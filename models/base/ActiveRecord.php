@@ -142,11 +142,11 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     {
         return [
             static::STATUS_ENABLED => [
-                'name' => Yii::t('app', 'Enabled'),
+                'name' => Yii::t('skeleton', 'Enabled'),
                 'icon' => 'globe',
             ],
             static::STATUS_DISABLED => [
-                'name' => Yii::t('app', 'Disabled'),
+                'name' => Yii::t('skeleton', 'Disabled'),
                 'icon' => 'lock',
             ],
         ];
@@ -209,7 +209,7 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
             'id' => Yii::t('skeleton', 'ID'),
             'status' => Yii::t('skeleton', 'Status'),
             'type' => Yii::t('skeleton', 'Type'),
-            'name' => Yii::t('skeleton', 'Title'),
+            'name' => Yii::t('cms', 'Title'),
             'position' => Yii::t('cms', 'Order'),
             'content' => Yii::t('cms', 'Content'),
             'updated_by_user_id' => Yii::t('skeleton', 'User'),

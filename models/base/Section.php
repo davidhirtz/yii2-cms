@@ -111,6 +111,28 @@ class Section extends ActiveRecord
     }
 
     /**
+     * @param bool $insert
+     * @param array $changedAttributes
+     */
+    public function afterSave($insert, $changedAttributes)
+    {
+        if ($insert) {
+            $this->entry->recalculateSectionCount();
+        }
+
+        parent::afterSave($insert, $changedAttributes);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function afterDelete()
+    {
+        $this->entry->recalculateSectionCount();
+        parent::afterDelete();
+    }
+
+    /**
      * @return ActiveQuery
      */
     public function findSiblings()

@@ -1,5 +1,7 @@
 <?php
+
 namespace davidhirtz\yii2\cms\modules\admin\widgets\grid\base;
+
 use davidhirtz\yii2\cms\components\ModuleTrait;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\modules\admin\models\forms\SectionForm;
@@ -42,18 +44,17 @@ class SectionGridView extends GridView
      */
     public function init()
     {
-        if(!$this->dataProvider)
-        {
-            $this->dataProvider=new ArrayDataProvider([
-                'allModels'=>$this->entry->sections,
-                'pagination'=>false,
-                'sort'=>false,
+        if (!$this->dataProvider) {
+            $this->dataProvider = new ArrayDataProvider([
+                'allModels' => $this->entry->sections,
+                'pagination' => false,
+                'sort' => false,
             ]);
 
             $this->setModel(new SectionForm);
         }
 
-        $this->orderRoute=['order', 'entry'=>$this->entry->id];
+        $this->orderRoute = ['order', 'entry' => $this->entry->id];
 
         $this->initHeader();
         $this->initFooter();
@@ -73,13 +74,12 @@ class SectionGridView extends GridView
      */
     protected function initFooter()
     {
-        if($this->footer===null)
-        {
-            $this->footer=[
+        if ($this->footer === null) {
+            $this->footer = [
                 [
                     [
-                        'content'=>$this->renderCreateSectionButton(),
-                        'options'=>['class'=>'col'],
+                        'content' => $this->renderCreateSectionButton(),
+                        'options' => ['class' => 'col'],
                     ],
                 ],
             ];
@@ -91,7 +91,7 @@ class SectionGridView extends GridView
      */
     protected function renderCreateSectionButton()
     {
-        return Html::a(Html::iconText('plus', Yii::t('cms', 'New Section')), ['create', 'entry'=>$this->entry->id], ['class'=>'btn btn-primary']);
+        return Html::a(Html::iconText('plus', Yii::t('cms', 'New Section')), ['create', 'entry' => $this->entry->id], ['class' => 'btn btn-primary']);
     }
 
     /**
@@ -116,11 +116,10 @@ class SectionGridView extends GridView
     public function renderTypeColumn()
     {
         return [
-            'attribute'=>'type',
-            'visible'=>count(SectionForm::getTypes())>1,
-            'content'=>function(SectionForm $section)
-            {
-                return Html::a($section->getTypeName(), ['update', 'id'=>$section->id]);
+            'attribute' => 'type',
+            'visible' => count(SectionForm::getTypes()) > 1,
+            'content' => function (SectionForm $section) {
+                return Html::a($section->getTypeName(), ['update', 'id' => $section->id]);
             }
         ];
     }
@@ -131,13 +130,12 @@ class SectionGridView extends GridView
     public function renderNameColumn()
     {
         return [
-            'attribute'=>$this->getModel()->getI18nAttributeName('name'),
-            'headerOptions'=>['class'=>'hidden-xs'],
-            'contentOptions'=>['class'=>'hidden-xs'],
-            'content'=>function(SectionForm $section)
-            {
-                $text=$section->getI18nAttribute('name');
-                $cssClass=null;
+            'attribute' => $this->getModel()->getI18nAttributeName('name'),
+            'headerOptions' => ['class' => 'hidden-xs'],
+            'contentOptions' => ['class' => 'hidden-xs'],
+            'content' => function (SectionForm $section) {
+                $text = $section->getI18nAttribute('name');
+                $cssClass = null;
 
 //                if(!$text)
 //                {
@@ -153,13 +151,12 @@ class SectionGridView extends GridView
 //                    }
 //                }
 
-                if(!$text)
-                {
-                    $text=Yii::t('cms', '[ No title ]');
-                    $cssClass='text-muted';
+                if (!$text) {
+                    $text = Yii::t('cms', '[ No title ]');
+                    $cssClass = 'text-muted';
                 }
 
-                return Html::a($text, ['update', 'id'=>$section->id], ['class'=>$cssClass]);
+                return Html::a($text, ['update', 'id' => $section->id], ['class' => $cssClass]);
             }
         ];
     }
@@ -187,17 +184,15 @@ class SectionGridView extends GridView
     public function renderButtonsColumn()
     {
         return [
-            'contentOptions'=>['class'=>'text-right text-nowrap'],
-            'content'=>function(SectionForm $section)
-            {
-                $buttons=[];
+            'contentOptions' => ['class' => 'text-right text-nowrap'],
+            'content' => function (SectionForm $section) {
+                $buttons = [];
 
-                if($this->getIsSortedByPosition())
-                {
-                    $buttons[]=Html::tag('span', FAS::icon('arrows-alt'), ['class'=>'btn btn-secondary sortable-handle']);
+                if ($this->dataProvider->getCount() > 1) {
+                    $buttons[] = Html::tag('span', FAS::icon('arrows-alt'), ['class' => 'btn btn-secondary sortable-handle']);
                 }
 
-                $buttons[]=Html::a(FAS::icon('wrench'), ['update', 'id'=>$section->id], ['class'=>'btn btn-secondary']);
+                $buttons[] = Html::a(FAS::icon('wrench'), ['update', 'id' => $section->id], ['class' => 'btn btn-secondary']);
                 return Html::buttons($buttons);
             }
         ];

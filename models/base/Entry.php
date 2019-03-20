@@ -167,6 +167,15 @@ class Entry extends ActiveRecord
     }
 
     /**
+     * @return false|int
+     */
+    public function recalculateSectionCount()
+    {
+        $this->section_count = $this->getSections()->count();
+        return $this->update(false);
+    }
+    
+    /**
      * @return array
      */
     public function getRoute(): array

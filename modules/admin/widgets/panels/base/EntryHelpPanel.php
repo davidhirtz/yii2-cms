@@ -42,14 +42,14 @@ class EntryHelpPanel extends HelpPanel
 	/**
 	 * Renders text.
 	 */
-	public function renderText()
-	{
-		return $this->renderHelpBlock(Yii::t('cms', 'This entry has {count, plural, =0{no sections yet} =1{one section} other{# sections}}{public, select, 1{, click {here} to view the entry on the website} other{ but was not published yet and thus will not be displayed on the website}}.', [
-			'count'=>$this->entry->section_count,
-			'public'=>$this->entry->getIsPublic() ? 1 : 0,
-			'here'=>$this->entry->getRoute() ? Html::a(Yii::t('app', 'here'), $this->entry->getRoute(), ['target'=>'_blank']) : Html::tag('s', Yii::t('app', 'here')),
-		]));
-	}
+//	public function renderText()
+//	{
+//		return $this->renderHelpBlock(Yii::t('cms', 'This entry has {count, plural, =0{no sections yet} =1{one section} other{# sections}}{public, select, 1{, click {here} to view the entry on the website} other{ but was not published yet and thus will not be displayed on the website}}.', [
+//			'count'=>$this->entry->section_count,
+//			'public'=>$this->entry->getIsPublic() ? 1 : 0,
+//			'here'=>$this->entry->getRoute() ? Html::a(Yii::t('cms', 'here'), $this->entry->getRoute(), ['target'=>'_blank']) : Html::tag('s', Yii::t('app', 'here')),
+//		]));
+//	}
 
 	/**
 	 * @return string
