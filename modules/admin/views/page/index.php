@@ -1,6 +1,6 @@
 <?php
 /**
- * Admin page list.
+ * Pages.
  * @see \davidhirtz\yii2\cms\modules\admin\controllers\PageController::actionIndex()
  *
  * @var \davidhirtz\yii2\skeleton\web\View $this

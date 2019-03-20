@@ -13,7 +13,6 @@ use yii\helpers\Url;
 /**
  * Class PageGridView.
  * @package davidhirtz\yii2\cms\modules\admin\widgets\grid\base
- * @see PageGridView
  *
  * @property ActiveDataProvider $dataProvider
  * @method PageForm getModel()
@@ -46,6 +45,7 @@ class PageGridView extends GridView
         'name',
         'section_count',
         'publish_date',
+        'buttons',
     ];
     
 	/**
@@ -78,7 +78,7 @@ class PageGridView extends GridView
 						'options'=>['class'=>'col-12 col-md-6'],
 					],
 					'options'=>[
-						'class'=>'justify-content-between',
+						'class'=>PageForm::getTypes() ? 'justify-content-between' : 'justify-content-end',
 					],
 				],
 			];

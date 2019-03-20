@@ -3,8 +3,7 @@
 namespace davidhirtz\yii2\cms\modules\admin\models\forms\base;
 
 use davidhirtz\yii2\cms\models\Page;
-use davidhirtz\yii2\datetime\DateTime;
-use yii\helpers\Inflector;
+use yii\behaviors\SluggableBehavior;
 
 /**
  * Class PageForm
@@ -15,28 +14,20 @@ use yii\helpers\Inflector;
 class PageForm extends Page
 {
     /**
-     * @inheritdoc
+     * @return array
      */
-    public function beforeValidate()
+    public function behaviors(): array
     {
-        if(!$this->customSlugBehavior)
-        {
-            $this->slug=Inflector::slug($this->slug);
-        }
-
-        return parent::beforeValidate();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function beforeSave($insert)
-    {
-        if(!$this->publish_date)
-        {
-            $this->publish_date=new DateTime;
-        }
-
-        return parent::beforeSave($insert);
+        return $this->customSlugBehavior ? parent::behaviors() : array_merge(parent::behaviors(), [
+            'SluggableBehavior' => [
+                'class' => SluggableBehavior::class,
+                'attribute' => 'name',
+                'immutable' => true,
+                'ensureUnique' => true,
+                'uniqueValidator' => [
+                    'targetAttribute' => ['slug', 'parent_id'],
+                ],
+            ],
+        ]);
     }
 }

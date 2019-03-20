@@ -107,7 +107,7 @@ class PageController extends Controller
         $page->type = $type;
 
         if ($page->load(Yii::$app->getRequest()->post()) && $page->insert()) {
-            $this->success(Yii::t('cms', 'The page was created and published.'));
+            $this->success(Yii::t('cms', 'The page was created.'));
             return $this->redirect(['index']);
         }
 
@@ -169,7 +169,6 @@ class PageController extends Controller
 
         Page::updatePosition($pages, array_flip(Yii::$app->getRequest()->post('page')));
     }
-
 
     /**
      * @return Sort

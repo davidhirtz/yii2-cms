@@ -1,26 +1,24 @@
 <?php
 /**
- * Create page form.
- * @see \davidhirtz\yii2\cms\modules\admin\controllers\PageController::actionCreate()
+ * Create page.
+ * @see \davidhirtz\yii2\cms\modules\admin\controllers\PageController::actionIndex()
  *
- * @var \davidhirtz\yii2\cms\modules\admin\components\web\View $this
+ * @var \davidhirtz\yii2\skeleton\web\View $this
  * @var \davidhirtz\yii2\cms\modules\admin\models\forms\PageForm $page
  */
-use app\components\helpers\Html;
-use app\components\widgets\bootstrap\Panel;
-use davidhirtz\yii2\cms\modules\admin\components\widgets\forms\PageActiveForm;
-use davidhirtz\yii2\cms\modules\admin\components\widgets\nav\Submenu;
 
-$this->setPageTitle(Yii::t('cms', 'Create New Page'));
+$this->setTitle(Yii::t('cms', 'Create New Page'));
+$this->setBreadcrumb(Yii::t('cms', 'Pages'), ['index']);
 
-$this->setPageBreadcrumbs($page);
-$this->setBreadcrumb($this->title);
-?>
+use davidhirtz\yii2\cms\modules\admin\widgets\forms\PageActiveForm;
+use davidhirtz\yii2\cms\modules\admin\widgets\nav\PageSubmenu;
+use davidhirtz\yii2\skeleton\helpers\Html;
+use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel; ?>
 
 <?= Html::errorSummary($page); ?>
 
-<?= Submenu::widget([
-	'title'=>Html::a(Yii::t('cms', 'Pages'), ['/cms/admin/page/index']),
+<?= PageSubmenu::widget([
+	'title'=>Html::a(Yii::t('cms', 'Pages'), ['index']),
 ]); ?>
 
 <?= Panel::widget([
@@ -29,8 +27,3 @@ $this->setBreadcrumb($this->title);
 		'model'=>$page,
 	]),
 ]); ?>
-
-<div class="page-files alert alert-info">
-	<?= Yii::t('cms', 'You can upload files after you created the page.'); ?>
-</div>
-

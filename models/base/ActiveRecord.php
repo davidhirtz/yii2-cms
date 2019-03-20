@@ -34,8 +34,12 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
      */
     const STATUS_DISABLED = 0;
     const STATUS_ENABLED = 1;
-
     const TYPE_DEFAULT = 1;
+
+    /**
+     * @var string
+     */
+    public $htmlValidator='\app\components\validators\HtmlValidator';
 
     /**
      * @inheritdoc
@@ -47,6 +51,14 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
                 'class' => DateTimeBehavior::class,
             ],
         ]);
+    }
+
+    /**
+     * @return UserQuery
+     */
+    public function getUpdated(): UserQuery
+    {
+        return $this->hasOne(User::class, ['id' => 'updated_by_user_id']);
     }
 
     /**
@@ -72,23 +84,15 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
             [
                 ['type'],
                 'in',
-                'range' => array_keys(static::getTypes()),
+                'range' => array_keys(static::getTypes()) ?: [static::TYPE_DEFAULT],
             ],
         ]);
     }
 
     /**
-     * @return UserQuery
-     */
-    public function getUpdated(): UserQuery
-    {
-        return $this->hasOne(User::class, ['id' => 'updated_by_user_id']);
-    }
-
-    /**
      * @return bool
      */
-    public function afterValidate()
+    public function beforeValidate()
     {
         if (!$this->type) {
             $this->type = static::TYPE_DEFAULT;
