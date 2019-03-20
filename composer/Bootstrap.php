@@ -2,11 +2,11 @@
 
 namespace davidhirtz\yii2\cms\composer;
 
+use davidhirtz\yii2\skeleton\composer\BootstrapTrait;
 use davidhirtz\yii2\skeleton\web\Application;
 use yii\base\BootstrapInterface;
 use Yii;
 use davidhirtz\yii2\skeleton\console\controllers\MigrateController;
-use yii\helpers\ArrayHelper;
 
 /**
  * Class Bootstrap
@@ -14,6 +14,8 @@ use yii\helpers\ArrayHelper;
  */
 class Bootstrap implements BootstrapInterface
 {
+    use BootstrapTrait;
+
     /**
      * @param Application $app
      */
@@ -21,37 +23,27 @@ class Bootstrap implements BootstrapInterface
     {
         Yii::setAlias('@cms', dirname(__DIR__));
 
-        $components = $app->getComponents();
-        $modules = $app->getModules();
+        $this->extendComponent($app, 'i18n', [
+            'translations' => [
+                'cms' => [
+                    'class' => 'yii\i18n\PhpMessageSource',
+                    'basePath' => '@cms/messages',
+                ],
+            ],
+        ]);
 
-        if (!isset($modules['cms']['class'])) {
-            $app->setModule('cms', ArrayHelper::merge($modules['admin'], [
-                'class' => 'davidhirtz\yii2\cms\Module',
-            ]));
-        }
-
-        if (!isset($modules['admin']['modules']['cms']['class'])) {
-            $app->setModule('admin', ArrayHelper::merge($modules['admin'], [
+        $this->extendModules($app, [
+            'admin' => [
                 'modules' => [
                     'cms' => [
                         'class' => 'davidhirtz\yii2\cms\modules\admin\Module',
                     ],
                 ],
-            ]));
-        }
-
-        if (!isset($components['i18n']['translations']['cms']['class'])) {
-            $app->setComponents([
-                'i18n' => ArrayHelper::merge($components['i18n'], [
-                    'translations' => [
-                        'cms' => [
-                            'class' => 'yii\i18n\PhpMessageSource',
-                            'basePath' => '@cms/messages',
-                        ],
-                    ],
-                ]),
-            ]);
-        }
+            ],
+            'cms' => [
+                'class' => 'davidhirtz\yii2\cms\Module',
+            ],
+        ]);
 
         if ($app instanceof \davidhirtz\yii2\skeleton\console\Application) {
             $app->on(Application::EVENT_BEFORE_ACTION, function (yii\base\ActionEvent $event) {
