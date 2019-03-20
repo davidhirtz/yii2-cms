@@ -1,6 +1,6 @@
 <?php
 
-namespace davidhirtz\yii2\cms\components;
+namespace davidhirtz\yii2\cms\modules;
 
 use davidhirtz\yii2\cms\Module;
 use Yii;

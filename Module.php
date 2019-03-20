@@ -2,7 +2,7 @@
 
 namespace davidhirtz\yii2\cms;
 
-use Yii;
+use davidhirtz\yii2\skeleton\modules\ModuleTrait;
 
 /**
  * Class Module
@@ -10,15 +10,12 @@ use Yii;
  */
 class Module extends \yii\base\Module
 {
-    /**
-     * @var bool
-     */
-    public $enabledNestedSlugs = false;
+    use ModuleTrait;
 
     /**
      * @var bool
      */
-    public $enableI18nTables = false;
+    public $enabledNestedSlugs = false;
 
     /**
      * @var bool
@@ -29,19 +26,4 @@ class Module extends \yii\base\Module
      * @var array
      */
     public $defaultEntrySort;
-
-    /**
-     * @var string
-     */
-    public $tablePrefix;
-
-    /**
-     * @param string $tableName
-     * @return string
-     */
-    public function getTableName($tableName)
-    {
-        $tableName = $this->tablePrefix . $tableName;
-        return '{{%' . ($this->enableI18nTables ? Yii::$app->getI18n()->getAttributeName($tableName) : $tableName) . '}}';
-    }
 }

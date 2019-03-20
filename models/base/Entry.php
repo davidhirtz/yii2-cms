@@ -26,7 +26,7 @@ use yii\helpers\Json;
  * @property string $content
  * @property DateTime $publish_date
  * @property int $section_count
- * @property int $media_count
+ * @property int $file_count
  * @property bool $order_by
  * @property Section[] $sections
  * @property  \davidhirtz\yii2\cms\models\Entry $entry
@@ -85,6 +85,18 @@ class Entry extends ActiveRecord
     /**
      * @inheritdoc
      */
+    public function afterFind()
+    {
+        if ($this->order_by) {
+            $this->order_by = Json::decode($this->order_by);
+        }
+
+        parent::afterFind();
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function beforeValidate(): bool
     {
         if ($this->customSlugBehavior) {
@@ -94,17 +106,6 @@ class Entry extends ActiveRecord
         return parent::beforeValidate();
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function afterFind()
-    {
-        if ($this->order_by) {
-            $this->order_by = Json::decode($this->order_by);
-        }
-
-        parent::afterFind();
-    }
 
     /**
      * @inheritdoc
@@ -190,10 +191,9 @@ class Entry extends ActiveRecord
     {
         return array_merge(parent::attributeLabels(), [
             'slug' => Yii::t('cms', 'Url'),
-            'title' => Yii::t('skeleton', 'Meta title'),
+            'title' => Yii::t('cms', 'Meta title'),
             'description' => Yii::t('cms', 'Meta description'),
-            'section_count' => Yii::t('skeleton', 'Sections'),
-            'media_count' => Yii::t('skeleton', 'Media'),
+            'section_count' => Yii::t('cms', 'Sections'),
         ]);
     }
 

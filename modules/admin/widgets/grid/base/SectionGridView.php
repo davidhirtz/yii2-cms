@@ -2,7 +2,7 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\widgets\grid\base;
 
-use davidhirtz\yii2\cms\components\ModuleTrait;
+use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\modules\admin\models\forms\SectionForm;
 use davidhirtz\yii2\skeleton\helpers\Html;
@@ -35,7 +35,7 @@ class SectionGridView extends GridView
         'status',
         'type',
         'name',
-//        'media_count',
+//        'file_count',
         'buttons',
     ];
 
@@ -167,13 +167,13 @@ class SectionGridView extends GridView
 //    public function renderMediaCountColumn()
 //    {
 //        return [
-//            'attribute'=>'media_count',
+//            'attribute'=>'file_count',
 //            'headerOptions'=>['class'=>'hidden-sm hidden-xs text-center'],
 //            'contentOptions'=>['class'=>'hidden-sm hidden-xs text-center'],
 //            'visible'=>static::getModule()->enableSections,
 //            'content'=>function(SectionForm $section)
 //            {
-//                return Html::a(Yii::$app->getFormatter()->asInteger($section->media_count), ['/cms/admin/section/media', 'section'=>$section->id], ['class'=>'badge']);
+//                return Html::a(Yii::$app->getFormatter()->asInteger($section->file_count), ['/cms/admin/section/media', 'section'=>$section->id], ['class'=>'badge']);
 //            }
 //        ];
 //    }

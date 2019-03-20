@@ -2,7 +2,7 @@
 
 namespace davidhirtz\yii2\cms\models\base;
 
-use davidhirtz\yii2\cms\components\ModuleTrait;
+use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\datetime\DateTimeBehavior;
 use davidhirtz\yii2\skeleton\db\I18nAttributesTrait;
@@ -212,6 +212,7 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
             'name' => Yii::t('cms', 'Title'),
             'position' => Yii::t('cms', 'Order'),
             'content' => Yii::t('cms', 'Content'),
+            'file_count' => Yii::t('cms', 'Files'),
             'updated_by_user_id' => Yii::t('skeleton', 'User'),
             'updated_at' => Yii::t('skeleton', 'Last Update'),
             'created_at' => Yii::t('skeleton', 'Created'),

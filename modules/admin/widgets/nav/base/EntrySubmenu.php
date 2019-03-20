@@ -2,7 +2,7 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\widgets\nav\base;
 
-use davidhirtz\yii2\cms\components\ModuleTrait;
+use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\cms\modules\admin\models\forms\EntryForm;
 use Yii;
 

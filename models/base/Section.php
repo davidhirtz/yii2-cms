@@ -149,7 +149,6 @@ class Section extends ActiveRecord
             'entry_id' => Yii::t('skeleton', 'Entry'),
             'slug' => Yii::t('cms', 'Url'),
             'section_count' => Yii::t('skeleton', 'Sections'),
-            'media_count' => Yii::t('skeleton', 'Media'),
         ]);
     }
 
