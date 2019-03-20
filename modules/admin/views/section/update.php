@@ -8,22 +8,31 @@
  */
 
 $this->setTitle(Yii::t('cms', 'Update Section'));
-$this->setBreadcrumb(Yii::t('cms', 'Pages'), ['page/index']);
+$this->setBreadcrumb(Yii::t('cms', 'Entries'), ['entry/index']);
 
 use davidhirtz\yii2\cms\modules\admin\widgets\forms\SectionActiveForm;
-use davidhirtz\yii2\cms\modules\admin\widgets\nav\PageSubmenu;
+use davidhirtz\yii2\cms\modules\admin\widgets\nav\EntrySubmenu;
 use davidhirtz\yii2\skeleton\helpers\Html;
-use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel; ?>
+use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
+use davidhirtz\yii2\skeleton\widgets\forms\DeleteActiveForm; ?>
 
 <?= Html::errorSummary($section); ?>
 
-<?= PageSubmenu::widget([
-	'page' => $section->page,
+<?= EntrySubmenu::widget([
+	'entry' => $section->entry,
 ]); ?>
 
 <?= Panel::widget([
-	'title' => $section->getI18nAttribute('name'),
+	'title' => $this->title,
 	'content' => SectionActiveForm::widget([
 		'model' => $section,
+	]),
+
+]); ?>
+<?= Panel::widget([
+	'type'=>'danger',
+	'title'=>Yii::t('cms', 'Delete Entry'),
+	'content'=>DeleteActiveForm::widget([
+		'model'=>$section,
 	]),
 ]); ?>

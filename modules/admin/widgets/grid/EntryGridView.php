@@ -2,9 +2,9 @@
 namespace davidhirtz\yii2\cms\modules\admin\widgets\grid;
 
 /**
- * Class PageGridView.
+ * Class EntryGridView.
  * @package davidhirtz\yii2\cms\modules\admin\widgets\grid
  */
-class PageGridView extends \davidhirtz\yii2\cms\modules\admin\widgets\grid\base\PageGridView
+class EntryGridView extends \davidhirtz\yii2\cms\modules\admin\widgets\grid\base\EntryGridView
 {
 }

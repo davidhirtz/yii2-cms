@@ -2,16 +2,17 @@
 
 namespace davidhirtz\yii2\cms\models\base;
 
-use davidhirtz\yii2\cms\models\queries\PageQuery;
+use davidhirtz\yii2\cms\models\queries\EntryQuery;
 use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\datetime\DateTimeValidator;
 use davidhirtz\yii2\skeleton\db\ActiveQuery;
 use Yii;
 use yii\helpers\Inflector;
+use yii\helpers\Json;
 
 /**
- * Class Page.
+ * Class Entry.
  * @package davidhirtz\yii2\cms\models\base
  *
  * @property int $parent_id
@@ -26,12 +27,12 @@ use yii\helpers\Inflector;
  * @property DateTime $publish_date
  * @property int $section_count
  * @property int $media_count
- * @property bool $sort_by_publish_date
+ * @property bool $order_by
  * @property Section[] $sections
- * @property  \davidhirtz\yii2\cms\models\Page $page
- * @method static \davidhirtz\yii2\cms\models\Page findOne($condition)
+ * @property  \davidhirtz\yii2\cms\models\Entry $entry
+ * @method static \davidhirtz\yii2\cms\models\Entry findOne($condition)
  */
-class Page extends ActiveRecord
+class Entry extends ActiveRecord
 {
     /**
      * @var bool
@@ -84,7 +85,7 @@ class Page extends ActiveRecord
     /**
      * @inheritdoc
      */
-    public function beforeValidate()
+    public function beforeValidate(): bool
     {
         if ($this->customSlugBehavior) {
             $this->slug = Inflector::slug($this->slug);
@@ -96,7 +97,19 @@ class Page extends ActiveRecord
     /**
      * @inheritdoc
      */
-    public function beforeSave($insert)
+    public function afterFind()
+    {
+        if ($this->order_by) {
+            $this->order_by = Json::decode($this->order_by);
+        }
+
+        parent::afterFind();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function beforeSave($insert): bool
     {
         if (!$this->publish_date) {
             $this->publish_date = new DateTime;
@@ -106,33 +119,49 @@ class Page extends ActiveRecord
             $this->position = $this->findSiblings()->max('[[position]]') + 1;
         }
 
+        if ($this->order_by) {
+            $this->order_by = Json::encode($this->order_by);
+        }
+
         return parent::beforeSave($insert);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function afterSave($insert, $changedAttributes)
+    {
+        if ($this->order_by) {
+            $this->order_by = Json::decode($this->order_by);
+        }
+
+        parent::afterSave($insert, $changedAttributes);
     }
 
     /**
      * @return ActiveQuery
      */
-    public function getSections()
+    public function getSections(): ActiveQuery
     {
-        return $this->hasMany(Section::class, ['page_id' => 'id'])
+        return $this->hasMany(Section::class, ['entry_id' => 'id'])
             ->orderBy(['position' => SORT_ASC])
             ->indexBy('id')
-            ->inverseOf('page');
+            ->inverseOf('entry');
     }
 
     /**
      * @inheritdoc
-     * @return PageQuery
+     * @return EntryQuery
      */
-    public static function find()
+    public static function find(): EntryQuery
     {
-        return new PageQuery(get_called_class());
+        return new EntryQuery(get_called_class());
     }
 
     /**
-     * @return PageQuery
+     * @return EntryQuery
      */
-    public function findSiblings()
+    public function findSiblings(): EntryQuery
     {
         return static::find()->where(['parent_id' => $this->parent_id]);
     }
@@ -140,15 +169,15 @@ class Page extends ActiveRecord
     /**
      * @return array
      */
-    public function getRoute()
+    public function getRoute(): array
     {
-        return array_filter(['/cms/site/view', 'page' => $this->slug]);
+        return array_filter(['/cms/site/view', 'entry' => $this->slug]);
     }
 
     /**
      * @inheritdoc
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return array_merge(parent::attributeLabels(), [
             'slug' => Yii::t('cms', 'Url'),
@@ -162,16 +191,16 @@ class Page extends ActiveRecord
     /**
      * @return string
      */
-    public function formName()
+    public function formName(): string
     {
-        return 'Page';
+        return 'Entry';
     }
 
     /**
      * @inheritdoc
      */
-    public static function tableName()
+    public static function tableName(): string
     {
-        return static::getModule()->getTableName('page');
+        return static::getModule()->getTableName('entry');
     }
 }

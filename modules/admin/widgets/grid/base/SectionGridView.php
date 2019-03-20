@@ -1,7 +1,7 @@
 <?php
 namespace davidhirtz\yii2\cms\modules\admin\widgets\grid\base;
 use davidhirtz\yii2\cms\components\ModuleTrait;
-use davidhirtz\yii2\cms\models\Page;
+use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\modules\admin\models\forms\SectionForm;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grid\GridView;
@@ -22,9 +22,9 @@ class SectionGridView extends GridView
     use ModuleTrait;
 
     /**
-     * @var Page
+     * @var Entry
      */
-    public $page;
+    public $entry;
 
     /**
      * @var array
@@ -45,7 +45,7 @@ class SectionGridView extends GridView
         if(!$this->dataProvider)
         {
             $this->dataProvider=new ArrayDataProvider([
-                'allModels'=>$this->page->sections,
+                'allModels'=>$this->entry->sections,
                 'pagination'=>false,
                 'sort'=>false,
             ]);
@@ -53,7 +53,7 @@ class SectionGridView extends GridView
             $this->setModel(new SectionForm);
         }
 
-        $this->orderRoute=['order', 'page'=>$this->page->id];
+        $this->orderRoute=['order', 'entry'=>$this->entry->id];
 
         $this->initHeader();
         $this->initFooter();
@@ -91,7 +91,7 @@ class SectionGridView extends GridView
      */
     protected function renderCreateSectionButton()
     {
-        return Html::a(Html::iconText('plus', Yii::t('cms', 'New Section')), ['create', 'page'=>$this->page->id], ['class'=>'btn btn-primary']);
+        return Html::a(Html::iconText('plus', Yii::t('cms', 'New Section')), ['create', 'entry'=>$this->entry->id], ['class'=>'btn btn-primary']);
     }
 
     /**

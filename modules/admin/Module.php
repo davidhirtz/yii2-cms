@@ -12,7 +12,7 @@ use Yii;
 class Module extends \yii\base\Module
 {
     /**
-     * @var string the module display name, defaults to "Pages"
+     * @var string the module display name, defaults to "Entries"
      */
     public $name;
 
@@ -29,7 +29,7 @@ class Module extends \yii\base\Module
     /**
      * @var string
      */
-    public $defaultRoute = 'page';
+    public $defaultRoute = 'entry';
 
     /**
      * @var string
@@ -40,9 +40,9 @@ class Module extends \yii\base\Module
      * @var array
      */
     protected $defaultControllerMap = [
-        'page' => [
-            'class' => 'davidhirtz\yii2\cms\modules\admin\controllers\PageController',
-            'viewPath' => '@cms/modules/admin/views/page',
+        'entry' => [
+            'class' => 'davidhirtz\yii2\cms\modules\admin\controllers\EntryController',
+            'viewPath' => '@cms/modules/admin/views/entry',
         ],
         'section' => [
             'class' => 'davidhirtz\yii2\cms\modules\admin\controllers\SectionController',
@@ -59,10 +59,10 @@ class Module extends \yii\base\Module
             if (!$this->navbarItems) {
                 $this->navbarItems = [
                     [
-                        'label' => $this->name ?: Yii::t('cms', 'Pages'),
+                        'label' => $this->name ?: Yii::t('cms', 'Entries'),
                         'icon' => 'book',
-                        'url' => ['/admin/page/index'],
-                        'active' => ['admin/page', 'admin/section'],
+                        'url' => ['/admin/entry/index'],
+                        'active' => ['admin/entry', 'admin/section'],
                         'labelOptions' => [
                             'class' => 'hidden-xs',
                         ],
@@ -72,16 +72,16 @@ class Module extends \yii\base\Module
             if (!$this->panels) {
                 $this->panels = [
                     [
-                        'name' => $this->name ?: Yii::t('cms', 'Pages'),
+                        'name' => $this->name ?: Yii::t('cms', 'Entries'),
                         'items' => [
                             [
-                                'label' => Yii::t('cms', 'Create New Page'),
-                                'url' => ['/admin/page/create'],
+                                'label' => Yii::t('cms', 'Create New Entry'),
+                                'url' => ['/admin/entry/create'],
                                 'icon' => 'pen',
                             ],
                             [
-                                'label' => Yii::t('cms', 'View All Pages'),
-                                'url' => ['/admin/page/index'],
+                                'label' => Yii::t('cms', 'View All Entries'),
+                                'url' => ['/admin/entry/index'],
                                 'icon' => 'book',
                             ],
                         ],

@@ -3,9 +3,9 @@
 namespace davidhirtz\yii2\cms\modules\admin\models\forms;
 
 /**
- * Class PageForm
+ * Class EntryForm
  * @package davidhirtz\yii2\cms\modules\admin\models\forms
  */
-class PageForm extends \davidhirtz\yii2\cms\modules\admin\models\forms\base\PageForm
+class EntryForm extends \davidhirtz\yii2\cms\modules\admin\models\forms\base\EntryForm
 {
 }

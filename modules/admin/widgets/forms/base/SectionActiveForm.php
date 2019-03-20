@@ -44,6 +44,6 @@ class SectionActiveForm extends ActiveForm
      */
     public function getBaseUrl()
     {
-        return trim(Url::to($this->model->page->getRoute(), true), '/') . '#';
+        return trim(Url::to($this->model->entry->getRoute(), true), '/') . '#';
     }
 }

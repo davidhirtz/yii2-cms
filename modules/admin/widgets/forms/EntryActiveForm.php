@@ -2,9 +2,9 @@
 namespace davidhirtz\yii2\cms\modules\admin\widgets\forms;
 
 /**
- * Class PageActiveForm.
+ * Class EntryActiveForm.
  * @package davidhirtz\yii2\cms\modules\admin\widgets\forms
  */
-class PageActiveForm extends \davidhirtz\yii2\cms\modules\admin\widgets\forms\base\PageActiveForm
+class EntryActiveForm extends \davidhirtz\yii2\cms\modules\admin\widgets\forms\base\EntryActiveForm
 {
 }

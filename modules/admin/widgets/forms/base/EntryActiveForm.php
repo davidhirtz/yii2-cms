@@ -2,7 +2,7 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\widgets\forms\base;
 
-use davidhirtz\yii2\cms\modules\admin\models\forms\PageForm;
+use davidhirtz\yii2\cms\modules\admin\models\forms\EntryForm;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm;
 use davidhirtz\yii2\skeleton\widgets\forms\CKEditor;
 use Yii;
@@ -11,12 +11,12 @@ use yii\jui\DatePicker;
 use yii\web\JsExpression;
 
 /**
- * Class PageActiveForm.
+ * Class EntryActiveForm.
  * @package davidhirtz\yii2\cms\modules\admin\widgets\forms\base
  *
- * @property PageForm $model
+ * @property EntryForm $model
  */
-class PageActiveForm extends ActiveForm
+class EntryActiveForm extends ActiveForm
 {
     /**
      * @var bool
@@ -30,8 +30,8 @@ class PageActiveForm extends ActiveForm
     {
         if (!$this->fields) {
             $this->fields = [
-                ['status', 'dropDownList', ArrayHelper::getColumn(PageForm::getStatuses(), 'name')],
-                ['type', 'dropDownList', ArrayHelper::getColumn(PageForm::getTypes(), 'name')],
+                ['status', 'dropDownList', ArrayHelper::getColumn(EntryForm::getStatuses(), 'name')],
+                ['type', 'dropDownList', ArrayHelper::getColumn(EntryForm::getTypes(), 'name')],
                 ['name'],
                 ['content', ['options' => ['style' => !$this->model->contentType ? 'display:none' : null]], $this->model->contentType === 'html' ? CKEditor::class : 'textarea'],
                 ['publish_date'],

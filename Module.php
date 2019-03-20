@@ -28,7 +28,7 @@ class Module extends \yii\base\Module
     /**
      * @var array
      */
-    public $defaultPageSort;
+    public $defaultEntrySort;
 
     /**
      * @var string

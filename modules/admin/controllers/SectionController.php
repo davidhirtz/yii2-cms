@@ -4,7 +4,7 @@ namespace davidhirtz\yii2\cms\modules\admin\controllers;
 
 use davidhirtz\yii2\cms\components\ModuleTrait;
 use davidhirtz\yii2\cms\models\Section;
-use davidhirtz\yii2\cms\modules\admin\models\forms\PageForm;
+use davidhirtz\yii2\cms\modules\admin\models\forms\EntryForm;
 use davidhirtz\yii2\cms\modules\admin\models\forms\SectionForm;
 use davidhirtz\yii2\skeleton\db\ActiveQuery;
 use davidhirtz\yii2\skeleton\web\Controller;
@@ -51,46 +51,46 @@ class SectionController extends Controller
     }
 
     /**
-     * @param int $page
+     * @param int $entry
      * @return string|\yii\web\Response
      */
-    public function actionIndex($page)
+    public function actionIndex($entry)
     {
-        $query = PageForm::find()
-            ->where(['id' => $page])
+        $query = EntryForm::find()
+            ->where(['id' => $entry])
             ->with([
                 'sections' => function (ActiveQuery $query) {
                     $query->replaceI18nAttributes();
                 }
             ]);
 
-        if (!$page = $query->one()) {
+        if (!$entry = $query->one()) {
             throw new NotFoundHttpException;
         }
 
         /** @noinspection MissedViewInspection */
         return $this->render('index', [
-            'page' => $page,
+            'entry' => $entry,
         ]);
     }
 
     /**
-     * @param int $page
+     * @param int $entry
      * @return string|\yii\web\Response
      */
-    public function actionCreate($page)
+    public function actionCreate($entry)
     {
         $section = new SectionForm([
-            'page_id' => $page,
+            'entry_id' => $entry,
         ]);
 
-        if (!$section->page) {
+        if (!$section->entry) {
             throw new NotFoundHttpException;
         }
 
         if ($section->load(Yii::$app->getRequest()->post()) && $section->insert()) {
             $this->success(Yii::t('cms', 'The section was created.'));
-            return $this->redirect(['index', 'page' => $section->id]);
+            return $this->redirect(['index', 'entry' => $section->entry_id]);
         }
 
         /** @noinspection MissedViewInspection */
@@ -111,7 +111,7 @@ class SectionController extends Controller
 
         if ($section->load(Yii::$app->getRequest()->post()) && $section->update()) {
             $this->success(Yii::t('cms', 'The section was updated.'));
-            return $this->redirect(['index', 'page' => $section->page_id]);
+            return $this->redirect(['index', 'entry' => $section->entry_id]);
         }
 
         /** @noinspection MissedViewInspection */
@@ -132,7 +132,7 @@ class SectionController extends Controller
 
         if ($section->delete()) {
             $this->success(Yii::t('cms', 'The section was deleted.'));
-            return $this->redirect(['index', 'page' => $section->page_id]);
+            return $this->redirect(['index', 'entry' => $section->entry_id]);
         }
 
         $errors = $section->getFirstErrors();
@@ -140,12 +140,12 @@ class SectionController extends Controller
     }
 
     /**
-     * @param int $page
+     * @param int $entry
      */
-    public function actionOrder($page)
+    public function actionOrder($entry)
     {
         $sections = Section::find()->select(['id', 'position'])
-            ->where(['page_id' => $page])
+            ->where(['entry_id' => $entry])
             ->orderBy(['position' => SORT_ASC])
             ->all();
 

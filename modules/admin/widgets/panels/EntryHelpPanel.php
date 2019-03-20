@@ -2,9 +2,9 @@
 namespace davidhirtz\yii2\cms\modules\admin\widgets\panels;
 
 /**
- * Class PageHelpPanel.
+ * Class EntryHelpPanel.
  * @package davidhirtz\yii2\cms\modules\admin\widgets\panels
  */
-class PageHelpPanel extends BasePageHelpPanel
+class EntryHelpPanel extends BaseEntryHelpPanel
 {
 }

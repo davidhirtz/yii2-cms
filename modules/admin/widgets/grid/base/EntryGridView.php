@@ -1,7 +1,7 @@
 <?php
 namespace davidhirtz\yii2\cms\modules\admin\widgets\grid\base;
 use davidhirtz\yii2\cms\components\ModuleTrait;
-use davidhirtz\yii2\cms\modules\admin\models\forms\PageForm;
+use davidhirtz\yii2\cms\modules\admin\models\forms\EntryForm;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grid\GridView;
 use davidhirtz\yii2\timeago\Timeago;
@@ -11,20 +11,20 @@ use yii\data\ActiveDataProvider;
 use yii\helpers\Url;
 
 /**
- * Class PageGridView.
+ * Class EntryGridView.
  * @package davidhirtz\yii2\cms\modules\admin\widgets\grid\base
  *
  * @property ActiveDataProvider $dataProvider
- * @method PageForm getModel()
+ * @method EntryForm getModel()
  */
-class PageGridView extends GridView
+class EntryGridView extends GridView
 {
     use ModuleTrait;
 
     /**
-     * @var PageForm
+     * @var EntryForm
      */
-    public $page;
+    public $entry;
 
     /**
      * @var bool
@@ -53,9 +53,9 @@ class PageGridView extends GridView
 	 */
 	public function init()
 	{
-		if($this->page)
+		if($this->entry)
 		{
-			$this->orderRoute=['order', 'id'=>$this->page->id];
+			$this->orderRoute=['order', 'id'=>$this->entry->id];
 		}
 
 		$this->initHeader();
@@ -78,7 +78,7 @@ class PageGridView extends GridView
 						'options'=>['class'=>'col-12 col-md-6'],
 					],
 					'options'=>[
-						'class'=>PageForm::getTypes() ? 'justify-content-between' : 'justify-content-end',
+						'class'=>EntryForm::getTypes() ? 'justify-content-between' : 'justify-content-end',
 					],
 				],
 			];
@@ -95,7 +95,7 @@ class PageGridView extends GridView
 			$this->footer=[
 				[
 					[
-						'content'=>$this->renderCreatePageButton(),
+						'content'=>$this->renderCreateEntryButton(),
 						'visible'=>Yii::$app->getUser()->can('author'),
 						'options'=>['class'=>'col'],
 					],
@@ -107,9 +107,9 @@ class PageGridView extends GridView
 	/**
 	 * @return string
 	 */
-	protected function renderCreatePageButton()
+	protected function renderCreateEntryButton()
 	{
-		return Html::a(Html::iconText('plus', Yii::t('cms', 'New Page')), ['create', 'id'=>$this->page ? $this->page->id : null, 'type'=>Yii::$app->getRequest()->get('type')], ['class'=>'btn btn-primary']);
+		return Html::a(Html::iconText('plus', Yii::t('cms', 'New Entry')), ['create', 'id'=>$this->entry ? $this->entry->id : null, 'type'=>Yii::$app->getRequest()->get('type')], ['class'=>'btn btn-primary']);
 	}
 
     /**
@@ -119,10 +119,10 @@ class PageGridView extends GridView
     {
         return [
             'contentOptions' => ['class' => 'text-center'],
-            'content' => function (PageForm $page) {
-                return FAS::icon($page->getStatusIcon(), [
+            'content' => function (EntryForm $entry) {
+                return FAS::icon($entry->getStatusIcon(), [
                     'data-toggle' => 'tooltip',
-                    'title' => $page->getStatusName()
+                    'title' => $entry->getStatusName()
                 ]);
             }
         ];
@@ -135,10 +135,10 @@ class PageGridView extends GridView
 	{
 		return [
 			'attribute'=>'type',
-			'visible'=>count(PageForm::getTypes())>1,
-			'content'=>function(PageForm $page)
+			'visible'=>count(EntryForm::getTypes())>1,
+			'content'=>function(EntryForm $entry)
 			{
-				return Html::a($page->getTypeName(), ['update', 'id'=>$page->id]);
+				return Html::a($entry->getTypeName(), ['update', 'id'=>$entry->id]);
 			}
 		];
 	}
@@ -150,14 +150,14 @@ class PageGridView extends GridView
 	{
 		return [
 			'attribute'=>$this->getModel()->getI18nAttributeName('name'),
-			'content'=>function(PageForm $page)
+			'content'=>function(EntryForm $entry)
 			{
-				$html=Html::markKeywords(Html::encode($page->getI18nAttribute('name')), $this->search);
-				$html=Html::tag('strong', Html::a($html, ['update', 'id'=>$page->id]));
+				$html=Html::markKeywords(Html::encode($entry->getI18nAttribute('name')), $this->search);
+				$html=Html::tag('strong', Html::a($html, ['update', 'id'=>$entry->id]));
 
 				if($this->showUrl)
 				{
-					$url=Url::to($page->getRoute(), true);
+					$url=Url::to($entry->getRoute(), true);
 					$html.=Html::tag('div', Html::a($url, $url, ['target'=>'_blank']), ['class'=>'small hidden-xs']);
 				}
 
@@ -177,9 +177,9 @@ class PageGridView extends GridView
 			'headerOptions'=>['class'=>'hidden-sm hidden-xs text-center'],
 			'contentOptions'=>['class'=>'hidden-sm hidden-xs text-center'],
 			'visible'=>static::getModule()->enableSections,
-			'content'=>function(PageForm $page)
+			'content'=>function(EntryForm $entry)
 			{
-				return Html::a(Yii::$app->getFormatter()->asInteger($page->section_count), ['section/index', 'page'=>$page->id], ['class'=>'badge']);
+				return Html::a(Yii::$app->getFormatter()->asInteger($entry->section_count), ['section/index', 'entry'=>$entry->id], ['class'=>'badge']);
 			}
 		];
 	}
@@ -193,9 +193,9 @@ class PageGridView extends GridView
 			'attribute'=>'publish_date',
 			'headerOptions'=>['class'=>'hidden-sm hidden-xs'],
 			'contentOptions'=>['class'=>'text-nowrap hidden-sm hidden-xs'],
-			'content'=>function(PageForm $page)
+			'content'=>function(EntryForm $entry)
 			{
-				return $this->dateFormat ? $page->publish_date->format($this->dateFormat) : Timeago::tag($page->publish_date);
+				return $this->dateFormat ? $entry->publish_date->format($this->dateFormat) : Timeago::tag($entry->publish_date);
 			}
 		];
 	}
@@ -207,7 +207,7 @@ class PageGridView extends GridView
 	{
 		return [
 			'contentOptions'=>['class'=>'text-right text-nowrap'],
-			'content'=>function(PageForm $page)
+			'content'=>function(EntryForm $entry)
 			{
 				$buttons=[];
 
@@ -216,7 +216,7 @@ class PageGridView extends GridView
 					$buttons[]=Html::tag('span', FAS::icon('arrows-alt'), ['class'=>'btn btn-secondary sortable-handle']);
 				}
 
-				$buttons[]=Html::a(FAS::icon('wrench'), ['update', 'id'=>$page->id], ['class'=>'btn btn-secondary']);
+				$buttons[]=Html::a(FAS::icon('wrench'), ['update', 'id'=>$entry->id], ['class'=>'btn btn-secondary']);
 				return Html::buttons($buttons);
 			}
 		];

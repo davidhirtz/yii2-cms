@@ -2,19 +2,19 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\models\forms\base;
 
-use davidhirtz\yii2\cms\models\Page;
+use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\modules\admin\models\forms\SectionForm;
 use davidhirtz\yii2\skeleton\db\ActiveQuery;
 use yii\behaviors\SluggableBehavior;
 
 /**
- * Class PageForm
+ * Class EntryForm
  * @package davidhirtz\yii2\cms\modules\admin\models\forms\base
  *
  * @property SectionForm[] $sections
- * @method static \davidhirtz\yii2\cms\modules\admin\models\forms\PageForm findOne($condition)
+ * @method static \davidhirtz\yii2\cms\modules\admin\models\forms\EntryForm findOne($condition)
  */
-class PageForm extends Page
+class EntryForm extends Entry
 {
     /**
      * @return array
@@ -39,9 +39,9 @@ class PageForm extends Page
      */
     public function getSections(): ActiveQuery
     {
-        return $this->hasMany(SectionForm::class, ['page_id' => 'id'])
+        return $this->hasMany(SectionForm::class, ['entry_id' => 'id'])
             ->orderBy(['position' => SORT_ASC])
             ->indexBy('id')
-            ->inverseOf('page');
+            ->inverseOf('entry');
     }
 }

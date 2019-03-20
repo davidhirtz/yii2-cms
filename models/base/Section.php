@@ -2,7 +2,7 @@
 
 namespace davidhirtz\yii2\cms\models\base;
 
-use davidhirtz\yii2\cms\models\queries\PageQuery;
+use davidhirtz\yii2\cms\models\queries\EntryQuery;
 use davidhirtz\yii2\skeleton\db\ActiveQuery;
 use Yii;
 use yii\helpers\Inflector;
@@ -11,22 +11,22 @@ use yii\helpers\Inflector;
  * Class Section.
  * @package davidhirtz\yii2\cms\models\base
  *
- * @property int $page_id
+ * @property int $entry_id
  * @property int $position
  * @property string $name
  * @property string $slug
  * @property string $content
- * @property \davidhirtz\yii2\cms\models\Page $page
+ * @property \davidhirtz\yii2\cms\models\Entry $entry
  * @method static \davidhirtz\yii2\cms\models\Section findOne($condition)
  */
 class Section extends ActiveRecord
 {
     /**
-     * @return PageQuery
+     * @return EntryQuery
      */
-    public function getPage(): PageQuery
+    public function getEntry(): EntryQuery
     {
-        return $this->hasOne(Page::class, ['id'=>'page_id']);
+        return $this->hasOne(Entry::class, ['id' => 'entry_id']);
     }
 
     /**
@@ -36,17 +36,17 @@ class Section extends ActiveRecord
     {
         return array_merge(parent::rules(), $this->getI18nRules([
             [
-                ['page_id'],
+                ['entry_id'],
                 'required',
             ],
             [
-                ['page_id'],
+                ['entry_id'],
                 'filter',
-                'filter'=>'intval',
+                'filter' => 'intval',
             ],
             [
-                ['page_id'],
-                'validatePageId',
+                ['entry_id'],
+                'validateEntryId',
             ],
             [
                 $this->getI18nAttributeNames(['name', 'slug', 'content']),
@@ -66,20 +66,19 @@ class Section extends ActiveRecord
             [
                 ['slug'],
                 'unique',
-                'targetAttribute' => ['slug', 'page_id'],
+                'targetAttribute' => ['slug', 'entry_id'],
                 'comboNotUnique' => Yii::t('yii', '{attribute} "{value}" has already been taken.'),
             ],
         ]));
     }
 
     /**
-     * Validates page and populates relation.
+     * Validates entry and populates relation.
      */
-    public function validatePageId()
+    public function validateEntryId()
     {
-        if(!$this->page || (!$this->getIsNewRecord() && $this->isAttributeChanged('page_id')))
-        {
-            $this->addInvalidAttributeError('page_id');
+        if (!$this->entry || (!$this->getIsNewRecord() && $this->isAttributeChanged('entry_id'))) {
+            $this->addInvalidAttributeError('entry_id');
         }
     }
 
@@ -104,6 +103,10 @@ class Section extends ActiveRecord
             $this->position = $this->findSiblings()->max('[[position]]') + 1;
         }
 
+        if (!$this->slug) {
+            $this->slug = null;
+        }
+
         return parent::beforeSave($insert);
     }
 
@@ -112,7 +115,7 @@ class Section extends ActiveRecord
      */
     public function findSiblings()
     {
-        return static::find()->where(['page_id' => $this->page_id]);
+        return static::find()->where(['entry_id' => $this->entry_id]);
     }
 
     /**
@@ -121,7 +124,7 @@ class Section extends ActiveRecord
     public function attributeLabels()
     {
         return array_merge(parent::attributeLabels(), [
-            'page_id' => Yii::t('skeleton', 'Page'),
+            'entry_id' => Yii::t('skeleton', 'Entry'),
             'slug' => Yii::t('cms', 'Url'),
             'section_count' => Yii::t('skeleton', 'Sections'),
             'media_count' => Yii::t('skeleton', 'Media'),

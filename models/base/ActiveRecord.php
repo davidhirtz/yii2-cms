@@ -209,7 +209,7 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
             'id' => Yii::t('skeleton', 'ID'),
             'status' => Yii::t('skeleton', 'Status'),
             'type' => Yii::t('skeleton', 'Type'),
-            'name' => Yii::t('skeleton', 'Name'),
+            'name' => Yii::t('skeleton', 'Title'),
             'position' => Yii::t('cms', 'Order'),
             'content' => Yii::t('cms', 'Content'),
             'updated_by_user_id' => Yii::t('skeleton', 'User'),

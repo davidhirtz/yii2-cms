@@ -3,19 +3,11 @@
 namespace davidhirtz\yii2\cms\models\queries;
 
 /**
- * Class PageQuery
+ * Class EntryQuery
  * @package davidhirtz\yii2\cms\models\queries
  */
-class PageQuery extends \davidhirtz\yii2\skeleton\db\ActiveQuery
+class EntryQuery extends \davidhirtz\yii2\skeleton\db\ActiveQuery
 {
-    /**
-     * @return bool
-     */
-    public function isSortedByPosition()
-    {
-        return $this->orderBy && key($this->orderBy) === 'position';
-    }
-
     /**
      * @param string $search
      * @return $this

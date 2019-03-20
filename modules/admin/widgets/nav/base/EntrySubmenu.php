@@ -3,21 +3,21 @@
 namespace davidhirtz\yii2\cms\modules\admin\widgets\nav\base;
 
 use davidhirtz\yii2\cms\components\ModuleTrait;
-use davidhirtz\yii2\cms\modules\admin\models\forms\PageForm;
+use davidhirtz\yii2\cms\modules\admin\models\forms\EntryForm;
 use Yii;
 
 /**
- * Class PageSubmenu.
+ * Class EntrySubmenu.
  * @package davidhirtz\yii2\cms\modules\admin\widgets\nav\base
  */
-class PageSubmenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
+class EntrySubmenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
 {
     use ModuleTrait;
 
     /**
-     * @var PageForm
+     * @var EntryForm
      */
-    public $page;
+    public $entry;
 
     /**
      * Initializes the nav items.
@@ -25,27 +25,27 @@ class PageSubmenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
     public function init()
     {
         if (!$this->items) {
-            if ($this->page) {
+            if ($this->entry) {
                 $this->items = [
                     [
-                        'label' => Yii::t('cms', 'Page'),
-                        'url' => ['page/update', 'id' => $this->page->id],
-                        'active' => ['page/'],
+                        'label' => Yii::t('cms', 'Entry'),
+                        'url' => ['entry/update', 'id' => $this->entry->id],
+                        'active' => ['entry/'],
                         'icon' => 'book hidden-xs',
                     ],
                     [
                         'label' => Yii::t('cms', 'Sections'),
-                        'url' => ['section/index', 'page' => $this->page->id],
+                        'url' => ['section/index', 'entry' => $this->entry->id],
                         'visible' => static::getModule()->enableSections,
-                        'badge' => $this->page->section_count ?: null,
+                        'badge' => $this->entry->section_count ?: null,
                         'badgeOptions' => [
-                            'id' => 'page-section-count',
+                            'id' => 'entry-section-count',
                             'class' => 'badge',
                         ],
                         'icon' => 'th-list hidden-xs',
                         'active' => ['section'],
                         'options' => [
-                            'class' => 'page-sections',
+                            'class' => 'entry-sections',
                         ],
                     ],
                 ];
@@ -53,7 +53,7 @@ class PageSubmenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
         }
 
         if (!$this->title) {
-            $this->title = $this->page ? $this->page->getI18nAttribute('name') : Yii::t('cms', 'Pages');
+            $this->title = $this->entry ? $this->entry->getI18nAttribute('name') : Yii::t('cms', 'Entries');
         }
 
         parent::init();

@@ -3,9 +3,10 @@
 namespace davidhirtz\yii2\cms\modules\admin\controllers;
 
 use davidhirtz\yii2\cms\components\ModuleTrait;
-use davidhirtz\yii2\cms\models\Page;
-use davidhirtz\yii2\cms\models\queries\PageQuery;
-use davidhirtz\yii2\cms\modules\admin\models\forms\PageForm;
+use davidhirtz\yii2\cms\models\Entry;
+use davidhirtz\yii2\cms\models\queries\EntryQuery;
+use davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider;
+use davidhirtz\yii2\cms\modules\admin\models\forms\EntryForm;
 use davidhirtz\yii2\skeleton\web\Controller;
 use Yii;
 use yii\data\ActiveDataProvider;
@@ -16,13 +17,13 @@ use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
 
 /**
- * Class BasePageController.
+ * Class BaseEntryController.
  * @package davidhirtz\yii2\cms\modules\admin\controllers
- * @see PageController
+ * @see EntryController
  *
  * @property \davidhirtz\yii2\cms\modules\admin\Module $module
  */
-class PageController extends Controller
+class EntryController extends Controller
 {
     use ModuleTrait;
 
@@ -61,36 +62,29 @@ class PageController extends Controller
      */
     public function actionIndex($id = null, $type = null, $q = null)
     {
-        $page = $id ? PageForm::findOne($id) : null;
+        $entry = $id ? EntryForm::findOne($id) : null;
 
         $query = $this->getQuery()
             ->andFilterWhere(['type' => $type])
             ->orderBy(['position' => SORT_ASC])
             ->matching($q);
 
-        if ($this->getModule()->defaultPageSort) {
-            $query->orderBy($this->getModule()->defaultPageSort);
+        if ($this->getModule()->defaultEntrySort) {
+            $query->orderBy($this->getModule()->defaultEntrySort);
         }
 
-        if ($page) {
-            if ($page->sort_by_publish_date) {
-                $query->orderBy(['publish_date' => SORT_DESC]);
-            }
+        if ($entry && $entry->order_by) {
+            $query->orderBy($entry->order_by);
         }
 
-        $provider = new ActiveDataProvider([
+        $provider = new EntryActiveDataProvider([
             'query' => $query,
-            'sort' => !$query->isSortedByPosition() ? $this->getSort() : false,
         ]);
-
-        if ($query->isSortedByPosition()) {
-            $provider->setPagination(false);
-        }
 
         /** @noinspection MissedViewInspection */
         return $this->render('index', [
             'provider' => $provider,
-            'page' => $page,
+            'entry' => $entry,
         ]);
     }
 
@@ -101,19 +95,19 @@ class PageController extends Controller
      */
     public function actionCreate($id = null, $type = null)
     {
-        $page = new PageForm;
+        $entry = new EntryForm;
 
-        $page->parent_id = $id;
-        $page->type = $type;
+        $entry->parent_id = $id;
+        $entry->type = $type;
 
-        if ($page->load(Yii::$app->getRequest()->post()) && $page->insert()) {
-            $this->success(Yii::t('cms', 'The page was created.'));
+        if ($entry->load(Yii::$app->getRequest()->post()) && $entry->insert()) {
+            $this->success(Yii::t('cms', 'The entry was created.'));
             return $this->redirect(['index']);
         }
 
         /** @noinspection MissedViewInspection */
         return $this->render('create', [
-            'page' => $page,
+            'entry' => $entry,
         ]);
     }
 
@@ -123,18 +117,18 @@ class PageController extends Controller
      */
     public function actionUpdate($id)
     {
-        if (!$page = PageForm::findOne($id)) {
+        if (!$entry = EntryForm::findOne($id)) {
             throw new NotFoundHttpException;
         }
 
-        if ($page->load(Yii::$app->getRequest()->post()) && $page->update()) {
-            $this->success(Yii::t('cms', 'The page was updated.'));
+        if ($entry->load(Yii::$app->getRequest()->post()) && $entry->update()) {
+            $this->success(Yii::t('cms', 'The entry was updated.'));
             return $this->refresh();
         }
 
         /** @noinspection MissedViewInspection */
         return $this->render('update', [
-            'page' => $page,
+            'entry' => $entry,
         ]);
     }
 
@@ -144,16 +138,16 @@ class PageController extends Controller
      */
     public function actionDelete($id)
     {
-        if (!$page = Page::findOne($id)) {
+        if (!$entry = Entry::findOne($id)) {
             throw new NotFoundHttpException;
         }
 
-        if ($page->delete()) {
-            $this->success(Yii::t('cms', 'The page was deleted.'));
+        if ($entry->delete()) {
+            $this->success(Yii::t('cms', 'The entry was deleted.'));
             return $this->redirect(['index']);
         }
 
-        $errors = $page->getFirstErrors();
+        $errors = $entry->getFirstErrors();
         throw new ServerErrorHttpException(reset($errors));
     }
 
@@ -162,12 +156,12 @@ class PageController extends Controller
      */
     public function actionOrder($id = null)
     {
-        $pages = Page::find()->select(['id', 'position'])
+        $entries = Entry::find()->select(['id', 'position'])
             ->filterWhere(['parent_id' => $id])
             ->orderBy(['position' => SORT_ASC])
             ->all();
 
-        Page::updatePosition($pages, array_flip(Yii::$app->getRequest()->post('page')));
+        Entry::updatePosition($entries, array_flip(Yii::$app->getRequest()->post('entry')));
     }
 
     /**
@@ -210,10 +204,10 @@ class PageController extends Controller
     }
 
     /**
-     * @return PageQuery
+     * @return EntryQuery
      */
     protected function getQuery()
     {
-        return PageForm::find()->replaceI18nAttributes();
+        return EntryForm::find()->replaceI18nAttributes();
     }
 }
