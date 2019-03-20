@@ -9,7 +9,6 @@ use davidhirtz\yii2\datetime\DateTimeValidator;
 use davidhirtz\yii2\skeleton\db\ActiveQuery;
 use Yii;
 use yii\helpers\Inflector;
-use yii\helpers\Json;
 
 /**
  * Class Entry.
@@ -27,7 +26,6 @@ use yii\helpers\Json;
  * @property DateTime $publish_date
  * @property int $section_count
  * @property int $file_count
- * @property bool $order_by
  * @property Section[] $sections
  * @property  \davidhirtz\yii2\cms\models\Entry $entry
  * @method static \davidhirtz\yii2\cms\models\Entry findOne($condition)
@@ -85,18 +83,6 @@ class Entry extends ActiveRecord
     /**
      * @inheritdoc
      */
-    public function afterFind()
-    {
-        if ($this->order_by) {
-            $this->order_by = Json::decode($this->order_by);
-        }
-
-        parent::afterFind();
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function beforeValidate(): bool
     {
         if ($this->customSlugBehavior) {
@@ -120,23 +106,7 @@ class Entry extends ActiveRecord
             $this->position = $this->findSiblings()->max('[[position]]') + 1;
         }
 
-        if ($this->order_by) {
-            $this->order_by = Json::encode($this->order_by);
-        }
-
         return parent::beforeSave($insert);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function afterSave($insert, $changedAttributes)
-    {
-        if ($this->order_by) {
-            $this->order_by = Json::decode($this->order_by);
-        }
-
-        parent::afterSave($insert, $changedAttributes);
     }
 
     /**
@@ -174,6 +144,14 @@ class Entry extends ActiveRecord
     {
         $this->section_count = $this->getSections()->count();
         return $this->update(false);
+    }
+
+    /**
+     * @return array
+     */
+    public function getOrderBy()
+    {
+        return ['position' => SORT_ASC];
     }
     
     /**

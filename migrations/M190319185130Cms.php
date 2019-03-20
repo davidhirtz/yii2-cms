@@ -47,7 +47,6 @@ class M190319185130Cms extends Migration
                 'publish_date' => $this->dateTime()->notNull(),
                 'section_count' => $this->smallInteger()->unsigned()->notNull()->defaultValue(0),
                 'file_count' => $this->smallInteger()->unsigned()->notNull()->defaultValue(0),
-                'order_by' => $this->string(50)->null(),
                 'updated_by_user_id' => $this->integer()->unsigned()->null(),
                 'updated_at' => $this->dateTime(),
                 'created_at' => $this->dateTime()->notNull(),

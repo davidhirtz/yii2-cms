@@ -25,5 +25,5 @@ class Module extends \yii\base\Module
     /**
      * @var array
      */
-    public $defaultEntrySort;
+    public $defaultEntryOrderBy;
 }

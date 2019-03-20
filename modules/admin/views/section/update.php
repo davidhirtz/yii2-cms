@@ -16,11 +16,11 @@ use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
 use davidhirtz\yii2\skeleton\widgets\forms\DeleteActiveForm; ?>
 
-<?= Html::errorSummary($section); ?>
-
 <?= EntrySubmenu::widget([
 	'entry' => $section->entry,
 ]); ?>
+
+<?= Html::errorSummary($section); ?>
 
 <?= Panel::widget([
 	'title' => $this->title,

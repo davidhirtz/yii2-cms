@@ -115,7 +115,7 @@ class EntryGridView extends GridView
     /**
      * @return array
      */
-    public function renderStatusColumn()
+    public function statusColumn()
     {
         return [
             'contentOptions' => ['class' => 'text-center'],
@@ -131,7 +131,7 @@ class EntryGridView extends GridView
 	/**
 	 * @return array
 	 */
-	public function renderTypeColumn()
+	public function typeColumn()
 	{
 		return [
 			'attribute'=>'type',
@@ -146,7 +146,7 @@ class EntryGridView extends GridView
 	/**
 	 * @return array
 	 */
-	public function renderNameColumn()
+	public function nameColumn()
 	{
 		return [
 			'attribute'=>$this->getModel()->getI18nAttributeName('name'),
@@ -170,7 +170,7 @@ class EntryGridView extends GridView
 	/**
 	 * @return array
 	 */
-	public function renderSectionCountColumn()
+	public function sectionCountColumn()
 	{
 		return [
 			'attribute'=>'section_count',
@@ -187,7 +187,7 @@ class EntryGridView extends GridView
 	/**
 	 * @return array
 	 */
-	public function renderPublishDateColumn()
+	public function publishDateColumn()
 	{
 		return [
 			'attribute'=>'publish_date',
@@ -203,7 +203,7 @@ class EntryGridView extends GridView
 	/**
 	 * @return array
 	 */
-	public function renderButtonsColumn()
+	public function buttonsColumn()
 	{
 		return [
 			'contentOptions'=>['class'=>'text-right text-nowrap'],

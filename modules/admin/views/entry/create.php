@@ -15,11 +15,11 @@ use davidhirtz\yii2\cms\modules\admin\widgets\nav\EntrySubmenu;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel; ?>
 
-<?= Html::errorSummary($entry); ?>
-
 <?= EntrySubmenu::widget([
 	'title'=>Html::a(Yii::t('cms', 'Entries'), ['index']),
 ]); ?>
+
+<?= Html::errorSummary($entry); ?>
 
 <?= Panel::widget([
 	'title'=>$this->title,

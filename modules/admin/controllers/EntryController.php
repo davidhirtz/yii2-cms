@@ -9,7 +9,6 @@ use davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider;
 use davidhirtz\yii2\cms\modules\admin\models\forms\EntryForm;
 use davidhirtz\yii2\skeleton\web\Controller;
 use Yii;
-use yii\data\ActiveDataProvider;
 use yii\data\Sort;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
@@ -69,12 +68,12 @@ class EntryController extends Controller
             ->orderBy(['position' => SORT_ASC])
             ->matching($q);
 
-        if ($this->getModule()->defaultEntrySort) {
-            $query->orderBy($this->getModule()->defaultEntrySort);
+        if ($this->getModule()->defaultEntryOrderBy) {
+            $query->orderBy($this->getModule()->defaultEntryOrderBy);
         }
 
-        if ($entry && $entry->order_by) {
-            $query->orderBy($entry->order_by);
+        if ($entry) {
+            $query->orderBy($entry->getOrderBy());
         }
 
         $provider = new EntryActiveDataProvider([

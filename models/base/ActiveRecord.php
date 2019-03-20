@@ -9,8 +9,6 @@ use davidhirtz\yii2\skeleton\db\I18nAttributesTrait;
 use davidhirtz\yii2\skeleton\models\queries\UserQuery;
 use davidhirtz\yii2\skeleton\models\User;
 use Yii;
-use yii\behaviors\BlameableBehavior;
-use yii\behaviors\TimestampBehavior;
 
 
 /**
@@ -117,19 +115,8 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     public function beforeSave($insert)
     {
         $this->attachBehaviors([
-            'TimestampBehavior' => [
-                'class' => TimestampBehavior::class,
-                'value' => function () {
-                    return new DateTime;
-                },
-            ],
-            'BlameableBehavior' => [
-                'class' => BlameableBehavior::class,
-                'attributes' => [
-                    static::EVENT_BEFORE_INSERT => ['updated_by_user_id'],
-                    static::EVENT_BEFORE_UPDATE => ['updated_by_user_id'],
-                ],
-            ],
+            'TimestampBehavior' => 'davidhirtz\yii2\skeleton\behaviors\TimestampBehavior',
+            'BlameableBehavior' => 'davidhirtz\yii2\skeleton\behaviors\BlameableBehavior',
         ]);
 
         return parent::beforeSave($insert);

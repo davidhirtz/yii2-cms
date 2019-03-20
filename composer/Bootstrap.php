@@ -45,14 +45,6 @@ class Bootstrap implements BootstrapInterface
             ],
         ]);
 
-        if ($app instanceof \davidhirtz\yii2\skeleton\console\Application) {
-            $app->on(Application::EVENT_BEFORE_ACTION, function (yii\base\ActionEvent $event) {
-                if ($event->action->controller instanceof MigrateController) {
-                    /** @var \davidhirtz\yii2\skeleton\console\controllers\MigrateController $controller */
-                    $controller = $event->action->controller;
-                    $controller->migrationNamespaces[] = 'davidhirtz\yii2\cms\migrations';
-                }
-            });
-        }
+        $this->setMigrationNamespace($app, 'davidhirtz\yii2\media\migrations');
     }
 }
