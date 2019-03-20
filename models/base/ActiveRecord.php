@@ -20,6 +20,7 @@ use yii\behaviors\TimestampBehavior;
  * @property int $id
  * @property int $status
  * @property int $type
+ * @property string $content
  * @property int $updated_by_user_id
  * @property DateTime $updated_at
  * @property DateTime $created_at
@@ -39,7 +40,12 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     /**
      * @var string
      */
-    public $htmlValidator='\app\components\validators\HtmlValidator';
+    public $htmlValidator='davidhirtz\yii2\skeleton\validators\HtmlValidator';
+
+    /**
+     * @var bool|string
+     */
+    public $contentType = 'html';
 
     /**
      * @inheritdoc
@@ -85,6 +91,10 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
                 ['type'],
                 'in',
                 'range' => array_keys(static::getTypes()) ?: [static::TYPE_DEFAULT],
+            ],
+            [
+                ['content'],
+                $this->contentType=='html' ? $this->htmlValidator : 'safe',
             ],
         ]);
     }
@@ -188,5 +198,23 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     public function getTypeName(): string
     {
         return $this->type ? static::getTypes()[$this->type]['name'] : null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => Yii::t('skeleton', 'ID'),
+            'status' => Yii::t('skeleton', 'Status'),
+            'type' => Yii::t('skeleton', 'Type'),
+            'name' => Yii::t('skeleton', 'Name'),
+            'position' => Yii::t('cms', 'Order'),
+            'content' => Yii::t('cms', 'Content'),
+            'updated_by_user_id' => Yii::t('skeleton', 'User'),
+            'updated_at' => Yii::t('skeleton', 'Last Update'),
+            'created_at' => Yii::t('skeleton', 'Created'),
+        ];
     }
 }

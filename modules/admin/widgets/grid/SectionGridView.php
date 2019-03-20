@@ -5,6 +5,6 @@ namespace davidhirtz\yii2\cms\modules\admin\widgets\grid;
  * Class SectionGridView.
  * @package davidhirtz\yii2\cms\modules\admin\widgets\grid
  */
-class SectionGridView extends BaseSectionGridView
+class SectionGridView extends \davidhirtz\yii2\cms\modules\admin\widgets\grid\base\SectionGridView
 {
 }

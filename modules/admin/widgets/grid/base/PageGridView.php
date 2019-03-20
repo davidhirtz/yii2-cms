@@ -179,7 +179,7 @@ class PageGridView extends GridView
 			'visible'=>static::getModule()->enableSections,
 			'content'=>function(PageForm $page)
 			{
-				return Html::a(Yii::$app->getFormatter()->asInteger($page->section_count), ['/cms/admin/section/index', 'page'=>$page->id], ['class'=>'badge']);
+				return Html::a(Yii::$app->getFormatter()->asInteger($page->section_count), ['section/index', 'page'=>$page->id], ['class'=>'badge']);
 			}
 		];
 	}

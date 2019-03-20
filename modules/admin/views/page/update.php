@@ -1,7 +1,7 @@
 <?php
 /**
  * Update page.
- * @see \davidhirtz\yii2\cms\modules\admin\controllers\PageController::actionIndex()
+ * @see \davidhirtz\yii2\cms\modules\admin\controllers\PageController::actionUpdate()
  *
  * @var \davidhirtz\yii2\skeleton\web\View $this
  * @var \davidhirtz\yii2\cms\modules\admin\models\forms\PageForm $page

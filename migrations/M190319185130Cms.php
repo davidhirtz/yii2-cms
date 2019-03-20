@@ -3,16 +3,17 @@
 namespace davidhirtz\yii2\cms\migrations;
 
 use davidhirtz\yii2\cms\models\Page;
+use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\Module;
 use davidhirtz\yii2\skeleton\models\User;
 use Yii;
 use yii\db\Migration;
 
 /**
- * Class M190319185130Page
+ * Class M190319185130Cms
  * @package davidhirtz\yii2\cms\migrations
  */
-class M190319185130Page extends Migration
+class M190319185130Cms extends Migration
 {
     use \davidhirtz\yii2\skeleton\db\MigrationTrait;
 
@@ -29,6 +30,7 @@ class M190319185130Page extends Migration
                 Yii::$app->language = $language;
             }
 
+            // Page.
             $this->createTable(Page::tableName(), [
                 'id' => $this->primaryKey()->unsigned(),
                 'status' => $this->tinyInteger(1)->unsigned()->notNull()->defaultValue(Page::STATUS_ENABLED),
@@ -51,6 +53,7 @@ class M190319185130Page extends Migration
                 'created_at' => $this->dateTime()->notNull(),
             ], $this->getTableOptions());
 
+            $this->createIndex('parent_id', Page::tableName(), ['parent_id', 'status']);
             $this->createIndex('slug', Page::tableName(), $this->getModule()->enabledNestedSlugs ? ['slug', 'parent_id'] : 'slug', true);
 
             $tableName = $schema->getRawTableName(Page::tableName());
@@ -58,6 +61,31 @@ class M190319185130Page extends Migration
             $this->addForeignKey($tableName . '_parent_id_ibfk', Page::tableName(), 'parent_id', Page::tableName(), 'id', 'SET NULL');
 
             $this->addI18nColumns(Page::tableName(), (new Page)->i18nAttributes);
+
+            // Section.
+            $this->createTable(Section::tableName(), [
+                'id' => $this->primaryKey()->unsigned(),
+                'status' => $this->tinyInteger(1)->unsigned()->notNull()->defaultValue(Section::STATUS_ENABLED),
+                'type' => $this->smallInteger()->notNull()->defaultValue(Section::TYPE_DEFAULT),
+                'page_id' => $this->integer()->unsigned()->notNull(),
+                'position' => $this->integer()->unsigned()->notNull()->defaultValue(0),
+                'name' => $this->string(250)->notNull(),
+                'slug' => $this->string(100)->null(),
+                'content' => $this->text()->null(),
+                'media_count' => $this->smallInteger()->unsigned()->notNull()->defaultValue(0),
+                'updated_by_user_id' => $this->integer()->unsigned()->null(),
+                'updated_at' => $this->dateTime(),
+                'created_at' => $this->dateTime()->notNull(),
+            ], $this->getTableOptions());
+
+            $this->createIndex('page_id', Section::tableName(), ['page_id', 'status', 'position']);
+            $this->createIndex('slug', Section::tableName(), $this->getModule()->enabledNestedSlugs ? ['slug', 'parent_id'] : 'slug', true);
+
+            $tableName = $schema->getRawTableName(Section::tableName());
+            $this->addForeignKey($tableName . '_updated_by_user_id_ibfk', Section::tableName(), 'updated_by_user_id', User::tableName(), 'id', 'SET NULL');
+            $this->addForeignKey($tableName . '_page_id_ibfk', Section::tableName(), 'page_id', Page::tableName(), 'id', 'CASCADE');
+
+            $this->addI18nColumns(Section::tableName(), (new Section)->i18nAttributes);
         }
 
         $auth = Yii::$app->getAuthManager();
@@ -76,6 +104,7 @@ class M190319185130Page extends Migration
     {
         foreach ($this->getLanguages() as $language) {
             Yii::$app->language = $language;
+            $this->dropTable(Section::tableName());
             $this->dropTable(Page::tableName());
         }
 

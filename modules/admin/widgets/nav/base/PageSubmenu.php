@@ -29,13 +29,13 @@ class PageSubmenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
                 $this->items = [
                     [
                         'label' => Yii::t('cms', 'Page'),
-                        'url' => ['/cms/admin/page/update', 'id' => $this->page->id],
+                        'url' => ['page/update', 'id' => $this->page->id],
                         'active' => ['page/'],
                         'icon' => 'book hidden-xs',
                     ],
                     [
                         'label' => Yii::t('cms', 'Sections'),
-                        'url' => ['/cms/admin/section/index', 'page' => $this->page->id],
+                        'url' => ['section/index', 'page' => $this->page->id],
                         'visible' => static::getModule()->enableSections,
                         'badge' => $this->page->section_count ?: null,
                         'badgeOptions' => [
