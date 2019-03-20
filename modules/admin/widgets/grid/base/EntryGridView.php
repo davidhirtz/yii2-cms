@@ -74,7 +74,7 @@ class EntryGridView extends GridView
 			$this->header=[
 				[
 					[
-						'content'=>$this->renderSearchInput(),
+						'content'=>$this->getSearchInput(),
 						'options'=>['class'=>'col-12 col-md-6'],
 					],
 					'options'=>[
