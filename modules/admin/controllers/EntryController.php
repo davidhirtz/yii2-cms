@@ -178,9 +178,9 @@ class EntryController extends Controller
                     'asc' => ['name' => SORT_ASC],
                     'desc' => ['name' => SORT_DESC],
                 ],
-                'file_count' => [
-                    'asc' => ['file_count' => SORT_ASC, 'name' => SORT_ASC],
-                    'desc' => ['file_count' => SORT_DESC, 'name' => SORT_ASC],
+                'asset_count' => [
+                    'asc' => ['asset_count' => SORT_ASC, 'name' => SORT_ASC],
+                    'desc' => ['asset_count' => SORT_DESC, 'name' => SORT_ASC],
                     'default' => SORT_DESC,
                 ],
                 'section_count' => [

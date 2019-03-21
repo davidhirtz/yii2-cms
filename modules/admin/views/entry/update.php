@@ -11,6 +11,7 @@ $this->setTitle(Yii::t('cms', 'Edit Entry'));
 $this->setBreadcrumb(Yii::t('cms', 'Entries'), ['index']);
 
 use davidhirtz\yii2\cms\modules\admin\widgets\forms\EntryActiveForm;
+use davidhirtz\yii2\cms\modules\admin\widgets\grid\AssetGridView;
 use davidhirtz\yii2\cms\modules\admin\widgets\nav\EntrySubmenu;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
@@ -31,9 +32,17 @@ use davidhirtz\yii2\skeleton\widgets\forms\DeleteActiveForm; ?>
 ]); ?>
 
 <?= Panel::widget([
+	'title'=>Yii::t('cms', 'Assets'),
+	'content'=> AssetGridView::widget([
+		'parent'=>$entry,
+	]),
+]); ?>
+
+<?= Panel::widget([
 	'type'=>'danger',
 	'title'=>Yii::t('cms', 'Delete Entry'),
 	'content'=>DeleteActiveForm::widget([
 		'model'=>$entry,
+		'message' => Yii::t('cms', 'Warning: Deleting this entry cannot be undone. All related sections will also be unrecoverably deleted. Please be certain!')
 	]),
 ]); ?>

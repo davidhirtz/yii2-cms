@@ -2,6 +2,8 @@
 
 namespace davidhirtz\yii2\cms\models\base;
 
+use davidhirtz\yii2\cms\models\Entry;
+use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\cms\models\queries\EntryQuery;
 use davidhirtz\yii2\skeleton\db\ActiveQuery;
 use Yii;
@@ -16,7 +18,8 @@ use yii\helpers\Inflector;
  * @property string $name
  * @property string $slug
  * @property string $content
- * @property \davidhirtz\yii2\cms\models\Entry $entry
+ * @property Entry $entry
+ * @property Asset[] $assets
  * @method static \davidhirtz\yii2\cms\models\Section findOne($condition)
  */
 class Section extends ActiveRecord
@@ -99,10 +102,6 @@ class Section extends ActiveRecord
      */
     public function beforeSave($insert)
     {
-        if ($insert) {
-            $this->position = $this->findSiblings()->max('[[position]]') + 1;
-        }
-
         if (!$this->slug) {
             $this->slug = null;
         }
@@ -130,6 +129,17 @@ class Section extends ActiveRecord
     {
         $this->entry->recalculateSectionCount();
         parent::afterDelete();
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getAssets(): ActiveQuery
+    {
+        return $this->hasMany(Asset::class, ['section_id' => 'id'])
+            ->orderBy(['position' => SORT_ASC])
+            ->indexBy('id')
+            ->inverseOf('section');
     }
 
     /**

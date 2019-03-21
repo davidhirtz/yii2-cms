@@ -44,6 +44,10 @@ class Module extends \yii\base\Module
             'class' => 'davidhirtz\yii2\cms\modules\admin\controllers\EntryController',
             'viewPath' => '@cms/modules/admin/views/entry',
         ],
+        'asset' => [
+            'class' => 'davidhirtz\yii2\cms\modules\admin\controllers\AssetController',
+            'viewPath' => '@cms/modules/admin/views/asset',
+        ],
         'section' => [
             'class' => 'davidhirtz\yii2\cms\modules\admin\controllers\SectionController',
             'viewPath' => '@cms/modules/admin/views/section',

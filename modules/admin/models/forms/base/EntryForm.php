@@ -3,6 +3,7 @@
 namespace davidhirtz\yii2\cms\modules\admin\models\forms\base;
 
 use davidhirtz\yii2\cms\models\Entry;
+use davidhirtz\yii2\cms\modules\admin\models\forms\AssetForm;
 use davidhirtz\yii2\cms\modules\admin\models\forms\SectionForm;
 use davidhirtz\yii2\skeleton\db\ActiveQuery;
 use yii\behaviors\SluggableBehavior;
@@ -12,6 +13,7 @@ use yii\behaviors\SluggableBehavior;
  * @package davidhirtz\yii2\cms\modules\admin\models\forms\base
  *
  * @property SectionForm[] $sections
+ * @property AssetForm[] $assets
  * @method static \davidhirtz\yii2\cms\modules\admin\models\forms\EntryForm findOne($condition)
  */
 class EntryForm extends Entry
@@ -40,6 +42,19 @@ class EntryForm extends Entry
     public function getSections(): ActiveQuery
     {
         return $this->hasMany(SectionForm::class, ['entry_id' => 'id'])
+            ->orderBy(['position' => SORT_ASC])
+            ->indexBy('id')
+            ->inverseOf('entry');
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getAssets(): ActiveQuery
+    {
+        return $this->hasMany(AssetForm::class, ['entry_id' => 'id'])
+            ->andWhere(['section_id' => null])
+            ->with(['file', 'file.folder'])
             ->orderBy(['position' => SORT_ASC])
             ->indexBy('id')
             ->inverseOf('entry');

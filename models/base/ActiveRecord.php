@@ -5,7 +5,10 @@ namespace davidhirtz\yii2\cms\models\base;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\datetime\DateTimeBehavior;
+use davidhirtz\yii2\skeleton\db\ActiveQuery;
 use davidhirtz\yii2\skeleton\db\I18nAttributesTrait;
+use davidhirtz\yii2\skeleton\db\StatusAttributeTrait;
+use davidhirtz\yii2\skeleton\db\TypeAttributeTrait;
 use davidhirtz\yii2\skeleton\models\queries\UserQuery;
 use davidhirtz\yii2\skeleton\models\User;
 use Yii;
@@ -26,14 +29,8 @@ use Yii;
  */
 abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
 {
-    use ModuleTrait, I18nAttributesTrait;
-
-    /**
-     * Constants.
-     */
-    const STATUS_DISABLED = 0;
-    const STATUS_ENABLED = 1;
-    const TYPE_DEFAULT = 1;
+    use I18nAttributesTrait, StatusAttributeTrait, TypeAttributeTrait,
+        ModuleTrait;
 
     /**
      * @var string
@@ -51,18 +48,8 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     public function behaviors(): array
     {
         return array_merge(parent::behaviors(), [
-            'DateTimeBehavior' => [
-                'class' => DateTimeBehavior::class,
-            ],
+            'DateTimeBehavior' => DateTimeBehavior::class,
         ]);
-    }
-
-    /**
-     * @return UserQuery
-     */
-    public function getUpdated(): UserQuery
-    {
-        return $this->hasOne(User::class, ['id' => 'updated_by_user_id']);
     }
 
     /**
@@ -73,40 +60,18 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         return array_merge(parent::rules(), [
             [
                 ['status'],
-                'required',
-            ],
-            [
-                ['status', 'type'],
-                'filter',
-                'filter' => 'intval',
-            ],
-            [
-                ['status'],
-                'in',
-                'range' => array_keys(static::getStatuses()),
+                'validateStatus',
             ],
             [
                 ['type'],
-                'in',
-                'range' => array_keys(static::getTypes()) ?: [static::TYPE_DEFAULT],
+                'validateType',
+                'skipOnEmpty' => false,
             ],
             [
                 ['content'],
                 $this->contentType=='html' ? $this->htmlValidator : 'safe',
             ],
         ]);
-    }
-
-    /**
-     * @return bool
-     */
-    public function beforeValidate()
-    {
-        if (!$this->type) {
-            $this->type = static::TYPE_DEFAULT;
-        }
-
-        return parent::beforeValidate();
     }
 
     /**
@@ -119,90 +84,35 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
             'BlameableBehavior' => 'davidhirtz\yii2\skeleton\behaviors\BlameableBehavior',
         ]);
 
+        if ($insert) {
+            $this->position = $this->findSiblings()->max('[[position]]') + 1;
+        }
+
         return parent::beforeSave($insert);
     }
 
     /**
-     * @return array
+     * @return UserQuery
      */
-    public static function getStatuses(): array
+    public function getUpdated(): UserQuery
     {
-        return [
-            static::STATUS_ENABLED => [
-                'name' => Yii::t('skeleton', 'Enabled'),
-                'icon' => 'globe',
-            ],
-            static::STATUS_DISABLED => [
-                'name' => Yii::t('skeleton', 'Disabled'),
-                'icon' => 'lock',
-            ],
-        ];
+        return $this->hasOne(User::class, ['id' => 'updated_by_user_id']);
     }
 
     /**
-     * @return string|null
+     * @return ActiveQuery
      */
-    public function getStatusName(): string
-    {
-        return $this->status ? static::getStatuses()[$this->status]['name'] : null;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getStatusIcon(): string
-    {
-        return $this->status ? static::getStatuses()[$this->status]['icon'] : null;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isEnabled()
-    {
-        return $this->status == static::STATUS_ENABLED;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isDisabled()
-    {
-        return $this->status == static::STATUS_DISABLED;
-    }
-
-    /**
-     * @return array
-     */
-    public static function getTypes(): array
-    {
-        return [];
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getTypeName(): string
-    {
-        return $this->type ? static::getTypes()[$this->type]['name'] : null;
-    }
+    abstract public function findSiblings();
 
     /**
      * @inheritdoc
      */
     public function attributeLabels()
     {
-        return [
-            'id' => Yii::t('skeleton', 'ID'),
-            'status' => Yii::t('skeleton', 'Status'),
-            'type' => Yii::t('skeleton', 'Type'),
+        return array_merge(parent::attributeLabels(), [
             'name' => Yii::t('cms', 'Title'),
-            'position' => Yii::t('cms', 'Order'),
             'content' => Yii::t('cms', 'Content'),
-            'file_count' => Yii::t('cms', 'Files'),
-            'updated_by_user_id' => Yii::t('skeleton', 'User'),
-            'updated_at' => Yii::t('skeleton', 'Last Update'),
-            'created_at' => Yii::t('skeleton', 'Created'),
-        ];
+            'asset_count' => Yii::t('cms', 'Assets'),
+        ]);
     }
 }

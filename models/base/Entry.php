@@ -2,6 +2,7 @@
 
 namespace davidhirtz\yii2\cms\models\base;
 
+use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\cms\models\queries\EntryQuery;
 use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\datetime\DateTime;
@@ -25,8 +26,9 @@ use yii\helpers\Inflector;
  * @property string $content
  * @property DateTime $publish_date
  * @property int $section_count
- * @property int $file_count
+ * @property int $asset_count
  * @property Section[] $sections
+ * @property Asset[] $assets
  * @property  \davidhirtz\yii2\cms\models\Entry $entry
  * @method static \davidhirtz\yii2\cms\models\Entry findOne($condition)
  */
@@ -102,10 +104,6 @@ class Entry extends ActiveRecord
             $this->publish_date = new DateTime;
         }
 
-        if ($insert) {
-            $this->position = $this->findSiblings()->max('[[position]]') + 1;
-        }
-
         return parent::beforeSave($insert);
     }
 
@@ -115,6 +113,17 @@ class Entry extends ActiveRecord
     public function getSections(): ActiveQuery
     {
         return $this->hasMany(Section::class, ['entry_id' => 'id'])
+            ->orderBy(['position' => SORT_ASC])
+            ->indexBy('id')
+            ->inverseOf('entry');
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getAssets(): ActiveQuery
+    {
+        return $this->hasMany(Asset::class, ['entry_id' => 'id'])
             ->orderBy(['position' => SORT_ASC])
             ->indexBy('id')
             ->inverseOf('entry');
@@ -171,6 +180,7 @@ class Entry extends ActiveRecord
             'slug' => Yii::t('cms', 'Url'),
             'title' => Yii::t('cms', 'Meta title'),
             'description' => Yii::t('cms', 'Meta description'),
+            'publish_date' => Yii::t('cms', 'Published'),
             'section_count' => Yii::t('cms', 'Sections'),
         ]);
     }

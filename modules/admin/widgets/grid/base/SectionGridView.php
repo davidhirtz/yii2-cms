@@ -35,7 +35,7 @@ class SectionGridView extends GridView
         'status',
         'type',
         'name',
-//        'file_count',
+//        'asset_count',
         'buttons',
     ];
 
@@ -167,13 +167,13 @@ class SectionGridView extends GridView
 //    public function renderMediaCountColumn()
 //    {
 //        return [
-//            'attribute'=>'file_count',
+//            'attribute'=>'asset_count',
 //            'headerOptions'=>['class'=>'hidden-sm hidden-xs text-center'],
 //            'contentOptions'=>['class'=>'hidden-sm hidden-xs text-center'],
 //            'visible'=>static::getModule()->enableSections,
 //            'content'=>function(SectionForm $section)
 //            {
-//                return Html::a(Yii::$app->getFormatter()->asInteger($section->file_count), ['/cms/admin/section/media', 'section'=>$section->id], ['class'=>'badge']);
+//                return Html::a(Yii::$app->getFormatter()->asInteger($section->asset_count), ['/cms/admin/section/media', 'section'=>$section->id], ['class'=>'badge']);
 //            }
 //        ];
 //    }

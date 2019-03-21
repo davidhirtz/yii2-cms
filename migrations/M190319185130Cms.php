@@ -4,7 +4,8 @@ namespace davidhirtz\yii2\cms\migrations;
 
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\Section;
-use davidhirtz\yii2\cms\Module;
+use davidhirtz\yii2\cms\modules\ModuleTrait;
+use davidhirtz\yii2\skeleton\db\MigrationTrait;
 use davidhirtz\yii2\skeleton\models\User;
 use Yii;
 use yii\db\Migration;
@@ -15,7 +16,7 @@ use yii\db\Migration;
  */
 class M190319185130Cms extends Migration
 {
-    use \davidhirtz\yii2\skeleton\db\MigrationTrait;
+    use ModuleTrait, MigrationTrait;
 
     /**
      * @return bool|void
@@ -46,7 +47,7 @@ class M190319185130Cms extends Migration
                 'content' => $this->text()->null(),
                 'publish_date' => $this->dateTime()->notNull(),
                 'section_count' => $this->smallInteger()->unsigned()->notNull()->defaultValue(0),
-                'file_count' => $this->smallInteger()->unsigned()->notNull()->defaultValue(0),
+                'asset_count' => $this->smallInteger()->unsigned()->notNull()->defaultValue(0),
                 'updated_by_user_id' => $this->integer()->unsigned()->null(),
                 'updated_at' => $this->dateTime(),
                 'created_at' => $this->dateTime()->notNull(),
@@ -56,7 +57,7 @@ class M190319185130Cms extends Migration
             $this->createIndex('slug', Entry::tableName(), $this->getModule()->enabledNestedSlugs ? ['slug', 'parent_id'] : 'slug', true);
 
             $tableName = $schema->getRawTableName(Entry::tableName());
-            $this->addForeignKey($tableName . '_updated_by_user_id_ibfk', Entry::tableName(), 'updated_by_user_id', User::tableName(), 'id', 'SET NULL');
+            $this->addForeignKey($tableName . '_updated_by_ibfk', Entry::tableName(), 'updated_by_user_id', User::tableName(), 'id', 'SET NULL');
             $this->addForeignKey($tableName . '_parent_id_ibfk', Entry::tableName(), 'parent_id', Entry::tableName(), 'id', 'SET NULL');
 
             $this->addI18nColumns(Entry::tableName(), (new Entry)->i18nAttributes);
@@ -71,7 +72,7 @@ class M190319185130Cms extends Migration
                 'name' => $this->string(250)->notNull(),
                 'slug' => $this->string(100)->null(),
                 'content' => $this->text()->null(),
-                'file_count' => $this->smallInteger()->unsigned()->notNull()->defaultValue(0),
+                'asset_count' => $this->smallInteger()->unsigned()->notNull()->defaultValue(0),
                 'updated_by_user_id' => $this->integer()->unsigned()->null(),
                 'updated_at' => $this->dateTime(),
                 'created_at' => $this->dateTime()->notNull(),
@@ -81,8 +82,8 @@ class M190319185130Cms extends Migration
             $this->createIndex('slug', Section::tableName(), $this->getModule()->enabledNestedSlugs ? ['slug', 'parent_id'] : 'slug', true);
 
             $tableName = $schema->getRawTableName(Section::tableName());
-            $this->addForeignKey($tableName . '_updated_by_user_id_ibfk', Section::tableName(), 'updated_by_user_id', User::tableName(), 'id', 'SET NULL');
             $this->addForeignKey($tableName . '_entry_id_ibfk', Section::tableName(), 'entry_id', Entry::tableName(), 'id', 'CASCADE');
+            $this->addForeignKey($tableName . '_updated_by_ibfk', Section::tableName(), 'updated_by_user_id', User::tableName(), 'id', 'SET NULL');
 
             $this->addI18nColumns(Section::tableName(), (new Section)->i18nAttributes);
         }
@@ -103,6 +104,7 @@ class M190319185130Cms extends Migration
     {
         foreach ($this->getLanguages() as $language) {
             Yii::$app->language = $language;
+
             $this->dropTable(Section::tableName());
             $this->dropTable(Entry::tableName());
         }
@@ -118,18 +120,6 @@ class M190319185130Cms extends Migration
      */
     private function getLanguages()
     {
-        try {
-            return $this->getModule()->enableI18nTables ? Yii::$app->getI18n()->getLanguages() : [Yii::$app->language];
-        } catch (\Exception $ex) {
-            die("WARNING: Module \"cms\" is not properly configured.\n");
-        }
-    }
-
-    /**
-     * @return Module
-     */
-    private function getModule()
-    {
-        return Yii::$app->getModule('cms');
+        return static::getModule()->enableI18nTables ? Yii::$app->getI18n()->getLanguages() : [Yii::$app->language];
     }
 }
