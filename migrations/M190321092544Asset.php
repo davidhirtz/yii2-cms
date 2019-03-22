@@ -5,7 +5,6 @@ namespace davidhirtz\yii2\cms\migrations;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\cms\models\Section;
-use davidhirtz\yii2\cms\Module;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\media\models\File;
 use davidhirtz\yii2\skeleton\db\MigrationTrait;
@@ -27,6 +26,7 @@ class M190321092544Asset extends Migration
     public function safeUp()
     {
         $schema = $this->getDb()->getSchema();
+        $i18n = Yii::$app->getI18n();
 
         foreach ($this->getLanguages() as $language) {
 
@@ -34,7 +34,7 @@ class M190321092544Asset extends Migration
                 Yii::$app->language = $language;
             }
 
-            // Media.
+            // Asset.
             $this->createTable(Asset::tableName(), [
                 'id' => $this->primaryKey()->unsigned(),
                 'status' => $this->tinyInteger(1)->unsigned()->notNull()->defaultValue(Section::STATUS_ENABLED),
@@ -46,6 +46,7 @@ class M190321092544Asset extends Migration
                 'name' => $this->string(250)->null(),
                 'content' => $this->text()->null(),
                 'alt_text' => $this->string(250)->null(),
+                'link' => $this->string(250)->null(),
                 'updated_by_user_id' => $this->integer()->unsigned()->null(),
                 'updated_at' => $this->dateTime(),
                 'created_at' => $this->dateTime()->notNull(),
@@ -61,6 +62,8 @@ class M190321092544Asset extends Migration
             $this->addForeignKey($tableName . '_updated_by_ibfk', Asset::tableName(), 'updated_by_user_id', User::tableName(), 'id', 'SET NULL');
 
             $this->addI18nColumns(Asset::tableName(), (new Asset)->i18nAttributes);
+
+            $this->addColumn(File::tableName(), $i18n->getAttributeName('cms_asset_count', $language), $this->smallInteger()->notNull()->defaultValue(0)->after('size'));
         }
     }
 
@@ -69,8 +72,12 @@ class M190321092544Asset extends Migration
      */
     public function safeDown()
     {
+        $i18n = Yii::$app->getI18n();
+
         foreach ($this->getLanguages() as $language) {
             Yii::$app->language = $language;
+
+            $this->dropColumn(File::tableName(), $i18n->getAttributeName('cms_asset_count', $language));
             $this->dropTable(Asset::tableName());
         }
     }

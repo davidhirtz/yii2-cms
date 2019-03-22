@@ -60,11 +60,6 @@ class AssetGridView extends GridView
             $this->setModel(new AssetForm);
         }
 
-
-        if (!$this->getId(false)) {
-            $this->options['id'] = 'assets';
-        }
-
         if (Yii::$app->getUser()->can('upload')) {
             AdminAsset::register($view = $this->getView());
             $view->registerJs('deleteFilesWithAssets()');
@@ -162,7 +157,7 @@ class AssetGridView extends GridView
             'attribute' => 'type',
             'visible' => count(AssetForm::getTypes()) > 1,
             'content' => function (AssetForm $asset) {
-                return Html::a($asset->getTypeName(), ['update', 'id' => $asset->id]);
+                return Html::a($asset->getTypeName(), ['cms/asset/update', 'id' => $asset->id]);
             }
         ];
     }
@@ -177,10 +172,10 @@ class AssetGridView extends GridView
             'content' => function (AssetForm $asset) {
 
                 if ($name = $asset->getI18nAttribute('name')) {
-                    return Html::tag('strong', Html::a($name, ['update', 'id' => $asset->id]));
+                    return Html::tag('strong', Html::a($name, ['cms/asset/update', 'id' => $asset->id]));
                 }
 
-                return Html::a($asset->file->name, ['update', 'id' => $asset->id], ['class' => 'text-muted']);
+                return Html::a($asset->file->name, ['cms/asset/update', 'id' => $asset->id], ['class' => 'text-muted']);
             }
         ];
     }

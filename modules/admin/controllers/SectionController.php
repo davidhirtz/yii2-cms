@@ -90,7 +90,7 @@ class SectionController extends Controller
 
         if ($section->load(Yii::$app->getRequest()->post()) && $section->insert()) {
             $this->success(Yii::t('cms', 'The section was created.'));
-            return $this->redirect(['index', 'entry' => $section->entry_id]);
+            return $this->redirect(['update', 'id' => $section->id]);
         }
 
         /** @noinspection MissedViewInspection */

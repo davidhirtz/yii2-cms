@@ -8,17 +8,17 @@
  */
 
 $this->setTitle(Yii::t('cms', 'Update Section'));
-$this->setBreadcrumb(Yii::t('cms', 'Entries'), ['entry/index']);
+$this->setBreadcrumb(Yii::t('cms', 'Sections'), ['entry/update', $section->entry_id]);
 
 use davidhirtz\yii2\cms\modules\admin\widgets\forms\SectionActiveForm;
 use davidhirtz\yii2\cms\modules\admin\widgets\grid\AssetGridView;
-use davidhirtz\yii2\cms\modules\admin\widgets\nav\EntrySubmenu;
+use davidhirtz\yii2\cms\modules\admin\widgets\nav\Submenu;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
 use davidhirtz\yii2\skeleton\widgets\forms\DeleteActiveForm; ?>
 
-<?= EntrySubmenu::widget([
-	'entry' => $section->entry,
+<?= Submenu::widget([
+	'model' => $section->entry,
 ]); ?>
 
 <?= Html::errorSummary($section); ?>
@@ -32,6 +32,7 @@ use davidhirtz\yii2\skeleton\widgets\forms\DeleteActiveForm; ?>
 ]); ?>
 
 <?= Panel::widget([
+	'id' => 'assets',
 	'title'=>Yii::t('cms', 'Assets'),
 	'content'=> AssetGridView::widget([
 		'parent'=>$section,

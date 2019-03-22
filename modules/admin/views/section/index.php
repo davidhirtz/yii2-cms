@@ -8,15 +8,15 @@
  */
 
 $this->setTitle(Yii::t('cms', 'Sections'));
-$this->setBreadcrumb(Yii::t('cms', 'Entries'), ['entry/index']);
+$this->setBreadcrumb(Yii::t('cms', 'Sections'), ['entry/update', $entry->id]);
 
 use davidhirtz\yii2\cms\modules\admin\widgets\grid\SectionGridView;
-use davidhirtz\yii2\cms\modules\admin\widgets\nav\EntrySubmenu;
+use davidhirtz\yii2\cms\modules\admin\widgets\nav\Submenu;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
 ?>
 
-<?= EntrySubmenu::widget([
-	'entry' => $entry,
+<?= Submenu::widget([
+	'model' => $entry,
 ]); ?>
 
 <?= Panel::widget([

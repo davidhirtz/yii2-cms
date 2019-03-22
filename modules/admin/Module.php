@@ -32,11 +32,6 @@ class Module extends \yii\base\Module
     public $defaultRoute = 'entry';
 
     /**
-     * @var string
-     */
-    public $layout = '@skeleton/modules/admin/views/layouts/main';
-
-    /**
      * @var array
      */
     protected $defaultControllerMap = [
@@ -66,7 +61,7 @@ class Module extends \yii\base\Module
                         'label' => $this->name ?: Yii::t('cms', 'Entries'),
                         'icon' => 'book',
                         'url' => ['/admin/entry/index'],
-                        'active' => ['admin/entry', 'admin/section'],
+                        'active' => ['admin/entry', 'admin/section', 'cms/'],
                         'labelOptions' => [
                             'class' => 'hidden-xs',
                         ],
@@ -94,10 +89,11 @@ class Module extends \yii\base\Module
             }
         }
 
-
         $this->module->navbarItems = array_merge($this->module->navbarItems, $this->navbarItems);
         $this->module->controllerMap = array_merge($this->module->controllerMap, $this->defaultControllerMap, $this->controllerMap);
         $this->module->panels = array_merge($this->module->panels, $this->panels);
+
+        Yii::$app->getView()->setBreadcrumb(Yii::t('cms', 'Entries'), ['/admin/entry/index']);
 
         parent::init();
     }

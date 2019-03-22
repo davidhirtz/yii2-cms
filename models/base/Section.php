@@ -18,6 +18,7 @@ use yii\helpers\Inflector;
  * @property string $name
  * @property string $slug
  * @property string $content
+ * @property int $asset_count
  * @property Entry $entry
  * @property Asset[] $assets
  * @method static \davidhirtz\yii2\cms\models\Section findOne($condition)

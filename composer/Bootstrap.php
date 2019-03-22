@@ -43,6 +43,11 @@ class Bootstrap implements BootstrapInterface
             'cms' => [
                 'class' => 'davidhirtz\yii2\cms\Module',
             ],
+            'media' => [
+                'relations' => [
+                    'davidhirtz\yii2\cms\models\Asset',
+                ],
+            ],
         ]);
 
         $this->setMigrationNamespace($app, 'davidhirtz\yii2\media\migrations');

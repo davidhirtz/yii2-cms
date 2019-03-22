@@ -2,9 +2,11 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\controllers;
 
+use davidhirtz\yii2\cms\modules\admin\models\forms\EntryForm;
+use davidhirtz\yii2\cms\modules\admin\models\forms\SectionForm;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
-use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\cms\modules\admin\models\forms\AssetForm;
+use davidhirtz\yii2\media\modules\admin\data\FileActiveDataProvider;
 use davidhirtz\yii2\media\modules\admin\models\forms\FileForm;
 use davidhirtz\yii2\skeleton\web\Controller;
 use Yii;
@@ -51,38 +53,36 @@ class AssetController extends Controller
     }
 
     /**
-     * @param int $id
+     * @param int $entry
+     * @param int $section
+     * @param int $folder
      * @param int $type
      * @param string $q
      * @return string
      */
-//    public function actionIndex($id = null, $type = null, $q = null)
-//    {
-//        $entry = $id ? MediaForm::findOne($id) : null;
-//
-//        $query = $this->getQuery()
-//            ->andFilterWhere(['type' => $type])
-//            ->orderBy(['position' => SORT_ASC])
-//            ->matching($q);
-//
-//        if ($this->getModule()->defaultMediaOrderBy) {
-//            $query->orderBy($this->getModule()->defaultMediaOrderBy);
-//        }
-//
-//        if ($entry) {
-//            $query->orderBy($entry->getOrderBy());
-//        }
-//
-//        $provider = new MediaActiveDataProvider([
-//            'query' => $query,
-//        ]);
-//
-//        /** @noinspection MissedViewInspection */
-//        return $this->render('index', [
-//            'provider' => $provider,
-//            'entry' => $entry,
-//        ]);
-//    }
+    public function actionIndex($entry = null, $section = null, $folder = null, $type = null, $q = null)
+    {
+        if ($section) {
+            if (!$parent = SectionForm::findOne($section)) {
+                throw new NotFoundHttpException;
+            }
+
+        } elseif (!$entry || !$parent = EntryForm::findOne($entry)) {
+            throw new NotFoundHttpException;
+        }
+
+        $provider = new FileActiveDataProvider([
+            'folderId' => $folder,
+            'type' => $type,
+            'search' => $q,
+        ]);
+
+        /** @noinspection MissedViewInspection */
+        return $this->render('index', [
+            'provider' => $provider,
+            'parent' => $parent,
+        ]);
+    }
 
     /**
      * @param int $entry
@@ -93,6 +93,7 @@ class AssetController extends Controller
     public function actionCreate($entry = null, $section = null, $file = null)
     {
         $file = $file ? FileForm::findOne($file) : new FileForm;
+        $isNew = $file->getIsNewRecord();
 
         if ($file->getIsNewRecord()) {
             if (!$file->insert()) {
@@ -101,7 +102,7 @@ class AssetController extends Controller
             }
         }
 
-        $asset = new Asset;
+        $asset = new AssetForm;
         $asset->entry_id = $entry;
         $asset->section_id = $section;
         $asset->file_id = $file->id;
@@ -111,8 +112,8 @@ class AssetController extends Controller
             return '';
         }
 
-        $this->success(Yii::t('cms', 'The asset was created.'));
-        return $this->redirect(['index']);
+        $this->success($isNew ? Yii::t('cms', 'The asset was created.') : Yii::t('cms', 'The asset was added.'));
+        return $this->redirectToParent($asset);
     }
 
     /**
@@ -127,7 +128,7 @@ class AssetController extends Controller
 
         if ($asset->load(Yii::$app->getRequest()->post()) && $asset->update()) {
             $this->success(Yii::t('cms', 'The asset was updated.'));
-            return $this->refresh();
+            return $this->redirectToParent($asset);
         }
 
         /** @noinspection MissedViewInspection */
@@ -142,18 +143,18 @@ class AssetController extends Controller
      */
     public function actionDelete($id)
     {
-        if (!$asset = Asset::findOne($id)) {
+        if (!$asset = AssetForm::findOne($id)) {
             throw new NotFoundHttpException;
         }
 
         if ($asset->delete()) {
 
             if (Yii::$app->getRequest()->getIsAjax()) {
-                return $this->asJson([]);
+                return '';
             }
 
             $this->success(Yii::t('cms', 'The asset was deleted.'));
-            return $this->redirect([strtolower($asset->getParent()->formName()) . '/update', 'id' => $asset->getParent()->id]);
+            return $this->redirectToParent($asset);
         }
 
         $errors = $asset->getFirstErrors();
@@ -167,12 +168,21 @@ class AssetController extends Controller
     public function actionOrder($entry = null, $section = null)
     {
         if ($entry || $section) {
-            $asset = Asset::find()->select(['id', 'position'])
+            $asset = AssetForm::find()->select(['id', 'position'])
                 ->andWhere($entry ? ['entry_id' => $entry, 'section_id' => null] : ['section_id' => $section])
                 ->orderBy(['position' => SORT_ASC])
                 ->all();
 
-            Asset::updatePosition($asset, array_flip(Yii::$app->getRequest()->post('media')));
+            AssetForm::updatePosition($asset, array_flip(Yii::$app->getRequest()->post('asset')));
         }
+    }
+
+    /**
+     * @param AssetForm $asset
+     * @return \yii\web\Response
+     */
+    private function redirectToParent(AssetForm $asset)
+    {
+        return $this->redirect(($asset->section_id ? ['/admin/section/update', 'id' => $asset->section_id] : ['/admin/entry/update', 'id' => $asset->entry_id]) + ['#' => 'assets']);
     }
 }

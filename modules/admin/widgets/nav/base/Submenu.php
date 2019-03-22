@@ -2,48 +2,57 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\widgets\nav\base;
 
+use davidhirtz\yii2\cms\modules\admin\models\forms\SectionForm;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\cms\modules\admin\models\forms\EntryForm;
+use davidhirtz\yii2\skeleton\helpers\Html;
 use Yii;
 
 /**
- * Class EntrySubmenu.
+ * Class Submenu.
  * @package davidhirtz\yii2\cms\modules\admin\widgets\nav\base
  */
-class EntrySubmenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
+class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
 {
     use ModuleTrait;
 
     /**
-     * @var EntryForm
+     * @var EntryForm|SectionForm
      */
-    public $entry;
+    public $model;
 
     /**
      * Initializes the nav items.
      */
     public function init()
     {
-        if (!$this->items) {
-            if ($this->entry) {
+        if (!$this->items && $this->model) {
+
+            $isSection = $this->model instanceof SectionForm || Yii::$app->controller->id == 'section';
+            $entry = $this->model instanceof SectionForm ? $this->model->entry : $this->model;
+
+            if (!$this->title) {
+                $this->title = Html::a($entry->getI18nAttribute('name'), ['/admin/entry/update', 'id' => $entry->id]);
+            }
+
+            if (static::getModule()->enableSections) {
                 $this->items = [
                     [
                         'label' => Yii::t('cms', 'Entry'),
-                        'url' => ['entry/update', 'id' => $this->entry->id],
-                        'active' => ['entry/'],
+                        'url' => ['entry/update', 'id' => $entry->id],
+                        'active' => !$isSection,
                         'icon' => 'book hidden-xs',
                     ],
                     [
                         'label' => Yii::t('cms', 'Sections'),
-                        'url' => ['section/index', 'entry' => $this->entry->id],
-                        'visible' => static::getModule()->enableSections,
-                        'badge' => $this->entry->section_count ?: null,
+                        'url' => ['section/index', 'entry' => $this->model->id],
+                        'badge' => $entry->section_count ?: null,
                         'badgeOptions' => [
                             'id' => 'entry-section-count',
                             'class' => 'badge',
                         ],
                         'icon' => 'th-list hidden-xs',
-                        'active' => ['section'],
+                        'active' => $isSection,
                         'options' => [
                             'class' => 'entry-sections',
                         ],
@@ -53,7 +62,7 @@ class EntrySubmenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
         }
 
         if (!$this->title) {
-            $this->title = $this->entry ? $this->entry->getI18nAttribute('name') : Yii::t('cms', 'Entries');
+            $this->title = Yii::t('cms', 'Entries');
         }
 
         parent::init();

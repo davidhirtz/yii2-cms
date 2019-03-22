@@ -101,7 +101,7 @@ class EntryController extends Controller
 
         if ($entry->load(Yii::$app->getRequest()->post()) && $entry->insert()) {
             $this->success(Yii::t('cms', 'The entry was created.'));
-            return $this->redirect(['index']);
+            return $this->redirect(['update', 'id' => $entry->id]);
         }
 
         /** @noinspection MissedViewInspection */
@@ -122,7 +122,7 @@ class EntryController extends Controller
 
         if ($entry->load(Yii::$app->getRequest()->post()) && $entry->update()) {
             $this->success(Yii::t('cms', 'The entry was updated.'));
-            return $this->refresh();
+            return $this->redirect(['index']);
         }
 
         /** @noinspection MissedViewInspection */

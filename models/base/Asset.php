@@ -10,6 +10,7 @@ use davidhirtz\yii2\media\models\File;
 use davidhirtz\yii2\media\models\queries\FileQuery;
 use davidhirtz\yii2\skeleton\db\ActiveQuery;
 use davidhirtz\yii2\skeleton\models\User;
+use Yii;
 
 /**
  * Class Asset.
@@ -23,6 +24,7 @@ use davidhirtz\yii2\skeleton\models\User;
  * @property string $name
  * @property string $content
  * @property string $alt_text
+ * @property string $link
  * @property int $updated_by_user_id
  * @property DateTime $updated_at
  * @property DateTime $created_at
@@ -52,6 +54,11 @@ class Asset extends \davidhirtz\yii2\cms\models\base\ActiveRecord
             [
                 ['entry_id'],
                 'validateEntryId',
+            ],
+            [
+                ['name', 'alt_text', 'link'],
+                'string',
+                'max' => 250,
             ],
         ]);
     }
@@ -85,8 +92,8 @@ class Asset extends \davidhirtz\yii2\cms\models\base\ActiveRecord
      */
     public function afterSave($insert, $changedAttributes)
     {
-        if($insert) {
-            $this->recalculateParentAssetCount();
+        if ($insert) {
+            $this->recalculateAssetCount();
         }
 
         parent::afterSave($insert, $changedAttributes);
@@ -97,7 +104,7 @@ class Asset extends \davidhirtz\yii2\cms\models\base\ActiveRecord
      */
     public function afterDelete()
     {
-        $this->recalculateParentAssetCount();
+        $this->recalculateAssetCount();
         parent::afterDelete();
     }
 
@@ -134,13 +141,18 @@ class Asset extends \davidhirtz\yii2\cms\models\base\ActiveRecord
     }
 
     /**
-     * Recalculates the parent's media count.
+     * Recalculates related asset count.
      */
-    public function recalculateParentAssetCount()
+    public function recalculateAssetCount()
     {
         $parent = $this->getParent();
         $parent->asset_count = $this->findSiblings()->count();
         $parent->update(false);
+
+        if (!$this->file->isDeleted()) {
+            $this->file->setAttribute('cms_asset_count', static::find()->where(['file_id' => $this->file_id])->count());
+            $this->file->update(false);
+        }
     }
 
     /**
@@ -150,7 +162,18 @@ class Asset extends \davidhirtz\yii2\cms\models\base\ActiveRecord
     {
         return $this->section_id ? $this->section : $this->entry;
     }
-    
+
+    /**
+     * @return array
+     */
+    public function attributeLabels()
+    {
+        return array_merge(parent::attributeLabels(), [
+            'alt_text' => Yii::t('cms', 'Alt text'),
+            'link' => Yii::t('cms', 'Link'),
+        ]);
+    }
+
     /**
      * @return string
      */

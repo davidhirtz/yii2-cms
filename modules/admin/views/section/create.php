@@ -8,15 +8,15 @@
  */
 
 $this->setTitle(Yii::t('cms', 'Create New Section'));
-$this->setBreadcrumb(Yii::t('cms', 'Entries'), ['entry/index']);
+$this->setBreadcrumb(Yii::t('cms', 'Sections'), ['entry/update', $section->entry_id]);
 
 use davidhirtz\yii2\cms\modules\admin\widgets\forms\SectionActiveForm;
-use davidhirtz\yii2\cms\modules\admin\widgets\nav\EntrySubmenu;
+use davidhirtz\yii2\cms\modules\admin\widgets\nav\Submenu;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel; ?>
 
-<?= EntrySubmenu::widget([
-    'entry' => $section->entry,
+<?= Submenu::widget([
+    'model' => $section->entry,
 ]); ?>
 
 <?= Html::errorSummary($section); ?>
