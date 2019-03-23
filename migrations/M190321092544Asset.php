@@ -63,7 +63,7 @@ class M190321092544Asset extends Migration
 
             $this->addI18nColumns(Asset::tableName(), (new Asset)->i18nAttributes);
 
-            $this->addColumn(File::tableName(), $i18n->getAttributeName('cms_asset_count', $language), $this->smallInteger()->notNull()->defaultValue(0)->after('size'));
+            $this->addColumn(File::tableName(), $i18n->getAttributeName('cms_asset_count', $language), $this->smallInteger()->notNull()->defaultValue(0)->after('transformation_count'));
         }
     }
 

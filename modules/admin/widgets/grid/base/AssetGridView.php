@@ -140,9 +140,11 @@ class AssetGridView extends GridView
     public function thumbnailColumn()
     {
         return [
+            'headerOptions' => ['style' => 'width:150px'],
             'content' => function (AssetForm $asset) {
-                return !$asset->file->hasThumbnail() ? '' : Html::tag('div', '', [
-                    'style' => 'width:100px; height:80px; background:url(' . $asset->file->folder->getUploadUrl() . $asset->file->filename . ') no-repeat center; background-size:contain;',
+                return !$asset->file->hasPreview() ? '' : Html::tag('div', '', [
+                    'style' => 'background-image:url(' . ($asset->file->getTransformationUrl('admin') ?: $asset->file->getUrl()) . ');',
+                    'class' => 'thumb',
                 ]);
             }
         ];

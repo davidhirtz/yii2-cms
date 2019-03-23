@@ -16,11 +16,8 @@ use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
 
 /**
- * Class BaseEntryController.
+ * Class EntryController.
  * @package davidhirtz\yii2\cms\modules\admin\controllers
- * @see EntryController
- *
- * @property \davidhirtz\yii2\cms\modules\admin\Module $module
  */
 class EntryController extends Controller
 {

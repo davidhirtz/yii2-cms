@@ -49,6 +49,6 @@ class AssetActiveForm extends ActiveForm
     public function thumbnailField()
     {
         $file=$this->model->file;
-        return $file->hasThumbnail() ? $this->row($this->offset(Html::img($file->folder->getUploadUrl() . $file->filename))) : '';
+        return $file->hasPreview() ? $this->row($this->offset(Html::img($file->folder->getUploadUrl() . $file->basename))) : '';
     }
 }

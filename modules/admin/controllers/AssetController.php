@@ -18,8 +18,6 @@ use yii\web\ServerErrorHttpException;
 /**
  * Class AssetController.
  * @package davidhirtz\yii2\cms\modules\admin\controllers
- *
- * @property \davidhirtz\yii2\cms\modules\admin\Module $module
  */
 class AssetController extends Controller
 {

@@ -30,8 +30,8 @@ class EntryActiveForm extends ActiveForm
     {
         if (!$this->fields) {
             $this->fields = [
-                ['status', 'dropDownList', ArrayHelper::getColumn(EntryForm::getStatuses(), 'name')],
-                ['type', 'dropDownList', ArrayHelper::getColumn(EntryForm::getTypes(), 'name')],
+                ['status', 'dropDownList', ArrayHelper::getColumn($this->model::getStatuses(), 'name')],
+                ['type', 'dropDownList', ArrayHelper::getColumn($this->model::getTypes(), 'name')],
                 ['name'],
                 ['content', ['options' => ['style' => !$this->model->contentType ? 'display:none' : null]], $this->model->contentType === 'html' ? CKEditor::class : 'textarea'],
                 ['publish_date'],
