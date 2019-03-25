@@ -2,21 +2,23 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\widgets\grid\base;
 
+use davidhirtz\yii2\cms\models\Entry;
+use davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\cms\modules\admin\models\forms\EntryForm;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grid\GridView;
+use davidhirtz\yii2\skeleton\widgets\bootstrap\ButtonDropdown;
 use davidhirtz\yii2\timeago\Timeago;
 use rmrevin\yii\fontawesome\FAS;
 use Yii;
-use yii\data\ActiveDataProvider;
 use yii\helpers\Url;
 
 /**
  * Class EntryGridView.
  * @package davidhirtz\yii2\cms\modules\admin\widgets\grid\base
  *
- * @property ActiveDataProvider $dataProvider
+ * @property EntryActiveDataProvider $dataProvider
  * @method EntryForm getModel()
  */
 class EntryGridView extends GridView
@@ -27,6 +29,11 @@ class EntryGridView extends GridView
      * @var EntryForm
      */
     public $entry;
+
+    /**
+     * @var int
+     */
+    public $type;
 
     /**
      * @var bool
@@ -60,6 +67,10 @@ class EntryGridView extends GridView
             $this->orderRoute = ['order', 'id' => $this->entry->id];
         }
 
+        if (!$this->type) {
+            $this->type = Yii::$app->getRequest()->get('type');
+        }
+
         $this->initHeader();
         $this->initFooter();
 
@@ -74,6 +85,10 @@ class EntryGridView extends GridView
         if ($this->header === null) {
             $this->header = [
                 [
+                    [
+                        'content' => $this->typeDropdown(),
+                        'options' => ['class' => 'col-12 col-md-6'],
+                    ],
                     [
                         'content' => $this->getSearchInput(),
                         'options' => ['class' => 'col-12 col-md-6'],
@@ -109,7 +124,7 @@ class EntryGridView extends GridView
      */
     protected function renderCreateEntryButton()
     {
-        return Html::a(Html::iconText('plus', Yii::t('cms', 'New Entry')), ['create', 'id' => $this->entry ? $this->entry->id : null, 'type' => Yii::$app->getRequest()->get('type')], ['class' => 'btn btn-primary']);
+        return Html::a(Html::iconText('plus', Yii::t('cms', 'New Entry')), ['create', 'id' => $this->entry ? $this->entry->id : null, 'type' => $this->type], ['class' => 'btn btn-primary']);
     }
 
     /**
@@ -228,5 +243,25 @@ class EntryGridView extends GridView
                 return Html::buttons($buttons);
             }
         ];
+    }
+
+    /**
+     * @return string
+     */
+    public function typeDropdown()
+    {
+        $config = [
+            'label' => isset(Entry::getTypes()[$this->type]) ? Html::tag('strong', Entry::getTypes()[$this->type]['name']) : Yii::t('cms', 'Types'),
+            'paramName' => 'type',
+        ];
+
+        foreach (Entry::getTypes() as $id => $type) {
+            $config['items'][] = [
+                'label' => $type['name'],
+                'url' => Url::current(['type' => $id, 'page' => null]),
+            ];
+        }
+
+        return ButtonDropdown::widget($config);
     }
 }
