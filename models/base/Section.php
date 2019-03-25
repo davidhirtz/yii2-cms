@@ -152,6 +152,25 @@ class Section extends ActiveRecord
     }
 
     /**
+     * @param Asset[] $assets
+     */
+    public function populateAssetRelations($assets)
+    {
+        $relations = [];
+
+        if ($assets) {
+            foreach ($assets as $asset) {
+                if ($asset->section_id == $this->id) {
+                    $asset->populateRelation('section', $this);
+                    $relations[$asset->id] = $asset;
+                }
+            }
+        }
+
+        $this->populateRelation('assets', $relations);
+    }
+
+    /**
      * @inheritdoc
      */
     public function attributeLabels()

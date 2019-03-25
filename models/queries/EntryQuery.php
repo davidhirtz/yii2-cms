@@ -9,12 +9,11 @@ namespace davidhirtz\yii2\cms\models\queries;
 class EntryQuery extends \davidhirtz\yii2\skeleton\db\ActiveQuery
 {
     /**
-     * @return EntryQuery
+     * @return $this
      */
-    public function enabled(): EntryQuery
+    public function selectSiteAttributes()
     {
-        $model = $this->getModelInstance();
-        return $this->andWhere([$model::tableName() . '.status' => $model::STATUS_ENABLED]);
+        return $this;
     }
 
     /**

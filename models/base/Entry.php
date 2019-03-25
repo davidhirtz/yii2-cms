@@ -147,6 +147,35 @@ class Entry extends ActiveRecord
     }
 
     /**
+     * @param Asset[] $assets
+     */
+    public function populateAssetRelations($assets = null)
+    {
+        if ($assets === null) {
+            $assets = $this->assets;
+        }
+
+        $relations = [];
+
+        if ($assets) {
+            foreach ($assets as $asset) {
+                if ($asset->entry_id == $this->id && !$asset->section_id) {
+                    $asset->populateRelation('entry', $this);
+                    $relations[$asset->id] = $asset;
+                }
+            }
+        }
+
+        $this->populateRelation('assets', $relations);
+
+        if (static::getModule()->enableSections && $this->isRelationPopulated('sections')) {
+            foreach ($this->sections as $section) {
+                $section->populateAssetRelations($assets);
+            }
+        }
+    }
+
+    /**
      * @return false|int
      */
     public function recalculateSectionCount()
@@ -162,7 +191,7 @@ class Entry extends ActiveRecord
     {
         return ['position' => SORT_ASC];
     }
-    
+
     /**
      * @return array
      */
