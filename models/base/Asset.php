@@ -38,6 +38,12 @@ use Yii;
 class Asset extends \davidhirtz\yii2\cms\models\base\ActiveRecord
 {
     /**
+     * Constants.
+     */
+    const TYPE_VIEWPORT_MOBILE = 2;
+    const TYPE_VIEWPORT_DESKTOP = 3;
+
+    /**
      * @inheritdoc
      */
     public function rules(): array
@@ -161,6 +167,25 @@ class Asset extends \davidhirtz\yii2\cms\models\base\ActiveRecord
     public function getParent()
     {
         return $this->section_id ? $this->section : $this->entry;
+    }
+
+
+    /**
+     * @return array
+     */
+    public static function getViewportTypes(): array
+    {
+        return [
+            static::TYPE_DEFAULT => [
+                'name' => Yii::t('cms', 'All devices'),
+            ],
+            static::TYPE_VIEWPORT_MOBILE => [
+                'name' => Yii::t('cms', 'Mobile'),
+            ],
+            static::TYPE_VIEWPORT_DESKTOP => [
+                'name' => Yii::t('cms', 'Desktop'),
+            ],
+        ];
     }
 
     /**
