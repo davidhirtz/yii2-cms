@@ -54,46 +54,49 @@ class Module extends \yii\base\Module
      */
     public function init()
     {
-        if(Yii::$app->getUser()->can('author')) {
-            if (!$this->navbarItems) {
-                $this->navbarItems = [
-                    [
-                        'label' => $this->name ?: Yii::t('cms', 'Entries'),
-                        'icon' => 'book',
-                        'url' => ['/admin/entry/index'],
-                        'active' => ['admin/entry', 'admin/section', 'cms/'],
-                        'labelOptions' => [
-                            'class' => 'hidden-xs',
-                        ],
-                    ]
-                ];
-            }
-            if (!$this->panels) {
-                $this->panels = [
-                    [
-                        'name' => $this->name ?: Yii::t('cms', 'Entries'),
-                        'items' => [
-                            [
-                                'label' => Yii::t('cms', 'Create New Entry'),
-                                'url' => ['/admin/entry/create'],
-                                'icon' => 'pen',
+        if (!Yii::$app->getRequest()->getIsConsoleRequest()) {
+            if (Yii::$app->getUser()->can('author')) {
+                if (!$this->navbarItems) {
+                    $this->navbarItems = [
+                        [
+                            'label' => $this->name ?: Yii::t('cms', 'Entries'),
+                            'icon' => 'book',
+                            'url' => ['/admin/entry/index'],
+                            'active' => ['admin/entry', 'admin/section', 'cms/'],
+                            'labelOptions' => [
+                                'class' => 'hidden-xs',
                             ],
-                            [
-                                'label' => Yii::t('cms', 'View All Entries'),
-                                'url' => ['/admin/entry/index'],
-                                'icon' => 'book',
+                        ]
+                    ];
+                }
+                if (!$this->panels) {
+                    $this->panels = [
+                        [
+                            'name' => $this->name ?: Yii::t('cms', 'Entries'),
+                            'items' => [
+                                [
+                                    'label' => Yii::t('cms', 'Create New Entry'),
+                                    'url' => ['/admin/entry/create'],
+                                    'icon' => 'pen',
+                                ],
+                                [
+                                    'label' => Yii::t('cms', 'View All Entries'),
+                                    'url' => ['/admin/entry/index'],
+                                    'icon' => 'book',
+                                ],
                             ],
                         ],
-                    ],
-                ];
+                    ];
+                }
             }
+
+            $this->module->navbarItems = array_merge($this->module->navbarItems, $this->navbarItems);
+            $this->module->panels = array_merge($this->module->panels, $this->panels);
+
+            Yii::$app->getView()->setBreadcrumb(Yii::t('cms', 'Entries'), ['/admin/entry/index']);
         }
 
-        $this->module->navbarItems = array_merge($this->module->navbarItems, $this->navbarItems);
         $this->module->controllerMap = array_merge($this->module->controllerMap, $this->defaultControllerMap, $this->controllerMap);
-        $this->module->panels = array_merge($this->module->panels, $this->panels);
-
-        Yii::$app->getView()->setBreadcrumb(Yii::t('cms', 'Entries'), ['/admin/entry/index']);
 
         parent::init();
     }
