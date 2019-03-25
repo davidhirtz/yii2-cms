@@ -39,13 +39,13 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
                 $this->items = [
                     [
                         'label' => Yii::t('cms', 'Entry'),
-                        'url' => ['entry/update', 'id' => $entry->id],
+                        'url' => ['/admin/entry/update', 'id' => $entry->id],
                         'active' => !$isSection,
                         'icon' => 'book hidden-xs',
                     ],
                     [
                         'label' => Yii::t('cms', 'Sections'),
-                        'url' => ['section/index', 'entry' => $this->model->id],
+                        'url' => ['/admin/section/index', 'entry' => $this->model->id],
                         'badge' => $entry->section_count ?: null,
                         'badgeOptions' => [
                             'id' => 'entry-section-count',

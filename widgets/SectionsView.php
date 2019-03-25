@@ -4,6 +4,7 @@ namespace davidhirtz\yii2\cms\widgets;
 
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\Section;
+use Yii;
 use yii\base\Widget;
 
 /**
@@ -31,6 +32,11 @@ class SectionsView extends Widget
      * @var string
      */
     public $defaultViewFile = '_sections';
+
+    /**
+     * @var array
+     */
+    public $viewPath;
 
     /**
      * Init.
@@ -134,5 +140,13 @@ class SectionsView extends Widget
     protected function getSectionViewFile($section)
     {
         return isset(Section::getTypes()[$section->type]['viewFile']) ? Section::getTypes()[$section->type]['viewFile'] : $this->defaultViewFile;
+    }
+
+    /**
+     * @return array|string
+     */
+    public function getViewPath()
+    {
+        return $this->viewPath === null ? Yii::$app->controller->getViewPath() : $this->viewPath;
     }
 }

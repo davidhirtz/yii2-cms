@@ -106,7 +106,7 @@ class AssetGridView extends GridView
     protected function getFileUploadWidget()
     {
         return FileUpload::widget([
-            'url' => $this->getRoute('cms/asset/create'),
+            'url' => $this->getRoute('/admin/cms/asset/create'),
         ]);
     }
 
