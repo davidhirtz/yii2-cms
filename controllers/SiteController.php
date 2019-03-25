@@ -3,13 +3,9 @@
 namespace davidhirtz\yii2\cms\controllers;
 
 use davidhirtz\yii2\cms\models\Entry;
-use davidhirtz\yii2\media\models\Transformation;
-use davidhirtz\yii2\media\models\File;
-use davidhirtz\yii2\media\models\Folder;
 use davidhirtz\yii2\media\Module;
 use davidhirtz\yii2\skeleton\db\ActiveQuery;
 use davidhirtz\yii2\skeleton\web\Controller;
-use Yii;
 use yii\web\NotFoundHttpException;
 
 /**
@@ -60,7 +56,7 @@ class SiteController extends Controller
             ->selectSiteAttributes()
             ->with([
                 'assets' => function(ActiveQuery $query) {
-                    $query->with('file');
+                    $query->with(['file', 'file.folder']);
                 },
             ]);
     }

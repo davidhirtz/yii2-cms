@@ -105,17 +105,17 @@ class AssetsView extends Widget
             $breakpoints=[$this->assets];
         }
 
-        foreach($breakpoints as $cssClass=>$files)
+        foreach($breakpoints as $cssClass=>$assets)
         {
             if($this->start!==null || $this->limit!==null)
             {
-                $files=array_slice($files, (int)$this->start, $this->limit);
+                $assets=array_slice($assets, (int)$this->start, $this->limit);
             }
 
-            if($files)
+            if($assets)
             {
                 $content=Yii::$app->getView()->render($this->viewFile, [
-                    'files'=>$files,
+                    'assets'=>$assets,
                 ]);
 
                 $options=$this->options;
@@ -125,7 +125,7 @@ class AssetsView extends Widget
                     Html::addCssClass($options, $cssClass);
                 }
 
-                if(count($files)>1 && $this->sliderClass)
+                if(count($assets)>1 && $this->sliderClass)
                 {
                     Html::addCssClass($options, $this->sliderClass);
                 }
