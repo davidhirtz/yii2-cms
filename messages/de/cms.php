@@ -17,6 +17,7 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
+    'All devices' => 'Alle Geräte',
     'Alt text' => '',
     'Are you sure you want to remove this asset?' => 'Sind sie sicher, dass sie dieses Asset löschen wollen?',
     'Assets' => '',
@@ -25,6 +26,7 @@ return [
     'Create New Section' => 'Neue Sektion erstellen',
     'Create Section' => 'Sektion erstellen',
     'Delete Entry' => 'Eintrag löschen',
+    'Desktop' => '',
     'Edit Asset' => 'Asset bearbeiten',
     'Edit Entry' => 'Eintrag bearbeiten',
     'Entries' => 'Einträge',
@@ -33,6 +35,7 @@ return [
     'Link' => '',
     'Meta description' => 'Meta Beschreibung',
     'Meta title' => 'Meta Titel',
+    'Mobile' => '',
     'New Entry' => 'Neue Eintrag',
     'New Section' => 'Neue Sektion',
     'Notice: Removing an asset will not delete the actual file.' => 'Bitte beachten Sie, dass die Löschung eines Assets nicht die dazugehörige Datei löscht.',
@@ -52,6 +55,7 @@ return [
     'The section was deleted.' => 'Die Sektion wurde gelöscht.',
     'The section was updated.' => 'Die Sektion wurde aktualisiert.',
     'Title' => 'Titel',
+    'Types' => '',
     'Update Section' => 'Sektion aktualisiern',
     'Upload' => '',
     'Url' => '',

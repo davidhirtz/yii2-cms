@@ -17,6 +17,7 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
+    'All devices' => '',
     'Alt text' => '',
     'Are you sure you want to remove this asset?' => '',
     'Assets' => '',
@@ -25,6 +26,7 @@ return [
     'Create New Section' => '',
     'Create Section' => '',
     'Delete Entry' => '',
+    'Desktop' => '',
     'Edit Asset' => '',
     'Edit Entry' => '',
     'Entries' => '',
@@ -33,6 +35,7 @@ return [
     'Link' => '',
     'Meta description' => '',
     'Meta title' => '',
+    'Mobile' => '',
     'New Entry' => '',
     'New Section' => '',
     'Notice: Removing an asset will not delete the actual file.' => '',
@@ -52,6 +55,7 @@ return [
     'The section was deleted.' => '',
     'The section was updated.' => '',
     'Title' => '',
+    'Types' => '',
     'Update Section' => '',
     'Upload' => '',
     'Url' => '',
