@@ -51,8 +51,6 @@ class SiteController extends Controller
             }
         }
 
-        die();
-
         /** @noinspection MissedViewInspection */
         return $this->render('view', [
             'entry' => $entry,
