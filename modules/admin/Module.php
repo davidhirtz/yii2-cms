@@ -69,6 +69,7 @@ class Module extends \yii\base\Module
                         ]
                     ];
                 }
+
                 if (!$this->panels) {
                     $this->panels = [
                         [

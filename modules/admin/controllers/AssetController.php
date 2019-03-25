@@ -104,7 +104,11 @@ class AssetController extends Controller
         $asset->entry_id = $entry;
         $asset->section_id = $section;
         $asset->file_id = $file->id;
-        $asset->insert();
+
+        if (!$asset->insert()) {
+            $errors = $asset->getFirstErrors();
+            throw new ServerErrorHttpException(reset($errors));
+        }
 
         if (Yii::$app->getRequest()->getIsAjax()) {
             return '';
@@ -124,9 +128,15 @@ class AssetController extends Controller
             throw new NotFoundHttpException;
         }
 
-        if ($asset->load(Yii::$app->getRequest()->post()) && $asset->update()) {
-            $this->success(Yii::t('cms', 'The asset was updated.'));
-            return $this->redirectToParent($asset);
+        if ($asset->load(Yii::$app->getRequest()->post())) {
+
+            if ($asset->update()) {
+                $this->success(Yii::t('cms', 'The asset was updated.'));
+            }
+
+            if (!$asset->hasErrors()) {
+                return $this->redirectToParent($asset);
+            }
         }
 
         /** @noinspection MissedViewInspection */

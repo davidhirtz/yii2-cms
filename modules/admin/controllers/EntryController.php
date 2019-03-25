@@ -117,9 +117,15 @@ class EntryController extends Controller
             throw new NotFoundHttpException;
         }
 
-        if ($entry->load(Yii::$app->getRequest()->post()) && $entry->update()) {
-            $this->success(Yii::t('cms', 'The entry was updated.'));
-            return $this->redirect(['index']);
+        if ($entry->load(Yii::$app->getRequest()->post())) {
+
+            if ($entry->update()) {
+                $this->success(Yii::t('cms', 'The entry was updated.'));
+            }
+
+            if (!$entry->hasErrors()) {
+                return $this->redirect(['index', 'id' => $entry->parent_id]);
+            }
         }
 
         /** @noinspection MissedViewInspection */

@@ -109,9 +109,15 @@ class SectionController extends Controller
             throw new NotFoundHttpException;
         }
 
-        if ($section->load(Yii::$app->getRequest()->post()) && $section->update()) {
-            $this->success(Yii::t('cms', 'The section was updated.'));
-            return $this->redirect(['index', 'entry' => $section->entry_id]);
+        if ($section->load(Yii::$app->getRequest()->post())) {
+
+            if ($section->update()) {
+                $this->success(Yii::t('cms', 'The section was updated.'));
+            }
+
+            if (!$section->hasErrors()) {
+                return $this->redirect(['index', 'entry' => $section->entry_id]);
+            }
         }
 
         /** @noinspection MissedViewInspection */
