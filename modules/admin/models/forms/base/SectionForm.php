@@ -2,6 +2,7 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\models\forms\base;
 
+use davidhirtz\yii2\cms\models\queries\AssetQuery;
 use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\modules\admin\models\forms\AssetForm;
 use davidhirtz\yii2\skeleton\db\ActiveQuery;
@@ -17,9 +18,9 @@ class SectionForm extends Section
 {
 
     /**
-     * @return ActiveQuery
+     * @return AssetQuery
      */
-    public function getAssets(): ActiveQuery
+    public function getAssets(): AssetQuery
     {
         return $this->hasMany(AssetForm::class, ['section_id' => 'id'])
             ->with(['file', 'file.folder'])

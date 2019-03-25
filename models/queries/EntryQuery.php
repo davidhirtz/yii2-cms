@@ -17,7 +17,8 @@ class EntryQuery extends \davidhirtz\yii2\skeleton\db\ActiveQuery
      */
     public function selectSiteAttributes()
     {
-        return $this;
+        return $this->addSelect(array_diff($this->getModelInstance()->attributes(),
+            ['updated_by_user_id', 'created_at']));
     }
 
     /**

@@ -4,8 +4,9 @@ namespace davidhirtz\yii2\cms\models\base;
 
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\Asset;
+use davidhirtz\yii2\cms\models\queries\AssetQuery;
 use davidhirtz\yii2\cms\models\queries\EntryQuery;
-use davidhirtz\yii2\skeleton\db\ActiveQuery;
+use davidhirtz\yii2\cms\models\queries\SectionQuery;
 use Yii;
 use yii\helpers\Inflector;
 
@@ -133,9 +134,9 @@ class Section extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery
+     * @return AssetQuery
      */
-    public function getAssets(): ActiveQuery
+    public function getAssets(): AssetQuery
     {
         return $this->hasMany(Asset::class, ['section_id' => 'id'])
             ->orderBy(['position' => SORT_ASC])
@@ -144,11 +145,19 @@ class Section extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery
+     * @return SectionQuery
      */
     public function findSiblings()
     {
         return static::find()->where(['entry_id' => $this->entry_id]);
+    }
+
+    /**
+     * @return SectionQuery
+     */
+    public static function find()
+    {
+        return Yii::createObject(SectionQuery::class, [get_called_class()]);
     }
 
     /**

@@ -3,6 +3,8 @@
 namespace davidhirtz\yii2\cms\modules\admin\models\forms\base;
 
 use davidhirtz\yii2\cms\models\Entry;
+use davidhirtz\yii2\cms\models\queries\AssetQuery;
+use davidhirtz\yii2\cms\models\queries\SectionQuery;
 use davidhirtz\yii2\cms\modules\admin\models\forms\AssetForm;
 use davidhirtz\yii2\cms\modules\admin\models\forms\SectionForm;
 use davidhirtz\yii2\skeleton\db\ActiveQuery;
@@ -37,9 +39,9 @@ class EntryForm extends Entry
     }
 
     /**
-     * @return ActiveQuery
+     * @return SectionQuery
      */
-    public function getSections(): ActiveQuery
+    public function getSections(): SectionQuery
     {
         return $this->hasMany(SectionForm::class, ['entry_id' => 'id'])
             ->orderBy(['position' => SORT_ASC])
@@ -48,9 +50,9 @@ class EntryForm extends Entry
     }
 
     /**
-     * @return ActiveQuery
+     * @return AssetQuery
      */
-    public function getAssets(): ActiveQuery
+    public function getAssets(): AssetQuery
     {
         return $this->hasMany(AssetForm::class, ['entry_id' => 'id'])
             ->andWhere(['section_id' => null])

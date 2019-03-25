@@ -11,6 +11,7 @@ use rmrevin\yii\fontawesome\FAS;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\data\ArrayDataProvider;
+use yii\helpers\StringHelper;
 
 /**
  * Class SectionGridView.
@@ -56,17 +57,9 @@ class SectionGridView extends GridView
 
         $this->orderRoute = ['order', 'entry' => $this->entry->id];
 
-        $this->initHeader();
         $this->initFooter();
 
         parent::init();
-    }
-
-    /**
-     * Sets up grid header.
-     */
-    protected function initHeader()
-    {
     }
 
     /**
@@ -135,21 +128,29 @@ class SectionGridView extends GridView
             'contentOptions' => ['class' => 'hidden-xs'],
             'content' => function (SectionForm $section) {
                 $text = $section->getI18nAttribute('name');
+                $text = $text ? Html::tag('strong', $text) : null;
                 $cssClass = null;
 
-//                if(!$text)
-//                {
-//                    if($file=$this->getFile($section->id))
-//                    {
-//                        if($preview=$file->getPictureByName(Picture::ADMIN_PICTURE_ID))
-//                        {
-//                            $text=Html::img(Yii::$app->getRequest()->cdnUrl.$preview->getUploadPath().$preview->filename, [
-//                                'width'=>$preview->width,
-//                                'height'=>$preview->height,
-//                            ]);
-//                        }
-//                    }
-//                }
+                if(!$text)
+                {
+                    if($section->assets)
+                    {
+                        $asset = current($section->assets);
+
+                        if($asset->file->hasPreview())
+                        {
+                            $text=Html::tag('div', Html::tag('div', '', [
+                                'style' => 'background-image:url(' . ($asset->file->getTransformationUrl('admin') ?: $asset->file->getUrl()) . ');',
+                                'class' => 'thumb',
+                            ]), ['style' => 'width:120px']);
+                        }
+                    }
+                }
+
+                if(!$text) {
+                    $text = $section->getI18nAttribute('content');
+                    $text = StringHelper::truncate($section->contentType == 'html' ? strip_tags($text) : $text, 100);
+                }
 
                 if (!$text) {
                     $text = Yii::t('cms', '[ No title ]');

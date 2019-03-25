@@ -3,12 +3,13 @@
 namespace davidhirtz\yii2\cms\models\base;
 
 use davidhirtz\yii2\cms\models\Entry;
+use davidhirtz\yii2\cms\models\queries\AssetQuery;
 use davidhirtz\yii2\cms\models\queries\EntryQuery;
+use davidhirtz\yii2\cms\models\queries\SectionQuery;
 use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\media\models\File;
 use davidhirtz\yii2\media\models\queries\FileQuery;
-use davidhirtz\yii2\skeleton\db\ActiveQuery;
 use davidhirtz\yii2\skeleton\models\User;
 use Yii;
 
@@ -30,6 +31,7 @@ use Yii;
  * @property DateTime $created_at
  * @property Entry $entry
  * @property Section $section
+ * @property Entry|Section $parent
  * @property File $file
  * @property User $updated
  *
@@ -123,9 +125,9 @@ class Asset extends \davidhirtz\yii2\cms\models\base\ActiveRecord
     }
 
     /**
-     * @return ActiveQuery
+     * @return SectionQuery
      */
-    public function getSection(): ActiveQuery
+    public function getSection(): SectionQuery
     {
         return $this->hasOne(Section::class, ['id' => 'section_id']);
     }
@@ -139,11 +141,19 @@ class Asset extends \davidhirtz\yii2\cms\models\base\ActiveRecord
     }
 
     /**
-     * @return ActiveQuery
+     * @return AssetQuery
      */
     public function findSiblings()
     {
         return static::find()->where(['entry_id' => $this->entry_id, 'section_id' => $this->section_id]);
+    }
+
+    /**
+     * @return AssetQuery
+     */
+    public static function find()
+    {
+        return Yii::createObject(AssetQuery::class, [get_called_class()]);
     }
 
     /**

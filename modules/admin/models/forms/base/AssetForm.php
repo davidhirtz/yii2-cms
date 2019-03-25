@@ -4,11 +4,11 @@ namespace davidhirtz\yii2\cms\modules\admin\models\forms\base;
 
 use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\cms\models\queries\EntryQuery;
+use davidhirtz\yii2\cms\models\queries\SectionQuery;
 use davidhirtz\yii2\cms\modules\admin\models\forms\EntryForm;
 use davidhirtz\yii2\cms\modules\admin\models\forms\SectionForm;
 use davidhirtz\yii2\media\models\queries\FileQuery;
 use davidhirtz\yii2\media\modules\admin\models\forms\FileForm;
-use davidhirtz\yii2\skeleton\db\ActiveQuery;
 
 /**
  * Class AssetForm
@@ -30,9 +30,9 @@ class AssetForm extends Asset
     }
 
     /**
-     * @return ActiveQuery
+     * @return SectionQuery
      */
-    public function getSection(): ActiveQuery
+    public function getSection(): SectionQuery
     {
         return $this->hasOne(SectionForm::class, ['id' => 'section_id']);
     }

@@ -3,11 +3,12 @@
 namespace davidhirtz\yii2\cms\models\base;
 
 use davidhirtz\yii2\cms\models\Asset;
+use davidhirtz\yii2\cms\models\queries\AssetQuery;
 use davidhirtz\yii2\cms\models\queries\EntryQuery;
+use davidhirtz\yii2\cms\models\queries\SectionQuery;
 use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\datetime\DateTimeValidator;
-use davidhirtz\yii2\skeleton\db\ActiveQuery;
 use Yii;
 use yii\helpers\Inflector;
 
@@ -108,9 +109,9 @@ class Entry extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery
+     * @return SectionQuery
      */
-    public function getSections(): ActiveQuery
+    public function getSections(): SectionQuery
     {
         return $this->hasMany(Section::class, ['entry_id' => 'id'])
             ->orderBy(['position' => SORT_ASC])
@@ -119,9 +120,9 @@ class Entry extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery
+     * @return AssetQuery
      */
-    public function getAssets(): ActiveQuery
+    public function getAssets(): AssetQuery
     {
         return $this->hasMany(Asset::class, ['entry_id' => 'id'])
             ->orderBy(['position' => SORT_ASC])
