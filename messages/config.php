@@ -7,7 +7,7 @@ return [
     'sourcePath' => dirname(__DIR__),
     'messagePath' => __DIR__,
     'languages' => ['de', 'en-US'],
-    'ignoreCategories' => ['yii', 'skeleton'],
+    'ignoreCategories' => ['yii', 'skeleton', 'media'],
     'overwrite' => true,
     'removeUnused' => true,
     'only' => ['*.php'],
