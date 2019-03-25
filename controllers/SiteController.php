@@ -45,18 +45,15 @@ class SiteController extends Controller
 
         $entry->populateAssetRelations();
 
-        foreach($entry->sections as $section) {
-            foreach($section->assets as $asset) {
-                dump($asset->section->entry->id);
-            }
-        }
-
         /** @noinspection MissedViewInspection */
         return $this->render('view', [
             'entry' => $entry,
         ]);
     }
 
+    /**
+     * @return \davidhirtz\yii2\cms\models\queries\EntryQuery
+     */
     protected function getQuery()
     {
         return Entry::find()
