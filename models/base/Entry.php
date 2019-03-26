@@ -114,6 +114,7 @@ class Entry extends ActiveRecord
     public function getSections(): SectionQuery
     {
         return $this->hasMany(Section::class, ['entry_id' => 'id'])
+            ->enabled()
             ->orderBy(['position' => SORT_ASC])
             ->indexBy('id')
             ->inverseOf('entry');
@@ -125,6 +126,7 @@ class Entry extends ActiveRecord
     public function getAssets(): AssetQuery
     {
         return $this->hasMany(Asset::class, ['entry_id' => 'id'])
+            ->enabled()
             ->orderBy(['position' => SORT_ASC])
             ->indexBy('id')
             ->inverseOf('entry');
