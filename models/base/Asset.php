@@ -64,7 +64,7 @@ class Asset extends \davidhirtz\yii2\cms\models\base\ActiveRecord
                 'validateEntryId',
             ],
             [
-                ['name', 'alt_text', 'link'],
+                $this->getI18nAttributeNames(['name', 'alt_text', 'link']),
                 'string',
                 'max' => 250,
             ],
@@ -199,7 +199,7 @@ class Asset extends \davidhirtz\yii2\cms\models\base\ActiveRecord
 
         return $srcset ? $srcset : $this->file->getUrl();
     }
-    
+
     /**
      * @return string
      */

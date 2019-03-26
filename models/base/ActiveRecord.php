@@ -22,6 +22,7 @@ use Yii;
  * @property int $status
  * @property int $type
  * @property string $content
+ * @property int $position
  * @property int $updated_by_user_id
  * @property DateTime $updated_at
  * @property DateTime $created_at
@@ -68,7 +69,7 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
                 'skipOnEmpty' => false,
             ],
             [
-                ['content'],
+                $this->getI18nAttributeNames(['content']),
                 $this->contentType=='html' ? $this->htmlValidator : 'safe',
             ],
         ]);
