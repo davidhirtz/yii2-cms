@@ -18,31 +18,35 @@ use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
 use davidhirtz\yii2\skeleton\widgets\forms\DeleteActiveForm; ?>
 
 <?= Submenu::widget([
-	'model' => $section->entry,
+    'model' => $section->entry,
 ]); ?>
 
 <?= Html::errorSummary($section); ?>
 
 <?= Panel::widget([
-	'title' => $this->title,
-	'content' => SectionActiveForm::widget([
-		'model' => $section,
-	]),
+    'title' => $this->title,
+    'content' => SectionActiveForm::widget([
+        'model' => $section,
+    ]),
 
 ]); ?>
 
-<?= Panel::widget([
-	'id' => 'assets',
-	'title'=>Yii::t('cms', 'Assets'),
-	'content'=> AssetGridView::widget([
-		'parent'=>$section,
-	]),
-]); ?>
+<?php
+if ($section->getModule()->enableSectionAssets) {
+    echo Panel::widget([
+        'id' => 'assets',
+        'title' => Yii::t('cms', 'Assets'),
+        'content' => AssetGridView::widget([
+            'parent' => $section,
+        ]),
+    ]);
+}
+?>
 
 <?= Panel::widget([
-	'type'=>'danger',
-	'title'=>Yii::t('cms', 'Delete Entry'),
-	'content'=>DeleteActiveForm::widget([
-		'model'=>$section,
-	]),
+    'type' => 'danger',
+    'title' => Yii::t('cms', 'Delete Entry'),
+    'content' => DeleteActiveForm::widget([
+        'model' => $section,
+    ]),
 ]); ?>

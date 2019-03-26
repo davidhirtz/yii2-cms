@@ -23,7 +23,29 @@ class Module extends \yii\base\Module
     public $enableSections = true;
 
     /**
+     * @var bool
+     */
+    public $enableEntryAssets = true;
+
+    /**
+     * @var bool
+     */
+    public $enableSectionAssets = true;
+
+    /**
      * @var array
      */
     public $defaultEntryOrderBy;
+
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        if (!$this->enableSections) {
+            $this->enableSectionAssets = false;
+        }
+
+        parent::init();
+    }
 }

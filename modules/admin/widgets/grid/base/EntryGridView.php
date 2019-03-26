@@ -204,6 +204,7 @@ class EntryGridView extends GridView
             'attribute' => 'asset_count',
             'headerOptions' => ['class' => 'hidden-sm hidden-xs text-center'],
             'contentOptions' => ['class' => 'hidden-sm hidden-xs text-center'],
+            'visible' => static::getModule()->enableEntryAssets,
             'content' => function (EntryForm $entry) {
                 return Html::a(Yii::$app->getFormatter()->asInteger($entry->asset_count), ['update', 'id' => $entry->id, '#' => 'assets'], ['class' => 'badge']);
             }

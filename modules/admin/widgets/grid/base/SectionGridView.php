@@ -171,6 +171,7 @@ class SectionGridView extends GridView
             'attribute' => 'asset_count',
             'headerOptions' => ['class' => 'hidden-sm hidden-xs text-center'],
             'contentOptions' => ['class' => 'hidden-sm hidden-xs text-center'],
+            'visible' => static::getModule()->enableSectionAssets,
             'content' => function (SectionForm $section) {
                 return Html::a(Yii::$app->getFormatter()->asInteger($section->asset_count), ['update', 'id' => $section->id, '#' => 'assets'], ['class' => 'badge']);
             }

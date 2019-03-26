@@ -31,13 +31,16 @@ $this->setTitle(Yii::t('cms', 'Edit Entry'));
     ]),
 ]); ?>
 
-<?= Panel::widget([
-    'id' => 'assets',
-    'title' => Yii::t('cms', 'Assets'),
-    'content' => AssetGridView::widget([
-        'parent' => $entry,
-    ]),
-]); ?>
+<?php
+if ($entry->getModule()->enableEntryAssets) {
+    echo Panel::widget([
+        'id' => 'assets',
+        'title' => Yii::t('cms', 'Assets'),
+        'content' => AssetGridView::widget([
+            'parent' => $entry,
+        ]),
+    ]);
+} ?>
 
 <?= Panel::widget([
     'type' => 'danger',
