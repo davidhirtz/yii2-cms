@@ -45,7 +45,7 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
                     ],
                     [
                         'label' => Yii::t('cms', 'Sections'),
-                        'url' => ['/admin/section/index', 'entry' => $this->model->id],
+                        'url' => ['/admin/section/index', 'entry' => $entry->id],
                         'badge' => $entry->section_count ?: null,
                         'badgeOptions' => [
                             'id' => 'entry-section-count',
