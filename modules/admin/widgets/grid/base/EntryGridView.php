@@ -87,7 +87,7 @@ class EntryGridView extends GridView
                 [
                     [
                         'content' => $this->typeDropdown(),
-                        'options' => ['class' => 'col-12 col-md-6'],
+                        'options' => ['class' => 'col-12 col-md-3'],
                     ],
                     [
                         'content' => $this->getSearchInput(),
@@ -251,18 +251,23 @@ class EntryGridView extends GridView
      */
     public function typeDropdown()
     {
-        $config = [
-            'label' => isset(Entry::getTypes()[$this->type]) ? Html::tag('strong', Entry::getTypes()[$this->type]['name']) : Yii::t('cms', 'Types'),
-            'paramName' => 'type',
-        ];
+        if (Entry::getTypes()) {
 
-        foreach (Entry::getTypes() as $id => $type) {
-            $config['items'][] = [
-                'label' => $type['name'],
-                'url' => Url::current(['type' => $id, 'page' => null]),
+            $config = [
+                'label' => isset(Entry::getTypes()[$this->type]) ? Html::tag('strong', Entry::getTypes()[$this->type]['name']) : Yii::t('cms', 'Types'),
+                'paramName' => 'type',
             ];
-        }
 
-        return ButtonDropdown::widget($config);
+            foreach (Entry::getTypes() as $id => $type) {
+                $config['items'][] = [
+                    'label' => $type['name'],
+                    'url' => Url::current(['type' => $id, 'page' => null]),
+                ];
+            }
+
+            return ButtonDropdown::widget($config);
+        }
+        
+        return '';
     }
 }
