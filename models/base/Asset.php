@@ -199,6 +199,14 @@ class Asset extends \davidhirtz\yii2\cms\models\base\ActiveRecord
 
         return $srcset ? $srcset : $this->file->getUrl();
     }
+    
+    /**
+     * @return string
+     */
+    public function getAutoplayLink()
+    {
+        return $this->link ? ($this->link . (strpos($this->link, '?') !== false ? '&' : '?') . 'autoplay=1') : '';
+    }
 
     /**
      * @return array
