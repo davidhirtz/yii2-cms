@@ -1,4 +1,5 @@
 <?php
+
 namespace davidhirtz\yii2\cms\widgets;
 
 use davidhirtz\yii2\cms\models\Asset;
@@ -20,7 +21,7 @@ class AssetsView extends Widget
     /**
      * @var string
      */
-    public $viewFile='_assets';
+    public $viewFile = '_assets';
 
     /**
      * @var array
@@ -40,17 +41,17 @@ class AssetsView extends Widget
     /**
      * @var array containing css class as key and related asset type as value.
      */
-    public $breakpoints=[];
+    public $breakpoints = [];
 
     /**
      * @var array containing asset type as key and an array of shared types as value.
      */
-    public $shared=[];
+    public $sharedBreakpoints = [];
 
     /**
      * @var array
      */
-    public $options=[];
+    public $options = [];
 
     /**
      * @var string slider class that will be applied if there is more than one item.
@@ -62,11 +63,11 @@ class AssetsView extends Widget
      */
     public function init()
     {
-        if(!$this->shared && $this->breakpoints)
-        {
-            foreach($this->breakpoints as $breakpoint)
-            {
-                $this->shared=$this->shared ? array_intersect($this->shared, $breakpoint) : $breakpoint;
+        // Find shared breakpoints, this helps to determine whether we need multiple
+        // views for the breakpoints
+        if (!$this->sharedBreakpoints && $this->breakpoints) {
+            foreach ($this->breakpoints as $breakpoint) {
+                $this->sharedBreakpoints = $this->sharedBreakpoints ? array_intersect($this->sharedBreakpoints, $breakpoint) : $breakpoint;
             }
         }
 
@@ -78,63 +79,53 @@ class AssetsView extends Widget
      */
     public function run()
     {
-        $isShared=true;
-        $breakpoints=[];
+        $sameViewport = true;
+        $breakpoints = [];
+        $output = '';
 
-        if($this->breakpoints)
-        {
-            foreach($this->assets as $asset)
-            {
-                foreach($this->breakpoints as $cssClass=>$types)
-                {
-                    if(in_array($asset->type, $types))
-                    {
-                        $breakpoints[$cssClass][]=$asset;
+        if ($this->breakpoints) {
+            foreach ($this->assets as $asset) {
+                foreach ($this->breakpoints as $cssClass => $types) {
+                    if (in_array($asset->type, $types)) {
+                        $breakpoints[$cssClass][] = $asset;
                     }
 
-                    if($isShared && !in_array($asset->type, $this->shared))
-                    {
-                        $isShared=false;
+                    if ($sameViewport && !in_array($asset->type, $this->sharedBreakpoints)) {
+                        $sameViewport = false;
                     }
                 }
             }
         }
 
-        if($isShared)
-        {
-            $breakpoints=[$this->assets];
+        if ($sameViewport) {
+            $breakpoints = [$this->assets];
         }
 
-        foreach($breakpoints as $cssClass=>$assets)
-        {
-            if($this->start!==null || $this->limit!==null)
-            {
-                $assets=array_slice($assets, (int)$this->start, $this->limit);
+        foreach ($breakpoints as $cssClass => $assets) {
+            if ($this->start !== null || $this->limit !== null) {
+                $assets = array_slice($assets, (int)$this->start, $this->limit);
             }
 
-            if($assets)
-            {
-                $content=Yii::$app->getView()->render($this->viewFile, [
-                    'assets'=>$assets,
+            if ($assets) {
+                $content = Yii::$app->getView()->render($this->viewFile, [
+                    'assets' => $assets,
                 ]);
 
-                $options=$this->options;
+                $options = $this->options;
 
-                if(is_string($cssClass))
-                {
+                if (is_string($cssClass)) {
                     Html::addCssClass($options, $cssClass);
                 }
 
-                if(count($assets)>1 && $this->sliderClass)
-                {
+                if (count($assets) > 1 && $this->sliderClass) {
                     Html::addCssClass($options, $this->sliderClass);
                 }
 
-                return Html::tag('div', $content, $options);
+                $output .= Html::tag('div', $content, $options);
             }
         }
 
-        return '';
+        return $output;
     }
 
     /**
