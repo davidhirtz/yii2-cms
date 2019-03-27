@@ -56,7 +56,7 @@ class AssetsView extends Widget
     /**
      * @var string slider class that will be applied if there is more than one item.
      */
-    public $sliderClass;
+    public $sliderClass = 'slider';
 
     /**
      * @inheritdoc
@@ -111,14 +111,10 @@ class AssetsView extends Widget
                     'assets' => $assets,
                 ]);
 
-                $options = $this->options;
+                $options = $this->prepareOptions($this->options, $assets);
 
                 if (is_string($cssClass)) {
                     Html::addCssClass($options, $cssClass);
-                }
-
-                if (count($assets) > 1 && $this->sliderClass) {
-                    Html::addCssClass($options, $this->sliderClass);
                 }
 
                 $output .= Html::tag('div', $content, $options);
@@ -126,6 +122,20 @@ class AssetsView extends Widget
         }
 
         return $output;
+    }
+
+    /**
+     * @param array $options
+     * @param Asset[] $assets
+     * @return array
+     */
+    protected function prepareOptions($options, $assets)
+    {
+        if (count($assets) > 1 && $this->sliderClass) {
+            Html::addCssClass($options, $this->sliderClass);
+        }
+
+        return $options;
     }
 
     /**
