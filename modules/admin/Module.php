@@ -93,8 +93,6 @@ class Module extends \yii\base\Module
 
             $this->module->navbarItems = array_merge($this->module->navbarItems, $this->navbarItems);
             $this->module->panels = array_merge($this->module->panels, $this->panels);
-
-            Yii::$app->getView()->setBreadcrumb(Yii::t('cms', 'Entries'), ['/admin/entry/index']);
         }
 
         $this->module->controllerMap = array_merge($this->module->controllerMap, $this->defaultControllerMap, $this->controllerMap);

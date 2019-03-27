@@ -8,6 +8,7 @@
  */
 
 $this->setTitle(Yii::t('cms', 'Sections'));
+$this->setBreadcrumb(Yii::t('cms', 'Entries'), ['entry/index']);
 $this->setBreadcrumb(Yii::t('cms', 'Sections'), ['entry/update', $entry->id]);
 
 use davidhirtz\yii2\cms\modules\admin\widgets\grid\SectionGridView;

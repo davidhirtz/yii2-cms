@@ -8,6 +8,7 @@
  */
 
 $this->setTitle(Yii::t('cms', 'Edit Asset'));
+$this->setBreadcrumb(Yii::t('cms', 'Entries'), ['/admin/entry/index']);
 
 if ($asset->section_id) {
     $this->setBreadcrumbs([

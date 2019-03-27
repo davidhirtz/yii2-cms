@@ -14,6 +14,7 @@ use davidhirtz\yii2\media\modules\admin\widgets\grid\FileGridView;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
 
 $this->setTitle(Yii::t('media', 'Assets'));
+$this->setBreadcrumb(Yii::t('cms', 'Entries'), ['/admin/entry/index']);
 
 if ($parent instanceof \davidhirtz\yii2\cms\modules\admin\models\forms\SectionForm) {
     $this->setBreadcrumbs([

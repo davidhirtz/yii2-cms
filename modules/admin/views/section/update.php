@@ -8,6 +8,7 @@
  */
 
 $this->setTitle(Yii::t('cms', 'Update Section'));
+$this->setBreadcrumb(Yii::t('cms', 'Entries'), ['entry/index']);
 $this->setBreadcrumb(Yii::t('cms', 'Sections'), ['entry/update', $section->entry_id]);
 
 use davidhirtz\yii2\cms\modules\admin\widgets\forms\SectionActiveForm;
