@@ -82,7 +82,7 @@ class AssetGridView extends GridView
                     [
                         'content' => $this->getButtons(),
                         'visible' => Yii::$app->getUser()->can('upload'),
-                        'options' => ['class' => 'offset-md-4 col-md-8 col-lg-6'],
+                        'options' => ['class' => 'offset-md-3 offset-lg-4 col-md-8 col-lg-6'],
                     ],
                 ],
             ];
@@ -196,11 +196,11 @@ class AssetGridView extends GridView
                     $buttons[] = Html::tag('span', FAS::icon('arrows-alt'), ['class' => 'btn btn-secondary sortable-handle']);
                 }
 
-                $buttons[] = Html::a(FAS::icon('image'), ['file/update', 'id' => $asset->file_id], ['class' => 'btn btn-secondary']);
+                $buttons[] = Html::a(FAS::icon('image'), ['file/update', 'id' => $asset->file_id], ['class' => 'btn btn-secondary d-none d-md-inline-block']);
                 $buttons[] = Html::a(FAS::icon('wrench'), ['cms/asset/update', 'id' => $asset->id], ['class' => 'btn btn-secondary']);
 
                 $buttons[] = Html::a(FAS::icon('trash'), ['cms/asset/delete', 'id' => $asset->id], [
-                    'class' => 'btn btn-danger btn-delete-asset',
+                    'class' => 'btn btn-danger btn-delete-asset d-none d-md-inline-block',
                     'data-confirm' => Yii::t('yii', 'Are you sure you want to remove this asset?'),
                     'data-ajax' => 1,
                     'data-delete-message' => Yii::t('cms', 'Permanently delete related files'),

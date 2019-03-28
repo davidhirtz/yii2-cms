@@ -124,8 +124,8 @@ class SectionGridView extends GridView
     {
         return [
             'attribute' => $this->getModel()->getI18nAttributeName('name'),
-            'headerOptions' => ['class' => 'hidden-xs'],
-            'contentOptions' => ['class' => 'hidden-xs'],
+            'headerOptions' => ['class' => 'd-none d-md-table-cell'],
+            'contentOptions' => ['class' => 'd-none d-md-table-cell'],
             'content' => function (SectionForm $section) {
                 $text = $section->getI18nAttribute('name');
                 $text = $text ? Html::tag('strong', $text) : null;
@@ -169,8 +169,8 @@ class SectionGridView extends GridView
     {
         return [
             'attribute' => 'asset_count',
-            'headerOptions' => ['class' => 'hidden-sm hidden-xs text-center'],
-            'contentOptions' => ['class' => 'hidden-sm hidden-xs text-center'],
+            'headerOptions' => ['class' => 'd-none d-md-table-cell text-center'],
+            'contentOptions' => ['class' => 'd-none d-md-table-cell text-center'],
             'visible' => static::getModule()->enableSectionAssets,
             'content' => function (SectionForm $section) {
                 return Html::a(Yii::$app->getFormatter()->asInteger($section->asset_count), ['update', 'id' => $section->id, '#' => 'assets'], ['class' => 'badge']);

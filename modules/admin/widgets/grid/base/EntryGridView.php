@@ -170,7 +170,7 @@ class EntryGridView extends GridView
 
                 if ($this->showUrl) {
                     $url = Url::to($entry->getRoute(), true);
-                    $html .= Html::tag('div', Html::a($url, $url, ['target' => '_blank']), ['class' => 'small hidden-xs']);
+                    $html .= Html::tag('div', Html::a($url, $url, ['target' => '_blank']), ['class' => 'd-none d-md-block small']);
                 }
 
 
@@ -186,8 +186,8 @@ class EntryGridView extends GridView
     {
         return [
             'attribute' => 'section_count',
-            'headerOptions' => ['class' => 'hidden-sm hidden-xs text-center'],
-            'contentOptions' => ['class' => 'hidden-sm hidden-xs text-center'],
+            'headerOptions' => ['class' => 'd-none d-md-table-cell text-center'],
+            'contentOptions' => ['class' => 'd-none d-md-table-cell text-center'],
             'visible' => static::getModule()->enableSections,
             'content' => function (EntryForm $entry) {
                 return Html::a(Yii::$app->getFormatter()->asInteger($entry->section_count), ['section/index', 'entry' => $entry->id], ['class' => 'badge']);
@@ -202,8 +202,8 @@ class EntryGridView extends GridView
     {
         return [
             'attribute' => 'asset_count',
-            'headerOptions' => ['class' => 'hidden-sm hidden-xs text-center'],
-            'contentOptions' => ['class' => 'hidden-sm hidden-xs text-center'],
+            'headerOptions' => ['class' => 'd-none d-md-table-cell text-center'],
+            'contentOptions' => ['class' => 'd-none d-md-table-cell text-center'],
             'visible' => static::getModule()->enableEntryAssets,
             'content' => function (EntryForm $entry) {
                 return Html::a(Yii::$app->getFormatter()->asInteger($entry->asset_count), ['update', 'id' => $entry->id, '#' => 'assets'], ['class' => 'badge']);
@@ -218,8 +218,8 @@ class EntryGridView extends GridView
     {
         return [
             'attribute' => 'publish_date',
-            'headerOptions' => ['class' => 'hidden-sm hidden-xs'],
-            'contentOptions' => ['class' => 'text-nowrap hidden-sm hidden-xs'],
+            'headerOptions' => ['class' => 'd-none d-md-table-cell'],
+            'contentOptions' => ['class' => 'd-none d-md-table-cell text-nowrap'],
             'content' => function (EntryForm $entry) {
                 return $this->dateFormat ? $entry->publish_date->format($this->dateFormat) : Timeago::tag($entry->publish_date);
             }
@@ -240,7 +240,7 @@ class EntryGridView extends GridView
                     $buttons[] = Html::tag('span', FAS::icon('arrows-alt'), ['class' => 'btn btn-secondary sortable-handle']);
                 }
 
-                $buttons[] = Html::a(FAS::icon('wrench'), ['update', 'id' => $entry->id], ['class' => 'btn btn-secondary']);
+                $buttons[] = Html::a(FAS::icon('wrench'), ['update', 'id' => $entry->id], ['class' => 'btn btn-secondary d-none d-md-inline-block']);
                 return Html::buttons($buttons);
             }
         ];

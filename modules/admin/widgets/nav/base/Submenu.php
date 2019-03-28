@@ -41,7 +41,10 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
                         'label' => Yii::t('cms', 'Entry'),
                         'url' => ['/admin/entry/update', 'id' => $entry->id],
                         'active' => !$isSection,
-                        'icon' => 'book hidden-xs',
+                        'icon' => 'book',
+                        'labelOptions' => [
+                            'class' => 'd-none d-md-inline'
+                        ],
                     ],
                     [
                         'label' => Yii::t('cms', 'Sections'),
@@ -49,12 +52,15 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
                         'badge' => $entry->section_count ?: null,
                         'badgeOptions' => [
                             'id' => 'entry-section-count',
-                            'class' => 'badge',
+                            'class' => 'badge d-none d-md-inline-block',
                         ],
-                        'icon' => 'th-list hidden-xs',
+                        'icon' => 'th-list',
                         'active' => $isSection,
                         'options' => [
                             'class' => 'entry-sections',
+                        ],
+                        'labelOptions' => [
+                            'class' => 'd-none d-md-inline'
                         ],
                     ],
                 ];

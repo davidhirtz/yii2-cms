@@ -63,9 +63,6 @@ class Module extends \yii\base\Module
                             'icon' => 'book',
                             'url' => ['/admin/entry/index'],
                             'active' => ['admin/entry', 'admin/section', 'cms/'],
-                            'labelOptions' => [
-                                'class' => 'hidden-xs',
-                            ],
                         ]
                     ];
                 }
