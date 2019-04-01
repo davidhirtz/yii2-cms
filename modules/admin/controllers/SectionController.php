@@ -3,6 +3,7 @@
 namespace davidhirtz\yii2\cms\modules\admin\controllers;
 
 use davidhirtz\yii2\cms\models\queries\AssetQuery;
+use davidhirtz\yii2\cms\models\queries\SectionQuery;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\modules\admin\models\forms\EntryForm;
@@ -60,9 +61,9 @@ class SectionController extends Controller
         $query = EntryForm::find()
             ->where(['id' => $entry])
             ->with([
-                'assets' => function (AssetQuery $query) {
+                'sections' => function (SectionQuery $query) {
                     $query->with([
-                        'sections' => function (ActiveQuery $query) {
+                        'assets' => function (AssetQuery $query) {
                             $query->replaceI18nAttributes()
                                 ->with(['file', 'file.folder']);
                         }
