@@ -49,7 +49,7 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
                     [
                         'label' => Yii::t('cms', 'Sections'),
                         'url' => ['/admin/section/index', 'entry' => $entry->id],
-                        'badge' => $entry->section_count ?: null,
+                        'badge' => $entry->section_count ?: false,
                         'badgeOptions' => [
                             'id' => 'entry-section-count',
                             'class' => 'badge d-none d-md-inline-block',
