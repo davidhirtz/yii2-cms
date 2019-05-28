@@ -32,7 +32,7 @@ class SiteController extends Controller
     {
         $entry = $this->getQuery()
             ->with('sections')
-            ->whereLower([Entry::instance()->getI18nAttribute('slug') => $entry])
+            ->whereLower([Entry::instance()->getI18nAttributeName('slug') => $entry])
             ->limit(1)
             ->one();
 
