@@ -54,17 +54,17 @@ class Section extends ActiveRecord
                 'validateEntryId',
             ],
             [
-                $this->getI18nAttributeNames(['name', 'slug', 'content']),
+                ['name', 'slug', 'content'],
                 'filter',
                 'filter' => 'trim',
             ],
             [
-                $this->getI18nAttributeNames(['slug']),
+                ['slug'],
                 'string',
                 'max' => 100,
             ],
             [
-                $this->getI18nAttributeNames(['name']),
+                ['name'],
                 'string',
                 'max' => 250,
             ],

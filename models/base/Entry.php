@@ -56,22 +56,22 @@ class Entry extends ActiveRecord
                 'required',
             ],
             [
-                $this->getI18nAttributeNames(['name', 'slug', 'title', 'description', 'content']),
+                ['name', 'slug', 'title', 'description', 'content'],
                 'filter',
                 'filter' => 'trim',
             ],
             [
-                $this->getI18nAttributeNames(['slug']),
+                ['slug'],
                 'string',
                 'max' => 100,
             ],
             [
-                $this->getI18nAttributeNames(['name', 'title', 'description']),
+                ['name', 'title', 'description'],
                 'string',
                 'max' => 250,
             ],
             [
-                ['slug'],
+                $this->getI18nAttributeNames(['slug']),
                 'unique',
                 'targetAttribute' => static::getModule()->enabledNestedSlugs ? ['slug', 'category_id'] : 'slug',
                 'comboNotUnique' => Yii::t('yii', '{attribute} "{value}" has already been taken.'),
@@ -200,7 +200,7 @@ class Entry extends ActiveRecord
      */
     public function getRoute(): array
     {
-        return array_filter(['/cms/site/view', 'entry' => $this->slug]);
+        return array_filter(['/cms/site/view', 'entry' => $this->getI18nAttribute('slug')]);
     }
 
     /**

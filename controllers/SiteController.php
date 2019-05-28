@@ -25,13 +25,14 @@ class SiteController extends Controller
     }
 
     /**
+     * @param string $entry
      * @return string|\yii\web\Response
      */
     public function actionView($entry)
     {
         $entry = $this->getQuery()
             ->with('sections')
-            ->whereLower(['slug' => $entry])
+            ->whereLower([Entry::instance()->getI18nAttribute('slug') => $entry])
             ->limit(1)
             ->one();
 
