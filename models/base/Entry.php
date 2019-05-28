@@ -71,7 +71,7 @@ class Entry extends ActiveRecord
                 'max' => 250,
             ],
             [
-                $this->getI18nAttributeNames(['slug']),
+                ['slug'],
                 'unique',
                 'targetAttribute' => static::getModule()->enabledNestedSlugs ? ['slug', 'category_id'] : 'slug',
                 'comboNotUnique' => Yii::t('yii', '{attribute} "{value}" has already been taken.'),
