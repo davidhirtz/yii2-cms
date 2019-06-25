@@ -169,8 +169,7 @@ class EntryGridView extends GridView
                 $html = Html::tag('strong', Html::a($html, ['update', 'id' => $entry->id]));
 
                 if ($this->showUrl) {
-                    $url = Url::to($entry->getRoute(), true);
-                    $html .= Html::tag('div', Html::a($url, $url, ['target' => '_blank']), ['class' => 'd-none d-md-block small']);
+                    $html .= $this->getUrl($entry);
                 }
 
 
@@ -269,5 +268,15 @@ class EntryGridView extends GridView
         }
         
         return '';
+    }
+
+    /**
+     * @param EntryForm $entry
+     * @return string
+     */
+    public function getUrl($entry)
+    {
+        $url = Url::to($entry->getRoute(), true);
+        return Html::tag('div', Html::a($url, $url, ['target' => '_blank']), ['class' => 'd-none d-md-block small']);
     }
 }
