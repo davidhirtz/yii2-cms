@@ -40,9 +40,10 @@ class SectionActiveForm extends ActiveForm
     }
 
     /**
+     * @param mixed $attribute can be used to customize the base url per attribute
      * @return string
      */
-    public function getBaseUrl()
+    public function getBaseUrl($attribute = null)
     {
         return trim(Url::to($this->model->entry->getRoute(), true), '/') . '#';
     }
