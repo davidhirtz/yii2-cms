@@ -61,6 +61,7 @@ use davidhirtz\yii2\skeleton\widgets\forms\DeleteActiveForm;
     'title' => Yii::t('media', 'Delete File'),
     'content' => DeleteActiveForm::widget([
         'model' => $asset->file,
+        'action' => ['/admin/file/delete', 'id' => $asset->file_id],
         'message' => Yii::t('cms', 'Warning: Deleting this file cannot be undone. All related assets will also be unrecoverably deleted. Please be certain!')
     ]),
 ]); ?>
