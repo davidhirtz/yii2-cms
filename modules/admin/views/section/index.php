@@ -8,8 +8,10 @@
  */
 
 $this->setTitle(Yii::t('cms', 'Sections'));
-$this->setBreadcrumb(Yii::t('cms', 'Entries'), ['entry/index']);
-$this->setBreadcrumb(Yii::t('cms', 'Sections'), ['entry/update', $entry->id]);
+$this->setBreadcrumbs([
+	Yii::t('cms', 'Entries') => ['entry/index'],
+	Yii::t('cms', 'Sections') => ['index', 'entry' => $entry->id],
+]);
 
 use davidhirtz\yii2\cms\modules\admin\widgets\grid\SectionGridView;
 use davidhirtz\yii2\cms\modules\admin\widgets\nav\Submenu;

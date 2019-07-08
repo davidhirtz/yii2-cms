@@ -8,8 +8,10 @@
  */
 
 $this->setTitle(Yii::t('cms', 'Update Section'));
-$this->setBreadcrumb(Yii::t('cms', 'Entries'), ['entry/index']);
-$this->setBreadcrumb(Yii::t('cms', 'Sections'), ['entry/update', $section->entry_id]);
+$this->setBreadcrumbs([
+    Yii::t('cms', 'Entries') => ['entry/index'],
+    Yii::t('cms', 'Sections') => ['index', 'entry' => $section->entry_id],
+]);
 
 use davidhirtz\yii2\cms\modules\admin\widgets\forms\SectionActiveForm;
 use davidhirtz\yii2\cms\modules\admin\widgets\grid\AssetGridView;
