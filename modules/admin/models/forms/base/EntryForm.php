@@ -32,7 +32,7 @@ class EntryForm extends Entry
                 'immutable' => true,
                 'ensureUnique' => true,
                 'uniqueValidator' => [
-                    'targetAttribute' => ['slug', 'parent_id'],
+                    'targetAttribute' => static::getModule()->enabledNestedEntries ? ['slug', 'parent_id'] : null,
                 ],
             ],
         ]);

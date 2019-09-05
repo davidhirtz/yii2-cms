@@ -76,9 +76,11 @@ class EntryController extends Controller
     public function actionCreate($id = null, $type = null)
     {
         $entry = new EntryForm;
-
-        $entry->parent_id = $id;
         $entry->type = $type;
+
+        if (static::getModule()->enabledNestedEntries) {
+            $entry->parent_id = $id;
+        }
 
         if ($entry->load(Yii::$app->getRequest()->post()) && $entry->insert()) {
             $this->success(Yii::t('cms', 'The entry was created.'));
