@@ -146,7 +146,7 @@ class Entry extends ActiveRecord
      */
     public function findSiblings(): EntryQuery
     {
-        return static::find()->where(['parent_id' => $this->parent_id]);
+        return static::getModule()->enabledNestedEntries ? $this->find()->where(['parent_id' => $this->parent_id]) : $this->find();
     }
 
     /**

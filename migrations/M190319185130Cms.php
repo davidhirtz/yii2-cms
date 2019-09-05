@@ -36,9 +36,6 @@ class M190319185130Cms extends Migration
                 'id' => $this->primaryKey()->unsigned(),
                 'status' => $this->tinyInteger(1)->unsigned()->notNull()->defaultValue(Entry::STATUS_ENABLED),
                 'type' => $this->smallInteger()->notNull()->defaultValue(Entry::TYPE_DEFAULT),
-                'parent_id' => $this->integer()->unsigned()->null(),
-                'lft' => $this->integer()->unsigned()->notNull()->defaultValue(0),
-                'rgt' => $this->integer()->unsigned()->notNull()->defaultValue(0),
                 'position' => $this->integer()->unsigned()->notNull()->defaultValue(0),
                 'name' => $this->string(250)->notNull(),
                 'slug' => $this->string(100)->notNull(),
@@ -53,12 +50,19 @@ class M190319185130Cms extends Migration
                 'created_at' => $this->dateTime()->notNull(),
             ], $this->getTableOptions());
 
-            $this->createIndex('parent_id', Entry::tableName(), ['parent_id', 'status']);
-            $this->createIndex('slug', Entry::tableName(), $this->getModule()->enabledNestedEntries ? ['slug', 'parent_id'] : 'slug', true);
-
             $tableName = $schema->getRawTableName(Entry::tableName());
+
+            if($this->getModule()->enabledNestedEntries) {
+                $this->addColumn(Entry::tableName(), 'parent_id', $this->integer()->unsigned()->null()->after('type'));
+                $this->addColumn(Entry::tableName(), 'lft', $this->integer()->unsigned()->notNull()->defaultValue(0)->after('parent_id'));
+                $this->addColumn(Entry::tableName(), 'rgt', $this->integer()->unsigned()->notNull()->defaultValue(0)->after('lft'));
+
+                $this->createIndex('parent_id', Entry::tableName(), ['parent_id', 'status']);
+                $this->addForeignKey($tableName . '_parent_id_ibfk', Entry::tableName(), 'parent_id', Entry::tableName(), 'id', 'SET NULL');
+            }
+
+            $this->createIndex('slug', Entry::tableName(), $this->getModule()->enabledNestedEntries ? ['slug', 'parent_id'] : 'slug', true);
             $this->addForeignKey($tableName . '_updated_by_ibfk', Entry::tableName(), 'updated_by_user_id', User::tableName(), 'id', 'SET NULL');
-            $this->addForeignKey($tableName . '_parent_id_ibfk', Entry::tableName(), 'parent_id', Entry::tableName(), 'id', 'SET NULL');
 
             $this->addI18nColumns(Entry::tableName(), (new Entry)->i18nAttributes);
 
