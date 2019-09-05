@@ -73,7 +73,7 @@ class Entry extends ActiveRecord
             [
                 ['slug'],
                 'unique',
-                'targetAttribute' => static::getModule()->enabledNestedSlugs ? ['slug', 'category_id'] : 'slug',
+                'targetAttribute' => static::getModule()->enabledNestedEntries ? ['slug', 'parent_id'] : 'slug',
                 'comboNotUnique' => Yii::t('yii', '{attribute} "{value}" has already been taken.'),
             ],
             [
@@ -185,14 +185,6 @@ class Entry extends ActiveRecord
     {
         $this->section_count = $this->getSections()->count();
         return $this->update(false);
-    }
-
-    /**
-     * @return array
-     */
-    public function getOrderBy()
-    {
-        return ['position' => SORT_ASC];
     }
 
     /**

@@ -19,21 +19,10 @@ use yii\helpers\Url;
  * @package davidhirtz\yii2\cms\modules\admin\widgets\grid\base
  *
  * @property EntryActiveDataProvider $dataProvider
- * @method EntryForm getModel()
  */
 class EntryGridView extends GridView
 {
     use ModuleTrait;
-
-    /**
-     * @var EntryForm
-     */
-    public $entry;
-
-    /**
-     * @var int
-     */
-    public $type;
 
     /**
      * @var bool
@@ -54,7 +43,7 @@ class EntryGridView extends GridView
         'name',
         'section_count',
         'asset_count',
-        'publish_date',
+        'updated_at',
         'buttons',
     ];
 
@@ -63,12 +52,8 @@ class EntryGridView extends GridView
      */
     public function init()
     {
-        if ($this->entry) {
-            $this->orderRoute = ['order', 'id' => $this->entry->id];
-        }
-
-        if (!$this->type) {
-            $this->type = Yii::$app->getRequest()->get('type');
+        if ($this->dataProvider->entry) {
+            $this->orderRoute = ['order', 'id' => $this->dataProvider->entry->id];
         }
 
         $this->initHeader();
@@ -124,7 +109,7 @@ class EntryGridView extends GridView
      */
     protected function renderCreateEntryButton()
     {
-        return Html::a(Html::iconText('plus', Yii::t('cms', 'New Entry')), ['create', 'id' => $this->entry ? $this->entry->id : null, 'type' => $this->type], ['class' => 'btn btn-primary']);
+        return Html::a(Html::iconText('plus', Yii::t('cms', 'New Entry')), ['create', 'id' => $this->dataProvider->entry ? $this->dataProvider->entry->id : null, 'type' => $this->dataProvider->type], ['class' => 'btn btn-primary']);
     }
 
     /**
@@ -148,6 +133,10 @@ class EntryGridView extends GridView
      */
     public function typeColumn()
     {
+        if ($this->dataProvider->type || !EntryForm::getTypes()) {
+            return false;
+        }
+
         return [
             'attribute' => 'type',
             'visible' => count(EntryForm::getTypes()) > 1,
@@ -217,10 +206,25 @@ class EntryGridView extends GridView
     {
         return [
             'attribute' => 'publish_date',
-            'headerOptions' => ['class' => 'd-none d-md-table-cell'],
-            'contentOptions' => ['class' => 'd-none d-md-table-cell text-nowrap'],
+            'headerOptions' => ['class' => 'd-none d-lg-table-cell'],
+            'contentOptions' => ['class' => 'd-none d-lg-table-cell text-nowrap'],
             'content' => function (EntryForm $entry) {
                 return $this->dateFormat ? $entry->publish_date->format($this->dateFormat) : Timeago::tag($entry->publish_date);
+            }
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function updatedAtColumn()
+    {
+        return [
+            'attribute' => 'updated_at',
+            'headerOptions' => ['class' => 'd-none d-lg-table-cell'],
+            'contentOptions' => ['class' => 'd-none d-lg-table-cell text-nowrap'],
+            'content' => function (EntryForm $entry) {
+                return $this->dateFormat ? $entry->updated_at->format($this->dateFormat) : Timeago::tag($entry->updated_at);
             }
         ];
     }
@@ -253,7 +257,7 @@ class EntryGridView extends GridView
         if (Entry::getTypes()) {
 
             $config = [
-                'label' => isset(Entry::getTypes()[$this->type]) ? Html::tag('strong', Entry::getTypes()[$this->type]['name']) : Yii::t('cms', 'Types'),
+                'label' => isset(Entry::getTypes()[$this->dataProvider->type]) ? Html::tag('strong', Entry::getTypes()[$this->dataProvider->type]['name']) : Yii::t('cms', 'Types'),
                 'paramName' => 'type',
             ];
 
@@ -266,7 +270,7 @@ class EntryGridView extends GridView
 
             return ButtonDropdown::widget($config);
         }
-        
+
         return '';
     }
 
@@ -278,5 +282,13 @@ class EntryGridView extends GridView
     {
         $url = Url::to($entry->getRoute(), true);
         return Html::tag('div', Html::a($url, $url, ['target' => '_blank']), ['class' => 'd-none d-md-block small']);
+    }
+
+    /**
+     * @return EntryForm
+     */
+    public function getModel()
+    {
+        return EntryForm::instance();
     }
 }

@@ -4,12 +4,10 @@ namespace davidhirtz\yii2\cms\modules\admin\controllers;
 
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\cms\models\Entry;
-use davidhirtz\yii2\cms\models\queries\EntryQuery;
 use davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider;
 use davidhirtz\yii2\cms\modules\admin\models\forms\EntryForm;
 use davidhirtz\yii2\skeleton\web\Controller;
 use Yii;
-use yii\data\Sort;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
@@ -58,29 +56,15 @@ class EntryController extends Controller
      */
     public function actionIndex($id = null, $type = null, $q = null)
     {
-        $entry = $id ? EntryForm::findOne($id) : null;
-
-        $query = $this->getQuery()
-            ->andFilterWhere(['type' => $type])
-            ->orderBy(['position' => SORT_ASC])
-            ->matching($q);
-
-        if ($this->getModule()->defaultEntryOrderBy) {
-            $query->orderBy($this->getModule()->defaultEntryOrderBy);
-        }
-
-        if ($entry) {
-            $query->orderBy($entry->getOrderBy());
-        }
-
         $provider = new EntryActiveDataProvider([
-            'query' => $query,
+            'entry' => $id ? EntryForm::findOne($id) : null,
+            'searchString' => $q,
+            'type' => $type,
         ]);
 
         /** @noinspection MissedViewInspection */
         return $this->render('index', [
             'provider' => $provider,
-            'entry' => $entry,
         ]);
     }
 
@@ -164,52 +148,5 @@ class EntryController extends Controller
             ->all();
 
         Entry::updatePosition($entries, array_flip(Yii::$app->getRequest()->post('entry')));
-    }
-
-    /**
-     * @return Sort
-     */
-    protected function getSort(): Sort
-    {
-        return new Sort([
-            'attributes' => [
-                'type' => [
-                    'asc' => ['type' => SORT_ASC, 'name' => SORT_ASC],
-                    'desc' => ['type' => SORT_DESC, 'name' => SORT_DESC],
-                ],
-                'name' => [
-                    'asc' => ['name' => SORT_ASC],
-                    'desc' => ['name' => SORT_DESC],
-                ],
-                'asset_count' => [
-                    'asc' => ['asset_count' => SORT_ASC, 'name' => SORT_ASC],
-                    'desc' => ['asset_count' => SORT_DESC, 'name' => SORT_ASC],
-                    'default' => SORT_DESC,
-                ],
-                'section_count' => [
-                    'asc' => ['section_count' => SORT_ASC, 'name' => SORT_ASC],
-                    'desc' => ['section_count' => SORT_DESC, 'name' => SORT_ASC],
-                    'default' => SORT_DESC,
-                ],
-                'publish_date' => [
-                    'asc' => ['publish_date' => SORT_ASC],
-                    'desc' => ['publish_date' => SORT_DESC],
-                    'default' => SORT_DESC,
-                ],
-                'updated_at' => [
-                    'asc' => ['updated_at' => SORT_ASC],
-                    'desc' => ['updated_at' => SORT_DESC],
-                    'default' => SORT_DESC,
-                ],
-            ],
-        ]);
-    }
-
-    /**
-     * @return EntryQuery
-     */
-    protected function getQuery()
-    {
-        return EntryForm::find()->replaceI18nAttributes();
     }
 }

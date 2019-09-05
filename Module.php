@@ -15,7 +15,7 @@ class Module extends \yii\base\Module
     /**
      * @var bool
      */
-    public $enabledNestedSlugs = false;
+    public $enabledNestedEntries = false;
 
     /**
      * @var bool

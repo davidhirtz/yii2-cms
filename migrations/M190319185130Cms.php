@@ -54,7 +54,7 @@ class M190319185130Cms extends Migration
             ], $this->getTableOptions());
 
             $this->createIndex('parent_id', Entry::tableName(), ['parent_id', 'status']);
-            $this->createIndex('slug', Entry::tableName(), $this->getModule()->enabledNestedSlugs ? ['slug', 'parent_id'] : 'slug', true);
+            $this->createIndex('slug', Entry::tableName(), $this->getModule()->enabledNestedEntries ? ['slug', 'parent_id'] : 'slug', true);
 
             $tableName = $schema->getRawTableName(Entry::tableName());
             $this->addForeignKey($tableName . '_updated_by_ibfk', Entry::tableName(), 'updated_by_user_id', User::tableName(), 'id', 'SET NULL');
@@ -79,7 +79,7 @@ class M190319185130Cms extends Migration
             ], $this->getTableOptions());
 
             $this->createIndex('entry_id', Section::tableName(), ['entry_id', 'status', 'position']);
-            $this->createIndex('slug', Section::tableName(), $this->getModule()->enabledNestedSlugs ? ['slug', 'parent_id'] : 'slug', true);
+            $this->createIndex('slug', Section::tableName(), $this->getModule()->enabledNestedEntries ? ['slug', 'parent_id'] : 'slug', true);
 
             $tableName = $schema->getRawTableName(Section::tableName());
             $this->addForeignKey($tableName . '_entry_id_ibfk', Section::tableName(), 'entry_id', Entry::tableName(), 'id', 'CASCADE');

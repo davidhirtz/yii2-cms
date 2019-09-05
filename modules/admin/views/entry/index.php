@@ -5,7 +5,6 @@
  *
  * @var \davidhirtz\yii2\skeleton\web\View $this
  * @var \yii\data\ActiveDataProvider $provider
- * @var \davidhirtz\yii2\cms\modules\admin\models\forms\EntryForm $entry
  */
 
 use davidhirtz\yii2\cms\modules\admin\widgets\grid\EntryGridView;
@@ -16,12 +15,11 @@ $this->setTitle(Yii::t('cms', 'Entries'));
 ?>
 
 <?= Submenu::widget([
-    'model' => $entry,
+    'model' => $provider->entry,
 ]); ?>
 
 <?= Panel::widget([
     'content' => EntryGridView::widget([
         'dataProvider' => $provider,
-        'entry' => $entry,
     ]),
 ]); ?>
