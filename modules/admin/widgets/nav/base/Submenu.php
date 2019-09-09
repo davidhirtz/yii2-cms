@@ -22,48 +22,58 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
     public $model;
 
     /**
+     * @var bool
+     */
+    public $showEntryTypes = false;
+
+    /**
      * Initializes the nav items.
      */
     public function init()
     {
-        if (!$this->items && $this->model) {
+        if (!$this->items) {
+            if ($this->model) {
+                $isSection = $this->model instanceof SectionForm || Yii::$app->controller->id == 'section';
+                $entry = $this->model instanceof SectionForm ? $this->model->entry : $this->model;
 
-            $isSection = $this->model instanceof SectionForm || Yii::$app->controller->id == 'section';
-            $entry = $this->model instanceof SectionForm ? $this->model->entry : $this->model;
+                if (!$this->title) {
+                    $this->title = Html::a($entry->getI18nAttribute('name'), ['/admin/entry/update', 'id' => $entry->id]);
+                }
 
-            if (!$this->title) {
-                $this->title = Html::a($entry->getI18nAttribute('name'), ['/admin/entry/update', 'id' => $entry->id]);
-            }
-
-            if (static::getModule()->enableSections) {
-                $this->items = [
-                    [
-                        'label' => Yii::t('cms', 'Entry'),
-                        'url' => ['/admin/entry/update', 'id' => $entry->id],
-                        'active' => !$isSection,
-                        'icon' => 'book',
-                        'labelOptions' => [
-                            'class' => 'd-none d-md-inline'
+                if (static::getModule()->enableSections) {
+                    $this->items = [
+                        [
+                            'label' => $this->showEntryTypes ? $entry->getTypeName() : Yii::t('cms', 'Entry'),
+                            'url' => ['/admin/entry/update', 'id' => $entry->id],
+                            'active' => !$isSection,
+                            'icon' => 'book',
+                            'labelOptions' => [
+                                'class' => 'd-none d-md-inline'
+                            ],
                         ],
-                    ],
-                    [
-                        'label' => Yii::t('cms', 'Sections'),
-                        'url' => ['/admin/section/index', 'entry' => $entry->id],
-                        'badge' => $entry->section_count ?: false,
-                        'badgeOptions' => [
-                            'id' => 'entry-section-count',
-                            'class' => 'badge d-none d-md-inline-block',
+                        [
+                            'label' => Yii::t('cms', 'Sections'),
+                            'url' => ['/admin/section/index', 'entry' => $entry->id],
+                            'badge' => $entry->section_count ?: false,
+                            'badgeOptions' => [
+                                'id' => 'entry-section-count',
+                                'class' => 'badge d-none d-md-inline-block',
+                            ],
+                            'icon' => 'th-list',
+                            'active' => $isSection,
+                            'options' => [
+                                'class' => 'entry-sections',
+                            ],
+                            'labelOptions' => [
+                                'class' => 'd-none d-md-inline'
+                            ],
                         ],
-                        'icon' => 'th-list',
-                        'active' => $isSection,
-                        'options' => [
-                            'class' => 'entry-sections',
-                        ],
-                        'labelOptions' => [
-                            'class' => 'd-none d-md-inline'
-                        ],
-                    ],
-                ];
+                    ];
+                }
+            } elseif (static::getModule()->enableCategories || $this->showEntryTypes) {
+                if ($this->showEntryTypes) {
+                    $this->addEntryTypeItems();
+                }
             }
         }
 
@@ -72,5 +82,22 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
         }
 
         parent::init();
+    }
+
+    /**
+     * Adds items for entry types.
+     */
+    protected function addEntryTypeItems()
+    {
+        foreach (EntryForm::getTypes() as $type => $attributes) {
+            $this->items[] = [
+                'label' => $attributes[isset($attributes['plural']) ? 'plural' : 'name'],
+                'url' => ['/admin/entry/index', 'type' => $type],
+                'icon' => isset($attributes['icon']) ? $attributes['icon'] : 'book',
+                'labelOptions' => [
+                    'class' => 'd-none d-md-inline'
+                ],
+            ];
+        }
     }
 }

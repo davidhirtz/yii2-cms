@@ -15,6 +15,11 @@ class Module extends \yii\base\Module
     /**
      * @var bool
      */
+    public $enableCategories = false;
+
+    /**
+     * @var bool
+     */
     public $enabledNestedEntries = false;
 
     /**

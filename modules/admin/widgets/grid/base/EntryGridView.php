@@ -30,6 +30,11 @@ class EntryGridView extends GridView
     public $showUrl = true;
 
     /**
+     * @var bool
+     */
+    public $showTypeDropdown = true;
+
+    /**
      * @var string
      */
     public $dateFormat;
@@ -56,6 +61,10 @@ class EntryGridView extends GridView
             $this->orderRoute = ['order', 'id' => $this->dataProvider->entry->id];
         }
 
+        if ($this->showTypeDropdown) {
+            $this->showTypeDropdown = count(Entry::getTypes()) > 1;
+        }
+
         $this->initHeader();
         $this->initFooter();
 
@@ -73,13 +82,14 @@ class EntryGridView extends GridView
                     [
                         'content' => $this->typeDropdown(),
                         'options' => ['class' => 'col-12 col-md-3'],
+                        'visible' => $this->showTypeDropdown,
                     ],
                     [
                         'content' => $this->getSearchInput(),
                         'options' => ['class' => 'col-12 col-md-6'],
                     ],
                     'options' => [
-                        'class' => EntryForm::getTypes() ? 'justify-content-between' : 'justify-content-end',
+                        'class' => $this->showTypeDropdown ? 'justify-content-between' : 'justify-content-end',
                     ],
                 ],
             ];
@@ -254,24 +264,19 @@ class EntryGridView extends GridView
      */
     public function typeDropdown()
     {
-        if (Entry::getTypes()) {
+        $config = [
+            'label' => isset(Entry::getTypes()[$this->dataProvider->type]) ? Html::tag('strong', Entry::getTypes()[$this->dataProvider->type]['name']) : Yii::t('cms', 'Types'),
+            'paramName' => 'type',
+        ];
 
-            $config = [
-                'label' => isset(Entry::getTypes()[$this->dataProvider->type]) ? Html::tag('strong', Entry::getTypes()[$this->dataProvider->type]['name']) : Yii::t('cms', 'Types'),
-                'paramName' => 'type',
+        foreach (Entry::getTypes() as $id => $type) {
+            $config['items'][] = [
+                'label' => $type['name'],
+                'url' => Url::current(['type' => $id, 'page' => null]),
             ];
-
-            foreach (Entry::getTypes() as $id => $type) {
-                $config['items'][] = [
-                    'label' => $type['name'],
-                    'url' => Url::current(['type' => $id, 'page' => null]),
-                ];
-            }
-
-            return ButtonDropdown::widget($config);
         }
 
-        return '';
+        return ButtonDropdown::widget($config);
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace davidhirtz\yii2\cms\modules\admin;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * Class Module
@@ -17,6 +18,16 @@ class Module extends \yii\base\Module
     public $name;
 
     /**
+     * @var mixed the navbar item url
+     */
+    public $url = ['/admin/entry/index'];
+
+    /**
+     * @var string
+     */
+    public $defaultRoute = 'entry';
+
+    /**
      * @var array containing the admin menu items
      */
     public $navbarItems = [];
@@ -25,11 +36,6 @@ class Module extends \yii\base\Module
      * @var array containing the panel items
      */
     public $panels = [];
-
-    /**
-     * @var string
-     */
-    public $defaultRoute = 'entry';
 
     /**
      * @var array
@@ -61,7 +67,7 @@ class Module extends \yii\base\Module
                         [
                             'label' => $this->name ?: Yii::t('cms', 'Entries'),
                             'icon' => 'book',
-                            'url' => ['/admin/entry/index'],
+                            'url' => $this->url,
                             'active' => ['admin/entry', 'admin/section', 'cms/'],
                         ]
                     ];
@@ -92,7 +98,7 @@ class Module extends \yii\base\Module
             $this->module->panels = array_merge($this->module->panels, $this->panels);
         }
 
-        $this->module->controllerMap = array_merge($this->module->controllerMap, $this->defaultControllerMap, $this->controllerMap);
+        $this->module->controllerMap = ArrayHelper::merge(array_merge($this->module->controllerMap, $this->defaultControllerMap), $this->controllerMap);
 
         parent::init();
     }
