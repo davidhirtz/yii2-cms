@@ -2,10 +2,10 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\controllers;
 
+use davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider;
 use davidhirtz\yii2\cms\modules\admin\models\forms\CategoryForm;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\cms\models\Entry;
-use davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider;
 use davidhirtz\yii2\cms\modules\admin\models\forms\EntryForm;
 use davidhirtz\yii2\skeleton\web\Controller;
 use Yii;
@@ -15,10 +15,10 @@ use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
 
 /**
- * Class EntryController.
+ * Class EntryCategoryController.
  * @package davidhirtz\yii2\cms\modules\admin\controllers
  */
-class EntryController extends Controller
+class EntryCategoryController extends Controller
 {
     use ModuleTrait;
 
@@ -33,7 +33,7 @@ class EntryController extends Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['create', 'index', 'order', 'update', 'delete'],
+                        'actions' => ['create', 'index', 'order', 'delete'],
                         'roles' => ['author'],
                     ],
                 ],
@@ -50,19 +50,19 @@ class EntryController extends Controller
     }
 
     /**
-     * @param int $id
-     * @param int $category
-     * @param int $type
+     * @param int $entry
      * @param string $q
      * @return string
      */
-    public function actionIndex($id = null, $category = null, $type = null, $q = null)
+    public function actionIndex($entry = null, $q = null)
     {
-        $provider = new EntryActiveDataProvider([
-            'category' => $category ? CategoryForm::findOne($category) : null,
-            'entry' => $id ? EntryForm::findOne($id) : null,
+        if (!$entry = EntryForm::findOne($entry)) {
+            throw new NotFoundHttpException;
+        }
+
+        $provider = new CategoryActiveDataProvider([
+            'entry' => $entry,
             'searchString' => $q,
-            'type' => $type,
         ]);
 
         /** @noinspection MissedViewInspection */
@@ -72,64 +72,40 @@ class EntryController extends Controller
     }
 
     /**
-     * @param int $id
-     * @param int $type
+     * @param int $entry
+     * @param int $category
      * @return string|\yii\web\Response
      */
-    public function actionCreate($id = null, $type = null)
+    public function actionCreate($entry, $category)
     {
-        $entry = new EntryForm;
-        $entry->type = $type;
-
-        if (static::getModule()->enabledNestedEntries) {
-            $entry->parent_id = $id;
+        if(!($entry=EntryForm::findOne($entry)) || !($category=CategoryForm::findOne($category)))
+        {
+            throw new NotFoundHttpException();
         }
 
-        if ($entry->load(Yii::$app->getRequest()->post()) && $entry->insert()) {
-            $this->success(Yii::t('cms', 'The entry was created.'));
-            return $this->redirect(['update', 'id' => $entry->id]);
+        $attributes=['product_id'=>$entry->id, 'category_id'=>$category->id];
+        $entryCategory=EntryCategory::findOne($attributes) ?: new EntryCategory($attributes);
+
+        if($entryCategory->getIsNewRecord())
+        {
+            $entryCategory->populateRelation('product', $entry);
+            $entryCategory->populateRelation('category', $category);
+
+            $entryCategory->insert();
         }
 
-        /** @noinspection MissedViewInspection */
-        return $this->render('create', [
-            'entry' => $entry,
-        ]);
+        return $this->redirect(['index', 'product'=>$entry->id]);
+
     }
 
-    /**
-     * @param int $id
-     * @return string|\yii\web\Response
-     */
-    public function actionUpdate($id)
-    {
-        if (!$entry = EntryForm::findOne($id)) {
-            throw new NotFoundHttpException;
-        }
-
-        if ($entry->load(Yii::$app->getRequest()->post())) {
-
-            if ($entry->update()) {
-                $this->success(Yii::t('cms', 'The entry was updated.'));
-            }
-
-            if (!$entry->hasErrors()) {
-                return $this->redirect(['index', 'id' => $entry->parent_id]);
-            }
-        }
-
-        /** @noinspection MissedViewInspection */
-        return $this->render('update', [
-            'entry' => $entry,
-        ]);
-    }
 
     /**
-     * @param int $id
+     * @param int $entry
      * @return string|\yii\web\Response
      */
-    public function actionDelete($id)
+    public function actionDelete($entry)
     {
-        if (!$entry = Entry::findOne($id)) {
+        if (!$entry = Entry::findOne($entry)) {
             throw new NotFoundHttpException;
         }
 

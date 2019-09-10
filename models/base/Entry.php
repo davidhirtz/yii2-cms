@@ -26,11 +26,13 @@ use yii\helpers\Inflector;
  * @property string $description
  * @property string $content
  * @property DateTime $publish_date
+ * @property string $category_ids
  * @property int $section_count
  * @property int $asset_count
  * @property Section[] $sections
  * @property Asset[] $assets
  * @property  \davidhirtz\yii2\cms\models\Entry $entry
+ * @property  \davidhirtz\yii2\cms\models\EntryCategory $entryCategory
  * @method static \davidhirtz\yii2\cms\models\Entry findOne($condition)
  */
 class Entry extends ActiveRecord
@@ -109,6 +111,23 @@ class Entry extends ActiveRecord
     }
 
     /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getEntryCategory()
+    {
+        return $this->hasOne(EntryCategory::class, ['entry_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+//    public function getCategories()
+//    {
+//        return $this->hasMany(\davidhirtz\yii2\cms\models\Category::class, ['id' => 'category_id'])
+//            ->viaTable(EntryCategory::tableName(), ['entry_id' => 'id']);
+//    }
+
+    /**
      * @return SectionQuery
      */
     public function getSections(): SectionQuery
@@ -185,6 +204,22 @@ class Entry extends ActiveRecord
     {
         $this->section_count = $this->getSections()->count();
         return $this->update(false);
+    }
+
+    /**
+     * @return array
+     */
+    public function getCategoryIds(): array
+    {
+        return array_filter(explode(',', $this->category_ids));
+    }
+
+    /**
+     * @return int
+     */
+    public function getCategoryCount(): int
+    {
+        return count($this->getCategoryIds());
     }
 
     /**

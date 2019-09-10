@@ -3,20 +3,28 @@
 namespace davidhirtz\yii2\cms\modules\admin\data\base;
 
 use davidhirtz\yii2\cms\models\queries\EntryQuery;
+use davidhirtz\yii2\cms\modules\admin\models\forms\CategoryForm;
 use davidhirtz\yii2\cms\modules\admin\models\forms\EntryForm;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
+use davidhirtz\yii2\skeleton\db\ActiveQuery;
 use yii\data\ActiveDataProvider;
 use yii\data\Sort;
 
 /**
  * Class EntryActiveDataProvider.
  * @package davidhirtz\yii2\cms\modules\admin\data\base
+ * @see \davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider
  *
  * @property EntryQuery $query
  */
 class EntryActiveDataProvider extends ActiveDataProvider
 {
     use ModuleTrait;
+
+    /**
+     * @var CategoryForm
+     */
+    public $category;
 
     /**
      * @var EntryForm
@@ -53,6 +61,14 @@ class EntryActiveDataProvider extends ActiveDataProvider
 
         if ($this->getModule()->defaultEntryOrderBy) {
             $this->query->orderBy($this->getModule()->defaultEntryOrderBy);
+        }
+
+        if ($this->category) {
+            $this->query->orderBy($this->category->getEntryOrderBy())->innerJoinWith([
+                'entryCategory' => function (ActiveQuery $query) {
+                    $query->onCondition(['category_id' => $this->category->id]);
+                }
+            ]);
         }
 
         if ($this->type && isset(EntryForm::getTypes()[$this->type])) {

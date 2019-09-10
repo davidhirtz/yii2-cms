@@ -2,11 +2,10 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\controllers;
 
-use davidhirtz\yii2\cms\modules\admin\models\forms\CategoryForm;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
-use davidhirtz\yii2\cms\models\Entry;
-use davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider;
-use davidhirtz\yii2\cms\modules\admin\models\forms\EntryForm;
+use davidhirtz\yii2\cms\models\Category;
+use davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider;
+use davidhirtz\yii2\cms\modules\admin\models\forms\CategoryForm;
 use davidhirtz\yii2\skeleton\web\Controller;
 use Yii;
 use yii\filters\AccessControl;
@@ -15,10 +14,10 @@ use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
 
 /**
- * Class EntryController.
+ * Class CategoryController.
  * @package davidhirtz\yii2\cms\modules\admin\controllers
  */
-class EntryController extends Controller
+class CategoryController extends Controller
 {
     use ModuleTrait;
 
@@ -51,18 +50,14 @@ class EntryController extends Controller
 
     /**
      * @param int $id
-     * @param int $category
-     * @param int $type
      * @param string $q
      * @return string
      */
-    public function actionIndex($id = null, $category = null, $type = null, $q = null)
+    public function actionIndex($id = null, $q = null)
     {
-        $provider = new EntryActiveDataProvider([
-            'category' => $category ? CategoryForm::findOne($category) : null,
-            'entry' => $id ? EntryForm::findOne($id) : null,
+        $provider = new CategoryActiveDataProvider([
+            'category' => $id ? CategoryForm::findOne($id) : null,
             'searchString' => $q,
-            'type' => $type,
         ]);
 
         /** @noinspection MissedViewInspection */
@@ -73,26 +68,21 @@ class EntryController extends Controller
 
     /**
      * @param int $id
-     * @param int $type
      * @return string|\yii\web\Response
      */
-    public function actionCreate($id = null, $type = null)
+    public function actionCreate($id = null)
     {
-        $entry = new EntryForm;
-        $entry->type = $type;
+        $category = new CategoryForm;
+        $category->parent_id = $id;
 
-        if (static::getModule()->enabledNestedEntries) {
-            $entry->parent_id = $id;
-        }
-
-        if ($entry->load(Yii::$app->getRequest()->post()) && $entry->insert()) {
-            $this->success(Yii::t('cms', 'The entry was created.'));
-            return $this->redirect(['update', 'id' => $entry->id]);
+        if ($category->load(Yii::$app->getRequest()->post()) && $category->insert()) {
+            $this->success(Yii::t('cms', 'The category was created.'));
+            return $this->redirect(['update', 'id' => $category->id]);
         }
 
         /** @noinspection MissedViewInspection */
         return $this->render('create', [
-            'entry' => $entry,
+            'category' => $category,
         ]);
     }
 
@@ -102,24 +92,24 @@ class EntryController extends Controller
      */
     public function actionUpdate($id)
     {
-        if (!$entry = EntryForm::findOne($id)) {
+        if (!$category = CategoryForm::findOne($id)) {
             throw new NotFoundHttpException;
         }
 
-        if ($entry->load(Yii::$app->getRequest()->post())) {
+        if ($category->load(Yii::$app->getRequest()->post())) {
 
-            if ($entry->update()) {
-                $this->success(Yii::t('cms', 'The entry was updated.'));
+            if ($category->update()) {
+                $this->success(Yii::t('cms', 'The category was updated.'));
             }
 
-            if (!$entry->hasErrors()) {
-                return $this->redirect(['index', 'id' => $entry->parent_id]);
+            if (!$category->hasErrors()) {
+                return $this->redirect(['index', 'id' => $category->parent_id]);
             }
         }
 
         /** @noinspection MissedViewInspection */
         return $this->render('update', [
-            'entry' => $entry,
+            'category' => $category,
         ]);
     }
 
@@ -129,29 +119,36 @@ class EntryController extends Controller
      */
     public function actionDelete($id)
     {
-        if (!$entry = Entry::findOne($id)) {
+        if (!$category = Category::findOne($id)) {
             throw new NotFoundHttpException;
         }
 
-        if ($entry->delete()) {
-            $this->success(Yii::t('cms', 'The entry was deleted.'));
+        if ($category->delete()) {
+            $this->success(Yii::t('cms', 'The category was deleted.'));
             return $this->redirect(['index']);
         }
 
-        $errors = $entry->getFirstErrors();
+        $errors = $category->getFirstErrors();
         throw new ServerErrorHttpException(reset($errors));
     }
 
     /**
      * @param int $id
      */
-    public function actionOrder($id = null)
+    public function actionOrder($id=null)
     {
-        $entries = Entry::find()->select(['id', 'position'])
-            ->filterWhere(['parent_id' => $id])
-            ->orderBy(['position' => SORT_ASC])
-            ->all();
+        $order=array_flip(Yii::$app->getRequest()->post('category'));
+        $transaction=Yii::$app->getDb()->beginTransaction();
 
-        Entry::updatePosition($entries, array_flip(Yii::$app->getRequest()->post('entry')));
+        try
+        {
+            Category::rebuildNestedTree(Category::findOne($id), $order);
+            $transaction->commit();
+        }
+        catch(\Exception $exception)
+        {
+            $transaction->rollBack();
+            throw $exception;
+        }
     }
 }

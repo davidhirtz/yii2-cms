@@ -4,6 +4,8 @@ namespace davidhirtz\yii2\cms\modules\admin\widgets\grid\base;
 
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider;
+use davidhirtz\yii2\cms\modules\admin\models\forms\CategoryForm;
+use davidhirtz\yii2\cms\modules\admin\widgets\CategoryTrait;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\cms\modules\admin\models\forms\EntryForm;
 use davidhirtz\yii2\skeleton\helpers\Html;
@@ -22,12 +24,17 @@ use yii\helpers\Url;
  */
 class EntryGridView extends GridView
 {
-    use ModuleTrait;
+    use ModuleTrait, CategoryTrait;
 
     /**
      * @var bool
      */
     public $showUrl = true;
+
+    /**
+     * @var bool
+     */
+    public $showCategoryDropdown = true;
 
     /**
      * @var bool
@@ -57,12 +64,23 @@ class EntryGridView extends GridView
      */
     public function init()
     {
-        if ($this->dataProvider->entry) {
+        if ($this->dataProvider->category) {
+            $this->orderRoute = ['entry-category/order', 'category' => $this->dataProvider->category->id];
+
+        } elseif ($this->dataProvider->entry) {
             $this->orderRoute = ['order', 'id' => $this->dataProvider->entry->id];
         }
 
+        if ($this->showCategoryDropdown) {
+            $this->showCategoryDropdown = static::getModule()->enableCategories;
+        }
+
+        if (static::getModule()->enableCategories && $this->dataProvider->type && isset(EntryForm::getTypes()[$this->dataProvider->type]['showCategoryDropdown'])) {
+            $this->showCategoryDropdown = EntryForm::getTypes()[$this->dataProvider->type]['showCategoryDropdown'];
+        }
+
         if ($this->showTypeDropdown) {
-            $this->showTypeDropdown = count(Entry::getTypes()) > 1;
+            $this->showTypeDropdown = count(EntryForm::getTypes()) > 1;
         }
 
         $this->initHeader();
@@ -85,11 +103,16 @@ class EntryGridView extends GridView
                         'visible' => $this->showTypeDropdown,
                     ],
                     [
+                        'content' => $this->categoryDropdown(),
+                        'options' => ['class' => 'col-12 col-md-3'],
+                        'visible' => $this->showCategoryDropdown,
+                    ],
+                    [
                         'content' => $this->getSearchInput(),
                         'options' => ['class' => 'col-12 col-md-6'],
                     ],
                     'options' => [
-                        'class' => $this->showTypeDropdown ? 'justify-content-between' : 'justify-content-end',
+                        'class' => $this->showCategoryDropdown || $this->showTypeDropdown ? 'justify-content-between' : 'justify-content-end',
                     ],
                 ],
             ];
@@ -257,6 +280,32 @@ class EntryGridView extends GridView
                 return Html::buttons($buttons);
             }
         ];
+    }
+
+    /**
+     * @return string
+     */
+    public function categoryDropdown()
+    {
+        if ($categories = static::getCategories()) {
+            $config = [
+                'label' => $this->dataProvider->category ? (Yii::t('cms', 'Category') . ': ' . Html::tag('strong', Html::encode($this->dataProvider->category->name))) : Yii::t('cms', 'Categories'),
+                'paramName' => 'category',
+            ];
+
+            $categories = CategoryForm::indentNestedTree($categories, CategoryForm::instance()->getI18nAttributeName('name'));
+
+            foreach ($categories as $id => $name) {
+                $config['items'][] = [
+                    'label' => $name,
+                    'url' => Url::current(['category' => $id, 'page' => null]),
+                ];
+            }
+
+            return ButtonDropdown::widget($config);
+        }
+
+        return null;
     }
 
     /**

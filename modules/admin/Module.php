@@ -41,13 +41,21 @@ class Module extends \yii\base\Module
      * @var array
      */
     protected $defaultControllerMap = [
+        'asset' => [
+            'class' => 'davidhirtz\yii2\cms\modules\admin\controllers\AssetController',
+            'viewPath' => '@cms/modules/admin/views/asset',
+        ],
+        'category' => [
+            'class' => 'davidhirtz\yii2\cms\modules\admin\controllers\CategoryController',
+            'viewPath' => '@cms/modules/admin/views/category',
+        ],
         'entry' => [
             'class' => 'davidhirtz\yii2\cms\modules\admin\controllers\EntryController',
             'viewPath' => '@cms/modules/admin/views/entry',
         ],
-        'asset' => [
-            'class' => 'davidhirtz\yii2\cms\modules\admin\controllers\AssetController',
-            'viewPath' => '@cms/modules/admin/views/asset',
+        'entry-category' => [
+            'class' => 'davidhirtz\yii2\cms\modules\admin\controllers\EntryCategoryController',
+            'viewPath' => '@cms/modules/admin/views/entry-category',
         ],
         'section' => [
             'class' => 'davidhirtz\yii2\cms\modules\admin\controllers\SectionController',
@@ -60,15 +68,19 @@ class Module extends \yii\base\Module
      */
     public function init()
     {
+        if (!$this->name) {
+            $this->name = Yii::t('cms', 'Content');
+        }
+
         if (!Yii::$app->getRequest()->getIsConsoleRequest()) {
             if (Yii::$app->getUser()->can('author')) {
                 if (!$this->navbarItems) {
                     $this->navbarItems = [
                         [
-                            'label' => $this->name ?: Yii::t('cms', 'Entries'),
+                            'label' => $this->name,
                             'icon' => 'book',
                             'url' => $this->url,
-                            'active' => ['admin/entry', 'admin/section', 'cms/'],
+                            'active' => ['admin/category', 'admin/entry', 'admin/entry-category', 'admin/section', 'cms/'],
                         ]
                     ];
                 }

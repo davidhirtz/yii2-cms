@@ -27,14 +27,6 @@ use yii\helpers\Inflector;
 class Section extends ActiveRecord
 {
     /**
-     * @return EntryQuery
-     */
-    public function getEntry(): EntryQuery
-    {
-        return $this->hasOne(Entry::class, ['id' => 'entry_id']);
-    }
-
-    /**
      * @inheritdoc
      */
     public function rules(): array
@@ -143,6 +135,14 @@ class Section extends ActiveRecord
             ->orderBy(['position' => SORT_ASC])
             ->indexBy('id')
             ->inverseOf('section');
+    }
+
+    /**
+     * @return EntryQuery
+     */
+    public function getEntry(): EntryQuery
+    {
+        return $this->hasOne(Entry::class, ['id' => 'entry_id']);
     }
 
     /**

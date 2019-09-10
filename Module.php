@@ -13,32 +13,43 @@ class Module extends \yii\base\Module
     use ModuleTrait;
 
     /**
-     * @var bool
+     * @var bool whether entries should be categorized
      */
     public $enableCategories = false;
 
     /**
+     * @var bool whether entries should automatically inherit parent categories
+     */
+    public $inheritCategories = true;
+
+    /**
+     * @var int duration in seconds for the caching the Category::getCategories() category query
+     */
+    public $categoryCachedQueryDuration = 60;
+
+    /**
+     * @todo currently not fully implemented
      * @var bool
      */
     public $enabledNestedEntries = false;
 
     /**
-     * @var bool
+     * @var bool whether entries should have sections
      */
     public $enableSections = true;
 
     /**
-     * @var bool
+     * @var bool whether entries should have assets
      */
     public $enableEntryAssets = true;
 
     /**
-     * @var bool
+     * @var bool whether sections should have assets
      */
     public $enableSectionAssets = true;
 
     /**
-     * @var array
+     * @var array the default sort when neither type nor category apply an order
      */
     public $defaultEntryOrderBy;
 

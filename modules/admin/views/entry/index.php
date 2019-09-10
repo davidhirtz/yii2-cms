@@ -4,7 +4,7 @@
  * @see \davidhirtz\yii2\cms\modules\admin\controllers\EntryController::actionIndex()
  *
  * @var \davidhirtz\yii2\skeleton\web\View $this
- * @var \yii\data\ActiveDataProvider $provider
+ * @var \davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider $provider
  */
 
 use davidhirtz\yii2\cms\modules\admin\widgets\grid\EntryGridView;
