@@ -75,7 +75,7 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
                     ],
                 ];
             }
-        } else {
+        } elseif ($this->showDefaultCategories) {
             $items[] = [
                 'label' => Yii::t('app', 'Entries'),
                 'url' => ['/admin/entry/index'],
