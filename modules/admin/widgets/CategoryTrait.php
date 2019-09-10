@@ -2,22 +2,22 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\widgets;
 
-use davidhirtz\yii2\cms\modules\admin\models\forms\CategoryForm;
+use davidhirtz\yii2\cms\models\Category;
 
 trait CategoryTrait{
 
     /**
-     * @var CategoryForm[]
+     * @var Category[]
      */
     protected static $_categories;
 
     /**
-     * @return CategoryForm[]
+     * @return Category[]
      */
     public static function getCategories()
     {
         if (static::$_categories === null) {
-            static::$_categories = CategoryForm::find()
+            static::$_categories = Category::find()
                 ->replaceI18nAttributes()
                 ->all();
         }

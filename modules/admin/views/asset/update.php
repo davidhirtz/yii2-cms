@@ -4,7 +4,7 @@
  * @see \davidhirtz\yii2\cms\modules\admin\controllers\AssetController::actionUpdate()
  *
  * @var \davidhirtz\yii2\skeleton\web\View $this
- * @var \davidhirtz\yii2\cms\modules\admin\models\forms\AssetForm $asset
+ * @var \davidhirtz\yii2\cms\models\Asset $asset
  */
 
 $this->setTitle(Yii::t('cms', 'Edit Asset'));

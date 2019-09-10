@@ -4,7 +4,7 @@
  * @see \davidhirtz\yii2\cms\modules\admin\controllers\SectionController::actionUpdate()
  *
  * @var \davidhirtz\yii2\skeleton\web\View $this
- * @var \davidhirtz\yii2\cms\modules\admin\models\forms\SectionForm $section
+ * @var \davidhirtz\yii2\cms\models\Section $section
  */
 
 $this->setTitle(Yii::t('cms', 'Update Section'));

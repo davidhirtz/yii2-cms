@@ -4,7 +4,7 @@
  * @see \davidhirtz\yii2\cms\modules\admin\controllers\CategoryController::actionUpdate()
  *
  * @var \davidhirtz\yii2\skeleton\web\View $this
- * @var \davidhirtz\yii2\cms\modules\admin\models\forms\CategoryForm $category
+ * @var \davidhirtz\yii2\cms\models\Category $category
  */
 
 use davidhirtz\yii2\cms\modules\admin\widgets\forms\CategoryActiveForm;

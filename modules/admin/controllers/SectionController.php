@@ -6,8 +6,8 @@ use davidhirtz\yii2\cms\models\queries\AssetQuery;
 use davidhirtz\yii2\cms\models\queries\SectionQuery;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\cms\models\Section;
-use davidhirtz\yii2\cms\modules\admin\models\forms\EntryForm;
-use davidhirtz\yii2\cms\modules\admin\models\forms\SectionForm;
+use davidhirtz\yii2\cms\models\Entry;
+use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\skeleton\db\ActiveQuery;
 use davidhirtz\yii2\skeleton\web\Controller;
 use Yii;
@@ -58,7 +58,7 @@ class SectionController extends Controller
      */
     public function actionIndex($entry)
     {
-        $query = EntryForm::find()
+        $query = Entry::find()
             ->where(['id' => $entry])
             ->with([
                 'sections' => function (SectionQuery $query) {
@@ -87,7 +87,7 @@ class SectionController extends Controller
      */
     public function actionCreate($entry)
     {
-        $section = new SectionForm([
+        $section = new Section([
             'entry_id' => $entry,
         ]);
 
@@ -112,7 +112,7 @@ class SectionController extends Controller
      */
     public function actionUpdate($id)
     {
-        if (!$section = SectionForm::findOne($id)) {
+        if (!$section = Section::findOne($id)) {
             throw new NotFoundHttpException;
         }
 

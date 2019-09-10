@@ -98,7 +98,11 @@ class Category extends ActiveRecord
      */
     public function beforeValidate(): bool
     {
-        if ($this->customSlugBehavior) {
+        if (!$this->slug) {
+            $this->slug = $this->name;
+        }
+
+        if (!$this->customSlugBehavior) {
             $this->slug = Inflector::slug($this->slug);
         }
 

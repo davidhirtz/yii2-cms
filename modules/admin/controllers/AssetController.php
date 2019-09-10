@@ -2,10 +2,10 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\controllers;
 
-use davidhirtz\yii2\cms\modules\admin\models\forms\EntryForm;
-use davidhirtz\yii2\cms\modules\admin\models\forms\SectionForm;
+use davidhirtz\yii2\cms\models\Entry;
+use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
-use davidhirtz\yii2\cms\modules\admin\models\forms\AssetForm;
+use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\media\modules\admin\data\FileActiveDataProvider;
 use davidhirtz\yii2\media\modules\admin\models\forms\FileForm;
 use davidhirtz\yii2\skeleton\web\Controller;
@@ -61,11 +61,11 @@ class AssetController extends Controller
     public function actionIndex($entry = null, $section = null, $folder = null, $type = null, $q = null)
     {
         if ($section) {
-            if (!$parent = SectionForm::findOne($section)) {
+            if (!$parent = Section::findOne($section)) {
                 throw new NotFoundHttpException;
             }
 
-        } elseif (!$entry || !$parent = EntryForm::findOne($entry)) {
+        } elseif (!$entry || !$parent = Entry::findOne($entry)) {
             throw new NotFoundHttpException;
         }
 
@@ -100,7 +100,7 @@ class AssetController extends Controller
             }
         }
 
-        $asset = new AssetForm;
+        $asset = new Asset;
         $asset->entry_id = $entry;
         $asset->section_id = $section;
         $asset->file_id = $file->id;
@@ -124,7 +124,7 @@ class AssetController extends Controller
      */
     public function actionUpdate($id)
     {
-        if (!$asset = AssetForm::findOne($id)) {
+        if (!$asset = Asset::findOne($id)) {
             throw new NotFoundHttpException;
         }
 
@@ -151,7 +151,7 @@ class AssetController extends Controller
      */
     public function actionDelete($id)
     {
-        if (!$asset = AssetForm::findOne($id)) {
+        if (!$asset = Asset::findOne($id)) {
             throw new NotFoundHttpException;
         }
 
@@ -176,20 +176,20 @@ class AssetController extends Controller
     public function actionOrder($entry = null, $section = null)
     {
         if ($entry || $section) {
-            $asset = AssetForm::find()->select(['id', 'position'])
+            $asset = Asset::find()->select(['id', 'position'])
                 ->andWhere($entry ? ['entry_id' => $entry, 'section_id' => null] : ['section_id' => $section])
                 ->orderBy(['position' => SORT_ASC])
                 ->all();
 
-            AssetForm::updatePosition($asset, array_flip(Yii::$app->getRequest()->post('asset')));
+            Asset::updatePosition($asset, array_flip(Yii::$app->getRequest()->post('asset')));
         }
     }
 
     /**
-     * @param AssetForm $asset
+     * @param Asset $asset
      * @return \yii\web\Response
      */
-    private function redirectToParent(AssetForm $asset)
+    private function redirectToParent(Asset $asset)
     {
         return $this->redirect(($asset->section_id ? ['/admin/section/update', 'id' => $asset->section_id] : ['/admin/entry/update', 'id' => $asset->entry_id]) + ['#' => 'assets']);
     }

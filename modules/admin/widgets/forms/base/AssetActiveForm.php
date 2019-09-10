@@ -2,7 +2,7 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\widgets\forms\base;
 
-use davidhirtz\yii2\cms\modules\admin\models\forms\AssetForm;
+use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm;
 use davidhirtz\yii2\skeleton\widgets\forms\CKEditor;
 use yii\helpers\ArrayHelper;
@@ -12,7 +12,7 @@ use yii\helpers\Html;
  * Class AssetActiveForm.
  * @package davidhirtz\yii2\cms\modules\admin\widgets\forms\base
  *
- * @property AssetForm $model
+ * @property Asset $model
  */
 class AssetActiveForm extends ActiveForm
 {
@@ -30,8 +30,8 @@ class AssetActiveForm extends ActiveForm
             $this->fields = [
                 ['thumbnail'],
                 ['-'],
-                ['status', 'dropDownList', ArrayHelper::getColumn(AssetForm::getStatuses(), 'name')],
-                ['type', 'dropDownList', ArrayHelper::getColumn(AssetForm::getTypes(), 'name')],
+                ['status', 'dropDownList', ArrayHelper::getColumn(Asset::getStatuses(), 'name')],
+                ['type', 'dropDownList', ArrayHelper::getColumn(Asset::getTypes(), 'name')],
                 ['name'],
                 ['content', ['options' => ['style' => !$this->model->contentType ? 'display:none' : null]], $this->model->contentType === 'html' ? CKEditor::class : 'textarea'],
                 ['alt_text'],

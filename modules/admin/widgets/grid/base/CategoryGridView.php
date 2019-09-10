@@ -4,7 +4,7 @@ namespace davidhirtz\yii2\cms\modules\admin\widgets\grid\base;
 
 use davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
-use davidhirtz\yii2\cms\modules\admin\models\forms\CategoryForm;
+use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grid\GridView;
 use davidhirtz\yii2\timeago\Timeago;
@@ -125,7 +125,7 @@ class CategoryGridView extends GridView
     {
         return [
             'contentOptions' => ['class' => 'text-center'],
-            'content' => function (CategoryForm $category) {
+            'content' => function (Category $category) {
                 return FAS::icon($category->getStatusIcon(), [
                     'data-toggle' => 'tooltip',
                     'title' => $category->getStatusName()
@@ -141,8 +141,8 @@ class CategoryGridView extends GridView
     {
         return [
             'attribute' => 'type',
-            'visible' => count(CategoryForm::getTypes()) > 1,
-            'content' => function (CategoryForm $category) {
+            'visible' => count(Category::getTypes()) > 1,
+            'content' => function (Category $category) {
                 return Html::a($category->getTypeName(), ['update', 'id' => $category->id]);
             }
         ];
@@ -155,7 +155,7 @@ class CategoryGridView extends GridView
     {
         return [
             'attribute' => $this->getModel()->getI18nAttributeName('name'),
-            'content' => function (CategoryForm $category) {
+            'content' => function (Category $category) {
                 $html = Html::markKeywords(Html::encode($category->getI18nAttribute('name')), $this->search);
                 $html = Html::tag('strong', Html::a($html, ['update', 'id' => $category->id]));
 
@@ -178,7 +178,7 @@ class CategoryGridView extends GridView
             'attribute' => 'branchCount',
             'headerOptions' => ['class' => 'd-none d-md-table-cell text-center'],
             'contentOptions' => ['class' => 'd-none d-md-table-cell text-center'],
-            'content' => function (CategoryForm $category) {
+            'content' => function (Category $category) {
                 return Html::a(Yii::$app->getFormatter()->asInteger($category->getBranchCount()), ['index', 'id' => $category->id], ['class' => 'badge']);
             }
         ];
@@ -194,7 +194,7 @@ class CategoryGridView extends GridView
             'headerOptions' => ['class' => 'd-none d-md-table-cell text-center'],
             'contentOptions' => ['class' => 'd-none d-md-table-cell text-center'],
             'visible' => static::getModule()->enableSections,
-            'content' => function (CategoryForm $category) {
+            'content' => function (Category $category) {
                 return Html::a(Yii::$app->getFormatter()->asInteger($category->entry_count), ['entry/index', 'category' => $category->id], ['class' => 'badge']);
             }
         ];
@@ -209,7 +209,7 @@ class CategoryGridView extends GridView
             'attribute' => 'updated_at',
             'headerOptions' => ['class' => 'd-none d-lg-table-cell'],
             'contentOptions' => ['class' => 'd-none d-lg-table-cell text-nowrap'],
-            'content' => function (CategoryForm $category) {
+            'content' => function (Category $category) {
                 return $this->dateFormat ? $category->updated_at->format($this->dateFormat) : Timeago::tag($category->updated_at);
             }
         ];
@@ -222,7 +222,7 @@ class CategoryGridView extends GridView
     {
         return [
             'contentOptions' => ['class' => 'text-right text-nowrap'],
-            'content' => function (CategoryForm $category) {
+            'content' => function (Category $category) {
                 $buttons = [];
 
                 if ($this->getIsSortedByPosition()) {
@@ -236,7 +236,7 @@ class CategoryGridView extends GridView
     }
 
     /**
-     * @param CategoryForm $category
+     * @param Category $category
      * @return string
      */
     public function getUrl($category)
@@ -246,10 +246,10 @@ class CategoryGridView extends GridView
     }
 
     /**
-     * @return CategoryForm
+     * @return Category
      */
     public function getModel()
     {
-        return CategoryForm::instance();
+        return Category::instance();
     }
 }

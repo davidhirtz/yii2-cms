@@ -2,10 +2,10 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\widgets\grid\base;
 
-use davidhirtz\yii2\cms\modules\admin\models\forms\EntryForm;
-use davidhirtz\yii2\cms\modules\admin\models\forms\SectionForm;
+use davidhirtz\yii2\cms\models\Entry;
+use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
-use davidhirtz\yii2\cms\modules\admin\models\forms\AssetForm;
+use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\media\assets\AdminAsset;
 use davidhirtz\yii2\media\modules\admin\widgets\forms\FileUpload;
 use davidhirtz\yii2\skeleton\helpers\Html;
@@ -21,14 +21,14 @@ use yii\helpers\Url;
  * @package davidhirtz\yii2\cms\modules\admin\widgets\grid\base
  *
  * @property ActiveDataProvider $dataProvider
- * @method AssetForm getModel()
+ * @method Asset getModel()
  */
 class AssetGridView extends GridView
 {
     use ModuleTrait;
 
     /**
-     * @var EntryForm|SectionForm
+     * @var Entry|Section
      */
     public $parent;
 
@@ -57,7 +57,7 @@ class AssetGridView extends GridView
                 'sort' => false,
             ]);
 
-            $this->setModel(new AssetForm);
+            $this->setModel(new Asset);
         }
 
         if (Yii::$app->getUser()->can('upload')) {
@@ -125,7 +125,7 @@ class AssetGridView extends GridView
     {
         return [
             'contentOptions' => ['class' => 'text-center'],
-            'content' => function (AssetForm $asset) {
+            'content' => function (Asset $asset) {
                 return FAS::icon($asset->getStatusIcon(), [
                     'data-toggle' => 'tooltip',
                     'title' => $asset->getStatusName()
@@ -141,7 +141,7 @@ class AssetGridView extends GridView
     {
         return [
             'headerOptions' => ['style' => 'width:150px'],
-            'content' => function (AssetForm $asset) {
+            'content' => function (Asset $asset) {
                 return !$asset->file->hasPreview() ? '' : Html::tag('div', '', [
                     'style' => 'background-image:url(' . ($asset->file->getTransformationUrl('admin') ?: $asset->file->getUrl()) . ');',
                     'class' => 'thumb',
@@ -157,8 +157,8 @@ class AssetGridView extends GridView
     {
         return [
             'attribute' => 'type',
-            'visible' => count(AssetForm::getTypes()) > 1,
-            'content' => function (AssetForm $asset) {
+            'visible' => count(Asset::getTypes()) > 1,
+            'content' => function (Asset $asset) {
                 return Html::a($asset->getTypeName(), ['cms/asset/update', 'id' => $asset->id]);
             }
         ];
@@ -171,7 +171,7 @@ class AssetGridView extends GridView
     {
         return [
             'attribute' => $this->getModel()->getI18nAttributeName('name'),
-            'content' => function (AssetForm $asset) {
+            'content' => function (Asset $asset) {
 
                 if ($name = $asset->getI18nAttribute('name')) {
                     return Html::tag('strong', Html::a($name, ['cms/asset/update', 'id' => $asset->id]));
@@ -189,7 +189,7 @@ class AssetGridView extends GridView
     {
         return [
             'contentOptions' => ['class' => 'text-right text-nowrap'],
-            'content' => function (AssetForm $asset) {
+            'content' => function (Asset $asset) {
                 $buttons = [];
 
                 if ($this->dataProvider->getCount() > 1) {
@@ -219,6 +219,6 @@ class AssetGridView extends GridView
      */
     protected function getRoute($action, $params = [])
     {
-        return array_merge([$action, ($this->parent instanceof EntryForm ? 'entry' : 'section') => $this->parent->id], $params);
+        return array_merge([$action, ($this->parent instanceof Entry ? 'entry' : 'section') => $this->parent->id], $params);
     }
 }

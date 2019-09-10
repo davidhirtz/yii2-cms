@@ -5,7 +5,6 @@ namespace davidhirtz\yii2\cms\modules\admin\controllers;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider;
-use davidhirtz\yii2\cms\modules\admin\models\forms\CategoryForm;
 use davidhirtz\yii2\skeleton\web\Controller;
 use Yii;
 use yii\filters\AccessControl;
@@ -56,7 +55,7 @@ class CategoryController extends Controller
     public function actionIndex($id = null, $q = null)
     {
         $provider = new CategoryActiveDataProvider([
-            'category' => $id ? CategoryForm::findOne($id) : null,
+            'category' => $id ? Category::findOne($id) : null,
             'searchString' => $q,
         ]);
 
@@ -72,7 +71,7 @@ class CategoryController extends Controller
      */
     public function actionCreate($id = null)
     {
-        $category = new CategoryForm;
+        $category = new Category;
         $category->parent_id = $id;
 
         if ($category->load(Yii::$app->getRequest()->post()) && $category->insert()) {
@@ -92,7 +91,7 @@ class CategoryController extends Controller
      */
     public function actionUpdate($id)
     {
-        if (!$category = CategoryForm::findOne($id)) {
+        if (!$category = Category::findOne($id)) {
             throw new NotFoundHttpException;
         }
 

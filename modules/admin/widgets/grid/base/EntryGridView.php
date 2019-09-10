@@ -4,10 +4,9 @@ namespace davidhirtz\yii2\cms\modules\admin\widgets\grid\base;
 
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider;
-use davidhirtz\yii2\cms\modules\admin\models\forms\CategoryForm;
+use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\modules\admin\widgets\CategoryTrait;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
-use davidhirtz\yii2\cms\modules\admin\models\forms\EntryForm;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grid\GridView;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\ButtonDropdown;
@@ -75,12 +74,12 @@ class EntryGridView extends GridView
             $this->showCategoryDropdown = static::getModule()->enableCategories;
         }
 
-        if (static::getModule()->enableCategories && $this->dataProvider->type && isset(EntryForm::getTypes()[$this->dataProvider->type]['showCategoryDropdown'])) {
-            $this->showCategoryDropdown = EntryForm::getTypes()[$this->dataProvider->type]['showCategoryDropdown'];
+        if (static::getModule()->enableCategories && $this->dataProvider->type && isset(Entry::getTypes()[$this->dataProvider->type]['showCategoryDropdown'])) {
+            $this->showCategoryDropdown = Entry::getTypes()[$this->dataProvider->type]['showCategoryDropdown'];
         }
 
         if ($this->showTypeDropdown) {
-            $this->showTypeDropdown = count(EntryForm::getTypes()) > 1;
+            $this->showTypeDropdown = count(Entry::getTypes()) > 1;
         }
 
         $this->initHeader();
@@ -152,7 +151,7 @@ class EntryGridView extends GridView
     {
         return [
             'contentOptions' => ['class' => 'text-center'],
-            'content' => function (EntryForm $entry) {
+            'content' => function (Entry $entry) {
                 return FAS::icon($entry->getStatusIcon(), [
                     'data-toggle' => 'tooltip',
                     'title' => $entry->getStatusName()
@@ -166,14 +165,14 @@ class EntryGridView extends GridView
      */
     public function typeColumn()
     {
-        if ($this->dataProvider->type || !EntryForm::getTypes()) {
+        if ($this->dataProvider->type || !Entry::getTypes()) {
             return false;
         }
 
         return [
             'attribute' => 'type',
-            'visible' => count(EntryForm::getTypes()) > 1,
-            'content' => function (EntryForm $entry) {
+            'visible' => count(Entry::getTypes()) > 1,
+            'content' => function (Entry $entry) {
                 return Html::a($entry->getTypeName(), ['update', 'id' => $entry->id]);
             }
         ];
@@ -186,7 +185,7 @@ class EntryGridView extends GridView
     {
         return [
             'attribute' => $this->getModel()->getI18nAttributeName('name'),
-            'content' => function (EntryForm $entry) {
+            'content' => function (Entry $entry) {
                 $html = Html::markKeywords(Html::encode($entry->getI18nAttribute('name')), $this->search);
                 $html = Html::tag('strong', Html::a($html, ['update', 'id' => $entry->id]));
 
@@ -210,7 +209,7 @@ class EntryGridView extends GridView
             'headerOptions' => ['class' => 'd-none d-md-table-cell text-center'],
             'contentOptions' => ['class' => 'd-none d-md-table-cell text-center'],
             'visible' => static::getModule()->enableSections,
-            'content' => function (EntryForm $entry) {
+            'content' => function (Entry $entry) {
                 return Html::a(Yii::$app->getFormatter()->asInteger($entry->section_count), ['section/index', 'entry' => $entry->id], ['class' => 'badge']);
             }
         ];
@@ -226,7 +225,7 @@ class EntryGridView extends GridView
             'headerOptions' => ['class' => 'd-none d-md-table-cell text-center'],
             'contentOptions' => ['class' => 'd-none d-md-table-cell text-center'],
             'visible' => static::getModule()->enableEntryAssets,
-            'content' => function (EntryForm $entry) {
+            'content' => function (Entry $entry) {
                 return Html::a(Yii::$app->getFormatter()->asInteger($entry->asset_count), ['update', 'id' => $entry->id, '#' => 'assets'], ['class' => 'badge']);
             }
         ];
@@ -241,7 +240,7 @@ class EntryGridView extends GridView
             'attribute' => 'publish_date',
             'headerOptions' => ['class' => 'd-none d-lg-table-cell'],
             'contentOptions' => ['class' => 'd-none d-lg-table-cell text-nowrap'],
-            'content' => function (EntryForm $entry) {
+            'content' => function (Entry $entry) {
                 return $this->dateFormat ? $entry->publish_date->format($this->dateFormat) : Timeago::tag($entry->publish_date);
             }
         ];
@@ -256,7 +255,7 @@ class EntryGridView extends GridView
             'attribute' => 'updated_at',
             'headerOptions' => ['class' => 'd-none d-lg-table-cell'],
             'contentOptions' => ['class' => 'd-none d-lg-table-cell text-nowrap'],
-            'content' => function (EntryForm $entry) {
+            'content' => function (Entry $entry) {
                 return $this->dateFormat ? $entry->updated_at->format($this->dateFormat) : Timeago::tag($entry->updated_at);
             }
         ];
@@ -269,7 +268,7 @@ class EntryGridView extends GridView
     {
         return [
             'contentOptions' => ['class' => 'text-right text-nowrap'],
-            'content' => function (EntryForm $entry) {
+            'content' => function (Entry $entry) {
                 $buttons = [];
 
                 if ($this->getIsSortedByPosition()) {
@@ -293,7 +292,7 @@ class EntryGridView extends GridView
                 'paramName' => 'category',
             ];
 
-            $categories = CategoryForm::indentNestedTree($categories, CategoryForm::instance()->getI18nAttributeName('name'));
+            $categories = Category::indentNestedTree($categories, Category::instance()->getI18nAttributeName('name'));
 
             foreach ($categories as $id => $name) {
                 $config['items'][] = [
@@ -329,7 +328,7 @@ class EntryGridView extends GridView
     }
 
     /**
-     * @param EntryForm $entry
+     * @param Entry $entry
      * @return string
      */
     public function getUrl($entry)
@@ -339,10 +338,10 @@ class EntryGridView extends GridView
     }
 
     /**
-     * @return EntryForm
+     * @return Entry
      */
     public function getModel()
     {
-        return EntryForm::instance();
+        return Entry::instance();
     }
 }

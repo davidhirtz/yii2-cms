@@ -4,7 +4,7 @@ namespace davidhirtz\yii2\cms\modules\admin\widgets\grid\base;
 
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\cms\models\Entry;
-use davidhirtz\yii2\cms\modules\admin\models\forms\SectionForm;
+use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grid\GridView;
 use rmrevin\yii\fontawesome\FAS;
@@ -18,7 +18,7 @@ use yii\helpers\StringHelper;
  * @package davidhirtz\yii2\cms\modules\admin\widgets\grid\base
  *
  * @property ActiveDataProvider $dataProvider
- * @method SectionForm getModel()
+ * @method Section getModel()
  */
 class SectionGridView extends GridView
 {
@@ -52,7 +52,7 @@ class SectionGridView extends GridView
                 'sort' => false,
             ]);
 
-            $this->setModel(new SectionForm);
+            $this->setModel(new Section);
         }
 
         $this->orderRoute = ['order', 'entry' => $this->entry->id];
@@ -94,7 +94,7 @@ class SectionGridView extends GridView
     {
         return [
             'contentOptions' => ['class' => 'text-center'],
-            'content' => function (SectionForm $section) {
+            'content' => function (Section $section) {
                 return FAS::icon($section->getStatusIcon(), [
                     'data-toggle' => 'tooltip',
                     'title' => $section->getStatusName()
@@ -110,8 +110,8 @@ class SectionGridView extends GridView
     {
         return [
             'attribute' => 'type',
-            'visible' => count(SectionForm::getTypes()) > 1,
-            'content' => function (SectionForm $section) {
+            'visible' => count(Section::getTypes()) > 1,
+            'content' => function (Section $section) {
                 return Html::a($section->getTypeName(), ['update', 'id' => $section->id]);
             }
         ];
@@ -126,7 +126,7 @@ class SectionGridView extends GridView
             'attribute' => $this->getModel()->getI18nAttributeName('name'),
             'headerOptions' => ['class' => 'd-none d-md-table-cell'],
             'contentOptions' => ['class' => 'd-none d-md-table-cell'],
-            'content' => function (SectionForm $section) {
+            'content' => function (Section $section) {
                 $text = $section->getI18nAttribute('name');
                 $text = $text ? Html::tag('strong', $text) : null;
                 $cssClass = null;
@@ -172,7 +172,7 @@ class SectionGridView extends GridView
             'headerOptions' => ['class' => 'd-none d-md-table-cell text-center'],
             'contentOptions' => ['class' => 'd-none d-md-table-cell text-center'],
             'visible' => static::getModule()->enableSectionAssets,
-            'content' => function (SectionForm $section) {
+            'content' => function (Section $section) {
                 return Html::a(Yii::$app->getFormatter()->asInteger($section->asset_count), ['update', 'id' => $section->id, '#' => 'assets'], ['class' => 'badge']);
             }
         ];
@@ -185,7 +185,7 @@ class SectionGridView extends GridView
     {
         return [
             'contentOptions' => ['class' => 'text-right text-nowrap'],
-            'content' => function (SectionForm $section) {
+            'content' => function (Section $section) {
                 $buttons = [];
 
                 if ($this->dataProvider->getCount() > 1) {

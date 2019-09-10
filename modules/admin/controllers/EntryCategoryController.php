@@ -3,10 +3,9 @@
 namespace davidhirtz\yii2\cms\modules\admin\controllers;
 
 use davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider;
-use davidhirtz\yii2\cms\modules\admin\models\forms\CategoryForm;
+use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\cms\models\Entry;
-use davidhirtz\yii2\cms\modules\admin\models\forms\EntryForm;
 use davidhirtz\yii2\skeleton\web\Controller;
 use Yii;
 use yii\filters\AccessControl;
@@ -56,7 +55,7 @@ class EntryCategoryController extends Controller
      */
     public function actionIndex($entry = null, $q = null)
     {
-        if (!$entry = EntryForm::findOne($entry)) {
+        if (!$entry = Entry::findOne($entry)) {
             throw new NotFoundHttpException;
         }
 
@@ -78,7 +77,7 @@ class EntryCategoryController extends Controller
      */
     public function actionCreate($entry, $category)
     {
-        if(!($entry=EntryForm::findOne($entry)) || !($category=CategoryForm::findOne($category)))
+        if(!($entry=Entry::findOne($entry)) || !($category=Category::findOne($category)))
         {
             throw new NotFoundHttpException();
         }

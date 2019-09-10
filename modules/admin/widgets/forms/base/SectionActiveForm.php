@@ -1,7 +1,7 @@
 <?php
 namespace davidhirtz\yii2\cms\modules\admin\widgets\forms\base;
 
-use davidhirtz\yii2\cms\modules\admin\models\forms\SectionForm;
+use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm;
 use davidhirtz\yii2\skeleton\widgets\forms\CKEditor;
 use yii\helpers\ArrayHelper;
@@ -11,7 +11,7 @@ use yii\helpers\Url;
  * Class SectionActiveForm.
  * @package davidhirtz\yii2\cms\modules\admin\widgets\forms\base
  *
- * @property SectionForm $model
+ * @property Section $model
  */
 class SectionActiveForm extends ActiveForm
 {
@@ -27,8 +27,8 @@ class SectionActiveForm extends ActiveForm
     {
         if (!$this->fields) {
             $this->fields = [
-                ['status', 'dropDownList', ArrayHelper::getColumn(SectionForm::getStatuses(), 'name')],
-                ['type', 'dropDownList', ArrayHelper::getColumn(SectionForm::getTypes(), 'name')],
+                ['status', 'dropDownList', ArrayHelper::getColumn(Section::getStatuses(), 'name')],
+                ['type', 'dropDownList', ArrayHelper::getColumn(Section::getTypes(), 'name')],
                 ['name'],
                 ['content', ['options' => ['style' => !$this->model->contentType ? 'display:none' : null]], $this->model->contentType === 'html' ? CKEditor::class : 'textarea'],
                 ['-'],

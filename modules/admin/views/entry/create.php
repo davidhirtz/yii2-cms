@@ -4,7 +4,7 @@
  * @see \davidhirtz\yii2\cms\modules\admin\controllers\EntryController::actionCreate()
  *
  * @var \davidhirtz\yii2\skeleton\web\View $this
- * @var \davidhirtz\yii2\cms\modules\admin\models\forms\EntryForm $entry
+ * @var \davidhirtz\yii2\cms\models\Entry $entry
  */
 
 use davidhirtz\yii2\cms\modules\admin\widgets\forms\EntryActiveForm;

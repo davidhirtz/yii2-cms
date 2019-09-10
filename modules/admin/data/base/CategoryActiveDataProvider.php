@@ -3,8 +3,8 @@
 namespace davidhirtz\yii2\cms\modules\admin\data\base;
 
 use davidhirtz\yii2\cms\models\queries\CategoryQuery;
-use davidhirtz\yii2\cms\modules\admin\models\forms\CategoryForm;
-use davidhirtz\yii2\cms\modules\admin\models\forms\EntryForm;
+use davidhirtz\yii2\cms\models\Category;
+use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\skeleton\db\ActiveQuery;
 use yii\data\ActiveDataProvider;
@@ -20,12 +20,12 @@ class CategoryActiveDataProvider extends ActiveDataProvider
     use ModuleTrait;
 
     /**
-     * @var CategoryForm
+     * @var Category
      */
     public $category;
 
     /**
-     * @var EntryForm
+     * @var Entry
      */
     public $entry;
 
@@ -48,7 +48,7 @@ class CategoryActiveDataProvider extends ActiveDataProvider
      */
     protected function initQuery()
     {
-        $this->query = CategoryForm::find()
+        $this->query = Category::find()
             ->replaceI18nAttributes();
 
         if ($this->entry) {

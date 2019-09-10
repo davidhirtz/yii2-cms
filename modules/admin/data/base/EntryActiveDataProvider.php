@@ -3,8 +3,8 @@
 namespace davidhirtz\yii2\cms\modules\admin\data\base;
 
 use davidhirtz\yii2\cms\models\queries\EntryQuery;
-use davidhirtz\yii2\cms\modules\admin\models\forms\CategoryForm;
-use davidhirtz\yii2\cms\modules\admin\models\forms\EntryForm;
+use davidhirtz\yii2\cms\models\Category;
+use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\skeleton\db\ActiveQuery;
 use yii\data\ActiveDataProvider;
@@ -22,12 +22,12 @@ class EntryActiveDataProvider extends ActiveDataProvider
     use ModuleTrait;
 
     /**
-     * @var CategoryForm
+     * @var Category
      */
     public $category;
 
     /**
-     * @var EntryForm
+     * @var Entry
      */
     public $entry;
 
@@ -57,7 +57,7 @@ class EntryActiveDataProvider extends ActiveDataProvider
      */
     protected function initQuery()
     {
-        $this->query = EntryForm::find()->replaceI18nAttributes();
+        $this->query = Entry::find()->replaceI18nAttributes();
 
         if ($this->getModule()->defaultEntryOrderBy) {
             $this->query->orderBy($this->getModule()->defaultEntryOrderBy);
@@ -71,9 +71,9 @@ class EntryActiveDataProvider extends ActiveDataProvider
             ]);
         }
 
-        if ($this->type && isset(EntryForm::getTypes()[$this->type])) {
-            if (isset(EntryForm::getTypes()[$this->type]['orderBy'])) {
-                $this->query->orderBy(EntryForm::getTypes()[$this->type]['orderBy']);
+        if ($this->type && isset(Entry::getTypes()[$this->type])) {
+            if (isset(Entry::getTypes()[$this->type]['orderBy'])) {
+                $this->query->orderBy(Entry::getTypes()[$this->type]['orderBy']);
             }
 
             $this->query->andWhere(['type' => $this->type]);

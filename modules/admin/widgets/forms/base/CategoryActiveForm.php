@@ -2,7 +2,7 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\widgets\forms\base;
 
-use davidhirtz\yii2\cms\modules\admin\models\forms\CategoryForm;
+use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\modules\admin\widgets\CategoryTrait;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm;
 use davidhirtz\yii2\skeleton\widgets\forms\CKEditor;
@@ -15,7 +15,7 @@ use yii\helpers\Url;
  * Class CategoryActiveForm.
  * @package davidhirtz\yii2\cms\modules\admin\widgets\forms\base
  *
- * @property CategoryForm $model
+ * @property Category $model
  */
 class CategoryActiveForm extends ActiveForm
 {
@@ -78,7 +78,7 @@ class CategoryActiveForm extends ActiveForm
                 $defaultOptions['options'][$category->id]['data-value'] = $this->getCategorySlug($category);
             }
 
-            $items = CategoryForm::indentNestedTree($categories, $this->model->getI18nAttributeName('name'));
+            $items = Category::indentNestedTree($categories, $this->model->getI18nAttributeName('name'));
             return $this->field($this->model, 'parent_id')->dropDownList($items, ArrayHelper::merge($defaultOptions, $options));
         }
 
@@ -103,7 +103,7 @@ class CategoryActiveForm extends ActiveForm
     }
 
     /**
-     * @param CategoryForm $category
+     * @param Category $category
      * @return string
      */
     protected function getCategorySlug($category)

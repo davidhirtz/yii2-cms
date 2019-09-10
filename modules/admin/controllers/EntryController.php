@@ -2,11 +2,10 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\controllers;
 
-use davidhirtz\yii2\cms\modules\admin\models\forms\CategoryForm;
+use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider;
-use davidhirtz\yii2\cms\modules\admin\models\forms\EntryForm;
 use davidhirtz\yii2\skeleton\web\Controller;
 use Yii;
 use yii\filters\AccessControl;
@@ -59,8 +58,8 @@ class EntryController extends Controller
     public function actionIndex($id = null, $category = null, $type = null, $q = null)
     {
         $provider = new EntryActiveDataProvider([
-            'category' => $category ? CategoryForm::findOne($category) : null,
-            'entry' => $id ? EntryForm::findOne($id) : null,
+            'category' => $category ? Category::findOne($category) : null,
+            'entry' => $id ? Entry::findOne($id) : null,
             'searchString' => $q,
             'type' => $type,
         ]);
@@ -78,7 +77,7 @@ class EntryController extends Controller
      */
     public function actionCreate($id = null, $type = null)
     {
-        $entry = new EntryForm;
+        $entry = new Entry;
         $entry->type = $type;
 
         if (static::getModule()->enabledNestedEntries) {
@@ -102,7 +101,7 @@ class EntryController extends Controller
      */
     public function actionUpdate($id)
     {
-        if (!$entry = EntryForm::findOne($id)) {
+        if (!$entry = Entry::findOne($id)) {
             throw new NotFoundHttpException;
         }
 
@@ -113,7 +112,7 @@ class EntryController extends Controller
             }
 
             if (!$entry->hasErrors()) {
-                return $this->redirect(['index', 'id' => $entry->parent_id]);
+                return $this->redirect(['index', 'id' => $entry->parent_id ?? null]);
             }
         }
 

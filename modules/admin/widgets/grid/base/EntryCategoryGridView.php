@@ -5,7 +5,7 @@ namespace davidhirtz\yii2\cms\modules\admin\widgets\grid\base;
 use davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider;
 use davidhirtz\yii2\cms\modules\admin\widgets\CategoryTrait;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
-use davidhirtz\yii2\cms\modules\admin\models\forms\CategoryForm;
+use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grid\GridView;
 use davidhirtz\yii2\timeago\Timeago;
@@ -55,7 +55,7 @@ class EntryCategoryGridView extends GridView
     {
         return [
             'contentOptions' => ['class' => 'text-center'],
-            'content' => function (CategoryForm $category) {
+            'content' => function (Category $category) {
                 return FAS::icon($category->getStatusIcon(), [
                     'data-toggle' => 'tooltip',
                     'title' => $category->getStatusName()
@@ -71,8 +71,8 @@ class EntryCategoryGridView extends GridView
     {
         return [
             'attribute' => 'type',
-            'visible' => count(CategoryForm::getTypes()) > 1,
-            'content' => function (CategoryForm $category) {
+            'visible' => count(Category::getTypes()) > 1,
+            'content' => function (Category $category) {
                 return Html::a($category->getTypeName(), ['category/update', 'id' => $category->id]);
             }
         ];
@@ -85,7 +85,7 @@ class EntryCategoryGridView extends GridView
     {
         return [
             'attribute' => $this->getModel()->getI18nAttributeName('name'),
-            'content' => function (CategoryForm $category) {
+            'content' => function (Category $category) {
                 $html = Html::markKeywords(Html::encode($this->getIndentedCategoryName($category->id)), $this->search);
                 $html = Html::tag('strong', Html::a($html, ['category/update', 'id' => $category->id]));
 
@@ -108,7 +108,7 @@ class EntryCategoryGridView extends GridView
             'attribute' => 'updated_at',
             'headerOptions' => ['class' => 'd-none d-lg-table-cell'],
             'contentOptions' => ['class' => 'd-none d-lg-table-cell text-nowrap'],
-            'content' => function (CategoryForm $category) {
+            'content' => function (Category $category) {
                 return $category->entryCategory ? ($this->dateFormat ? $category->entryCategory->updated_at->format($this->dateFormat) : Timeago::tag($category->entryCategory->updated_at)) : null;
             }
         ];
@@ -121,7 +121,7 @@ class EntryCategoryGridView extends GridView
     {
         return [
             'contentOptions' => ['class' => 'text-right text-nowrap'],
-            'content' => function (CategoryForm $category) {
+            'content' => function (Category $category) {
                 return Html::buttons(Html::a(FAS::icon($category->entryCategory ? 'ban' : 'star'), [$category->entryCategory ? 'delete' : 'create', 'entry' => $this->dataProvider->entry->id, 'category' => $category->id], [
                     'class' => 'btn btn-secondary',
                 ]));
@@ -130,7 +130,7 @@ class EntryCategoryGridView extends GridView
     }
 
     /**
-     * @param CategoryForm $category
+     * @param Category $category
      * @return string
      */
     public function getUrl($category)
@@ -146,17 +146,17 @@ class EntryCategoryGridView extends GridView
     protected function getIndentedCategoryName($id)
     {
         if ($this->_names === null) {
-            $this->_names = CategoryForm::indentNestedTree(static::getCategories(), $this->getModel()->getI18nAttributeName('name'), '–');
+            $this->_names = Category::indentNestedTree(static::getCategories(), $this->getModel()->getI18nAttributeName('name'), '–');
         }
 
         return $this->_names[$id] ?? '';
     }
 
     /**
-     * @return CategoryForm
+     * @return Category
      */
     public function getModel()
     {
-        return CategoryForm::instance();
+        return Category::instance();
     }
 }

@@ -2,7 +2,7 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\widgets\forms\base;
 
-use davidhirtz\yii2\cms\modules\admin\models\forms\EntryForm;
+use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm;
 use davidhirtz\yii2\skeleton\widgets\forms\CKEditor;
 use Yii;
@@ -14,7 +14,7 @@ use yii\web\JsExpression;
  * Class EntryActiveForm.
  * @package davidhirtz\yii2\cms\modules\admin\widgets\forms\base
  *
- * @property EntryForm $model
+ * @property Entry $model
  */
 class EntryActiveForm extends ActiveForm
 {

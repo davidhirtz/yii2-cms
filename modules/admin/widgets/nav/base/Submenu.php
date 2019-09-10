@@ -2,9 +2,9 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\widgets\nav\base;
 
-use davidhirtz\yii2\cms\modules\admin\models\forms\CategoryForm;
-use davidhirtz\yii2\cms\modules\admin\models\forms\SectionForm;
-use davidhirtz\yii2\cms\modules\admin\models\forms\EntryForm;
+use davidhirtz\yii2\cms\models\Category;
+use davidhirtz\yii2\cms\models\Section;
+use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\modules\admin\Module;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\skeleton\helpers\Html;
@@ -19,7 +19,7 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
     use ModuleTrait;
 
     /**
-     * @var CategoryForm|EntryForm
+     * @var Category|Entry
      */
     public $model;
 
@@ -42,17 +42,17 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
             $this->showDefaultCategories = static::getModule()->enableCategories;
         }
 
-        if ($this->model instanceof SectionForm) {
+        if ($this->model instanceof Section) {
             $this->model = $this->model->entry;
         }
 
         if (!$this->title) {
             /** @var Module $module */
             $module = Yii::$app->getModule('admin')->getModule('cms');
-            $this->title = $this->model instanceof EntryForm ? Html::a($this->model->getI18nAttribute('name'), ['/admin/entry/update', 'id' => $this->model->id]) : $module->name;
+            $this->title = $this->model instanceof Entry ? Html::a($this->model->getI18nAttribute('name'), ['/admin/entry/update', 'id' => $this->model->id]) : $module->name;
         }
 
-        $this->items = array_merge($this->items, $this->model instanceof EntryForm ? $this->getEntryItems() : $this->getDefaultItems());
+        $this->items = array_merge($this->items, $this->model instanceof Entry ? $this->getEntryItems() : $this->getDefaultItems());
 
         parent::init();
     }
@@ -65,7 +65,7 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
         $items = [];
 
         if ($this->showEntryTypes) {
-            foreach (EntryForm::getTypes() as $type => $attributes) {
+            foreach (Entry::getTypes() as $type => $attributes) {
                 $items[] = [
                     'label' => $attributes[isset($attributes['plural']) ? 'plural' : 'name'],
                     'url' => ['/admin/entry/index', 'type' => $type],
