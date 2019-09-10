@@ -2,6 +2,7 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\widgets\grid\base;
 
+use davidhirtz\yii2\cms\models\base\EntryCategory;
 use davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider;
 use davidhirtz\yii2\cms\modules\admin\widgets\CategoryTrait;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
@@ -20,17 +21,7 @@ use yii\helpers\Url;
  */
 class EntryCategoryGridView extends GridView
 {
-    use ModuleTrait, CategoryTrait;
-
-    /**
-     * @var bool
-     */
-    public $showUrl = true;
-
-    /**
-     * @var string
-     */
-    public $dateFormat;
+    use ModuleTrait, CategoryTrait, CategoryGridTrait;
 
     /**
      * @var array
@@ -39,6 +30,7 @@ class EntryCategoryGridView extends GridView
         'status',
         'type',
         'name',
+        'entry_count',
         'updated_at',
         'buttons',
     ];
@@ -49,33 +41,15 @@ class EntryCategoryGridView extends GridView
     private $_names;
 
     /**
-     * @return array
+     * @inheritDoc
      */
-    public function statusColumn()
+    public function init()
     {
-        return [
-            'contentOptions' => ['class' => 'text-center'],
-            'content' => function (Category $category) {
-                return FAS::icon($category->getStatusIcon(), [
-                    'data-toggle' => 'tooltip',
-                    'title' => $category->getStatusName()
-                ]);
-            }
-        ];
-    }
+        $this->rowOptions = function (Category $category) {
+            return ['class' => $category->entryCategory ? 'is-selected' : null];
+        };
 
-    /**
-     * @return array
-     */
-    public function typeColumn()
-    {
-        return [
-            'attribute' => 'type',
-            'visible' => count(Category::getTypes()) > 1,
-            'content' => function (Category $category) {
-                return Html::a($category->getTypeName(), ['category/update', 'id' => $category->id]);
-            }
-        ];
+        parent::init();
     }
 
     /**
@@ -105,7 +79,7 @@ class EntryCategoryGridView extends GridView
     public function updatedAtColumn()
     {
         return [
-            'attribute' => 'updated_at',
+            'label' => EntryCategory::instance()->getAttributeLabel('updated_at'),
             'headerOptions' => ['class' => 'd-none d-lg-table-cell'],
             'contentOptions' => ['class' => 'd-none d-lg-table-cell text-nowrap'],
             'content' => function (Category $category) {
@@ -124,19 +98,10 @@ class EntryCategoryGridView extends GridView
             'content' => function (Category $category) {
                 return Html::buttons(Html::a(FAS::icon($category->entryCategory ? 'ban' : 'star'), [$category->entryCategory ? 'delete' : 'create', 'entry' => $this->dataProvider->entry->id, 'category' => $category->id], [
                     'class' => 'btn btn-secondary',
+                    'data-method' => 'post',
                 ]));
             }
         ];
-    }
-
-    /**
-     * @param Category $category
-     * @return string
-     */
-    public function getUrl($category)
-    {
-        $url = Url::to($category->getRoute(), true);
-        return Html::tag('div', Html::a($url, $url, ['target' => '_blank']), ['class' => 'd-none d-md-block small']);
     }
 
     /**
@@ -150,13 +115,5 @@ class EntryCategoryGridView extends GridView
         }
 
         return $this->_names[$id] ?? '';
-    }
-
-    /**
-     * @return Category
-     */
-    public function getModel()
-    {
-        return Category::instance();
     }
 }

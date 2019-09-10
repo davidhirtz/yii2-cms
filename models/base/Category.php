@@ -5,6 +5,7 @@ namespace davidhirtz\yii2\cms\models\base;
 use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\cms\models\queries\CategoryQuery;
 use davidhirtz\yii2\cms\models\Section;
+use davidhirtz\yii2\cms\models\EntryCategory;
 use davidhirtz\yii2\skeleton\db\NestedTreeTrait;
 use Yii;
 use yii\caching\TagDependency;
@@ -26,7 +27,7 @@ use yii\helpers\Inflector;
  * @property int $entry_count
  * @property Section[] $sections
  * @property Asset[] $assets
- * @property  \davidhirtz\yii2\cms\models\EntryCategory $entryCategory
+ * @property  EntryCategory $entryCategory
  * @method static \davidhirtz\yii2\cms\models\Category findOne($condition)
  */
 class Category extends ActiveRecord
@@ -145,6 +146,15 @@ class Category extends ActiveRecord
         return $this->hasOne(EntryCategory::class, ['category_id' => 'id']);
     }
 
+    /**
+     * Updates entry count.
+     */
+    public function recalculateEntryCount()
+    {
+        $this->entry_count = EntryCategory::find()->where(['category_id' => $this->id])->count();
+        $this->update(false, ['entry_count', 'updated_at', 'updated_by_user_id']);
+    }
+    
     /**
      * @inheritdoc
      * @return CategoryQuery
@@ -265,6 +275,7 @@ class Category extends ActiveRecord
     public function attributeLabels(): array
     {
         return array_merge(parent::attributeLabels(), [
+            'name' => Yii::t('cms', 'Name'),
             'parent_id' => Yii::t('cms', 'Category'),
             'slug' => Yii::t('cms', 'Url'),
             'title' => Yii::t('cms', 'Meta title'),

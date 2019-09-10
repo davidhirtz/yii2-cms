@@ -2,8 +2,8 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\controllers;
 
+use davidhirtz\yii2\cms\models\EntryCategory;
 use davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider;
-use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\skeleton\web\Controller;
@@ -11,7 +11,6 @@ use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
-use yii\web\ServerErrorHttpException;
 
 /**
  * Class EntryCategoryController.
@@ -42,7 +41,7 @@ class EntryCategoryController extends Controller
                 'actions' => [
                     'delete' => ['post'],
                     'order' => ['post'],
-                    'upload' => ['post'],
+                    'create' => ['post'],
                 ],
             ],
         ]);
@@ -77,56 +76,40 @@ class EntryCategoryController extends Controller
      */
     public function actionCreate($entry, $category)
     {
-        if(!($entry=Entry::findOne($entry)) || !($category=Category::findOne($category)))
-        {
-            throw new NotFoundHttpException();
-        }
+        $junction = new EntryCategory([
+            'entry_id' => $entry,
+            'category_id' => $category,
+        ]);
 
-        $attributes=['product_id'=>$entry->id, 'category_id'=>$category->id];
-        $entryCategory=EntryCategory::findOne($attributes) ?: new EntryCategory($attributes);
-
-        if($entryCategory->getIsNewRecord())
-        {
-            $entryCategory->populateRelation('product', $entry);
-            $entryCategory->populateRelation('category', $category);
-
-            $entryCategory->insert();
-        }
-
-        return $this->redirect(['index', 'product'=>$entry->id]);
-
+        $junction->insert();
+        return $this->redirect(['index', 'entry' => $junction->entry_id]);
     }
-
 
     /**
      * @param int $entry
+     * @param int $category
      * @return string|\yii\web\Response
      */
-    public function actionDelete($entry)
+    public function actionDelete($entry, $category)
     {
-        if (!$entry = Entry::findOne($entry)) {
+        if (!$junction = EntryCategory::findOne(['entry_id' => $entry, 'category_id' => $category])) {
             throw new NotFoundHttpException;
         }
 
-        if ($entry->delete()) {
-            $this->success(Yii::t('cms', 'The entry was deleted.'));
-            return $this->redirect(['index']);
-        }
-
-        $errors = $entry->getFirstErrors();
-        throw new ServerErrorHttpException(reset($errors));
+        $junction->delete();
+        return $this->redirect(['index', 'entry' => $junction->entry_id]);
     }
 
     /**
-     * @param int $id
+     * @param int $category
      */
-    public function actionOrder($id = null)
+    public function actionOrder($category)
     {
-        $entries = Entry::find()->select(['id', 'position'])
-            ->filterWhere(['parent_id' => $id])
+        $entries = EntryCategory::find()->select(['entry_id', 'category_id', 'position'])
+            ->where(['category_id' => $category])
             ->orderBy(['position' => SORT_ASC])
             ->all();
 
-        Entry::updatePosition($entries, array_flip(Yii::$app->getRequest()->post('entry')));
+        EntryCategory::updatePosition($entries, array_flip(Yii::$app->getRequest()->post('entry')));
     }
 }

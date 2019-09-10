@@ -4,8 +4,8 @@ namespace davidhirtz\yii2\cms\modules\admin\widgets;
 
 use davidhirtz\yii2\cms\models\Category;
 
-trait CategoryTrait{
-
+trait CategoryTrait
+{
     /**
      * @var Category[]
      */
@@ -19,6 +19,7 @@ trait CategoryTrait{
         if (static::$_categories === null) {
             static::$_categories = Category::find()
                 ->replaceI18nAttributes()
+                ->indexBy('id')
                 ->all();
         }
 

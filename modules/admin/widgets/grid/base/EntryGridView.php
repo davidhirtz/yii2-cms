@@ -29,6 +29,10 @@ class EntryGridView extends GridView
      * @var bool
      */
     public $showUrl = true;
+    /**
+     * @var bool
+     */
+    public $showCategories = true;
 
     /**
      * @var bool
@@ -70,12 +74,17 @@ class EntryGridView extends GridView
             $this->orderRoute = ['order', 'id' => $this->dataProvider->entry->id];
         }
 
+        if ($this->showCategories) {
+            $this->showCategories = static::getModule()->enableCategories;
+        }
+
         if ($this->showCategoryDropdown) {
             $this->showCategoryDropdown = static::getModule()->enableCategories;
         }
 
-        if (static::getModule()->enableCategories && $this->dataProvider->type && isset(Entry::getTypes()[$this->dataProvider->type]['showCategoryDropdown'])) {
-            $this->showCategoryDropdown = Entry::getTypes()[$this->dataProvider->type]['showCategoryDropdown'];
+        if (static::getModule()->enableCategories && $this->dataProvider->type) {
+            $this->showCategories = Entry::getTypes()[$this->dataProvider->type]['showCategories'] ?? $this->showCategories;
+            $this->showCategoryDropdown = Entry::getTypes()[$this->dataProvider->type]['showCategoryDropdown'] ?? $this->showCategoryDropdown;
         }
 
         if ($this->showTypeDropdown) {
@@ -193,6 +202,9 @@ class EntryGridView extends GridView
                     $html .= $this->getUrl($entry);
                 }
 
+                if ($this->showCategories) {
+                    $html .= $this->renderCategoryButtons($entry);
+                }
 
                 return $html;
             }
@@ -325,6 +337,24 @@ class EntryGridView extends GridView
         }
 
         return ButtonDropdown::widget($config);
+    }
+
+    /**
+     * @param Entry $entry
+     * @param array $options
+     * @return string
+     */
+    public function renderCategoryButtons($entry, $options = [])
+    {
+        $categories = [];
+
+        foreach ($entry->getCategoryIds() as $categoryId) {
+            if ($category = static::getCategories()[$categoryId] ?? false) {
+                $categories[] = Html::a(Html::encode($category->getI18nAttribute('name')), Url::current(['category' => $category->id]), ['class' => 'btn btn-secondary btn-sm']);
+            }
+        }
+
+        return Html::tag('div', implode('', $categories), $options ?: ['class' => 'small', 'style' => 'margin-top:.4em']);
     }
 
     /**

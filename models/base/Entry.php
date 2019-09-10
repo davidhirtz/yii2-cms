@@ -3,10 +3,11 @@
 namespace davidhirtz\yii2\cms\models\base;
 
 use davidhirtz\yii2\cms\models\Asset;
+use davidhirtz\yii2\cms\models\EntryCategory;
+use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\models\queries\AssetQuery;
 use davidhirtz\yii2\cms\models\queries\EntryQuery;
 use davidhirtz\yii2\cms\models\queries\SectionQuery;
-use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\datetime\DateTimeValidator;
 use Yii;
@@ -31,8 +32,8 @@ use yii\helpers\Inflector;
  * @property int $asset_count
  * @property Section[] $sections
  * @property Asset[] $assets
- * @property  \davidhirtz\yii2\cms\models\Entry $entry
- * @property  \davidhirtz\yii2\cms\models\EntryCategory $entryCategory
+ * @property \davidhirtz\yii2\cms\models\Entry $entry
+ * @property EntryCategory $entryCategory
  * @method static \davidhirtz\yii2\cms\models\Entry findOne($condition)
  */
 class Entry extends ActiveRecord
@@ -199,6 +200,16 @@ class Entry extends ActiveRecord
                 $section->populateAssetRelations($assets);
             }
         }
+    }
+
+    /**
+     * Updates category ids.
+     */
+    public function recalculateCategoryIds()
+    {
+        $categoryIds = EntryCategory::find()->select(['category_id'])->where(['entry_id' => $this->id])->column();
+        $this->category_ids = implode(',', $categoryIds);
+        $this->update(false, ['category_ids', 'updated_at', 'updated_by_user_id']);
     }
 
     /**

@@ -41,7 +41,6 @@ class CategoryController extends Controller
                 'actions' => [
                     'delete' => ['post'],
                     'order' => ['post'],
-                    'upload' => ['post'],
                 ],
             ],
         ]);

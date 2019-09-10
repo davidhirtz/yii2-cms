@@ -17,10 +17,10 @@ class Module extends \yii\base\Module
      */
     public $enableCategories = false;
 
-    /**
-     * @var bool whether entries should automatically inherit parent categories
-     */
-    public $inheritCategories = true;
+//    /**
+//     * @var bool whether entries should automatically inherit parent categories
+//     */
+//    public $inheritCategories = true;
 
     /**
      * @var int duration in seconds for the caching the Category::getCategories() category query

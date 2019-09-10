@@ -2,6 +2,7 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\data\base;
 
+use davidhirtz\yii2\cms\models\EntryCategory;
 use davidhirtz\yii2\cms\models\queries\EntryQuery;
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\Entry;
@@ -145,6 +146,10 @@ class EntryActiveDataProvider extends ActiveDataProvider
      */
     public function isOrderedByPosition()
     {
-        return $this->query->orderBy && in_array(key($this->query->orderBy), ['lft', 'position']);
+        return $this->query->orderBy && in_array(key($this->query->orderBy), [
+                EntryCategory::tableName() . '.[[position]]',
+                'position',
+                'lft',
+            ]);
     }
 }
