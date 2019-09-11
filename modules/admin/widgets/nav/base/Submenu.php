@@ -49,7 +49,7 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
         if (!$this->title) {
             /** @var Module $module */
             $module = Yii::$app->getModule('admin')->getModule('cms');
-            $this->title = $this->model instanceof Entry ? Html::a($this->model->getI18nAttribute('name'), ['/admin/entry/update', 'id' => $this->model->id]) : $module->name;
+            $this->title = $this->model instanceof Entry ? Html::a($this->model->getI18nAttribute('name'), ['/admin/entry/update', 'id' => $this->model->id]) : Html::a($module->name, $module->url);
         }
 
         $this->items = array_merge($this->items, $this->model instanceof Entry ? $this->getEntryItems() : $this->getDefaultItems());
@@ -111,6 +111,7 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
             [
                 'label' => $this->showEntryTypes ? $this->model->getTypeName() : Yii::t('cms', 'Entry'),
                 'url' => ['/admin/entry/update', 'id' => $this->model->id],
+                'active' => ['admin/entry/', 'admin/cms/asset/' => ['entry']],
                 'icon' => 'book',
                 'labelOptions' => [
                     'class' => 'd-none d-md-inline'
@@ -123,13 +124,13 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
                 'label' => Yii::t('cms', 'Categories'),
                 'url' => ['/admin/entry-category/index', 'entry' => $this->model->id],
                 'visible' => static::getModule()->enableCategories,
+                'active' => ['admin/entry-category/'],
                 'badge' => $this->model->getCategoryCount() ?: false,
                 'badgeOptions' => [
                     'id' => 'entry-category-count',
                     'class' => 'badge d-none d-md-inline-block',
                 ],
                 'icon' => 'folder-open',
-                'active' => ['admin/entry-category/'],
                 'options' => [
                     'class' => 'entry-sections',
                 ],
@@ -144,12 +145,12 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
                 'label' => Yii::t('cms', 'Sections'),
                 'url' => ['/admin/section/index', 'entry' => $this->model->id],
                 'badge' => $this->model->section_count ?: false,
+                'active' => ['admin/section/', 'admin/cms/asset/' => ['section']],
                 'badgeOptions' => [
                     'id' => 'entry-section-count',
                     'class' => 'badge d-none d-md-inline-block',
                 ],
                 'icon' => 'th-list',
-                'active' => ['admin/section/'],
                 'options' => [
                     'class' => 'entry-sections',
                 ],

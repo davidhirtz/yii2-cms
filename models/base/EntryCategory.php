@@ -40,6 +40,10 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         return array_merge(parent::rules(), [
             [
                 ['category_id', 'entry_id'],
+                'required',
+            ],
+            [
+                ['category_id', 'entry_id'],
                 'filter',
                 'filter' => 'intval',
             ],
@@ -64,7 +68,7 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
      */
     public function validateCategoryId()
     {
-        if ($this->isAttributeChanged('category_id') && !$this->refreshRelation('category')) {
+        if (($this->isAttributeChanged('category_id') && !$this->refreshRelation('category')) || !$this->category->enableEntryCategory()) {
             $this->addInvalidAttributeError('category_id');
         }
     }

@@ -270,6 +270,14 @@ class Category extends ActiveRecord
     }
 
     /**
+     * @return bool
+     */
+    public function enableEntryCategory()
+    {
+        return true;
+    }
+
+    /**
      * @inheritdoc
      */
     public function attributeLabels(): array

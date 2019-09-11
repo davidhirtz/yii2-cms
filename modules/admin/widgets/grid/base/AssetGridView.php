@@ -196,8 +196,17 @@ class AssetGridView extends GridView
                     $buttons[] = Html::tag('span', FAS::icon('arrows-alt'), ['class' => 'btn btn-secondary sortable-handle']);
                 }
 
-                $buttons[] = Html::a(FAS::icon('image'), ['file/update', 'id' => $asset->file_id], ['class' => 'btn btn-secondary d-none d-md-inline-block']);
-                $buttons[] = Html::a(FAS::icon('wrench'), ['cms/asset/update', 'id' => $asset->id], ['class' => 'btn btn-secondary']);
+                $buttons[] = Html::a(FAS::icon('image'), ['file/update', 'id' => $asset->file_id], [
+                    'class' => 'btn btn-secondary d-none d-md-inline-block',
+                    'data-toggle' => 'tooltip',
+                    'title' => Yii::t('media', 'Edit File'),
+                ]);
+
+                $buttons[] = Html::a(FAS::icon('wrench'), ['cms/asset/update', 'id' => $asset->id], [
+                    'class' => 'btn btn-secondary',
+                    'data-toggle' => 'tooltip',
+                    'title' => Yii::t('cms', 'Edit Asset'),
+                ]);
 
                 $buttons[] = Html::a(FAS::icon('trash'), ['cms/asset/delete', 'id' => $asset->id], [
                     'class' => 'btn btn-danger btn-delete-asset d-none d-md-inline-block',

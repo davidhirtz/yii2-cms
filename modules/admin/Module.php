@@ -69,7 +69,7 @@ class Module extends \yii\base\Module
     public function init()
     {
         if (!$this->name) {
-            $this->name = Yii::t('cms', 'Content');
+            $this->name = Yii::t('cms', 'Entries');
         }
 
         if (!Yii::$app->getRequest()->getIsConsoleRequest()) {
