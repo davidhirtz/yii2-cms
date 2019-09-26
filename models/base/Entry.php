@@ -8,9 +8,11 @@ use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\models\queries\AssetQuery;
 use davidhirtz\yii2\cms\models\queries\EntryQuery;
 use davidhirtz\yii2\cms\models\queries\SectionQuery;
+use davidhirtz\yii2\cms\modules\admin\widgets\forms\EntryActiveForm;
 use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\datetime\DateTimeValidator;
 use Yii;
+use yii\base\Widget;
 use yii\helpers\Inflector;
 
 /**
@@ -243,6 +245,14 @@ class Entry extends ActiveRecord
     public function getRoute(): array
     {
         return array_filter(['/cms/site/view', 'entry' => $this->getI18nAttribute('slug')]);
+    }
+
+    /**
+     * @return EntryActiveForm|Widget
+     */
+    public function getActiveForm()
+    {
+        return static::getTypes()[$this->type]['activeForm'] ?? EntryActiveForm::class;
     }
 
     /**

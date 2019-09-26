@@ -7,11 +7,13 @@ use davidhirtz\yii2\cms\models\queries\AssetQuery;
 use davidhirtz\yii2\cms\models\queries\EntryQuery;
 use davidhirtz\yii2\cms\models\queries\SectionQuery;
 use davidhirtz\yii2\cms\models\Section;
+use davidhirtz\yii2\cms\modules\admin\widgets\forms\AssetActiveForm;
 use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\media\models\File;
 use davidhirtz\yii2\media\models\queries\FileQuery;
 use davidhirtz\yii2\skeleton\models\User;
 use Yii;
+use yii\base\Widget;
 
 /**
  * Class Asset.
@@ -224,6 +226,14 @@ class Asset extends \davidhirtz\yii2\cms\models\base\ActiveRecord
                 'name' => Yii::t('cms', 'Desktop'),
             ],
         ];
+    }
+
+    /**
+     * @return AssetActiveForm|Widget
+     */
+    public function getActiveForm()
+    {
+        return static::getTypes()[$this->type]['activeForm'] ?? AssetActiveForm::class;
     }
 
     /**

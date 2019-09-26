@@ -7,7 +7,6 @@
  * @var \davidhirtz\yii2\cms\models\Category $category
  */
 
-use davidhirtz\yii2\cms\modules\admin\widgets\forms\CategoryActiveForm;
 use davidhirtz\yii2\cms\modules\admin\widgets\nav\Submenu;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
@@ -25,7 +24,7 @@ $this->setTitle(Yii::t('cms', 'Edit Category'));
 
 <?= Panel::widget([
     'title' => $this->title,
-    'content' => CategoryActiveForm::widget([
+    'content' => $category->getActiveForm()::widget([
         'model' => $category,
     ]),
 ]); ?>

@@ -19,7 +19,6 @@ if ($asset->section_id) {
     $this->setBreadcrumb(Yii::t('cms', 'Assets'), ['/admin/entry/update', 'id' => $asset->section_id, '#' => 'assets']);
 }
 
-use davidhirtz\yii2\cms\modules\admin\widgets\forms\AssetActiveForm;
 use davidhirtz\yii2\cms\modules\admin\widgets\nav\Submenu;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
@@ -36,7 +35,7 @@ use davidhirtz\yii2\skeleton\widgets\forms\DeleteActiveForm;
 
 <?= Panel::widget([
     'title' => $this->title,
-    'content' => AssetActiveForm::widget([
+    'content' => $asset->getActiveForm()::widget([
         'model' => $asset,
     ]),
 ]); ?>

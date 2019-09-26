@@ -6,8 +6,10 @@ use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\cms\models\queries\CategoryQuery;
 use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\models\EntryCategory;
+use davidhirtz\yii2\cms\modules\admin\widgets\forms\CategoryActiveForm;
 use davidhirtz\yii2\skeleton\db\NestedTreeTrait;
 use Yii;
+use yii\base\Widget;
 use yii\caching\TagDependency;
 use yii\helpers\Inflector;
 
@@ -275,6 +277,14 @@ class Category extends ActiveRecord
     public function enableEntryCategory()
     {
         return true;
+    }
+
+    /**
+     * @return CategoryActiveForm|Widget
+     */
+    public function getActiveForm()
+    {
+        return static::getTypes()[$this->type]['activeForm'] ?? CategoryActiveForm::class;
     }
 
     /**

@@ -7,7 +7,9 @@ use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\cms\models\queries\AssetQuery;
 use davidhirtz\yii2\cms\models\queries\EntryQuery;
 use davidhirtz\yii2\cms\models\queries\SectionQuery;
+use davidhirtz\yii2\cms\modules\admin\widgets\forms\SectionActiveForm;
 use Yii;
+use yii\base\Widget;
 use yii\helpers\Inflector;
 
 /**
@@ -178,6 +180,14 @@ class Section extends ActiveRecord
         }
 
         $this->populateRelation('assets', $relations);
+    }
+
+    /**
+     * @return SectionActiveForm|Widget
+     */
+    public function getActiveForm()
+    {
+        return static::getTypes()[$this->type]['activeForm'] ?? SectionActiveForm::class;
     }
 
     /**
