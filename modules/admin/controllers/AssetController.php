@@ -7,7 +7,7 @@ use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\media\modules\admin\data\FileActiveDataProvider;
-use davidhirtz\yii2\media\modules\admin\models\forms\FileForm;
+use davidhirtz\yii2\media\models\File;
 use davidhirtz\yii2\skeleton\web\Controller;
 use Yii;
 use yii\filters\AccessControl;
