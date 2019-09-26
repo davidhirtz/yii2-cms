@@ -9,7 +9,7 @@ use yii\helpers\Html;
 
 /**
  * Class AssetActiveForm.
- * @package davidhirtz\yii2\cms\modules\admin\widgets\forms\base
+ * @package davidhirtz\yii2\cms\modules\admin\widgets\forms
  *
  * @property Asset $model
  */
