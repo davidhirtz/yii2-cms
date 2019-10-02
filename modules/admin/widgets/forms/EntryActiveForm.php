@@ -46,7 +46,6 @@ class EntryActiveForm extends ActiveForm
     }
 
     /**
-     * @param array $options
      * @return \yii\bootstrap4\ActiveField|\yii\widgets\ActiveField
      */
     public function publishDateField()

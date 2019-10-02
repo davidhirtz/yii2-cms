@@ -1,8 +1,10 @@
 <?php
+
 namespace davidhirtz\yii2\cms\modules\admin\widgets\forms;
 
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\modules\admin\widgets\CategoryTrait;
+use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm;
 use davidhirtz\yii2\skeleton\widgets\forms\CKEditor;
 use Yii;
@@ -18,7 +20,7 @@ use yii\helpers\Url;
  */
 class CategoryActiveForm extends ActiveForm
 {
-    use CategoryTrait;
+    use CategoryTrait, ModuleTrait;
 
     /**
      * @var bool
@@ -38,7 +40,7 @@ class CategoryActiveForm extends ActiveForm
         if (!$this->fields) {
             $this->fields = [
                 ['status', 'dropDownList', ArrayHelper::getColumn($this->model::getStatuses(), 'name')],
-                ['parent_id'],
+                ['parent_id', ['visible' => static::getModule()->enabledNestedEntries]],
                 ['type', 'dropDownList', ArrayHelper::getColumn($this->model::getTypes(), 'name')],
                 ['name'],
                 ['content', ['options' => ['style' => !$this->model->contentType ? 'display:none' : null]], $this->model->contentType === 'html' ? CKEditor::class : 'textarea'],
