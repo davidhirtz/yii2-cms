@@ -67,8 +67,9 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
         if ($this->showEntryTypes) {
             foreach (Entry::getTypes() as $type => $attributes) {
                 $items[] = [
-                    'label' => $attributes[isset($attributes['plural']) ? 'plural' : 'name'],
+                    'label' => $attributes['plural'] ?? $attributes['name'],
                     'url' => ['/admin/entry/index', 'type' => $type],
+                    'active' => ['admin/entry' => ['type' => $type]],
                     'icon' => $attributes['icon'] ?? 'book',
                     'labelOptions' => [
                         'class' => 'd-none d-md-inline'
@@ -123,7 +124,6 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
             $items[] = [
                 'label' => Yii::t('cms', 'Categories'),
                 'url' => ['/admin/entry-category/index', 'entry' => $this->model->id],
-                'visible' => static::getModule()->enableCategories,
                 'active' => ['admin/entry-category/'],
                 'badge' => $this->model->getCategoryCount() ?: false,
                 'badgeOptions' => [
@@ -144,8 +144,8 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
             $items[] = [
                 'label' => Yii::t('cms', 'Sections'),
                 'url' => ['/admin/section/index', 'entry' => $this->model->id],
-                'badge' => $this->model->section_count ?: false,
                 'active' => ['admin/section/', 'admin/cms/asset/' => ['section']],
+                'badge' => $this->model->section_count ?: false,
                 'badgeOptions' => [
                     'id' => 'entry-section-count',
                     'class' => 'badge d-none d-md-inline-block',
