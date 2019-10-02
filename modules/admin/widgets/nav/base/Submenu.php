@@ -29,7 +29,7 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
     public $showDefaultCategories = true;
 
     /**
-     * @var bool
+     * @var bool whether entry types should be listed as items.
      */
     public $showEntryTypes = false;
 

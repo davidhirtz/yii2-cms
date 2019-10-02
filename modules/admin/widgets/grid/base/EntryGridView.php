@@ -74,15 +74,17 @@ class EntryGridView extends GridView
             $this->orderRoute = ['order', 'id' => $this->dataProvider->entry->id];
         }
 
+        $enableCategories = static::getModule()->enableCategories && count(static::getCategories()) > 1;
+
         if ($this->showCategories) {
-            $this->showCategories = static::getModule()->enableCategories;
+            $this->showCategories = $enableCategories;
         }
 
         if ($this->showCategoryDropdown) {
-            $this->showCategoryDropdown = static::getModule()->enableCategories;
+            $this->showCategoryDropdown = $enableCategories;
         }
 
-        if (static::getModule()->enableCategories && $this->dataProvider->type) {
+        if ($enableCategories && $this->dataProvider->type) {
             $this->showCategories = Entry::getTypes()[$this->dataProvider->type]['showCategories'] ?? $this->showCategories;
             $this->showCategoryDropdown = Entry::getTypes()[$this->dataProvider->type]['showCategoryDropdown'] ?? $this->showCategoryDropdown;
         }
