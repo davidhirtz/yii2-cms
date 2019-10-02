@@ -54,6 +54,17 @@ class Module extends \yii\base\Module
     public $defaultEntryOrderBy;
 
     /**
+     * @var array the default entry type which is applied to all default admin urls
+     */
+    public $defaultEntryType;
+
+    /**
+     * @todo currently not fully implemented
+     * @var array the default category type which is applied to all default admin urls
+     */
+    public $defaultCategoryType;
+
+    /**
      * @inheritdoc
      */
     public function init()

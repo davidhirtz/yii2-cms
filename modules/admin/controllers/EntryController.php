@@ -10,6 +10,7 @@ use davidhirtz\yii2\skeleton\web\Controller;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
+use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
 
@@ -56,6 +57,10 @@ class EntryController extends Controller
      */
     public function actionIndex($id = null, $category = null, $type = null, $q = null)
     {
+        if (!$type && static::getModule()->defaultEntryType) {
+            return $this->redirect(Url::current(['type' => static::getModule()->defaultEntryType]));
+        }
+
         $provider = new EntryActiveDataProvider([
             'category' => $category ? Category::findOne($category) : null,
             'entry' => $id ? Entry::findOne($id) : null,
@@ -77,7 +82,7 @@ class EntryController extends Controller
     public function actionCreate($id = null, $type = null)
     {
         $entry = new Entry;
-        $entry->type = $type;
+        $entry->type = $type ?: static::getModule()->defaultEntryType;
 
         if (static::getModule()->enabledNestedEntries) {
             $entry->parent_id = $id;
