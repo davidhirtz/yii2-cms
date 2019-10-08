@@ -64,20 +64,20 @@ class EntryActiveDataProvider extends ActiveDataProvider
             $this->query->orderBy($this->getModule()->defaultEntryOrderBy);
         }
 
-        if ($this->category) {
-            $this->query->orderBy($this->category->getEntryOrderBy())->innerJoinWith([
-                'entryCategory' => function (ActiveQuery $query) {
-                    $query->onCondition(['category_id' => $this->category->id]);
-                }
-            ]);
-        }
-
         if ($this->type && isset(Entry::getTypes()[$this->type])) {
             if (isset(Entry::getTypes()[$this->type]['orderBy'])) {
                 $this->query->orderBy(Entry::getTypes()[$this->type]['orderBy']);
             }
 
             $this->query->andWhere(['type' => $this->type]);
+        }
+
+        if ($this->category) {
+            $this->query->orderBy($this->category->getEntryOrderBy())->innerJoinWith([
+                'entryCategory' => function (ActiveQuery $query) {
+                    $query->onCondition(['category_id' => $this->category->id]);
+                }
+            ]);
         }
 
         if ($this->searchString) {
