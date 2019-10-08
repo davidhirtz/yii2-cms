@@ -58,7 +58,7 @@ class Asset extends \davidhirtz\yii2\cms\models\base\ActiveRecord
                 'validateSectionId',
             ],
             [
-                ['entry_id'],
+                ['file_id', 'entry_id'],
                 'required',
             ],
             [

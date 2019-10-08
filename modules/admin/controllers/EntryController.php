@@ -116,7 +116,7 @@ class EntryController extends Controller
             }
 
             if (!$entry->hasErrors()) {
-                return $this->redirect(['index', 'id' => $entry->parent_id ?? null]);
+                return $this->redirect(['update', 'id' => $entry->id]);
             }
         }
 

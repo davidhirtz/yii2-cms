@@ -93,6 +93,10 @@ class AssetController extends Controller
         $isNew = $file->getIsNewRecord();
 
         if ($file->getIsNewRecord()) {
+            if (!$file->upload()) {
+                return '';
+            }
+
             if (!$file->insert()) {
                 $errors = $file->getFirstErrors();
                 throw new ServerErrorHttpException(reset($errors));
