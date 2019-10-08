@@ -89,7 +89,7 @@ class AssetController extends Controller
      */
     public function actionCreate($entry = null, $section = null, $file = null)
     {
-        $file = $file ? FileForm::findOne($file) : new FileForm;
+        $file = $file ? File::findOne($file) : new File;
         $isNew = $file->getIsNewRecord();
 
         if ($file->getIsNewRecord()) {
