@@ -3,8 +3,8 @@
 namespace davidhirtz\yii2\cms\controllers;
 
 use davidhirtz\yii2\cms\models\Entry;
+use davidhirtz\yii2\cms\models\queries\AssetQuery;
 use davidhirtz\yii2\media\Module;
-use davidhirtz\yii2\skeleton\db\ActiveQuery;
 use davidhirtz\yii2\skeleton\web\Controller;
 use yii\web\NotFoundHttpException;
 
@@ -36,7 +36,7 @@ class SiteController extends Controller
             ->limit(1)
             ->one();
 
-        if(!$entry) {
+        if (!$entry) {
             throw new NotFoundHttpException;
         }
 
@@ -56,8 +56,8 @@ class SiteController extends Controller
         return Entry::find()
             ->selectSiteAttributes()
             ->with([
-                'assets' => function(ActiveQuery $query) {
-                    $query->with(['file', 'file.folder']);
+                'assets' => function (AssetQuery $query) {
+                    $query->selectSiteAttributes()->withFiles();
                 },
             ]);
     }
