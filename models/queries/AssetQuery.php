@@ -29,7 +29,7 @@ class AssetQuery extends \davidhirtz\yii2\skeleton\db\ActiveQuery
     public function withFiles()
     {
         return $this->with([
-            'files' => function (FileQuery $query) {
+            'file' => function (FileQuery $query) {
                 $query->selectSiteAttributes()
                     ->with([
                         'folder' => function (FolderQuery $query) {
