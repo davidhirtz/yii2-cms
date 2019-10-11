@@ -173,17 +173,15 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
     protected function setBreadcrumbs()
     {
         $view = $this->getView();
+        $view->setBreadcrumb($this->getParentModule()->name, ['index', 'type' => static::getModule()->defaultEntryType]);
+
         $params = Yii::$app->getRequest()->get();
         unset($params['id']);
 
         if ($this->model instanceof Entry) {
-            $view->setBreadcrumb($this->getParentModule()->name, ['index', 'type' => static::getModule()->defaultEntryType]);
-
             if ($this->showEntryTypes) {
                 $view->setBreadcrumb(Entry::getTypes()[$this->model->type]['plural'] ?? Entry::getTypes()[$this->model->type]['name'], array_merge($params, ['index', 'type' => $this->model->type]));
             }
-        } else {
-            $view->setBreadcrumb($this->getParentModule()->name, ['index']);
         }
     }
 
