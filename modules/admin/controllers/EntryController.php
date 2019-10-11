@@ -83,14 +83,15 @@ class EntryController extends Controller
     {
         $entry = new Entry;
         $entry->type = $type ?: static::getModule()->defaultEntryType;
+        $request = Yii::$app->getRequest();
 
         if (static::getModule()->enabledNestedEntries) {
             $entry->parent_id = $id;
         }
 
-        if ($entry->load(Yii::$app->getRequest()->post()) && $entry->insert()) {
+        if ($entry->load($request->post()) && $entry->insert()) {
             $this->success(Yii::t('cms', 'The entry was created.'));
-            return $this->redirect(['update', 'id' => $entry->id]);
+            return $this->redirect(array_merge($request->get(), ['update', 'id' => $entry->id]));
         }
 
         /** @noinspection MissedViewInspection */
@@ -109,14 +110,15 @@ class EntryController extends Controller
             throw new NotFoundHttpException;
         }
 
-        if ($entry->load(Yii::$app->getRequest()->post())) {
+        $request = Yii::$app->getRequest();
 
+        if ($entry->load($request->post())) {
             if ($entry->update()) {
                 $this->success(Yii::t('cms', 'The entry was updated.'));
             }
 
             if (!$entry->hasErrors()) {
-                return $this->redirect(['update', 'id' => $entry->id]);
+                return $this->redirect(array_merge($request->get(), ['update', 'id' => $entry->id]));
             }
         }
 
@@ -138,7 +140,7 @@ class EntryController extends Controller
 
         if ($entry->delete()) {
             $this->success(Yii::t('cms', 'The entry was deleted.'));
-            return $this->redirect(['index']);
+            return $this->redirect(array_merge(Yii::$app->getRequest()->get(), ['index']));
         }
 
         $errors = $entry->getFirstErrors();
