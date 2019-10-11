@@ -8,7 +8,6 @@
  */
 
 $this->setTitle(Yii::t('cms', 'Create New Section'));
-$this->setBreadcrumb(Yii::t('cms', 'Entries'), ['entry/index']);
 
 use davidhirtz\yii2\cms\modules\admin\widgets\nav\Submenu;
 use davidhirtz\yii2\skeleton\helpers\Html;

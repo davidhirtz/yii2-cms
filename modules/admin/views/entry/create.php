@@ -12,7 +12,6 @@ use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
 
 $this->setTitle(Yii::t('cms', 'Create New Entry'));
-$this->setBreadcrumb(Yii::t('cms', 'Entries'), ['index']);
 ?>
 
 <?= Submenu::widget([

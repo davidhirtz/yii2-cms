@@ -14,7 +14,6 @@ use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
 use davidhirtz\yii2\skeleton\widgets\forms\DeleteActiveForm;
 
 $this->setTitle(Yii::t('cms', 'Edit Entry'));
-$this->setBreadcrumb(Yii::t('cms', 'Entries'), ['index']);
 ?>
 
 <?= Submenu::widget([

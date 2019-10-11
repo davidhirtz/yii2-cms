@@ -184,7 +184,7 @@ class EntryGridView extends GridView
             'attribute' => 'type',
             'visible' => count(Entry::getTypes()) > 1,
             'content' => function (Entry $entry) {
-                return Html::a($entry->getTypeName(), ['update', 'id' => $entry->id]);
+                return Html::a($entry->getTypeName(), $this->getRoute($entry));
             }
         ];
     }
@@ -198,7 +198,7 @@ class EntryGridView extends GridView
             'attribute' => $this->getModel()->getI18nAttributeName('name'),
             'content' => function (Entry $entry) {
                 $html = Html::markKeywords(Html::encode($entry->getI18nAttribute('name')), $this->search);
-                $html = Html::tag('strong', Html::a($html, ['update', 'id' => $entry->id]));
+                $html = Html::tag('strong', Html::a($html, $this->getRoute($entry)));
 
                 if ($this->showUrl) {
                     $html .= $this->getUrl($entry);
@@ -289,7 +289,7 @@ class EntryGridView extends GridView
                     $buttons[] = Html::tag('span', FAS::icon('arrows-alt'), ['class' => 'btn btn-secondary sortable-handle']);
                 }
 
-                $buttons[] = Html::a(FAS::icon('wrench'), ['update', 'id' => $entry->id], ['class' => 'btn btn-secondary d-none d-md-inline-block']);
+                $buttons[] = Html::a(FAS::icon('wrench'), $this->getRoute($entry), ['class' => 'btn btn-secondary d-none d-md-inline-block']);
                 return Html::buttons($buttons);
             }
         ];
@@ -367,6 +367,15 @@ class EntryGridView extends GridView
     {
         $url = Url::to($entry->getRoute(), true);
         return Html::tag('div', Html::a($url, $url, ['target' => '_blank']), ['class' => 'd-none d-md-block small']);
+    }
+
+    /**
+     * @param Entry $entry
+     * @return array
+     */
+    public function getRoute($entry):array
+    {
+        return array_merge(Yii::$app->getRequest()->get(), ['update', 'id' => $entry->id]);
     }
 
     /**

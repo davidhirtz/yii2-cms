@@ -8,7 +8,6 @@
  */
 
 $this->setTitle(Yii::t('cms', 'Update Section'));
-$this->setBreadcrumb(Yii::t('cms', 'Entries'), ['entry/index']);
 
 use davidhirtz\yii2\cms\modules\admin\widgets\grid\AssetGridView;
 use davidhirtz\yii2\cms\modules\admin\widgets\nav\Submenu;

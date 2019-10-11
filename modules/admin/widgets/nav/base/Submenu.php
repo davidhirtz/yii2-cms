@@ -34,6 +34,11 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
     public $showEntryTypes = false;
 
     /**
+     * @var string
+     */
+    private $_parentModule;
+
+    /**
      * Initializes the nav items.
      */
     public function init()
@@ -47,12 +52,11 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
         }
 
         if (!$this->title) {
-            /** @var Module $module */
-            $module = Yii::$app->getModule('admin')->getModule('cms');
-            $this->title = $this->model instanceof Entry ? Html::a($this->model->getI18nAttribute('name'), ['/admin/entry/update', 'id' => $this->model->id]) : Html::a($module->name, $module->url);
+            $this->title = $this->model instanceof Entry ? Html::a($this->model->getI18nAttribute('name'), ['/admin/entry/update', 'id' => $this->model->id]) : Html::a($this->getParentModule()->name, $this->getParentModule()->url);
         }
 
         $this->items = array_merge($this->items, $this->model instanceof Entry ? $this->getEntryItems() : $this->getDefaultItems());
+        $this->setBreadcrumbs();
 
         parent::init();
     }
@@ -161,5 +165,35 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
         }
 
         return $items;
+    }
+
+    /**
+     * Sets breadcrumbs.
+     */
+    protected function setBreadcrumbs()
+    {
+        $view = $this->getView();
+        $params = Yii::$app->getRequest()->get();
+        unset($params['id']);
+
+        if ($this->model instanceof Entry) {
+            $view->setBreadcrumb($this->getParentModule()->name, array_merge($params, ['index', 'type' => static::getModule()->defaultEntryType]));
+
+            if($this->showEntryTypes && $this->model->type != static::getModule()->defaultEntryType) {
+                $view->setBreadcrumb(Entry::getTypes()[$this->model->type]['plural'] ?? Entry::getTypes()[$this->model->type]['name'], array_merge($params, ['index', 'type' => $this->model->type]));
+            }
+        }
+    }
+
+    /**
+     * @return Module
+     */
+    protected function getParentModule(): Module
+    {
+        if ($this->_parentModule === null) {
+            $this->_parentModule = Yii::$app->getModule('admin')->getModule('cms');
+        }
+
+        return $this->_parentModule;
     }
 }

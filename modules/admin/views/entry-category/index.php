@@ -8,7 +8,6 @@
  */
 
 $this->setTitle(Yii::t('cms', 'Categories'));
-$this->setBreadcrumb(Yii::t('cms', 'Entries'), ['entry/index']);
 
 use davidhirtz\yii2\cms\modules\admin\widgets\grid\EntryCategoryGridView;
 use davidhirtz\yii2\cms\modules\admin\widgets\nav\Submenu;
