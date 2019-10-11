@@ -177,11 +177,13 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
         unset($params['id']);
 
         if ($this->model instanceof Entry) {
-            $view->setBreadcrumb($this->getParentModule()->name, array_merge($params, ['index', 'type' => static::getModule()->defaultEntryType]));
+            $view->setBreadcrumb($this->getParentModule()->name, ['index', 'type' => static::getModule()->defaultEntryType]);
 
-            if($this->showEntryTypes && $this->model->type != static::getModule()->defaultEntryType) {
+            if ($this->showEntryTypes) {
                 $view->setBreadcrumb(Entry::getTypes()[$this->model->type]['plural'] ?? Entry::getTypes()[$this->model->type]['name'], array_merge($params, ['index', 'type' => $this->model->type]));
             }
+        } else {
+            $view->setBreadcrumb($this->getParentModule()->name, ['index']);
         }
     }
 
