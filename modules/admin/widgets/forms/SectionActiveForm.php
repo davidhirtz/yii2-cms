@@ -30,7 +30,7 @@ class SectionActiveForm extends ActiveForm
                 ['status', 'dropDownList', ArrayHelper::getColumn(Section::getStatuses(), 'name')],
                 ['type', 'dropDownList', ArrayHelper::getColumn(Section::getTypes(), 'name')],
                 ['name'],
-                ['content', ['options' => ['style' => !$this->model->contentType ? 'display:none' : null]], $this->model->contentType === 'html' ? CKEditor::class : 'textarea'],
+                ['content', ['options' => ['style' => !$this->model->contentType ? 'display:none' : null]], $this->model->contentType === 'html' ? CKEditor::class : 'textarea', ['validator' => $this->model->contentType === 'html' ? $this->model->htmlValidator : null]],
                 ['-'],
                 ['slug', ['enableClientValidation' => false], 'url'],
             ];

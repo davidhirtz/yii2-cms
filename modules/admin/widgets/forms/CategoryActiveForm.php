@@ -43,14 +43,13 @@ class CategoryActiveForm extends ActiveForm
                 ['parent_id', ['visible' => static::getModule()->enabledNestedEntries]],
                 ['type', 'dropDownList', ArrayHelper::getColumn($this->model::getTypes(), 'name')],
                 ['name'],
-                ['content', ['options' => ['style' => !$this->model->contentType ? 'display:none' : null]], $this->model->contentType === 'html' ? CKEditor::class : 'textarea'],
+                ['content', ['options' => ['style' => !$this->model->contentType ? 'display:none' : null]], $this->model->contentType === 'html' ? CKEditor::class : 'textarea', ['validator' => $this->model->contentType === 'html' ? $this->model->htmlValidator : null]],
                 ['-'],
                 ['title'],
                 ['description', 'textarea'],
                 ['slug', ['enableClientValidation' => false], 'url'],
             ];
         }
-
 
         parent::init();
     }

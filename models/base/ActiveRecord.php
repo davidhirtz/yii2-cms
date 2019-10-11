@@ -34,9 +34,10 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         ModuleTrait;
 
     /**
-     * @var string
+     * @var string|array with the first value containing the validator class, following
+     * keys can be used to configure the validator.
      */
-    public $htmlValidator='davidhirtz\yii2\skeleton\validators\HtmlValidator';
+    public $htmlValidator = 'davidhirtz\yii2\skeleton\validators\HtmlValidator';
 
     /**
      * @var bool|string
@@ -68,10 +69,7 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
                 'validateType',
                 'skipOnEmpty' => false,
             ],
-            [
-                $this->getI18nAttributeNames(['content']),
-                $this->contentType=='html' ? $this->htmlValidator : 'safe',
-            ],
+            array_merge([$this->getI18nAttributeNames(['content'])], (array)($this->contentType == 'html' ? $this->htmlValidator : 'safe')),
         ]);
     }
 
