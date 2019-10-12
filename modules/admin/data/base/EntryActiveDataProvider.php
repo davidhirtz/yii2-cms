@@ -28,11 +28,6 @@ class EntryActiveDataProvider extends ActiveDataProvider
     public $category;
 
     /**
-     * @var Entry
-     */
-    public $entry;
-
-    /**
      * @var string
      */
     public $searchString;
@@ -82,10 +77,6 @@ class EntryActiveDataProvider extends ActiveDataProvider
 
         if ($this->searchString) {
             $this->query->matching($this->searchString);
-        }
-
-        if ($this->getModule()->enableNestedEntries) {
-            $this->query->andWhere(['parent_id' => $this->entry ? $this->entry->id : null]);
         }
     }
 

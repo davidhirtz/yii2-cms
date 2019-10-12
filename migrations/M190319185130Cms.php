@@ -51,16 +51,7 @@ class M190319185130Cms extends Migration
             ], $this->getTableOptions());
 
             $tableName = $schema->getRawTableName(Entry::tableName());
-
-            if($this->getModule()->enableNestedEntries) {
-                $this->addColumn(Entry::tableName(), 'parent_id', $this->integer()->unsigned()->null()->after('type'));
-
-                $this->createIndex('parent_id', Entry::tableName(), ['parent_id', 'status']);
-                $this->addForeignKey($tableName . '_parent_id_ibfk', Entry::tableName(), 'parent_id', Entry::tableName(), 'id', 'SET NULL');
-            }
-
-            // Todo keep simple slug?!?
-            $this->createIndex('slug', Entry::tableName(), $this->getModule()->enableNestedEntries ? ['slug', 'parent_id'] : 'slug', true);
+            $this->createIndex('slug', Entry::tableName(), 'slug', true);
             $this->addForeignKey($tableName . '_updated_by_ibfk', Entry::tableName(), 'updated_by_user_id', User::tableName(), 'id', 'SET NULL');
 
             $this->addI18nColumns(Entry::tableName(), (new Entry)->i18nAttributes);
