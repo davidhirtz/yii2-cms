@@ -28,11 +28,6 @@ class Module extends \yii\base\Module
     public $categoryCachedQueryDuration = 60;
 
     /**
-     * @var bool
-     */
-    public $enableNestedEntries = false;
-
-    /**
      * @var bool whether entries should have sections
      */
     public $enableSections = true;

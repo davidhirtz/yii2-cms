@@ -49,13 +49,12 @@ class EntryController extends Controller
     }
 
     /**
-     * @param int $id
      * @param int $category
      * @param int $type
      * @param string $q
      * @return string
      */
-    public function actionIndex($id = null, $category = null, $type = null, $q = null)
+    public function actionIndex($category = null, $type = null, $q = null)
     {
         if (!$type && static::getModule()->defaultEntryType) {
             return $this->redirect(Url::current(['type' => static::getModule()->defaultEntryType]));
@@ -63,7 +62,6 @@ class EntryController extends Controller
 
         $provider = new EntryActiveDataProvider([
             'category' => $category ? Category::findOne($category) : null,
-            'entry' => $id ? Entry::findOne($id) : null,
             'searchString' => $q,
             'type' => $type,
         ]);
@@ -75,19 +73,14 @@ class EntryController extends Controller
     }
 
     /**
-     * @param int $id
      * @param int $type
      * @return string|\yii\web\Response
      */
-    public function actionCreate($id = null, $type = null)
+    public function actionCreate($type = null)
     {
         $entry = new Entry;
         $entry->type = $type ?: static::getModule()->defaultEntryType;
         $request = Yii::$app->getRequest();
-
-        if (static::getModule()->enableNestedEntries) {
-            $entry->parent_id = $id;
-        }
 
         if ($entry->load($request->post()) && $entry->insert()) {
             $this->success(Yii::t('cms', 'The entry was created.'));
@@ -148,12 +141,11 @@ class EntryController extends Controller
     }
 
     /**
-     * @param int $id
+     * Order entries based on position.
      */
-    public function actionOrder($id = null)
+    public function actionOrder()
     {
         $entries = Entry::find()->select(['id', 'position'])
-            ->filterWhere(['parent_id' => $id])
             ->orderBy(['position' => SORT_ASC])
             ->all();
 

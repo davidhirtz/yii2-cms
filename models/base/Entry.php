@@ -11,7 +11,6 @@ use davidhirtz\yii2\cms\models\queries\SectionQuery;
 use davidhirtz\yii2\cms\modules\admin\widgets\forms\EntryActiveForm;
 use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\datetime\DateTimeValidator;
-use davidhirtz\yii2\skeleton\db\NestedTreeTrait;
 use Yii;
 use yii\base\Widget;
 use yii\helpers\Inflector;
@@ -20,7 +19,6 @@ use yii\helpers\Inflector;
  * Class Entry.
  * @package davidhirtz\yii2\cms\models\base
  *
- * @property int $parent_id
  * @property int $position
  * @property string $name
  * @property string $slug
@@ -56,11 +54,6 @@ class Entry extends ActiveRecord
     {
         return array_merge(parent::rules(), $this->getI18nRules([
             [
-                ['parent_id'],
-                'validateParentId',
-                'skipOnEmpty' => false,
-            ],
-            [
                 ['name', 'slug'],
                 'required',
             ],
@@ -82,8 +75,6 @@ class Entry extends ActiveRecord
             [
                 ['slug'],
                 'unique',
-                'targetAttribute' => static::getModule()->enableNestedEntries ? ['slug', 'parent_id'] : 'slug',
-                'comboNotUnique' => Yii::t('yii', '{attribute} "{value}" has already been taken.'),
             ],
             [
                 ['publish_date'],
@@ -175,7 +166,7 @@ class Entry extends ActiveRecord
      */
     public function findSiblings(): EntryQuery
     {
-        return static::getModule()->enableNestedEntries ? $this->find()->where(['parent_id' => $this->parent_id]) : $this->find();
+        return $this->find();
     }
 
     /**
