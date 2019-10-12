@@ -83,7 +83,7 @@ class M190319185130Cms extends Migration
             ], $this->getTableOptions());
 
             $this->createIndex('entry_id', Section::tableName(), ['entry_id', 'status', 'position']);
-            $this->createIndex('slug', Section::tableName(), $this->getModule()->enabledNestedEntries ? ['slug', 'parent_id'] : 'slug', true);
+            $this->createIndex('slug', Section::tableName(), 'slug', true);
 
             $tableName = $schema->getRawTableName(Section::tableName());
             $this->addForeignKey($tableName . '_entry_id_ibfk', Section::tableName(), 'entry_id', Entry::tableName(), 'id', 'CASCADE');
