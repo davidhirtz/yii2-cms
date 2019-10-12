@@ -28,10 +28,9 @@ class Module extends \yii\base\Module
     public $categoryCachedQueryDuration = 60;
 
     /**
-     * @todo currently not fully implemented
      * @var bool
      */
-    public $enabledNestedEntries = false;
+    public $enableNestedEntries = false;
 
     /**
      * @var bool whether entries should have sections

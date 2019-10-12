@@ -13,6 +13,11 @@ use davidhirtz\yii2\skeleton\web\UrlManager;
 class UrlRule extends \yii\web\UrlRule
 {
     /**
+     * @var string
+     */
+    public $paramName = 'category';
+
+    /**
      * @var bool
      */
     public $encodeParams = false;
@@ -31,7 +36,7 @@ class UrlRule extends \yii\web\UrlRule
     {
         if (!static::$mismatch) {
             $placeholders = array_flip($this->placeholders);
-            $placeholder = isset($placeholders['category']) ? $placeholders['category'] : null;
+            $placeholder = $placeholders[$this->paramName] ?? null;
 
             if ($placeholder) {
                 $matches = preg_split('~(?<!\\\)\/~', str_replace(['#^', '$#u'], '', $this->pattern));
@@ -57,7 +62,7 @@ class UrlRule extends \yii\web\UrlRule
                     $slug = implode('/', array_splice($parts, $start, $branch));
 
                     $this->pattern = str_replace($pattern, $slug, $this->pattern);
-                    $request->setQueryParams(array_merge($request->getQueryParams(), ['category' => $slug]));
+                    $request->setQueryParams(array_merge($request->getQueryParams(), [$this->paramName => $slug]));
 
                     return parent::parseRequest($manager, $request);
                 }

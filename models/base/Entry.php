@@ -11,6 +11,7 @@ use davidhirtz\yii2\cms\models\queries\SectionQuery;
 use davidhirtz\yii2\cms\modules\admin\widgets\forms\EntryActiveForm;
 use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\datetime\DateTimeValidator;
+use davidhirtz\yii2\skeleton\db\NestedTreeTrait;
 use Yii;
 use yii\base\Widget;
 use yii\helpers\Inflector;
@@ -20,8 +21,6 @@ use yii\helpers\Inflector;
  * @package davidhirtz\yii2\cms\models\base
  *
  * @property int $parent_id
- * @property int $lft
- * @property int $rgt
  * @property int $position
  * @property string $name
  * @property string $slug
@@ -57,6 +56,11 @@ class Entry extends ActiveRecord
     {
         return array_merge(parent::rules(), $this->getI18nRules([
             [
+                ['parent_id'],
+                'validateParentId',
+                'skipOnEmpty' => false,
+            ],
+            [
                 ['name', 'slug'],
                 'required',
             ],
@@ -78,7 +82,7 @@ class Entry extends ActiveRecord
             [
                 ['slug'],
                 'unique',
-                'targetAttribute' => static::getModule()->enabledNestedEntries ? ['slug', 'parent_id'] : 'slug',
+                'targetAttribute' => static::getModule()->enableNestedEntries ? ['slug', 'parent_id'] : 'slug',
                 'comboNotUnique' => Yii::t('yii', '{attribute} "{value}" has already been taken.'),
             ],
             [
@@ -103,7 +107,6 @@ class Entry extends ActiveRecord
 
         return parent::beforeValidate();
     }
-
 
     /**
      * @inheritdoc
@@ -172,7 +175,7 @@ class Entry extends ActiveRecord
      */
     public function findSiblings(): EntryQuery
     {
-        return static::getModule()->enabledNestedEntries ? $this->find()->where(['parent_id' => $this->parent_id]) : $this->find();
+        return static::getModule()->enableNestedEntries ? $this->find()->where(['parent_id' => $this->parent_id]) : $this->find();
     }
 
     /**
@@ -240,6 +243,7 @@ class Entry extends ActiveRecord
     }
 
     /**
+     * @todo
      * @return array
      */
     public function getRoute(): array
@@ -265,6 +269,7 @@ class Entry extends ActiveRecord
             'title' => Yii::t('cms', 'Meta title'),
             'description' => Yii::t('cms', 'Meta description'),
             'publish_date' => Yii::t('cms', 'Published'),
+            'branchCount' => Yii::t('cms', 'Entries'),
             'section_count' => Yii::t('cms', 'Sections'),
         ]);
     }

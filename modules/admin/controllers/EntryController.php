@@ -85,7 +85,7 @@ class EntryController extends Controller
         $entry->type = $type ?: static::getModule()->defaultEntryType;
         $request = Yii::$app->getRequest();
 
-        if (static::getModule()->enabledNestedEntries) {
+        if (static::getModule()->enableNestedEntries) {
             $entry->parent_id = $id;
         }
 

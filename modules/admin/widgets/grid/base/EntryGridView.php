@@ -56,6 +56,7 @@ class EntryGridView extends GridView
         'status',
         'type',
         'name',
+        //'branchCount',
         'section_count',
         'asset_count',
         'updated_at',
@@ -212,6 +213,23 @@ class EntryGridView extends GridView
             }
         ];
     }
+
+    /**
+     * @return array
+     */
+//    public function branchCountColumn()
+//    {
+//        return [
+//            'attribute' => 'branchCount',
+//            'visible' => static::getModule()->enableNestedEntries,
+//            'headerOptions' => ['class' => 'd-none d-md-table-cell text-center'],
+//            'contentOptions' => ['class' => 'd-none d-md-table-cell text-center'],
+//            'content' => function (Entry $entry) {
+//                return Html::a(Yii::$app->getFormatter()->asInteger($entry->getBranchCount()), ['index', 'id' => $entry->id], ['class' => 'badge']);
+//            }
+//        ];
+//    }
+
 
     /**
      * @return array

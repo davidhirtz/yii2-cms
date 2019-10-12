@@ -84,12 +84,8 @@ class EntryActiveDataProvider extends ActiveDataProvider
             $this->query->matching($this->searchString);
         }
 
-        if ($this->getModule()->enabledNestedEntries) {
-            if ($this->entry) {
-                $this->query->andWhere(['parent_id' => $this->entry->id]);
-            }
-
-            $this->query->orderBy(['lft' => SORT_ASC]);
+        if ($this->getModule()->enableNestedEntries) {
+            $this->query->andWhere(['parent_id' => $this->entry ? $this->entry->id : null]);
         }
     }
 
@@ -149,7 +145,6 @@ class EntryActiveDataProvider extends ActiveDataProvider
         return $this->query->orderBy && in_array(key($this->query->orderBy), [
                 EntryCategory::tableName() . '.[[position]]',
                 'position',
-                'lft',
             ]);
     }
 }

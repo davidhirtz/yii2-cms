@@ -40,7 +40,7 @@ class CategoryActiveForm extends ActiveForm
         if (!$this->fields) {
             $this->fields = [
                 ['status', 'dropDownList', ArrayHelper::getColumn($this->model::getStatuses(), 'name')],
-                ['parent_id', ['visible' => static::getModule()->enabledNestedEntries]],
+                ['parent_id'],
                 ['type', 'dropDownList', ArrayHelper::getColumn($this->model::getTypes(), 'name')],
                 ['name'],
                 ['content', ['options' => ['style' => !$this->model->contentType ? 'display:none' : null]], $this->model->contentType === 'html' ? CKEditor::class : 'textarea', ['validator' => $this->model->contentType === 'html' ? $this->model->htmlValidator : null]],
@@ -53,7 +53,6 @@ class CategoryActiveForm extends ActiveForm
 
         parent::init();
     }
-
 
     /**
      * @param array $options
