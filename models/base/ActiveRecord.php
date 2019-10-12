@@ -78,10 +78,12 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
      */
     public function beforeSave($insert)
     {
-        $this->attachBehaviors([
-            'BlameableBehavior' => 'davidhirtz\yii2\skeleton\behaviors\BlameableBehavior',
-            'TimestampBehavior' => 'davidhirtz\yii2\skeleton\behaviors\TimestampBehavior',
-        ]);
+        if (!$this->isAttributeChanged('updated_by_user_id')) {
+            // Only use BlameableBehavior if user id wasn't set by application.
+            $this->attachBehavior('BlameableBehavior', 'davidhirtz\yii2\skeleton\behaviors\BlameableBehavior');
+        }
+
+        $this->attachBehavior('TimestampBehavior', 'davidhirtz\yii2\skeleton\behaviors\TimestampBehavior');
 
         if ($insert) {
             $this->position = $this->findSiblings()->max('[[position]]') + 1;
