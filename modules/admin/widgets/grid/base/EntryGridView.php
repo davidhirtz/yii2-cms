@@ -58,7 +58,7 @@ class EntryGridView extends GridView
         'name',
         'section_count',
         'asset_count',
-        'updated_at',
+        'date',
         'buttons',
     ];
 
@@ -69,7 +69,6 @@ class EntryGridView extends GridView
     {
         if ($this->dataProvider->category) {
             $this->orderRoute = ['entry-category/order', 'category' => $this->dataProvider->category->id];
-
         }
 
         $enableCategories = static::getModule()->enableCategories && count(static::getCategories()) > 1;
@@ -241,6 +240,15 @@ class EntryGridView extends GridView
                 return Html::a(Yii::$app->getFormatter()->asInteger($entry->asset_count), ['update', 'id' => $entry->id, '#' => 'assets'], ['class' => 'badge']);
             }
         ];
+    }
+
+    /**
+     * @return array
+     */
+    public function dateColumn()
+    {
+        // The Query object reflects the initial order even if Sort changed the query.
+        return key($this->dataProvider->query->orderBy) === 'publish_date' ? $this->publishDateColumn() : $this->updatedAtColumn();
     }
 
     /**

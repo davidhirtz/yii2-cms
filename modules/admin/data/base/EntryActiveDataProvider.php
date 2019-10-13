@@ -116,7 +116,7 @@ class EntryActiveDataProvider extends ActiveDataProvider
                     'default' => SORT_DESC,
                 ],
             ],
-            'defaultOrder' => ['updated_at' => SORT_DESC],
+            'defaultOrder' => $this->query->orderBy ?: ['updated_at' => SORT_DESC],
         ]));
     }
 
