@@ -59,7 +59,7 @@ class EntryActiveForm extends ActiveForm
      */
     public function publishDateField()
     {
-        return $this->field($this->model, 'publish_date', ['inputTemplate' => '<div class="input-group">{input}<div class="input-group-append"><span class="input-group-text">' . Yii::$app->getUser()->getIdentity()->getTimezoneOffset() . '</span></div></div>'])->widget(DatePicker::class, [
+        return $this->field($this->model, 'publish_date', ['inputTemplate' => $this->appendInput(Yii::$app->getUser()->getIdentity()->getTimezoneOffset())])->widget(DatePicker::class, [
             'options' => ['class' => 'form-control', 'autocomplete' => 'off'],
             'language' => Yii::$app->language,
             'dateFormat' => 'php:Y-m-d H:i',
