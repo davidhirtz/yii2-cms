@@ -34,6 +34,11 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         ModuleTrait;
 
     /**
+     * @var bool whether slugs should not automatically be checked and processed.
+     */
+    public $customSlugBehavior = false;
+
+    /**
      * @var string|array with the first value containing the validator class, following
      * keys can be used to configure the validator.
      */

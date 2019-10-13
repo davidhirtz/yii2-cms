@@ -53,14 +53,14 @@ class Section extends ActiveRecord
                 'filter' => 'trim',
             ],
             [
-                ['slug'],
-                'string',
-                'max' => 100,
-            ],
-            [
                 ['name'],
                 'string',
                 'max' => 250,
+            ],
+            [
+                ['slug'],
+                'string',
+                'max' => 100,
             ],
             [
                 ['slug'],
@@ -86,7 +86,7 @@ class Section extends ActiveRecord
      */
     public function beforeValidate()
     {
-        if ($this->slug) {
+        if ($this->slug && !$this->customSlugBehavior) {
             $this->slug = Inflector::slug($this->slug);
         }
 

@@ -38,14 +38,15 @@ use yii\helpers\Inflector;
 class Entry extends ActiveRecord
 {
     /**
-     * @var bool
-     */
-    public $customSlugBehavior = false;
-
-    /**
      * @var bool|string
      */
     public $contentType = false;
+
+    /**
+     * @see \yii\validators\UniqueValidator::$targetAttribute
+     * @var string|array
+     */
+    public $slugTargetAttribute;
 
     /**
      * @inheritdoc
@@ -63,18 +64,19 @@ class Entry extends ActiveRecord
                 'filter' => 'trim',
             ],
             [
-                ['slug'],
-                'string',
-                'max' => 100,
-            ],
-            [
                 ['name', 'title', 'description'],
                 'string',
                 'max' => 250,
             ],
             [
                 ['slug'],
+                'string',
+                'max' => 100,
+            ],
+            [
+                ['slug'],
                 'unique',
+                'targetAttribute' => $this->slugTargetAttribute,
             ],
             [
                 ['publish_date'],

@@ -37,11 +37,6 @@ class Category extends ActiveRecord
     use NestedTreeTrait;
 
     /**
-     * @var bool
-     */
-    public $customSlugBehavior = false;
-
-    /**
      * @var bool|string
      */
     public $contentType = false;
@@ -78,14 +73,14 @@ class Category extends ActiveRecord
                 'filter' => 'trim',
             ],
             [
-                ['slug'],
-                'string',
-                'max' => 100,
-            ],
-            [
                 ['name', 'title', 'description'],
                 'string',
                 'max' => 250,
+            ],
+            [
+                ['slug'],
+                'string',
+                'max' => 100,
             ],
             [
                 ['slug'],
