@@ -234,7 +234,6 @@ class Entry extends ActiveRecord
     }
 
     /**
-     * @todo
      * @return array
      */
     public function getRoute(): array

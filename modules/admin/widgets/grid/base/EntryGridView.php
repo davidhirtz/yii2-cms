@@ -70,8 +70,6 @@ class EntryGridView extends GridView
         if ($this->dataProvider->category) {
             $this->orderRoute = ['entry-category/order', 'category' => $this->dataProvider->category->id];
 
-        } elseif ($this->dataProvider->entry) {
-            $this->orderRoute = ['order', 'id' => $this->dataProvider->entry->id];
         }
 
         $enableCategories = static::getModule()->enableCategories && count(static::getCategories()) > 1;
@@ -152,7 +150,7 @@ class EntryGridView extends GridView
      */
     protected function renderCreateEntryButton()
     {
-        return Html::a(Html::iconText('plus', Yii::t('cms', 'New Entry')), ['create', 'id' => $this->dataProvider->entry ? $this->dataProvider->entry->id : null, 'type' => $this->dataProvider->type], ['class' => 'btn btn-primary']);
+        return Html::a(Html::iconText('plus', Yii::t('cms', 'New Entry')), ['create', 'type' => $this->dataProvider->type], ['class' => 'btn btn-primary']);
     }
 
     /**
