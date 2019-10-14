@@ -2,8 +2,8 @@
 
 namespace davidhirtz\yii2\cms\controllers;
 
+use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\Entry;
-use davidhirtz\yii2\cms\models\queries\AssetQuery;
 use davidhirtz\yii2\media\Module;
 use davidhirtz\yii2\skeleton\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -18,10 +18,20 @@ class SiteController extends Controller
 {
 
     /**
+     * @param string $category
      * @return string|\yii\web\Response
+     * @todo
      */
-    public function actionIndex()
+    public function actionIndex($category = null)
     {
+        $category = Category::getBySlug($category);
+        $entries = [];
+
+        /** @noinspection MissedViewInspection */
+        return $this->render('index', [
+            'category' => $category,
+            'entries' => $entries,
+        ]);
     }
 
     /**
@@ -31,8 +41,9 @@ class SiteController extends Controller
     public function actionView($entry)
     {
         $entry = $this->getQuery()
-            ->with('sections')
-            ->whereLower([Entry::instance()->getI18nAttributeName('slug') => $entry])
+            ->whereSlug($entry)
+            ->withAssets()
+            ->withSections()
             ->limit(1)
             ->one();
 
@@ -54,11 +65,6 @@ class SiteController extends Controller
     protected function getQuery()
     {
         return Entry::find()
-            ->selectSiteAttributes()
-            ->with([
-                'assets' => function (AssetQuery $query) {
-                    $query->selectSiteAttributes()->withFiles();
-                },
-            ]);
+            ->selectSiteAttributes();
     }
 }

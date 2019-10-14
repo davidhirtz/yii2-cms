@@ -13,7 +13,7 @@ use davidhirtz\yii2\cms\models\Entry;
 class EntryQuery extends \davidhirtz\yii2\skeleton\db\ActiveQuery
 {
     /**
-     * @return $this
+     * @return EntryQuery
      */
     public function selectSiteAttributes()
     {
@@ -23,7 +23,7 @@ class EntryQuery extends \davidhirtz\yii2\skeleton\db\ActiveQuery
 
     /**
      * @param string $search
-     * @return $this
+     * @return EntryQuery
      */
     public function matching($search): EntryQuery
     {
@@ -33,5 +33,41 @@ class EntryQuery extends \davidhirtz\yii2\skeleton\db\ActiveQuery
         }
 
         return $this;
+    }
+
+    /**
+     * @param string $slug
+     * @return EntryQuery
+     */
+    public function whereSlug($slug)
+    {
+        return $this->whereLower([Entry::instance()->getI18nAttributeName('slug') => $slug]);
+    }
+
+    /**
+     * @return EntryQuery
+     */
+    public function withAssets()
+    {
+        return $this->with([
+            'assets' => function (AssetQuery $query) {
+                $query->selectSiteAttributes()
+                    ->enabled()
+                    ->withFiles();
+            },
+        ]);
+    }
+
+    /**
+     * @return EntryQuery
+     */
+    public function withSections()
+    {
+        return $this->with([
+            'sections' => function (SectionQuery $query) {
+                $query->selectSiteAttributes()
+                    ->enabled();
+            }
+        ]);
     }
 }

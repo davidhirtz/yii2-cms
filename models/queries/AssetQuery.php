@@ -4,7 +4,6 @@ namespace davidhirtz\yii2\cms\models\queries;
 
 use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\media\models\queries\FileQuery;
-use davidhirtz\yii2\media\models\queries\FolderQuery;
 
 /**
  * Class AssetQuery
@@ -31,11 +30,7 @@ class AssetQuery extends \davidhirtz\yii2\skeleton\db\ActiveQuery
         return $this->with([
             'file' => function (FileQuery $query) {
                 $query->selectSiteAttributes()
-                    ->with([
-                        'folder' => function (FolderQuery $query) {
-                            $query->selectSiteAttributes();
-                        }
-                    ]);
+                    ->withFolder();
             }
         ]);
     }
