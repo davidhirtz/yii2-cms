@@ -51,6 +51,10 @@ class EntryQuery extends \davidhirtz\yii2\skeleton\db\ActiveQuery
     {
         return $this->with([
             'assets' => function (AssetQuery $query) {
+                if (!isset($this->with['sections'])) {
+                    $query->andWhere(['section_id' => null]);
+                }
+
                 $query->selectSiteAttributes()
                     ->enabled()
                     ->withFiles();

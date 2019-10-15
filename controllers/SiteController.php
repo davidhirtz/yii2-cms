@@ -65,6 +65,7 @@ class SiteController extends Controller
     protected function getQuery()
     {
         return Entry::find()
-            ->selectSiteAttributes();
+            ->selectSiteAttributes()
+            ->enabled();
     }
 }
