@@ -33,7 +33,7 @@ use davidhirtz\yii2\skeleton\widgets\forms\DeleteActiveForm; ?>
 if ($section->getModule()->enableSectionAssets) {
     echo Panel::widget([
         'id' => 'assets',
-        'title' => Yii::t('cms', 'Assets'),
+        'title' => $section->getAttributeLabel('asset_count'),
         'content' => AssetGridView::widget([
             'parent' => $section,
         ]),
