@@ -183,16 +183,17 @@ class Asset extends \davidhirtz\yii2\cms\models\base\ActiveRecord
 
     /**
      * @param array|string $transformations
+     * @param string $extension
      * @return array|string
      */
-    public function getSrcset($transformations = null)
+    public function getSrcset($transformations = null, $extension = null)
     {
         $transformations = is_string($transformations) ? [$transformations] : $transformations;
         $srcset = [];
 
         if ($this->file->isTransformableImage()) {
             foreach ($transformations as $name) {
-                if ($url = $this->file->getTransformationUrl($name)) {
+                if ($url = $this->file->getTransformationUrl($name, $extension)) {
                     $option = $this->file->getTransformationOptions($name);
                     $srcset[isset($option['width']) ? $option['width'] : $this->file->width] = $url;
                 }
