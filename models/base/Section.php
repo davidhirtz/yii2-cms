@@ -133,7 +133,6 @@ class Section extends ActiveRecord
     public function getAssets(): AssetQuery
     {
         return $this->hasMany(Asset::class, ['section_id' => 'id'])
-            ->enabled()
             ->orderBy(['position' => SORT_ASC])
             ->indexBy('id')
             ->inverseOf('section');

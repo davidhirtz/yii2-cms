@@ -115,6 +115,10 @@ class EntryController extends Controller
             }
         }
 
+        $entry->populateRelation('assets', $entry->getAssets()
+            ->andWhere(['section_id' => null])
+            ->all());
+        
         /** @noinspection MissedViewInspection */
         return $this->render('update', [
             'entry' => $entry,
