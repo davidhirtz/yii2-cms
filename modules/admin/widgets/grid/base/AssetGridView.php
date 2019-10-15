@@ -82,7 +82,7 @@ class AssetGridView extends GridView
                     [
                         'content' => $this->getButtons(),
                         'visible' => Yii::$app->getUser()->can('upload'),
-                        'options' => ['class' => 'offset-md-3 offset-lg-4 col-md-8'],
+                        'options' => ['class' => 'offset-md-3 col-md-8'],
                     ],
                 ],
             ];
