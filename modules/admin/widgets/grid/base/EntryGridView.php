@@ -261,7 +261,7 @@ class EntryGridView extends GridView
             'headerOptions' => ['class' => 'd-none d-lg-table-cell'],
             'contentOptions' => ['class' => 'd-none d-lg-table-cell text-nowrap'],
             'content' => function (Entry $entry) {
-                return $this->dateFormat ? $entry->publish_date->format($this->dateFormat) : Timeago::tag($entry->publish_date);
+                return $this->dateFormat ? $entry->publish_date->format($this->dateFormat) : Yii::$app->getFormatter()->asDate($entry->publish_date);
             }
         ];
     }
