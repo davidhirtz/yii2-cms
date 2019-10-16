@@ -34,6 +34,16 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
     public $showEntryTypes = false;
 
     /**
+     * @var bool whether entry categories should be visible.
+     */
+    public $showEntryCategories = true;
+
+    /**
+     * @var bool whether entry sections should be visible.
+     */
+    public $showEntrySections = true;
+
+    /**
      * @var string
      */
     private $_parentModule;
@@ -49,6 +59,24 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
 
         if ($this->model instanceof Section) {
             $this->model = $this->model->entry;
+        }
+
+        if ($this->showEntryCategories) {
+            $this->showEntryCategories = static::getModule()->enableCategories;
+        }
+
+        if ($this->showEntrySections) {
+            $this->showEntrySections = static::getModule()->enableSections;
+        }
+
+        if ($this->model instanceof Entry) {
+            if ($this->showEntryCategories) {
+                $this->showEntryCategories = !isset(Entry::getTypes()[$this->model->type]['showCategories']) || Entry::getTypes()[$this->model->type]['showCategories'];
+            }
+
+            if ($this->showEntrySections) {
+                $this->showEntrySections = !isset(Entry::getTypes()[$this->model->type]['showSections']) || Entry::getTypes()[$this->model->type]['showSections'];
+            }
         }
 
         if (!$this->title) {
@@ -124,7 +152,7 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
             ],
         ];
 
-        if (static::getModule()->enableCategories) {
+        if ($this->showEntryCategories) {
             $items[] = [
                 'label' => Yii::t('cms', 'Categories'),
                 'url' => ['/admin/entry-category/index', 'entry' => $this->model->id],
@@ -144,7 +172,7 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
             ];
         }
 
-        if (static::getModule()->enableSections) {
+        if ($this->showEntrySections) {
             $items[] = [
                 'label' => Yii::t('cms', 'Sections'),
                 'url' => ['/admin/section/index', 'entry' => $this->model->id],
