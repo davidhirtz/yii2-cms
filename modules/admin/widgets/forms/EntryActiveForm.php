@@ -6,10 +6,9 @@ use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm;
 use davidhirtz\yii2\skeleton\widgets\forms\CKEditor;
+use davidhirtz\yii2\skeleton\widgets\jui\DatePicker;
 use Yii;
 use yii\helpers\ArrayHelper;
-use yii\jui\DatePicker;
-use yii\web\JsExpression;
 
 /**
  * Class EntryActiveForm.
@@ -61,11 +60,7 @@ class EntryActiveForm extends ActiveForm
     {
         return $this->field($this->model, 'publish_date', ['inputTemplate' => $this->appendInput(Yii::$app->getUser()->getIdentity()->getTimezoneOffset())])->widget(DatePicker::class, [
             'options' => ['class' => 'form-control', 'autocomplete' => 'off'],
-            'language' => Yii::$app->language,
-            'dateFormat' => 'php:Y-m-d H:i',
-            'clientOptions' => [
-                'onSelect' => new JsExpression('function(t){$(this).val(t.slice(0, 10)+" 00:00");}'),
-            ]
+            'showTime' => true,
         ]);
     }
 }
