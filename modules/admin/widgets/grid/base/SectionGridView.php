@@ -7,7 +7,7 @@ use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grid\GridView;
-use rmrevin\yii\fontawesome\FAS;
+use davidhirtz\yii2\skeleton\widgets\fontawesome\Icon;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\data\ArrayDataProvider;
@@ -95,7 +95,7 @@ class SectionGridView extends GridView
         return [
             'contentOptions' => ['class' => 'text-center'],
             'content' => function (Section $section) {
-                return FAS::icon($section->getStatusIcon(), [
+                return Icon::tag($section->getStatusIcon(), [
                     'data-toggle' => 'tooltip',
                     'title' => $section->getStatusName()
                 ]);
@@ -189,10 +189,10 @@ class SectionGridView extends GridView
                 $buttons = [];
 
                 if ($this->dataProvider->getCount() > 1) {
-                    $buttons[] = Html::tag('span', FAS::icon('arrows-alt'), ['class' => 'btn btn-secondary sortable-handle']);
+                    $buttons[] = Html::tag('span', Icon::tag('arrows-alt'), ['class' => 'btn btn-secondary sortable-handle']);
                 }
 
-                $buttons[] = Html::a(FAS::icon('wrench'), ['update', 'id' => $section->id], ['class' => 'btn btn-secondary']);
+                $buttons[] = Html::a(Icon::tag('wrench'), ['update', 'id' => $section->id], ['class' => 'btn btn-secondary']);
                 return Html::buttons($buttons);
             }
         ];

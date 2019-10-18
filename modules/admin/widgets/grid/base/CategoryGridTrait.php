@@ -5,7 +5,7 @@ namespace davidhirtz\yii2\cms\modules\admin\widgets\grid\base;
 
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\skeleton\helpers\Html;
-use rmrevin\yii\fontawesome\FAS;
+use davidhirtz\yii2\skeleton\widgets\fontawesome\Icon;
 use Yii;
 use yii\helpers\Url;
 
@@ -32,7 +32,7 @@ trait CategoryGridTrait
         return [
             'contentOptions' => ['class' => 'text-center'],
             'content' => function (Category $category) {
-                return FAS::icon($category->getStatusIcon(), [
+                return Icon::tag($category->getStatusIcon(), [
                     'data-toggle' => 'tooltip',
                     'title' => $category->getStatusName()
                 ]);

@@ -10,7 +10,7 @@ use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grid\GridView;
 use davidhirtz\yii2\timeago\Timeago;
-use rmrevin\yii\fontawesome\FAS;
+use davidhirtz\yii2\skeleton\widgets\fontawesome\Icon;
 
 /**
  * Class EntryCategoryGridView.
@@ -96,7 +96,7 @@ class EntryCategoryGridView extends GridView
         return [
             'contentOptions' => ['class' => 'text-right text-nowrap'],
             'content' => function (Category $category) {
-                return !$category->enableEntryCategory() ? '' : Html::buttons(Html::a(FAS::icon($category->entryCategory ? 'ban' : 'star'), [$category->entryCategory ? 'delete' : 'create', 'entry' => $this->dataProvider->entry->id, 'category' => $category->id], [
+                return !$category->enableEntryCategory() ? '' : Html::buttons(Html::a(Icon::tag($category->entryCategory ? 'ban' : 'star'), [$category->entryCategory ? 'delete' : 'create', 'entry' => $this->dataProvider->entry->id, 'category' => $category->id], [
                     'class' => 'btn btn-secondary',
                     'data-method' => 'post',
                 ]));

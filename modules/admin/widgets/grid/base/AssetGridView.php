@@ -10,7 +10,7 @@ use davidhirtz\yii2\media\assets\AdminAsset;
 use davidhirtz\yii2\media\modules\admin\widgets\forms\FileUpload;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grid\GridView;
-use rmrevin\yii\fontawesome\FAS;
+use davidhirtz\yii2\skeleton\widgets\fontawesome\Icon;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\data\ArrayDataProvider;
@@ -126,7 +126,7 @@ class AssetGridView extends GridView
         return [
             'contentOptions' => ['class' => 'text-center'],
             'content' => function (Asset $asset) {
-                return FAS::icon($asset->getStatusIcon(), [
+                return Icon::tag($asset->getStatusIcon(), [
                     'data-toggle' => 'tooltip',
                     'title' => $asset->getStatusName()
                 ]);
@@ -193,22 +193,22 @@ class AssetGridView extends GridView
                 $buttons = [];
 
                 if ($this->dataProvider->getCount() > 1) {
-                    $buttons[] = Html::tag('span', FAS::icon('arrows-alt'), ['class' => 'btn btn-secondary sortable-handle']);
+                    $buttons[] = Html::tag('span', Icon::tag('arrows-alt'), ['class' => 'btn btn-secondary sortable-handle']);
                 }
 
-                $buttons[] = Html::a(FAS::icon('image'), ['file/update', 'id' => $asset->file_id], [
+                $buttons[] = Html::a(Icon::tag('image'), ['file/update', 'id' => $asset->file_id], [
                     'class' => 'btn btn-secondary d-none d-md-inline-block',
                     'data-toggle' => 'tooltip',
                     'title' => Yii::t('media', 'Edit File'),
                 ]);
 
-                $buttons[] = Html::a(FAS::icon('wrench'), ['cms/asset/update', 'id' => $asset->id], [
+                $buttons[] = Html::a(Icon::tag('wrench'), ['cms/asset/update', 'id' => $asset->id], [
                     'class' => 'btn btn-secondary',
                     'data-toggle' => 'tooltip',
                     'title' => Yii::t('cms', 'Edit Asset'),
                 ]);
 
-                $buttons[] = Html::a(FAS::icon('trash'), ['cms/asset/delete', 'id' => $asset->id], [
+                $buttons[] = Html::a(Icon::tag('trash'), ['cms/asset/delete', 'id' => $asset->id], [
                     'class' => 'btn btn-danger btn-delete-asset d-none d-md-inline-block',
                     'data-confirm' => Yii::t('yii', 'Are you sure you want to remove this asset?'),
                     'data-ajax' => 1,

@@ -11,7 +11,7 @@ use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grid\GridView;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\ButtonDropdown;
 use davidhirtz\yii2\timeago\Timeago;
-use rmrevin\yii\fontawesome\FAS;
+use davidhirtz\yii2\skeleton\widgets\fontawesome\Icon;
 use Yii;
 use yii\helpers\Url;
 
@@ -160,7 +160,7 @@ class EntryGridView extends GridView
         return [
             'contentOptions' => ['class' => 'text-center'],
             'content' => function (Entry $entry) {
-                return FAS::icon($entry->getStatusIcon(), [
+                return Icon::tag($entry->getStatusIcon(), [
                     'data-toggle' => 'tooltip',
                     'title' => $entry->getStatusName()
                 ]);
@@ -292,10 +292,10 @@ class EntryGridView extends GridView
                 $buttons = [];
 
                 if ($this->isSortedByPosition()) {
-                    $buttons[] = Html::tag('span', FAS::icon('arrows-alt'), ['class' => 'btn btn-secondary sortable-handle']);
+                    $buttons[] = Html::tag('span', Icon::tag('arrows-alt'), ['class' => 'btn btn-secondary sortable-handle']);
                 }
 
-                $buttons[] = Html::a(FAS::icon('wrench'), $this->getRoute($entry), ['class' => 'btn btn-secondary d-none d-md-inline-block']);
+                $buttons[] = Html::a(Icon::tag('wrench'), $this->getRoute($entry), ['class' => 'btn btn-secondary d-none d-md-inline-block']);
                 return Html::buttons($buttons);
             }
         ];
