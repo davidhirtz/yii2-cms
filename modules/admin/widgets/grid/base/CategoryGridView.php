@@ -170,7 +170,7 @@ class CategoryGridView extends GridView
             'content' => function (Category $category) {
                 $buttons = [];
 
-                if ($this->getIsSortedByPosition()) {
+                if ($this->isSortedByPosition()) {
                     $buttons[] = Html::tag('span', FAS::icon('arrows-alt'), ['class' => 'btn btn-secondary sortable-handle']);
                 }
 
