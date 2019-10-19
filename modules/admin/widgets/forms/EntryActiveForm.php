@@ -4,8 +4,6 @@ namespace davidhirtz\yii2\cms\modules\admin\widgets\forms;
 
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
-use davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm;
-use davidhirtz\yii2\skeleton\widgets\forms\CKEditor;
 use davidhirtz\yii2\skeleton\widgets\jui\DatePicker;
 use Yii;
 use yii\helpers\ArrayHelper;
@@ -26,11 +24,6 @@ class EntryActiveForm extends ActiveForm
     public $slugMaxLength = 20;
 
     /**
-     * @var bool
-     */
-    public $showUnsafeAttributes = true;
-
-    /**
      * @inheritdoc
      */
     public function init()
@@ -40,7 +33,7 @@ class EntryActiveForm extends ActiveForm
                 ['status', 'dropDownList', ArrayHelper::getColumn($this->model::getStatuses(), 'name')],
                 ['type', 'dropDownList', ArrayHelper::getColumn($this->model::getTypes(), 'name')],
                 ['name'],
-                ['content', ['options' => ['style' => !$this->model->contentType ? 'display:none' : null]], $this->model->contentType === 'html' ? CKEditor::class : 'textarea', ['validator' => $this->model->contentType === 'html' ? $this->model->htmlValidator : null]],
+                ['content'],
                 ['publish_date'],
                 ['-'],
                 ['title'],

@@ -2,7 +2,6 @@
 namespace davidhirtz\yii2\cms\modules\admin\widgets\forms;
 
 use davidhirtz\yii2\cms\models\Asset;
-use davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm;
 use davidhirtz\yii2\skeleton\widgets\forms\CKEditor;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
@@ -16,11 +15,6 @@ use yii\helpers\Html;
 class AssetActiveForm extends ActiveForm
 {
     /**
-     * @var bool
-     */
-    public $showUnsafeAttributes = true;
-
-    /**
      * @inheritdoc
      */
     public function init()
@@ -32,7 +26,7 @@ class AssetActiveForm extends ActiveForm
                 ['status', 'dropDownList', ArrayHelper::getColumn(Asset::getStatuses(), 'name')],
                 ['type', 'dropDownList', ArrayHelper::getColumn(Asset::getTypes(), 'name')],
                 ['name'],
-                ['content', ['options' => ['style' => !$this->model->contentType ? 'display:none' : null]], $this->model->contentType === 'html' ? CKEditor::class : 'textarea'],
+                ['content'],
                 ['alt_text'],
                 ['link'],
             ];

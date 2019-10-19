@@ -5,8 +5,6 @@ namespace davidhirtz\yii2\cms\modules\admin\widgets\forms;
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\modules\admin\widgets\CategoryTrait;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
-use davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm;
-use davidhirtz\yii2\skeleton\widgets\forms\CKEditor;
 use Yii;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
@@ -21,11 +19,6 @@ use yii\helpers\Url;
 class CategoryActiveForm extends ActiveForm
 {
     use CategoryTrait, ModuleTrait;
-
-    /**
-     * @var bool
-     */
-    public $showUnsafeAttributes = true;
 
     /**
      * @var int
@@ -43,7 +36,7 @@ class CategoryActiveForm extends ActiveForm
                 ['parent_id'],
                 ['type', 'dropDownList', ArrayHelper::getColumn($this->model::getTypes(), 'name')],
                 ['name'],
-                ['content', ['options' => ['style' => !$this->model->contentType ? 'display:none' : null]], $this->model->contentType === 'html' ? CKEditor::class : 'textarea', ['validator' => $this->model->contentType === 'html' ? $this->model->htmlValidator : null]],
+                ['content'],
                 ['-'],
                 ['title'],
                 ['description', 'textarea'],

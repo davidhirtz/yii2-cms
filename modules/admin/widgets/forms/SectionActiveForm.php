@@ -1,9 +1,8 @@
 <?php
+
 namespace davidhirtz\yii2\cms\modules\admin\widgets\forms;
 
 use davidhirtz\yii2\cms\models\Section;
-use davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm;
-use davidhirtz\yii2\skeleton\widgets\forms\CKEditor;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 
@@ -16,11 +15,6 @@ use yii\helpers\Url;
 class SectionActiveForm extends ActiveForm
 {
     /**
-     * @var bool
-     */
-    public $showUnsafeAttributes = true;
-
-    /**
      * @inheritdoc
      */
     public function init()
@@ -30,7 +24,7 @@ class SectionActiveForm extends ActiveForm
                 ['status', 'dropDownList', ArrayHelper::getColumn(Section::getStatuses(), 'name')],
                 ['type', 'dropDownList', ArrayHelper::getColumn(Section::getTypes(), 'name')],
                 ['name'],
-                ['content', ['options' => ['style' => !$this->model->contentType ? 'display:none' : null]], $this->model->contentType === 'html' ? CKEditor::class : 'textarea', ['validator' => $this->model->contentType === 'html' ? $this->model->htmlValidator : null]],
+                ['content'],
                 ['-'],
                 ['slug', ['enableClientValidation' => false], 'url'],
             ];
