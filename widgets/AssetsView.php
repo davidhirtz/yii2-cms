@@ -3,7 +3,6 @@
 namespace davidhirtz\yii2\cms\widgets;
 
 use davidhirtz\yii2\cms\models\Asset;
-use Yii;
 use yii\base\Widget;
 use yii\helpers\Html;
 
@@ -64,11 +63,6 @@ class AssetsView extends Widget
     protected $sharedBreakpoints = [];
 
     /**
-     * @var array
-     */
-    private $_viewPath;
-
-    /**
      * @inheritdoc
      */
     public function init()
@@ -116,7 +110,7 @@ class AssetsView extends Widget
 
             if ($assets) {
                 $this->params['assets'] = $assets;
-                $content = Yii::$app->getView()->render($this->viewFile, $this->params);
+                $content = $this->render($this->viewFile, $this->params);
 
                 $options = $this->prepareOptions($this->options, $assets);
 
@@ -143,25 +137,5 @@ class AssetsView extends Widget
         }
 
         return $options;
-    }
-
-    /**
-     * @return string
-     */
-    public function getViewPath()
-    {
-        if ($this->_viewPath === null) {
-            $this->_viewPath = Yii::$app->controller->getViewPath();
-        }
-
-        return $this->viewPath;
-    }
-
-    /**
-     * @param string $path
-     */
-    public function setViewPath($path)
-    {
-        $this->_viewPath = $path;
     }
 }
