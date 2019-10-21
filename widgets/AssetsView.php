@@ -19,14 +19,14 @@ class AssetsView extends Widget
     public $assets;
 
     /**
+     * @var array containing additional view parameters.
+     */
+    public $params = [];
+
+    /**
      * @var string
      */
     public $viewFile = '_assets';
-
-    /**
-     * @var array
-     */
-    public $viewPath;
 
     /**
      * @var int
@@ -39,14 +39,14 @@ class AssetsView extends Widget
     public $limit;
 
     /**
-     * @var array containing css class as key and related asset type as value.
+     * @var array containing CSS class as key and related asset types as value.
+     *
+     * [
+     *     'hidden-md' => [Asset::TYPE_MOBILE],
+     *     'hidden block-md' => [Asset::TYPE_TABLET, Asset::TYPE_DESKTOP],
+     * ]
      */
     public $breakpoints = [];
-
-    /**
-     * @var array containing asset type as key and an array of shared types as value.
-     */
-    public $sharedBreakpoints = [];
 
     /**
      * @var array
@@ -59,13 +59,21 @@ class AssetsView extends Widget
     public $sliderClass = 'slider';
 
     /**
+     * @var array containing asset type as key and an array of shared types as value.
+     */
+    protected $sharedBreakpoints = [];
+
+    /**
+     * @var array
+     */
+    private $_viewPath;
+
+    /**
      * @inheritdoc
      */
     public function init()
     {
-        // Find shared breakpoints, this helps to determine whether we need multiple
-        // views for the breakpoints
-        if (!$this->sharedBreakpoints && $this->breakpoints) {
+        if ($this->breakpoints) {
             foreach ($this->breakpoints as $breakpoint) {
                 $this->sharedBreakpoints = $this->sharedBreakpoints ? array_intersect($this->sharedBreakpoints, $breakpoint) : $breakpoint;
             }
@@ -107,9 +115,8 @@ class AssetsView extends Widget
             }
 
             if ($assets) {
-                $content = Yii::$app->getView()->render($this->viewFile, [
-                    'assets' => $assets,
-                ]);
+                $this->params['assets'] = $assets;
+                $content = Yii::$app->getView()->render($this->viewFile, $this->params);
 
                 $options = $this->prepareOptions($this->options, $assets);
 
@@ -139,10 +146,22 @@ class AssetsView extends Widget
     }
 
     /**
-     * @return array|string
+     * @return string
      */
     public function getViewPath()
     {
-        return $this->viewPath === null ? Yii::$app->controller->getViewPath() : $this->viewPath;
+        if ($this->_viewPath === null) {
+            $this->_viewPath = Yii::$app->controller->getViewPath();
+        }
+
+        return $this->viewPath;
+    }
+
+    /**
+     * @param string $path
+     */
+    public function setViewPath($path)
+    {
+        $this->_viewPath = $path;
     }
 }
