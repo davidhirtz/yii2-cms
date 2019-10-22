@@ -45,7 +45,7 @@ class AssetsView extends Widget
      *     'hidden block-md' => [Asset::TYPE_TABLET, Asset::TYPE_DESKTOP],
      * ]
      */
-    public $breakpoints = [];
+    public $viewports = [];
 
     /**
      * @var array
@@ -60,16 +60,16 @@ class AssetsView extends Widget
     /**
      * @var array containing asset type as key and an array of shared types as value.
      */
-    protected $sharedBreakpoints = [];
+    protected $sharedViewports = [];
 
     /**
      * @inheritdoc
      */
     public function init()
     {
-        if ($this->breakpoints) {
-            foreach ($this->breakpoints as $breakpoint) {
-                $this->sharedBreakpoints = $this->sharedBreakpoints ? array_intersect($this->sharedBreakpoints, $breakpoint) : $breakpoint;
+        if ($this->viewports) {
+            foreach ($this->viewports as $viewport) {
+                $this->sharedViewports = $this->sharedViewports ? array_intersect($this->sharedViewports, $viewport) : $viewport;
             }
         }
 
@@ -82,17 +82,17 @@ class AssetsView extends Widget
     public function run()
     {
         $sameViewport = true;
-        $breakpoints = [];
+        $viewports = [];
         $output = '';
 
-        if ($this->breakpoints) {
+        if ($this->viewports) {
             foreach ($this->assets as $asset) {
-                foreach ($this->breakpoints as $cssClass => $types) {
+                foreach ($this->viewports as $cssClass => $types) {
                     if (in_array($asset->type, $types)) {
-                        $breakpoints[$cssClass][] = $asset;
+                        $viewports[$cssClass][] = $asset;
                     }
 
-                    if ($sameViewport && !in_array($asset->type, $this->sharedBreakpoints)) {
+                    if ($sameViewport && !in_array($asset->type, $this->sharedViewports)) {
                         $sameViewport = false;
                     }
                 }
@@ -100,10 +100,10 @@ class AssetsView extends Widget
         }
 
         if ($sameViewport) {
-            $breakpoints = [$this->assets];
+            $viewports = [$this->assets];
         }
 
-        foreach ($breakpoints as $cssClass => $assets) {
+        foreach ($viewports as $cssClass => $assets) {
             if ($this->start !== null || $this->limit !== null) {
                 $assets = array_slice($assets, (int)$this->start, $this->limit);
             }
@@ -111,7 +111,6 @@ class AssetsView extends Widget
             if ($assets) {
                 $this->params['assets'] = $assets;
                 $content = $this->render($this->viewFile, $this->params);
-
                 $options = $this->prepareOptions($this->options, $assets);
 
                 if (is_string($cssClass)) {
