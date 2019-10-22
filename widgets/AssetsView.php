@@ -63,7 +63,7 @@ class AssetsView extends Widget
     protected $sharedViewports = [];
 
     /**
-     * @inheritdoc
+     * Finds assets types that are represented in more than one viewport.
      */
     public function init()
     {
@@ -113,11 +113,8 @@ class AssetsView extends Widget
                 $content = $this->render($this->viewFile, $this->params);
                 $options = $this->prepareOptions($this->options, $assets);
 
-                if (is_string($cssClass)) {
-                    Html::addCssClass($options, $cssClass);
-                }
-
-                $output .= Html::tag('div', $content, $options);
+                $content = Html::tag('div', $content, $options);
+                $output .= is_string($cssClass) ? Html::tag('div', $content, ['class' => $cssClass]) : $content;
             }
         }
 
