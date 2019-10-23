@@ -4,7 +4,6 @@ namespace davidhirtz\yii2\cms\widgets;
 
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\Section;
-use Yii;
 use yii\base\Widget;
 
 /**
@@ -24,22 +23,17 @@ class SectionsView extends Widget
     public $sections;
 
     /**
-     * @var array
+     * @var array containing additional view parameters.
      */
     public $viewParams = [];
 
     /**
      * @var string
      */
-    public $defaultViewFile = '_sections';
+    public $viewFile = '_sections';
 
     /**
-     * @var array
-     */
-    public $viewPath;
-
-    /**
-     * Init.
+     * @inheritDoc
      */
     public function init()
     {
@@ -103,7 +97,7 @@ class SectionsView extends Widget
 
         foreach ($this->sections as $key => $section) {
             if (call_user_func($callback, $section, $sections)) {
-                if (!$viewFile) {
+                if ($viewFile === null) {
                     $viewFile = $this->getSectionViewFile($section);
                 }
 
@@ -124,11 +118,11 @@ class SectionsView extends Widget
      */
     protected function renderSectionsInternal($sections, $viewFile = null)
     {
-        if (!$viewFile) {
+        if ($viewFile === null) {
             $viewFile = $this->getSectionViewFile(current($sections));
         }
 
-        return $this->render($viewFile, array_merge($this->viewParams, [
+        return !$viewFile ? '' : $this->render($viewFile, array_merge($this->viewParams, [
             'sections' => $sections,
         ]));
     }
@@ -139,14 +133,15 @@ class SectionsView extends Widget
      */
     protected function getSectionViewFile($section)
     {
-        return isset(Section::getTypes()[$section->type]['viewFile']) ? Section::getTypes()[$section->type]['viewFile'] : $this->defaultViewFile;
+        return Section::getTypes()[$section->type]['viewFile'] ?? $this->viewFile;
     }
 
     /**
+     * Override Widget::getViewPath() to set current controller's context.
      * @return array|string
      */
     public function getViewPath()
     {
-        return $this->viewPath === null ? Yii::$app->controller->getViewPath() : $this->viewPath;
+        return \Yii::$app->controller->getViewPath();
     }
 }

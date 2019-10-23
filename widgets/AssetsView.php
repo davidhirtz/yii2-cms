@@ -20,7 +20,7 @@ class AssetsView extends Widget
     /**
      * @var array containing additional view parameters.
      */
-    public $params = [];
+    public $viewParams = [];
 
     /**
      * @var string
@@ -109,8 +109,8 @@ class AssetsView extends Widget
             }
 
             if ($assets) {
-                $this->params['assets'] = $assets;
-                $content = $this->render($this->viewFile, $this->params);
+                $this->viewParams['assets'] = $assets;
+                $content = $this->render($this->viewFile, $this->viewParams);
                 $options = $this->prepareOptions($this->options, $assets);
 
                 $content = Html::tag('div', $content, $options);
@@ -133,5 +133,14 @@ class AssetsView extends Widget
         }
 
         return $options;
+    }
+
+    /**
+     * Override Widget::getViewPath() to set current controller's context.
+     * @return array|string
+     */
+    public function getViewPath()
+    {
+        return \Yii::$app->controller->getViewPath();
     }
 }
