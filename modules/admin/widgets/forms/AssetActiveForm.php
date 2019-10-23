@@ -1,8 +1,8 @@
 <?php
+
 namespace davidhirtz\yii2\cms\modules\admin\widgets\forms;
 
 use davidhirtz\yii2\cms\models\Asset;
-use davidhirtz\yii2\skeleton\widgets\forms\CKEditor;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
@@ -41,7 +41,7 @@ class AssetActiveForm extends ActiveForm
      */
     public function thumbnailField()
     {
-        $file=$this->model->file;
-        return $file->hasPreview() ? $this->row($this->offset(Html::img($file->folder->getUploadUrl() . $file->getFilename()))) : '';
+        $file = $this->model->file;
+        return $file->hasPreview() ? $this->row($this->offset(Html::img($file->folder->getUploadUrl() . $file->getFilename(), ['class' => 'img-transparent']))) : '';
     }
 }
