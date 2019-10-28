@@ -177,7 +177,6 @@ class Category extends ActiveRecord
         return static::find()
             ->selectSiteAttributes()
             ->replaceI18nAttributes()
-            ->enabled()
             ->indexBy('id')
             ->all();
     }

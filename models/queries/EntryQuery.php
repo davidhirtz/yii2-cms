@@ -56,7 +56,7 @@ class EntryQuery extends \davidhirtz\yii2\skeleton\db\ActiveQuery
                 }
 
                 $query->selectSiteAttributes()
-                    ->enabled()
+                    ->whereStatus()
                     ->withFiles();
             },
         ]);
@@ -70,7 +70,7 @@ class EntryQuery extends \davidhirtz\yii2\skeleton\db\ActiveQuery
         return $this->with([
             'sections' => function (SectionQuery $query) {
                 $query->selectSiteAttributes()
-                    ->enabled();
+                    ->whereStatus();
             }
         ]);
     }
