@@ -28,8 +28,7 @@ class EntryQuery extends \davidhirtz\yii2\skeleton\db\ActiveQuery
     public function matching($search): EntryQuery
     {
         if ($search = $this->sanitizeSearchString($search)) {
-            $tableName = $this->getModelInstance()::tableName();
-            $this->andWhere("{$tableName}.[[name]] LIKE :search", [':search' => "%{$search}%"]);
+            $this->andWhere(Entry::tableName() . '.[[name]] LIKE :search', [':search' => "%{$search}%"]);
         }
 
         return $this;
@@ -41,7 +40,7 @@ class EntryQuery extends \davidhirtz\yii2\skeleton\db\ActiveQuery
      */
     public function whereSlug($slug)
     {
-        return $this->whereLower([Entry::instance()->getI18nAttributeName('slug') => $slug]);
+        return $this->whereLower([Entry::tableName() . '.[[' . Entry::instance()->getI18nAttributeName('slug') . ']]' => $slug]);
     }
 
     /**
