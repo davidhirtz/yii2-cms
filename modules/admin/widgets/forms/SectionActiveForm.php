@@ -40,36 +40,16 @@ class SectionActiveForm extends ActiveForm
     {
         $html = '';
 
-        if ($url = $this->getBaseUrl()) {
-            $html .= $this->field($this->model, 'slug')->slug(['baseUrl' => $url]);
+        if ($route = $this->model->entry->getRoute()) {
+            $urlManager = Yii::$app->getUrlManager();
 
-            if ($this->model->isI18nAttribute('slug')) {
-                foreach (Yii::$app->getI18n()->languages as $language) {
-                    if ($language !== Yii::$app->sourceLanguage) {
-                        $html .= $this->field($this->model, $this->model->getI18nAttributeName('slug', $language))->slug(['baseUrl' => $this->getBaseUrl($language)]);
-                    }
-                }
+            foreach ($this->model->getI18nAttributeNames('slug') as $language => $attributeName) {
+                $route['language'] = $language;
+                $baseUrl = $this->model->entry->isEnabled() ? $urlManager->createAbsoluteUrl($route) : $urlManager->createDraftUrl($route);
+                $html .= $this->field($this->model, $attributeName)->slug(['baseUrl' => $baseUrl]);
             }
         }
 
         return $html;
-    }
-
-    /**
-     * @param null $language
-     * @return bool|string
-     */
-    private function getBaseUrl($language = null)
-    {
-        if ($route = $this->model->entry->getRoute()) {
-            if ($language) {
-                $route['language'] = $language;
-            }
-
-            $urlManager = Yii::$app->getUrlManager();
-            return $this->model->entry->isEnabled() ? $urlManager->createAbsoluteUrl($route) : $urlManager->createDraftUrl($route);
-        }
-
-        return false;
     }
 }
