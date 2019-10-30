@@ -7,28 +7,29 @@
  * @var \davidhirtz\yii2\cms\models\Asset $asset
  */
 
-$this->setTitle(Yii::t('cms', 'Edit Asset'));
-$this->setBreadcrumb(Yii::t('cms', 'Entries'), ['/admin/entry/index']);
-
-if ($asset->section_id) {
-    $this->setBreadcrumbs([
-        Yii::t('cms', 'Sections') => ['/admin/section/index', 'entry' => $asset->entry_id],
-        Yii::t('cms', 'Assets') => ['/admin/section/update', 'id' => $asset->section_id, '#' => 'assets'],
-    ]);
-} else {
-    $this->setBreadcrumb(Yii::t('cms', 'Assets'), ['/admin/entry/update', 'id' => $asset->section_id, '#' => 'assets']);
-}
-
 use davidhirtz\yii2\cms\modules\admin\widgets\nav\Submenu;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
 use davidhirtz\yii2\skeleton\widgets\forms\DeleteActiveForm;
+
+$this->setTitle(Yii::t('cms', 'Edit Asset'));
 
 ?>
 
 <?= Submenu::widget([
     'model' => $asset->getParent(),
 ]); ?>
+
+<?php
+if ($asset->section_id) {
+    $this->setBreadcrumbs([
+        Yii::t('cms', 'Sections') => ['/admin/section/index', 'entry' => $asset->entry_id],
+        Yii::t('cms', 'Assets') => ['/admin/section/update', 'id' => $asset->section_id, '#' => 'assets'],
+    ]);
+} else {
+    $this->setBreadcrumb(Yii::t('cms', 'Assets'), ['/admin/entry/update', 'id' => $asset->entry_id, '#' => 'assets']);
+}
+?>
 
 <?= Html::errorSummary($asset); ?>
 

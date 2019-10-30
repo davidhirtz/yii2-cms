@@ -300,6 +300,7 @@ class EntryGridView extends GridView
             }
         ];
     }
+
     /**
      * @return string
      */
@@ -368,17 +369,25 @@ class EntryGridView extends GridView
      * @param Entry $entry
      * @return string
      */
-    public function getUrl($entry)
+    public function getUrl($entry): string
     {
-        $url = Url::to($entry->getRoute(), true);
-        return Html::tag('div', Html::a($url, $url, ['target' => '_blank']), ['class' => 'd-none d-md-block small']);
+        if ($route = $entry->getRoute()) {
+            $urlManager = Yii::$app->getUrlManager();
+            $url = $entry->isEnabled() ? $urlManager->createAbsoluteUrl($route) : $urlManager->createDraftUrl($route);
+
+            if ($url) {
+                return Html::tag('div', Html::a($url, $url, ['target' => '_blank']), ['class' => 'd-none d-md-block small']);
+            }
+        }
+
+        return '';
     }
 
     /**
      * @param Entry $entry
      * @return array
      */
-    public function getRoute($entry):array
+    public function getRoute($entry): array
     {
         return array_merge(Yii::$app->getRequest()->get(), ['update', 'id' => $entry->id]);
     }

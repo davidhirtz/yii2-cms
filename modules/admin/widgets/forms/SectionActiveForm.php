@@ -3,8 +3,8 @@
 namespace davidhirtz\yii2\cms\modules\admin\widgets\forms;
 
 use davidhirtz\yii2\cms\models\Section;
+use Yii;
 use yii\helpers\ArrayHelper;
-use yii\helpers\Url;
 
 /**
  * Class SectionActiveForm.
@@ -26,7 +26,7 @@ class SectionActiveForm extends ActiveForm
                 ['name'],
                 ['content'],
                 ['-'],
-                ['slug', ['enableClientValidation' => false], 'url'],
+                ['slug'],
             ];
         }
 
@@ -34,11 +34,42 @@ class SectionActiveForm extends ActiveForm
     }
 
     /**
-     * @param mixed $attribute can be used to customize the base url per attribute
-     * @return string
+     * @return string|false
      */
-    public function getBaseUrl($attribute = null)
+    public function slugField()
     {
-        return trim(Url::to($this->model->entry->getRoute(), true), '/') . '#';
+        $html = '';
+
+        if ($url = $this->getBaseUrl()) {
+            $html .= $this->field($this->model, 'slug')->slug(['baseUrl' => $url]);
+
+            if ($this->model->isI18nAttribute('slug')) {
+                foreach (Yii::$app->getI18n()->languages as $language) {
+                    if ($language !== Yii::$app->sourceLanguage) {
+                        $html .= $this->field($this->model, $this->model->getI18nAttributeName('slug', $language))->slug(['baseUrl' => $this->getBaseUrl($language)]);
+                    }
+                }
+            }
+        }
+
+        return $html;
+    }
+
+    /**
+     * @param null $language
+     * @return bool|string
+     */
+    private function getBaseUrl($language = null)
+    {
+        if ($route = $this->model->entry->getRoute()) {
+            if ($language) {
+                $route['language'] = $language;
+            }
+
+            $urlManager = Yii::$app->getUrlManager();
+            return $this->model->entry->isEnabled() ? $urlManager->createAbsoluteUrl($route) : $urlManager->createDraftUrl($route);
+        }
+
+        return false;
     }
 }

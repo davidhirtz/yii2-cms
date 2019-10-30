@@ -74,7 +74,7 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
                 'validateType',
                 'skipOnEmpty' => false,
             ],
-            array_merge([$this->getI18nAttributeNames(['content'])], (array)($this->contentType == 'html' ? $this->htmlValidator : 'safe')),
+            array_merge([$this->getI18nAttributesNames(['content'])], (array)($this->contentType == 'html' ? $this->htmlValidator : 'safe')),
         ]);
     }
 
@@ -84,17 +84,24 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     public function beforeSave($insert)
     {
         if (!$this->isAttributeChanged('updated_by_user_id')) {
-            // Only use BlameableBehavior if user id wasn't set by application.
             $this->attachBehavior('BlameableBehavior', 'davidhirtz\yii2\skeleton\behaviors\BlameableBehavior');
         }
 
         $this->attachBehavior('TimestampBehavior', 'davidhirtz\yii2\skeleton\behaviors\TimestampBehavior');
 
         if ($insert) {
-            $this->position = $this->findSiblings()->max('[[position]]') + 1;
+            $this->position = $this->getMaxPosition() + 1;
         }
 
         return parent::beforeSave($insert);
+    }
+
+    /**
+     * @return int
+     */
+    public function getMaxPosition(): int
+    {
+        return (int)$this->findSiblings()->max('[[position]]');
     }
 
     /**

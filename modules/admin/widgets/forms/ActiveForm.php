@@ -29,7 +29,7 @@ class ActiveForm extends \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm
         $html = '';
 
         if ($this->model->contentType) {
-            foreach ($this->model->getI18nAttributeNames('content') as $attributeName) {
+            foreach ($this->model->getI18nAttributesNames('content') as $attributeName) {
                 $field = $this->field($this->model, $attributeName);
                 $html .= $this->model->contentType === 'html' ? $field->widget(CKEditor::class, $this->getContentConfig()) : $field->textarea();
             }

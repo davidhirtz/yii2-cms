@@ -66,7 +66,7 @@ class Asset extends \davidhirtz\yii2\cms\models\base\ActiveRecord
                 'validateEntryId',
             ],
             [
-                $this->getI18nAttributeNames(['name', 'alt_text', 'link']),
+                $this->getI18nAttributesNames(['name', 'alt_text', 'link']),
                 'string',
                 'max' => 250,
             ],

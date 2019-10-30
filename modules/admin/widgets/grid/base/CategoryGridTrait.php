@@ -7,7 +7,6 @@ use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\widgets\fontawesome\Icon;
 use Yii;
-use yii\helpers\Url;
 
 /**
  * Class CategoryGridTrait.
@@ -76,8 +75,16 @@ trait CategoryGridTrait
      */
     public function getUrl($category)
     {
-        $url = Url::to($category->getRoute(), true);
-        return Html::tag('div', Html::a($url, $url, ['target' => '_blank']), ['class' => 'd-none d-md-block small']);
+        if ($route = $category->getRoute()) {
+            $urlManager = Yii::$app->getUrlManager();
+            $url = $category->isEnabled() ? $urlManager->createAbsoluteUrl($route) : $urlManager->createDraftUrl($route);
+
+            if ($url) {
+                return Html::tag('div', Html::a($url, $url, ['target' => '_blank']), ['class' => 'd-none d-md-block small']);
+            }
+        }
+
+        return '';
     }
 
     /**

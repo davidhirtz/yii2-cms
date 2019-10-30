@@ -44,6 +44,11 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
     public $showEntrySections = true;
 
     /**
+     * @var bool
+     */
+    public $isSection = false;
+
+    /**
      * @var string
      */
     private $_parentModule;
@@ -59,6 +64,7 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
 
         if ($this->model instanceof Section) {
             $this->model = $this->model->entry;
+            $this->isSection = true;
         }
 
         if ($this->showEntryCategories) {
@@ -144,7 +150,11 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
             [
                 'label' => $this->showEntryTypes ? $this->model->getTypeName() : Yii::t('cms', 'Entry'),
                 'url' => ['/admin/entry/update', 'id' => $this->model->id],
-                'active' => ['admin/entry/', 'admin/cms/asset/' => ['entry']],
+                'active' => array_filter([
+                    'admin/entry/',
+                    'admin/cms/asset/' => ['entry'],
+                    !$this->isSection ? 'admin/cms/asset/update' : null,
+                ]),
                 'icon' => 'book',
                 'labelOptions' => [
                     'class' => 'd-none d-md-inline'
@@ -176,7 +186,11 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
             $items[] = [
                 'label' => Yii::t('cms', 'Sections'),
                 'url' => ['/admin/section/index', 'entry' => $this->model->id],
-                'active' => ['admin/section/', 'admin/cms/asset/' => ['section']],
+                'active' => array_filter([
+                    'admin/section/',
+                    'admin/cms/asset/' => ['section'],
+                    $this->isSection ? 'admin/cms/asset/update' : null,
+                ]),
                 'badge' => $this->model->section_count ?: false,
                 'badgeOptions' => [
                     'id' => 'entry-section-count',
@@ -201,15 +215,13 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
     protected function setBreadcrumbs()
     {
         $view = $this->getView();
-        $view->setBreadcrumb($this->getParentModule()->name, ['index', 'type' => static::getModule()->defaultEntryType]);
+        $view->setBreadcrumb($this->getParentModule()->name, ['/admin/entry/index', 'type' => static::getModule()->defaultEntryType]);
 
-        $params = Yii::$app->getRequest()->get();
-        unset($params['id']);
+        if ($this->model instanceof Entry && $this->showEntryTypes) {
+            $params = Yii::$app->getRequest()->get();
+            unset($params['id']);
 
-        if ($this->model instanceof Entry) {
-            if ($this->showEntryTypes) {
-                $view->setBreadcrumb(Entry::getTypes()[$this->model->type]['plural'] ?? Entry::getTypes()[$this->model->type]['name'], array_merge($params, ['index', 'type' => $this->model->type]));
-            }
+            $view->setBreadcrumb(Entry::getTypes()[$this->model->type]['plural'] ?? Entry::getTypes()[$this->model->type]['name'], array_merge($params, ['/admin/entry/index', 'type' => $this->model->type]));
         }
     }
 

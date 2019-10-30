@@ -72,11 +72,11 @@ class Section extends ActiveRecord
     }
 
     /**
-     * Validates entry and populates relation.
+     * Validates entry.
      */
     public function validateEntryId()
     {
-        if (!$this->entry || (!$this->getIsNewRecord() && $this->isAttributeChanged('entry_id'))) {
+        if ($this->isAttributeChanged('entry_id') && !$this->refreshRelation('entry')) {
             $this->addInvalidAttributeError('entry_id');
         }
     }
@@ -102,16 +102,34 @@ class Section extends ActiveRecord
             $this->slug = null;
         }
 
+        if (!$insert) {
+            if ($this->isAttributeChanged('entry_id')) {
+                $this->position = $this->getMaxPosition() + 1;
+            }
+        }
+
         return parent::beforeSave($insert);
     }
 
     /**
+     * Updates related entries after save.
+     *
      * @param bool $insert
      * @param array $changedAttributes
      */
     public function afterSave($insert, $changedAttributes)
     {
-        if ($insert) {
+        if (array_key_exists('entry_id', $changedAttributes)) {
+            if (!empty($changedAttributes['entry_id'])) {
+                if ($entry = Entry::findOne($changedAttributes['entry_id'])) {
+                    $entry->recalculateSectionCount();
+                }
+            }
+
+            if ($this->asset_count) {
+                Asset::updateAll(['entry_id' => $this->entry_id], ['section_id' => $this->id]);
+            }
+
             $this->entry->recalculateSectionCount();
         }
 

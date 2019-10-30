@@ -16,7 +16,7 @@ use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
 
 /**
- * Class AssetController.
+ * Class AssetController
  * @package davidhirtz\yii2\cms\modules\admin\controllers
  */
 class AssetController extends Controller
@@ -159,7 +159,6 @@ class AssetController extends Controller
         }
 
         if ($asset->delete()) {
-
             if (Yii::$app->getRequest()->getIsAjax()) {
                 return '';
             }

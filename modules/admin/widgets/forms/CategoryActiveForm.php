@@ -40,7 +40,7 @@ class CategoryActiveForm extends ActiveForm
                 ['-'],
                 ['title'],
                 ['description', 'textarea'],
-                ['slug', ['enableClientValidation' => false], 'url'],
+                ['slug', ['enableClientValidation' => false], 'slug'],
             ];
         }
 
