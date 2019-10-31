@@ -30,7 +30,7 @@ class ActiveForm extends \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm
      */
     public function statusField($options = [])
     {
-        return ($statuses = $this->getStatuses()) ? $this->field($this->model, 'status')->dropdownList($statuses, $options) : '';
+        return ($statuses = $this->getStatuses()) ? $this->field($this->model, 'status', $options)->dropdownList($statuses) : '';
     }
 
     /**
@@ -39,7 +39,7 @@ class ActiveForm extends \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm
      */
     public function typeField($options = [])
     {
-        return ($types = $this->getTypes()) ? $this->field($this->model, 'type')->dropdownList($this->getTypes(), $options) : '';
+        return ($types = $this->getTypes()) ? $this->field($this->model, 'type', $options)->dropdownList($this->getTypes()) : '';
     }
 
     /**
@@ -50,7 +50,7 @@ class ActiveForm extends \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm
     {
         $html = '';
         foreach ($this->model->getI18nAttributeNames('description') as $attributeName) {
-            $html .= $this->field($this->model, $attributeName)->textarea($options);
+            $html .= $this->field($this->model, $attributeName, $options)->textarea();
         }
 
         return $html;
@@ -65,8 +65,8 @@ class ActiveForm extends \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm
         $html = '';
         if ($this->model->contentType) {
             foreach ($this->model->getI18nAttributeNames('content') as $attributeName) {
-                $field = $this->field($this->model, $attributeName);
-                $html .= $this->model->contentType === 'html' ? $field->widget(CKEditor::class, $this->getContentConfig()) : $field->textarea($options);
+                $field = $this->field($this->model, $attributeName, $options);
+                $html .= $this->model->contentType === 'html' ? $field->widget(CKEditor::class, $this->getContentConfig()) : $field->textarea();
             }
         }
 
@@ -79,11 +79,13 @@ class ActiveForm extends \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm
      */
     public function slugField($options = []): string
     {
+        $options = array_merge(['enableClientValidation' => false], $options);
         $html = '';
+
         foreach ($this->model->getI18nAttributeNames('slug') as $language => $attributeName) {
-            $html .= $this->field($this->model, $attributeName)->slug(array_merge($options, [
+            $html .= $this->field($this->model, $attributeName, $options)->slug([
                 'baseUrl' => Html::tag('span', $this->getSlugBaseUrl($language), ['id' => $this->getSlugId($language)]),
-            ]));
+            ]);
         }
 
         return $html;
@@ -119,7 +121,7 @@ class ActiveForm extends \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm
      */
     protected function getSlugBaseUrl($language = null): string
     {
-        return rtrim(Yii::$app->getUrlManager()->createAbsoluteUrl(['/', 'language' => $language]), '/') .'/';
+        return rtrim(Yii::$app->getUrlManager()->createAbsoluteUrl(['/', 'language' => $language]), '/') . '/';
     }
 
     /**
