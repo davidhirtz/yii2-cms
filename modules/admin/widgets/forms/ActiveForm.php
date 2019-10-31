@@ -25,20 +25,20 @@ class ActiveForm extends \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm
 
     /**
      * @param array $options
-     * @return \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveField|\yii\widgets\ActiveField
+     * @return \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveField|\yii\widgets\ActiveField|string
      */
     public function statusField($options = [])
     {
-        return $this->field($this->model, 'status')->dropdownList($this->getStatuses(), $options);
+        return ($statuses = $this->getStatuses()) ? $this->field($this->model, 'status')->dropdownList($statuses, $options) : '';
     }
 
     /**
      * @param array $options
-     * @return \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveField|\yii\widgets\ActiveField
+     * @return \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveField|\yii\widgets\ActiveField|string
      */
     public function typeField($options = [])
     {
-        return $this->field($this->model, 'type')->dropdownList($this->getTypes(), $options);
+        return ($types = $this->getTypes()) ? $this->field($this->model, 'type')->dropdownList($this->getTypes(), $options) : '';
     }
 
     /**
