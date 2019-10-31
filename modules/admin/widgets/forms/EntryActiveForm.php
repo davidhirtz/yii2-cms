@@ -49,9 +49,17 @@ class EntryActiveForm extends ActiveForm
      */
     public function publishDateField()
     {
-        return $this->field($this->model, 'publish_date')->appendInput(Yii::$app->getUser()->getIdentity()->getTimezoneOffset())->widget(DatePicker::class, [
+        return $this->field($this->model, 'publish_date')->appendInput(Yii::$app->getUser()->getIdentity()->getTimezoneOffset())->widget(DatePicker::class, $this->getPublishDateConfig());
+    }
+
+    /**
+     * @return array
+     */
+    protected function getPublishDateConfig(): array
+    {
+        return [
             'options' => ['class' => 'form-control', 'autocomplete' => 'off'],
             'showTime' => true,
-        ]);
+        ];
     }
 }

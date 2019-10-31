@@ -32,11 +32,12 @@ class SectionActiveForm extends ActiveForm
     }
 
     /**
+     * @param array $options
      * @return string
      */
-    public function slugField(): string
+    public function slugField($options = []): string
     {
-        return $this->showSlugField() ? parent::slugField() : '';
+        return $this->showSlugField() ? parent::slugField($options) : '';
     }
 
     /**

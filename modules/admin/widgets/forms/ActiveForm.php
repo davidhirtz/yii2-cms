@@ -24,33 +24,48 @@ class ActiveForm extends \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm
     public $showUnsafeAttributes = true;
 
     /**
+     * @param array $options
      * @return \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveField|\yii\widgets\ActiveField
      */
-    public function statusField()
+    public function statusField($options = [])
     {
-        return $this->field($this->model, 'status')->dropdownList($this->getStatuses());
+        return $this->field($this->model, 'status')->dropdownList($this->getStatuses(), $options);
     }
 
     /**
+     * @param array $options
      * @return \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveField|\yii\widgets\ActiveField
      */
-    public function statusType()
+    public function typeField($options = [])
     {
-        return $this->field($this->model, 'type')->dropdownList($this->getTypes());
+        return $this->field($this->model, 'type')->dropdownList($this->getTypes(), $options);
     }
 
     /**
-     * @noinspection PhpUnused
+     * @param array $options
      * @return string
      */
-    public function contentField()
+    public function descriptionField($options = []): string
     {
         $html = '';
+        foreach ($this->model->getI18nAttributeNames('description') as $attributeName) {
+            $html .= $this->field($this->model, $attributeName)->textarea($options);
+        }
 
+        return $html;
+    }
+
+    /**
+     * @param array $options
+     * @return string
+     */
+    public function contentField($options = [])
+    {
+        $html = '';
         if ($this->model->contentType) {
             foreach ($this->model->getI18nAttributeNames('content') as $attributeName) {
                 $field = $this->field($this->model, $attributeName);
-                $html .= $this->model->contentType === 'html' ? $field->widget(CKEditor::class, $this->getContentConfig()) : $field->textarea();
+                $html .= $this->model->contentType === 'html' ? $field->widget(CKEditor::class, $this->getContentConfig()) : $field->textarea($options);
             }
         }
 
@@ -58,14 +73,14 @@ class ActiveForm extends \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm
     }
 
     /**
-     * @noinspection PhpUnused
+     * @param array $options
      * @return string
      */
-    public function slugField(): string
+    public function slugField($options = []): string
     {
         $html = '';
         foreach ($this->model->getI18nAttributeNames('slug') as $language => $attributeName) {
-            $html .= $this->field($this->model, $attributeName)->slug(['baseUrl' => $this->getSlugBaseUrl($language)]);
+            $html .= $this->field($this->model, $attributeName)->slug(array_merge($options, ['baseUrl' => $this->getSlugBaseUrl($language)]));
         }
 
         return $html;
