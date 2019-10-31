@@ -4,10 +4,9 @@ namespace davidhirtz\yii2\cms\modules\admin\widgets\forms;
 
 use davidhirtz\yii2\cms\models\Section;
 use Yii;
-use yii\helpers\ArrayHelper;
 
 /**
- * Class SectionActiveForm.
+ * Class SectionActiveForm
  * @package davidhirtz\yii2\cms\modules\admin\widgets\forms
  *
  * @property Section $model
@@ -21,12 +20,11 @@ class SectionActiveForm extends ActiveForm
     {
         if (!$this->fields) {
             $this->fields = [
-                ['status', 'dropDownList', ArrayHelper::getColumn(Section::getStatuses(), 'name')],
-                ['type', 'dropDownList', ArrayHelper::getColumn(Section::getTypes(), 'name')],
-                ['name'],
-                ['content'],
-                ['-'],
-                ['slug'],
+                'status',
+                'type',
+                'name',
+                'content',
+                'slug',
             ];
         }
 
@@ -34,22 +32,31 @@ class SectionActiveForm extends ActiveForm
     }
 
     /**
-     * @return string|false
+     * @return string
      */
-    public function slugField()
+    public function slugField(): string
     {
-        $html = '';
+        return $this->showSlugField() ? parent::slugField() : '';
+    }
 
-        if ($route = $this->model->entry->getRoute()) {
-            $urlManager = Yii::$app->getUrlManager();
+    /**
+     * @param string $language
+     * @return string
+     */
+    protected function getSlugBaseUrl($language = null): string
+    {
+        $draftHostInfo = Yii::$app->getRequest()->getDraftHostInfo();
+        $urlManager = Yii::$app->getUrlManager();
+        $route = array_merge($this->model->entry->getRoute(), ['language' => $language, '#' => '']);
 
-            foreach ($this->model->getI18nAttributeNames('slug') as $language => $attributeName) {
-                $route['language'] = $language;
-                $baseUrl = $this->model->entry->isEnabled() ? $urlManager->createAbsoluteUrl($route) : $urlManager->createDraftUrl($route);
-                $html .= $this->field($this->model, $attributeName)->slug(['baseUrl' => $baseUrl]);
-            }
-        }
+        return $this->model->entry->isEnabled() || !$draftHostInfo ? $urlManager->createAbsoluteUrl($route) : $urlManager->createDraftUrl($route);
+    }
 
-        return $html;
+    /**
+     * @return bool
+     */
+    protected function showSlugField(): bool
+    {
+        return $this->model->entry->getRoute() !== false;
     }
 }

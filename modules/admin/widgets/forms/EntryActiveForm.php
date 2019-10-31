@@ -6,10 +6,9 @@ use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\skeleton\widgets\jui\DatePicker;
 use Yii;
-use yii\helpers\ArrayHelper;
 
 /**
- * Class EntryActiveForm.
+ * Class EntryActiveForm
  * @package davidhirtz\yii2\cms\modules\admin\widgets\forms\base
  *
  * @property Entry $model
@@ -30,18 +29,17 @@ class EntryActiveForm extends ActiveForm
     {
         if (!$this->fields) {
             $this->fields = [
-                ['status', 'dropDownList', ArrayHelper::getColumn($this->model::getStatuses(), 'name')],
-                ['type', 'dropDownList', ArrayHelper::getColumn($this->model::getTypes(), 'name')],
-                ['name'],
-                ['content'],
-                ['publish_date'],
-                ['-'],
-                ['title'],
-                ['description', 'textarea'],
-                ['slug', ['enableClientValidation' => false], 'slug'],
+                'status',
+                'type',
+                'name',
+                'content',
+                'publish_date',
+                '-',
+                'title',
+                'description',
+                'slug',
             ];
         }
-
 
         parent::init();
     }

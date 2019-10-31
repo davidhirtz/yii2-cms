@@ -8,7 +8,6 @@ use davidhirtz\yii2\cms\modules\ModuleTrait;
 use Yii;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
-use yii\helpers\Url;
 
 /**
  * Class CategoryActiveForm.
@@ -32,15 +31,15 @@ class CategoryActiveForm extends ActiveForm
     {
         if (!$this->fields) {
             $this->fields = [
-                ['status', 'dropDownList', ArrayHelper::getColumn($this->model::getStatuses(), 'name')],
-                ['parent_id'],
-                ['type', 'dropDownList', ArrayHelper::getColumn($this->model::getTypes(), 'name')],
-                ['name'],
-                ['content'],
-                ['-'],
-                ['title'],
-                ['description', 'textarea'],
-                ['slug', ['enableClientValidation' => false], 'slug'],
+                'status',
+                'parent_id',
+                'type',
+                'name',
+                'content',
+                '-',
+                'title',
+                'description',
+                'slug',
             ];
         }
 
@@ -54,20 +53,26 @@ class CategoryActiveForm extends ActiveForm
     public function parentIdField($options = [])
     {
         if ($categories = static::getCategories()) {
+            $attributeNames = $this->model->getI18nAttributeNames('slug');
             $defaultOptions = [
-                'data-form-target' => $this->getSlugId(),
                 'prompt' => [
                     'options' => ['data-value' => ''],
                     'text' => '',
                 ],
             ];
 
+            foreach ($attributeNames as $language => $attributeName) {
+                $defaultOptions['data-form-target'][] = $this->getSlugId($language);
+            }
+
             foreach ($categories as $category) {
                 if ($category->lft >= $this->model->lft && $category->rgt <= $this->model->rgt) {
                     $defaultOptions['options'][$category->id]['disabled'] = true;
                 }
 
-                $defaultOptions['options'][$category->id]['data-value'] = $this->getCategorySlug($category);
+                foreach ($attributeNames as $language => $attributeName) {
+                    $defaultOptions['options'][$category->id]['data-value'][] = $this->getCategoryBaseUrl($category, $language);
+                }
             }
 
             $items = Category::indentNestedTree($categories, $this->model->getI18nAttributeName('name'));
@@ -78,34 +83,38 @@ class CategoryActiveForm extends ActiveForm
     }
 
     /**
-     * @param null $attribute
+     * @param null $language
      * @return string
      */
-    public function getBaseUrl($attribute = null)
+    protected function getSlugBaseUrl($language = null): string
     {
-        return parent::getBaseUrl() . Html::tag('span', '', ['id' => $this->getSlugId()]);
+        return Html::tag('span', parent::getSlugBaseUrl($language), ['id' => $this->getSlugId()]);
     }
 
     /**
+     * @param string $language
      * @return string
      */
-    protected function getSlugId()
+    protected function getSlugId($language = null)
     {
-        return $this->getId() . '-slug';
+        return $this->getId() . '-' . $this->model->getI18nAttributeName('slug', $language);
     }
 
     /**
      * @param Category $category
+     * @param string $language
      * @return string
      */
-    protected function getCategorySlug($category)
+    protected function getCategoryBaseUrl($category, $language = null): string
     {
-        $route = ltrim(Url::to($category->getRoute()), '/');
+        $draftHostInfo = Yii::$app->getRequest()->getDraftHostInfo();
+        $urlManager = Yii::$app->getUrlManager();
+        $route = array_merge($category->getRoute(), ['language' => $language]);
 
-        if (mb_strlen($route, Yii::$app->charset) > $this->slugMaxLength) {
-            $route = Html::tag('span', '...', ['class' => 'text-muted']) . mb_substr($route, -$this->slugMaxLength, $this->slugMaxLength, Yii::$app->charset);
+        if (mb_strlen($route['category'], Yii::$app->charset) > $this->slugMaxLength) {
+            $route['category'] = '...' . mb_substr($route['category'], -$this->slugMaxLength, $this->slugMaxLength, Yii::$app->charset);
         }
 
-        return $route ? "{$route}/" : '';
+        return $category->isEnabled() || !$draftHostInfo ? $urlManager->createAbsoluteUrl($route) : $urlManager->createDraftUrl($route);
     }
 }
