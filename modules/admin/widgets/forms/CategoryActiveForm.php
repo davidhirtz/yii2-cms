@@ -7,7 +7,6 @@ use davidhirtz\yii2\cms\modules\admin\widgets\CategoryTrait;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use Yii;
 use yii\helpers\ArrayHelper;
-use yii\helpers\Html;
 
 /**
  * Class CategoryActiveForm.
@@ -54,15 +53,11 @@ class CategoryActiveForm extends ActiveForm
     {
         if ($categories = static::getCategories()) {
             $attributeNames = $this->model->getI18nAttributeNames('slug');
-            $defaultOptions = [
-                'prompt' => [
-                    'options' => ['data-value' => ''],
-                    'text' => '',
-                ],
-            ];
+            $defaultOptions = ['prompt' => ['text' => '']];
 
             foreach ($attributeNames as $language => $attributeName) {
                 $defaultOptions['data-form-target'][] = $this->getSlugId($language);
+                $defaultOptions['prompt']['options']['data-value'][] = $this->getSlugBaseUrl($language);
             }
 
             foreach ($categories as $category) {
@@ -88,16 +83,7 @@ class CategoryActiveForm extends ActiveForm
      */
     protected function getSlugBaseUrl($language = null): string
     {
-        return Html::tag('span', parent::getSlugBaseUrl($language), ['id' => $this->getSlugId()]);
-    }
-
-    /**
-     * @param string $language
-     * @return string
-     */
-    protected function getSlugId($language = null)
-    {
-        return $this->getId() . '-' . $this->model->getI18nAttributeName('slug', $language);
+        return rtrim(Yii::$app->getUrlManager()->createAbsoluteUrl(array_merge($this->model->getRoute(), ['category' => '', 'language' => $language])), '/') .'/';
     }
 
     /**
@@ -115,6 +101,6 @@ class CategoryActiveForm extends ActiveForm
             $route['category'] = '...' . mb_substr($route['category'], -$this->slugMaxLength, $this->slugMaxLength, Yii::$app->charset);
         }
 
-        return $category->isEnabled() || !$draftHostInfo ? $urlManager->createAbsoluteUrl($route) : $urlManager->createDraftUrl($route);
+        return rtrim($category->isEnabled() || !$draftHostInfo ? $urlManager->createAbsoluteUrl($route) : $urlManager->createDraftUrl($route), '/') .'/';
     }
 }

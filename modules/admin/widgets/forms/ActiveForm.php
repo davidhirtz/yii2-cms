@@ -6,6 +6,7 @@ use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\Section;
+use davidhirtz\yii2\lazysizes\Html;
 use davidhirtz\yii2\skeleton\widgets\forms\CKEditor;
 use Yii;
 use yii\helpers\ArrayHelper;
@@ -80,7 +81,9 @@ class ActiveForm extends \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm
     {
         $html = '';
         foreach ($this->model->getI18nAttributeNames('slug') as $language => $attributeName) {
-            $html .= $this->field($this->model, $attributeName)->slug(array_merge($options, ['baseUrl' => $this->getSlugBaseUrl($language)]));
+            $html .= $this->field($this->model, $attributeName)->slug(array_merge($options, [
+                'baseUrl' => Html::tag('span', $this->getSlugBaseUrl($language), ['id' => $this->getSlugId($language)]),
+            ]));
         }
 
         return $html;
@@ -116,6 +119,15 @@ class ActiveForm extends \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm
      */
     protected function getSlugBaseUrl($language = null): string
     {
-        return Yii::$app->getUrlManager()->createAbsoluteUrl(['/', 'language' => $language]);
+        return rtrim(Yii::$app->getUrlManager()->createAbsoluteUrl(['/', 'language' => $language]), '/') .'/';
+    }
+
+    /**
+     * @param string $language
+     * @return string
+     */
+    protected function getSlugId($language = null): string
+    {
+        return $this->getId() . '-' . $this->model->getI18nAttributeName('slug', $language);
     }
 }
