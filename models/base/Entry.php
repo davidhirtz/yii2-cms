@@ -170,6 +170,34 @@ class Entry extends ActiveRecord
     }
 
     /**
+     * @param array $attributes
+     * @return $this
+     */
+    public function clone($attributes = [])
+    {
+        $clone = new static;
+        $clone->setAttributes(array_merge($this->getAttributes(), $attributes ?: ['status' => static::STATUS_DRAFT]));
+        $clone->generateUniqueSlug();
+
+        if ($clone->insert()) {
+            foreach ($this->sections as $section) {
+                $section->clone(['entry_id' => $clone->id]);
+            }
+
+            $assets = $this->getAssets()->withoutSections()->all();
+
+            foreach ($assets as $asset) {
+                $assetClone = new Asset;
+                $assetClone->setAttributes(array_merge($asset->getAttributes(), ['entry_id' => $clone->id]));
+                $assetClone->populateRelation('entry', $clone);
+                $assetClone->insert();
+            }
+        }
+
+        return $clone;
+    }
+
+    /**
      * @param Asset[] $assets
      */
     public function populateAssetRelations($assets = null)
@@ -234,9 +262,9 @@ class Entry extends ActiveRecord
     }
 
     /**
-     * @return array
+     * @return array|false
      */
-    public function getRoute(): array
+    public function getRoute()
     {
         return array_filter(['/cms/site/view', 'entry' => $this->getI18nAttribute('slug')]);
     }

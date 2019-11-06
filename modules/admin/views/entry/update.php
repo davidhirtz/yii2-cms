@@ -12,6 +12,7 @@ use davidhirtz\yii2\cms\modules\admin\widgets\nav\Submenu;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
 use davidhirtz\yii2\skeleton\widgets\forms\DeleteActiveForm;
+use davidhirtz\yii2\cms\modules\admin\widgets\panels\base\EntryHelpPanel;
 
 $this->setTitle(Yii::t('cms', 'Edit Entry'));
 ?>
@@ -21,7 +22,6 @@ $this->setTitle(Yii::t('cms', 'Edit Entry'));
 ]); ?>
 
 <?= Html::errorSummary($entry); ?>
-
 
 <?= Panel::widget([
     'title' => $this->title,
@@ -40,6 +40,11 @@ if ($entry->getModule()->enableEntryAssets) {
         ]),
     ]);
 } ?>
+
+<?= EntryHelpPanel::widget([
+    'id' => 'operations',
+    'model' => $entry,
+]); ?>
 
 <?= Panel::widget([
     'type' => 'danger',

@@ -7,13 +7,15 @@
  * @var \davidhirtz\yii2\cms\models\Section $section
  */
 
-$this->setTitle(Yii::t('cms', 'Update Section'));
-
 use davidhirtz\yii2\cms\modules\admin\widgets\grid\AssetGridView;
 use davidhirtz\yii2\cms\modules\admin\widgets\nav\Submenu;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
-use davidhirtz\yii2\skeleton\widgets\forms\DeleteActiveForm; ?>
+use davidhirtz\yii2\skeleton\widgets\forms\DeleteActiveForm;
+use davidhirtz\yii2\cms\modules\admin\widgets\panels\SectionHelpPanel;
+
+$this->setTitle(Yii::t('cms', 'Edit Section'));
+?>
 
 <?= Submenu::widget([
     'model' => $section->entry,
@@ -41,9 +43,15 @@ if ($section->getModule()->enableSectionAssets) {
 }
 ?>
 
+<?= SectionHelpPanel::widget([
+    'id' => 'operations',
+    'model' => $section,
+]); ?>
+
 <?= Panel::widget([
+    'id' => 'delete',
     'type' => 'danger',
-    'title' => Yii::t('cms', 'Delete Entry'),
+    'title' => Yii::t('cms', 'Delete Section'),
     'content' => DeleteActiveForm::widget([
         'model' => $section,
     ]),

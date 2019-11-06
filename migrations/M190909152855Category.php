@@ -28,6 +28,7 @@ class M190909152855Category extends Migration
                 Yii::$app->language = $language;
             }
 
+            // Category.
             $this->createTable(Category::tableName(), [
                 'id' => $this->primaryKey()->unsigned(),
                 'status' => $this->tinyInteger(1)->unsigned()->notNull()->defaultValue(Category::STATUS_ENABLED),
@@ -47,16 +48,21 @@ class M190909152855Category extends Migration
                 'created_at' => $this->dateTime()->notNull(),
             ], $this->getTableOptions());
 
-            $tableName = $schema->getRawTableName(Category::tableName());
+            $category = new Category;
+            $this->addI18nColumns(Category::tableName(), $category->i18nAttributes);
+
+            foreach($category->getI18nAttributeNames('slug') as $attributeName) {
+                $this->createIndex($attributeName, Category::tableName(), ['parent_id', $attributeName], true);
+            }
 
             $this->createIndex('parent_id', Category::tableName(), ['parent_id', 'status']);
-            $this->createIndex('slug', Category::tableName(), ['slug', 'parent_id'], true);
 
+            $tableName = $schema->getRawTableName(Category::tableName());
             $this->addForeignKey($tableName . '_parent_id_ibfk', Category::tableName(), 'parent_id', Category::tableName(), 'id', 'SET NULL');
             $this->addForeignKey($tableName . '_updated_by_ibfk', Category::tableName(), 'updated_by_user_id', User::tableName(), 'id', 'SET NULL');
 
-            $this->addI18nColumns(Category::tableName(), (new Category)->i18nAttributes);
 
+            // EntryCategory.
             $this->createTable(EntryCategory::tableName(), [
                 'entry_id' => $this->integer()->unsigned(),
                 'category_id' => $this->integer()->unsigned(),
@@ -65,10 +71,9 @@ class M190909152855Category extends Migration
                 'updated_at' => $this->dateTime(),
             ], $this->getTableOptions());
 
-            $tableName = $schema->getRawTableName(EntryCategory::tableName());
-
             $this->addPrimaryKey('entry_id', EntryCategory::tableName(), ['entry_id', 'category_id']);
 
+            $tableName = $schema->getRawTableName(EntryCategory::tableName());
             $this->addForeignKey($tableName . '_entry_id_ibfk', EntryCategory::tableName(), 'entry_id', Entry::tableName(), 'id', 'CASCADE');
             $this->addForeignKey($tableName . '_category_id_ibfk', EntryCategory::tableName(), 'category_id', Category::tableName(), 'id', 'CASCADE');
             $this->addForeignKey($tableName . '_updated_by_ibfk', EntryCategory::tableName(), 'updated_by_user_id', User::tableName(), 'id', 'SET NULL');

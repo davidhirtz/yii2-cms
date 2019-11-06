@@ -52,6 +52,8 @@ class M190321092544Asset extends Migration
                 'created_at' => $this->dateTime()->notNull(),
             ], $this->getTableOptions());
 
+            $this->addI18nColumns(Asset::tableName(), (new Asset)->i18nAttributes);
+
             $this->createIndex('entry_id', Asset::tableName(), ['entry_id', 'status', 'position']);
             $this->createIndex('section_id', Asset::tableName(), ['section_id', 'position']);
 
@@ -60,8 +62,6 @@ class M190321092544Asset extends Migration
             $this->addForeignKey($tableName . '_section_id_ibfk', Asset::tableName(), 'section_id', Section::tableName(), 'id', 'CASCADE');
             $this->addForeignKey($tableName . '_file_id_ibfk', Asset::tableName(), 'file_id', File::tableName(), 'id', 'CASCADE');
             $this->addForeignKey($tableName . '_updated_by_ibfk', Asset::tableName(), 'updated_by_user_id', User::tableName(), 'id', 'SET NULL');
-
-            $this->addI18nColumns(Asset::tableName(), (new Asset)->i18nAttributes);
 
             $this->addColumn(File::tableName(), $i18n->getAttributeName('cms_asset_count', $language), $this->smallInteger()->notNull()->defaultValue(0)->after('transformation_count'));
         }

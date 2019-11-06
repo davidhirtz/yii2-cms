@@ -102,10 +102,8 @@ class Section extends ActiveRecord
             $this->slug = null;
         }
 
-        if (!$insert) {
-            if ($this->isAttributeChanged('entry_id')) {
-                $this->position = $this->getMaxPosition() + 1;
-            }
+        if (!$insert && $this->isAttributeChanged('entry_id')) {
+            $this->position = $this->getMaxPosition() + 1;
         }
 
         return parent::beforeSave($insert);
@@ -181,6 +179,28 @@ class Section extends ActiveRecord
     }
 
     /**
+     * @param array $attributes
+     * @return $this
+     */
+    public function clone($attributes = [])
+    {
+        $clone = new static;
+        $clone->setAttributes(array_merge($this->getAttributes(), $attributes ?: ['status' => static::STATUS_DRAFT]));
+        $clone->generateUniqueSlug();
+
+        if ($clone->insert()) {
+            foreach ($this->assets as $asset) {
+                $assetClone = new Asset;
+                $assetClone->setAttributes(array_merge($asset->getAttributes(), ['section_id' => $clone->id]));
+                $assetClone->populateRelation('section', $clone);
+                $assetClone->insert();
+            }
+        }
+
+        return $clone;
+    }
+
+    /**
      * @param Asset[] $assets
      */
     public function populateAssetRelations($assets)
@@ -205,6 +225,14 @@ class Section extends ActiveRecord
     public function getActiveForm()
     {
         return static::getTypes()[$this->type]['activeForm'] ?? SectionActiveForm::class;
+    }
+
+    /**
+     * @return array|false
+     */
+    public function getRoute()
+    {
+        return array_merge($this->entry->getRoute(), ['#' => $this->getI18nAttribute('slug')]);
     }
 
     /**

@@ -50,11 +50,15 @@ class M190319185130Cms extends Migration
                 'created_at' => $this->dateTime()->notNull(),
             ], $this->getTableOptions());
 
-            $tableName = $schema->getRawTableName(Entry::tableName());
-            $this->createIndex('slug', Entry::tableName(), 'slug', true);
-            $this->addForeignKey($tableName . '_updated_by_ibfk', Entry::tableName(), 'updated_by_user_id', User::tableName(), 'id', 'SET NULL');
+            $entry = new Entry;
+            $this->addI18nColumns(Entry::tableName(), $entry->i18nAttributes);
 
-            $this->addI18nColumns(Entry::tableName(), (new Entry)->i18nAttributes);
+            foreach($entry->getI18nAttributeNames('slug') as $attributeName) {
+                $this->createIndex($attributeName, Entry::tableName(), $attributeName, true);
+            }
+
+            $tableName = $schema->getRawTableName(Entry::tableName());
+            $this->addForeignKey($tableName . '_updated_by_ibfk', Entry::tableName(), 'updated_by_user_id', User::tableName(), 'id', 'SET NULL');
 
             // Section.
             $this->createTable(Section::tableName(), [
@@ -72,14 +76,19 @@ class M190319185130Cms extends Migration
                 'created_at' => $this->dateTime()->notNull(),
             ], $this->getTableOptions());
 
+            $section = new Section;
+            $this->addI18nColumns(Section::tableName(), $section->i18nAttributes);
+
+            foreach($section->getI18nAttributeNames('slug') as $attributeName) {
+                $this->createIndex($attributeName, Section::tableName(), ['entry_id', $attributeName], true);
+            }
+
             $this->createIndex('entry_id', Section::tableName(), ['entry_id', 'status', 'position']);
-            $this->createIndex('slug', Section::tableName(), 'slug', true);
 
             $tableName = $schema->getRawTableName(Section::tableName());
             $this->addForeignKey($tableName . '_entry_id_ibfk', Section::tableName(), 'entry_id', Entry::tableName(), 'id', 'CASCADE');
             $this->addForeignKey($tableName . '_updated_by_ibfk', Section::tableName(), 'updated_by_user_id', User::tableName(), 'id', 'SET NULL');
 
-            $this->addI18nColumns(Section::tableName(), (new Section)->i18nAttributes);
         }
 
         $auth = Yii::$app->getAuthManager();

@@ -34,4 +34,12 @@ class AssetQuery extends \davidhirtz\yii2\skeleton\db\ActiveQuery
             }
         ]);
     }
+
+    /**
+     * @return AssetQuery
+     */
+    public function withoutSections()
+    {
+        return $this->andWhere(['section_id' => null]);
+    }
 }

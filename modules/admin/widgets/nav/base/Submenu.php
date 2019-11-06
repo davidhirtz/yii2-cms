@@ -116,7 +116,7 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
             }
         } elseif ($this->showDefaultCategories) {
             $items[] = [
-                'label' => Yii::t('app', 'Entries'),
+                'label' => Yii::t('cms', 'Entries'),
                 'url' => ['/admin/entry/index'],
                 'active' => ['admin/entry/'],
                 'icon' => 'book',

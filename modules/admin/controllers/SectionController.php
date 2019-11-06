@@ -12,7 +12,6 @@ use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
-use yii\web\ServerErrorHttpException;
 
 
 /**
@@ -34,7 +33,7 @@ class SectionController extends Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['create', 'delete', 'index', 'order', 'update'],
+                        'actions' => ['clone', 'create', 'delete', 'index', 'order', 'update'],
                         'roles' => ['author'],
                     ],
                 ],
@@ -42,9 +41,9 @@ class SectionController extends Controller
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
+                    'clone' => ['post'],
                     'delete' => ['post'],
                     'order' => ['post'],
-                    'upload' => ['post'],
                 ],
             ],
         ]);
@@ -110,12 +109,9 @@ class SectionController extends Controller
      */
     public function actionUpdate($id)
     {
-        if (!$section = Section::findOne($id)) {
-            throw new NotFoundHttpException;
-        }
+        $section = $this->findSection($id);
 
         if ($section->load(Yii::$app->getRequest()->post())) {
-
             if ($section->update()) {
                 $this->success(Yii::t('cms', 'The section was updated.'));
             }
@@ -135,19 +131,37 @@ class SectionController extends Controller
      * @param int $id
      * @return string|\yii\web\Response
      */
+    public function actionClone($id)
+    {
+        $section = $this->findSection($id);
+        $clone = $section->clone();
+
+        if ($errors = $clone->getFirstErrors()) {
+            $this->error($errors);
+
+        } else {
+            $this->success(Yii::t('cms', 'The section was duplicated.'));
+        }
+
+        return $this->redirect($clone->id ? ['update', 'id' => $clone->id] : ['index', 'entry' => $clone->entry_id]);
+    }
+
+    /**
+     * @param int $id
+     * @return string|\yii\web\Response
+     */
     public function actionDelete($id)
     {
-        if (!$section = Section::findOne($id)) {
-            throw new NotFoundHttpException;
-        }
+        $section = $this->findSection($id);
 
         if ($section->delete()) {
             $this->success(Yii::t('cms', 'The section was deleted.'));
-            return $this->redirect(['index', 'entry' => $section->entry_id]);
+
+        } elseif ($errors = $section->getFirstErrors()) {
+            $this->error($errors);
         }
 
-        $errors = $section->getFirstErrors();
-        throw new ServerErrorHttpException(reset($errors));
+        return $this->redirect(['index', 'entry' => $section->entry_id]);
     }
 
     /**
@@ -161,5 +175,19 @@ class SectionController extends Controller
             ->all();
 
         Section::updatePosition($sections, array_flip(Yii::$app->getRequest()->post('section')));
+    }
+
+    /**
+     * @param int $id
+     * @return Section
+     * @throws NotFoundHttpException
+     */
+    private function findSection($id)
+    {
+        if (!$section = Section::findOne((int)$id)) {
+            throw new NotFoundHttpException;
+        }
+
+        return $section;
     }
 }

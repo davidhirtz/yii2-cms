@@ -12,7 +12,6 @@ use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
-use yii\web\ServerErrorHttpException;
 
 /**
  * Class EntryController.
@@ -33,7 +32,7 @@ class EntryController extends Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['create', 'index', 'order', 'update', 'delete'],
+                        'actions' => ['clone', 'create', 'delete', 'index', 'order', 'update'],
                         'roles' => ['author'],
                     ],
                 ],
@@ -41,6 +40,7 @@ class EntryController extends Controller
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
+                    'clone' => ['post'],
                     'delete' => ['post'],
                     'order' => ['post'],
                 ],
@@ -99,10 +99,7 @@ class EntryController extends Controller
      */
     public function actionUpdate($id)
     {
-        if (!$entry = Entry::findOne($id)) {
-            throw new NotFoundHttpException;
-        }
-
+        $entry = $this->findEntry($id);
         $request = Yii::$app->getRequest();
 
         if ($entry->load($request->post())) {
@@ -116,9 +113,9 @@ class EntryController extends Controller
         }
 
         $entry->populateRelation('assets', $entry->getAssets()
-            ->andWhere(['section_id' => null])
+            ->withoutSections()
             ->all());
-        
+
         /** @noinspection MissedViewInspection */
         return $this->render('update', [
             'entry' => $entry,
@@ -129,19 +126,37 @@ class EntryController extends Controller
      * @param int $id
      * @return string|\yii\web\Response
      */
+    public function actionClone($id)
+    {
+        $entry = $this->findEntry($id);
+        $clone = $entry->clone();
+
+        if ($errors = $clone->getFirstErrors()) {
+            $this->error($errors);
+
+        } else {
+            $this->success(Yii::t('cms', 'The entry was duplicated.'));
+        }
+
+        return $this->redirect(['update', 'id' => $clone->id ?: $entry->id]);
+    }
+
+    /**
+     * @param int $id
+     * @return string|\yii\web\Response
+     */
     public function actionDelete($id)
     {
-        if (!$entry = Entry::findOne($id)) {
-            throw new NotFoundHttpException;
-        }
+        $entry = $this->findEntry($id);
 
         if ($entry->delete()) {
             $this->success(Yii::t('cms', 'The entry was deleted.'));
-            return $this->redirect(array_merge(Yii::$app->getRequest()->get(), ['index']));
+
+        } elseif ($errors = $entry->getFirstErrors()) {
+            $this->error($errors);
         }
 
-        $errors = $entry->getFirstErrors();
-        throw new ServerErrorHttpException(reset($errors));
+        return $this->redirect(array_merge(Yii::$app->getRequest()->get(), ['index']));
     }
 
     /**
@@ -154,5 +169,19 @@ class EntryController extends Controller
             ->all();
 
         Entry::updatePosition($entries, array_flip(Yii::$app->getRequest()->post('entry')));
+    }
+
+    /**
+     * @param int $id
+     * @return Entry
+     * @throws NotFoundHttpException
+     */
+    private function findEntry($id)
+    {
+        if (!$entry = Entry::findOne((int)$id)) {
+            throw new NotFoundHttpException;
+        }
+
+        return $entry;
     }
 }

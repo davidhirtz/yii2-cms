@@ -35,6 +35,6 @@ $this->setTitle(Yii::t('cms', 'Edit Category'));
     'title' => Yii::t('cms', 'Delete Category'),
     'content' => DeleteActiveForm::widget([
         'model' => $category,
-        'message' => Yii::t('cms', 'Warning: Deleting this category cannot be undone. All related sections will also be unrecoverably deleted. Please be certain!')
+        'message' => Yii::t('cms', 'Warning: Deleting this category cannot be undone. All related sections will also be unrecoverably deleted. All subcategories will also be unrecoverably deleted. Please be certain!')
     ]),
 ]); ?>

@@ -97,14 +97,6 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     }
 
     /**
-     * @return int
-     */
-    public function getMaxPosition(): int
-    {
-        return (int)$this->findSiblings()->max('[[position]]');
-    }
-
-    /**
      * @return UserQuery
      */
     public function getUpdated(): UserQuery
@@ -116,6 +108,29 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
      * @return ActiveQuery
      */
     abstract public function findSiblings();
+
+    /**
+     * Generates a unique slug if the slug is already taken.
+     */
+    public function generateUniqueSlug()
+    {
+        foreach ($this->getI18nAttributeNames('slug') as $attributeName) {
+            if ($baseSlug = $this->getAttribute($attributeName)) {
+                $iteration = 1;
+                while (!$this->validate($attributeName)) {
+                    $this->setAttribute($attributeName, $baseSlug . '-' . $iteration++);
+                }
+            }
+        }
+    }
+
+    /**
+     * @return int
+     */
+    public function getMaxPosition(): int
+    {
+        return (int)$this->findSiblings()->max('[[position]]');
+    }
 
     /**
      * @inheritdoc
