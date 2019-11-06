@@ -180,6 +180,13 @@ class Entry extends ActiveRecord
         $clone->generateUniqueSlug();
 
         if ($clone->insert()) {
+            foreach ($this->getCategoryIds() as $categoryId) {
+                (new EntryCategory([
+                    'entry_id' => $clone->id,
+                    'category_id' => $categoryId,
+                ]))->insert();
+            }
+
             foreach ($this->sections as $section) {
                 $section->clone(['entry_id' => $clone->id]);
             }
