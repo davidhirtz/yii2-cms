@@ -308,7 +308,7 @@ class EntryGridView extends GridView
     {
         if ($categories = static::getCategories()) {
             $config = [
-                'label' => $this->dataProvider->category ? (Yii::t('cms', 'Category') . ': ' . Html::tag('strong', Html::encode($this->dataProvider->category->getI18nAttributeName('name')))) : Yii::t('cms', 'Categories'),
+                'label' => $this->dataProvider->category ? (Yii::t('cms', 'Category') . ': ' . Html::tag('strong', Html::encode($this->dataProvider->category->getI18nAttribute('name')))) : Yii::t('cms', 'Categories'),
                 'paramName' => 'category',
             ];
 
