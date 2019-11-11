@@ -144,7 +144,7 @@ class MetaTags extends BaseObject
                     if ($this->transformationName) {
                         if ($url = $file->getTransformationUrl($this->transformationName)) {
                             $width = $file->getTransformationOptions($this->transformationName, 'width');
-                            $height = $file->getTransformationOptions($this->transformationName, 'height') ?: ($width * $file->getHeightPercentage());
+                            $height = $file->getTransformationOptions($this->transformationName, 'height') ?: ceil($width * $file->getHeightPercentage() / 100);
                             $this->getView()->registerImageMetaTags($url, $width, $height);
                         }
                     } else {
