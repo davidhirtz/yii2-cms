@@ -39,7 +39,7 @@ class ActiveForm extends \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm
      */
     public function typeField($options = [])
     {
-        return ($types = $this->getTypes()) ? $this->field($this->model, 'type', $options)->dropdownList($this->getTypes()) : '';
+        return ($types = $this->getTypes()) ? $this->field($this->model, 'type', $options)->dropdownList($types) : '';
     }
 
     /**
