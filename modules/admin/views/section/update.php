@@ -32,7 +32,7 @@ $this->setTitle(Yii::t('cms', 'Edit Section'));
 ]); ?>
 
 <?php
-if ($section->getModule()->enableSectionAssets) {
+if ($section->hasAssetsEnabled()) {
     echo Panel::widget([
         'id' => 'assets',
         'title' => $section->getAttributeLabel('asset_count'),

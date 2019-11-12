@@ -221,7 +221,7 @@ class EntryGridView extends GridView
             'contentOptions' => ['class' => 'd-none d-md-table-cell text-center'],
             'visible' => static::getModule()->enableSections,
             'content' => function (Entry $entry) {
-                return Html::a(Yii::$app->getFormatter()->asInteger($entry->section_count), ['section/index', 'entry' => $entry->id], ['class' => 'badge']);
+                return $entry->hasSectionsEnabled() ? Html::a(Yii::$app->getFormatter()->asInteger($entry->section_count), ['section/index', 'entry' => $entry->id], ['class' => 'badge']) : '';
             }
         ];
     }
@@ -237,7 +237,7 @@ class EntryGridView extends GridView
             'contentOptions' => ['class' => 'd-none d-md-table-cell text-center'],
             'visible' => static::getModule()->enableEntryAssets,
             'content' => function (Entry $entry) {
-                return Html::a(Yii::$app->getFormatter()->asInteger($entry->asset_count), ['update', 'id' => $entry->id, '#' => 'assets'], ['class' => 'badge']);
+                return $entry->hasAssetsEnabled() ? Html::a(Yii::$app->getFormatter()->asInteger($entry->asset_count), ['update', 'id' => $entry->id, '#' => 'assets'], ['class' => 'badge']) : '';
             }
         ];
     }

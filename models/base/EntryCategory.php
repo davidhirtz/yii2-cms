@@ -68,7 +68,7 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
      */
     public function validateCategoryId()
     {
-        if (($this->isAttributeChanged('category_id') && !$this->refreshRelation('category')) || !$this->category->enableEntryCategory()) {
+        if (($this->isAttributeChanged('category_id') && !$this->refreshRelation('category')) || !$this->category->hasEntriesEnabled()) {
             $this->addInvalidAttributeError('category_id');
         }
     }
@@ -78,7 +78,7 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
      */
     public function validateEntryId()
     {
-        if ($this->isAttributeChanged('entry_id') && !$this->refreshRelation('entry')) {
+        if (($this->isAttributeChanged('entry_id') && !$this->refreshRelation('entry')) || !$this->entry->hasCategoriesEnabled()) {
             $this->addInvalidAttributeError('entry_id');
         }
     }

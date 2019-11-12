@@ -268,7 +268,7 @@ class Category extends ActiveRecord
     /**
      * @return bool
      */
-    public function enableEntryCategory()
+    public function hasEntriesEnabled()
     {
         return true;
     }

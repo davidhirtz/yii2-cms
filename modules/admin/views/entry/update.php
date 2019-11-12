@@ -31,7 +31,7 @@ $this->setTitle(Yii::t('cms', 'Edit Entry'));
 ]); ?>
 
 <?php
-if ($entry->getModule()->enableEntryAssets) {
+if ($entry->hasAssetsEnabled()) {
     echo Panel::widget([
         'id' => 'assets',
         'title' => $entry->getAttributeLabel('asset_count'),

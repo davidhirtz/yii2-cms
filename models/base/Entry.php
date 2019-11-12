@@ -270,6 +270,30 @@ class Entry extends ActiveRecord
     }
 
     /**
+     * @return bool
+     */
+    public function hasAssetsEnabled(): bool
+    {
+        return static::getModule()->enableEntryAssets;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasCategoriesEnabled(): bool
+    {
+        return static::getModule()->enableCategories;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasSectionsEnabled(): bool
+    {
+        return static::getModule()->enableSections;
+    }
+
+    /**
      * @return array|false
      */
     public function getRoute()

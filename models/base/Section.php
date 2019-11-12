@@ -76,7 +76,7 @@ class Section extends ActiveRecord
      */
     public function validateEntryId()
     {
-        if ($this->isAttributeChanged('entry_id') && !$this->refreshRelation('entry')) {
+        if (($this->isAttributeChanged('entry_id') && !$this->refreshRelation('entry')) || !$this->entry->hasSectionsEnabled()) {
             $this->addInvalidAttributeError('entry_id');
         }
     }
@@ -217,6 +217,14 @@ class Section extends ActiveRecord
         }
 
         $this->populateRelation('assets', $relations);
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasAssetsEnabled(): bool
+    {
+        return static::getModule()->enableSectionAssets;
     }
 
     /**
