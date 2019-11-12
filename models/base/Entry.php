@@ -77,6 +77,7 @@ class Entry extends ActiveRecord
                 ['slug'],
                 'unique',
                 'targetAttribute' => $this->slugTargetAttribute,
+                'comboNotUnique' => Yii::t('yii', '{attribute} "{value}" has already been taken.'),
             ],
             [
                 ['publish_date'],
