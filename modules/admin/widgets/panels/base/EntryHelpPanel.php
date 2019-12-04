@@ -55,10 +55,12 @@ class EntryHelpPanel extends HelpPanel
             $manager = Yii::$app->getUrlManager();
             $url = $this->model->isDraft() ? $manager->createDraftUrl($route) : $manager->createAbsoluteUrl($route);
 
-            return Html::a(Html::iconText($this->model->isDraft() ? 'lock-open' : 'globe', Yii::t('cms', 'View Entry')), $url, [
-                'class' => 'btn btn-primary',
-                'target' => 'blank',
-            ]);
+            if($url) {
+                return Html::a(Html::iconText($this->model->isDraft() ? 'lock-open' : 'globe', Yii::t('cms', 'View Entry')), $url, [
+                    'class' => 'btn btn-primary',
+                    'target' => 'blank',
+                ]);
+            }
         }
 
         return null;
