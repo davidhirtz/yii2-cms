@@ -39,8 +39,9 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     public $customSlugBehavior = false;
 
     /**
-     * @var string|array with the first value containing the validator class, following
-     * keys can be used to configure the validator.
+     * @var mixed used when $contentType is set to "html". use array with the first value containing the
+     * validator class, following keys can be used to configure the validator, string containing the class
+     * name or false for disabling the validation.
      */
     public $htmlValidator = 'davidhirtz\yii2\skeleton\validators\HtmlValidator';
 
@@ -74,7 +75,7 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
                 'validateType',
                 'skipOnEmpty' => false,
             ],
-            array_merge([$this->getI18nAttributesNames(['content'])], (array)($this->contentType == 'html' ? $this->htmlValidator : 'safe')),
+            array_merge([$this->getI18nAttributesNames(['content'])], (array)($this->contentType == 'html' && $this->htmlValidator ? $this->htmlValidator : 'safe')),
         ]);
     }
 

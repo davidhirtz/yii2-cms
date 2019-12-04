@@ -112,7 +112,12 @@ class ActiveForm extends \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm
      */
     protected function getContentConfig(): array
     {
-        return ['validator' => $this->model->htmlValidator];
+        return [
+            'validator' => $this->model->htmlValidator,
+            'clientOptions' => $this->model->htmlValidator !== false ? [] : [
+                'allowedContent' => true,
+            ],
+        ];
     }
 
     /**
