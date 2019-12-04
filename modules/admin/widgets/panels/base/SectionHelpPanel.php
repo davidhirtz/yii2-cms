@@ -56,10 +56,12 @@ class SectionHelpPanel extends HelpPanel
             $isDraft = $this->model->isDraft() || $this->model->entry->isDraft();
             $url = $isDraft ? $manager->createDraftUrl($route) : $manager->createAbsoluteUrl($route);
 
-            return Html::a(Html::iconText($isDraft ? 'lock-open' : 'globe', Yii::t('cms', 'View Section')), $url, [
-                'class' => 'btn btn-primary',
-                'target' => 'blank',
-            ]);
+            if ($url) {
+                return Html::a(Html::iconText($isDraft ? 'lock-open' : 'globe', Yii::t('cms', 'View Section')), $url, [
+                    'class' => 'btn btn-primary',
+                    'target' => 'blank',
+                ]);
+            }
         }
 
         return null;
