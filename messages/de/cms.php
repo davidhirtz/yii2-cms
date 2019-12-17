@@ -21,7 +21,7 @@ return [
     'All devices' => 'Alle Geräte',
     'Alt text' => 'Alt text',
     'Are you sure you want to remove this asset?' => 'Sind sie sicher, dass sie dieses Asset löschen wollen?',
-    'Assets' => 'Alt text',
+    'Assets' => 'Assets',
     'Categories' => 'Kategorien',
     'Category' => 'Kategorie',
     'Content' => 'Inhalt',
