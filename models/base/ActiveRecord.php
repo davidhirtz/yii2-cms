@@ -111,6 +111,32 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     abstract public function findSiblings();
 
     /**
+     * @return array
+     */
+    public function generateSitemapUrls(): array
+    {
+        $manager = Yii::$app->getUrlManager();
+        $languages = $manager->i18nUrl || $manager->i18nSubdomain ? Yii::$app->getI18n()->getLanguages() : [static::getModule()->enableI18nTables ? Yii::$app->language : null];
+        $urls = [];
+
+        /** @var ActiveRecord $record */
+        foreach (static::find()->each() as $record) {
+            foreach ($languages as $language) {
+                if ($record->includeInSitemap($language)) {
+                    if ($route = $record->getRoute()) {
+                        $urls [] = [
+                            'loc' => $route + ['language' => $language],
+                            'lastmod' => $record->updated_at,
+                        ];
+                    }
+                }
+            }
+        }
+
+        return $urls;
+    }
+
+    /**
      * Generates a unique slug if the slug is already taken.
      */
     public function generateUniqueSlug()
@@ -123,6 +149,15 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
                 }
             }
         }
+    }
+
+    /**
+     * @param string|null $language
+     * @return bool
+     */
+    public function includeInSitemap(/** @noinspection PhpUnusedParameterInspection */ $language = null): bool
+    {
+        return $this->isEnabled();
     }
 
     /**
