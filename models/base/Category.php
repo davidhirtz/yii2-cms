@@ -235,9 +235,9 @@ class Category extends ActiveRecord
     }
 
     /**
-     * @return array
+     * @return array|false
      */
-    public function getRoute(): array
+    public function getRoute()
     {
         return array_filter(['/cms/site/index', 'category' => $this->getNestedSlug()]);
     }
