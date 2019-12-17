@@ -48,7 +48,7 @@ class SectionActiveForm extends ActiveForm
     {
         $draftHostInfo = Yii::$app->getRequest()->getDraftHostInfo();
         $urlManager = Yii::$app->getUrlManager();
-        $route = array_merge($this->model->entry->getRoute(), ['language' => $language, '#' => '']);
+        $route = array_merge($this->model->entry->getRoute(), ['language' => $urlManager->i18nUrl || $urlManager->i18nSubdomain ? $language : null, '#' => '']);
 
         return $this->model->entry->isEnabled() || !$draftHostInfo ? $urlManager->createAbsoluteUrl($route) : $urlManager->createDraftUrl($route);
     }
