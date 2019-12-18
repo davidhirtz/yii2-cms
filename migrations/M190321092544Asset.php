@@ -37,8 +37,8 @@ class M190321092544Asset extends Migration
             // Asset.
             $this->createTable(Asset::tableName(), [
                 'id' => $this->primaryKey()->unsigned(),
-                'status' => $this->tinyInteger(1)->unsigned()->notNull()->defaultValue(Section::STATUS_ENABLED),
-                'type' => $this->smallInteger()->notNull()->defaultValue(Section::TYPE_DEFAULT),
+                'status' => $this->tinyInteger(1)->unsigned()->notNull()->defaultValue(Asset::STATUS_ENABLED),
+                'type' => $this->smallInteger()->notNull()->defaultValue(Asset::TYPE_DEFAULT),
                 'entry_id' => $this->integer()->unsigned()->notNull(),
                 'section_id' => $this->integer()->unsigned()->null(),
                 'file_id' => $this->integer()->unsigned()->notNull(),
