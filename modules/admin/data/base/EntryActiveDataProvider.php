@@ -9,7 +9,6 @@ use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\skeleton\db\ActiveQuery;
 use yii\data\ActiveDataProvider;
-use yii\data\Sort;
 
 /**
  * Class EntryActiveDataProvider.
@@ -43,8 +42,6 @@ class EntryActiveDataProvider extends ActiveDataProvider
     public function init()
     {
         $this->initQuery();
-        $this->initSort();
-
         parent::init();
     }
 
@@ -64,6 +61,10 @@ class EntryActiveDataProvider extends ActiveDataProvider
                 $this->query->orderBy(Entry::getTypes()[$this->type]['orderBy']);
             }
 
+            if (isset(Entry::getTypes()[$this->type]['sort'])) {
+                $this->setSort(Entry::getTypes()[$this->type]['sort']);
+            }
+
             $this->query->andWhere(['type' => $this->type]);
         }
 
@@ -81,51 +82,19 @@ class EntryActiveDataProvider extends ActiveDataProvider
     }
 
     /**
-     * Inits sort.
-     */
-    protected function initSort()
-    {
-        $this->setSort($this->isOrderedByPosition() ? false : new Sort([
-            'attributes' => [
-                'type' => [
-                    'asc' => ['type' => SORT_ASC, 'name' => SORT_ASC],
-                    'desc' => ['type' => SORT_DESC, 'name' => SORT_DESC],
-                ],
-                'name' => [
-                    'asc' => ['name' => SORT_ASC],
-                    'desc' => ['name' => SORT_DESC],
-                ],
-                'asset_count' => [
-                    'asc' => ['asset_count' => SORT_ASC, 'name' => SORT_ASC],
-                    'desc' => ['asset_count' => SORT_DESC, 'name' => SORT_ASC],
-                    'default' => SORT_DESC,
-                ],
-                'section_count' => [
-                    'asc' => ['section_count' => SORT_ASC, 'name' => SORT_ASC],
-                    'desc' => ['section_count' => SORT_DESC, 'name' => SORT_ASC],
-                    'default' => SORT_DESC,
-                ],
-                'publish_date' => [
-                    'asc' => ['publish_date' => SORT_ASC],
-                    'desc' => ['publish_date' => SORT_DESC],
-                    'default' => SORT_DESC,
-                ],
-                'updated_at' => [
-                    'asc' => ['updated_at' => SORT_ASC],
-                    'desc' => ['updated_at' => SORT_DESC],
-                    'default' => SORT_DESC,
-                ],
-            ],
-            'defaultOrder' => $this->query->orderBy ?: ['updated_at' => SORT_DESC],
-        ]));
-    }
-
-    /**
      * @inheritDoc
      */
     public function getPagination()
     {
         return !$this->isOrderedByPosition() ? parent::getPagination() : false;
+    }
+
+    /**
+     * @return bool|\yii\data\Sort
+     */
+    public function getSort()
+    {
+        return !$this->isOrderedByPosition() ? parent::getSort() : false;
     }
 
     /**

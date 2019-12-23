@@ -60,7 +60,9 @@ class EntryController extends Controller
             return $this->redirect(Url::current(['type' => static::getModule()->defaultEntryType]));
         }
 
-        $provider = new EntryActiveDataProvider([
+        /** @var EntryActiveDataProvider $provider */
+        $provider = Yii::createObject([
+            'class' => 'davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider',
             'category' => $category ? Category::findOne($category) : null,
             'searchString' => $q,
             'type' => $type,
