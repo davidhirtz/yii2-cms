@@ -72,7 +72,7 @@ class MetaTags extends BaseObject
         if (!$this->languages && $this->languages !== false) {
             $manager = Yii::$app->getUrlManager();
             if ($manager->i18nUrl || $manager->i18nSubdomain) {
-                $this->languages = $manager->languages;
+                $this->languages = array_keys($manager->languages);
             }
         }
 
