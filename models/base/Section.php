@@ -8,6 +8,7 @@ use davidhirtz\yii2\cms\models\queries\AssetQuery;
 use davidhirtz\yii2\cms\models\queries\EntryQuery;
 use davidhirtz\yii2\cms\models\queries\SectionQuery;
 use davidhirtz\yii2\cms\modules\admin\widgets\forms\SectionActiveForm;
+use davidhirtz\yii2\media\models\AssetRelationInterface;
 use Yii;
 use yii\base\Widget;
 use yii\helpers\Inflector;
@@ -26,7 +27,7 @@ use yii\helpers\Inflector;
  * @property Asset[] $assets
  * @method static \davidhirtz\yii2\cms\models\Section findOne($condition)
  */
-class Section extends ActiveRecord
+class Section extends ActiveRecord implements AssetRelationInterface
 {
     /**
      * @inheritdoc

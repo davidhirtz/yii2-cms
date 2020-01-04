@@ -11,6 +11,7 @@ use davidhirtz\yii2\cms\models\queries\SectionQuery;
 use davidhirtz\yii2\cms\modules\admin\widgets\forms\EntryActiveForm;
 use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\datetime\DateTimeValidator;
+use davidhirtz\yii2\media\models\AssetRelationInterface;
 use Yii;
 use yii\base\Widget;
 use yii\helpers\Inflector;
@@ -35,7 +36,7 @@ use yii\helpers\Inflector;
  * @property EntryCategory $entryCategory
  * @method static \davidhirtz\yii2\cms\models\Entry findOne($condition)
  */
-class Entry extends ActiveRecord
+class Entry extends ActiveRecord implements AssetRelationInterface
 {
     /**
      * @var bool|string

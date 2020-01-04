@@ -9,6 +9,7 @@ use davidhirtz\yii2\cms\models\queries\SectionQuery;
 use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\modules\admin\widgets\forms\AssetActiveForm;
 use davidhirtz\yii2\datetime\DateTime;
+use davidhirtz\yii2\media\models\AssetInterface;
 use davidhirtz\yii2\media\models\File;
 use davidhirtz\yii2\media\models\queries\FileQuery;
 use davidhirtz\yii2\skeleton\models\User;
@@ -39,7 +40,7 @@ use yii\base\Widget;
  *
  * @method static \davidhirtz\yii2\cms\models\Asset findOne($condition)
  */
-class Asset extends \davidhirtz\yii2\cms\models\base\ActiveRecord
+class Asset extends \davidhirtz\yii2\cms\models\base\ActiveRecord implements AssetInterface
 {
     /**
      * Constants.

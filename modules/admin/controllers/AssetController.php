@@ -2,12 +2,14 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\controllers;
 
+use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\Section;
+use davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\cms\models\Asset;
-use davidhirtz\yii2\media\modules\admin\data\FileActiveDataProvider;
 use davidhirtz\yii2\media\models\File;
+use davidhirtz\yii2\media\modules\admin\data\FileActiveDataProvider;
 use davidhirtz\yii2\skeleton\web\Controller;
 use Yii;
 use yii\filters\AccessControl;
@@ -68,7 +70,9 @@ class AssetController extends Controller
             throw new NotFoundHttpException;
         }
 
-        $provider = new FileActiveDataProvider([
+        /** @var FileActiveDataProvider $provider */
+        $provider = Yii::createObject([
+            'class' => 'davidhirtz\yii2\media\modules\admin\data\FileActiveDataProvider',
             'folderId' => $folder,
             'type' => $type,
             'search' => $q,
