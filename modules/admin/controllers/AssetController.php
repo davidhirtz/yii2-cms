@@ -2,10 +2,8 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\controllers;
 
-use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\Section;
-use davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\media\models\File;
@@ -68,6 +66,13 @@ class AssetController extends Controller
 
         } elseif (!$entry || !$parent = Entry::findOne($entry)) {
             throw new NotFoundHttpException;
+        }
+
+        if ($parent instanceof Entry) {
+            // Populate assets without sections for file grid
+            $parent->populateRelation('assets', $parent->getAssets()
+                ->withoutSections()
+                ->all());
         }
 
         /** @var FileActiveDataProvider $provider */
@@ -168,7 +173,7 @@ class AssetController extends Controller
             }
 
             $this->success(Yii::t('cms', 'The asset was deleted.'));
-            return $this->redirectToParent($asset);
+            return $this->redirectToParent($asset, true);
         }
 
         $errors = $asset->getFirstErrors();
@@ -193,10 +198,11 @@ class AssetController extends Controller
 
     /**
      * @param Asset $asset
+     * @param bool $isDeleted
      * @return \yii\web\Response
      */
-    private function redirectToParent(Asset $asset)
+    private function redirectToParent(Asset $asset, $isDeleted = false)
     {
-        return $this->redirect(($asset->section_id ? ['/admin/section/update', 'id' => $asset->section_id] : ['/admin/entry/update', 'id' => $asset->entry_id]) + ['#' => 'assets']);
+        return $this->redirect(($asset->section_id ? ['/admin/section/update', 'id' => $asset->section_id] : ['/admin/entry/update', 'id' => $asset->entry_id]) + ['#' => $isDeleted ? 'assets' : ('asset-' . $asset->id)]);
     }
 }

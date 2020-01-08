@@ -8,6 +8,7 @@ use davidhirtz\yii2\cms\models\queries\EntryQuery;
 use davidhirtz\yii2\cms\models\queries\SectionQuery;
 use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\modules\admin\widgets\forms\AssetActiveForm;
+use davidhirtz\yii2\cms\modules\admin\widgets\grid\AssetGridView;
 use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\media\models\AssetInterface;
 use davidhirtz\yii2\media\models\File;
@@ -34,7 +35,6 @@ use yii\base\Widget;
  * @property DateTime $created_at
  * @property Entry $entry
  * @property Section $section
- * @property Entry|Section $parent
  * @property File $file
  * @property User $updated
  *
@@ -144,6 +144,14 @@ class Asset extends \davidhirtz\yii2\cms\models\base\ActiveRecord implements Ass
     }
 
     /**
+     * @return EntryQuery
+     */
+    public function getParent()
+    {
+        return $this->getEntry();
+    }
+
+    /**
      * @return AssetQuery
      */
     public function findSiblings()
@@ -164,22 +172,14 @@ class Asset extends \davidhirtz\yii2\cms\models\base\ActiveRecord implements Ass
      */
     public function recalculateAssetCount()
     {
-        $parent = $this->getParent();
+        $parent = $this->section_id ? $this->section : $this->entry;
         $parent->asset_count = $this->findSiblings()->count();
         $parent->update(false);
 
         if (!$this->file->isDeleted()) {
-            $this->file->setAttribute('cms_asset_count', static::find()->where(['file_id' => $this->file_id])->count());
+            $this->file->setAttribute(static::fileCountAttribute(), static::find()->where(['file_id' => $this->file_id])->count());
             $this->file->update(false);
         }
-    }
-
-    /**
-     * @return Entry|Section
-     */
-    public function getParent()
-    {
-        return $this->section_id ? $this->section : $this->entry;
     }
 
     /**
@@ -236,6 +236,22 @@ class Asset extends \davidhirtz\yii2\cms\models\base\ActiveRecord implements Ass
     public function getActiveForm()
     {
         return static::getTypes()[$this->type]['activeForm'] ?? AssetActiveForm::class;
+    }
+
+    /**
+     * @return string
+     */
+    public static function getAssetParentGridView(): string
+    {
+        return AssetGridView::class;
+    }
+
+    /**
+     * @return string
+     */
+    public static function fileCountAttribute(): string
+    {
+        return 'cms_asset_count';
     }
 
     /**

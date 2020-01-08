@@ -13,11 +13,10 @@ use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
 use davidhirtz\yii2\skeleton\widgets\forms\DeleteActiveForm;
 
 $this->setTitle(Yii::t('cms', 'Edit Asset'));
-
 ?>
 
 <?= Submenu::widget([
-    'model' => $asset->getParent(),
+    'model' => $asset->section_id ? $asset->section : $asset->entry,
 ]); ?>
 
 <?php

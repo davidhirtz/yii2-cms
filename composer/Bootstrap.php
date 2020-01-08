@@ -43,7 +43,8 @@ class Bootstrap implements BootstrapInterface
                 'class' => 'davidhirtz\yii2\cms\Module',
             ],
             'media' => [
-                'relations' => [
+                'class' => 'davidhirtz\yii2\media\Module',
+                'assets' => [
                     'davidhirtz\yii2\cms\models\Asset',
                 ],
             ],

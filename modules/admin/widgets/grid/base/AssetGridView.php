@@ -121,7 +121,7 @@ class AssetGridView extends GridView
     /**
      * @return array
      */
-    public function statusColumn()
+    public function statusColumn(): array
     {
         return [
             'contentOptions' => ['class' => 'text-center'],
@@ -137,7 +137,7 @@ class AssetGridView extends GridView
     /**
      * @return array
      */
-    public function thumbnailColumn()
+    public function thumbnailColumn(): array
     {
         return [
             'headerOptions' => ['style' => 'width:150px'],
@@ -153,7 +153,7 @@ class AssetGridView extends GridView
     /**
      * @return array
      */
-    public function typeColumn()
+    public function typeColumn(): array
     {
         return [
             'attribute' => 'type',
@@ -167,7 +167,7 @@ class AssetGridView extends GridView
     /**
      * @return array
      */
-    public function nameColumn()
+    public function nameColumn(): array
     {
         return [
             'attribute' => $this->getModel()->getI18nAttributeName('name'),
@@ -185,7 +185,7 @@ class AssetGridView extends GridView
     /**
      * @return array
      */
-    public function buttonsColumn()
+    public function buttonsColumn(): array
     {
         return [
             'contentOptions' => ['class' => 'text-right text-nowrap'],
@@ -226,7 +226,7 @@ class AssetGridView extends GridView
      * @param array $params
      * @return array
      */
-    protected function getRoute($action, $params = [])
+    protected function getRoute($action, $params = []): array
     {
         return array_merge([$action, ($this->parent instanceof Entry ? 'entry' : 'section') => $this->parent->id], $params);
     }
