@@ -10,7 +10,6 @@ use davidhirtz\yii2\skeleton\widgets\fontawesome\Icon;
 use davidhirtz\yii2\timeago\Timeago;
 use yii\data\ArrayDataProvider;
 use Yii;
-use yii\helpers\Url;
 
 /**
  * Class AssetParentGridView.
