@@ -136,6 +136,20 @@ class Section extends ActiveRecord implements AssetParentInterface
     }
 
     /**
+     * @return bool
+     */
+    public function beforeDelete()
+    {
+        if ($this->asset_count) {
+            foreach ($this->assets as $asset) {
+                $asset->delete();
+            }
+        }
+
+        return parent::beforeDelete();
+    }
+
+    /**
      * @inheritdoc
      */
     public function afterDelete()

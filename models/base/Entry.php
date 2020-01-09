@@ -34,6 +34,7 @@ use yii\helpers\Inflector;
  * @property Asset[] $assets
  * @property \davidhirtz\yii2\cms\models\Entry $entry
  * @property EntryCategory $entryCategory
+ * @property EntryCategory[] $entryCategories
  * @method static \davidhirtz\yii2\cms\models\Entry findOne($condition)
  */
 class Entry extends ActiveRecord implements AssetParentInterface
@@ -116,6 +117,26 @@ class Entry extends ActiveRecord implements AssetParentInterface
     }
 
     /**
+     * @return bool
+     */
+    public function beforeDelete()
+    {
+        if ($this->asset_count) {
+            foreach ($this->assets as $asset) {
+                $asset->delete();
+            }
+        }
+
+        if ($this->category_ids) {
+            foreach ($this->entryCategories as $entryCategory) {
+                $entryCategory->delete();
+            }
+        }
+
+        return parent::beforeDelete();
+    }
+
+    /**
      * @return \yii\db\ActiveQuery
      */
     public function getEntryCategory()
@@ -126,11 +147,10 @@ class Entry extends ActiveRecord implements AssetParentInterface
     /**
      * @return \yii\db\ActiveQuery
      */
-//    public function getCategories()
-//    {
-//        return $this->hasMany(\davidhirtz\yii2\cms\models\Category::class, ['id' => 'category_id'])
-//            ->viaTable(EntryCategory::tableName(), ['entry_id' => 'id']);
-//    }
+    public function getEntryCategories()
+    {
+        return $this->hasMany(EntryCategory::class, ['entry_id' => 'id']);
+    }
 
     /**
      * @return SectionQuery
