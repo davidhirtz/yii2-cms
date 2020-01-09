@@ -8,7 +8,7 @@ use davidhirtz\yii2\cms\models\queries\EntryQuery;
 use davidhirtz\yii2\cms\models\queries\SectionQuery;
 use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\modules\admin\widgets\forms\AssetActiveForm;
-use davidhirtz\yii2\cms\modules\admin\widgets\grid\AssetGridView;
+use davidhirtz\yii2\cms\modules\admin\widgets\grid\AssetParentGridView;
 use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\media\models\AssetInterface;
 use davidhirtz\yii2\media\models\File;
@@ -144,14 +144,6 @@ class Asset extends \davidhirtz\yii2\cms\models\base\ActiveRecord implements Ass
     }
 
     /**
-     * @return EntryQuery
-     */
-    public function getParent()
-    {
-        return $this->getEntry();
-    }
-
-    /**
      * @return AssetQuery
      */
     public function findSiblings()
@@ -172,12 +164,12 @@ class Asset extends \davidhirtz\yii2\cms\models\base\ActiveRecord implements Ass
      */
     public function recalculateAssetCount()
     {
-        $parent = $this->section_id ? $this->section : $this->entry;
+        $parent = $this->getParent();
         $parent->asset_count = $this->findSiblings()->count();
         $parent->update(false);
 
         if (!$this->file->isDeleted()) {
-            $this->file->setAttribute(static::fileCountAttribute(), static::find()->where(['file_id' => $this->file_id])->count());
+            $this->file->setAttribute($this->getFileCountAttribute(), static::find()->where(['file_id' => $this->file_id])->count());
             $this->file->update(false);
         }
     }
@@ -239,17 +231,35 @@ class Asset extends \davidhirtz\yii2\cms\models\base\ActiveRecord implements Ass
     }
 
     /**
-     * @return string
+     * @return Entry|Section
      */
-    public static function getAssetParentGridView(): string
+    public function getParent()
     {
-        return AssetGridView::class;
+        return $this->section_id ? $this->section : $this->entry;
     }
 
     /**
      * @return string
      */
-    public static function fileCountAttribute(): string
+    public function getParentGridView(): string
+    {
+        return AssetParentGridView::class;
+    }
+
+    /**
+     * @return mixed|string
+     */
+    public function getParentName(): string
+    {
+        /** @var \davidhirtz\yii2\cms\modules\admin\Module $module */
+        $module = Yii::$app->getModule('admin')->getModule('cms');
+        return $module->name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFileCountAttribute(): string
     {
         return 'cms_asset_count';
     }

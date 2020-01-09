@@ -102,7 +102,7 @@ class EntryActiveDataProvider extends ActiveDataProvider
      */
     public function isOrderedByPosition()
     {
-        return $this->query->orderBy && in_array(key($this->query->orderBy), [
+        return isset($this->query->orderBy) && in_array(key($this->query->orderBy), [
                 EntryCategory::tableName() . '.[[position]]',
                 'position',
             ]);

@@ -173,13 +173,9 @@ class EntryGridView extends GridView
      */
     public function typeColumn()
     {
-        if ($this->dataProvider->type || !Entry::getTypes()) {
-            return false;
-        }
-
         return [
             'attribute' => 'type',
-            'visible' => count(Entry::getTypes()) > 1,
+            'visible' => !$this->dataProvider->type && count(Entry::getTypes()) > 1,
             'content' => function (Entry $entry) {
                 return Html::a($entry->getTypeName(), $this->getRoute($entry));
             }

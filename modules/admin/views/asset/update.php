@@ -16,7 +16,7 @@ $this->setTitle(Yii::t('cms', 'Edit Asset'));
 ?>
 
 <?= Submenu::widget([
-    'model' => $asset->section_id ? $asset->section : $asset->entry,
+    'model' => $asset->getParent(),
 ]); ?>
 
 <?php
