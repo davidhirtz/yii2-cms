@@ -121,6 +121,11 @@ class SectionController extends Controller
             }
         }
 
+        // Populate assets with file and folder relations.
+        $section->populateRelation('assets', $section->getAssets()
+            ->with(['file', 'file.folder'])
+            ->all());
+
         /** @noinspection MissedViewInspection */
         return $this->render('update', [
             'section' => $section,

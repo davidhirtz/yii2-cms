@@ -40,6 +40,7 @@ class AssetGridView extends GridView
         'thumbnail',
         'type',
         'name',
+        'dimensions',
         'buttons',
     ];
 
@@ -178,6 +179,19 @@ class AssetGridView extends GridView
                 }
 
                 return Html::a($asset->file->name, ['cms/asset/update', 'id' => $asset->id], ['class' => 'text-muted']);
+            }
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function dimensionsColumn(): array
+    {
+        return [
+            'attribute' => $this->getModel()->getI18nAttributeName('dimensions'),
+            'content' => function (Asset $asset) {
+                return $asset->file->hasDimensions() ? $asset->file->getDimensions() : '-';
             }
         ];
     }

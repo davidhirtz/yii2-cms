@@ -117,6 +117,7 @@ class EntryController extends Controller
         // Populate assets without sections for asset grid
         $entry->populateRelation('assets', $entry->getAssets()
             ->withoutSections()
+            ->with(['file', 'file.folder'])
             ->all());
 
         /** @noinspection MissedViewInspection */
