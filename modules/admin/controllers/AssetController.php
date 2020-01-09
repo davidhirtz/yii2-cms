@@ -94,11 +94,14 @@ class AssetController extends Controller
      * @param int $entry
      * @param int $section
      * @param int $file
+     * @param int $folder
      * @return string|\yii\web\Response
      */
-    public function actionCreate($entry = null, $section = null, $file = null)
+    public function actionCreate($entry = null, $section = null, $file = null, $folder = null)
     {
         $file = $file ? File::findOne($file) : new File;
+        $file->folder_id = $folder;
+        
         $isNew = $file->getIsNewRecord();
 
         if ($file->getIsNewRecord()) {

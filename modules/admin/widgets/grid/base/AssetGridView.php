@@ -107,7 +107,9 @@ class AssetGridView extends GridView
     protected function getFileUploadWidget()
     {
         return FileUpload::widget([
-            'url' => $this->getRoute('/admin/cms/asset/create'),
+            'url' => $this->getRoute('/admin/cms/asset/create', [
+                'folder' => Yii::$app->getRequest()->get('folder'),
+            ]),
         ]);
     }
 
