@@ -3,7 +3,6 @@
 namespace davidhirtz\yii2\cms\modules\admin\widgets\forms;
 
 use davidhirtz\yii2\cms\models\Asset;
-use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 /**
@@ -21,14 +20,14 @@ class AssetActiveForm extends ActiveForm
     {
         if (!$this->fields) {
             $this->fields = [
-                ['thumbnail'],
-                ['-'],
-                ['status', 'dropDownList', ArrayHelper::getColumn(Asset::getStatuses(), 'name')],
-                ['type', 'dropDownList', ArrayHelper::getColumn(Asset::getTypes(), 'name')],
-                ['name'],
-                ['content'],
-                ['alt_text'],
-                ['link'],
+                'thumbnail',
+                '-',
+                'status',
+                'type',
+                'name',
+                'content',
+                'alt_text',
+                'link',
             ];
         }
 
@@ -43,5 +42,23 @@ class AssetActiveForm extends ActiveForm
     {
         $file = $this->model->file;
         return $file->hasPreview() ? $this->row($this->offset(Html::img($file->folder->getUploadUrl() . $file->getFilename(), ['class' => 'img-transparent']))) : '';
+    }
+
+    /**
+     * @param array $options
+     * @return \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveField|\yii\widgets\ActiveField|string
+     */
+    public function statusField($options = [])
+    {
+        return ($statuses = $this->getStatuses()) ? $this->field($this->model, 'status', $options)->dropdownList($statuses) : '';
+    }
+
+    /**
+     * @param array $options
+     * @return \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveField|\yii\widgets\ActiveField|string
+     */
+    public function typeField($options = [])
+    {
+        return ($types = $this->getTypes()) ? $this->field($this->model, 'type', $options)->dropdownList($types) : '';
     }
 }
