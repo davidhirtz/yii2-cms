@@ -54,7 +54,7 @@ class AssetParentGridView extends GridView
         if (!$this->dataProvider) {
             $this->dataProvider = new ArrayDataProvider([
                 'allModels' => Asset::find()
-                    ->where(['file_id' => $this->file])
+                    ->where(['file_id' => $this->file->id])
                     ->with(['entry', 'section'])
                     ->orderBy(['updated_at' => SORT_DESC])
                     ->all()
