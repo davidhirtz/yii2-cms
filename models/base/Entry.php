@@ -10,7 +10,6 @@ use davidhirtz\yii2\cms\models\queries\EntryQuery;
 use davidhirtz\yii2\cms\models\queries\SectionQuery;
 use davidhirtz\yii2\cms\modules\admin\widgets\forms\EntryActiveForm;
 use davidhirtz\yii2\datetime\DateTime;
-use davidhirtz\yii2\datetime\DateTimeValidator;
 use davidhirtz\yii2\media\models\AssetParentInterface;
 use Yii;
 use yii\base\Widget;
@@ -51,6 +50,11 @@ class Entry extends ActiveRecord implements AssetParentInterface
     public $slugTargetAttribute;
 
     /**
+     * @var array|string
+     */
+    public $dateTimeValidator = '\davidhirtz\yii2\datetime\DateTimeValidator';
+
+    /**
      * @inheritdoc
      */
     public function rules(): array
@@ -81,10 +85,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
                 'targetAttribute' => $this->slugTargetAttribute,
                 'comboNotUnique' => Yii::t('yii', '{attribute} "{value}" has already been taken.'),
             ],
-            [
-                ['publish_date'],
-                DateTimeValidator::class,
-            ],
+            array_merge([$this->getI18nAttributeNames('publish_date')], (array)$this->dateTimeValidator),
         ]));
     }
 
