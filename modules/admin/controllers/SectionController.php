@@ -23,6 +23,11 @@ class SectionController extends Controller
     use ModuleTrait;
 
     /**
+     * @var bool
+     */
+    public $autoCreateSection = true;
+
+    /**
      * @inheritdoc
      */
     public function behaviors()
@@ -92,7 +97,7 @@ class SectionController extends Controller
             throw new NotFoundHttpException;
         }
 
-        if ($section->load(Yii::$app->getRequest()->post()) && $section->insert()) {
+        if (($this->autoCreateSection || $section->load(Yii::$app->getRequest()->post())) && $section->insert()) {
             $this->success(Yii::t('cms', 'The section was created.'));
             return $this->redirect(['update', 'id' => $section->id]);
         }
@@ -143,7 +148,6 @@ class SectionController extends Controller
 
         if ($errors = $clone->getFirstErrors()) {
             $this->error($errors);
-
         } else {
             $this->success(Yii::t('cms', 'The section was duplicated.'));
         }
@@ -161,7 +165,6 @@ class SectionController extends Controller
 
         if ($section->delete()) {
             $this->success(Yii::t('cms', 'The section was deleted.'));
-
         } elseif ($errors = $section->getFirstErrors()) {
             $this->error($errors);
         }
