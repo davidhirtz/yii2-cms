@@ -29,7 +29,10 @@ use yii\helpers\Inflector;
  * @property int $entry_count
  * @property Section[] $sections
  * @property Asset[] $assets
- * @property  EntryCategory $entryCategory
+ * @property EntryCategory $entryCategory
+ * @property \davidhirtz\yii2\cms\models\Category $parent
+ * @property \davidhirtz\yii2\cms\models\Category[] $ancestors
+ * @property \davidhirtz\yii2\cms\models\Category[] $descendants
  * @method static \davidhirtz\yii2\cms\models\Category findOne($condition)
  */
 class Category extends ActiveRecord
@@ -271,6 +274,14 @@ class Category extends ActiveRecord
     public function hasEntriesEnabled()
     {
         return true;
+    }
+
+    /**
+     * @return bool
+     */
+    public function inheritNestedCategories()
+    {
+        return static::getModule()->inheritNestedCategories;
     }
 
     /**

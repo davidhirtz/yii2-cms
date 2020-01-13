@@ -13,7 +13,7 @@ use davidhirtz\yii2\timeago\Timeago;
 use davidhirtz\yii2\skeleton\widgets\fontawesome\Icon;
 
 /**
- * Class EntryCategoryGridView.
+ * Class EntryCategoryGridView
  * @package davidhirtz\yii2\cms\modules\admin\widgets\grid\base
  * @see \davidhirtz\yii2\cms\modules\admin\widgets\grid\EntryCategoryGridView
  *
@@ -49,6 +49,7 @@ class EntryCategoryGridView extends GridView
             return ['class' => $category->entryCategory ? 'is-selected' : null];
         };
 
+        $this->initAncestors();
         parent::init();
     }
 

@@ -14,6 +14,8 @@ use yii\data\ActiveDataProvider;
  * @package davidhirtz\yii2\cms\modules\admin\data\base
  *
  * @property CategoryQuery $query
+ * @property Category[] $models
+ * @method Category[] getModels()
  */
 class CategoryActiveDataProvider extends ActiveDataProvider
 {
@@ -57,7 +59,6 @@ class CategoryActiveDataProvider extends ActiveDataProvider
                     $query->onCondition(['entry_id' => $this->entry->id]);
                 }
             ]);
-
         } else {
             $this->query->andWhere(['parent_id' => $this->category->id ?? null]);
         }

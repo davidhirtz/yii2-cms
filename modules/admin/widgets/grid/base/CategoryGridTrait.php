@@ -4,12 +4,16 @@ namespace davidhirtz\yii2\cms\modules\admin\widgets\grid\base;
 
 
 use davidhirtz\yii2\cms\models\Category;
+use davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\widgets\fontawesome\Icon;
 use Yii;
 
 /**
  * Class CategoryGridTrait.
+ * @package davidhirtz\yii2\cms\modules\admin\widgets\grid\base
+ *
+ * @property CategoryActiveDataProvider $dataProvider
  */
 trait CategoryGridTrait
 {
@@ -85,6 +89,29 @@ trait CategoryGridTrait
         }
 
         return '';
+    }
+
+    /**
+     * Sets ancestors for all categories to avoid each record loading it's ancestors from the database.
+     * If no parent category is set simply set all loaded models and let setAncestors method work it's magic.
+     */
+    protected function initAncestors()
+    {
+        $categories = null;
+
+        foreach ($this->dataProvider->getModels() as $category) {
+            if ($categories === null) {
+                if ($this->dataProvider->category) {
+                    $categories = $category->ancestors;
+                } else {
+                    $categories = !$this->dataProvider->searchString ? $this->dataProvider->getModels() : Category::find()
+                        ->indexBy('id')
+                        ->all();
+                }
+            }
+
+            $category->setAncestors($categories);
+        }
     }
 
     /**

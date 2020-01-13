@@ -45,6 +45,7 @@ class CategoryGridView extends GridView
 
         $this->initHeader();
         $this->initFooter();
+        $this->initAncestors();
 
         parent::init();
     }

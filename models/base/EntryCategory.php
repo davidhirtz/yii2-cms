@@ -27,10 +27,16 @@ use Yii;
  * @property User $updated
  *
  * @method static \davidhirtz\yii2\cms\models\EntryCategory findOne($condition)
+ * @method static \davidhirtz\yii2\cms\models\EntryCategory[] findAll($condition)
  */
 class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
 {
     use ModuleTrait;
+
+    /**
+     * @var bool
+     */
+    public $isInherited = false;
 
     /**
      * @inheritDoc
@@ -68,7 +74,7 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
      */
     public function validateCategoryId()
     {
-        if (($this->isAttributeChanged('category_id') && !$this->refreshRelation('category')) || !$this->category->hasEntriesEnabled()) {
+        if ((!$this->isInherited && $this->isAttributeChanged('category_id') && !$this->refreshRelation('category')) || !$this->category->hasEntriesEnabled()) {
             $this->addInvalidAttributeError('category_id');
         }
     }
@@ -78,7 +84,7 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
      */
     public function validateEntryId()
     {
-        if (($this->isAttributeChanged('entry_id') && !$this->refreshRelation('entry')) || !$this->entry->hasCategoriesEnabled()) {
+        if ((!$this->isInherited && $this->isAttributeChanged('entry_id') && !$this->refreshRelation('entry')) || !$this->entry->hasCategoriesEnabled()) {
             $this->addInvalidAttributeError('entry_id');
         }
     }
@@ -108,8 +114,17 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
      */
     public function afterSave($insert, $changedAttributes)
     {
-        $this->category->recalculateEntryCount();
-        $this->entry->recalculateCategoryIds();
+        if ($insert) {
+            if (!$this->isInherited) {
+                if ($this->category->inheritNestedCategories()) {
+                    $this->insertCategoryAncestors();
+                }
+
+                $this->entry->recalculateCategoryIds();
+            }
+
+            $this->category->recalculateEntryCount();
+        }
 
         parent::afterSave($insert, $changedAttributes);
     }
@@ -119,12 +134,18 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
      */
     public function afterDelete()
     {
-        if ($this->category) {
-            $this->category->recalculateEntryCount();
+        if (!$this->isInherited) {
+            if ($this->category->inheritNestedCategories()) {
+                $this->deleteDescendantCategories();
+            }
+
+            if ($this->entry) {
+                $this->entry->recalculateCategoryIds();
+            }
         }
 
-        if ($this->entry) {
-            $this->entry->recalculateCategoryIds();
+        if ($this->category) {
+            $this->category->recalculateEntryCount();
         }
 
         parent::afterDelete();
@@ -152,6 +173,65 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     public function getUpdated(): UserQuery
     {
         return $this->hasOne(User::class, ['id' => 'updated_by_user_id']);
+    }
+
+    /**
+     * @param Category $category
+     */
+    public function populateCategoryRelation($category)
+    {
+        $this->populateRelation('category', $category);
+        $this->category_id = $category->id;
+    }
+
+    /**
+     * @param Entry $entry
+     */
+    public function populateEntryRelation($entry)
+    {
+        $this->populateRelation('entry', $entry);
+        $this->entry_id = $entry->id;
+    }
+
+    /**
+     * Inserts ascending categories.
+     */
+    public function insertCategoryAncestors()
+    {
+        if ($categories = $this->category->ancestors) {
+            foreach ($categories as $category) {
+                if ($category->inheritNestedCategories()) {
+                    $junction = new static;
+                    $junction->populateCategoryRelation($category);
+                    $junction->populateEntryRelation($this->entry);
+                    $junction->isInherited = true;
+                    $junction->insert();
+                }
+            }
+        }
+    }
+
+    /**
+     * Deletes descendant categories.
+     */
+    public function deleteDescendantCategories()
+    {
+        if ($categories = $this->category->descendants) {
+            $junctions = static::findAll([
+                'category_id' => array_keys($categories),
+                'entry_id' => $this->entry_id,
+            ]);
+
+            foreach ($junctions as $junction) {
+                $category = $categories[$junction->category_id];
+                if ($category->inheritNestedCategories()) {
+                    $junction->populateCategoryRelation($category);
+                    $junction->populateEntryRelation($this->entry);
+                    $junction->isInherited = true;
+                    $junction->delete();
+                }
+            }
+        }
     }
 
     /**

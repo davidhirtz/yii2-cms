@@ -17,10 +17,10 @@ class Module extends \yii\base\Module
      */
     public $enableCategories = false;
 
-//    /**
-//     * @var bool whether entries should automatically inherit parent categories
-//     */
-//    public $inheritCategories = true;
+    /**
+     * @var bool whether entries should automatically inherit parent categories
+     */
+    public $inheritNestedCategories = true;
 
     /**
      * @var int duration in seconds for the caching the Category::getCategories() category query
@@ -59,12 +59,16 @@ class Module extends \yii\base\Module
     public $defaultCategoryType;
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function init()
     {
         if (!$this->enableSections) {
             $this->enableSectionAssets = false;
+        }
+
+        if (!$this->enableCategories) {
+            $this->inheritNestedCategories = false;
         }
 
         parent::init();
