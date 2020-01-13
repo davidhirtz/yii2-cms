@@ -28,7 +28,7 @@ class M191106150324Slugs extends Migration
             } catch (\Exception $ex) {
             }
 
-            $this->createIndex($attributeName, Category::tableName(), $category->slugTargetAttribute ? array_merge($category->slugTargetAttribute, [$attributeName]) : $attributeName, true);
+            $this->createIndex($attributeName, Category::tableName(), $category->slugTargetAttribute ?: $attributeName, true);
         }
 
         $entry = Entry::instance();
@@ -38,7 +38,7 @@ class M191106150324Slugs extends Migration
             } catch (\Exception $ex) {
             }
 
-            $this->createIndex($attributeName, Entry::tableName(), $entry->slugTargetAttribute ? array_merge($entry->slugTargetAttribute, [$attributeName]) : $attributeName, true);
+            $this->createIndex($attributeName, Entry::tableName(), $entry->slugTargetAttribute ?: $attributeName, true);
         }
 
         $section = Section::instance();
@@ -48,7 +48,7 @@ class M191106150324Slugs extends Migration
             } catch (\Exception $ex) {
             }
 
-            $this->createIndex($attributeName, Section::tableName(), $section->slugTargetAttribute ? array_merge($section->slugTargetAttribute, [$attributeName]) : $attributeName, true);
+            $this->createIndex($attributeName, Section::tableName(), $section->slugTargetAttribute ?: $attributeName, true);
         }
     }
 }
