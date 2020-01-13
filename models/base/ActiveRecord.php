@@ -51,6 +51,12 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     public $contentType = 'html';
 
     /**
+     * @see \yii\validators\UniqueValidator::$targetAttribute
+     * @var string|array
+     */
+    public $slugTargetAttribute;
+
+    /**
      * @inheritdoc
      */
     public function behaviors(): array

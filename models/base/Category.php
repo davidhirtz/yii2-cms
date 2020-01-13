@@ -45,6 +45,12 @@ class Category extends ActiveRecord
     public $contentType = false;
 
     /**
+     * @see \yii\validators\UniqueValidator::$targetAttribute
+     * @var string|array
+     */
+    public $slugTargetAttribute = ['parent_id', 'slug'];
+
+    /**
      * @var static[]
      * @see Category::getCategories()
      */
@@ -88,7 +94,7 @@ class Category extends ActiveRecord
             [
                 ['slug'],
                 'unique',
-                'targetAttribute' => ['slug', 'parent_id'],
+                'targetAttribute' => $this->slugTargetAttribute,
                 'comboNotUnique' => Yii::t('yii', '{attribute} "{value}" has already been taken.'),
             ],
         ]));

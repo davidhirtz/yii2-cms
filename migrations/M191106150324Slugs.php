@@ -17,38 +17,38 @@ class M191106150324Slugs extends Migration
     use ModuleTrait, MigrationTrait;
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function safeUp()
     {
-        $entry = new Entry;
-        foreach ($entry->getI18nAttributeNames('slug') as $attributeName) {
-            try {
-                $this->dropIndex($attributeName, Entry::tableName());
-            } catch (\Exception $ex) {
-            }
-
-            $this->createIndex($attributeName, Entry::tableName(), $attributeName, true);
-        }
-
-        $section = new Section;
-        foreach ($section->getI18nAttributeNames('slug') as $attributeName) {
-            try {
-                $this->dropIndex($attributeName, Section::tableName());
-            } catch (\Exception $ex) {
-            }
-
-            $this->createIndex($attributeName, Section::tableName(), ['entry_id', $attributeName], true);
-        }
-
-        $category = new Category;
+        $category = Category::instance();
         foreach ($category->getI18nAttributeNames('slug') as $attributeName) {
             try {
                 $this->dropIndex($attributeName, Category::tableName());
             } catch (\Exception $ex) {
             }
 
-            $this->createIndex($attributeName, Category::tableName(), ['parent_id', $attributeName], true);
+            $this->createIndex($attributeName, Category::tableName(), $category->slugTargetAttribute ? array_merge($category->slugTargetAttribute, [$attributeName]) : $attributeName, true);
+        }
+
+        $entry = Entry::instance();
+        foreach ($entry->getI18nAttributeNames('slug') as $attributeName) {
+            try {
+                $this->dropIndex($attributeName, Entry::tableName());
+            } catch (\Exception $ex) {
+            }
+
+            $this->createIndex($attributeName, Entry::tableName(), $entry->slugTargetAttribute ? array_merge($entry->slugTargetAttribute, [$attributeName]) : $attributeName, true);
+        }
+
+        $section = Section::instance();
+        foreach ($section->getI18nAttributeNames('slug') as $attributeName) {
+            try {
+                $this->dropIndex($attributeName, Section::tableName());
+            } catch (\Exception $ex) {
+            }
+
+            $this->createIndex($attributeName, Section::tableName(), $section->slugTargetAttribute ? array_merge($section->slugTargetAttribute, [$attributeName]) : $attributeName, true);
         }
     }
 }

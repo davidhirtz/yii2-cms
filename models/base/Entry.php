@@ -44,12 +44,6 @@ class Entry extends ActiveRecord implements AssetParentInterface
     public $contentType = false;
 
     /**
-     * @see \yii\validators\UniqueValidator::$targetAttribute
-     * @var string|array
-     */
-    public $slugTargetAttribute;
-
-    /**
      * @var array|string
      */
     public $dateTimeValidator = '\davidhirtz\yii2\datetime\DateTimeValidator';

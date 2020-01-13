@@ -30,6 +30,12 @@ use yii\helpers\Inflector;
 class Section extends ActiveRecord implements AssetParentInterface
 {
     /**
+     * @see \yii\validators\UniqueValidator::$targetAttribute
+     * @var string|array
+     */
+    public $slugTargetAttribute = ['entry_id', 'slug'];
+
+    /**
      * @inheritdoc
      */
     public function rules(): array
@@ -66,7 +72,7 @@ class Section extends ActiveRecord implements AssetParentInterface
             [
                 ['slug'],
                 'unique',
-                'targetAttribute' => ['slug', 'entry_id'],
+                'targetAttribute' => $this->slugTargetAttribute,
                 'comboNotUnique' => Yii::t('yii', '{attribute} "{value}" has already been taken.'),
             ],
         ]));
