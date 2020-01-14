@@ -160,7 +160,7 @@ class Category extends ActiveRecord
         $this->entry_count = EntryCategory::find()->where(['category_id' => $this->id])->count();
         $this->update(false, ['entry_count', 'updated_at', 'updated_by_user_id']);
     }
-    
+
     /**
      * @inheritdoc
      * @return CategoryQuery
@@ -269,7 +269,7 @@ class Category extends ActiveRecord
     /**
      * @return array
      */
-    public function getEntryOrderBy()
+    public function getEntryOrderBy(): array
     {
         return [EntryCategory::tableName() . '.[[position]]' => SORT_ASC];
     }
@@ -277,7 +277,7 @@ class Category extends ActiveRecord
     /**
      * @return bool
      */
-    public function hasEntriesEnabled()
+    public function hasEntriesEnabled(): bool
     {
         return true;
     }
@@ -285,7 +285,7 @@ class Category extends ActiveRecord
     /**
      * @return bool
      */
-    public function inheritNestedCategories()
+    public function inheritNestedCategories(): bool
     {
         return static::getModule()->inheritNestedCategories && $this->hasEntriesEnabled();
     }
