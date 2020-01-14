@@ -287,7 +287,7 @@ class Category extends ActiveRecord
      */
     public function inheritNestedCategories()
     {
-        return static::getModule()->inheritNestedCategories;
+        return static::getModule()->inheritNestedCategories && $this->hasEntriesEnabled();
     }
 
     /**
