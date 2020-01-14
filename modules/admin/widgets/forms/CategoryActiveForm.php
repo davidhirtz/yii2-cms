@@ -83,7 +83,11 @@ class CategoryActiveForm extends ActiveForm
      */
     protected function getSlugBaseUrl($language = null): string
     {
-        return rtrim(Yii::$app->getUrlManager()->createAbsoluteUrl(array_merge($this->model->getRoute(), ['category' => '', 'language' => $language])), '/') .'/';
+        if ($route = $this->model->getRoute()) {
+            return rtrim(Yii::$app->getUrlManager()->createAbsoluteUrl(array_merge($route, ['category' => '', 'language' => $language])), '/') . '/';
+        }
+
+        return '';
     }
 
     /**
@@ -93,14 +97,18 @@ class CategoryActiveForm extends ActiveForm
      */
     protected function getCategoryBaseUrl($category, $language = null): string
     {
-        $draftHostInfo = Yii::$app->getRequest()->getDraftHostInfo();
-        $urlManager = Yii::$app->getUrlManager();
-        $route = array_merge($category->getRoute(), ['language' => $language]);
+        if ($route = $category->getRoute()) {
+            $draftHostInfo = Yii::$app->getRequest()->getDraftHostInfo();
+            $urlManager = Yii::$app->getUrlManager();
+            $route = array_merge($route, ['language' => $language]);
 
-        if (mb_strlen($route['category'], Yii::$app->charset) > $this->slugMaxLength) {
-            $route['category'] = '...' . mb_substr($route['category'], -$this->slugMaxLength, $this->slugMaxLength, Yii::$app->charset);
+            if (mb_strlen($route['category'], Yii::$app->charset) > $this->slugMaxLength) {
+                $route['category'] = '...' . mb_substr($route['category'], -$this->slugMaxLength, $this->slugMaxLength, Yii::$app->charset);
+            }
+
+            return rtrim($category->isEnabled() || !$draftHostInfo ? $urlManager->createAbsoluteUrl($route) : $urlManager->createDraftUrl($route), '/') . '/';
         }
 
-        return rtrim($category->isEnabled() || !$draftHostInfo ? $urlManager->createAbsoluteUrl($route) : $urlManager->createDraftUrl($route), '/') .'/';
+        return '';
     }
 }
