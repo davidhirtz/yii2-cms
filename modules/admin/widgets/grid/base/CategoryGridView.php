@@ -198,4 +198,12 @@ class CategoryGridView extends GridView
     {
         return Html::a(Html::iconText('plus', Yii::t('cms', 'New Category')), ['create', 'id' => $this->dataProvider->category->id ?? null], ['class' => 'btn btn-primary']);
     }
+
+    /**
+     * @return bool
+     */
+    public function isSortedByPosition(): bool
+    {
+        return parent::isSortedByPosition() && !$this->dataProvider->searchString;
+    }
 }
