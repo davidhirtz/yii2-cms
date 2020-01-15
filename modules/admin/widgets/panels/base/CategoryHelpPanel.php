@@ -7,6 +7,7 @@ use davidhirtz\yii2\cms\models\Category;
 /**
  * Class CategoryHelpPanel
  * @package davidhirtz\yii2\cms\modules\admin\widgets\base
+ * @see \davidhirtz\yii2\cms\modules\admin\widgets\panels\CategoryHelpPanel
  *
  * @property Category $model
  */

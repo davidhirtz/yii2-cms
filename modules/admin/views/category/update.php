@@ -11,7 +11,7 @@ use davidhirtz\yii2\cms\modules\admin\widgets\nav\Submenu;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
 use davidhirtz\yii2\skeleton\widgets\forms\DeleteActiveForm;
-use davidhirtz\yii2\cms\modules\admin\widgets\panels\base\CategoryHelpPanel;
+use davidhirtz\yii2\cms\modules\admin\widgets\panels\CategoryHelpPanel;
 
 $this->setTitle(Yii::t('cms', 'Edit Category'));
 ?>

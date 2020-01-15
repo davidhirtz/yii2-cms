@@ -3,9 +3,9 @@
 namespace davidhirtz\yii2\cms\modules\admin\widgets\panels;
 
 /**
- * Class SectionHelpPanel
+ * Class EntryHelpPanel
  * @package davidhirtz\yii2\cms\modules\admin\widgets
  */
-class SectionHelpPanel extends \davidhirtz\yii2\cms\modules\admin\widgets\panels\base\SectionHelpPanel
+class EntryHelpPanel extends \davidhirtz\yii2\cms\modules\admin\widgets\panels\base\EntryHelpPanel
 {
 }
