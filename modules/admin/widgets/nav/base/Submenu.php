@@ -100,6 +100,14 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
      */
     protected function getDefaultItems(): array
     {
+        return array_filter(array_merge($this->getEntryGridViewItems(), $this->getCategoryGridViewItems()));
+    }
+
+    /**
+     * @return array
+     */
+    protected function getEntryGridViewItems(): array
+    {
         $items = [];
 
         if ($this->showEntryTypes) {
@@ -126,8 +134,16 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
             ];
         }
 
-        if ($this->showDefaultCategories) {
-            $items[] = [
+        return $items;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getCategoryGridViewItems(): array
+    {
+        return !$this->showDefaultCategories ? [] : [
+            [
                 'label' => Yii::t('cms', 'Categories'),
                 'url' => ['/admin/category/index'],
                 'active' => ['admin/category/'],
@@ -135,10 +151,8 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
                 'labelOptions' => [
                     'class' => 'd-none d-md-inline'
                 ],
-            ];
-        }
-
-        return $items;
+            ],
+        ];
     }
 
     /**
@@ -146,7 +160,15 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
      */
     protected function getEntryItems(): array
     {
-        $items = [
+        return array_filter(array_merge($this->getEntryFormItems(), $this->getEntryCategoryItems(), $this->getEntrySectionItems()));
+    }
+
+    /**
+     * @return array
+     */
+    protected function getEntryFormItems(): array
+    {
+        return [
             [
                 'label' => $this->showEntryTypes ? $this->model->getTypeName() : Yii::t('cms', 'Entry'),
                 'url' => ['/admin/entry/update', 'id' => $this->model->id],
@@ -161,9 +183,15 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
                 ],
             ],
         ];
+    }
 
-        if ($this->showEntryCategories) {
-            $items[] = [
+    /**
+     * @return array
+     */
+    protected function getEntryCategoryItems(): array
+    {
+        return !$this->showEntryCategories ? [] : [
+            [
                 'label' => Yii::t('cms', 'Categories'),
                 'url' => ['/admin/entry-category/index', 'entry' => $this->model->id],
                 'active' => ['admin/entry-category/'],
@@ -179,11 +207,17 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
                 'labelOptions' => [
                     'class' => 'd-none d-md-inline'
                 ],
-            ];
-        }
+            ],
+        ];
+    }
 
-        if ($this->showEntrySections) {
-            $items[] = [
+    /**
+     * @return array
+     */
+    protected function getEntrySectionItems(): array
+    {
+        return !$this->showEntrySections ? [] : [
+            [
                 'label' => Yii::t('cms', 'Sections'),
                 'url' => ['/admin/section/index', 'entry' => $this->model->id],
                 'active' => array_filter([
@@ -203,10 +237,8 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
                 'labelOptions' => [
                     'class' => 'd-none d-md-inline'
                 ],
-            ];
-        }
-
-        return $items;
+            ],
+        ];
     }
 
     /**
