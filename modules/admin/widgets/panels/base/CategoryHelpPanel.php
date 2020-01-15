@@ -2,16 +2,15 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\widgets\panels\base;
 
-use davidhirtz\yii2\cms\models\Entry;
+use davidhirtz\yii2\cms\models\Category;
 
 /**
- * Class EntryHelpPanel
+ * Class CategoryHelpPanel
  * @package davidhirtz\yii2\cms\modules\admin\widgets\base
- * @see \davidhirtz\yii2\cms\modules\admin\widgets\panels\EntryHelpPanel
  *
- * @property Entry $model
+ * @property Category $model
  */
-class EntryHelpPanel extends HelpPanel
+class CategoryHelpPanel extends HelpPanel
 {
     /**
      * @return array
@@ -20,7 +19,6 @@ class EntryHelpPanel extends HelpPanel
     {
         return array_filter([
             $this->getLinkButton(),
-            $this->getCloneButton(),
         ]);
     }
 }
