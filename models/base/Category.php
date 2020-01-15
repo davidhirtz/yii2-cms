@@ -33,6 +33,9 @@ use yii\helpers\Inflector;
  * @property \davidhirtz\yii2\cms\models\Category $parent
  * @property \davidhirtz\yii2\cms\models\Category[] $ancestors
  * @property \davidhirtz\yii2\cms\models\Category[] $descendants
+ *
+ * @method \davidhirtz\yii2\cms\models\Category[] getAncestors()
+ * @method \davidhirtz\yii2\cms\models\Category[] getDescendants()
  * @method static \davidhirtz\yii2\cms\models\Category findOne($condition)
  */
 class Category extends ActiveRecord

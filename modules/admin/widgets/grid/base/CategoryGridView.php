@@ -7,12 +7,14 @@ use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grid\GridView;
+use davidhirtz\yii2\skeleton\widgets\bootstrap\ButtonDropdown;
 use davidhirtz\yii2\timeago\Timeago;
 use davidhirtz\yii2\skeleton\widgets\fontawesome\Icon;
 use Yii;
+use yii\helpers\Url;
 
 /**
- * Class CategoryGridView.
+ * Class CategoryGridView
  * @package davidhirtz\yii2\cms\modules\admin\widgets\grid\base
  *
  * @property CategoryActiveDataProvider $dataProvider
@@ -59,11 +61,15 @@ class CategoryGridView extends GridView
             $this->header = [
                 [
                     [
+                        'content' => $this->categoryDropdown(),
+                        'options' => ['class' => 'col-12 col-md-3'],
+                    ],
+                    [
                         'content' => $this->getSearchInput(),
                         'options' => ['class' => 'col-12 col-md-6'],
                     ],
                     'options' => [
-                        'class' => 'justify-content-end',
+                        'class' => $this->dataProvider->category ? 'justify-content-between' : 'justify-content-end',
                     ],
                 ],
             ];
@@ -87,27 +93,6 @@ class CategoryGridView extends GridView
             ];
         }
     }
-
-    /**
-     * @return string
-     */
-    public function renderSummary()
-    {
-        if($this->dataProvider->category) {
-            // @todo category path
-        }
-
-        return parent::renderSummary();
-    }
-
-    /**
-     * @return string
-     */
-    protected function renderCreateCategoryButton()
-    {
-        return Html::a(Html::iconText('plus', Yii::t('cms', 'New Category')), ['create', 'id' => $this->dataProvider->category->id ?? null], ['class' => 'btn btn-primary']);
-    }
-
 
     /**
      * @return array
@@ -179,5 +164,38 @@ class CategoryGridView extends GridView
                 return Html::buttons($buttons);
             }
         ];
+    }
+
+    /**
+     * @param array $config
+     * @return string|null
+     */
+    public function categoryDropdown($config = [])
+    {
+        if ($category = $this->dataProvider->category) {
+            $config['label'] = Html::tag('strong', Html::encode($category->getI18nAttribute('name')));
+            $config['paramName'] = 'id';
+
+            $categories = Category::indentNestedTree($category->getAncestors() + [$category], Category::instance()->getI18nAttributeName('name'));
+
+            foreach ($categories as $id => $name) {
+                $config['items'][] = [
+                    'label' => $name,
+                    'url' => Url::current(['id' => $id, 'page' => null]),
+                ];
+            }
+
+            return ButtonDropdown::widget($config);
+        }
+
+        return null;
+    }
+
+    /**
+     * @return string
+     */
+    protected function renderCreateCategoryButton()
+    {
+        return Html::a(Html::iconText('plus', Yii::t('cms', 'New Category')), ['create', 'id' => $this->dataProvider->category->id ?? null], ['class' => 'btn btn-primary']);
     }
 }

@@ -53,18 +53,19 @@ class CategoryActiveDataProvider extends ActiveDataProvider
         $this->query = Category::find()
             ->replaceI18nAttributes();
 
+        if ($this->searchString) {
+            $this->query->matching($this->searchString);
+            $this->category = null;
+        }
+
         if ($this->entry) {
             $this->query->joinWith([
                 'entryCategory' => function (ActiveQuery $query) {
                     $query->onCondition(['entry_id' => $this->entry->id]);
                 }
             ]);
-        } else {
+        } elseif (!$this->searchString) {
             $this->query->andWhere(['parent_id' => $this->category->id ?? null]);
-        }
-
-        if ($this->searchString) {
-            $this->query->matching($this->searchString);
         }
     }
 
