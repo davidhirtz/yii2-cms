@@ -146,7 +146,7 @@ class Section extends ActiveRecord implements AssetParentInterface
      */
     public function beforeDelete()
     {
-        if (parent::beforeDelete()) {
+        if ($isValid = parent::beforeDelete()) {
             if (!$this->entry->isDeleted()) {
                 if ($this->asset_count) {
                     foreach ($this->assets as $asset) {
@@ -156,7 +156,7 @@ class Section extends ActiveRecord implements AssetParentInterface
             }
         }
 
-        return false;
+        return $isValid;
     }
 
     /**

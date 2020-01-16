@@ -136,7 +136,7 @@ class Category extends ActiveRecord
      */
     public function beforeDelete()
     {
-        if (parent::beforeDelete()) {
+        if ($isValid = parent::beforeDelete()) {
             $this->deleteNestedTreeItems();
 
             if ($this->entry_count) {
@@ -144,10 +144,9 @@ class Category extends ActiveRecord
                     $entryCategory->delete();
                 }
             }
-            return true;
         }
 
-        return false;
+        return $isValid;
     }
 
     /**

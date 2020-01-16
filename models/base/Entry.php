@@ -118,7 +118,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
      */
     public function beforeDelete()
     {
-        if (parent::beforeDelete()) {
+        if ($isValid = parent::beforeDelete()) {
             if ($this->asset_count) {
                 foreach ($this->assets as $asset) {
                     $asset->delete();
@@ -136,11 +136,9 @@ class Entry extends ActiveRecord implements AssetParentInterface
                     $entryCategory->delete();
                 }
             }
-
-            return true;
         }
 
-        return false;
+        return $isValid;
     }
 
     /**
