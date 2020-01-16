@@ -27,9 +27,11 @@ use yii\helpers\Inflector;
  * @property string $description
  * @property string $content
  * @property int $entry_count
+ *
  * @property Section[] $sections
  * @property Asset[] $assets
  * @property EntryCategory $entryCategory
+ * @property EntryCategory[] $entryCategories
  * @property \davidhirtz\yii2\cms\models\Category $parent
  * @property \davidhirtz\yii2\cms\models\Category[] $ancestors
  * @property \davidhirtz\yii2\cms\models\Category[] $descendants
@@ -134,8 +136,18 @@ class Category extends ActiveRecord
      */
     public function beforeDelete()
     {
-        $this->deleteNestedTreeItems();
-        return parent::beforeDelete();
+        if (parent::beforeDelete()) {
+            $this->deleteNestedTreeItems();
+
+            if ($this->entry_count) {
+                foreach ($this->entryCategories as $entryCategory) {
+                    $entryCategory->delete();
+                }
+            }
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -152,7 +164,17 @@ class Category extends ActiveRecord
      */
     public function getEntryCategory()
     {
-        return $this->hasOne(EntryCategory::class, ['category_id' => 'id']);
+        return $this->hasOne(EntryCategory::class, ['category_id' => 'id'])
+            ->inverseOf('category');
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getEntryCategories()
+    {
+        return $this->hasMany(EntryCategory::class, ['category_id' => 'id'])
+            ->inverseOf('category');
     }
 
     /**

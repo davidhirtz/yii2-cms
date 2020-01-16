@@ -165,8 +165,13 @@ class Asset extends \davidhirtz\yii2\cms\models\base\ActiveRecord implements Ass
     public function recalculateAssetCount()
     {
         $parent = $this->getParent();
-        $parent->asset_count = $this->findSiblings()->count();
-        $parent->update(false);
+
+        // Entry needs to be checked separately here because Entry::beforeDelete() deletes
+        // all related assets before deleting the sections.
+        if (!$this->entry->isDeleted() && (!$this->section_id || !$this->section->isDeleted())) {
+            $parent->asset_count = $this->findSiblings()->count();
+            $parent->update(false);
+        }
 
         if (!$this->file->isDeleted()) {
             $this->file->setAttribute($this->getFileCountAttribute(), static::find()->where(['file_id' => $this->file_id])->count());

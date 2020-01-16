@@ -146,13 +146,17 @@ class Section extends ActiveRecord implements AssetParentInterface
      */
     public function beforeDelete()
     {
-        if ($this->asset_count) {
-            foreach ($this->assets as $asset) {
-                $asset->delete();
+        if (parent::beforeDelete()) {
+            if (!$this->entry->isDeleted()) {
+                if ($this->asset_count) {
+                    foreach ($this->assets as $asset) {
+                        $asset->delete();
+                    }
+                }
             }
         }
 
-        return parent::beforeDelete();
+        return false;
     }
 
     /**
@@ -160,7 +164,10 @@ class Section extends ActiveRecord implements AssetParentInterface
      */
     public function afterDelete()
     {
-        $this->entry->recalculateSectionCount();
+        if (!$this->entry->isDeleted()) {
+            $this->entry->recalculateSectionCount();
+        }
+
         parent::afterDelete();
     }
 

@@ -139,12 +139,12 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
                 $this->deleteDescendantCategories();
             }
 
-            if ($this->entry) {
+            if (!$this->entry->isDeleted()) {
                 $this->entry->recalculateCategoryIds();
             }
         }
 
-        if ($this->category) {
+        if (!$this->category->isDeleted()) {
             $this->category->recalculateEntryCount();
         }
 

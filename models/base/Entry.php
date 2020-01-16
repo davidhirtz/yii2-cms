@@ -29,11 +29,13 @@ use yii\helpers\Inflector;
  * @property string $category_ids
  * @property int $section_count
  * @property int $asset_count
+ *
  * @property Section[] $sections
  * @property Asset[] $assets
  * @property \davidhirtz\yii2\cms\models\Entry $entry
  * @property EntryCategory $entryCategory
  * @property EntryCategory[] $entryCategories
+ *
  * @method static \davidhirtz\yii2\cms\models\Entry findOne($condition)
  */
 class Entry extends ActiveRecord implements AssetParentInterface
@@ -116,19 +118,29 @@ class Entry extends ActiveRecord implements AssetParentInterface
      */
     public function beforeDelete()
     {
-        if ($this->asset_count) {
-            foreach ($this->assets as $asset) {
-                $asset->delete();
+        if (parent::beforeDelete()) {
+            if ($this->asset_count) {
+                foreach ($this->assets as $asset) {
+                    $asset->delete();
+                }
             }
+
+            if ($this->section_count) {
+                foreach ($this->sections as $section) {
+                    $section->delete();
+                }
+            }
+
+            if ($this->category_ids) {
+                foreach ($this->entryCategories as $entryCategory) {
+                    $entryCategory->delete();
+                }
+            }
+
+            return true;
         }
 
-        if ($this->category_ids) {
-            foreach ($this->entryCategories as $entryCategory) {
-                $entryCategory->delete();
-            }
-        }
-
-        return parent::beforeDelete();
+        return false;
     }
 
     /**
@@ -136,7 +148,8 @@ class Entry extends ActiveRecord implements AssetParentInterface
      */
     public function getEntryCategory()
     {
-        return $this->hasOne(EntryCategory::class, ['entry_id' => 'id']);
+        return $this->hasOne(EntryCategory::class, ['entry_id' => 'id'])
+            ->inverseOf('entry');
     }
 
     /**
@@ -144,7 +157,8 @@ class Entry extends ActiveRecord implements AssetParentInterface
      */
     public function getEntryCategories()
     {
-        return $this->hasMany(EntryCategory::class, ['entry_id' => 'id']);
+        return $this->hasMany(EntryCategory::class, ['entry_id' => 'id'])
+            ->inverseOf('entry');
     }
 
     /**
