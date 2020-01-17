@@ -61,4 +61,19 @@ class AssetActiveForm extends ActiveForm
     {
         return ($types = $this->getTypes()) ? $this->field($this->model, 'type', $options)->dropdownList($types) : '';
     }
+
+    /**
+     * @param array $options
+     * @return string
+     */
+    public function altTextField($options = [])
+    {
+        $fields = [];
+        foreach ($this->model->getI18nAttributeNames('alt_text') as $language => $attributeName) {
+            $options['inputOptions']['placeholder'] = $this->model->file->getI18nAttribute('alt_text', $language);
+            $fields[] = $this->field($this->model, $attributeName, $options);
+        }
+
+        return implode('', $fields);
+    }
 }
