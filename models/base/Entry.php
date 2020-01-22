@@ -200,20 +200,20 @@ class Entry extends ActiveRecord implements AssetParentInterface
 
     /**
      * @param array $attributes
-     * @return $this
+     * @return \davidhirtz\yii2\cms\models\Entry
      */
     public function clone($attributes = [])
     {
+        /** @var \davidhirtz\yii2\cms\models\Entry $clone */
         $clone = new static;
         $clone->setAttributes(array_merge($this->getAttributes(), $attributes ?: ['status' => static::STATUS_DRAFT]));
         $clone->generateUniqueSlug();
 
         if ($clone->insert()) {
             foreach ($this->getCategoryIds() as $categoryId) {
-                (new EntryCategory([
-                    'entry_id' => $clone->id,
-                    'category_id' => $categoryId,
-                ]))->insert();
+                $entryCategory = new EntryCategory(['category_id' => $categoryId]);
+                $entryCategory->populateEntryRelation($clone);
+                $entryCategory->insert();
             }
 
             foreach ($this->sections as $section) {
