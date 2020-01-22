@@ -45,13 +45,16 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     {
         return array_merge(parent::rules(), [
             [
-                ['category_id', 'entry_id'],
-                'required',
+                ['category_id'],
+                'davidhirtz\yii2\skeleton\validators\RelationValidator',
+                'relation' => 'category',
+                'required' => true,
             ],
             [
-                ['category_id', 'entry_id'],
-                'filter',
-                'filter' => 'intval',
+                ['entry_id'],
+                'davidhirtz\yii2\skeleton\validators\RelationValidator',
+                'relation' => 'entry',
+                'required' => true,
             ],
             [
                 ['category_id'],
@@ -74,7 +77,7 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
      */
     public function validateCategoryId()
     {
-        if ((!$this->isInherited && $this->isAttributeChanged('category_id') && !$this->refreshRelation('category')) || !$this->category->hasEntriesEnabled()) {
+        if (!$this->category->hasEntriesEnabled()) {
             $this->addInvalidAttributeError('category_id');
         }
     }
@@ -84,7 +87,7 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
      */
     public function validateEntryId()
     {
-        if ((!$this->isInherited && $this->isAttributeChanged('entry_id') && !$this->refreshRelation('entry')) || !$this->entry->hasCategoriesEnabled()) {
+        if (!$this->entry->hasCategoriesEnabled()) {
             $this->addInvalidAttributeError('entry_id');
         }
     }
