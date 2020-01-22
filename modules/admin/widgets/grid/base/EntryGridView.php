@@ -308,12 +308,12 @@ class EntryGridView extends GridView
                 'paramName' => 'category',
             ];
 
-            $categories = Category::indentNestedTree($categories, Category::instance()->getI18nAttributeName('name'));
+            $indentedNames = Category::indentNestedTree($categories, Category::instance()->getI18nAttributeName('name'));
 
-            foreach ($categories as $id => $name) {
+            foreach ($categories as $category) {
                 $config['items'][] = [
-                    'label' => $name,
-                    'url' => Url::current(['category' => $id, 'page' => null]),
+                    'label' => $indentedNames[$category->id],
+                    'url' => $category->hasEntriesEnabled() ? Url::current(['category' => $category->id, 'page' => null]) : null,
                 ];
             }
 
