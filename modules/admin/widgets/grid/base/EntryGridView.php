@@ -16,7 +16,7 @@ use Yii;
 use yii\helpers\Url;
 
 /**
- * Class EntryGridView.
+ * Class EntryGridView
  * @package davidhirtz\yii2\cms\modules\admin\widgets\grid\base
  *
  * @property EntryActiveDataProvider $dataProvider
@@ -328,8 +328,9 @@ class EntryGridView extends GridView
      */
     public function typeDropdown()
     {
+        $type = Entry::getTypes()[$this->dataProvider->type] ?? false;
         $config = [
-            'label' => isset(Entry::getTypes()[$this->dataProvider->type]) ? Html::tag('strong', Entry::getTypes()[$this->dataProvider->type]['name']) : Yii::t('cms', 'Types'),
+            'label' => $type ? Html::tag('strong', $type['plural'] ?? $type['name']) : Yii::t('cms', 'Types'),
             'paramName' => 'type',
         ];
 

@@ -16,7 +16,7 @@ use yii\base\Widget;
 use yii\helpers\Inflector;
 
 /**
- * Class Entry.
+ * Class Entry
  * @package davidhirtz\yii2\cms\models\base
  *
  * @property int $position

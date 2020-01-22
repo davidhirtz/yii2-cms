@@ -13,7 +13,7 @@ use davidhirtz\yii2\skeleton\models\User;
 use Yii;
 
 /**
- * Class EntryCategory.
+ * Class EntryCategory
  * @package davidhirtz\yii2\cms\models\base
  *
  * @property int $entry_id
