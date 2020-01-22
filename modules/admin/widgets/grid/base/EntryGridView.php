@@ -335,7 +335,7 @@ class EntryGridView extends GridView
 
         foreach (Entry::getTypes() as $id => $type) {
             $config['items'][] = [
-                'label' => $type['name'],
+                'label' => $type['plural'] ?? $type['name'],
                 'url' => Url::current(['type' => $id, 'page' => null]),
             ];
         }
