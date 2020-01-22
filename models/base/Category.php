@@ -181,7 +181,7 @@ class Category extends ActiveRecord
      */
     public function recalculateEntryCount()
     {
-        $this->entry_count = EntryCategory::find()->where(['category_id' => $this->id])->count();
+        $this->entry_count = $this->getEntryCategories()->count();
         $this->update(false, ['entry_count', 'updated_at', 'updated_by_user_id']);
     }
 

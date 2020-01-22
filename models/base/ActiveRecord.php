@@ -90,11 +90,10 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
      */
     public function beforeSave($insert)
     {
-        if (!$this->isAttributeChanged('updated_by_user_id')) {
-            $this->attachBehavior('BlameableBehavior', 'davidhirtz\yii2\skeleton\behaviors\BlameableBehavior');
-        }
-
-        $this->attachBehavior('TimestampBehavior', 'davidhirtz\yii2\skeleton\behaviors\TimestampBehavior');
+        $this->attachBehaviors([
+            'BlameableBehavior' => 'davidhirtz\yii2\skeleton\behaviors\BlameableBehavior',
+            'TimestampBehavior' => 'davidhirtz\yii2\skeleton\behaviors\TimestampBehavior',
+        ]);
 
         if ($insert) {
             $this->position = $this->getMaxPosition() + 1;
