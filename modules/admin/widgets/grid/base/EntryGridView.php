@@ -233,7 +233,7 @@ class EntryGridView extends GridView
             'contentOptions' => ['class' => 'd-none d-md-table-cell text-center'],
             'visible' => static::getModule()->enableEntryAssets,
             'content' => function (Entry $entry) {
-                return $entry->hasAssetsEnabled() ? Html::a(Yii::$app->getFormatter()->asInteger($entry->asset_count), ['update', 'id' => $entry->id, '#' => 'assets'], ['class' => 'badge']) : '';
+                return $entry->hasAssetsEnabled() ? Html::a(Yii::$app->getFormatter()->asInteger($entry->asset_count), array_merge($this->getRoute($entry), ['#' => 'assets']), ['class' => 'badge']) : '';
             }
         ];
     }
@@ -385,7 +385,7 @@ class EntryGridView extends GridView
      */
     public function getRoute($entry): array
     {
-        return array_merge(Yii::$app->getRequest()->get(), ['update', 'id' => $entry->id]);
+        return array_merge(Yii::$app->getRequest()->get(), ['/admin/entry/update', 'id' => $entry->id]);
     }
 
     /**
