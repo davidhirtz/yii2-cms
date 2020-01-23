@@ -65,13 +65,13 @@ class EntryActiveDataProvider extends ActiveDataProvider
                 $this->setSort(Entry::getTypes()[$this->type]['sort']);
             }
 
-            $this->query->andWhere(['type' => $this->type]);
+            $this->query->andWhere([Entry::tableName() . '.[[type]]' => $this->type]);
         }
 
         if ($this->category) {
             $this->query->orderBy($this->category->getEntryOrderBy())->innerJoinWith([
                 'entryCategory' => function (ActiveQuery $query) {
-                    $query->onCondition(['category_id' => $this->category->id]);
+                    $query->onCondition([EntryCategory::tableName() . '.[[category_id]]' => $this->category->id]);
                 }
             ]);
         }
