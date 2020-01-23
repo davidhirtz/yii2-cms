@@ -39,6 +39,7 @@ use yii\helpers\Inflector;
  * @method \davidhirtz\yii2\cms\models\Category[] getAncestors()
  * @method \davidhirtz\yii2\cms\models\Category[] getDescendants()
  * @method static \davidhirtz\yii2\cms\models\Category findOne($condition)
+ * @method static \davidhirtz\yii2\cms\models\Category[] findAll($condition)
  */
 class Category extends ActiveRecord
 {
