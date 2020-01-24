@@ -65,7 +65,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
                 ['slug'],
                 'required',
                 'when' => function () {
-                    return $this->getIsSlugRequired();
+                    return $this->isSlugRequired();
                 }
             ],
             [
@@ -98,7 +98,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
      */
     public function beforeValidate(): bool
     {
-        if (!$this->slug && $this->getIsSlugRequired()) {
+        if (!$this->slug && $this->isSlugRequired()) {
             $this->slug = $this->name;
         }
 

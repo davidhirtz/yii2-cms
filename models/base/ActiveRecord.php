@@ -58,7 +58,7 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     public $slugTargetAttribute;
 
     /**
-     * @var bool {@link ActiveRecord::getIsSlugRequired()}
+     * @var bool {@link ActiveRecord::isSlugRequired()}
      */
     private $_isSlugRequired;
 
@@ -180,9 +180,9 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     }
 
     /**
-     * @return bool
+     * @return bool whether slugs are required, override this method to not rely on db schema.
      */
-    public function getIsSlugRequired(): bool
+    public function isSlugRequired(): bool
     {
         if ($this->_isSlugRequired === null) {
             /** @var Schema $schema */

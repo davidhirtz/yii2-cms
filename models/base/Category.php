@@ -86,7 +86,7 @@ class Category extends ActiveRecord
                 ['slug'],
                 'required',
                 'when' => function () {
-                    return $this->getIsSlugRequired();
+                    return $this->isSlugRequired();
                 }
             ],
             [
@@ -118,7 +118,7 @@ class Category extends ActiveRecord
      */
     public function beforeValidate(): bool
     {
-        if (!$this->slug && $this->getIsSlugRequired()) {
+        if (!$this->slug && $this->isSlugRequired()) {
             $this->slug = $this->name;
         }
 
