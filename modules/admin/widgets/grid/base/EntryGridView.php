@@ -26,21 +26,27 @@ class EntryGridView extends GridView
     use ModuleTrait, CategoryTrait;
 
     /**
-     * @var bool
+     * @var bool whether entry urls should be displayed in the name column
      */
     public $showUrl = true;
+
     /**
-     * @var bool
+     * @var bool whether category column should be visible when {@link EntryActiveDataProvider::$type} is null
      */
     public $showCategories = true;
 
     /**
-     * @var bool
+     * @var bool whether categories should be selectable via dropdown
      */
     public $showCategoryDropdown = true;
 
     /**
-     * @var bool
+     * @var int|false defines when dropdown filter textfield is shown for category dropdown
+     */
+    public $showCategoryDropdownFilterMinCount = 50;
+
+    /**
+     * @var bool whether entry types should be selectable via dropdown
      */
     public $showTypeDropdown = true;
 
@@ -61,6 +67,11 @@ class EntryGridView extends GridView
         'date',
         'buttons',
     ];
+
+    /**
+     * @var array {@link \davidhirtz\yii2\cms\modules\admin\widgets\grid\EntryGridView::getNestedCategoryNames()}
+     */
+    private $_categoryNames;
 
     /**
      * @inheritdoc
@@ -302,25 +313,30 @@ class EntryGridView extends GridView
      */
     public function categoryDropdown()
     {
-        if ($categories = static::getCategories()) {
-            $config = [
-                'label' => $this->dataProvider->category ? (Yii::t('cms', 'Category') . ': ' . Html::tag('strong', Html::encode($this->dataProvider->category->getI18nAttribute('name')))) : Yii::t('cms', 'Categories'),
-                'paramName' => 'category',
+        $categoryCount = count(static::getCategories());
+
+        return !$categoryCount ? '' : ButtonDropdown::widget([
+            'label' => $this->dataProvider->category ? (Yii::t('cms', 'Category') . ': ' . Html::tag('strong', Html::encode($this->dataProvider->category->getI18nAttribute('name')))) : Yii::t('cms', 'Categories'),
+            'showFilter' => $this->showCategoryDropdownFilterMinCount && $this->showCategoryDropdownFilterMinCount < $categoryCount,
+            'items' => $this->categoryDropdownItems(),
+            'paramName' => 'category',
+        ]);
+    }
+
+    /**
+     * @return array
+     */
+    protected function categoryDropdownItems(): array
+    {
+        $items = [];
+        foreach (static::getCategories() as $category) {
+            $items[] = [
+                'label' => $this->getNestedCategoryNames()[$category->id],
+                'url' => $category->hasEntriesEnabled() ? Url::current(['category' => $category->id, 'page' => null]) : null,
             ];
-
-            $indentedNames = Category::indentNestedTree($categories, Category::instance()->getI18nAttributeName('name'));
-
-            foreach ($categories as $category) {
-                $config['items'][] = [
-                    'label' => $indentedNames[$category->id],
-                    'url' => $category->hasEntriesEnabled() ? Url::current(['category' => $category->id, 'page' => null]) : null,
-                ];
-            }
-
-            return ButtonDropdown::widget($config);
         }
 
-        return null;
+        return $items;
     }
 
     /**
@@ -329,19 +345,28 @@ class EntryGridView extends GridView
     public function typeDropdown()
     {
         $type = Entry::getTypes()[$this->dataProvider->type] ?? false;
-        $config = [
-            'label' => $type ? Html::tag('strong', $type['plural'] ?? $type['name']) : Yii::t('cms', 'Types'),
-            'paramName' => 'type',
-        ];
 
+        return ButtonDropdown::widget([
+            'label' => $type ? Html::tag('strong', $type['plural'] ?? $type['name']) : Yii::t('cms', 'Types'),
+            'items' => $this->typeDropdownItems(),
+            'paramName' => 'type',
+        ]);
+    }
+
+    /**
+     * @return array
+     */
+    protected function typeDropdownItems(): array
+    {
+        $items = [];
         foreach (Entry::getTypes() as $id => $type) {
-            $config['items'][] = [
+            $items[] = [
                 'label' => $type['plural'] ?? $type['name'],
                 'url' => Url::current(['type' => $id, 'page' => null]),
             ];
         }
 
-        return ButtonDropdown::widget($config);
+        return $items;
     }
 
     /**
@@ -387,6 +412,18 @@ class EntryGridView extends GridView
     public function getRoute($entry): array
     {
         return array_merge(Yii::$app->getRequest()->get(), ['/admin/entry/update', 'id' => $entry->id]);
+    }
+
+    /**
+     * @return array|mixed
+     */
+    public function getNestedCategoryNames(): array
+    {
+        if ($this->_categoryNames === null) {
+            $this->_categoryNames = Category::indentNestedTree(static::getCategories(), Category::instance()->getI18nAttributeName('name'));
+        }
+
+        return $this->_categoryNames;
     }
 
     /**
