@@ -28,7 +28,7 @@ class EntryQuery extends \davidhirtz\yii2\skeleton\db\ActiveQuery
     public function matching($search)
     {
         if ($search = $this->sanitizeSearchString($search)) {
-            $this->andWhere(Entry::tableName() . '.[[name]] LIKE :search', [':search' => "%{$search}%"]);
+            $this->andWhere(Entry::tableName() . '.[[' . Entry::instance()->getI18nAttributeName('name') . ']] LIKE :search', [':search' => "%{$search}%"]);
         }
 
         return $this;
