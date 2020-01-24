@@ -12,6 +12,7 @@ use davidhirtz\yii2\skeleton\db\TypeAttributeTrait;
 use davidhirtz\yii2\skeleton\models\queries\UserQuery;
 use davidhirtz\yii2\skeleton\models\User;
 use Yii;
+use yii\db\Schema;
 
 
 /**
@@ -55,6 +56,11 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
      * @var string|array
      */
     public $slugTargetAttribute;
+
+    /**
+     * @var bool {@link ActiveRecord::getIsSlugRequired()}
+     */
+    private $_isSlugRequired;
 
     /**
      * @inheritdoc
@@ -171,6 +177,20 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     public function getMaxPosition(): int
     {
         return (int)$this->findSiblings()->max('[[position]]');
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsSlugRequired(): bool
+    {
+        if ($this->_isSlugRequired === null) {
+            /** @var Schema $schema */
+            $schema = static::getDb()->getSchema();
+            $this->_isSlugRequired = !$schema->getTableSchema(static::tableName())->getColumn('slug')->allowNull;
+        }
+
+        return $this->_isSlugRequired;
     }
 
     /**

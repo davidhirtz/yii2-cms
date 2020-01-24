@@ -79,8 +79,15 @@ class Category extends ActiveRecord
                 'skipOnEmpty' => false,
             ],
             [
-                ['name', 'slug'],
+                ['name'],
                 'required',
+            ],
+            [
+                ['slug'],
+                'required',
+                'when' => function () {
+                    return $this->getIsSlugRequired();
+                }
             ],
             [
                 ['name', 'slug', 'title', 'description', 'content'],
@@ -111,7 +118,7 @@ class Category extends ActiveRecord
      */
     public function beforeValidate(): bool
     {
-        if (!$this->slug) {
+        if (!$this->slug && $this->getIsSlugRequired()) {
             $this->slug = $this->name;
         }
 
