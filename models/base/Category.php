@@ -106,7 +106,7 @@ class Category extends ActiveRecord
             ],
             [
                 ['slug'],
-                'unique',
+                $this->slugUniqueValidator,
                 'targetAttribute' => $this->slugTargetAttribute,
                 'comboNotUnique' => Yii::t('yii', '{attribute} "{value}" has already been taken.'),
             ],

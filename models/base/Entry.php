@@ -13,7 +13,6 @@ use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\media\models\AssetParentInterface;
 use Yii;
 use yii\base\Widget;
-use yii\db\Schema;
 use yii\helpers\Inflector;
 
 /**
@@ -85,7 +84,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
             ],
             [
                 ['slug'],
-                'unique',
+                $this->slugUniqueValidator,
                 'targetAttribute' => $this->slugTargetAttribute,
                 'comboNotUnique' => Yii::t('yii', '{attribute} "{value}" has already been taken.'),
             ],

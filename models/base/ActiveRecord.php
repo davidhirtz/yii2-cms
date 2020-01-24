@@ -47,13 +47,17 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     public $htmlValidator = 'davidhirtz\yii2\skeleton\validators\HtmlValidator';
 
     /**
-     * @var bool|string
+     * @var string|false the content type, "html" enables html validators and WYSIWYG editor
      */
     public $contentType = 'html';
 
     /**
-     * @see \yii\validators\UniqueValidator::$targetAttribute
-     * @var string|array
+     * @var string the class name of the unique validator, defaults to Yii default
+     */
+    public $slugUniqueValidator = 'unique';
+
+    /**
+     * @var string|array {@see \yii\validators\UniqueValidator::$targetAttribute}
      */
     public $slugTargetAttribute;
 
