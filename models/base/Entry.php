@@ -113,6 +113,10 @@ class Entry extends ActiveRecord implements AssetParentInterface
      */
     public function beforeSave($insert): bool
     {
+        if (!$this->slug) {
+            $this->slug = null;
+        }
+
         if (!$this->publish_date) {
             $this->publish_date = new DateTime;
         }

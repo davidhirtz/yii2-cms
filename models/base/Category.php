@@ -135,6 +135,10 @@ class Category extends ActiveRecord
      */
     public function beforeSave($insert): bool
     {
+        if (!$this->slug) {
+            $this->slug = null;
+        }
+
         $this->updateTreeBeforeSave();
         return parent::beforeSave($insert);
     }
