@@ -98,6 +98,18 @@ class EntryActiveDataProvider extends ActiveDataProvider
     }
 
     /**
+     * @param array|bool|\yii\data\Sort $value
+     */
+    public function setSort($value)
+    {
+        if (!isset($value['defaultOrder'])) {
+            $value['defaultOrder'] = $this->query->orderBy;
+        }
+
+        parent::setSort($value);
+    }
+
+    /**
      * @return bool
      */
     public function isOrderedByPosition()
