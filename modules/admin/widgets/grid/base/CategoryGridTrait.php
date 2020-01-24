@@ -10,7 +10,7 @@ use davidhirtz\yii2\skeleton\widgets\fontawesome\Icon;
 use Yii;
 
 /**
- * Class CategoryGridTrait.
+ * Class CategoryGridTrait
  * @package davidhirtz\yii2\cms\modules\admin\widgets\grid\base
  *
  * @property CategoryActiveDataProvider $dataProvider
@@ -100,14 +100,12 @@ trait CategoryGridTrait
         $categories = null;
 
         foreach ($this->dataProvider->getModels() as $category) {
-            if ($categories === null) {
-                if ($this->dataProvider->category) {
-                    $categories = $category->ancestors;
-                } else {
-                    $categories = !$this->dataProvider->searchString ? $this->dataProvider->getModels() : Category::find()
-                        ->indexBy('id')
-                        ->all();
-                }
+            if ($this->dataProvider->category) {
+                $categories = $this->dataProvider->category->ancestors;
+            } else {
+                $categories = !$this->dataProvider->searchString ? $this->dataProvider->getModels() : Category::find()
+                    ->indexBy('id')
+                    ->all();
             }
 
             $category->setAncestors($categories);

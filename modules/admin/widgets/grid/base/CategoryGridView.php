@@ -105,6 +105,10 @@ class CategoryGridView extends GridView
                 $html = Html::markKeywords(Html::encode($category->getI18nAttribute('name')), $this->search);
                 $html = Html::tag('strong', Html::a($html, ['update', 'id' => $category->id]));
 
+                if ($this->dataProvider->searchString) {
+                    $html .= Html::tag('div', $this->getCategoryAncestors($category), ['class' => 'small']);
+                }
+
                 if ($this->showUrl) {
                     $html .= $this->getUrl($category);
                 }
@@ -189,6 +193,25 @@ class CategoryGridView extends GridView
         }
 
         return null;
+    }
+
+    /**
+     * @param Category $category
+     * @return string
+     */
+    protected function getCategoryAncestors($category)
+    {
+        if ($category->parent_id) {
+            $parents = [];
+
+            foreach ($category->getAncestors() as $parent) {
+                $parents[] = Html::a(Html::encode($parent->name), ['update', 'id' => $parent->id]);
+            }
+
+            return implode(' / ', $parents);
+        }
+
+        return '';
     }
 
     /**
