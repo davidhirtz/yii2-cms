@@ -162,7 +162,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
     /**
      * @return SectionQuery
      */
-    public function getSections(): SectionQuery
+    public function getSections()
     {
         return $this->hasMany(Section::class, ['entry_id' => 'id'])
             ->orderBy(['position' => SORT_ASC])
@@ -185,7 +185,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
      * @inheritdoc
      * @return EntryQuery
      */
-    public static function find(): EntryQuery
+    public static function find()
     {
         return new EntryQuery(get_called_class());
     }
@@ -193,7 +193,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
     /**
      * @return EntryQuery
      */
-    public function findSiblings(): EntryQuery
+    public function findSiblings()
     {
         return $this->find();
     }

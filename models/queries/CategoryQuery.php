@@ -30,7 +30,7 @@ class CategoryQuery extends \davidhirtz\yii2\skeleton\db\ActiveQuery
      * @param string $search
      * @return $this
      */
-    public function matching($search): CategoryQuery
+    public function matching($search)
     {
         if ($search = $this->sanitizeSearchString($search)) {
             $tableName = $this->getModelInstance()::tableName();

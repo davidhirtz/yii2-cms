@@ -25,7 +25,7 @@ class EntryQuery extends \davidhirtz\yii2\skeleton\db\ActiveQuery
      * @param string $search
      * @return EntryQuery
      */
-    public function matching($search): EntryQuery
+    public function matching($search)
     {
         if ($search = $this->sanitizeSearchString($search)) {
             $this->andWhere(Entry::tableName() . '.[[name]] LIKE :search', [':search' => "%{$search}%"]);

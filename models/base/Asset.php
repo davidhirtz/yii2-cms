@@ -122,7 +122,7 @@ class Asset extends \davidhirtz\yii2\cms\models\base\ActiveRecord implements Ass
     /**
      * @return EntryQuery
      */
-    public function getEntry(): EntryQuery
+    public function getEntry()
     {
         return $this->hasOne(Entry::class, ['id' => 'entry_id']);
     }
@@ -130,7 +130,7 @@ class Asset extends \davidhirtz\yii2\cms\models\base\ActiveRecord implements Ass
     /**
      * @return SectionQuery
      */
-    public function getSection(): SectionQuery
+    public function getSection()
     {
         return $this->hasOne(Section::class, ['id' => 'section_id']);
     }

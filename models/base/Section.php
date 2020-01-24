@@ -185,7 +185,7 @@ class Section extends ActiveRecord implements AssetParentInterface
     /**
      * @return EntryQuery
      */
-    public function getEntry(): EntryQuery
+    public function getEntry()
     {
         return $this->hasOne(Entry::class, ['id' => 'entry_id']);
     }

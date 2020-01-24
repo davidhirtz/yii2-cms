@@ -190,7 +190,7 @@ class Category extends ActiveRecord
      * @inheritdoc
      * @return CategoryQuery
      */
-    public static function find(): CategoryQuery
+    public static function find()
     {
         return new CategoryQuery(get_called_class());
     }
@@ -198,7 +198,7 @@ class Category extends ActiveRecord
     /**
      * @return CategoryQuery
      */
-    public function findSiblings(): CategoryQuery
+    public function findSiblings()
     {
         return $this->find()->where(['parent_id' => $this->parent_id]);
     }
