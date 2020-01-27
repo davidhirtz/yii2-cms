@@ -36,20 +36,21 @@ class EntryQuery extends \davidhirtz\yii2\skeleton\db\ActiveQuery
 
         return $this;
     }
+
     /**
-     * @param Category $category
+     * @param int[]|Category $category
      * @return EntryQuery
      */
     public function whereCategory($category)
     {
         return $this->orderBy($category->getEntryOrderBy())->innerJoinWith([
             'entryCategory' => function (ActiveQuery $query) use ($category) {
-                $query->onCondition([EntryCategory::tableName() . '.[[category_id]]' => $category->id]);
+                $query->onCondition([EntryCategory::tableName() . '.[[category_id]]' => $category->id ?? $category]);
             }
         ]);
     }
     /**
-     * @param Category[] $categories
+     * @param int[]|Category[] $categories
      * @return EntryQuery
      */
     public function whereCategories($categories)
@@ -57,7 +58,7 @@ class EntryQuery extends \davidhirtz\yii2\skeleton\db\ActiveQuery
         foreach ($categories as $category) {
             $this->innerJoinWith([
                 'entryCategory entryCategory' . $category->id => function (ActiveQuery $query) use ($category) {
-                    $query->onCondition(['entryCategory' . $category->id . '.[[category_id]]' => $category->id]);
+                    $query->onCondition(['entryCategory' . $category->id . '.[[category_id]]' => $category->id ?? $category]);
                 }
             ], false);
         }
