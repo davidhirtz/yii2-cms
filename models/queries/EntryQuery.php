@@ -2,7 +2,10 @@
 
 namespace davidhirtz\yii2\cms\models\queries;
 
+use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\Entry;
+use davidhirtz\yii2\cms\models\EntryCategory;
+use davidhirtz\yii2\skeleton\db\ActiveQuery;
 
 /**
  * Class EntryQuery
@@ -33,7 +36,35 @@ class EntryQuery extends \davidhirtz\yii2\skeleton\db\ActiveQuery
 
         return $this;
     }
+    /**
+     * @param Category $category
+     * @return EntryQuery
+     */
+    public function whereCategory($category)
+    {
+        return $this->orderBy($category->getEntryOrderBy())->innerJoinWith([
+            'entryCategory' => function (ActiveQuery $query) use ($category) {
+                $query->onCondition([EntryCategory::tableName() . '.[[category_id]]' => $category->id]);
+            }
+        ]);
+    }
+    /**
+     * @param Category[] $categories
+     * @return EntryQuery
+     */
+    public function whereCategories($categories)
+    {
+        foreach ($categories as $category) {
+            $this->innerJoinWith([
+                'entryCategory entryCategory' . $category->id => function (ActiveQuery $query) use ($category) {
+                    $query->onCondition(['entryCategory' . $category->id . '.[[category_id]]' => $category->id]);
+                }
+            ], false);
+        }
 
+        return $this->addSelectPrefixed(['position', 'updated_at']);
+    }
+    
     /**
      * @param string $slug
      * @return EntryQuery

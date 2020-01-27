@@ -69,11 +69,7 @@ class EntryActiveDataProvider extends ActiveDataProvider
         }
 
         if ($this->category) {
-            $this->query->orderBy($this->category->getEntryOrderBy())->innerJoinWith([
-                'entryCategory' => function (ActiveQuery $query) {
-                    $query->onCondition([EntryCategory::tableName() . '.[[category_id]]' => $this->category->id]);
-                }
-            ]);
+            $this->query->whereCategory($this->category);
         }
 
         if ($this->searchString) {
