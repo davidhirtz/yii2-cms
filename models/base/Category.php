@@ -57,7 +57,7 @@ class Category extends ActiveRecord
     public $slugTargetAttribute = ['parent_id', 'slug'];
 
     /**
-     * @var static[]
+     * @var \davidhirtz\yii2\cms\models\Category[]
      * @see Category::getCategories()
      */
     protected static $_categories;
@@ -252,7 +252,7 @@ class Category extends ActiveRecord
     /**
      * @param string $slug
      * @param int $parentId
-     * @return Category|null
+     * @return \davidhirtz\yii2\cms\models\Category|null
      */
     public static function getBySlug($slug, $parentId = null)
     {
