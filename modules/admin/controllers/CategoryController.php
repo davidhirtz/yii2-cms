@@ -54,7 +54,7 @@ class CategoryController extends Controller
     public function actionIndex($id = null, $q = null)
     {
         $provider = new CategoryActiveDataProvider([
-            'category' => $id ? Category::findOne($id) : null,
+            'category' => $id ? Category::findOne((int)$id) : null,
             'searchString' => $q,
         ]);
 
@@ -90,7 +90,7 @@ class CategoryController extends Controller
      */
     public function actionUpdate($id)
     {
-        if (!$category = Category::findOne($id)) {
+        if (!$category = Category::findOne((int)$id)) {
             throw new NotFoundHttpException;
         }
 
@@ -117,7 +117,7 @@ class CategoryController extends Controller
      */
     public function actionDelete($id)
     {
-        if (!$category = Category::findOne($id)) {
+        if (!$category = Category::findOne((int)$id)) {
             throw new NotFoundHttpException;
         }
 
@@ -140,7 +140,7 @@ class CategoryController extends Controller
 
         try
         {
-            Category::rebuildNestedTree(Category::findOne($id), $order);
+            Category::rebuildNestedTree(Category::findOne((int)$id), $order);
             $transaction->commit();
         }
         catch(\Exception $exception)

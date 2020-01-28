@@ -63,7 +63,7 @@ class EntryController extends Controller
         /** @var EntryActiveDataProvider $provider */
         $provider = Yii::createObject([
             'class' => 'davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider',
-            'category' => $category ? Category::findOne($category) : null,
+            'category' => $category ? Category::findOne((int)$category) : null,
             'searchString' => $q,
             'type' => $type,
         ]);

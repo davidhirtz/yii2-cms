@@ -54,7 +54,7 @@ class EntryCategoryController extends Controller
      */
     public function actionIndex($entry = null, $q = null)
     {
-        if (!$entry = Entry::findOne($entry)) {
+        if (!$entry = Entry::findOne((int)$entry)) {
             throw new NotFoundHttpException;
         }
 

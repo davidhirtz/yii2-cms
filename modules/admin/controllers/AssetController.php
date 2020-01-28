@@ -60,11 +60,11 @@ class AssetController extends Controller
     public function actionIndex($entry = null, $section = null, $folder = null, $type = null, $q = null)
     {
         if ($section) {
-            if (!$parent = Section::findOne($section)) {
+            if (!$parent = Section::findOne((int)$section)) {
                 throw new NotFoundHttpException;
             }
 
-        } elseif (!$entry || !$parent = Entry::findOne($entry)) {
+        } elseif (!$entry || !$parent = Entry::findOne((int)$entry)) {
             throw new NotFoundHttpException;
         }
 
