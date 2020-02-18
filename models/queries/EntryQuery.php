@@ -11,6 +11,7 @@ use davidhirtz\yii2\skeleton\db\ActiveQuery;
  * Class EntryQuery
  * @package davidhirtz\yii2\cms\models\queries
  *
+ * @method Entry[] all($db = null)
  * @method Entry one($db = null)
  */
 class EntryQuery extends \davidhirtz\yii2\skeleton\db\ActiveQuery

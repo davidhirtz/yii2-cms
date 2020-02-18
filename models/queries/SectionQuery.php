@@ -8,6 +8,7 @@ use davidhirtz\yii2\cms\models\Section;
  * Class SectionQuery
  * @package davidhirtz\yii2\cms\models\queries
  *
+ * @method Section[] all($db = null)
  * @method Section one($db = null)
  */
 class SectionQuery extends \davidhirtz\yii2\skeleton\db\ActiveQuery

@@ -9,6 +9,7 @@ use davidhirtz\yii2\media\models\queries\FileQuery;
  * Class AssetQuery
  * @package davidhirtz\yii2\cms\models\queries
  *
+ * @method Asset[] all($db = null)
  * @method Asset one($db = null)
  */
 class AssetQuery extends \davidhirtz\yii2\skeleton\db\ActiveQuery
