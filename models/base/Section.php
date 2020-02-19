@@ -8,6 +8,7 @@ use davidhirtz\yii2\cms\models\queries\AssetQuery;
 use davidhirtz\yii2\cms\models\queries\EntryQuery;
 use davidhirtz\yii2\cms\models\queries\SectionQuery;
 use davidhirtz\yii2\cms\modules\admin\widgets\forms\SectionActiveForm;
+use davidhirtz\yii2\cms\modules\admin\widgets\grid\SectionGridView;
 use davidhirtz\yii2\media\models\AssetParentInterface;
 use Yii;
 use yii\base\Widget;
@@ -248,11 +249,16 @@ class Section extends ActiveRecord implements AssetParentInterface
     }
 
     /**
-     * @return bool
+     * @return callable||string|null custom name for {@link SectionGridView::nameColumn()}
      */
-    public function hasAssetsEnabled(): bool
+    public function getNameColumnContent()
     {
-        return static::getModule()->enableSectionAssets;
+        if (isset(static::getTypes()[$this->type]['nameColumn'])) {
+            $nameColumn = static::getTypes()[$this->type]['nameColumn'];
+            return is_callable($nameColumn) ? call_user_func($nameColumn, $this) : $nameColumn;
+        }
+
+        return null;
     }
 
     /**
@@ -269,6 +275,14 @@ class Section extends ActiveRecord implements AssetParentInterface
     public function getRoute()
     {
         return array_merge($this->entry->getRoute(), ['#' => $this->getI18nAttribute('slug') ?: ('section-' . $this->id)]);
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasAssetsEnabled(): bool
+    {
+        return static::getModule()->enableSectionAssets;
     }
 
     /**

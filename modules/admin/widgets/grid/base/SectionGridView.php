@@ -127,8 +127,7 @@ class SectionGridView extends GridView
             'headerOptions' => ['class' => 'd-none d-md-table-cell'],
             'contentOptions' => ['class' => 'd-none d-md-table-cell'],
             'content' => function (Section $section) {
-                $text = $section->getI18nAttribute('name');
-                $text = $text ? Html::tag('strong', $text) : null;
+                $text = $section->getNameColumnContent() ?: Html::tag('strong', $section->getI18nAttribute('name'));
                 $cssClass = null;
 
                 if(!$text)

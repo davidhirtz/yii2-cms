@@ -167,20 +167,20 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     }
 
     /**
+     * @return int
+     */
+    public function getMaxPosition(): int
+    {
+        return (int)$this->findSiblings()->max('[[position]]');
+    }
+
+    /**
      * @param string|null $language
      * @return bool
      */
     public function includeInSitemap(/** @noinspection PhpUnusedParameterInspection */ $language = null): bool
     {
         return $this->isEnabled();
-    }
-
-    /**
-     * @return int
-     */
-    public function getMaxPosition(): int
-    {
-        return (int)$this->findSiblings()->max('[[position]]');
     }
 
     /**
