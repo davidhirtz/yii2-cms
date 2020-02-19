@@ -127,18 +127,15 @@ class SectionGridView extends GridView
             'headerOptions' => ['class' => 'd-none d-md-table-cell'],
             'contentOptions' => ['class' => 'd-none d-md-table-cell'],
             'content' => function (Section $section) {
-                $text = $section->getNameColumnContent() ?: Html::tag('strong', $section->getI18nAttribute('name'));
+                $text = $section->getNameColumnContent() ?: (($name = $section->getI18nAttribute('name')) ? Html::tag('strong', $name) : null);
                 $cssClass = null;
 
-                if(!$text)
-                {
-                    if($section->assets)
-                    {
+                if (!$text) {
+                    if ($section->assets) {
                         $asset = current($section->assets);
 
-                        if($asset->file->hasPreview())
-                        {
-                            $text=Html::tag('div', Html::tag('div', '', [
+                        if ($asset->file->hasPreview()) {
+                            $text = Html::tag('div', Html::tag('div', '', [
                                 'style' => 'background-image:url(' . ($asset->file->getTransformationUrl('admin') ?: $asset->file->getUrl()) . ');',
                                 'class' => 'thumb',
                             ]), ['style' => 'width:120px']);
@@ -146,7 +143,7 @@ class SectionGridView extends GridView
                     }
                 }
 
-                if(!$text) {
+                if (!$text) {
                     $text = $section->getI18nAttribute('content');
                     $text = StringHelper::truncate($section->contentType == 'html' ? strip_tags($text) : $text, 100);
                 }
