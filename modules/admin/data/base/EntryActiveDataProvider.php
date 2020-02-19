@@ -7,7 +7,6 @@ use davidhirtz\yii2\cms\models\queries\EntryQuery;
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
-use davidhirtz\yii2\skeleton\db\ActiveQuery;
 use yii\data\ActiveDataProvider;
 
 /**
