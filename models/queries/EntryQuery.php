@@ -40,9 +40,10 @@ class EntryQuery extends \davidhirtz\yii2\skeleton\db\ActiveQuery
 
     /**
      * @param int[]|Category $category
+     * @param bool $eagerLoading
      * @return EntryQuery
      */
-    public function whereCategory($category)
+    public function whereCategory($category, $eagerLoading = false)
     {
         if ($orderBy = $category->getEntryOrderBy()) {
             $this->orderBy($orderBy);
@@ -52,25 +53,28 @@ class EntryQuery extends \davidhirtz\yii2\skeleton\db\ActiveQuery
             'entryCategory' => function (ActiveQuery $query) use ($category) {
                 $query->onCondition([EntryCategory::tableName() . '.[[category_id]]' => $category->id ?? $category]);
             }
-        ]);
+        ], $eagerLoading);
     }
+
     /**
      * @param int[]|Category[] $categories
+     * @param bool $eagerLoading
      * @return EntryQuery
      */
-    public function whereCategories($categories)
+    public function whereCategories($categories, $eagerLoading = false)
     {
         foreach ($categories as $category) {
+            $categoryId = $category->id ?? $category;
             $this->innerJoinWith([
-                'entryCategory entryCategory' . $category->id => function (ActiveQuery $query) use ($category) {
-                    $query->onCondition(['entryCategory' . $category->id . '.[[category_id]]' => $category->id ?? $category]);
+                'entryCategory entryCategory' . $categoryId => function (ActiveQuery $query) use ($categoryId) {
+                    $query->onCondition(['entryCategory' . $categoryId . '.[[category_id]]' => $categoryId]);
                 }
-            ], false);
+            ], $eagerLoading);
         }
 
         return $this->addSelectPrefixed(['position', 'updated_at']);
     }
-    
+
     /**
      * @param string $slug
      * @return EntryQuery
