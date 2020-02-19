@@ -44,7 +44,11 @@ class EntryQuery extends \davidhirtz\yii2\skeleton\db\ActiveQuery
      */
     public function whereCategory($category)
     {
-        return $this->orderBy($category->getEntryOrderBy())->innerJoinWith([
+        if ($orderBy = $category->getEntryOrderBy()) {
+            $this->orderBy($orderBy);
+        }
+
+        return $this->innerJoinWith([
             'entryCategory' => function (ActiveQuery $query) use ($category) {
                 $query->onCondition([EntryCategory::tableName() . '.[[category_id]]' => $category->id ?? $category]);
             }

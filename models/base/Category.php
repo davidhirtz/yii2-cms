@@ -303,11 +303,19 @@ class Category extends ActiveRecord
     }
 
     /**
-     * @return array
+     * @return array|false
      */
-    public function getEntryOrderBy(): array
+    public function getEntryOrderBy()
     {
         return [EntryCategory::tableName() . '.[[position]]' => SORT_ASC];
+    }
+
+    /**
+     * @return CategoryActiveForm|Widget
+     */
+    public function getActiveForm()
+    {
+        return static::getTypes()[$this->type]['activeForm'] ?? CategoryActiveForm::class;
     }
 
     /**
@@ -324,14 +332,6 @@ class Category extends ActiveRecord
     public function inheritNestedCategories(): bool
     {
         return static::getModule()->inheritNestedCategories && $this->hasEntriesEnabled();
-    }
-
-    /**
-     * @return CategoryActiveForm|Widget
-     */
-    public function getActiveForm()
-    {
-        return static::getTypes()[$this->type]['activeForm'] ?? CategoryActiveForm::class;
     }
 
     /**
