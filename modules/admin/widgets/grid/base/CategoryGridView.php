@@ -205,7 +205,9 @@ class CategoryGridView extends GridView
             $parents = [];
 
             foreach ($category->getAncestors() as $parent) {
-                $parents[] = Html::a(Html::encode($parent->name), ['update', 'id' => $parent->id]);
+                if ($parent->hasEntriesEnabled()) {
+                    $parents[] = Html::a(Html::encode($parent->name), ['update', 'id' => $parent->id]);
+                }
             }
 
             return implode(' / ', $parents);

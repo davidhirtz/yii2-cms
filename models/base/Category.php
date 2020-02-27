@@ -3,7 +3,9 @@
 namespace davidhirtz\yii2\cms\models\base;
 
 use davidhirtz\yii2\cms\models\Asset;
+use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\queries\CategoryQuery;
+use davidhirtz\yii2\cms\models\queries\EntryQuery;
 use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\models\EntryCategory;
 use davidhirtz\yii2\cms\modules\admin\widgets\forms\CategoryActiveForm;
@@ -30,9 +32,10 @@ use yii\helpers\Inflector;
  *
  * @property Section[] $sections
  * @property Asset[] $assets
- * @property EntryCategory $entryCategory
- * @property EntryCategory[] $entryCategories
- * @property \davidhirtz\yii2\cms\models\Category $parent
+ * @property Entry[] $entry {@see \davidhirtz\yii2\cms\models\Category::getEntries()}
+ * @property EntryCategory $entryCategory {@see \davidhirtz\yii2\cms\models\Category::getEntryCategory()}
+ * @property EntryCategory[] $entryCategories {@see \davidhirtz\yii2\cms\models\Category::getEntryCategories()}
+ * @property \davidhirtz\yii2\cms\models\Category $parent {@see \davidhirtz\yii2\cms\models\Category::getParent()}
  * @property \davidhirtz\yii2\cms\models\Category[] $ancestors
  * @property \davidhirtz\yii2\cms\models\Category[] $descendants
  *
@@ -146,6 +149,31 @@ class Category extends ActiveRecord
     /**
      * @inheritDoc
      */
+    public function afterSave($insert, $changedAttributes)
+    {
+        if (!$insert) {
+            if (array_key_exists('parent_id', $changedAttributes)) {
+                if ($this->entry_count) {
+                    /** @var EntryCategory[] $entryCategories */
+                    $entryCategories = $this->getEntryCategories()
+                        ->with('entry')
+                        ->all();
+
+                    foreach ($entryCategories as $entryCategory) {
+                        $entryCategory->populateRelation('category', $this);
+                        $entryCategory->insertCategoryAncestors();
+                        $entryCategory->entry->recalculateCategoryIds();
+                    }
+                }
+            }
+        }
+
+        parent::afterSave($insert, $changedAttributes);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function beforeDelete()
     {
         if ($isValid = parent::beforeDelete()) {
@@ -177,6 +205,15 @@ class Category extends ActiveRecord
     {
         return $this->hasOne(EntryCategory::class, ['category_id' => 'id'])
             ->inverseOf('category');
+    }
+
+    /**
+     * @return EntryQuery
+     */
+    public function getEntries()
+    {
+        return $this->hasMany(Entry::class, ['id' => 'entry_id'])
+            ->via('entryCategory');
     }
 
     /**
