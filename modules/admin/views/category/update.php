@@ -4,9 +4,11 @@
  * @see \davidhirtz\yii2\cms\modules\admin\controllers\CategoryController::actionUpdate()
  *
  * @var \davidhirtz\yii2\skeleton\web\View $this
+ * @var \davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider $provider
  * @var \davidhirtz\yii2\cms\models\Category $category
  */
 
+use davidhirtz\yii2\cms\modules\admin\widgets\grid\CategoryGridView;
 use davidhirtz\yii2\cms\modules\admin\widgets\nav\Submenu;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
@@ -29,6 +31,18 @@ $this->setTitle(Yii::t('cms', 'Edit Category'));
         'model' => $category,
     ]),
 ]); ?>
+
+<?php
+if ($category->getBranchCount()) {
+    echo Panel::widget([
+        'title' => Yii::t('cms', 'Subcategories'),
+        'content' => CategoryGridView::widget([
+            'dataProvider' => $provider,
+            'layout' => '{items}',
+        ]),
+    ]);
+}
+?>
 
 <?= CategoryHelpPanel::widget([
     'id' => 'operations',

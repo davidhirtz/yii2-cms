@@ -105,8 +105,13 @@ class CategoryController extends Controller
             }
         }
 
+        $provider = new CategoryActiveDataProvider([
+            'category' => $category,
+        ]);
+
         /** @noinspection MissedViewInspection */
         return $this->render('update', [
+            'provider' => $provider,
             'category' => $category,
         ]);
     }

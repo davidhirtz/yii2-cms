@@ -10,6 +10,7 @@ use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\models\EntryCategory;
 use davidhirtz\yii2\cms\modules\admin\widgets\forms\CategoryActiveForm;
 use davidhirtz\yii2\skeleton\db\NestedTreeTrait;
+use davidhirtz\yii2\skeleton\helpers\ArrayHelper;
 use Yii;
 use yii\base\Widget;
 use yii\caching\TagDependency;
@@ -147,22 +148,32 @@ class Category extends ActiveRecord
     }
 
     /**
-     * @inheritDoc
+     * On parent id change all related entries (from this category as well as child categories)
+     * need to be added to the new parent categories, if {@link \davidhirtz\yii2\cms\Module::$inheritNestedCategories}
+     * is true. Previous parent category relations will not be deleted.
+     *
+     * @param bool $insert
+     * @param array $changedAttributes
      */
     public function afterSave($insert, $changedAttributes)
     {
         if (!$insert) {
             if (array_key_exists('parent_id', $changedAttributes)) {
-                if ($this->entry_count) {
-                    /** @var EntryCategory[] $entryCategories */
-                    $entryCategories = $this->getEntryCategories()
-                        ->with('entry')
-                        ->all();
+                if (static::getModule()->inheritNestedCategories && $this->parent_id) {
+                    $categories = [$this->id => $this] + $this->getDescendants();
+                    $entryCategories = EntryCategory::find()->where(['category_id' => array_keys($categories)])->all();
+
+                    $entryIds = array_unique(ArrayHelper::getColumn($entryCategories, 'entry_id'));
+                    $entries = Entry::find()->where(['id' => $entryIds])->indexBy('id')->all();
 
                     foreach ($entryCategories as $entryCategory) {
-                        $entryCategory->populateRelation('category', $this);
+                        $entryCategory->populateCategoryRelation($categories[$entryCategory->category_id]);
+                        $entryCategory->populateEntryRelation($entries[$entryCategory->entry_id]);
                         $entryCategory->insertCategoryAncestors();
-                        $entryCategory->entry->recalculateCategoryIds();
+                    }
+
+                    foreach ($entries as $entry) {
+                        $entry->recalculateCategoryIds();
                     }
                 }
             }

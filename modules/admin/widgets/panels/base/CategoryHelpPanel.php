@@ -3,6 +3,8 @@
 namespace davidhirtz\yii2\cms\modules\admin\widgets\panels\base;
 
 use davidhirtz\yii2\cms\models\Category;
+use davidhirtz\yii2\skeleton\helpers\Html;
+use Yii;
 
 /**
  * Class CategoryHelpPanel
@@ -13,6 +15,7 @@ use davidhirtz\yii2\cms\models\Category;
  */
 class CategoryHelpPanel extends HelpPanel
 {
+
     /**
      * @return array
      */
@@ -20,6 +23,17 @@ class CategoryHelpPanel extends HelpPanel
     {
         return array_filter([
             $this->getLinkButton(),
+            $this->getCreateCategory(),
+        ]);
+    }
+
+    /**
+     * @return string
+     */
+    protected function getCreateCategory()
+    {
+        return Html::a(Html::iconText('plus', Yii::t('cms', 'New Category')), ['category/create', 'id' => $this->model->id], [
+            'class' => 'btn btn-primary',
         ]);
     }
 }
