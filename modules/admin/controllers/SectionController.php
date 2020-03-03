@@ -122,7 +122,7 @@ class SectionController extends Controller
             }
 
             if (!$section->hasErrors()) {
-                return $this->redirect(['index', 'entry' => $section->entry_id]);
+                return $this->refresh();
             }
         }
 
