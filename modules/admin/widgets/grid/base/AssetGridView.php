@@ -58,7 +58,7 @@ class AssetGridView extends GridView
                 'sort' => false,
             ]);
 
-            $this->setModel(new Asset);
+            $this->setModel(Asset::instance());
         }
 
         if (Yii::$app->getUser()->can('upload')) {
@@ -208,7 +208,7 @@ class AssetGridView extends GridView
             'content' => function (Asset $asset) {
                 $buttons = [];
 
-                if ($this->dataProvider->getCount() > 1) {
+                if ($this->isSortedByPosition() && $this->dataProvider->getCount() > 1) {
                     $buttons[] = Html::tag('span', Icon::tag('arrows-alt'), ['class' => 'btn btn-secondary sortable-handle']);
                 }
 
