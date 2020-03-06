@@ -384,7 +384,7 @@ class EntryGridView extends GridView
             }
         }
 
-        return $categories ? Html::tag('div', implode('', $categories), $options ?: ['class' => 'small', 'style' => 'margin-top:.4em']) : '';
+        return $categories ? Html::tag('div', implode('', $categories), $options ?: ['class' => 'btn-list']) : '';
     }
 
     /**
