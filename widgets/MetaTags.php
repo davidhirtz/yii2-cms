@@ -164,7 +164,7 @@ class MetaTags extends BaseObject
     public function getView()
     {
         if ($this->_view === null) {
-            $this->_view = Yii::$app->getView();
+            $this->_view = Yii::$app->controller->getView();
         }
 
         return $this->_view;
