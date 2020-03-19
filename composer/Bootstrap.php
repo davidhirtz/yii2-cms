@@ -50,6 +50,6 @@ class Bootstrap implements BootstrapInterface
             ],
         ]);
 
-        $this->setMigrationNamespace($app, 'davidhirtz\yii2\media\migrations');
+        $this->setMigrationNamespace($app, 'davidhirtz\yii2\cms\migrations');
     }
 }
