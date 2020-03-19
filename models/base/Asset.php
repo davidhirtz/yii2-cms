@@ -202,11 +202,12 @@ class Asset extends \davidhirtz\yii2\cms\models\base\ActiveRecord implements Ass
     }
 
     /**
+     * @param string $language
      * @return string
      */
-    public function getAutoplayLink()
+    public function getAutoplayLink($language = null): string
     {
-        return $this->link ? ($this->link . (strpos($this->link, '?') !== false ? '&' : '?') . 'autoplay=1') : '';
+        return ($link = $this->getI18nAttribute('link', $language)) ? ($link . (strpos($link, '?') !== false ? '&' : '?') . 'autoplay=1') : '';
     }
 
     /**
