@@ -6,7 +6,8 @@ namespace davidhirtz\yii2\cms\modules\admin\widgets\grid\base;
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider;
 use davidhirtz\yii2\skeleton\helpers\Html;
-use davidhirtz\yii2\skeleton\widgets\fontawesome\Icon;
+use davidhirtz\yii2\skeleton\modules\admin\widgets\grid\StatusGridViewTrait;
+use davidhirtz\yii2\skeleton\modules\admin\widgets\grid\TypeGridViewTrait;
 use Yii;
 
 /**
@@ -17,6 +18,8 @@ use Yii;
  */
 trait CategoryGridTrait
 {
+    use StatusGridViewTrait, TypeGridViewTrait;
+
     /**
      * @var bool
      */
@@ -26,36 +29,6 @@ trait CategoryGridTrait
      * @var string
      */
     public $dateFormat;
-
-    /**
-     * @return array
-     */
-    public function statusColumn()
-    {
-        return [
-            'contentOptions' => ['class' => 'text-center'],
-            'content' => function (Category $category) {
-                return Icon::tag($category->getStatusIcon(), [
-                    'data-toggle' => 'tooltip',
-                    'title' => $category->getStatusName()
-                ]);
-            }
-        ];
-    }
-
-    /**
-     * @return array
-     */
-    public function typeColumn()
-    {
-        return [
-            'attribute' => 'type',
-            'visible' => count(Category::getTypes()) > 1,
-            'content' => function (Category $category) {
-                return Html::a($category->getTypeName(), ['update', 'id' => $category->id]);
-            }
-        ];
-    }
 
     /**
      * @return array

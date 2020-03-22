@@ -9,6 +9,8 @@ use davidhirtz\yii2\cms\modules\admin\widgets\CategoryTrait;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grid\GridView;
+use davidhirtz\yii2\skeleton\modules\admin\widgets\grid\StatusGridViewTrait;
+use davidhirtz\yii2\skeleton\modules\admin\widgets\grid\TypeGridViewTrait;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\ButtonDropdown;
 use davidhirtz\yii2\timeago\Timeago;
 use davidhirtz\yii2\skeleton\widgets\fontawesome\Icon;
@@ -23,7 +25,7 @@ use yii\helpers\Url;
  */
 class EntryGridView extends GridView
 {
-    use ModuleTrait, CategoryTrait;
+    use ModuleTrait, CategoryTrait, StatusGridViewTrait, TypeGridViewTrait;
 
     /**
      * @var bool whether entry urls should be displayed in the name column
@@ -101,6 +103,8 @@ class EntryGridView extends GridView
             $this->showTypeDropdown = count(Entry::getTypes()) > 1;
         }
 
+        $this->type = $this->dataProvider->type;
+
         $this->initHeader();
         $this->initFooter();
 
@@ -161,36 +165,6 @@ class EntryGridView extends GridView
     protected function renderCreateEntryButton()
     {
         return Html::a(Html::iconText('plus', Yii::t('cms', 'New Entry')), ['create', 'type' => $this->dataProvider->type], ['class' => 'btn btn-primary']);
-    }
-
-    /**
-     * @return array
-     */
-    public function statusColumn()
-    {
-        return [
-            'contentOptions' => ['class' => 'text-center'],
-            'content' => function (Entry $entry) {
-                return Icon::tag($entry->getStatusIcon(), [
-                    'data-toggle' => 'tooltip',
-                    'title' => $entry->getStatusName()
-                ]);
-            }
-        ];
-    }
-
-    /**
-     * @return array
-     */
-    public function typeColumn()
-    {
-        return [
-            'attribute' => 'type',
-            'visible' => !$this->dataProvider->type && count(Entry::getTypes()) > 1,
-            'content' => function (Entry $entry) {
-                return Html::a($entry->getTypeName(), $this->getRoute($entry));
-            }
-        ];
     }
 
     /**
@@ -340,36 +314,6 @@ class EntryGridView extends GridView
     }
 
     /**
-     * @return string
-     */
-    public function typeDropdown()
-    {
-        $type = Entry::getTypes()[$this->dataProvider->type] ?? false;
-
-        return ButtonDropdown::widget([
-            'label' => $type ? Html::tag('strong', $type['plural'] ?? $type['name']) : Yii::t('cms', 'Types'),
-            'items' => $this->typeDropdownItems(),
-            'paramName' => 'type',
-        ]);
-    }
-
-    /**
-     * @return array
-     */
-    protected function typeDropdownItems(): array
-    {
-        $items = [];
-        foreach (Entry::getTypes() as $id => $type) {
-            $items[] = [
-                'label' => $type['plural'] ?? $type['name'],
-                'url' => Url::current(['type' => $id, 'page' => null]),
-            ];
-        }
-
-        return $items;
-    }
-
-    /**
      * @param Entry $entry
      * @param array $options
      * @return string
@@ -407,11 +351,12 @@ class EntryGridView extends GridView
 
     /**
      * @param Entry $entry
+     * @param array $params
      * @return array
      */
-    public function getRoute($entry): array
+    protected function getRoute($entry, $params = []): array
     {
-        return array_merge(Yii::$app->getRequest()->get(), ['/admin/entry/update', 'id' => $entry->id]);
+        return array_merge(Yii::$app->getRequest()->get(), ['/admin/entry/update', 'id' => $entry->id], $params);
     }
 
     /**

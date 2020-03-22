@@ -7,6 +7,7 @@ use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grid\GridView;
+use davidhirtz\yii2\skeleton\modules\admin\widgets\grid\StatusGridViewTrait;
 use davidhirtz\yii2\skeleton\widgets\fontawesome\Icon;
 use Yii;
 use yii\data\ActiveDataProvider;
@@ -18,11 +19,10 @@ use yii\helpers\StringHelper;
  * @package davidhirtz\yii2\cms\modules\admin\widgets\grid\base
  *
  * @property ActiveDataProvider $dataProvider
- * @method Section getModel()
  */
 class SectionGridView extends GridView
 {
-    use ModuleTrait;
+    use ModuleTrait, StatusGridViewTrait;
 
     /**
      * @var Entry
@@ -85,22 +85,6 @@ class SectionGridView extends GridView
     protected function renderCreateSectionButton()
     {
         return Html::a(Html::iconText('plus', Yii::t('cms', 'New Section')), ['create', 'entry' => $this->entry->id], ['class' => 'btn btn-primary']);
-    }
-
-    /**
-     * @return array
-     */
-    public function statusColumn()
-    {
-        return [
-            'contentOptions' => ['class' => 'text-center'],
-            'content' => function (Section $section) {
-                return Icon::tag($section->getStatusIcon(), [
-                    'data-toggle' => 'tooltip',
-                    'title' => $section->getStatusName()
-                ]);
-            }
-        ];
     }
 
     /**
@@ -192,5 +176,13 @@ class SectionGridView extends GridView
                 return Html::buttons($buttons);
             }
         ];
+    }
+
+    /**
+     * @return \davidhirtz\yii2\skeleton\db\ActiveRecord|Section
+     */
+    public function getModel()
+    {
+        return Section::instance();
     }
 }

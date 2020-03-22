@@ -10,6 +10,8 @@ use davidhirtz\yii2\media\assets\AdminAsset;
 use davidhirtz\yii2\media\modules\admin\widgets\forms\FileUpload;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grid\GridView;
+use davidhirtz\yii2\skeleton\modules\admin\widgets\grid\StatusGridViewTrait;
+use davidhirtz\yii2\skeleton\modules\admin\widgets\grid\TypeGridViewTrait;
 use davidhirtz\yii2\skeleton\widgets\fontawesome\Icon;
 use Yii;
 use yii\data\ActiveDataProvider;
@@ -25,7 +27,7 @@ use yii\helpers\Url;
  */
 class AssetGridView extends GridView
 {
-    use ModuleTrait;
+    use ModuleTrait, StatusGridViewTrait, TypeGridViewTrait;
 
     /**
      * @var Entry|Section
@@ -66,7 +68,7 @@ class AssetGridView extends GridView
             $view->registerJs('deleteFilesWithAssets()');
         }
 
-        $this->orderRoute = $this->getRoute('cms/asset/order');
+        $this->orderRoute = $this->getParentRoute('cms/asset/order');
         $this->initFooter();
 
         parent::init();
@@ -97,7 +99,7 @@ class AssetGridView extends GridView
     {
         return Html::buttons([
             Html::tag('div', Html::iconText('plus', Yii::t('cms', 'Upload') . $this->getFileUploadWidget()), ['class' => 'btn btn-primary btn-upload']),
-            Html::a(Html::iconText('images', Yii::t('cms', 'Library')), $this->getRoute('cms/asset/index'), ['class' => 'btn btn-primary']),
+            Html::a(Html::iconText('images', Yii::t('cms', 'Library')), $this->getParentRoute('cms/asset/index'), ['class' => 'btn btn-primary']),
         ]);
     }
 
@@ -107,7 +109,7 @@ class AssetGridView extends GridView
     protected function getFileUploadWidget()
     {
         return FileUpload::widget([
-            'url' => $this->getRoute('/admin/cms/asset/create', [
+            'url' => $this->getParentRoute('/admin/cms/asset/create', [
                 'folder' => Yii::$app->getRequest()->get('folder'),
             ]),
         ]);
@@ -119,22 +121,6 @@ class AssetGridView extends GridView
     public function renderItems()
     {
         return Html::tag('div', parent::renderItems(), ['id' => 'files']);
-    }
-
-    /**
-     * @return array
-     */
-    public function statusColumn(): array
-    {
-        return [
-            'contentOptions' => ['class' => 'text-center'],
-            'content' => function (Asset $asset) {
-                return Icon::tag($asset->getStatusIcon(), [
-                    'data-toggle' => 'tooltip',
-                    'title' => $asset->getStatusName()
-                ]);
-            }
-        ];
     }
 
     /**
@@ -156,20 +142,6 @@ class AssetGridView extends GridView
     /**
      * @return array
      */
-    public function typeColumn(): array
-    {
-        return [
-            'attribute' => 'type',
-            'visible' => count(Asset::getTypes()) > 1,
-            'content' => function (Asset $asset) {
-                return Html::a($asset->getTypeName(), ['cms/asset/update', 'id' => $asset->id]);
-            }
-        ];
-    }
-
-    /**
-     * @return array
-     */
     public function nameColumn(): array
     {
         return [
@@ -177,10 +149,10 @@ class AssetGridView extends GridView
             'content' => function (Asset $asset) {
 
                 if ($name = $asset->getI18nAttribute('name')) {
-                    return Html::tag('strong', Html::a($name, ['cms/asset/update', 'id' => $asset->id]));
+                    return Html::tag('strong', Html::a($name, $this->getRoute($asset)));
                 }
 
-                return Html::a($asset->file->name, ['cms/asset/update', 'id' => $asset->id], ['class' => 'text-muted']);
+                return Html::a($asset->file->name, $this->getRoute($asset), ['class' => 'text-muted']);
             }
         ];
     }
@@ -218,7 +190,7 @@ class AssetGridView extends GridView
                     'title' => Yii::t('media', 'Edit File'),
                 ]);
 
-                $buttons[] = Html::a(Icon::tag('wrench'), ['cms/asset/update', 'id' => $asset->id], [
+                $buttons[] = Html::a(Icon::tag('wrench'), $this->getRoute($asset), [
                     'class' => 'btn btn-secondary',
                     'data-toggle' => 'tooltip',
                     'title' => Yii::t('cms', 'Edit Asset'),
@@ -242,8 +214,18 @@ class AssetGridView extends GridView
      * @param array $params
      * @return array
      */
-    protected function getRoute($action, $params = []): array
+    protected function getParentRoute($action, $params = []): array
     {
         return array_merge([$action, ($this->parent instanceof Entry ? 'entry' : 'section') => $this->parent->id], $params);
+    }
+
+    /**
+     * @param Asset $model
+     * @param array $params
+     * @return array
+     */
+    protected function getRoute($model, $params = []): array
+    {
+        return array_merge(['cms/asset/update', 'id' => $model->id], $params);
     }
 }
