@@ -9,7 +9,7 @@ use Yii;
 
 /**
  * Class EntryActiveForm
- * @package davidhirtz\yii2\cms\modules\admin\widgets\forms\base
+ * @package davidhirtz\yii2\cms\modules\admin\widgets\forms
  *
  * @property Entry $model
  */

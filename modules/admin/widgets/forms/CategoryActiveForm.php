@@ -10,7 +10,7 @@ use yii\helpers\ArrayHelper;
 
 /**
  * Class CategoryActiveForm.
- * @package davidhirtz\yii2\cms\modules\admin\widgets\forms\base
+ * @package davidhirtz\yii2\cms\modules\admin\widgets\forms
  *
  * @property Category $model
  */
