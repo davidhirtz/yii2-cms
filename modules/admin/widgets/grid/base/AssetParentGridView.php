@@ -169,11 +169,12 @@ class AssetParentGridView extends GridView
 
     /**
      * @param Asset $asset
+     * @param array $params
      * @return array
      */
-    public function getRoute($asset): array
+    public function getRoute($asset, $params = []): array
     {
-        return [$asset->section_id ? '/admin/section/update' : '/admin/entry/update', 'id' => $asset->getParent()->id, '#' => 'asset-' . $asset->id];
+        return array_merge([$asset->section_id ? '/admin/section/update' : '/admin/entry/update', 'id' => $asset->getParent()->id, '#' => 'asset-' . $asset->id], $params);
     }
 
     /**
