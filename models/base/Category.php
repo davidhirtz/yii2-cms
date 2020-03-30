@@ -282,6 +282,11 @@ class Category extends ActiveRecord
         if (static::$_categories === null) {
             $dependency = new TagDependency(['tags' => static::CATEGORIES_CACHE_KEY]);
             static::$_categories = static::getModule()->categoryCachedQueryDuration > 0 ? static::getDb()->cache([static::class, 'findCategories'], static::getModule()->categoryCachedQueryDuration, $dependency) : static::findCategories();
+
+            foreach (static::$_categories as $category) {
+                $category->setAncestors(static::$_categories);
+                $category->setDescendants(static::$_categories);
+            }
         }
 
         return static::$_categories;
