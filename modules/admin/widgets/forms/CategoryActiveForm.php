@@ -100,9 +100,12 @@ class CategoryActiveForm extends ActiveForm
         if ($route = $category->getRoute()) {
             $draftHostInfo = Yii::$app->getRequest()->getDraftHostInfo();
             $urlManager = Yii::$app->getUrlManager();
-            $route = array_merge($route, ['language' => $language]);
 
-            if (mb_strlen($route['category'], Yii::$app->charset) > $this->slugMaxLength) {
+            if (count(Yii::$app->getI18n()->languages) > 1) {
+                $route = array_merge($route, ['language' => $language]);
+            }
+
+            if (isset($route['category']) && mb_strlen($route['category'], Yii::$app->charset) > $this->slugMaxLength) {
                 $route['category'] = '...' . mb_substr($route['category'], -$this->slugMaxLength, $this->slugMaxLength, Yii::$app->charset);
             }
 
