@@ -78,7 +78,7 @@ class M190909152855Category extends Migration
             $this->addForeignKey($tableName . '_category_id_ibfk', EntryCategory::tableName(), 'category_id', Category::tableName(), 'id', 'CASCADE');
             $this->addForeignKey($tableName . '_updated_by_ibfk', EntryCategory::tableName(), 'updated_by_user_id', User::tableName(), 'id', 'SET NULL');
 
-            $this->addColumn(Entry::tableName(), 'category_ids', $this->string()->null()->after('publish_date'));
+            $this->addColumn(Entry::tableName(), 'category_ids', $this->text()->null()->after('publish_date'));
         }
     }
 
