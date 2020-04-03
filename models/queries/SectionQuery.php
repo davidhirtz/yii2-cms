@@ -14,7 +14,7 @@ use davidhirtz\yii2\cms\models\Section;
 class SectionQuery extends \davidhirtz\yii2\skeleton\db\ActiveQuery
 {
     /**
-     * @return SectionQuery
+     * @return $this
      */
     public function selectSiteAttributes()
     {

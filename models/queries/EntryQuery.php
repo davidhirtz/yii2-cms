@@ -17,7 +17,7 @@ use davidhirtz\yii2\skeleton\db\ActiveQuery;
 class EntryQuery extends \davidhirtz\yii2\skeleton\db\ActiveQuery
 {
     /**
-     * @return EntryQuery
+     * @return $this
      */
     public function selectSiteAttributes()
     {
@@ -27,7 +27,7 @@ class EntryQuery extends \davidhirtz\yii2\skeleton\db\ActiveQuery
 
     /**
      * @param string $search
-     * @return EntryQuery
+     * @return $this
      */
     public function matching($search)
     {
@@ -41,7 +41,7 @@ class EntryQuery extends \davidhirtz\yii2\skeleton\db\ActiveQuery
     /**
      * @param Category $category
      * @param bool $eagerLoading
-     * @return EntryQuery
+     * @return $this
      */
     public function whereCategory($category, $eagerLoading = false)
     {
@@ -59,7 +59,7 @@ class EntryQuery extends \davidhirtz\yii2\skeleton\db\ActiveQuery
     /**
      * @param int[]|Category[] $categories
      * @param bool $eagerLoading
-     * @return EntryQuery
+     * @return $this
      */
     public function whereCategories($categories, $eagerLoading = false)
     {
@@ -77,7 +77,7 @@ class EntryQuery extends \davidhirtz\yii2\skeleton\db\ActiveQuery
 
     /**
      * @param string $slug
-     * @return EntryQuery
+     * @return $this
      */
     public function whereSlug($slug)
     {
@@ -85,7 +85,7 @@ class EntryQuery extends \davidhirtz\yii2\skeleton\db\ActiveQuery
     }
 
     /**
-     * @return EntryQuery
+     * @return $this
      */
     public function withAssets()
     {
@@ -103,7 +103,7 @@ class EntryQuery extends \davidhirtz\yii2\skeleton\db\ActiveQuery
     }
 
     /**
-     * @return EntryQuery
+     * @return $this
      */
     public function withSections()
     {
