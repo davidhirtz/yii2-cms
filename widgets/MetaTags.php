@@ -28,12 +28,18 @@ class MetaTags extends BaseObject
     public $languages;
 
     /**
-     * @var bool
+     * @var bool whether assets should be registered as meta images
      */
     public $registerImages = true;
 
     /**
-     * @var bool
+     * @var int the asset type for meta images, if empty all assets of the entry will be included
+     */
+    public $assetType;
+
+    /**
+     * @var string the transformation for the meta images, if empty the original asset file will
+     * be included
      */
     public $transformationName;
 
@@ -142,7 +148,7 @@ class MetaTags extends BaseObject
     {
         if ($this->registerImages) {
             foreach ($this->model->assets as $asset) {
-                if (!$asset->section_id) {
+                if (!$asset->section_id && (!$this->assetType || $this->assetType == $asset->type)) {
                     $file = $asset->file;
                     if ($this->transformationName) {
                         if ($url = $file->getTransformationUrl($this->transformationName)) {
