@@ -12,6 +12,7 @@ use davidhirtz\yii2\skeleton\db\TypeAttributeTrait;
 use davidhirtz\yii2\skeleton\models\queries\UserQuery;
 use davidhirtz\yii2\skeleton\models\User;
 use Yii;
+use yii\db\ExpressionInterface;
 use yii\db\Schema;
 
 
@@ -126,16 +127,18 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     abstract public function findSiblings();
 
     /**
+     * @param int|ExpressionInterface|null $offset
      * @return array
      */
-    public function generateSitemapUrls(): array
+    public function generateSitemapUrls($offset = null): array
     {
         $manager = Yii::$app->getUrlManager();
         $languages = $manager->i18nUrl || $manager->i18nSubdomain ? Yii::$app->getI18n()->getLanguages() : [static::getModule()->enableI18nTables ? Yii::$app->language : null];
+        $query = $this->getSitemapQuery()->limit($offset);
         $urls = [];
 
         /** @var ActiveRecord $record */
-        foreach (static::find()->each() as $record) {
+        foreach ($query->each() as $record) {
             foreach ($languages as $language) {
                 if ($record->includeInSitemap($language)) {
                     if ($route = $record->getRoute()) {
@@ -149,6 +152,14 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         }
 
         return $urls;
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getSitemapQuery()
+    {
+        return static::find();
     }
 
     /**
