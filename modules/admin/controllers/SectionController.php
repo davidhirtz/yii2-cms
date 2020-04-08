@@ -164,8 +164,15 @@ class SectionController extends Controller
         $section = $this->findSection($id);
 
         if ($section->delete()) {
+            if (Yii::$app->getRequest()->getIsAjax()) {
+                return '';
+            }
+
             $this->success(Yii::t('cms', 'The section was deleted.'));
-        } elseif ($errors = $section->getFirstErrors()) {
+
+        }
+
+        if ($errors = $section->getFirstErrors()) {
             $this->error($errors);
         }
 

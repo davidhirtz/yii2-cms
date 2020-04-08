@@ -166,16 +166,25 @@ class SectionGridView extends GridView
         return [
             'contentOptions' => ['class' => 'text-right text-nowrap'],
             'content' => function (Section $section) {
-                $buttons = [];
-
-                if ($this->dataProvider->getCount() > 1) {
-                    $buttons[] = Html::tag('span', Icon::tag('arrows-alt'), ['class' => 'btn btn-secondary sortable-handle']);
-                }
-
-                $buttons[] = Html::a(Icon::tag('wrench'), ['update', 'id' => $section->id], ['class' => 'btn btn-secondary']);
-                return Html::buttons($buttons);
+                return Html::buttons($this->getRowButtons($section));
             }
         ];
+    }
+
+    /**
+     * @param Section $section
+     * @return  array
+     */
+    protected function getRowButtons($section)
+    {
+        $buttons = [];
+
+        if ($this->dataProvider->getCount() > 1) {
+            $buttons[] = Html::tag('span', Icon::tag('arrows-alt'), ['class' => 'btn btn-secondary sortable-handle']);
+        }
+
+        $buttons[] = Html::a(Icon::tag('wrench'), ['update', 'id' => $section->id], ['class' => 'btn btn-secondary']);
+        return $buttons;
     }
 
     /**
