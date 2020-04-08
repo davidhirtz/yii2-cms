@@ -74,7 +74,6 @@ return [
     'The section was duplicated.' => 'Die Sektion wurde dupliziert.',
     'The section was updated.' => 'Die Sektion wurde aktualisiert.',
     'Title' => 'Titel',
-    'Types' => 'Typen',
     'Upload' => 'Upload',
     'Url' => 'Url',
     'View All Entries' => 'Alle Einträge anzeigen',

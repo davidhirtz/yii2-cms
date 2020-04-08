@@ -7,7 +7,7 @@ use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\media\assets\AdminAsset;
-use davidhirtz\yii2\media\modules\admin\widgets\forms\FileUpload;
+use davidhirtz\yii2\media\modules\admin\widgets\UploadTrait;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grid\GridView;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grid\StatusGridViewTrait;
@@ -23,11 +23,10 @@ use yii\helpers\Url;
  * @package davidhirtz\yii2\cms\modules\admin\widgets\grid\base
  *
  * @property ActiveDataProvider $dataProvider
- * @method Asset getModel()
  */
 class AssetGridView extends GridView
 {
-    use ModuleTrait, StatusGridViewTrait, TypeGridViewTrait;
+    use ModuleTrait, StatusGridViewTrait, TypeGridViewTrait, UploadTrait;
 
     /**
      * @var Entry|Section
@@ -46,6 +45,9 @@ class AssetGridView extends GridView
         'buttons',
     ];
 
+    /**
+     * @var string
+     */
     public $layout = '{items}{footer}';
 
     /**
@@ -65,7 +67,8 @@ class AssetGridView extends GridView
 
         if (Yii::$app->getUser()->can('upload')) {
             AdminAsset::register($view = $this->getView());
-            $view->registerJs('deleteFilesWithAssets()');
+            $view->registerJs('Skeleton.deleteFilesWithAssets();');
+            $view->registerJs('Skeleton.mediaFileImport();');
         }
 
         $this->orderRoute = $this->getParentRoute('cms/asset/order');
@@ -83,9 +86,9 @@ class AssetGridView extends GridView
             $this->footer = [
                 [
                     [
-                        'content' => $this->getButtons(),
+                        'content' => Html::buttons($this->getFooterButtons()),
                         'visible' => Yii::$app->getUser()->can('upload'),
-                        'options' => ['class' => 'offset-md-3 col-md-8'],
+                        'options' => ['class' => 'offset-md-3 col-md-9'],
                     ],
                 ],
             ];
@@ -93,26 +96,21 @@ class AssetGridView extends GridView
     }
 
     /**
-     * @return string
+     * @return array
      */
-    protected function getButtons()
+    protected function getFooterButtons()
     {
-        return Html::buttons([
-            Html::tag('div', Html::iconText('plus', Yii::t('cms', 'Upload') . $this->getFileUploadWidget()), ['class' => 'btn btn-primary btn-upload']),
-            Html::a(Html::iconText('images', Yii::t('cms', 'Library')), $this->getParentRoute('cms/asset/index'), ['class' => 'btn btn-primary']),
-        ]);
+        return [$this->getUploadFileButton(), $this->getImportFileButton(), $this->getAssetsButton()];
     }
 
     /**
      * @return string
      */
-    protected function getFileUploadWidget()
+    protected function getAssetsButton()
     {
-        return FileUpload::widget([
-            'url' => $this->getParentRoute('/admin/cms/asset/create', [
-                'folder' => Yii::$app->getRequest()->get('folder'),
-            ]),
-        ]);
+        return Html::a(Html::iconText('images', Yii::t('cms', 'Library')), $this->getParentRoute('cms/asset/index'), [
+                'class' => 'btn btn-primary',
+            ]);
     }
 
     /**
@@ -178,35 +176,44 @@ class AssetGridView extends GridView
         return [
             'contentOptions' => ['class' => 'text-right text-nowrap'],
             'content' => function (Asset $asset) {
-                $buttons = [];
-
-                if ($this->isSortedByPosition() && $this->dataProvider->getCount() > 1) {
-                    $buttons[] = Html::tag('span', Icon::tag('arrows-alt'), ['class' => 'btn btn-secondary sortable-handle']);
-                }
-
-                $buttons[] = Html::a(Icon::tag('image'), ['file/update', 'id' => $asset->file_id], [
-                    'class' => 'btn btn-secondary d-none d-md-inline-block',
-                    'data-toggle' => 'tooltip',
-                    'title' => Yii::t('media', 'Edit File'),
-                ]);
-
-                $buttons[] = Html::a(Icon::tag('wrench'), $this->getRoute($asset), [
-                    'class' => 'btn btn-secondary',
-                    'data-toggle' => 'tooltip',
-                    'title' => Yii::t('cms', 'Edit Asset'),
-                ]);
-
-                $buttons[] = Html::a(Icon::tag('trash'), ['cms/asset/delete', 'id' => $asset->id], [
-                    'class' => 'btn btn-danger btn-delete-asset d-none d-md-inline-block',
-                    'data-confirm' => Yii::t('yii', 'Are you sure you want to remove this asset?'),
-                    'data-ajax' => 1,
-                    'data-delete-message' => Yii::t('cms', 'Permanently delete related files'),
-                    'data-delete-url' => Url::to(['file/delete', 'id' => $asset->file_id]),
-                ]);
-
-                return Html::buttons($buttons);
+                return Html::buttons($this->getRowButtons($asset));
             }
         ];
+    }
+
+    /**
+     * @param Asset $asset
+     * @return array
+     */
+    protected function getRowButtons($asset)
+    {
+        $buttons = [];
+
+        if ($this->isSortedByPosition() && $this->dataProvider->getCount() > 1) {
+            $buttons[] = Html::tag('span', Icon::tag('arrows-alt'), ['class' => 'btn btn-secondary sortable-handle']);
+        }
+
+        $buttons[] = Html::a(Icon::tag('image'), ['file/update', 'id' => $asset->file_id], [
+            'class' => 'btn btn-secondary d-none d-md-inline-block',
+            'data-toggle' => 'tooltip',
+            'title' => Yii::t('media', 'Edit File'),
+        ]);
+
+        $buttons[] = Html::a(Icon::tag('wrench'), $this->getRoute($asset), [
+            'class' => 'btn btn-secondary',
+            'data-toggle' => 'tooltip',
+            'title' => Yii::t('cms', 'Edit Asset'),
+        ]);
+
+        $buttons[] = Html::a(Icon::tag('trash'), ['cms/asset/delete', 'id' => $asset->id], [
+            'class' => 'btn btn-danger btn-delete-asset d-none d-md-inline-block',
+            'data-confirm' => Yii::t('yii', 'Are you sure you want to remove this asset?'),
+            'data-ajax' => 1,
+            'data-delete-message' => Yii::t('cms', 'Permanently delete related files'),
+            'data-delete-url' => Url::to(['file/delete', 'id' => $asset->file_id]),
+        ]);
+
+        return $buttons;
     }
 
     /**
@@ -227,5 +234,23 @@ class AssetGridView extends GridView
     protected function getRoute($model, $params = []): array
     {
         return array_merge(['cms/asset/update', 'id' => $model->id], $params);
+    }
+
+    /**
+     * @return array
+     */
+    protected function getCreateRoute()
+    {
+        return $this->getParentRoute('/admin/cms/asset/create', [
+            'folder' => Yii::$app->getRequest()->get('folder'),
+        ]);
+    }
+
+    /**
+     * @return Asset
+     */
+    public function getModel()
+    {
+        return Asset::instance();
     }
 }

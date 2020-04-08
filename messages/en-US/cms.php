@@ -74,7 +74,6 @@ return [
     'The section was duplicated.' => '',
     'The section was updated.' => '',
     'Title' => '',
-    'Types' => '',
     'Upload' => '',
     'Url' => '',
     'View All Entries' => '',

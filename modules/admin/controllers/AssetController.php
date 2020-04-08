@@ -12,8 +12,8 @@ use davidhirtz\yii2\skeleton\web\Controller;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
+use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
-use yii\web\ServerErrorHttpException;
 
 /**
  * Class AssetController
@@ -99,19 +99,18 @@ class AssetController extends Controller
      */
     public function actionCreate($entry = null, $section = null, $file = null, $folder = null)
     {
+        $request = Yii::$app->getRequest();
         $file = $file ? File::findOne($file) : new File;
         $file->folder_id = $folder;
-        
+
         $isNew = $file->getIsNewRecord();
 
         if ($file->getIsNewRecord()) {
-            if (!$file->upload()) {
-                return '';
-            }
+            $file->copy($request->post('url')) || $file->upload();
 
             if (!$file->insert()) {
                 $errors = $file->getFirstErrors();
-                throw new ServerErrorHttpException(reset($errors));
+                throw new BadRequestHttpException(reset($errors));
             }
         }
 
@@ -122,10 +121,10 @@ class AssetController extends Controller
 
         if (!$asset->insert()) {
             $errors = $asset->getFirstErrors();
-            throw new ServerErrorHttpException(reset($errors));
+            throw new BadRequestHttpException(reset($errors));
         }
 
-        if (Yii::$app->getRequest()->getIsAjax()) {
+        if ($request->getIsAjax()) {
             return '';
         }
 
@@ -144,7 +143,6 @@ class AssetController extends Controller
         }
 
         if ($asset->load(Yii::$app->getRequest()->post())) {
-
             if ($asset->update()) {
                 $this->success(Yii::t('cms', 'The asset was updated.'));
             }
@@ -180,7 +178,7 @@ class AssetController extends Controller
         }
 
         $errors = $asset->getFirstErrors();
-        throw new ServerErrorHttpException(reset($errors));
+        throw new BadRequestHttpException(reset($errors));
     }
 
     /**
