@@ -106,9 +106,12 @@ class AssetController extends Controller
         $isNew = $file->getIsNewRecord();
 
         if ($file->getIsNewRecord()) {
-            $file->copy($request->post('url')) || $file->upload();
+            // This is not very elegant right now. But copy errors need to be handled by validation
+            // and upload errors might be a partial upload that should simply end the request.
+            if ($url = $request->post('url')) {
+                $file->copy($request->post('url'));
 
-            if ($file->upload && $file->upload->isPartial()) {
+            } elseif (!$file->upload()) {
                 return '';
             }
 
