@@ -121,6 +121,10 @@ class Entry extends ActiveRecord implements AssetParentInterface
             $this->publish_date = new DateTime;
         }
 
+        if (!$this->description) {
+            $this->description = null;
+        }
+
         return parent::beforeSave($insert);
     }
 
