@@ -193,7 +193,8 @@ class Asset extends \davidhirtz\yii2\cms\models\base\ActiveRecord implements Ass
             foreach ($transformations as $name) {
                 if ($url = $this->file->getTransformationUrl($name, $extension)) {
                     $option = $this->file->getTransformationOptions($name);
-                    $srcset[isset($option['width']) ? $option['width'] : $this->file->width] = $url;
+                    $width = $option['width'] ?? (isset($option['height']) ? floor($option['height'] / $this->file->height * $this->file->width) : $this->file->width);
+                    $srcset[$width] = $url;
                 }
             }
         }
