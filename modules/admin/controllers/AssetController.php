@@ -108,6 +108,10 @@ class AssetController extends Controller
         if ($file->getIsNewRecord()) {
             $file->copy($request->post('url')) || $file->upload();
 
+            if ($file->upload && $file->upload->isPartial()) {
+                return '';
+            }
+
             if (!$file->insert()) {
                 $errors = $file->getFirstErrors();
                 throw new BadRequestHttpException(reset($errors));
