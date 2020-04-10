@@ -75,6 +75,9 @@ class Section extends ActiveRecord implements AssetParentInterface
                 'unique',
                 'targetAttribute' => $this->slugTargetAttribute,
                 'comboNotUnique' => Yii::t('yii', '{attribute} "{value}" has already been taken.'),
+                'when' => function () {
+                    return $this->isAttributeChanged('slug');
+                }
             ],
         ]));
     }
