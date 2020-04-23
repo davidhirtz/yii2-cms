@@ -68,21 +68,11 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
         }
 
         if ($this->showEntryCategories) {
-            $this->showEntryCategories = static::getModule()->enableCategories;
+            $this->showEntryCategories = $this->model instanceof Entry ? $this->model->hasCategoriesEnabled() : static::getModule()->enableCategories;
         }
 
         if ($this->showEntrySections) {
-            $this->showEntrySections = static::getModule()->enableSections;
-        }
-
-        if ($this->model instanceof Entry) {
-            if ($this->showEntryCategories) {
-                $this->showEntryCategories = !isset(Entry::getTypes()[$this->model->type]['showCategories']) || Entry::getTypes()[$this->model->type]['showCategories'];
-            }
-
-            if ($this->showEntrySections) {
-                $this->showEntrySections = !isset(Entry::getTypes()[$this->model->type]['showSections']) || Entry::getTypes()[$this->model->type]['showSections'];
-            }
+            $this->showEntrySections = $this->model instanceof Entry ? $this->model->hasSectionsEnabled() : static::getModule()->enableSections;
         }
 
         if (!$this->title) {
