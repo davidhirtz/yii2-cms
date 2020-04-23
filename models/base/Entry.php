@@ -270,7 +270,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
 
         $this->populateRelation('assets', $relations);
 
-        if (static::getModule()->enableSections && $this->isRelationPopulated('sections')) {
+        if ($this->hasSectionsEnabled() && $this->isRelationPopulated('sections')) {
             foreach ($this->sections as $section) {
                 $section->populateAssetRelations($assets);
             }
