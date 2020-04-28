@@ -186,20 +186,7 @@ class Asset extends \davidhirtz\yii2\cms\models\base\ActiveRecord implements Ass
      */
     public function getSrcset($transformations = null, $extension = null)
     {
-        $transformations = is_string($transformations) ? [$transformations] : $transformations;
-        $srcset = [];
-
-        if ($this->file->isTransformableImage()) {
-            foreach ($transformations as $name) {
-                if ($url = $this->file->getTransformationUrl($name, $extension)) {
-                    $option = $this->file->getTransformationOptions($name);
-                    $width = $option['width'] ?? (isset($option['height']) ? floor($option['height'] / $this->file->height * $this->file->width) : $this->file->width);
-                    $srcset[$width] = $url;
-                }
-            }
-        }
-
-        return $srcset ? $srcset : $this->file->getUrl();
+        return $this->file->getSrcset($transformations, $extension);
     }
 
     /**
