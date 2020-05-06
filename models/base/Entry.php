@@ -30,11 +30,10 @@ use yii\helpers\Inflector;
  * @property int $section_count
  * @property int $asset_count
  *
- * @property Section[] $sections
- * @property Asset[] $assets
- * @property \davidhirtz\yii2\cms\models\Entry $entry
- * @property EntryCategory $entryCategory
- * @property EntryCategory[] $entryCategories
+ * @property Asset[] $assets {@link \davidhirtz\yii2\cms\models\Entry::getAssets()}
+ * @property Section[] $sections {@link \davidhirtz\yii2\cms\models\Entry::getSections()}
+ * @property EntryCategory $entryCategory {@link \davidhirtz\yii2\cms\models\Entry::getEntryCategory()}
+ * @property EntryCategory[] $entryCategories {@link \davidhirtz\yii2\cms\models\Entry::getEntryCategories()}
  *
  * @method static \davidhirtz\yii2\cms\models\Entry findOne($condition)
  */
@@ -134,7 +133,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
     public function beforeDelete()
     {
         if ($isValid = parent::beforeDelete()) {
-            if ($this->asset_count) {
+            if ($this->asset_count || $this->section_count) {
                 foreach ($this->assets as $asset) {
                     $asset->delete();
                 }
@@ -179,6 +178,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
      */
     public function getSections()
     {
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $this->hasMany(Section::class, ['entry_id' => 'id'])
             ->orderBy(['position' => SORT_ASC])
             ->indexBy('id')
@@ -190,6 +190,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
      */
     public function getAssets(): AssetQuery
     {
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $this->hasMany(Asset::class, ['entry_id' => 'id'])
             ->orderBy(['position' => SORT_ASC])
             ->indexBy('id')
@@ -210,7 +211,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
      */
     public function findSiblings()
     {
-        return $this->find();
+        return static::find();
     }
 
     /**
@@ -349,6 +350,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
      */
     public function getActiveForm()
     {
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return static::getTypes()[$this->type]['activeForm'] ?? EntryActiveForm::class;
     }
 

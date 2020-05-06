@@ -124,6 +124,7 @@ class Asset extends \davidhirtz\yii2\cms\models\base\ActiveRecord implements Ass
      */
     public function getEntry()
     {
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $this->hasOne(Entry::class, ['id' => 'entry_id']);
     }
 
@@ -132,6 +133,7 @@ class Asset extends \davidhirtz\yii2\cms\models\base\ActiveRecord implements Ass
      */
     public function getSection()
     {
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $this->hasOne(Section::class, ['id' => 'section_id']);
     }
 
@@ -140,6 +142,7 @@ class Asset extends \davidhirtz\yii2\cms\models\base\ActiveRecord implements Ass
      */
     public function getFile(): FileQuery
     {
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $this->hasOne(File::class, ['id' => 'file_id']);
     }
 
@@ -157,6 +160,37 @@ class Asset extends \davidhirtz\yii2\cms\models\base\ActiveRecord implements Ass
     public static function find()
     {
         return Yii::createObject(AssetQuery::class, [get_called_class()]);
+    }
+
+    /**
+     * @param Entry $entry
+     */
+    public function populateEntryRelation($entry)
+    {
+        $this->populateRelation('entry', $entry);
+        $this->entry_id = $entry->id;
+    }
+
+    /**
+     * @param File $file
+     */
+    public function populateFileRelation($file)
+    {
+        $this->populateRelation('file', $file);
+        $this->file_id = $file->id;
+    }
+
+    /**
+     * @param Section $section
+     */
+    public function populateSectionRelation($section)
+    {
+        if($section) {
+            $this->populateRelation('entry', $section->entry);
+        }
+
+        $this->populateRelation('section', $section);
+        $this->section_id = $section->id ?? null;
     }
 
     /**
@@ -221,6 +255,7 @@ class Asset extends \davidhirtz\yii2\cms\models\base\ActiveRecord implements Ass
      */
     public function getActiveForm()
     {
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return static::getTypes()[$this->type]['activeForm'] ?? AssetActiveForm::class;
     }
 
