@@ -38,11 +38,6 @@ class Module extends \yii\base\Module
     public $panels = [];
 
     /**
-     * @var array containing the roles to access any admin module or controller
-     */
-    public $roles = ['author'];
-
-    /**
      * @var array
      */
     protected $defaultControllerMap = [
@@ -78,42 +73,42 @@ class Module extends \yii\base\Module
         }
 
         if (!Yii::$app->getRequest()->getIsConsoleRequest()) {
-            if (Yii::$app->getUser()->can('author')) {
-                if (!$this->navbarItems) {
-                    $this->navbarItems = [
-                        [
-                            'label' => $this->name,
-                            'icon' => 'book',
-                            'url' => $this->url,
-                            'active' => ['admin/category', 'admin/entry', 'admin/entry-category', 'admin/section', 'cms/'],
-                        ]
-                    ];
-                }
+            if (!$this->navbarItems) {
+                $this->navbarItems = [
+                    'cms' => [
+                        'label' => $this->name,
+                        'icon' => 'book',
+                        'url' => $this->url,
+                        'active' => ['admin/category', 'admin/entry', 'admin/entry-category', 'admin/section', 'cms/'],
+                        'roles' => ['author'],
+                    ]
+                ];
+            }
 
-                if (!$this->panels) {
-                    $this->panels = [
-                        [
-                            'name' => $this->name ?: Yii::t('cms', 'Entries'),
-                            'items' => [
-                                [
-                                    'label' => Yii::t('cms', 'Create New Entry'),
-                                    'url' => ['/admin/entry/create'],
-                                    'icon' => 'pen',
-                                ],
-                                [
-                                    'label' => Yii::t('cms', 'View All Entries'),
-                                    'url' => ['/admin/entry/index'],
-                                    'icon' => 'book',
-                                ],
+            if (!$this->panels) {
+                $this->panels = [
+                    'cms' => [
+                        'name' => $this->name ?: Yii::t('cms', 'Entries'),
+                        'items' => [
+                            [
+                                'label' => Yii::t('cms', 'Create New Entry'),
+                                'url' => ['/admin/entry/create'],
+                                'icon' => 'pen',
+                                'roles' => ['author'],
+                            ],
+                            [
+                                'label' => Yii::t('cms', 'View All Entries'),
+                                'url' => ['/admin/entry/index'],
+                                'icon' => 'book',
+                                'roles' => ['author'],
                             ],
                         ],
-                    ];
-                }
+                    ],
+                ];
             }
 
             $this->module->navbarItems = array_merge($this->module->navbarItems, $this->navbarItems);
             $this->module->panels = array_merge($this->module->panels, $this->panels);
-            $this->module->roles = array_merge($this->module->roles, $this->roles);
         }
 
         $this->module->controllerMap = ArrayHelper::merge(array_merge($this->module->controllerMap, $this->defaultControllerMap), $this->controllerMap);
