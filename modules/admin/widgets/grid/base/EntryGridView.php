@@ -25,7 +25,10 @@ use yii\helpers\Url;
  */
 class EntryGridView extends GridView
 {
-    use ModuleTrait, CategoryTrait, StatusGridViewTrait, TypeGridViewTrait;
+    use CategoryTrait;
+    use ModuleTrait;
+    use StatusGridViewTrait;
+    use TypeGridViewTrait;
 
     /**
      * @var bool whether entry urls should be displayed in the name column
@@ -56,19 +59,6 @@ class EntryGridView extends GridView
      * @var string
      */
     public $dateFormat;
-
-    /**
-     * @var array
-     */
-    public $columns = [
-        'status',
-        'type',
-        'name',
-        'section_count',
-        'asset_count',
-        'date',
-        'buttons',
-    ];
 
     /**
      * @var array {@link \davidhirtz\yii2\cms\modules\admin\widgets\grid\EntryGridView::getNestedCategoryNames()}
@@ -104,6 +94,18 @@ class EntryGridView extends GridView
         }
 
         $this->type = $this->dataProvider->type;
+
+        if (!$this->columns) {
+            $this->columns = [
+                $this->statusColumn(),
+                $this->typeColumn(),
+                $this->nameColumn(),
+                $this->sectionCountColumn(),
+                $this->assetCountColumn(),
+                $this->dateColumn(),
+                $this->buttonsColumn(),
+            ];
+        }
 
         $this->initHeader();
         $this->initFooter();
@@ -303,6 +305,7 @@ class EntryGridView extends GridView
     protected function categoryDropdownItems(): array
     {
         $items = [];
+
         foreach (static::getCategories() as $category) {
             $items[] = [
                 'label' => $this->getNestedCategoryNames()[$category->id],
