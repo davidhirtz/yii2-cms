@@ -51,8 +51,8 @@ class EntryActiveDataProvider extends ActiveDataProvider
     {
         $this->query = Entry::find()->replaceI18nAttributes();
 
-        if ($this->getModule()->defaultEntryOrderBy) {
-            $this->query->orderBy($this->getModule()->defaultEntryOrderBy);
+        if (static::getModule()->defaultEntryOrderBy) {
+            $this->query->orderBy(static::getModule()->defaultEntryOrderBy);
         }
 
         if ($this->type && isset(Entry::getTypes()[$this->type])) {
@@ -98,7 +98,7 @@ class EntryActiveDataProvider extends ActiveDataProvider
     public function setSort($value)
     {
         // Try to set default order from query if it's a single order.
-        if (!isset($value['defaultOrder']) && count($this->query->orderBy) === 1) {
+        if (!isset($value['defaultOrder']) && is_array($this->query->orderBy) && count($this->query->orderBy) === 1) {
             $value['defaultOrder'] = $this->query->orderBy;
         }
 
