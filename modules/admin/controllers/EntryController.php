@@ -14,7 +14,7 @@ use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
 
 /**
- * Class EntryController.
+ * Class EntryController
  * @package davidhirtz\yii2\cms\modules\admin\controllers
  */
 class EntryController extends Controller
@@ -22,7 +22,7 @@ class EntryController extends Controller
     use ModuleTrait;
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function behaviors()
     {
@@ -80,7 +80,7 @@ class EntryController extends Controller
      */
     public function actionCreate($type = null)
     {
-        $entry = new Entry;
+        $entry = new Entry();
         $entry->type = $type ?: static::getModule()->defaultEntryType;
         $request = Yii::$app->getRequest();
 
@@ -180,10 +180,10 @@ class EntryController extends Controller
      * @return Entry
      * @throws NotFoundHttpException
      */
-    private function findEntry($id)
+    protected function findEntry($id)
     {
         if (!$entry = Entry::findOne((int)$id)) {
-            throw new NotFoundHttpException;
+            throw new NotFoundHttpException();
         }
 
         return $entry;

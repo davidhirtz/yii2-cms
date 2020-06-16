@@ -55,7 +55,7 @@ class EntryCategoryController extends Controller
     public function actionIndex($entry = null, $q = null)
     {
         if (!$entry = Entry::findOne((int)$entry)) {
-            throw new NotFoundHttpException;
+            throw new NotFoundHttpException();
         }
 
         $provider = new CategoryActiveDataProvider([
@@ -93,7 +93,7 @@ class EntryCategoryController extends Controller
     public function actionDelete($entry, $category)
     {
         if (!$junction = EntryCategory::findOne(['entry_id' => $entry, 'category_id' => $category])) {
-            throw new NotFoundHttpException;
+            throw new NotFoundHttpException();
         }
 
         $junction->delete();
