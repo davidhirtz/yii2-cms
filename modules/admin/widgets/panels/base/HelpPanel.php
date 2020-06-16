@@ -11,7 +11,9 @@ use Yii;
 /**
  * Class HelpPanel
  * @package davidhirtz\yii2\cms\modules\admin\widgets\base
+ * @see \davidhirtz\yii2\cms\modules\admin\widgets\panels\CategoryHelpPanel
  * @see \davidhirtz\yii2\cms\modules\admin\widgets\panels\EntryHelpPanel
+ * @see \davidhirtz\yii2\cms\modules\admin\widgets\panels\SectionHelpPanel
  */
 abstract class HelpPanel extends \davidhirtz\yii2\skeleton\modules\admin\widgets\panels\HelpPanel
 {
@@ -37,7 +39,7 @@ abstract class HelpPanel extends \davidhirtz\yii2\skeleton\modules\admin\widgets
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     protected function getLinkButton()
     {
@@ -59,14 +61,6 @@ abstract class HelpPanel extends \davidhirtz\yii2\skeleton\modules\admin\widgets
     }
 
     /**
-     * @return bool
-     */
-    protected function isDraft(): bool
-    {
-        return $this->model->isDraft();
-    }
-
-    /**
      * @return string
      */
     protected function getCloneButton()
@@ -75,6 +69,14 @@ abstract class HelpPanel extends \davidhirtz\yii2\skeleton\modules\admin\widgets
             'class' => 'btn btn-primary',
             'data-method' => 'post',
         ]);
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isDraft(): bool
+    {
+        return $this->model->isDraft();
     }
 
     /**

@@ -15,7 +15,6 @@ use Yii;
  */
 class CategoryHelpPanel extends HelpPanel
 {
-
     /**
      * @return array
      */
@@ -23,14 +22,14 @@ class CategoryHelpPanel extends HelpPanel
     {
         return array_filter([
             $this->getLinkButton(),
-            $this->getCreateCategory(),
+            $this->getCreateCategoryButton(),
         ]);
     }
 
     /**
      * @return string
      */
-    protected function getCreateCategory()
+    protected function getCreateCategoryButton()
     {
         return Html::a(Html::iconText('plus', Yii::t('cms', 'New Category')), ['category/create', 'id' => $this->model->id], [
             'class' => 'btn btn-primary',

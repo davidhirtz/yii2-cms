@@ -8,6 +8,7 @@
  */
 
 use davidhirtz\yii2\cms\modules\admin\widgets\nav\Submenu;
+use davidhirtz\yii2\cms\modules\admin\widgets\panels\AssetHelpPanel;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
 use davidhirtz\yii2\skeleton\widgets\forms\DeleteActiveForm;
@@ -32,12 +33,16 @@ if ($asset->section_id) {
 
 <?= Html::errorSummary($asset); ?>
 
-
 <?= Panel::widget([
     'title' => $this->title,
     'content' => $asset->getActiveForm()::widget([
         'model' => $asset,
     ]),
+]); ?>
+
+<?= AssetHelpPanel::widget([
+    'id' => 'operations',
+    'model' => $asset,
 ]); ?>
 
 <?= Panel::widget([
