@@ -14,7 +14,7 @@ use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
 
 /**
- * Class EntryController
+ * Class EntryController.
  * @package davidhirtz\yii2\cms\modules\admin\controllers
  */
 class EntryController extends Controller
@@ -22,7 +22,7 @@ class EntryController extends Controller
     use ModuleTrait;
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     public function behaviors()
     {
@@ -168,11 +168,16 @@ class EntryController extends Controller
      */
     public function actionOrder()
     {
-        $entries = Entry::find()->select(['id', 'position'])
-            ->orderBy(['position' => SORT_ASC])
-            ->all();
+        $entryIds = array_map('intval', array_filter(Yii::$app->getRequest()->post('entry')));
 
-        Entry::updatePosition($entries, array_flip(Yii::$app->getRequest()->post('entry')));
+        if ($entryIds) {
+            $entries = Entry::find()->select(['id', 'position'])
+                ->where(['id' => $entryIds])
+                ->orderBy(['position' => SORT_ASC])
+                ->all();
+
+            Entry::updatePosition($entries, array_flip($entryIds));
+        }
     }
 
     /**
@@ -180,7 +185,7 @@ class EntryController extends Controller
      * @return Entry
      * @throws NotFoundHttpException
      */
-    protected function findEntry($id)
+    private function findEntry($id)
     {
         if (!$entry = Entry::findOne((int)$id)) {
             throw new NotFoundHttpException();

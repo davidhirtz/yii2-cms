@@ -74,7 +74,7 @@ class SectionController extends Controller
             ]);
 
         if (!$entry = $query->one()) {
-            throw new NotFoundHttpException;
+            throw new NotFoundHttpException();
         }
 
         /** @noinspection MissedViewInspection */
@@ -94,7 +94,7 @@ class SectionController extends Controller
         ]);
 
         if (!$section->entry) {
-            throw new NotFoundHttpException;
+            throw new NotFoundHttpException();
         }
 
         if (($this->autoCreateSection || $section->load(Yii::$app->getRequest()->post())) && $section->insert()) {
@@ -184,12 +184,16 @@ class SectionController extends Controller
      */
     public function actionOrder($entry)
     {
-        $sections = Section::find()->select(['id', 'position'])
-            ->where(['entry_id' => $entry])
-            ->orderBy(['position' => SORT_ASC])
-            ->all();
+        $sectionIds = array_map('intval', array_filter(Yii::$app->getRequest()->post('entry')));
 
-        Section::updatePosition($sections, array_flip(Yii::$app->getRequest()->post('section')));
+        if ($sectionIds) {
+            $sections = Section::find()->select(['id', 'position'])
+                ->where(['entry_id' => $entry, 'section_ids' => $sectionIds])
+                ->orderBy(['position' => SORT_ASC])
+                ->all();
+
+            Section::updatePosition($sections, array_flip($sectionIds));
+        }
     }
 
     /**
@@ -200,7 +204,7 @@ class SectionController extends Controller
     private function findSection($id)
     {
         if (!$section = Section::findOne((int)$id)) {
-            throw new NotFoundHttpException;
+            throw new NotFoundHttpException();
         }
 
         return $section;
