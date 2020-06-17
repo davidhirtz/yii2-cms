@@ -184,7 +184,7 @@ class SectionController extends Controller
      */
     public function actionOrder($entry)
     {
-        $sectionIds = array_map('intval', array_filter(Yii::$app->getRequest()->post('entry')));
+        $sectionIds = array_map('intval', array_filter(Yii::$app->getRequest()->post('section', [])));
 
         if ($sectionIds) {
             $sections = Section::find()->select(['id', 'position'])

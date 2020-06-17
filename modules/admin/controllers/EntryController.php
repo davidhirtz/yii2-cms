@@ -168,7 +168,7 @@ class EntryController extends Controller
      */
     public function actionOrder()
     {
-        $entryIds = array_map('intval', array_filter(Yii::$app->getRequest()->post('entry')));
+        $entryIds = array_map('intval', array_filter(Yii::$app->getRequest()->post('entry', [])));
 
         if ($entryIds) {
             $entries = Entry::find()->select(['id', 'position'])
