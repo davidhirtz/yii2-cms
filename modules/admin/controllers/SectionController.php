@@ -188,7 +188,7 @@ class SectionController extends Controller
 
         if ($sectionIds) {
             $sections = Section::find()->select(['id', 'position'])
-                ->where(['entry_id' => $entry, 'section_ids' => $sectionIds])
+                ->where(['entry_id' => $entry, 'id' => $sectionIds])
                 ->orderBy(['position' => SORT_ASC])
                 ->all();
 
