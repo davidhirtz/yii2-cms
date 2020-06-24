@@ -180,6 +180,7 @@ class Section extends ActiveRecord implements AssetParentInterface
      */
     public function getAssets(): AssetQuery
     {
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $this->hasMany(Asset::class, ['section_id' => 'id'])
             ->orderBy(['position' => SORT_ASC])
             ->indexBy('id')
@@ -191,6 +192,7 @@ class Section extends ActiveRecord implements AssetParentInterface
      */
     public function getEntry()
     {
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $this->hasOne(Entry::class, ['id' => 'entry_id']);
     }
 
@@ -216,13 +218,13 @@ class Section extends ActiveRecord implements AssetParentInterface
      */
     public function clone($attributes = [])
     {
-        $clone = new static;
+        $clone = new static();
         $clone->setAttributes(array_merge($this->getAttributes(), $attributes ?: ['status' => static::STATUS_DRAFT]));
         $clone->generateUniqueSlug();
 
         if ($clone->insert()) {
             foreach ($this->assets as $asset) {
-                $assetClone = new Asset;
+                $assetClone = new Asset();
                 $assetClone->setAttributes(array_merge($asset->getAttributes(), ['section_id' => $clone->id]));
                 $assetClone->populateRelation('section', $clone);
                 $assetClone->insert();
@@ -269,6 +271,7 @@ class Section extends ActiveRecord implements AssetParentInterface
      */
     public function getActiveForm()
     {
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return static::getTypes()[$this->type]['activeForm'] ?? SectionActiveForm::class;
     }
 
@@ -277,7 +280,7 @@ class Section extends ActiveRecord implements AssetParentInterface
      */
     public function getRoute()
     {
-        return array_merge($this->entry->getRoute(), ['#' => $this->getI18nAttribute('slug') ?: ('section-' . $this->id)]);
+        return ($route = $this->entry->getRoute()) ? array_merge($route, ['#' => $this->getI18nAttribute('slug') ?: ('section-' . $this->id)]) : false;
     }
 
     /**
