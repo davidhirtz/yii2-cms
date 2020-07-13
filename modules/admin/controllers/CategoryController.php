@@ -70,7 +70,7 @@ class CategoryController extends Controller
      */
     public function actionCreate($id = null)
     {
-        $category = new Category;
+        $category = new Category();
         $category->parent_id = $id;
 
         if ($category->load(Yii::$app->getRequest()->post()) && $category->insert()) {
@@ -91,7 +91,7 @@ class CategoryController extends Controller
     public function actionUpdate($id)
     {
         if (!$category = Category::findOne((int)$id)) {
-            throw new NotFoundHttpException;
+            throw new NotFoundHttpException();
         }
 
         if ($category->load(Yii::$app->getRequest()->post())) {
@@ -123,7 +123,7 @@ class CategoryController extends Controller
     public function actionDelete($id)
     {
         if (!$category = Category::findOne((int)$id)) {
-            throw new NotFoundHttpException;
+            throw new NotFoundHttpException();
         }
 
         if ($category->delete()) {
