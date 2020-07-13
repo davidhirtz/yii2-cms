@@ -18,7 +18,8 @@ use Yii;
  */
 trait CategoryGridTrait
 {
-    use StatusGridViewTrait, TypeGridViewTrait;
+    use StatusGridViewTrait;
+    use TypeGridViewTrait;
 
     /**
      * @var bool
@@ -66,21 +67,20 @@ trait CategoryGridTrait
 
     /**
      * Sets ancestors for all categories to avoid each record loading it's ancestors from the database.
-     * If no parent category is set simply set all loaded models and let setAncestors method work it's magic.
+     * If no parent category is set simply set all loaded models and let {@link Category::setAncestors}
+     * work it's magic.
      */
     protected function initAncestors()
     {
-        $categories = null;
+        if ($this->dataProvider->category) {
+            $categories = $this->dataProvider->category->ancestors;
+        } else {
+            $categories = !$this->dataProvider->searchString ? $this->dataProvider->getModels() : Category::find()
+                ->indexBy('id')
+                ->all();
+        }
 
         foreach ($this->dataProvider->getModels() as $category) {
-            if ($this->dataProvider->category) {
-                $categories = $this->dataProvider->category->ancestors;
-            } else {
-                $categories = !$this->dataProvider->searchString ? $this->dataProvider->getModels() : Category::find()
-                    ->indexBy('id')
-                    ->all();
-            }
-
             $category->setAncestors($categories);
         }
     }
