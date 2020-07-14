@@ -201,7 +201,7 @@ class SectionController extends Controller
      * @return Section
      * @throws NotFoundHttpException
      */
-    private function findSection($id)
+    protected function findSection($id)
     {
         if (!$section = Section::findOne((int)$id)) {
             throw new NotFoundHttpException();

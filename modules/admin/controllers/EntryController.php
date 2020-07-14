@@ -185,7 +185,7 @@ class EntryController extends Controller
      * @return Entry
      * @throws NotFoundHttpException
      */
-    private function findEntry($id)
+    protected function findEntry($id)
     {
         if (!$entry = Entry::findOne((int)$id)) {
             throw new NotFoundHttpException();
