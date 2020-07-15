@@ -208,13 +208,22 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
             foreach ($categories as $category) {
                 if ($category->inheritNestedCategories()) {
                     $junction = new static();
-                    $junction->populateCategoryRelation($category);
-                    $junction->populateEntryRelation($this->entry);
-                    $junction->isInherited = true;
+                    $junction->populateInheritedRelation($this, $category);
                     $junction->insert();
                 }
             }
         }
+    }
+
+    /**
+     * @param EntryCategory $entryCategory
+     * @param Category $category
+     */
+    protected function populateInheritedRelation($entryCategory, $category)
+    {
+        $this->populateEntryRelation($entryCategory->entry);
+        $this->populateCategoryRelation($category);
+        $this->isInherited = true;
     }
 
     /**
