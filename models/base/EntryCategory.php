@@ -216,7 +216,7 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     }
 
     /**
-     * @param EntryCategory $entryCategory
+     * @param static $entryCategory
      * @param Category $category
      */
     protected function populateInheritedRelation($entryCategory, $category)
