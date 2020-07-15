@@ -159,6 +159,7 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
      */
     public function getCategory()
     {
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $this->hasOne(Category::class, ['id' => 'category_id']);
     }
 
@@ -167,6 +168,7 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
      */
     public function getEntry()
     {
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $this->hasOne(Entry::class, ['id' => 'entry_id']);
     }
 
@@ -175,6 +177,7 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
      */
     public function getUpdated(): UserQuery
     {
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $this->hasOne(User::class, ['id' => 'updated_by_user_id']);
     }
 
@@ -204,7 +207,7 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         if ($categories = $this->category->ancestors) {
             foreach ($categories as $category) {
                 if ($category->inheritNestedCategories()) {
-                    $junction = new static;
+                    $junction = new static();
                     $junction->populateCategoryRelation($category);
                     $junction->populateEntryRelation($this->entry);
                     $junction->isInherited = true;

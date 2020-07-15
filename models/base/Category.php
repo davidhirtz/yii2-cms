@@ -69,7 +69,7 @@ class Category extends ActiveRecord
     /**
      * Cache.
      */
-    const CATEGORIES_CACHE_KEY = 'get-categories-cache';
+    public const CATEGORIES_CACHE_KEY = 'get-categories-cache';
 
     /**
      * @inheritdoc
@@ -161,6 +161,8 @@ class Category extends ActiveRecord
             if (array_key_exists('parent_id', $changedAttributes)) {
                 if (static::getModule()->inheritNestedCategories && $this->parent_id) {
                     $categories = [$this->id => $this] + $this->getDescendants();
+
+                    /** @var EntryCategory[] $entryCategories */
                     $entryCategories = EntryCategory::find()->where(['category_id' => array_keys($categories)])->all();
 
                     $entryIds = array_unique(ArrayHelper::getColumn($entryCategories, 'entry_id'));
@@ -223,6 +225,7 @@ class Category extends ActiveRecord
      */
     public function getEntries()
     {
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $this->hasMany(Entry::class, ['id' => 'entry_id'])
             ->via('entryCategory');
     }
@@ -364,6 +367,7 @@ class Category extends ActiveRecord
      */
     public function getActiveForm()
     {
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return static::getTypes()[$this->type]['activeForm'] ?? CategoryActiveForm::class;
     }
 
