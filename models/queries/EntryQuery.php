@@ -39,19 +39,21 @@ class EntryQuery extends \davidhirtz\yii2\skeleton\db\ActiveQuery
     }
 
     /**
-     * @param Category $category
+     * @param int[]|Category $category
      * @param bool $eagerLoading
      * @return $this
      */
     public function whereCategory($category, $eagerLoading = false)
     {
-        if ($orderBy = $category->getEntryOrderBy()) {
-            $this->orderBy($orderBy);
+        if ($category instanceof Category) {
+            if ($orderBy = $category->getEntryOrderBy()) {
+                $this->orderBy($orderBy);
+            }
         }
 
         return $this->innerJoinWith([
             'entryCategory' => function (ActiveQuery $query) use ($category) {
-                $query->onCondition([EntryCategory::tableName() . '.[[category_id]]' => $category->id]);
+                $query->onCondition([EntryCategory::tableName() . '.[[category_id]]' => $category->id ?? $category]);
             }
         ], $eagerLoading);
     }
