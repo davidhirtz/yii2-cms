@@ -210,6 +210,7 @@ class Section extends ActiveRecord implements AssetParentInterface
      */
     public static function find()
     {
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return Yii::createObject(SectionQuery::class, [get_called_class()]);
     }
 

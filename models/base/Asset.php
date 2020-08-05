@@ -45,8 +45,8 @@ class Asset extends \davidhirtz\yii2\cms\models\base\ActiveRecord implements Ass
     /**
      * Constants.
      */
-    const TYPE_VIEWPORT_MOBILE = 2;
-    const TYPE_VIEWPORT_DESKTOP = 3;
+    public const TYPE_VIEWPORT_MOBILE = 2;
+    public const TYPE_VIEWPORT_DESKTOP = 3;
 
     /**
      * @inheritdoc
@@ -159,6 +159,7 @@ class Asset extends \davidhirtz\yii2\cms\models\base\ActiveRecord implements Ass
      */
     public static function find()
     {
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return Yii::createObject(AssetQuery::class, [get_called_class()]);
     }
 
@@ -185,7 +186,7 @@ class Asset extends \davidhirtz\yii2\cms\models\base\ActiveRecord implements Ass
      */
     public function populateSectionRelation($section)
     {
-        if($section) {
+        if ($section) {
             $this->populateRelation('entry', $section->entry);
         }
 
@@ -214,8 +215,8 @@ class Asset extends \davidhirtz\yii2\cms\models\base\ActiveRecord implements Ass
     }
 
     /**
-     * @param array|string $transformations
-     * @param string $extension
+     * @param array|string|null $transformations
+     * @param string|null $extension
      * @return array|string
      */
     public function getSrcset($transformations = null, $extension = null)
@@ -224,7 +225,7 @@ class Asset extends \davidhirtz\yii2\cms\models\base\ActiveRecord implements Ass
     }
 
     /**
-     * @param string $language
+     * @param string|null $language
      * @return string
      */
     public function getAutoplayLink($language = null): string
@@ -291,6 +292,14 @@ class Asset extends \davidhirtz\yii2\cms\models\base\ActiveRecord implements Ass
     public function getFileCountAttribute(): string
     {
         return 'cms_asset_count';
+    }
+
+    /**
+     * @return false|mixed
+     */
+    public function getRoute()
+    {
+        return false;
     }
 
     /**
