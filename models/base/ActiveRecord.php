@@ -13,11 +13,10 @@ use davidhirtz\yii2\skeleton\models\queries\UserQuery;
 use davidhirtz\yii2\skeleton\models\User;
 use Yii;
 use yii\db\ExpressionInterface;
-use yii\db\Schema;
 
 
 /**
- * Class ActiveRecord.
+ * Class ActiveRecord
  * @package davidhirtz\yii2\cms\models\base
  *
  * @property int $id
@@ -32,8 +31,10 @@ use yii\db\Schema;
  */
 abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
 {
-    use I18nAttributesTrait, StatusAttributeTrait, TypeAttributeTrait,
-        ModuleTrait;
+    use I18nAttributesTrait;
+    use ModuleTrait;
+    use StatusAttributeTrait;
+    use TypeAttributeTrait;
 
     /**
      * @var bool whether slugs should not automatically be checked and processed.
@@ -118,6 +119,7 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
      */
     public function getUpdated(): UserQuery
     {
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $this->hasOne(User::class, ['id' => 'updated_by_user_id']);
     }
 
@@ -137,7 +139,7 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         $query = $this->getSitemapQuery()->limit($offset);
         $urls = [];
 
-        /** @var ActiveRecord $record */
+        /** @var self $record */
         foreach ($query->each() as $record) {
             foreach ($languages as $language) {
                 if ($record->includeInSitemap($language)) {
@@ -186,10 +188,16 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     }
 
     /**
+     * @return mixed
+     */
+    abstract public function getRoute();
+
+    /**
      * @param string|null $language
      * @return bool
+     * @noinspection PhpUnusedParameterInspection
      */
-    public function includeInSitemap(/** @noinspection PhpUnusedParameterInspection */ $language = null): bool
+    public function includeInSitemap($language = null): bool
     {
         return $this->isEnabled();
     }
@@ -200,7 +208,6 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     public function isSlugRequired(): bool
     {
         if ($this->_isSlugRequired === null) {
-            /** @var Schema $schema */
             $schema = static::getDb()->getSchema();
             $this->_isSlugRequired = !$schema->getTableSchema(static::tableName())->getColumn('slug')->allowNull;
         }
