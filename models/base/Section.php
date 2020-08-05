@@ -113,6 +113,7 @@ class Section extends ActiveRecord implements AssetParentInterface
             $this->slug = null;
         }
 
+        // Handle section cloning...
         if (!$insert && $this->isAttributeChanged('entry_id')) {
             $this->position = $this->getMaxPosition() + 1;
         }

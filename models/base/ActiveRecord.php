@@ -106,7 +106,7 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
             'TimestampBehavior' => 'davidhirtz\yii2\skeleton\behaviors\TimestampBehavior',
         ]);
 
-        if ($insert) {
+        if ($this->position === null) {
             $this->position = $this->getMaxPosition() + 1;
         }
 
