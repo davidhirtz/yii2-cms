@@ -7,7 +7,7 @@ use davidhirtz\yii2\cms\models\Section;
 use yii\base\Widget;
 
 /**
- * Class SectionsView.
+ * Class SectionsView
  * @package davidhirtz\yii2\cms\widgets
  */
 class SectionsView extends Widget
@@ -28,9 +28,15 @@ class SectionsView extends Widget
     public $viewParams = [];
 
     /**
-     * @var string
+     * @var string the path to the view file
      */
     public $viewFile = '_sections';
+
+    /**
+     * @var callable|null an anonymous function with the signature `function ($section)`, where `$section`
+     * is the {@link Section} object that you can modify in the function.
+     */
+    public $isVisible;
 
     /**
      * @inheritDoc
@@ -78,7 +84,7 @@ class SectionsView extends Widget
      * Renders sections by type, removing them from the stack.
      *
      * @param array|int $types
-     * @param string $viewFile
+     * @param string|null $viewFile
      */
     public function renderSectionsByType($types, $viewFile = null)
     {
@@ -113,13 +119,17 @@ class SectionsView extends Widget
 
     /**
      * @param Section[] $sections
-     * @param string $viewFile
+     * @param string|null $viewFile
      * @return string
      */
     protected function renderSectionsInternal($sections, $viewFile = null)
     {
         if ($viewFile === null) {
             $viewFile = $this->getSectionViewFile(current($sections));
+        }
+
+        if (is_callable($this->isVisible)) {
+            $sections = array_filter($sections, $this->isVisible);
         }
 
         return !$viewFile ? '' : $this->render($viewFile, array_merge($this->viewParams, [
