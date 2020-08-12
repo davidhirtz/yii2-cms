@@ -12,7 +12,7 @@ use Yii;
 use yii\helpers\ArrayHelper;
 
 /**
- * Class ActiveForm.
+ * Class ActiveForm
  * @package davidhirtz\yii2\cms\modules\admin\widgets\forms
  *
  * @property Asset|Category|Entry|Section $model
@@ -26,34 +26,20 @@ class ActiveForm extends \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm
 
     /**
      * @param array $options
-     * @return \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveField|\yii\widgets\ActiveField|string
+     * @return \yii\widgets\ActiveField|string
      */
     public function statusField($options = [])
     {
-        return ($statuses = $this->getStatuses()) ? $this->field($this->model, 'status', $options)->dropdownList($statuses) : '';
+        return ($statuses = $this->getStatuses()) ? $this->field($this->model, 'status', $options)->dropDownList($statuses) : '';
     }
 
     /**
      * @param array $options
-     * @return \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveField|\yii\widgets\ActiveField|string
+     * @return \yii\widgets\ActiveField|string
      */
     public function typeField($options = [])
     {
-        return ($types = $this->getTypes()) ? $this->field($this->model, 'type', $options)->dropdownList($types) : '';
-    }
-
-    /**
-     * @param array $options
-     * @return string
-     */
-    public function descriptionField($options = []): string
-    {
-        $html = '';
-        foreach ($this->model->getI18nAttributeNames('description') as $attributeName) {
-            $html .= $this->field($this->model, $attributeName, $options)->textarea();
-        }
-
-        return $html;
+        return ($types = $this->getTypes()) ? $this->field($this->model, 'type', $options)->dropDownList($types) : '';
     }
 
     /**
@@ -63,6 +49,7 @@ class ActiveForm extends \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm
     public function contentField($options = [])
     {
         $html = '';
+
         if ($this->model->contentType) {
             foreach ($this->model->getI18nAttributeNames('content') as $attributeName) {
                 $field = $this->field($this->model, $attributeName, $options);
@@ -121,7 +108,7 @@ class ActiveForm extends \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm
     }
 
     /**
-     * @param string $language
+     * @param string|null $language
      * @return string
      */
     protected function getSlugBaseUrl($language = null): string
@@ -131,7 +118,7 @@ class ActiveForm extends \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm
     }
 
     /**
-     * @param string $language
+     * @param string|null $language
      * @return string
      */
     protected function getSlugId($language = null): string

@@ -9,14 +9,15 @@ use Yii;
 use yii\helpers\ArrayHelper;
 
 /**
- * Class CategoryActiveForm.
+ * Class CategoryActiveForm
  * @package davidhirtz\yii2\cms\modules\admin\widgets\forms
  *
  * @property Category $model
  */
 class CategoryActiveForm extends ActiveForm
 {
-    use CategoryTrait, ModuleTrait;
+    use CategoryTrait;
+    use ModuleTrait;
 
     /**
      * @var int
@@ -30,15 +31,15 @@ class CategoryActiveForm extends ActiveForm
     {
         if (!$this->fields) {
             $this->fields = [
-                'status',
-                'parent_id',
-                'type',
-                'name',
-                'content',
-                '-',
-                'title',
-                'description',
-                'slug',
+                $this->statusField(),
+                $this->parentIdField(),
+                $this->typeField(),
+                ['name'],
+                $this->contentField(),
+                ['-'],
+                ['title'],
+                ['description', 'textarea'],
+                $this->slugField(),
             ];
         }
 
@@ -47,7 +48,7 @@ class CategoryActiveForm extends ActiveForm
 
     /**
      * @param array $options
-     * @return \yii\bootstrap4\ActiveField
+     * @return \yii\bootstrap4\ActiveField|string
      */
     public function parentIdField($options = [])
     {
@@ -92,7 +93,7 @@ class CategoryActiveForm extends ActiveForm
 
     /**
      * @param Category $category
-     * @param string $language
+     * @param string|null $language
      * @return string
      */
     protected function getCategoryBaseUrl($category, $language = null): string

@@ -20,11 +20,11 @@ class SectionActiveForm extends ActiveForm
     {
         if (!$this->fields) {
             $this->fields = [
-                'status',
-                'type',
-                'name',
-                'content',
-                'slug',
+                $this->statusField(),
+                $this->typeField(),
+                ['name'],
+                $this->contentField(),
+                $this->slugField(),
             ];
         }
 
@@ -41,7 +41,7 @@ class SectionActiveForm extends ActiveForm
     }
 
     /**
-     * @param string $language
+     * @param string|null $language
      * @return string
      */
     protected function getSlugBaseUrl($language = null): string

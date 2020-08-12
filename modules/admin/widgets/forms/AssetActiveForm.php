@@ -6,7 +6,7 @@ use davidhirtz\yii2\cms\models\Asset;
 use yii\helpers\Html;
 
 /**
- * Class AssetActiveForm.
+ * Class AssetActiveForm
  * @package davidhirtz\yii2\cms\modules\admin\widgets\forms
  *
  * @property Asset $model
@@ -14,20 +14,20 @@ use yii\helpers\Html;
 class AssetActiveForm extends ActiveForm
 {
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function init()
     {
         if (!$this->fields) {
             $this->fields = [
-                'thumbnail',
-                '-',
-                'status',
-                'type',
-                'name',
-                'content',
-                'alt_text',
-                'link',
+                $this->thumbnailField(),
+                ['-'],
+                $this->statusField(),
+                $this->typeField(),
+                ['name'],
+                $this->contentField(),
+                $this->altTextField(),
+                ['link'],
             ];
         }
 
@@ -50,7 +50,7 @@ class AssetActiveForm extends ActiveForm
      */
     public function statusField($options = [])
     {
-        return ($statuses = $this->getStatuses()) ? $this->field($this->model, 'status', $options)->dropdownList($statuses) : '';
+        return ($statuses = $this->getStatuses()) ? $this->field($this->model, 'status', $options)->dropDownList($statuses) : '';
     }
 
     /**
@@ -59,7 +59,7 @@ class AssetActiveForm extends ActiveForm
      */
     public function typeField($options = [])
     {
-        return ($types = $this->getTypes()) ? $this->field($this->model, 'type', $options)->dropdownList($types) : '';
+        return ($types = $this->getTypes()) ? $this->field($this->model, 'type', $options)->dropDownList($types) : '';
     }
 
     /**
