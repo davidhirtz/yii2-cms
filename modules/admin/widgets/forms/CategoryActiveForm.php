@@ -31,15 +31,15 @@ class CategoryActiveForm extends ActiveForm
     {
         if (!$this->fields) {
             $this->fields = [
-                $this->statusField(),
-                $this->parentIdField(),
-                $this->typeField(),
-                ['name'],
-                $this->contentField(),
-                ['-'],
-                ['title'],
-                ['description', 'textarea'],
-                $this->slugField(),
+                'status',
+                'parent_id',
+                'type',
+                'name',
+                'content',
+                '-',
+                'title',
+                'description',
+                'slug',
             ];
         }
 

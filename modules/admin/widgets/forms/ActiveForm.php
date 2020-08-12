@@ -46,6 +46,21 @@ class ActiveForm extends \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm
      * @param array $options
      * @return string
      */
+    public function descriptionField($options = []): string
+    {
+        $html = '';
+
+        foreach ($this->model->getI18nAttributeNames('description') as $attributeName) {
+            $html .= $this->field($this->model, $attributeName, $options)->textarea();
+        }
+
+        return $html;
+    }
+
+    /**
+     * @param array $options
+     * @return string
+     */
     public function contentField($options = [])
     {
         $html = '';

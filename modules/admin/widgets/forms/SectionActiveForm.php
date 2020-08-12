@@ -20,11 +20,11 @@ class SectionActiveForm extends ActiveForm
     {
         if (!$this->fields) {
             $this->fields = [
-                $this->statusField(),
-                $this->typeField(),
-                ['name'],
-                $this->contentField(),
-                $this->slugField(),
+                'status',
+                'type',
+                'name',
+                'content',
+                'slug',
             ];
         }
 

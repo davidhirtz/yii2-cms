@@ -29,15 +29,15 @@ class EntryActiveForm extends ActiveForm
     {
         if (!$this->fields) {
             $this->fields = [
-                $this->statusField(),
-                $this->typeField(),
-                ['name'],
-                $this->contentField(),
-                $this->publishDateField(),
-                ['-'],
+                'status',
+                'type',
+                'name',
+                'content',
+                'publish_date',
+                '-',
                 'title',
-                ['description', 'textarea'],
-                $this->slugField(),
+                'description',
+                'slug',
             ];
         }
 

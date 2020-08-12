@@ -20,14 +20,14 @@ class AssetActiveForm extends ActiveForm
     {
         if (!$this->fields) {
             $this->fields = [
-                $this->thumbnailField(),
-                ['-'],
-                $this->statusField(),
-                $this->typeField(),
-                ['name'],
-                $this->contentField(),
-                $this->altTextField(),
-                ['link'],
+                'thumbnail',
+                '-',
+                'status',
+                'type',
+                'name',
+                'content',
+                'alt_text',
+                'link',
             ];
         }
 
