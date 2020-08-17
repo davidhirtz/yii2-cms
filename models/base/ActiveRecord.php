@@ -173,10 +173,11 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     {
         foreach ($this->getI18nAttributeNames('slug') as $attributeName) {
             if ($baseSlug = $this->getAttribute($attributeName)) {
-                $baseSlug = mb_substr($baseSlug, 0, static::SLUG_MAX_LENGTH - 2);
                 $iteration = 1;
 
-                while (!$this->validate($attributeName)) {
+                // Make sure the loop is limited in case a persistent error prevents the validation.
+                while (!$this->validate($attributeName) && $iteration < 100) {
+                    $baseSlug = mb_substr($baseSlug, 0, static::SLUG_MAX_LENGTH - ceil($iteration / 10));
                     $this->setAttribute($attributeName, $baseSlug . '-' . $iteration++);
                 }
             }
