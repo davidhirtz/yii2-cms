@@ -79,7 +79,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
             [
                 ['slug'],
                 'string',
-                'max' => 100,
+                'max' => static::SLUG_MAX_LENGTH,
             ],
             [
                 ['slug'],

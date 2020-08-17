@@ -106,7 +106,7 @@ class Category extends ActiveRecord
             [
                 ['slug'],
                 'string',
-                'max' => 100,
+                'max' => static::SLUG_MAX_LENGTH,
             ],
             [
                 ['slug'],

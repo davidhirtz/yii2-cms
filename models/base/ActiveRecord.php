@@ -36,6 +36,8 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     use StatusAttributeTrait;
     use TypeAttributeTrait;
 
+    public const SLUG_MAX_LENGTH = 100;
+
     /**
      * @var bool whether slugs should not automatically be checked and processed.
      */
@@ -171,7 +173,9 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     {
         foreach ($this->getI18nAttributeNames('slug') as $attributeName) {
             if ($baseSlug = $this->getAttribute($attributeName)) {
+                $baseSlug = mb_substr($baseSlug, 0, static::SLUG_MAX_LENGTH - 2);
                 $iteration = 1;
+
                 while (!$this->validate($attributeName)) {
                     $this->setAttribute($attributeName, $baseSlug . '-' . $iteration++);
                 }
