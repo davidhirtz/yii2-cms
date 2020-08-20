@@ -2,6 +2,7 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\controllers;
 
+use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\EntryCategory;
 use davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
@@ -13,7 +14,7 @@ use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
 
 /**
- * Class EntryCategoryController.
+ * Class EntryCategoryController
  * @package davidhirtz\yii2\cms\modules\admin\controllers
  */
 class EntryCategoryController extends Controller
@@ -48,17 +49,19 @@ class EntryCategoryController extends Controller
     }
 
     /**
-     * @param int $entry
-     * @param string $q
+     * @param int|null $entry
+     * @param int|null $category
+     * @param string|null $q
      * @return string
      */
-    public function actionIndex($entry = null, $q = null)
+    public function actionIndex($entry = null, $category = null, $q = null)
     {
         if (!$entry = Entry::findOne((int)$entry)) {
             throw new NotFoundHttpException();
         }
 
         $provider = new CategoryActiveDataProvider([
+            'category' => $category ? Category::findOne((int)$category) : null,
             'entry' => $entry,
             'searchString' => $q,
         ]);

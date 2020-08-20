@@ -2,6 +2,7 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\data\base;
 
+use davidhirtz\yii2\cms\models\EntryCategory;
 use davidhirtz\yii2\cms\models\queries\CategoryQuery;
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\Entry;
@@ -10,7 +11,7 @@ use davidhirtz\yii2\skeleton\db\ActiveQuery;
 use yii\data\ActiveDataProvider;
 
 /**
- * Class CategoryActiveDataProvider.
+ * Class CategoryActiveDataProvider
  * @package davidhirtz\yii2\cms\modules\admin\data\base
  *
  * @property CategoryQuery $query
@@ -53,18 +54,30 @@ class CategoryActiveDataProvider extends ActiveDataProvider
         $this->query = Category::find()
             ->replaceI18nAttributes();
 
-        if ($this->searchString) {
-            $this->query->matching($this->searchString);
-            $this->category = null;
-        }
-
         if ($this->entry) {
             $this->query->joinWith([
                 'entryCategory' => function (ActiveQuery $query) {
                     $query->onCondition(['entry_id' => $this->entry->id]);
                 }
             ]);
-        } elseif (!$this->searchString) {
+        }
+
+        if ($this->searchString) {
+            $this->query->matching($this->searchString);
+            $this->category = null;
+
+        } elseif ($this->entry) {
+            if ($this->category) {
+                $this->query->andWhere(['parent_id' => $this->category->id]);
+            } else {
+                $this->query->andWhere([
+                    'or',
+                    ['parent_id' => null],
+                    EntryCategory::tableName() . '.[[entry_id]] IS NOT NULL',
+                ]);
+            }
+
+        } else {
             $this->query->andWhere(['parent_id' => $this->category->id ?? null]);
         }
     }

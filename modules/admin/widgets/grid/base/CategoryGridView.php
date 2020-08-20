@@ -7,37 +7,34 @@ use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grid\GridView;
-use davidhirtz\yii2\skeleton\widgets\bootstrap\ButtonDropdown;
 use davidhirtz\yii2\timeago\Timeago;
 use davidhirtz\yii2\skeleton\widgets\fontawesome\Icon;
 use Yii;
-use yii\helpers\Url;
 
 /**
  * Class CategoryGridView
  * @package davidhirtz\yii2\cms\modules\admin\widgets\grid\base
+ * @see \davidhirtz\yii2\cms\modules\admin\widgets\grid\CategoryGridView
  *
  * @property CategoryActiveDataProvider $dataProvider
  */
 class CategoryGridView extends GridView
 {
-    use ModuleTrait, CategoryGridTrait;
+    use CategoryGridTrait;
+    use ModuleTrait;
 
     /**
-     * @var array
+     * @var string the category param name used in urls on {@link CategoryGridTrait}.
      */
-    public $columns = [
-        'status',
-        'type',
-        'name',
-        'branchCount',
-        'entry_count',
-        'updated_at',
-        'buttons',
-    ];
+    public $categoryParamName = 'id';
 
     /**
-     * @inheritdoc
+     * @var bool whether frontend url should be displayed, defaults to true
+     */
+    public $showUrl = true;
+
+    /**
+     * @inheritDoc
      */
     public function init()
     {
@@ -45,35 +42,23 @@ class CategoryGridView extends GridView
             $this->orderRoute = ['order', 'id' => $this->dataProvider->category->id];
         }
 
+        if (!$this->columns) {
+            $this->columns = [
+                $this->statusColumn(),
+                $this->typeColumn(),
+                $this->nameColumn(),
+                $this->branchCountColumn(),
+                $this->entryCountColumn(),
+                $this->updatedAtColumn(),
+                $this->buttonsColumn(),
+            ];
+        }
+
         $this->initHeader();
         $this->initFooter();
         $this->initAncestors();
 
         parent::init();
-    }
-
-    /**
-     * Sets up grid header.
-     */
-    protected function initHeader()
-    {
-        if ($this->header === null) {
-            $this->header = [
-                [
-                    [
-                        'content' => $this->categoryDropdown(),
-                        'options' => ['class' => 'col-12 col-md-3'],
-                    ],
-                    [
-                        'content' => $this->getSearchInput(),
-                        'options' => ['class' => 'col-12 col-md-6'],
-                    ],
-                    'options' => [
-                        'class' => $this->dataProvider->category ? 'justify-content-between' : 'justify-content-end',
-                    ],
-                ],
-            ];
-        }
     }
 
     /**
@@ -93,47 +78,6 @@ class CategoryGridView extends GridView
             ];
         }
     }
-
-    /**
-     * @return array
-     */
-    public function nameColumn()
-    {
-        return [
-            'attribute' => $this->getModel()->getI18nAttributeName('name'),
-            'content' => function (Category $category) {
-                $html = Html::markKeywords(Html::encode($category->getI18nAttribute('name')), $this->search);
-                $html = Html::tag('strong', Html::a($html, ['update', 'id' => $category->id]));
-
-                if ($this->dataProvider->searchString) {
-                    $html .= Html::tag('div', $this->getCategoryAncestors($category), ['class' => 'small']);
-                }
-
-                if ($this->showUrl) {
-                    $html .= $this->getUrl($category);
-                }
-
-
-                return $html;
-            }
-        ];
-    }
-
-    /**
-     * @return array
-     */
-    public function branchCountColumn()
-    {
-        return [
-            'attribute' => 'branchCount',
-            'headerOptions' => ['class' => 'd-none d-md-table-cell text-center'],
-            'contentOptions' => ['class' => 'd-none d-md-table-cell text-center'],
-            'content' => function (Category $category) {
-                return Html::a(Yii::$app->getFormatter()->asInteger($category->getBranchCount()), ['index', 'id' => $category->id], ['class' => 'badge']);
-            }
-        ];
-    }
-
 
     /**
      * @return array
@@ -171,52 +115,6 @@ class CategoryGridView extends GridView
     }
 
     /**
-     * @param array $config
-     * @return string|null
-     */
-    public function categoryDropdown($config = [])
-    {
-        if ($category = $this->dataProvider->category) {
-            $config['label'] = Html::tag('strong', Html::encode($category->getI18nAttribute('name')));
-            $config['paramName'] = 'id';
-
-            $categories = Category::indentNestedTree($category->getAncestors() + [$category], Category::instance()->getI18nAttributeName('name'));
-
-            foreach ($categories as $id => $name) {
-                $config['items'][] = [
-                    'label' => $name,
-                    'url' => Url::current(['id' => $id, 'page' => null]),
-                ];
-            }
-
-            return ButtonDropdown::widget($config);
-        }
-
-        return null;
-    }
-
-    /**
-     * @param Category $category
-     * @return string
-     */
-    protected function getCategoryAncestors($category)
-    {
-        if ($category->parent_id) {
-            $parents = [];
-
-            foreach ($category->getAncestors() as $parent) {
-                if ($parent->hasEntriesEnabled()) {
-                    $parents[] = Html::a(Html::encode($parent->name), ['update', 'id' => $parent->id]);
-                }
-            }
-
-            return implode(' / ', $parents);
-        }
-
-        return '';
-    }
-
-    /**
      * @return string
      */
     protected function renderCreateCategoryButton()
@@ -230,5 +128,13 @@ class CategoryGridView extends GridView
     public function isSortedByPosition(): bool
     {
         return parent::isSortedByPosition() && !$this->dataProvider->searchString;
+    }
+
+    /**
+     * @return bool
+     */
+    public function showCategoryAncestors(): bool
+    {
+        return (bool)$this->dataProvider->searchString;
     }
 }

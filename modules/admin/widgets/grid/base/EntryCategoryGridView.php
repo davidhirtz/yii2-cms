@@ -21,19 +21,20 @@ use davidhirtz\yii2\skeleton\widgets\fontawesome\Icon;
  */
 class EntryCategoryGridView extends GridView
 {
-    use ModuleTrait, CategoryTrait, CategoryGridTrait;
+    use CategoryGridTrait;
+    use CategoryTrait;
+    use ModuleTrait;
 
     /**
-     * @var array
+     * @var string the category param name used in urls on {@link CategoryGridTrait}
      */
-    public $columns = [
-        'status',
-        'type',
-        'name',
-        'entry_count',
-        'updated_at',
-        'buttons',
-    ];
+    public $categoryParamName = 'category';
+
+    /**
+     * @var bool whether frontend url should be displayed, defaults to false
+     */
+    public $showUrl = false;
+
 
     /**
      * @var array
@@ -49,29 +50,21 @@ class EntryCategoryGridView extends GridView
             return ['class' => $category->entryCategory ? 'is-selected' : null];
         };
 
+        if (!$this->columns) {
+            $this->columns = [
+                $this->statusColumn(),
+                $this->typeColumn(),
+                $this->nameColumn(),
+                $this->branchCountColumn(),
+                $this->entryCountColumn(),
+                $this->updatedAtColumn(),
+                $this->buttonsColumn(),
+            ];
+        }
+
+        $this->initHeader();
         $this->initAncestors();
         parent::init();
-    }
-
-    /**
-     * @return array
-     */
-    public function nameColumn()
-    {
-        return [
-            'attribute' => $this->getModel()->getI18nAttributeName('name'),
-            'content' => function (Category $category) {
-                $html = Html::markKeywords(Html::encode($this->getIndentedCategoryName($category->id)), $this->search);
-                $html = Html::tag('strong', Html::a($html, ['category/update', 'id' => $category->id]));
-
-                if ($this->showUrl) {
-                    $html .= $this->getUrl($category);
-                }
-
-
-                return $html;
-            }
-        ];
     }
 
     /**
@@ -107,15 +100,21 @@ class EntryCategoryGridView extends GridView
     }
 
     /**
-     * @param $id
-     * @return string
+     * @param Category $model
+     * @param array $params
+     * @return array|false
      */
-    protected function getIndentedCategoryName($id)
+    protected function getRoute($model, $params = [])
     {
-        if ($this->_names === null) {
-            $this->_names = Category::indentNestedTree(static::getCategories(), $this->getModel()->getI18nAttributeName('name'), '–');
-        }
+        return ['category/update', 'id' => $model->id];
+    }
 
-        return $this->_names[$id] ?? '';
+    /**
+     * @param Category $category
+     * @return bool
+     */
+    public function showCategoryAncestors($category): bool
+    {
+        return (bool)$this->dataProvider->searchString || $category->entryCategory;
     }
 }

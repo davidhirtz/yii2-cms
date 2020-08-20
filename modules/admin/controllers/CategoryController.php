@@ -13,7 +13,7 @@ use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
 
 /**
- * Class CategoryController.
+ * Class CategoryController
  * @package davidhirtz\yii2\cms\modules\admin\controllers
  */
 class CategoryController extends Controller
@@ -47,8 +47,8 @@ class CategoryController extends Controller
     }
 
     /**
-     * @param int $id
-     * @param string $q
+     * @param int|null $id
+     * @param string|null $q
      * @return string
      */
     public function actionIndex($id = null, $q = null)
@@ -65,7 +65,7 @@ class CategoryController extends Controller
     }
 
     /**
-     * @param int $id
+     * @param int|null $id
      * @return string|\yii\web\Response
      */
     public function actionCreate($id = null)
@@ -136,7 +136,7 @@ class CategoryController extends Controller
     }
 
     /**
-     * @param int $id
+     * @param int|null $id
      */
     public function actionOrder($id=null)
     {
