@@ -6,8 +6,9 @@ use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\Section;
-use davidhirtz\yii2\lazysizes\Html;
+use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\widgets\forms\CKEditor;
+use davidhirtz\yii2\timeago\Timeago;
 use Yii;
 use yii\helpers\ArrayHelper;
 
@@ -91,6 +92,43 @@ class ActiveForm extends \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm
         }
 
         return $html;
+    }
+
+    /**
+     * Renders user information footer.
+     */
+    public function renderFooter()
+    {
+        if ($items = array_filter($this->getFooterItems())) {
+            echo $this->listRow($items);
+        }
+    }
+
+    /**
+     * @return array
+     */
+    protected function getFooterItems(): array
+    {
+        $items = [];
+
+        if (!$this->model->getIsNewRecord()) {
+            if ($this->model->updated_by_user_id) {
+                $items[] = Yii::t('skeleton', 'Last updated by {user} {timestamp}', [
+                    'timestamp' => Timeago::tag($this->model->updated_at),
+                    'user' => Html::username($this->model->updated, Yii::$app->getUser()->can('userUpdate', ['user' => $this->model->updated]) ? ['/admin/user/update', 'id' => $this->model->updated_by_user_id] : null),
+                ]);
+            } else {
+                $items[] = Yii::t('skeleton', 'Last updated {timestamp}', [
+                    'timestamp' => Timeago::tag($this->model->updated_at),
+                ]);
+            }
+
+            $items[] = Yii::t('skeleton', 'Created {timestamp}', [
+                'timestamp' => Timeago::tag($this->model->created_at),
+            ]);
+        }
+
+        return $items;
     }
 
     /**

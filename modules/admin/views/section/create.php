@@ -9,12 +9,17 @@
 
 $this->setTitle(Yii::t('cms', 'Create New Section'));
 
+use davidhirtz\yii2\cms\modules\admin\widgets\nav\SectionToolbar;
 use davidhirtz\yii2\cms\modules\admin\widgets\nav\Submenu;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel; ?>
 
 <?= Submenu::widget([
     'model' => $section->entry,
+]); ?>
+
+<?= SectionToolbar::widget([
+    'model' => $section,
 ]); ?>
 
 <?= Html::errorSummary($section); ?>

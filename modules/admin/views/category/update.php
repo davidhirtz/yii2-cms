@@ -9,6 +9,7 @@
  */
 
 use davidhirtz\yii2\cms\modules\admin\widgets\grid\CategoryGridView;
+use davidhirtz\yii2\cms\modules\admin\widgets\nav\CategoryToolbar;
 use davidhirtz\yii2\cms\modules\admin\widgets\nav\Submenu;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
@@ -22,8 +23,12 @@ $this->setTitle(Yii::t('cms', 'Edit Category'));
     'model' => $category,
 ]); ?>
 
-<?= Html::errorSummary($category); ?>
+<?= CategoryToolbar::widget([
+    'model' => $category,
+]); ?>
 
+
+<?= Html::errorSummary($category); ?>
 
 <?= Panel::widget([
     'title' => $this->title,

@@ -3,7 +3,7 @@
 namespace davidhirtz\yii2\cms\modules\admin\widgets\panels\base;
 
 use davidhirtz\yii2\cms\models\Asset;
-use davidhirtz\yii2\skeleton\helpers\Html;
+use davidhirtz\yii2\cms\modules\admin\widgets\traits\UpdateFileButtonTrait;
 use Yii;
 
 /**
@@ -15,6 +15,8 @@ use Yii;
  */
 class AssetHelpPanel extends HelpPanel
 {
+    use UpdateFileButtonTrait;
+
     /**
      * @return array
      */
@@ -22,16 +24,6 @@ class AssetHelpPanel extends HelpPanel
     {
         return array_filter([
             $this->getUpdateFileButton(),
-        ]);
-    }
-
-    /**
-     * @return string
-     */
-    protected function getUpdateFileButton()
-    {
-        return Html::a(Html::iconText('image', Yii::t('media', 'Edit File')), ['/admin/file/update', 'id' => $this->model->file_id], [
-            'class' => 'btn btn-primary',
         ]);
     }
 }

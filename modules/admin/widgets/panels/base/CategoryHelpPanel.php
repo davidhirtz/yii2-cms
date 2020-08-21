@@ -21,8 +21,8 @@ class CategoryHelpPanel extends HelpPanel
     protected function getButtons(): array
     {
         return array_filter([
-            $this->getLinkButton(),
             $this->getCreateCategoryButton(),
+            $this->getLinkButton(),
         ]);
     }
 

@@ -5,6 +5,7 @@ namespace davidhirtz\yii2\cms\modules\admin\widgets\panels\base;
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\Section;
+use davidhirtz\yii2\cms\modules\admin\widgets\traits\LinkButtonTrait;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use Yii;
 
@@ -17,6 +18,8 @@ use Yii;
  */
 abstract class HelpPanel extends \davidhirtz\yii2\skeleton\modules\admin\widgets\panels\HelpPanel
 {
+    use LinkButtonTrait;
+
     /**
      * @var Category|Entry|Section
      */
@@ -39,28 +42,6 @@ abstract class HelpPanel extends \davidhirtz\yii2\skeleton\modules\admin\widgets
     }
 
     /**
-     * @return string|null
-     */
-    protected function getLinkButton()
-    {
-        if (!$this->model->isDisabled()) {
-            if ($route = $this->model->getRoute()) {
-                $manager = Yii::$app->getUrlManager();
-                $url = $this->isDraft() ? $manager->createDraftUrl($route) : $manager->createAbsoluteUrl($route);
-
-                if ($url) {
-                    return Html::a(Html::iconText($this->isDraft() ? 'lock-open' : 'globe', Yii::t('cms', 'Open website')), $url, [
-                        'class' => 'btn btn-primary',
-                        'target' => 'blank',
-                    ]);
-                }
-            }
-        }
-
-        return null;
-    }
-
-    /**
      * @return string
      */
     protected function getCloneButton()
@@ -69,14 +50,6 @@ abstract class HelpPanel extends \davidhirtz\yii2\skeleton\modules\admin\widgets
             'class' => 'btn btn-primary',
             'data-method' => 'post',
         ]);
-    }
-
-    /**
-     * @return bool
-     */
-    protected function isDraft(): bool
-    {
-        return $this->model->isDraft();
     }
 
     /**

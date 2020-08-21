@@ -9,12 +9,14 @@
 
 use davidhirtz\yii2\cms\modules\admin\widgets\grid\EntryGridView;
 use davidhirtz\yii2\cms\modules\admin\widgets\nav\Submenu;
+use \davidhirtz\yii2\cms\modules\admin\widgets\nav\EntryToolbar;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
 
 $this->setTitle(Yii::t('cms', 'Entries'));
 ?>
 
 <?= Submenu::widget(); ?>
+<?= EntryToolbar::widget(); ?>
 
 <?= Panel::widget([
     'content' => EntryGridView::widget([

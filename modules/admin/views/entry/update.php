@@ -8,6 +8,7 @@
  */
 
 use davidhirtz\yii2\cms\modules\admin\widgets\grid\AssetGridView;
+use davidhirtz\yii2\cms\modules\admin\widgets\nav\EntryToolbar;
 use davidhirtz\yii2\cms\modules\admin\widgets\nav\Submenu;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
@@ -18,6 +19,10 @@ $this->setTitle(Yii::t('cms', 'Edit Entry'));
 ?>
 
 <?= Submenu::widget([
+    'model' => $entry,
+]); ?>
+
+<?= EntryToolbar::widget([
     'model' => $entry,
 ]); ?>
 

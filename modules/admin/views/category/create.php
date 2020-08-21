@@ -7,6 +7,7 @@
  * @var \davidhirtz\yii2\cms\models\Category $category
  */
 
+use davidhirtz\yii2\cms\modules\admin\widgets\nav\CategoryToolbar;
 use davidhirtz\yii2\cms\modules\admin\widgets\nav\Submenu;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
@@ -15,6 +16,10 @@ $this->setTitle(Yii::t('cms', 'Create New Category'));
 ?>
 
 <?= Submenu::widget([
+    'model' => $category,
+]); ?>
+
+<?= CategoryToolbar::widget([
     'model' => $category,
 ]); ?>
 

@@ -48,7 +48,7 @@ class Module extends \yii\base\Module
     public $defaultEntryOrderBy;
 
     /**
-     * @var array the default entry type which is applied to all default admin urls
+     * @var int the default entry type which is applied to all default admin urls
      */
     public $defaultEntryType;
 

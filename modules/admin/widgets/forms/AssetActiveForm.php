@@ -3,6 +3,8 @@
 namespace davidhirtz\yii2\cms\modules\admin\widgets\forms;
 
 use davidhirtz\yii2\cms\models\Asset;
+use davidhirtz\yii2\timeago\Timeago;
+use Yii;
 use yii\helpers\Html;
 
 /**
@@ -31,7 +33,6 @@ class AssetActiveForm extends ActiveForm
             ];
         }
 
-
         parent::init();
     }
 
@@ -46,7 +47,7 @@ class AssetActiveForm extends ActiveForm
 
     /**
      * @param array $options
-     * @return \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveField|\yii\widgets\ActiveField|string
+     * @return \yii\widgets\ActiveField|string
      */
     public function statusField($options = [])
     {
@@ -55,7 +56,7 @@ class AssetActiveForm extends ActiveForm
 
     /**
      * @param array $options
-     * @return \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveField|\yii\widgets\ActiveField|string
+     * @return \yii\widgets\ActiveField|string
      */
     public function typeField($options = [])
     {
