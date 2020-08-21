@@ -3,10 +3,10 @@
 namespace davidhirtz\yii2\cms\modules\admin\widgets\grid\base;
 
 use davidhirtz\yii2\cms\models\Entry;
-use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\media\assets\AdminAsset;
+use davidhirtz\yii2\media\models\AssetParentInterface;
 use davidhirtz\yii2\media\modules\admin\widgets\UploadTrait;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grid\GridView;
@@ -19,31 +19,22 @@ use yii\data\ArrayDataProvider;
 use yii\helpers\Url;
 
 /**
- * Class AssetGridView.
+ * Class AssetGridView
  * @package davidhirtz\yii2\cms\modules\admin\widgets\grid\base
  *
  * @property ActiveDataProvider $dataProvider
  */
 class AssetGridView extends GridView
 {
-    use ModuleTrait, StatusGridViewTrait, TypeGridViewTrait, UploadTrait;
+    use ModuleTrait;
+    use StatusGridViewTrait;
+    use TypeGridViewTrait;
+    use UploadTrait;
 
     /**
-     * @var Entry|Section
+     * @var AssetParentInterface
      */
     public $parent;
-
-    /**
-     * @var array
-     */
-    public $columns = [
-        'status',
-        'thumbnail',
-        'type',
-        'name',
-        'dimensions',
-        'buttons',
-    ];
 
     /**
      * @var string
@@ -63,6 +54,17 @@ class AssetGridView extends GridView
             ]);
 
             $this->setModel(Asset::instance());
+        }
+
+        if (!$this->columns) {
+            $this->columns = [
+                $this->statusColumn(),
+                $this->thumbnailColumn(),
+                $this->typeColumn(),
+                $this->nameColumn(),
+                $this->dimensionsColumn(),
+                $this->buttonsColumn(),
+            ];
         }
 
         if (Yii::$app->getUser()->can('upload')) {
@@ -109,8 +111,8 @@ class AssetGridView extends GridView
     protected function getAssetsButton()
     {
         return Html::a(Html::iconText('images', Yii::t('cms', 'Library')), $this->getParentRoute('cms/asset/index'), [
-                'class' => 'btn btn-primary',
-            ]);
+            'class' => 'btn btn-primary',
+        ]);
     }
 
     /**
@@ -195,8 +197,9 @@ class AssetGridView extends GridView
 
         $buttons[] = Html::a(Icon::tag('image'), ['file/update', 'id' => $asset->file_id], [
             'class' => 'btn btn-secondary d-none d-md-inline-block',
-            'data-toggle' => 'tooltip',
             'title' => Yii::t('media', 'Edit File'),
+            'data-toggle' => 'tooltip',
+            'target' => '_blank',
         ]);
 
         $buttons[] = Html::a(Icon::tag('wrench'), $this->getRoute($asset), [
