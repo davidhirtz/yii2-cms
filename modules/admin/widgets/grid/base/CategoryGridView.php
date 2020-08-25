@@ -108,7 +108,7 @@ class CategoryGridView extends GridView
                     $buttons[] = Html::tag('span', Icon::tag('arrows-alt'), ['class' => 'btn btn-secondary sortable-handle']);
                 }
 
-                $buttons[] = Html::a(Icon::tag('wrench'), ['update', 'id' => $category->id], ['class' => 'btn btn-secondary d-none d-md-inline-block']);
+                $buttons[] = Html::a(Icon::tag('wrench'), ['update', 'id' => $category->id], ['class' => 'btn btn-primary d-none d-md-inline-block']);
                 return Html::buttons($buttons);
             }
         ];

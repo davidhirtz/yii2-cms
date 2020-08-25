@@ -45,7 +45,7 @@ class CategoryToolbar extends Toolbar
         if (Yii::$app->getUser()->can('author')) {
             $type = Yii::$app->getRequest()->get('type', static::getModule()->defaultCategoryType);
             return Html::a(Html::iconText('plus', Yii::t('cms', 'New Category')), ['create', 'type' => $type], [
-                'class' => 'btn btn-primary',
+                'class' => 'btn btn-primary btn-submit',
             ]);
         }
 

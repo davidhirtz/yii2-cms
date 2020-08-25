@@ -56,7 +56,7 @@ if ($asset->section_id) {
     'content' => DeleteActiveForm::widget([
         'model' => $asset,
         'buttons' => Html::button(Yii::t('cms', 'Remove'), [
-            'class' => 'btn btn-danger btn-submit',
+            'class' => 'btn btn-danger',
             'data-method' => 'post',
             'data-message' => Yii::t('cms', 'Are you sure you want to remove this asset?'),
             'type' => 'submit',

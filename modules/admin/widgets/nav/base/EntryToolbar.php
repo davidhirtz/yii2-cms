@@ -45,7 +45,7 @@ class EntryToolbar extends Toolbar
         if (Yii::$app->getUser()->can('author')) {
             $type = Yii::$app->getRequest()->get('type', static::getModule()->defaultEntryType);
             return Html::a(Html::iconText('plus', Yii::t('cms', 'New Entry')), ['create', 'type' => $type], [
-                'class' => 'btn btn-primary',
+                'class' => 'btn btn-primary btn-submit',
             ]);
         }
 

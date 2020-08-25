@@ -183,7 +183,7 @@ class SectionGridView extends GridView
             $buttons[] = Html::tag('span', Icon::tag('arrows-alt'), ['class' => 'btn btn-secondary sortable-handle']);
         }
 
-        $buttons[] = Html::a(Icon::tag('wrench'), ['update', 'id' => $section->id], ['class' => 'btn btn-secondary']);
+        $buttons[] = Html::a(Icon::tag('wrench'), ['update', 'id' => $section->id], ['class' => 'btn btn-primary']);
         return $buttons;
     }
 

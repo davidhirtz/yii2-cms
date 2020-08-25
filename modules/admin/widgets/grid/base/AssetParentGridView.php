@@ -152,7 +152,7 @@ class AssetParentGridView extends GridView
             'content' => function (Asset $asset) {
                 return Html::buttons([
                     Html::a(Icon::tag('wrench'), ['cms/asset/update', 'id' => $asset->id], [
-                        'class' => 'btn btn-secondary',
+                        'class' => 'btn btn-primary',
                         'data-toggle' => 'tooltip',
                         'title' => Yii::t('cms', 'Edit Asset'),
                     ]),

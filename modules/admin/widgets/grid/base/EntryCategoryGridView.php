@@ -92,7 +92,7 @@ class EntryCategoryGridView extends GridView
             'content' => function (Category $category) {
                 // Make sure categories can always be removed even if they were not supposed to have entries enabled.
                 return !$category->hasEntriesEnabled() && !$category->entryCategory ? '' : Html::buttons(Html::a(Icon::tag($category->entryCategory ? 'ban' : 'star'), [$category->entryCategory ? 'delete' : 'create', 'entry' => $this->dataProvider->entry->id, 'category' => $category->id], [
-                    'class' => 'btn btn-secondary',
+                    'class' => 'btn btn-primary',
                     'data-method' => 'post',
                 ]));
             }

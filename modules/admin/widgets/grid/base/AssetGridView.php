@@ -196,14 +196,14 @@ class AssetGridView extends GridView
         }
 
         $buttons[] = Html::a(Icon::tag('image'), ['file/update', 'id' => $asset->file_id], [
-            'class' => 'btn btn-secondary d-none d-md-inline-block',
+            'class' => 'btn btn-primary d-none d-md-inline-block',
             'title' => Yii::t('media', 'Edit File'),
             'data-toggle' => 'tooltip',
             'target' => '_blank',
         ]);
 
         $buttons[] = Html::a(Icon::tag('wrench'), $this->getRoute($asset), [
-            'class' => 'btn btn-secondary',
+            'class' => 'btn btn-primary',
             'data-toggle' => 'tooltip',
             'title' => Yii::t('cms', 'Edit Asset'),
         ]);

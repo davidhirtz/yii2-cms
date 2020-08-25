@@ -45,7 +45,7 @@ class SectionToolbar extends Toolbar
     {
         if (Yii::$app->getUser()->can('author')) {
             return Html::a(Html::iconText('plus', Yii::t('cms', 'New Section')), ['create', 'entry' => $this->model->id], [
-                'class' => 'btn btn-primary',
+                'class' => 'btn btn-primary btn-submit',
             ]);
         }
 
