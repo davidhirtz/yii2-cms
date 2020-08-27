@@ -23,6 +23,11 @@ class EntryActiveForm extends ActiveForm
     public $slugMaxLength = 20;
 
     /**
+     * @var bool
+     */
+    public $hasStickyButtons = true;
+
+    /**
      * @inheritdoc
      */
     public function init()

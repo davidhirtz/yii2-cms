@@ -12,7 +12,7 @@ use yii\data\ArrayDataProvider;
 use Yii;
 
 /**
- * Class AssetParentGridView.
+ * Class AssetParentGridView
  * @package davidhirtz\yii2\cms\modules\admin\widgets\grid\base
  * @see \davidhirtz\yii2\cms\modules\admin\widgets\grid\AssetParentGridView
  */
@@ -22,18 +22,6 @@ class AssetParentGridView extends GridView
      * @var File
      */
     public $file;
-
-    /**
-     * @var array
-     */
-    public $columns = [
-        'status',
-        'type',
-        'name',
-        'asset_count',
-        'updated_at',
-        'buttons',
-    ];
 
     /**
      * @var bool
@@ -58,6 +46,17 @@ class AssetParentGridView extends GridView
                     ->orderBy(['updated_at' => SORT_DESC])
                     ->all()
             ]);
+        }
+
+        if (!$this->columns) {
+            $this->columns = [
+                $this->statusColumn(),
+                $this->typeColumn(),
+                $this->nameColumn(),
+                $this->assetCountColumn(),
+                $this->updatedAtColumn(),
+                $this->buttonsColumn(),
+            ];
         }
 
         /** @var Asset $asset */
@@ -172,7 +171,7 @@ class AssetParentGridView extends GridView
      * @param array $params
      * @return array
      */
-    public function getRoute($asset, $params = []): array
+    protected function getRoute($asset, $params = []): array
     {
         return array_merge([$asset->section_id ? '/admin/section/update' : '/admin/entry/update', 'id' => $asset->getParent()->id, '#' => 'asset-' . $asset->id], $params);
     }

@@ -16,6 +16,11 @@ use yii\helpers\Html;
 class AssetActiveForm extends ActiveForm
 {
     /**
+     * @var bool
+     */
+    public $hasStickyButtons = true;
+
+    /**
      * @inheritDoc
      */
     public function init()

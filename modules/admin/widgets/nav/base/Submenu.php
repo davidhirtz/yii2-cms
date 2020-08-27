@@ -19,34 +19,34 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
     use ModuleTrait;
 
     /**
-     * @var Category|Entry
+     * @var Category|Entry|Section
      */
     public $model;
 
     /**
-     * @var bool
+     * @var bool whether default categories should be shown as nav items
      */
     public $showDefaultCategories = true;
 
     /**
-     * @var bool whether entry types should be listed as items.
+     * @var bool whether entry types should be listed as items
      */
     public $showEntryTypes = false;
 
     /**
-     * @var bool whether entry categories should be visible.
+     * @var bool whether entry categories should be visible
      */
     public $showEntryCategories = true;
 
     /**
-     * @var bool whether entry sections should be visible.
+     * @var bool whether entry sections should be visible
      */
     public $showEntrySections = true;
 
     /**
-     * @var bool
+     * @var bool whether the website url to given model should be displayed
      */
-    public $isSection = false;
+    public $showUrl = true;
 
     /**
      * @var string
@@ -58,28 +58,29 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
      */
     public function init()
     {
+        $model = $this->isSection() ? $this->model->entry : $this->model;
+
         if ($this->showDefaultCategories) {
             $this->showDefaultCategories = static::getModule()->enableCategories;
         }
 
-        if ($this->model instanceof Section) {
-            $this->model = $this->model->entry;
-            $this->isSection = true;
+        if (!$this->title) {
+            $this->title = $model instanceof Entry ? Html::a($model->getI18nAttribute('name'), ['/admin/entry/update', 'id' => $model->id]) : Html::a($this->getParentModule()->name, $this->getParentModule()->url);
+        }
+
+        if ($this->title && $this->showUrl) {
+            $this->title .= $this->getUrl();
         }
 
         if ($this->showEntryCategories) {
-            $this->showEntryCategories = $this->model instanceof Entry ? $this->model->hasCategoriesEnabled() : static::getModule()->enableCategories;
+            $this->showEntryCategories = $model instanceof Entry ? $model->hasCategoriesEnabled() : static::getModule()->enableCategories;
         }
 
         if ($this->showEntrySections) {
-            $this->showEntrySections = $this->model instanceof Entry ? $this->model->hasSectionsEnabled() : static::getModule()->enableSections;
+            $this->showEntrySections = $model instanceof Entry ? $model->hasSectionsEnabled() : static::getModule()->enableSections;
         }
 
-        if (!$this->title) {
-            $this->title = $this->model instanceof Entry ? Html::a($this->model->getI18nAttribute('name'), ['/admin/entry/update', 'id' => $this->model->id]) : Html::a($this->getParentModule()->name, $this->getParentModule()->url);
-        }
-
-        $this->items = array_merge($this->items, $this->model instanceof Entry ? $this->getEntryItems() : $this->getDefaultItems());
+        $this->items = array_merge($this->items, $model instanceof Entry ? $this->getEntryItems() : $this->getDefaultItems());
         $this->setBreadcrumbs();
 
         parent::init();
@@ -158,14 +159,16 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
      */
     protected function getEntryFormItems(): array
     {
+        $model = $this->isSection()  ? $this->model->entry : $this->model;
+
         return [
             [
-                'label' => $this->showEntryTypes ? $this->model->getTypeName() : Yii::t('cms', 'Entry'),
-                'url' => ['/admin/entry/update', 'id' => $this->model->id],
+                'label' => $this->showEntryTypes ? $model->getTypeName() : Yii::t('cms', 'Entry'),
+                'url' => ['/admin/entry/update', 'id' => $model->id],
                 'active' => array_filter([
                     'admin/entry/',
                     'admin/cms/asset/' => ['entry'],
-                    !$this->isSection ? 'admin/cms/asset/update' : null,
+                    !$this->isSection()  ? 'admin/cms/asset/update' : null,
                 ]),
                 'icon' => 'book',
                 'labelOptions' => [
@@ -180,12 +183,14 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
      */
     protected function getEntryCategoryItems(): array
     {
+        $model = $this->isSection()  ? $this->model->entry : $this->model;
+
         return !$this->showEntryCategories ? [] : [
             [
                 'label' => Yii::t('cms', 'Categories'),
-                'url' => ['/admin/entry-category/index', 'entry' => $this->model->id],
+                'url' => ['/admin/entry-category/index', 'entry' => $model->id],
                 'active' => ['admin/entry-category/'],
-                'badge' => $this->model->getCategoryCount() ?: false,
+                'badge' => $model->getCategoryCount() ?: false,
                 'badgeOptions' => [
                     'id' => 'entry-category-count',
                     'class' => 'badge d-none d-md-inline-block',
@@ -206,16 +211,18 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
      */
     protected function getEntrySectionItems(): array
     {
+        $model = $this->isSection()  ? $this->model->entry : $this->model;
+
         return !$this->showEntrySections ? [] : [
             [
                 'label' => Yii::t('cms', 'Sections'),
-                'url' => ['/admin/section/index', 'entry' => $this->model->id],
+                'url' => ['/admin/section/index', 'entry' => $model->id],
                 'active' => array_filter([
                     'admin/section/',
                     'admin/cms/asset/' => ['section'],
-                    $this->isSection ? 'admin/cms/asset/update' : null,
+                    $this->isSection() ? 'admin/cms/asset/update' : null,
                 ]),
-                'badge' => $this->model->section_count ?: false,
+                'badge' => $model->section_count ?: false,
                 'badgeOptions' => [
                     'id' => 'entry-section-count',
                     'class' => 'badge d-none d-md-inline-block',
@@ -238,12 +245,13 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
     {
         $view = $this->getView();
         $view->setBreadcrumb($this->getParentModule()->name, ['/admin/entry/index', 'type' => static::getModule()->defaultEntryType]);
+        $model = $this->isSection()  ? $this->model->entry : $this->model;
 
-        if ($this->model instanceof Entry && $this->showEntryTypes) {
+        if ($model instanceof Entry && $this->showEntryTypes) {
             $params = Yii::$app->getRequest()->get();
             unset($params['id']);
 
-            $view->setBreadcrumb(Entry::getTypes()[$this->model->type]['plural'] ?? Entry::getTypes()[$this->model->type]['name'], array_merge($params, ['/admin/entry/index', 'type' => $this->model->type]));
+            $view->setBreadcrumb(Entry::getTypes()[$model->type]['plural'] ?? Entry::getTypes()[$model->type]['name'], array_merge($params, ['/admin/entry/index', 'type' => $model->type]));
         }
     }
 
@@ -256,6 +264,39 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
             $this->_parentModule = Yii::$app->getModule('admin')->getModule('cms');
         }
 
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $this->_parentModule;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getUrl()
+    {
+        if ($this->model) {
+            if ($route = $this->model->getRoute()) {
+                $manager = Yii::$app->getUrlManager();
+                $url = $this->isDraft() ? $manager->createDraftUrl($route) : $manager->createAbsoluteUrl($route);
+                return Html::tag('div', Html::a(Html::encode($url), $url, ['target' => '_blank']), ['class' => 'small']);
+            }
+        }
+
+        return '';
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isDraft(): bool
+    {
+        return $this->model->isDraft();
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isSection(): bool
+    {
+        return $this->model instanceof Section;
     }
 }

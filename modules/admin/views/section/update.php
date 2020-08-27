@@ -8,7 +8,6 @@
  */
 
 use davidhirtz\yii2\cms\modules\admin\widgets\grid\AssetGridView;
-use davidhirtz\yii2\cms\modules\admin\widgets\nav\SectionToolbar;
 use davidhirtz\yii2\cms\modules\admin\widgets\nav\Submenu;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
@@ -19,10 +18,6 @@ $this->setTitle(Yii::t('cms', 'Edit Section'));
 ?>
 
 <?= Submenu::widget([
-    'model' => $section->entry,
-]); ?>
-
-<?= SectionToolbar::widget([
     'model' => $section,
 ]); ?>
 

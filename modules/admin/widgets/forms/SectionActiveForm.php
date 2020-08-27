@@ -14,6 +14,11 @@ use Yii;
 class SectionActiveForm extends ActiveForm
 {
     /**
+     * @var bool
+     */
+    public $hasStickyButtons = true;
+
+    /**
      * @inheritdoc
      */
     public function init()

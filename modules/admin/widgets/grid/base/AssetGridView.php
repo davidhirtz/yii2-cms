@@ -21,6 +21,7 @@ use yii\helpers\Url;
 /**
  * Class AssetGridView
  * @package davidhirtz\yii2\cms\modules\admin\widgets\grid\base
+ * @see \davidhirtz\yii2\cms\modules\admin\widgets\grid\AssetGridView
  *
  * @property ActiveDataProvider $dataProvider
  */
@@ -196,7 +197,7 @@ class AssetGridView extends GridView
         }
 
         $buttons[] = Html::a(Icon::tag('image'), ['file/update', 'id' => $asset->file_id], [
-            'class' => 'btn btn-primary d-none d-md-inline-block',
+            'class' => 'btn btn-secondary d-none d-md-inline-block',
             'title' => Yii::t('media', 'Edit File'),
             'data-toggle' => 'tooltip',
             'target' => '_blank',

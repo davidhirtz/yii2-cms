@@ -10,16 +10,11 @@
 $this->setTitle(Yii::t('cms', 'Sections'));
 
 use davidhirtz\yii2\cms\modules\admin\widgets\grid\SectionGridView;
-use davidhirtz\yii2\cms\modules\admin\widgets\nav\SectionToolbar;
 use davidhirtz\yii2\cms\modules\admin\widgets\nav\Submenu;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
 ?>
 
 <?= Submenu::widget([
-	'model' => $entry,
-]); ?>
-
-<?= SectionToolbar::widget([
 	'model' => $entry,
 ]); ?>
 
