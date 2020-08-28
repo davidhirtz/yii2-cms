@@ -308,7 +308,7 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
      */
     protected function isDraft(): bool
     {
-        return $this->model->isDraft();
+        return $this->isSection() ? ($this->model->isDraft() || $this->model->entry->isDraft()) : $this->model->isDraft();
     }
 
     /**
