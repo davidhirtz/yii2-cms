@@ -14,7 +14,7 @@ use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
 
 /**
- * Class EntryController.
+ * Class EntryController
  * @package davidhirtz\yii2\cms\modules\admin\controllers
  */
 class EntryController extends Controller
@@ -49,9 +49,9 @@ class EntryController extends Controller
     }
 
     /**
-     * @param int $category
-     * @param int $type
-     * @param string $q
+     * @param int|null $category
+     * @param int|null $type
+     * @param string|null $q
      * @return string
      */
     public function actionIndex($category = null, $type = null, $q = null)
@@ -75,7 +75,7 @@ class EntryController extends Controller
     }
 
     /**
-     * @param int $type
+     * @param int|null $type
      * @return string|\yii\web\Response
      */
     public function actionCreate($type = null)
@@ -142,7 +142,7 @@ class EntryController extends Controller
             $this->success(Yii::t('cms', 'The entry was duplicated.'));
         }
 
-        return $this->redirect(['update', 'id' => $clone->id ?: $entry->id]);
+        return $this->redirect($clone->id ? ['update', 'id' => $clone->id] : ['index']);
     }
 
     /**

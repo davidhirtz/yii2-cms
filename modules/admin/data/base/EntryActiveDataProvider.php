@@ -6,11 +6,12 @@ use davidhirtz\yii2\cms\models\EntryCategory;
 use davidhirtz\yii2\cms\models\queries\EntryQuery;
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\Entry;
+use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use yii\data\ActiveDataProvider;
 
 /**
- * Class EntryActiveDataProvider.
+ * Class EntryActiveDataProvider
  * @package davidhirtz\yii2\cms\modules\admin\data\base
  * @see \davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider
  *

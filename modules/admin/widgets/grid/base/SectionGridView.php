@@ -22,12 +22,18 @@ use yii\helpers\StringHelper;
  */
 class SectionGridView extends GridView
 {
-    use ModuleTrait, StatusGridViewTrait;
+    use ModuleTrait;
+    use StatusGridViewTrait;
 
     /**
      * @var Entry
      */
     public $entry;
+
+    /**
+     * @var bool whether the delete button should be visible in the section grid.
+     */
+    public $showDeleteButton = false;
 
     /**
      * @var array
@@ -52,11 +58,10 @@ class SectionGridView extends GridView
                 'sort' => false,
             ]);
 
-            $this->setModel(new Section);
+            $this->setModel(Section::instance());
         }
 
         $this->orderRoute = ['order', 'entry' => $this->entry->id];
-
         $this->initFooter();
 
         parent::init();
@@ -180,11 +185,30 @@ class SectionGridView extends GridView
         $buttons = [];
 
         if ($this->dataProvider->getCount() > 1) {
-            $buttons[] = Html::tag('span', Icon::tag('arrows-alt'), ['class' => 'btn btn-secondary sortable-handle']);
+            $buttons[] = $this->getSortableButton();
         }
 
-        $buttons[] = Html::a(Icon::tag('wrench'), ['update', 'id' => $section->id], ['class' => 'btn btn-primary']);
+        $buttons[] = $this->getUpdateButton($section);
+
+        if ($this->showDeleteButton) {
+            $buttons[] = $this->getSectionDeleteButton($section);
+        }
+
         return $buttons;
+    }
+
+    /**
+     * @param Section $section
+     * @return string
+     */
+    protected function getSectionDeleteButton($section)
+    {
+        return Html::a(Icon::tag('trash'), ['delete', 'id' => $section->id], [
+            'class' => 'btn btn-danger',
+            'data-confirm' => 'Wollen Sie diese Sektion sicher löschen?',
+            'data-ajax' => 'remove',
+            'data-target' => '#' . $this->getRowId($section),
+        ]);
     }
 
     /**

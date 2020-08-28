@@ -37,7 +37,7 @@ class Section extends ActiveRecord implements AssetParentInterface
     public $slugTargetAttribute = ['entry_id', 'slug'];
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function rules(): array
     {
@@ -53,6 +53,13 @@ class Section extends ActiveRecord implements AssetParentInterface
             ],
             [
                 ['entry_id'],
+                'davidhirtz\yii2\skeleton\validators\RelationValidator',
+                'relation' => 'entry',
+                'required' => true,
+            ],
+            [
+                ['entry_id'],
+                /** {@link \davidhirtz\yii2\cms\models\Section::validateEntryId()} */
                 'validateEntryId',
             ],
             [
@@ -87,13 +94,13 @@ class Section extends ActiveRecord implements AssetParentInterface
      */
     public function validateEntryId()
     {
-        if (($this->isAttributeChanged('entry_id') && !$this->refreshRelation('entry')) || !$this->entry->hasSectionsEnabled()) {
+        if (!$this->entry->hasSectionsEnabled()) {
             $this->addInvalidAttributeError('entry_id');
         }
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function beforeValidate()
     {
@@ -105,15 +112,13 @@ class Section extends ActiveRecord implements AssetParentInterface
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function beforeSave($insert)
     {
-        if (!$this->slug) {
-            $this->slug = null;
-        }
+        $this->slug = $this->slug ? (string)$this->slug : null;
 
-        // Handle section cloning...
+        // Handle section move / clone.
         if (!$insert && $this->isAttributeChanged('entry_id')) {
             $this->position = $this->getMaxPosition() + 1;
         }
@@ -131,8 +136,14 @@ class Section extends ActiveRecord implements AssetParentInterface
     {
         if (array_key_exists('entry_id', $changedAttributes)) {
             if (!empty($changedAttributes['entry_id'])) {
-                if ($entry = Entry::findOne($changedAttributes['entry_id'])) {
-                    $entry->recalculateSectionCount();
+                $prevEntry = Entry::findOne($changedAttributes['entry_id']);
+
+                if ($prevEntry) {
+                    $prevEntry->recalculateSectionCount()->updateAttributes([
+                        'section_count',
+                        'updated_by_user_id' => $this->updated_by_user_id,
+                        'updated_at' => $this->updated_at,
+                    ]);
                 }
             }
 
@@ -140,7 +151,7 @@ class Section extends ActiveRecord implements AssetParentInterface
                 Asset::updateAll(['entry_id' => $this->entry_id], ['section_id' => $this->id]);
             }
 
-            $this->entry->recalculateSectionCount();
+            $this->updateEntrySectionCount();
         }
 
         parent::afterSave($insert, $changedAttributes);
@@ -165,12 +176,12 @@ class Section extends ActiveRecord implements AssetParentInterface
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function afterDelete()
     {
         if (!$this->entry->isDeleted()) {
-            $this->entry->recalculateSectionCount();
+            $this->updateEntrySectionCount();
         }
 
         parent::afterDelete();
@@ -210,7 +221,6 @@ class Section extends ActiveRecord implements AssetParentInterface
      */
     public static function find()
     {
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return Yii::createObject(SectionQuery::class, [get_called_class()]);
     }
 
@@ -234,6 +244,18 @@ class Section extends ActiveRecord implements AssetParentInterface
         }
 
         return $clone;
+    }
+
+    /**
+     * @return int
+     */
+    public function updateEntrySectionCount()
+    {
+        return $this->entry->recalculateSectionCount()->updateAttributes([
+            'section_count',
+            'updated_by_user_id' => $this->updated_by_user_id,
+            'updated_at' => $this->updated_at,
+        ]);
     }
 
     /**
@@ -294,7 +316,7 @@ class Section extends ActiveRecord implements AssetParentInterface
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function attributeLabels()
     {
@@ -314,7 +336,7 @@ class Section extends ActiveRecord implements AssetParentInterface
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public static function tableName()
     {

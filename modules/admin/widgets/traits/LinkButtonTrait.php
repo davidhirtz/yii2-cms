@@ -21,7 +21,7 @@ trait LinkButtonTrait
                 $url = $this->isDraft() ? $manager->createDraftUrl($route) : $manager->createAbsoluteUrl($route);
 
                 if ($url) {
-                    return Html::a(Html::iconText($this->isDraft() ? 'edit' : 'globe', Yii::t('cms', 'Open website')), $url, [
+                    return Html::a(Html::iconText('external-link-alt', Yii::t('cms', 'Open website')), $url, [
                         'class' => 'btn btn-secondary',
                         'target' => 'blank',
                     ]);

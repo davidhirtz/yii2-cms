@@ -159,7 +159,7 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
      */
     protected function getEntryFormItems(): array
     {
-        $model = $this->isSection()  ? $this->model->entry : $this->model;
+        $model = $this->isSection() ? $this->model->entry : $this->model;
 
         return [
             [
@@ -168,7 +168,7 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
                 'active' => array_filter([
                     'admin/entry/',
                     'admin/cms/asset/' => ['entry'],
-                    !$this->isSection()  ? 'admin/cms/asset/update' : null,
+                    !$this->isSection() ? 'admin/cms/asset/update' : null,
                 ]),
                 'icon' => 'book',
                 'labelOptions' => [
@@ -183,7 +183,7 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
      */
     protected function getEntryCategoryItems(): array
     {
-        $model = $this->isSection()  ? $this->model->entry : $this->model;
+        $model = $this->isSection() ? $this->model->entry : $this->model;
 
         return !$this->showEntryCategories ? [] : [
             [
@@ -211,7 +211,7 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
      */
     protected function getEntrySectionItems(): array
     {
-        $model = $this->isSection()  ? $this->model->entry : $this->model;
+        $model = $this->isSection() ? $this->model->entry : $this->model;
 
         return !$this->showEntrySections ? [] : [
             [
@@ -243,15 +243,23 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
      */
     protected function setBreadcrumbs()
     {
+        $params = Yii::$app->getRequest()->get();
+        unset($params['id']);
+
         $view = $this->getView();
-        $view->setBreadcrumb($this->getParentModule()->name, ['/admin/entry/index', 'type' => static::getModule()->defaultEntryType]);
-        $model = $this->isSection()  ? $this->model->entry : $this->model;
+        $view->setBreadcrumb($this->getParentModule()->name, array_merge($params, ['/admin/entry/index', 'type' => static::getModule()->defaultEntryType]));
+        $model = $this->isSection() ? $this->model->entry : $this->model;
 
-        if ($model instanceof Entry && $this->showEntryTypes) {
-            $params = Yii::$app->getRequest()->get();
-            unset($params['id']);
+        if ($model instanceof Entry) {
+            if ($this->showEntryTypes) {
+                $view->setBreadcrumb(Entry::getTypes()[$model->type]['plural'] ?? Entry::getTypes()[$model->type]['name'], array_merge($params, ['/admin/entry/index', 'type' => $model->type]));
+            }
 
-            $view->setBreadcrumb(Entry::getTypes()[$model->type]['plural'] ?? Entry::getTypes()[$model->type]['name'], array_merge($params, ['/admin/entry/index', 'type' => $model->type]));
+            $view->setBreadcrumb($this->showEntryTypes ? $model->getTypeName() : Yii::t('cms', 'Entry'), ['/admin/entry/update', 'id' => $model->id]);
+
+            if($this->isSection()) {
+                $view->setBreadcrumb(Yii::t('cms', 'Section'), ['/admin/section/update', 'id' => $this->model->id]);
+            }
         }
     }
 

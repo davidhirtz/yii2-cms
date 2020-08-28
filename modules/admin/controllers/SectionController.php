@@ -2,8 +2,10 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\controllers;
 
+use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\queries\AssetQuery;
 use davidhirtz\yii2\cms\models\queries\SectionQuery;
+use davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\models\Entry;
@@ -38,7 +40,7 @@ class SectionController extends Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['clone', 'create', 'delete', 'index', 'order', 'update'],
+                        'actions' => ['clone', 'create', 'delete', 'entries', 'index', 'order', 'update'],
                         'roles' => ['author'],
                     ],
                 ],
@@ -138,21 +140,27 @@ class SectionController extends Controller
     }
 
     /**
+     * Clones or copies section. Additional changes can be set via POST (eg. the entry id for
+     * copying the section to another entry).
+     *
      * @param int $id
-     * @return string|\yii\web\Response
+     * @return \yii\web\Response
      */
     public function actionClone($id)
     {
         $section = $this->findSection($id);
+        $entryId = $section->entry_id;
+
+        $section->load(Yii::$app->getRequest()->post());
         $clone = $section->clone();
 
         if ($errors = $clone->getFirstErrors()) {
             $this->error($errors);
-        } else {
-            $this->success(Yii::t('cms', 'The section was duplicated.'));
+            return $this->redirect(['index', 'entry' => $entryId]);
         }
 
-        return $this->redirect($clone->id ? ['update', 'id' => $clone->id] : ['index', 'entry' => $clone->entry_id]);
+        $this->success(Yii::t('cms', 'The section was duplicated.'));
+        return $this->redirect(['update', 'id' => $clone->id]);
     }
 
     /**
@@ -194,6 +202,32 @@ class SectionController extends Controller
 
             Section::updatePosition($sections, array_flip($sectionIds));
         }
+    }
+
+    /**
+     * @param int $id
+     * @param int|null $category
+     * @param int|null $type
+     * @param string|null $q
+     * @return string
+     */
+    public function actionEntries($id, $category = null, $type = null, $q = null)
+    {
+        $section = $this->findSection($id);
+
+        /** @var EntryActiveDataProvider $provider */
+        $provider = Yii::createObject([
+            'class' => 'davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider',
+            'category' => $category ? Category::findOne((int)$category) : null,
+            'searchString' => $q,
+            'type' => $type,
+        ]);
+
+        /** @noinspection MissedViewInspection */
+        return $this->render('entries', [
+            'section' => $section,
+            'provider' => $provider,
+        ]);
     }
 
     /**

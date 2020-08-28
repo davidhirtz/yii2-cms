@@ -289,12 +289,12 @@ class Entry extends ActiveRecord implements AssetParentInterface
     }
 
     /**
-     * @return false|int
+     * @return $this
      */
     public function recalculateSectionCount()
     {
         $this->section_count = $this->getSections()->count();
-        return $this->update(false);
+        return $this;
     }
 
     /**

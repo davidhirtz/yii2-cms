@@ -3,6 +3,8 @@
 namespace davidhirtz\yii2\cms\modules\admin\widgets\grid\base;
 
 use davidhirtz\yii2\cms\models\Entry;
+use davidhirtz\yii2\cms\models\Section;
+use davidhirtz\yii2\cms\modules\admin\controllers\SectionController;
 use davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider;
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\modules\admin\widgets\CategoryTrait;
@@ -29,6 +31,11 @@ class EntryGridView extends GridView
     use ModuleTrait;
     use StatusGridViewTrait;
     use TypeGridViewTrait;
+
+    /**
+     * @var Section|null see {@link SectionController::actionEntries()}
+     */
+    public $section;
 
     /**
      * @var bool whether entry urls should be displayed in the name column
@@ -272,16 +279,70 @@ class EntryGridView extends GridView
         return [
             'contentOptions' => ['class' => 'text-right text-nowrap'],
             'content' => function (Entry $entry) {
-                $buttons = [];
-
-                if ($this->isSortedByPosition()) {
-                    $buttons[] = Html::tag('span', Icon::tag('arrows-alt'), ['class' => 'btn btn-secondary sortable-handle']);
-                }
-
-                $buttons[] = Html::a(Icon::tag('wrench'), $this->getRoute($entry), ['class' => 'btn btn-primary d-none d-md-inline-block']);
-                return Html::buttons($buttons);
+                return Html::buttons($this->getRowButtons($entry));
             }
         ];
+    }
+
+    /**
+     * @param Entry $entry
+     * @return array
+     */
+    protected function getRowButtons($entry)
+    {
+        if ($this->section) {
+            return $this->getSectionButtons($entry);
+        }
+
+        return $this->isSortedByPosition() ? [$this->getSortableButton(), $this->getUpdateButton($entry)] : [$this->getUpdateButton($entry)];
+    }
+
+    /**
+     * @param Entry $entry
+     * @return array
+     */
+    protected function getSectionButtons($entry)
+    {
+        $options = [
+            'class' => 'btn btn-primary',
+            'data-toggle' => 'tooltip',
+            'data-method' => 'post',
+            'data-params' => [Html::getInputName($this->section, 'entry_id') => $entry->id],
+        ];
+
+        return [
+            Html::a(Icon::tag('copy'), ['update', 'id' => $this->section->id], array_merge($options, [
+                'title' => Yii::t('cms', 'Move Section'),
+            ])),
+            Html::a(Icon::tag('paste'), ['clone', 'id' => $this->section->id], array_merge($options, [
+                'title' => Yii::t('cms', 'Copy Section'),
+            ])),
+        ];
+    }
+
+    /**
+     * @param Section $section
+     * @return string
+     */
+    protected function getSectionDeleteButton($section)
+    {
+        return Html::a(Icon::tag('trash'), ['delete', 'id' => $section->id], [
+            'class' => 'btn btn-danger',
+            'data-confirm' => 'Wollen Sie diese Sektion sicher löschen?',
+            'data-ajax' => 'remove',
+            'data-target' => '#' . $this->getRowId($section),
+        ]);
+    }
+
+    /**
+     * @param Section $section
+     * @return string
+     */
+    protected function getSectionUpdateButton($section)
+    {
+        return Html::a(Icon::tag('wrench'), ['update', 'id' => $section->id], [
+            'class' => 'btn btn-primary',
+        ]);
     }
 
     /**
