@@ -38,6 +38,11 @@ class CategoryActiveDataProvider extends ActiveDataProvider
     public $searchString;
 
     /**
+     * @var bool
+     */
+    public $showNestedCategories = true;
+
+    /**
      * @inheritDoc
      */
     public function init()
@@ -67,16 +72,17 @@ class CategoryActiveDataProvider extends ActiveDataProvider
             $this->category = null;
 
         } elseif ($this->entry) {
-            if ($this->category) {
-                $this->query->andWhere(['parent_id' => $this->category->id]);
-            } else {
-                $this->query->andWhere([
-                    'or',
-                    ['parent_id' => null],
-                    EntryCategory::tableName() . '.[[entry_id]] IS NOT NULL',
-                ]);
+            if ($this->showNestedCategories) {
+                if ($this->category) {
+                    $this->query->andWhere(['parent_id' => $this->category->id]);
+                } else {
+                    $this->query->andWhere([
+                        'or',
+                        ['parent_id' => null],
+                        EntryCategory::tableName() . '.[[entry_id]] IS NOT NULL',
+                    ]);
+                }
             }
-
         } else {
             $this->query->andWhere(['parent_id' => $this->category->id ?? null]);
         }
