@@ -252,7 +252,9 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
 
         if ($model instanceof Entry) {
             if ($this->showEntryTypes) {
-                $view->setBreadcrumb(Entry::getTypes()[$model->type]['plural'] ?? Entry::getTypes()[$model->type]['name'], array_merge($params, ['/admin/entry/index', 'type' => $model->type]));
+                if (isset(Entry::getTypes()[$model->type])) {
+                    $view->setBreadcrumb(Entry::getTypes()[$model->type]['plural'] ?? Entry::getTypes()[$model->type]['name'], array_merge($params, ['/admin/entry/index', 'type' => $model->type]));
+                }
             }
 
             $this->setEntryBreadcrumbs();
