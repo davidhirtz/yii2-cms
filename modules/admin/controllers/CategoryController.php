@@ -53,7 +53,9 @@ class CategoryController extends Controller
      */
     public function actionIndex($id = null, $q = null)
     {
-        $provider = new CategoryActiveDataProvider([
+        /** @var CategoryActiveDataProvider $provider */
+        $provider = Yii::createObject([
+            'class' => 'davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider',
             'category' => $id ? Category::findOne((int)$id) : null,
             'searchString' => $q,
         ]);
@@ -105,7 +107,9 @@ class CategoryController extends Controller
             }
         }
 
-        $provider = new CategoryActiveDataProvider([
+        /** @var CategoryActiveDataProvider $provider */
+        $provider = Yii::createObject([
+            'class' => 'davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider',
             'category' => $category,
         ]);
 

@@ -60,7 +60,9 @@ class EntryCategoryController extends Controller
             throw new NotFoundHttpException();
         }
 
-        $provider = new CategoryActiveDataProvider([
+        /** @var CategoryActiveDataProvider $provider */
+        $provider = Yii::createObject([
+            'class' => 'davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider',
             'category' => $category ? Category::findOne((int)$category) : null,
             'entry' => $entry,
             'searchString' => $q,
