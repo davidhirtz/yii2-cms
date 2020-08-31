@@ -29,7 +29,7 @@ class EntryQuery extends \davidhirtz\yii2\skeleton\db\ActiveQuery
      * @param string $search
      * @return $this
      */
-    public function matching($search)
+    public function matching(string $search)
     {
         if ($search = $this->sanitizeSearchString($search)) {
             $this->andWhere(Entry::tableName() . '.[[' . Entry::instance()->getI18nAttributeName('name') . ']] LIKE :search', [':search' => "%{$search}%"]);
@@ -63,7 +63,7 @@ class EntryQuery extends \davidhirtz\yii2\skeleton\db\ActiveQuery
      * @param bool $eagerLoading
      * @return $this
      */
-    public function whereCategories($categories, $eagerLoading = false)
+    public function whereCategories(array $categories, $eagerLoading = false)
     {
         foreach ($categories as $category) {
             $categoryId = $category->id ?? $category;
@@ -81,9 +81,9 @@ class EntryQuery extends \davidhirtz\yii2\skeleton\db\ActiveQuery
      * @param string $slug
      * @return $this
      */
-    public function whereSlug($slug)
+    public function whereSlug(string $slug)
     {
-        return $this->whereLower([Entry::tableName() . '.[[' . Entry::instance()->getI18nAttributeName('slug') . ']]' => $slug]);
+        return $this->where([Entry::tableName() . '.[[' . Entry::instance()->getI18nAttributeName('slug') . ']]' => $slug]);
     }
 
     /**
