@@ -32,7 +32,7 @@ class EntryController extends Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['clone', 'create', 'delete', 'index', 'order', 'update'],
+                        'actions' => ['clone', 'create', 'delete', 'index', 'order', 'update', 'update-all'],
                         'roles' => ['author'],
                     ],
                 ],
@@ -43,6 +43,7 @@ class EntryController extends Controller
                     'clone' => ['post'],
                     'delete' => ['post'],
                     'order' => ['post'],
+                    'update-all' => ['post'],
                 ],
             ],
         ]);
@@ -99,7 +100,7 @@ class EntryController extends Controller
      * @param int $id
      * @return string|\yii\web\Response
      */
-    public function actionUpdate($id)
+    public function actionUpdate(int $id)
     {
         $entry = $this->findEntry($id);
         $request = Yii::$app->getRequest();
@@ -127,10 +128,41 @@ class EntryController extends Controller
     }
 
     /**
+     * @return \yii\web\Response
+     */
+    public function actionUpdateAll()
+    {
+        $request = Yii::$app->getRequest();
+
+        if ($entryIds = array_map('intval', $request->post('selection', []))) {
+            $entries = Entry::findAll(['id' => $entryIds]);
+            $isUpdated = false;
+
+            foreach ($entries as $entry) {
+                if ($entry->load($request->post())) {
+                    if ($entry->update()) {
+                        $isUpdated = true;
+                    }
+
+                    if ($entry->hasErrors()) {
+                        $this->error($entry->getFirstErrors());
+                    }
+                }
+            }
+
+            if ($isUpdated) {
+                $this->success(Yii::t('cms', 'The selected entries were updated.'));
+            }
+        }
+
+        return $this->redirect(array_merge($request->get(), ['index']));
+    }
+
+    /**
      * @param int $id
      * @return string|\yii\web\Response
      */
-    public function actionClone($id)
+    public function actionClone(int $id)
     {
         $entry = $this->findEntry($id);
         $clone = $entry->clone();
@@ -149,7 +181,7 @@ class EntryController extends Controller
      * @param int $id
      * @return string|\yii\web\Response
      */
-    public function actionDelete($id)
+    public function actionDelete(int $id)
     {
         $entry = $this->findEntry($id);
 
@@ -185,7 +217,7 @@ class EntryController extends Controller
      * @return Entry
      * @throws NotFoundHttpException
      */
-    protected function findEntry($id)
+    protected function findEntry(int $id)
     {
         if (!$entry = Entry::findOne((int)$id)) {
             throw new NotFoundHttpException();

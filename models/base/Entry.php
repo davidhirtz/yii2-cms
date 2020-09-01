@@ -86,6 +86,9 @@ class Entry extends ActiveRecord implements AssetParentInterface
                 $this->slugUniqueValidator,
                 'targetAttribute' => $this->slugTargetAttribute,
                 'comboNotUnique' => Yii::t('yii', '{attribute} "{value}" has already been taken.'),
+                'when' => function () {
+                    return $this->isAttributeChanged('slug');
+                }
             ],
             array_merge([$this->getI18nAttributeNames('publish_date')], (array)$this->dateTimeValidator),
         ]));
@@ -117,7 +120,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
         }
 
         if (!$this->publish_date) {
-            $this->publish_date = new DateTime;
+            $this->publish_date = new DateTime();
         }
 
         if (!$this->description) {
@@ -221,7 +224,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
     public function clone($attributes = [])
     {
         /** @var \davidhirtz\yii2\cms\models\Entry $clone */
-        $clone = new static;
+        $clone = new static();
         $clone->setAttributes(array_merge($this->getAttributes(), $attributes ?: ['status' => static::STATUS_DRAFT]));
         $clone->generateUniqueSlug();
 
@@ -239,7 +242,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
             $assets = $this->getAssets()->withoutSections()->all();
 
             foreach ($assets as $asset) {
-                $assetClone = new Asset;
+                $assetClone = new Asset();
                 $assetClone->setAttributes(array_merge($asset->getAttributes(), ['entry_id' => $clone->id]));
                 $assetClone->populateRelation('entry', $clone);
                 $assetClone->insert();
@@ -250,7 +253,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
     }
 
     /**
-     * @param Asset[] $assets
+     * @param Asset[]|null $assets
      */
     public function populateAssetRelations($assets = null)
     {

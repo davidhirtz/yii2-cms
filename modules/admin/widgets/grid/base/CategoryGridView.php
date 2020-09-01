@@ -70,7 +70,7 @@ class CategoryGridView extends GridView
             $this->footer = [
                 [
                     [
-                        'content' => $this->renderCreateCategoryButton(),
+                        'content' => $this->getCreateCategoryButton(),
                         'visible' => Yii::$app->getUser()->can('author'),
                         'options' => ['class' => 'col'],
                     ],
@@ -117,7 +117,7 @@ class CategoryGridView extends GridView
     /**
      * @return string
      */
-    protected function renderCreateCategoryButton()
+    protected function getCreateCategoryButton()
     {
         return Html::a(Html::iconText('plus', Yii::t('cms', 'New Category')), ['create', 'id' => $this->dataProvider->category->id ?? null], ['class' => 'btn btn-primary']);
     }

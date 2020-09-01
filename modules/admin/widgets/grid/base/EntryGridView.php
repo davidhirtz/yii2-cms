@@ -160,7 +160,7 @@ class EntryGridView extends GridView
             $this->footer = [
                 [
                     [
-                        'content' => $this->renderCreateEntryButton(),
+                        'content' => $this->getCreateEntryButton() . ($this->showSelection ? $this->getSelectionButton() : ''),
                         'visible' => Yii::$app->getUser()->can('author'),
                         'options' => ['class' => 'col'],
                     ],
@@ -172,9 +172,17 @@ class EntryGridView extends GridView
     /**
      * @return string
      */
-    protected function renderCreateEntryButton()
+    protected function getCreateEntryButton()
     {
         return Html::a(Html::iconText('plus', Yii::t('cms', 'New Entry')), ['create', 'type' => $this->dataProvider->type], ['class' => 'btn btn-primary']);
+    }
+
+    /**
+     * @return array
+     */
+    protected function getSelectionButtonItems(): array
+    {
+        return $this->statusSelectionButtonItems();
     }
 
     /**
@@ -289,7 +297,7 @@ class EntryGridView extends GridView
      * @param Entry $entry
      * @return array
      */
-    protected function getRowButtons($entry)
+    protected function getRowButtons(Entry $entry)
     {
         if ($this->section) {
             return $this->getSectionButtons($entry);
@@ -302,7 +310,7 @@ class EntryGridView extends GridView
      * @param Entry $entry
      * @return array
      */
-    protected function getSectionButtons($entry)
+    protected function getSectionButtons(Entry $entry)
     {
         $options = [
             'class' => 'btn btn-primary',
@@ -325,7 +333,7 @@ class EntryGridView extends GridView
      * @param Section $section
      * @return string
      */
-    protected function getSectionDeleteButton($section)
+    protected function getSectionDeleteButton(Section $section)
     {
         return Html::a(Icon::tag('trash'), ['delete', 'id' => $section->id], [
             'class' => 'btn btn-danger',
@@ -339,7 +347,7 @@ class EntryGridView extends GridView
      * @param Section $section
      * @return string
      */
-    protected function getSectionUpdateButton($section)
+    protected function getSectionUpdateButton(Section $section)
     {
         return Html::a(Icon::tag('wrench'), ['update', 'id' => $section->id], [
             'class' => 'btn btn-primary',
@@ -383,7 +391,7 @@ class EntryGridView extends GridView
      * @param array $options
      * @return string
      */
-    public function renderCategoryButtons($entry, $options = [])
+    public function renderCategoryButtons(Entry $entry, $options = [])
     {
         $categories = [];
 
@@ -400,7 +408,7 @@ class EntryGridView extends GridView
      * @param Entry $entry
      * @return string
      */
-    public function getUrl($entry): string
+    public function getUrl(Entry $entry): string
     {
         if ($route = $entry->getRoute()) {
             $urlManager = Yii::$app->getUrlManager();
@@ -421,6 +429,7 @@ class EntryGridView extends GridView
      */
     protected function getRoute(ActiveRecord $model, $params = []): array
     {
+        /** @var Entry $model */
         return array_merge(Yii::$app->getRequest()->get(), ['/admin/entry/update', 'id' => $model->id], $params);
     }
 

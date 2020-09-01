@@ -76,7 +76,7 @@ class SectionGridView extends GridView
             $this->footer = [
                 [
                     [
-                        'content' => $this->renderCreateSectionButton(),
+                        'content' => $this->getCreateSectionButton() . ($this->showSelection ? $this->getSelectionButton() : ''),
                         'options' => ['class' => 'col'],
                     ],
                 ],
@@ -87,7 +87,7 @@ class SectionGridView extends GridView
     /**
      * @return string
      */
-    protected function renderCreateSectionButton()
+    protected function getCreateSectionButton(): string
     {
         return Html::a(Html::iconText('plus', Yii::t('cms', 'New Section')), ['create', 'entry' => $this->entry->id], ['class' => 'btn btn-primary']);
     }
@@ -95,7 +95,15 @@ class SectionGridView extends GridView
     /**
      * @return array
      */
-    public function typeColumn()
+    protected function getSelectionButtonItems(): array
+    {
+        return $this->statusSelectionButtonItems();
+    }
+
+    /**
+     * @return array
+     */
+    public function typeColumn(): array
     {
         return [
             'attribute' => 'type',
@@ -109,7 +117,7 @@ class SectionGridView extends GridView
     /**
      * @return array
      */
-    public function nameColumn()
+    public function nameColumn(): array
     {
         return [
             'attribute' => $this->getModel()->getI18nAttributeName('name'),
@@ -150,7 +158,7 @@ class SectionGridView extends GridView
     /**
      * @return array
      */
-    public function assetCountColumn()
+    public function assetCountColumn(): array
     {
         return [
             'attribute' => 'asset_count',
@@ -166,7 +174,7 @@ class SectionGridView extends GridView
     /**
      * @return array
      */
-    public function buttonsColumn()
+    public function buttonsColumn(): array
     {
         return [
             'contentOptions' => ['class' => 'text-right text-nowrap'],
@@ -180,7 +188,7 @@ class SectionGridView extends GridView
      * @param Section $section
      * @return  array
      */
-    protected function getRowButtons($section)
+    protected function getRowButtons(Section $section): array
     {
         $buttons = [];
 
@@ -201,7 +209,7 @@ class SectionGridView extends GridView
      * @param Section $section
      * @return string
      */
-    protected function getSectionDeleteButton($section)
+    protected function getSectionDeleteButton(Section $section): string
     {
         return Html::a(Icon::tag('trash'), ['delete', 'id' => $section->id], [
             'class' => 'btn btn-danger',
