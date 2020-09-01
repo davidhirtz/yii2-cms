@@ -62,6 +62,8 @@ class SectionGridView extends GridView
         }
 
         $this->orderRoute = ['order', 'entry' => $this->entry->id];
+        $this->selectionRoute = ['update-all', 'entry' => $this->entry->id];
+        
         $this->initFooter();
 
         parent::init();
