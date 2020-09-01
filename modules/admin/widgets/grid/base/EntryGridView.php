@@ -9,6 +9,7 @@ use davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider;
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\modules\admin\widgets\CategoryTrait;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
+use davidhirtz\yii2\skeleton\db\ActiveRecord;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grid\GridView;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grid\StatusGridViewTrait;
@@ -414,13 +415,13 @@ class EntryGridView extends GridView
     }
 
     /**
-     * @param Entry $entry
+     * @param ActiveRecord $model
      * @param array $params
      * @return array
      */
-    protected function getRoute($entry, $params = []): array
+    protected function getRoute(ActiveRecord $model, $params = []): array
     {
-        return array_merge(Yii::$app->getRequest()->get(), ['/admin/entry/update', 'id' => $entry->id], $params);
+        return array_merge(Yii::$app->getRequest()->get(), ['/admin/entry/update', 'id' => $model->id], $params);
     }
 
     /**

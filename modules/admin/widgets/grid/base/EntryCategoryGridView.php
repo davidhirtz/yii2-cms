@@ -7,6 +7,7 @@ use davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider;
 use davidhirtz\yii2\cms\modules\admin\widgets\CategoryTrait;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\cms\models\Category;
+use davidhirtz\yii2\skeleton\db\ActiveRecord;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grid\GridView;
 use davidhirtz\yii2\timeago\Timeago;
@@ -100,11 +101,11 @@ class EntryCategoryGridView extends GridView
     }
 
     /**
-     * @param Category $model
+     * @param ActiveRecord $model
      * @param array $params
      * @return array|false
      */
-    protected function getRoute($model, $params = [])
+    protected function getRoute(ActiveRecord $model, $params = [])
     {
         return ['category/update', 'id' => $model->id];
     }

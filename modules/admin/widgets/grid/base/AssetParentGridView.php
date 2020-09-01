@@ -4,6 +4,7 @@ namespace davidhirtz\yii2\cms\modules\admin\widgets\grid\base;
 
 use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\media\models\File;
+use davidhirtz\yii2\skeleton\db\ActiveRecord;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grid\GridView;
 use davidhirtz\yii2\skeleton\widgets\fontawesome\Icon;
@@ -167,13 +168,13 @@ class AssetParentGridView extends GridView
     }
 
     /**
-     * @param Asset $asset
+     * @param ActiveRecord $model
      * @param array $params
      * @return array
      */
-    protected function getRoute($asset, $params = []): array
+    protected function getRoute(ActiveRecord $model, $params = []): array
     {
-        return array_merge([$asset->section_id ? '/admin/section/update' : '/admin/entry/update', 'id' => $asset->getParent()->id, '#' => 'asset-' . $asset->id], $params);
+        return array_merge([$model->section_id ? '/admin/section/update' : '/admin/entry/update', 'id' => $model->getParent()->id, '#' => 'asset-' . $model->id], $params);
     }
 
     /**

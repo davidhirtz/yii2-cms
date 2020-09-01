@@ -8,6 +8,7 @@ use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\media\assets\AdminAsset;
 use davidhirtz\yii2\media\models\AssetParentInterface;
 use davidhirtz\yii2\media\modules\admin\widgets\UploadTrait;
+use davidhirtz\yii2\skeleton\db\ActiveRecord;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grid\GridView;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grid\StatusGridViewTrait;
@@ -43,7 +44,7 @@ class AssetGridView extends GridView
     public $layout = '{items}{footer}';
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function init()
     {
@@ -117,9 +118,9 @@ class AssetGridView extends GridView
     }
 
     /**
-     * @return string|null
+     * @return string
      */
-    public function renderItems()
+    public function renderItems(): string
     {
         return Html::tag('div', parent::renderItems(), ['id' => 'files']);
     }
@@ -188,7 +189,7 @@ class AssetGridView extends GridView
      * @param Asset $asset
      * @return array
      */
-    protected function getRowButtons($asset)
+    protected function getRowButtons(Asset $asset)
     {
         $buttons = [];
 
@@ -225,18 +226,17 @@ class AssetGridView extends GridView
      * @param array $params
      * @return array
      */
-    protected function getParentRoute($action, $params = []): array
+    protected function getParentRoute(string $action, $params = []): array
     {
         return array_merge([$action, ($this->parent instanceof Entry ? 'entry' : 'section') => $this->parent->id], $params);
     }
 
     /**
-     * @param Asset $model
-     * @param array $params
-     * @return array
+     * @inheritDoc
      */
-    protected function getRoute($model, $params = []): array
+    protected function getRoute(ActiveRecord $model, $params = []): array
     {
+        /** @var Asset $model */
         return array_merge(['cms/asset/update', 'id' => $model->id], $params);
     }
 
