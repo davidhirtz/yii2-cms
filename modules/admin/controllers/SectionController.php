@@ -40,7 +40,7 @@ class SectionController extends Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['clone', 'create', 'delete', 'entries', 'index', 'order', 'update'],
+                        'actions' => ['clone', 'create', 'delete', 'entries', 'index', 'order', 'update', 'update-all'],
                         'roles' => ['author'],
                     ],
                 ],
@@ -60,7 +60,7 @@ class SectionController extends Controller
      * @param int $entry
      * @return string|\yii\web\Response
      */
-    public function actionIndex($entry)
+    public function actionIndex(int $entry)
     {
         $query = Entry::find()
             ->where(['id' => $entry])
@@ -89,7 +89,7 @@ class SectionController extends Controller
      * @param int $entry
      * @return string|\yii\web\Response
      */
-    public function actionCreate($entry)
+    public function actionCreate(int $entry)
     {
         $section = new Section([
             'entry_id' => $entry,
@@ -114,7 +114,7 @@ class SectionController extends Controller
      * @param int $id
      * @return string|\yii\web\Response
      */
-    public function actionUpdate($id)
+    public function actionUpdate(int $id)
     {
         $section = $this->findSection($id);
 
@@ -140,13 +140,44 @@ class SectionController extends Controller
     }
 
     /**
+     * @return \yii\web\Response
+     */
+    public function actionUpdateAll()
+    {
+        $request = Yii::$app->getRequest();
+
+        if ($entryIds = array_map('intval', $request->post('selection', []))) {
+            $sections = Section::findAll(['id' => $entryIds]);
+            $isUpdated = false;
+
+            foreach ($sections as $section) {
+                if ($section->load($request->post())) {
+                    if ($section->update()) {
+                        $isUpdated = true;
+                    }
+
+                    if ($section->hasErrors()) {
+                        $this->error($section->getFirstErrors());
+                    }
+                }
+            }
+
+            if ($isUpdated) {
+                $this->success(Yii::t('cms', 'The selected sections were updated.'));
+            }
+        }
+
+        return $this->redirect(array_merge($request->get(), ['index']));
+    }
+
+    /**
      * Clones or copies section. Additional changes can be set via POST (eg. the entry id for
      * copying the section to another entry).
      *
      * @param int $id
      * @return \yii\web\Response
      */
-    public function actionClone($id)
+    public function actionClone(int $id)
     {
         $section = $this->findSection($id);
         $entryId = $section->entry_id;
@@ -167,7 +198,7 @@ class SectionController extends Controller
      * @param int $id
      * @return string|\yii\web\Response
      */
-    public function actionDelete($id)
+    public function actionDelete(int $id)
     {
         $section = $this->findSection($id);
 
@@ -190,7 +221,7 @@ class SectionController extends Controller
     /**
      * @param int $entry
      */
-    public function actionOrder($entry)
+    public function actionOrder(int $entry)
     {
         $sectionIds = array_map('intval', array_filter(Yii::$app->getRequest()->post('section', [])));
 
@@ -211,7 +242,7 @@ class SectionController extends Controller
      * @param string|null $q
      * @return string
      */
-    public function actionEntries($id, $category = null, $type = null, $q = null)
+    public function actionEntries(int $id, $category = null, $type = null, $q = null)
     {
         $section = $this->findSection($id);
 
@@ -235,7 +266,7 @@ class SectionController extends Controller
      * @return Section
      * @throws NotFoundHttpException
      */
-    protected function findSection($id)
+    protected function findSection(int $id)
     {
         if (!$section = Section::findOne((int)$id)) {
             throw new NotFoundHttpException();
