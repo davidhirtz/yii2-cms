@@ -4,7 +4,6 @@ namespace davidhirtz\yii2\cms\models\queries;
 
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\Entry;
-use davidhirtz\yii2\cms\models\EntryCategory;
 use davidhirtz\yii2\skeleton\db\ActiveQuery;
 
 /**
@@ -51,11 +50,7 @@ class EntryQuery extends \davidhirtz\yii2\skeleton\db\ActiveQuery
             }
         }
 
-        return $this->innerJoinWith([
-            'entryCategory' => function (ActiveQuery $query) use ($category) {
-                $query->onCondition([EntryCategory::tableName() . '.[[category_id]]' => $category->id ?? $category]);
-            }
-        ], $eagerLoading);
+        return $this->whereCategories([$category], $eagerLoading);
     }
 
     /**
