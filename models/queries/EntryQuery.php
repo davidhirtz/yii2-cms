@@ -39,7 +39,7 @@ class EntryQuery extends \davidhirtz\yii2\skeleton\db\ActiveQuery
     }
 
     /**
-     * @param int[]|Category $category
+     * @param int|Category $category
      * @param bool $eagerLoading
      * @return $this
      */
