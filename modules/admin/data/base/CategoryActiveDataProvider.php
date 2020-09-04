@@ -47,7 +47,9 @@ class CategoryActiveDataProvider extends ActiveDataProvider
      */
     public function init()
     {
+        $this->query = Category::find();
         $this->initQuery();
+
         parent::init();
     }
 
@@ -56,8 +58,9 @@ class CategoryActiveDataProvider extends ActiveDataProvider
      */
     protected function initQuery()
     {
-        $this->query = Category::find()
-            ->replaceI18nAttributes();
+        if ($this->query->select) {
+            $this->query->replaceI18nAttributes();
+        }
 
         if ($this->entry) {
             $this->query->joinWith([

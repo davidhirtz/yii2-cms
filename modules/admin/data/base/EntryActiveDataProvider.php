@@ -6,7 +6,6 @@ use davidhirtz\yii2\cms\models\EntryCategory;
 use davidhirtz\yii2\cms\models\queries\EntryQuery;
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\Entry;
-use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use yii\data\ActiveDataProvider;
 
@@ -41,7 +40,9 @@ class EntryActiveDataProvider extends ActiveDataProvider
      */
     public function init()
     {
+        $this->query = Entry::find();
         $this->initQuery();
+
         parent::init();
     }
 
@@ -50,10 +51,16 @@ class EntryActiveDataProvider extends ActiveDataProvider
      */
     protected function initQuery()
     {
-        $this->query = Entry::find()->replaceI18nAttributes();
-
         if (static::getModule()->defaultEntryOrderBy) {
             $this->query->orderBy(static::getModule()->defaultEntryOrderBy);
+        }
+
+        if ($this->query->select) {
+            $this->query->replaceI18nAttributes();
+        }
+
+        if (!$this->query->select) {
+            $this->query->select('*');
         }
 
         if ($this->type && isset(Entry::getTypes()[$this->type])) {
