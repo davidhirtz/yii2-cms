@@ -4,6 +4,7 @@ namespace davidhirtz\yii2\cms\models\queries;
 
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\Entry;
+use davidhirtz\yii2\cms\models\EntryCategory;
 use davidhirtz\yii2\skeleton\db\ActiveQuery;
 
 /**
@@ -50,7 +51,8 @@ class EntryQuery extends \davidhirtz\yii2\skeleton\db\ActiveQuery
             }
         }
 
-        return $this->whereCategories([$category], $eagerLoading);
+        return $this->addSelectPrefixed(['position', 'updated_at'])
+            ->innerJoinWithEntryCategory($category->id ?? $category, $eagerLoading);
     }
 
     /**
@@ -61,17 +63,28 @@ class EntryQuery extends \davidhirtz\yii2\skeleton\db\ActiveQuery
     public function whereCategories(array $categories, $eagerLoading = false)
     {
         foreach ($categories as $category) {
-            $categoryId = $category->id ?? $category;
-            $alias = count($categories) > 1 ? "entryCategory{$categoryId}" : 'entryCategory';
-
-            $this->innerJoinWith([
-                "entryCategory {$alias}" => function (ActiveQuery $query) use ($alias, $categoryId) {
-                    $query->onCondition(["[[{$alias}]].[[category_id]]" => $categoryId]);
-                }
-            ], $eagerLoading);
+            $this->innerJoinWithEntryCategory($category->id ?? $category, $eagerLoading, true);
         }
 
-        return $this->addSelectPrefixed(['position', 'updated_at']);
+        return $this;
+    }
+
+    /**
+     * Prepends alias to inner join to allow multiple categories. Keeps original table name
+     * for single joins to use of {@link Category::getEntryOrderBy()} order.
+     *
+     * @param int $categoryId
+     * @param bool $eagerLoading
+     * @param false $useAlias
+     * @return $this
+     */
+    private function innerJoinWithEntryCategory($categoryId, $eagerLoading = false, $useAlias = false)
+    {
+        return $this->innerJoinWith([
+            ($useAlias ? "entryCategory entryCategory{$categoryId}" : 'entryCategory') => function (ActiveQuery $query) use ($categoryId, $useAlias) {
+                $query->onCondition([($useAlias ? "[[entryCategory{$categoryId}]]" : EntryCategory::tableName()) . '.[[category_id]]' => $categoryId]);
+            }
+        ], $eagerLoading);
     }
 
     /**
