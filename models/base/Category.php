@@ -303,7 +303,7 @@ class Category extends ActiveRecord
 
     /**
      * @param string $slug
-     * @param int $parentId
+     * @param int|null $parentId
      * @return \davidhirtz\yii2\cms\models\Category|null
      */
     public static function getBySlug($slug, $parentId = null)
@@ -359,7 +359,7 @@ class Category extends ActiveRecord
      */
     public function getEntryOrderBy()
     {
-        return [EntryCategory::tableName() . '.[[position]]' => SORT_ASC];
+        return [EntryCategory::tableName() . $this->id . '.[[position]]' => SORT_ASC];
     }
 
     /**
