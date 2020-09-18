@@ -51,13 +51,8 @@ class ActiveForm extends \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm
      */
     public function descriptionField($options = []): string
     {
-        $html = '';
-
-        foreach ($this->model->getI18nAttributeNames('description') as $attributeName) {
-            $html .= $this->field($this->model, $attributeName, $options)->textarea();
-        }
-
-        return $html;
+        $attribute = $this->model->getI18nAttributeName('description', ArrayHelper::remove($options, 'language'));
+        return $this->field($this->model, $attribute, $options)->textarea();
     }
 
     /**
@@ -66,16 +61,14 @@ class ActiveForm extends \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm
      */
     public function contentField($options = [])
     {
-        $html = '';
-
         if ($this->model->contentType) {
-            foreach ($this->model->getI18nAttributeNames('content') as $attributeName) {
-                $field = $this->field($this->model, $attributeName, $options);
-                $html .= $this->model->contentType === 'html' ? $field->widget(CKEditor::class, $this->getContentConfig()) : $field->textarea();
-            }
+            $attribute = $this->model->getI18nAttributeName('content', ArrayHelper::remove($options, 'language'));
+            $field = $this->field($this->model, $attribute, $options);
+
+            return $this->model->contentType === 'html' ? $field->widget(CKEditor::class, $this->getContentConfig()) : $field->textarea();
         }
 
-        return $html;
+        return '';
     }
 
     /**
@@ -84,16 +77,13 @@ class ActiveForm extends \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm
      */
     public function slugField($options = []): string
     {
+        $language = ArrayHelper::remove($options, 'language');
+        $attribute = $this->model->getI18nAttributeName('slug', $language);
         $options = array_merge(['enableClientValidation' => false], $options);
-        $html = '';
 
-        foreach ($this->model->getI18nAttributeNames('slug') as $language => $attributeName) {
-            $html .= $this->field($this->model, $attributeName, $options)->slug([
-                'baseUrl' => Html::tag('span', $this->getSlugBaseUrl($language), ['id' => $this->getSlugId($language)]),
-            ]);
-        }
-
-        return $html;
+        return  $this->field($this->model, $attribute, $options)->slug([
+            'baseUrl' => Html::tag('span', $this->getSlugBaseUrl($language), ['id' => $this->getSlugId($language)]),
+        ]);
     }
 
     /**

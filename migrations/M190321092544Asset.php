@@ -18,7 +18,8 @@ use yii\db\Migration;
  */
 class M190321092544Asset extends Migration
 {
-    use ModuleTrait, MigrationTrait;
+    use MigrationTrait;
+    use ModuleTrait;
 
     /**
      * @return bool|void
@@ -26,7 +27,6 @@ class M190321092544Asset extends Migration
     public function safeUp()
     {
         $schema = $this->getDb()->getSchema();
-        $i18n = Yii::$app->getI18n();
 
         foreach ($this->getLanguages() as $language) {
 
@@ -52,7 +52,7 @@ class M190321092544Asset extends Migration
                 'created_at' => $this->dateTime()->notNull(),
             ], $this->getTableOptions());
 
-            $this->addI18nColumns(Asset::tableName(), (new Asset)->i18nAttributes);
+            $this->addI18nColumns(Asset::tableName(), Asset::instance()->i18nAttributes);
 
             $this->createIndex('entry_id', Asset::tableName(), ['entry_id', 'status', 'position']);
             $this->createIndex('section_id', Asset::tableName(), ['section_id', 'position']);
@@ -63,7 +63,7 @@ class M190321092544Asset extends Migration
             $this->addForeignKey($tableName . '_file_id_ibfk', Asset::tableName(), 'file_id', File::tableName(), 'id', 'CASCADE');
             $this->addForeignKey($tableName . '_updated_by_ibfk', Asset::tableName(), 'updated_by_user_id', User::tableName(), 'id', 'SET NULL');
 
-            $this->addColumn(File::tableName(), $i18n->getAttributeName('cms_asset_count', $language), $this->smallInteger()->notNull()->defaultValue(0)->after('transformation_count'));
+            $this->addColumn(File::tableName(), File::instance()->getI18nAttributeName('cms_asset_count', $language), $this->smallInteger()->notNull()->defaultValue(0)->after('transformation_count'));
         }
     }
 
