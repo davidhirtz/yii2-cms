@@ -62,9 +62,11 @@ class EntryQuery extends \davidhirtz\yii2\skeleton\db\ActiveQuery
     {
         foreach ($categories as $category) {
             $categoryId = $category->id ?? $category;
+            $alias = count($categories) > 1 ? "entryCategory{$categoryId}" : 'entryCategory';
+
             $this->innerJoinWith([
-                'entryCategory entryCategory' . $categoryId => function (ActiveQuery $query) use ($categoryId) {
-                    $query->onCondition(['entryCategory' . $categoryId . '.[[category_id]]' => $categoryId]);
+                "entryCategory {$alias}" => function (ActiveQuery $query) use ($alias, $categoryId) {
+                    $query->onCondition(["[[{$alias}]].[[category_id]]" => $categoryId]);
                 }
             ], $eagerLoading);
         }

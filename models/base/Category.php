@@ -363,7 +363,7 @@ class Category extends ActiveRecord
      */
     public function getEntryOrderBy()
     {
-        return [EntryCategory::tableName() . $this->id . '.[[position]]' => SORT_ASC];
+        return [EntryCategory::tableName() . '.[[position]]' => SORT_ASC];
     }
 
     /**
