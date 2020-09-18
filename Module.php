@@ -13,9 +13,14 @@ class Module extends \yii\base\Module
     use ModuleTrait;
 
     /**
-     * @var bool whether entries should be categorized
+     * @var bool whether categories should be enabled
      */
     public $enableCategories = false;
+
+    /**
+     * @var bool whether categories should be stored in a nested tree
+     */
+    public $enableNestedCategories = true;
 
     /**
      * @var bool whether entries should automatically inherit parent categories
@@ -68,6 +73,10 @@ class Module extends \yii\base\Module
         }
 
         if (!$this->enableCategories) {
+            $this->enableNestedCategories = false;
+        }
+
+        if (!$this->enableNestedCategories) {
             $this->inheritNestedCategories = false;
         }
 

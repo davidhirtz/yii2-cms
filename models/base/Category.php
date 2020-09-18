@@ -130,6 +130,10 @@ class Category extends ActiveRecord
             $this->slug = Inflector::slug($this->slug);
         }
 
+        if (!static::getModule()->enableNestedCategories) {
+            $this->parent_id = null;
+        }
+
         return parent::beforeValidate();
     }
 

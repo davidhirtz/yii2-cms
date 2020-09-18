@@ -57,27 +57,29 @@ class CategoryActiveForm extends ActiveForm
      */
     public function parentIdField($options = [])
     {
-        if ($categories = static::getCategories()) {
-            $attributeNames = $this->model->getI18nAttributeNames('slug');
-            $defaultOptions = ['prompt' => ['text' => '']];
-
-            foreach ($attributeNames as $language => $attributeName) {
-                $defaultOptions['data-form-target'][] = $this->getSlugId($language);
-                $defaultOptions['prompt']['options']['data-value'][] = $this->getSlugBaseUrl($language);
-            }
-
-            foreach ($categories as $category) {
-                if ($category->lft >= $this->model->lft && $category->rgt <= $this->model->rgt) {
-                    $defaultOptions['options'][$category->id]['disabled'] = true;
-                }
+        if (static::getModule()->enableNestedCategories) {
+            if ($categories = static::getCategories()) {
+                $attributeNames = $this->model->getI18nAttributeNames('slug');
+                $defaultOptions = ['prompt' => ['text' => '']];
 
                 foreach ($attributeNames as $language => $attributeName) {
-                    $defaultOptions['options'][$category->id]['data-value'][] = $this->getCategoryBaseUrl($category, $language);
+                    $defaultOptions['data-form-target'][] = $this->getSlugId($language);
+                    $defaultOptions['prompt']['options']['data-value'][] = $this->getSlugBaseUrl($language);
                 }
-            }
 
-            $items = Category::indentNestedTree($categories, $this->model->getI18nAttributeName('name'));
-            return $this->field($this->model, 'parent_id')->dropDownList($items, ArrayHelper::merge($defaultOptions, $options));
+                foreach ($categories as $category) {
+                    if ($category->lft >= $this->model->lft && $category->rgt <= $this->model->rgt) {
+                        $defaultOptions['options'][$category->id]['disabled'] = true;
+                    }
+
+                    foreach ($attributeNames as $language => $attributeName) {
+                        $defaultOptions['options'][$category->id]['data-value'][] = $this->getCategoryBaseUrl($category, $language);
+                    }
+                }
+
+                $items = Category::indentNestedTree($categories, $this->model->getI18nAttributeName('name'));
+                return $this->field($this->model, 'parent_id')->dropDownList($items, ArrayHelper::merge($defaultOptions, $options));
+            }
         }
 
         return '';
@@ -107,9 +109,7 @@ class CategoryActiveForm extends ActiveForm
             $draftHostInfo = Yii::$app->getRequest()->getDraftHostInfo();
             $urlManager = Yii::$app->getUrlManager();
 
-            if (count(Yii::$app->getI18n()->languages) > 1) {
-                $route = array_merge($route, ['language' => $language]);
-            }
+            $route = array_filter(array_merge($route, ['language' => $urlManager->i18nUrl || $urlManager->i18nSubdomain ? $language : null]));
 
             if (isset($route['category']) && mb_strlen($route['category'], Yii::$app->charset) > $this->slugMaxLength) {
                 $route['category'] = '...' . mb_substr($route['category'], -$this->slugMaxLength, $this->slugMaxLength, Yii::$app->charset);
