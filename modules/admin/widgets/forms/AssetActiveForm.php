@@ -3,8 +3,10 @@
 namespace davidhirtz\yii2\cms\modules\admin\widgets\forms;
 
 use davidhirtz\yii2\cms\models\Asset;
+use davidhirtz\yii2\skeleton\widgets\forms\CKEditor;
 use davidhirtz\yii2\timeago\Timeago;
 use Yii;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 /**
@@ -74,12 +76,13 @@ class AssetActiveForm extends ActiveForm
      */
     public function altTextField($options = [])
     {
-        $fields = [];
-        foreach ($this->model->getI18nAttributeNames('alt_text') as $language => $attributeName) {
+        $language = ArrayHelper::remove($options, 'language');
+        $attribute = $this->model->getI18nAttributeName('alt_text', $language);
+
+        if (!isset($options['inputOptions']['placeholder'])) {
             $options['inputOptions']['placeholder'] = $this->model->file->getI18nAttribute('alt_text', $language);
-            $fields[] = $this->field($this->model, $attributeName, $options);
         }
 
-        return implode('', $fields);
+        return $this->field($this->model, $attribute, $options);
     }
 }
