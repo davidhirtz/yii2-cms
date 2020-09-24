@@ -107,6 +107,7 @@ class EntryCategoryGridView extends GridView
      */
     protected function getRoute(ActiveRecord $model, $params = [])
     {
+        /** @var Category $model */
         return ['category/update', 'id' => $model->id];
     }
 
