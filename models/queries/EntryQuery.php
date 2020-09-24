@@ -66,7 +66,7 @@ class EntryQuery extends \davidhirtz\yii2\skeleton\db\ActiveQuery
             $this->innerJoinWithEntryCategory($category->id ?? $category, $eagerLoading, true);
         }
 
-        return $this;
+        return $this->addSelectPrefixed(['position', 'updated_at']);
     }
 
     /**
