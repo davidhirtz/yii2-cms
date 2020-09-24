@@ -5,7 +5,6 @@ namespace davidhirtz\yii2\cms\modules\admin\widgets\grid\base;
 
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider;
-use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grid\StatusGridViewTrait;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grid\TypeGridViewTrait;
@@ -23,7 +22,6 @@ trait CategoryGridTrait
 {
     use StatusGridViewTrait;
     use TypeGridViewTrait;
-    use ModuleTrait;
 
     /**
      * @var string
