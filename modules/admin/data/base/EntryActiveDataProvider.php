@@ -40,9 +40,11 @@ class EntryActiveDataProvider extends ActiveDataProvider
      */
     public function init()
     {
-        $this->query = Entry::find();
-        $this->initQuery();
+        if (!$this->query) {
+            $this->query = Entry::find();
+        }
 
+        $this->initQuery();
         parent::init();
     }
 
@@ -55,21 +57,20 @@ class EntryActiveDataProvider extends ActiveDataProvider
             $this->query->orderBy(static::getModule()->defaultEntryOrderBy);
         }
 
-        if ($this->query->select) {
+        if (!$this->query->select) {
+            $this->query->select(Entry::tableName() . '.*');
+
+        } else {
             $this->query->replaceI18nAttributes();
         }
 
-        if (!$this->query->select) {
-            $this->query->select('*');
-        }
-
-        if ($this->type && isset(Entry::getTypes()[$this->type])) {
-            if (isset(Entry::getTypes()[$this->type]['orderBy'])) {
-                $this->query->orderBy(Entry::getTypes()[$this->type]['orderBy']);
+        if ($type = (Entry::getTypes()[$this->type] ?? false)) {
+            if (isset($type['orderBy'])) {
+                $this->query->orderBy($type['orderBy']);
             }
 
-            if (isset(Entry::getTypes()[$this->type]['sort'])) {
-                $this->setSort(Entry::getTypes()[$this->type]['sort']);
+            if (isset($type['sort'])) {
+                $this->setSort($type['sort']);
             }
 
             $this->query->andWhere([Entry::tableName() . '.[[type]]' => $this->type]);
