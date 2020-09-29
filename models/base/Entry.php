@@ -282,21 +282,26 @@ class Entry extends ActiveRecord implements AssetParentInterface
     }
 
     /**
-     * Updates category ids.
+     * Recalculates {@link \davidhirtz\yii2\cms\models\Entry::$category_ids}.
+     * @return $this
      */
     public function recalculateCategoryIds()
     {
-        $categoryIds = EntryCategory::find()->select(['category_id'])->where(['entry_id' => $this->id])->column();
-        $this->category_ids = implode(',', $categoryIds);
-        $this->update(false, ['category_ids', 'updated_at', 'updated_by_user_id']);
+        $this->category_ids = implode(',', EntryCategory::find()
+            ->select(['category_id'])
+            ->where(['entry_id' => $this->id])
+            ->column());
+
+        return $this;
     }
 
     /**
+     * Recalculates {@link \davidhirtz\yii2\cms\models\Entry::$section_count}.
      * @return $this
      */
     public function recalculateSectionCount()
     {
-        $this->section_count = $this->getSections()->count();
+        $this->section_count = (int)$this->getSections()->count();
         return $this;
     }
 

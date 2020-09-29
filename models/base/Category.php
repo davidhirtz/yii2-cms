@@ -152,9 +152,9 @@ class Category extends ActiveRecord
     }
 
     /**
-     * On parent id change all related entries (from this category as well as child categories)
+     * On parent id change all related entries (linked to this category as well as to the child categories)
      * need to be added to the new parent categories, if {@link \davidhirtz\yii2\cms\Module::$inheritNestedCategories}
-     * is true. Previous parent category relations will not be deleted.
+     * is true. Previous parent {@link EntryCategory} relations will not be deleted.
      *
      * @param bool $insert
      * @param array $changedAttributes
@@ -167,10 +167,16 @@ class Category extends ActiveRecord
                     $categories = [$this->id => $this] + $this->getDescendants();
 
                     /** @var EntryCategory[] $entryCategories */
-                    $entryCategories = EntryCategory::find()->where(['category_id' => array_keys($categories)])->all();
+                    $entryCategories = EntryCategory::find()
+                        ->where(['category_id' => array_keys($categories)])
+                        ->all();
 
                     $entryIds = array_unique(ArrayHelper::getColumn($entryCategories, 'entry_id'));
-                    $entries = Entry::find()->where(['id' => $entryIds])->indexBy('id')->all();
+
+                    $entries = Entry::find()
+                        ->where(['id' => $entryIds])
+                        ->indexBy('id')
+                        ->all();
 
                     foreach ($entryCategories as $entryCategory) {
                         $entryCategory->populateCategoryRelation($categories[$entryCategory->category_id]);
@@ -179,7 +185,11 @@ class Category extends ActiveRecord
                     }
 
                     foreach ($entries as $entry) {
-                        $entry->recalculateCategoryIds();
+                        $entry->recalculateCategoryIds()->updateAttributes([
+                            'category_ids',
+                            'updated_by_user_id' => $this->updated_by_user_id,
+                            'updated_at' => $this->updated_at,
+                        ]);
                     }
                 }
             }
@@ -244,12 +254,13 @@ class Category extends ActiveRecord
     }
 
     /**
-     * Updates entry count.
+     * Updates {@link \davidhirtz\yii2\cms\models\Category::$entry_count}.
+     * @return $this
      */
     public function recalculateEntryCount()
     {
-        $this->entry_count = $this->getEntryCategories()->count();
-        $this->update(false, ['entry_count', 'updated_at', 'updated_by_user_id']);
+        $this->entry_count = (int)$this->getEntryCategories()->count();
+        return $this;
     }
 
     /**

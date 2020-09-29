@@ -123,10 +123,10 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
                     $this->insertCategoryAncestors();
                 }
 
-                $this->entry->recalculateCategoryIds();
+                $this->updateEntryCategoryIds();
             }
 
-            $this->category->recalculateEntryCount();
+            $this->updateCategoryEntryCount();
         }
 
         parent::afterSave($insert, $changedAttributes);
@@ -143,12 +143,12 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
             }
 
             if (!$this->entry->isDeleted()) {
-                $this->entry->recalculateCategoryIds();
+                $this->updateEntryCategoryIds();
             }
         }
 
         if (!$this->category->isDeleted()) {
-            $this->category->recalculateEntryCount();
+            $this->updateCategoryEntryCount();
         }
 
         parent::afterDelete();
@@ -197,6 +197,32 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     {
         $this->populateRelation('entry', $entry);
         $this->entry_id = $entry->id;
+    }
+
+    /**
+     * Updates {@link \davidhirtz\yii2\cms\models\Entry::$category_ids}.
+     * @return bool|int
+     */
+    public function updateEntryCategoryIds()
+    {
+        return $this->entry->recalculateCategoryIds()->updateAttributes([
+            'category_ids',
+            'updated_by_user_id' => $this->updated_by_user_id,
+            'updated_at' => $this->updated_at,
+        ]);
+    }
+
+    /**
+     * Updates {@link \davidhirtz\yii2\cms\models\Category::$entry_count}.
+     * @return bool|int
+     */
+    public function updateCategoryEntryCount()
+    {
+        return $this->category->recalculateEntryCount()->updateAttributes([
+            'entry_count',
+            'updated_by_user_id' => $this->updated_by_user_id,
+            'updated_at' => $this->updated_at,
+        ]);
     }
 
     /**
