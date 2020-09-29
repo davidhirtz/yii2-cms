@@ -36,7 +36,6 @@ class EntryCategoryGridView extends GridView
      */
     public $showUrl = false;
 
-
     /**
      * @var array
      */
