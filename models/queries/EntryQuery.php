@@ -14,7 +14,7 @@ use davidhirtz\yii2\skeleton\db\ActiveQuery;
  * @method Entry[] all($db = null)
  * @method Entry one($db = null)
  */
-class EntryQuery extends \davidhirtz\yii2\skeleton\db\ActiveQuery
+class EntryQuery extends ActiveQuery
 {
     /**
      * @return $this
@@ -78,7 +78,7 @@ class EntryQuery extends \davidhirtz\yii2\skeleton\db\ActiveQuery
      * @param false $useAlias
      * @return $this
      */
-    private function innerJoinWithEntryCategory($categoryId, $eagerLoading = false, $useAlias = false)
+    protected function innerJoinWithEntryCategory($categoryId, $eagerLoading = false, $useAlias = false)
     {
         return $this->innerJoinWith([
             ($useAlias ? "entryCategory entryCategory{$categoryId}" : 'entryCategory') => function (ActiveQuery $query) use ($categoryId, $useAlias) {
