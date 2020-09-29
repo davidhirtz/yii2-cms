@@ -288,9 +288,8 @@ class Entry extends ActiveRecord implements AssetParentInterface
      */
     public function recalculateCategoryIds()
     {
-        $this->category_ids = ArrayHelper::createCacheString(EntryCategory::find()
+        $this->category_ids = ArrayHelper::createCacheString($this->getEntryCategories()
             ->select(['category_id'])
-            ->where(['entry_id' => $this->id])
             ->column());
 
         return $this;
