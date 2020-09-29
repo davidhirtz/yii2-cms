@@ -11,6 +11,7 @@ use davidhirtz\yii2\cms\models\queries\SectionQuery;
 use davidhirtz\yii2\cms\modules\admin\widgets\forms\EntryActiveForm;
 use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\media\models\AssetParentInterface;
+use davidhirtz\yii2\skeleton\helpers\ArrayHelper;
 use Yii;
 use yii\base\Widget;
 use yii\helpers\Inflector;
@@ -287,7 +288,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
      */
     public function recalculateCategoryIds()
     {
-        $this->category_ids = implode(',', EntryCategory::find()
+        $this->category_ids = ArrayHelper::createCacheString(EntryCategory::find()
             ->select(['category_id'])
             ->where(['entry_id' => $this->id])
             ->column());
@@ -310,7 +311,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
      */
     public function getCategoryIds(): array
     {
-        return array_filter(explode(',', $this->category_ids));
+        return ArrayHelper::cacheStringToArray($this->category_ids);
     }
 
     /**
