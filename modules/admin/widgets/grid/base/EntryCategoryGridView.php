@@ -47,9 +47,13 @@ class EntryCategoryGridView extends GridView
      */
     public function init()
     {
-        $this->rowOptions = function (Category $category) {
-            return ['class' => $category->entryCategory ? 'is-selected' : null];
-        };
+        if (!$this->rowOptions) {
+            $this->rowOptions = function (Category $category) {
+                return [
+                    'class' => $category->entryCategory ? 'is-selected' : null,
+                ];
+            };
+        }
 
         if (!$this->columns) {
             $this->columns = [
