@@ -3,8 +3,7 @@
 namespace davidhirtz\yii2\cms\modules\admin\widgets\grid\base;
 
 use davidhirtz\yii2\cms\models\Entry;
-use davidhirtz\yii2\cms\models\Section;
-use davidhirtz\yii2\cms\modules\admin\controllers\SectionController;
+use davidhirtz\yii2\cms\modules\admin\controllers\EntryCategoryController;
 use davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider;
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\modules\admin\widgets\CategoryTrait;
@@ -16,13 +15,13 @@ use davidhirtz\yii2\skeleton\modules\admin\widgets\grid\StatusGridViewTrait;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grid\TypeGridViewTrait;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\ButtonDropdown;
 use davidhirtz\yii2\timeago\Timeago;
-use davidhirtz\yii2\skeleton\widgets\fontawesome\Icon;
 use Yii;
 use yii\helpers\Url;
 
 /**
  * Class EntryGridView
  * @package davidhirtz\yii2\cms\modules\admin\widgets\grid\base
+ * @see \davidhirtz\yii2\cms\modules\admin\widgets\grid\EntryGridView
  *
  * @property EntryActiveDataProvider $dataProvider
  */
@@ -32,11 +31,6 @@ class EntryGridView extends GridView
     use ModuleTrait;
     use StatusGridViewTrait;
     use TypeGridViewTrait;
-
-    /**
-     * @var Section|null see {@link SectionController::actionEntries()}
-     */
-    public $section;
 
     /**
      * @var bool whether entry urls should be displayed in the name column
@@ -54,7 +48,7 @@ class EntryGridView extends GridView
     public $showCategoryDropdown = true;
 
     /**
-     * @var int|false defines when dropdown filter textfield is shown for category dropdown
+     * @var int|false defines when dropdown filter text field is shown for category dropdown
      */
     public $showCategoryDropdownFilterMinCount = 50;
 
@@ -62,6 +56,11 @@ class EntryGridView extends GridView
      * @var bool whether entry types should be selectable via dropdown
      */
     public $showTypeDropdown = true;
+
+    /**
+     * @var bool whether the delete button should be visible in the entry grid
+     */
+    public $showDeleteButton = false;
 
     /**
      * @var string
@@ -79,6 +78,7 @@ class EntryGridView extends GridView
     public function init()
     {
         if ($this->dataProvider->category) {
+            /** {@link EntryCategoryController::actionOrder()} */
             $this->orderRoute = ['entry-category/order', 'category' => $this->dataProvider->category->id];
         }
 
@@ -161,7 +161,6 @@ class EntryGridView extends GridView
                 [
                     [
                         'content' => $this->getCreateEntryButton() . ($this->showSelection ? $this->getSelectionButton() : ''),
-                        'visible' => Yii::$app->getUser()->can('author'),
                         'options' => ['class' => 'col'],
                     ],
                 ],
@@ -174,6 +173,10 @@ class EntryGridView extends GridView
      */
     protected function getCreateEntryButton()
     {
+        if (!Yii::$app->getUser()->can('entryCreate')) {
+            return '';
+        }
+
         return Html::a(Html::iconText('plus', Yii::t('cms', 'New Entry')), ['create', 'type' => $this->dataProvider->type], ['class' => 'btn btn-primary']);
     }
 
@@ -182,6 +185,10 @@ class EntryGridView extends GridView
      */
     protected function getSelectionButtonItems(): array
     {
+        if (!Yii::$app->getUser()->can('entryUpdate')) {
+            return [];
+        }
+
         return $this->statusSelectionButtonItems();
     }
 
@@ -299,59 +306,22 @@ class EntryGridView extends GridView
      */
     protected function getRowButtons(Entry $entry)
     {
-        if ($this->section) {
-            return $this->getSectionButtons($entry);
+        $user = Yii::$app->getUser();
+        $buttons = [];
+
+        if($this->isSortedByPosition() && $this->dataProvider->getCount() > 1 && $user->can('entryOrder')) {
+            $buttons[] = $this->getSortableButton();
         }
 
-        return $this->isSortedByPosition() ? [$this->getSortableButton(), $this->getUpdateButton($entry)] : [$this->getUpdateButton($entry)];
-    }
+        if($user->can('entryUpdate', ['entry' => $entry])) {
+            $buttons[] = $this->getUpdateButton($entry);
+        }
 
-    /**
-     * @param Entry $entry
-     * @return array
-     */
-    protected function getSectionButtons(Entry $entry)
-    {
-        $options = [
-            'class' => 'btn btn-primary',
-            'data-toggle' => 'tooltip',
-            'data-method' => 'post',
-            'data-params' => [Html::getInputName($this->section, 'entry_id') => $entry->id],
-        ];
+        if($this->showDeleteButton && $user->can('entryDelete', ['entry' => $entry])) {
+            $buttons[] = $this->getDeleteButton($entry);
+        }
 
-        return [
-            Html::a(Icon::tag('copy'), ['update', 'id' => $this->section->id], array_merge($options, [
-                'title' => Yii::t('cms', 'Move Section'),
-            ])),
-            Html::a(Icon::tag('paste'), ['clone', 'id' => $this->section->id], array_merge($options, [
-                'title' => Yii::t('cms', 'Copy Section'),
-            ])),
-        ];
-    }
-
-    /**
-     * @param Section $section
-     * @return string
-     */
-    protected function getSectionDeleteButton(Section $section)
-    {
-        return Html::a(Icon::tag('trash'), ['delete', 'id' => $section->id], [
-            'class' => 'btn btn-danger',
-            'data-confirm' => 'Wollen Sie diese Sektion sicher löschen?',
-            'data-ajax' => 'remove',
-            'data-target' => '#' . $this->getRowId($section),
-        ]);
-    }
-
-    /**
-     * @param Section $section
-     * @return string
-     */
-    protected function getSectionUpdateButton(Section $section)
-    {
-        return Html::a(Icon::tag('wrench'), ['update', 'id' => $section->id], [
-            'class' => 'btn btn-primary',
-        ]);
+        return $buttons;
     }
 
     /**

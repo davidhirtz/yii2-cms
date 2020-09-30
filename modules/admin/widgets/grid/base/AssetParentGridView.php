@@ -91,10 +91,10 @@ class AssetParentGridView extends GridView
     {
         return [
             'content' => function (Asset $asset) {
-                $typeName = [$asset->entry->getTypeName() ?: (!$asset->section_id ? \Yii::t('cms', 'Entry') : null)];
+                $typeName = [$asset->entry->getTypeName() ?: (!$asset->section_id ? Yii::t('cms', 'Entry') : null)];
 
                 if ($asset->section_id) {
-                    $typeName[] = $asset->section->getTypeName() ?: \Yii::t('cms', 'Section');
+                    $typeName[] = $asset->section->getTypeName() ?: Yii::t('cms', 'Section');
                 }
 
                 return Html::a(implode(' / ', array_filter($typeName)), $this->getRoute($asset));
@@ -150,35 +150,57 @@ class AssetParentGridView extends GridView
         return [
             'contentOptions' => ['class' => 'text-right text-nowrap'],
             'content' => function (Asset $asset) {
-                return Html::buttons([
-                    Html::a(Icon::tag('wrench'), ['cms/asset/update', 'id' => $asset->id], [
+                $user = Yii::$app->getUser();
+                $buttons = [];
+
+                if ($user->can($asset->isEntryAsset() ? 'entryAssetUpdate' : 'sectionAssetUpdate', ['asset' => $asset])) {
+                    $buttons[] = Html::a(Icon::tag('wrench'), ['cms/asset/update', 'id' => $asset->id], [
                         'class' => 'btn btn-primary',
                         'data-toggle' => 'tooltip',
                         'title' => Yii::t('cms', 'Edit Asset'),
-                    ]),
-                    Html::a(Icon::tag('trash'), ['cms/asset/delete', 'id' => $asset->id], [
+                    ]);
+                }
+
+                if ($user->can($asset->isEntryAsset() ? 'entryAssetDelete' : 'sectionAssetDelete', ['asset' => $asset])) {
+                    $buttons[] = Html::a(Icon::tag('trash'), ['cms/asset/delete', 'id' => $asset->id], [
                         'class' => 'btn btn-danger btn-delete-asset d-none d-md-inline-block',
                         'data-confirm' => Yii::t('yii', 'Are you sure you want to remove this asset?'),
                         'data-ajax' => 'remove',
                         'data-target' => '#' . $this->getRowId($asset),
-                    ]),
-                ]);
+                    ]);
+                }
+
+                return Html::buttons($buttons);
             }
         ];
     }
 
     /**
-     * @param ActiveRecord $model
-     * @param array $params
-     * @return array
+     * @inheritDoc
      */
-    protected function getRoute(ActiveRecord $model, $params = []): array
+    protected function getRoute(ActiveRecord $model, $params = [])
     {
-        return array_merge([$model->section_id ? '/admin/section/update' : '/admin/entry/update', 'id' => $model->getParent()->id, '#' => 'asset-' . $model->id], $params);
+        /** @var Asset $model */
+        $user = Yii::$app->getUser();
+        $parent = $model->getParent();
+
+        if ($model->isEntryAsset()) {
+            if ($user->can('entryUpdate', ['entry' => $parent])) {
+                return array_merge(['/admin/entry/update', 'id' => $parent->id, '#' => 'asset-' . $model->id], $params);
+            }
+        }
+
+        if ($model->isSectionAsset()) {
+            if ($user->can('sectionUpdate', ['section' => $parent])) {
+                return array_merge(['/admin/section/update', 'id' => $parent->id, '#' => 'asset-' . $model->id], $params);
+            }
+        }
+
+        return false;
     }
 
     /**
-     * @return Asset|\davidhirtz\yii2\skeleton\db\ActiveRecord
+     * @return Asset
      */
     public function getModel()
     {

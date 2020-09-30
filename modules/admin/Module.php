@@ -80,7 +80,7 @@ class Module extends \yii\base\Module
                         'icon' => 'book',
                         'url' => $this->url,
                         'active' => ['admin/category', 'admin/entry', 'admin/entry-category', 'admin/section', 'cms/'],
-                        'roles' => ['author'],
+                        'roles' => ['categoryUpdate', 'entryUpdate'],
                     ]
                 ];
             }
@@ -94,13 +94,13 @@ class Module extends \yii\base\Module
                                 'label' => Yii::t('cms', 'Create New Entry'),
                                 'url' => ['/admin/entry/create'],
                                 'icon' => 'pen',
-                                'roles' => ['author'],
+                                'roles' => ['entryCreate'],
                             ],
                             [
                                 'label' => Yii::t('cms', 'View All Entries'),
                                 'url' => ['/admin/entry/index'],
                                 'icon' => 'book',
-                                'roles' => ['author'],
+                                'roles' => ['entryUpdate'],
                             ],
                         ],
                     ],

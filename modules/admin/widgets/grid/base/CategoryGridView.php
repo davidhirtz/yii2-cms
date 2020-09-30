@@ -71,7 +71,7 @@ class CategoryGridView extends GridView
                 [
                     [
                         'content' => $this->getCreateCategoryButton(),
-                        'visible' => Yii::$app->getUser()->can('author'),
+                        'visible' => Yii::$app->getUser()->can('categoryCreate'),
                         'options' => ['class' => 'col'],
                     ],
                 ],

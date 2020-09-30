@@ -5,6 +5,8 @@ namespace davidhirtz\yii2\cms\modules\admin\controllers;
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\queries\AssetQuery;
 use davidhirtz\yii2\cms\models\queries\SectionQuery;
+use davidhirtz\yii2\cms\modules\admin\controllers\traits\EntryTrait;
+use davidhirtz\yii2\cms\modules\admin\controllers\traits\SectionTrait;
 use davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\cms\models\Section;
@@ -13,15 +15,19 @@ use davidhirtz\yii2\skeleton\web\Controller;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
+use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 
 
 /**
- * Class SectionController.
+ * Class SectionController
  * @package app\modules\content\modules\admin\controllers
  */
 class SectionController extends Controller
 {
+    use EntryTrait;
+    use SectionTrait;
     use ModuleTrait;
 
     /**
@@ -40,8 +46,23 @@ class SectionController extends Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['clone', 'create', 'delete', 'entries', 'index', 'order', 'update', 'update-all'],
-                        'roles' => ['author'],
+                        'actions' => ['entries', 'index', 'update', 'update-all'],
+                        'roles' => ['sectionUpdate'],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['clone', 'create'],
+                        'roles' => ['sectionCreate'],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['delete'],
+                        'roles' => ['sectionDelete'],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['order'],
+                        'roles' => ['sectionOrder'],
                     ],
                 ],
             ],
@@ -58,7 +79,7 @@ class SectionController extends Controller
 
     /**
      * @param int $entry
-     * @return string|\yii\web\Response
+     * @return string|Response
      */
     public function actionIndex(int $entry)
     {
@@ -79,6 +100,10 @@ class SectionController extends Controller
             throw new NotFoundHttpException();
         }
 
+        if (!Yii::$app->getUser()->can('entryUpdate', ['entry' => $entry])) {
+            throw new ForbiddenHttpException();
+        }
+
         /** @noinspection MissedViewInspection */
         return $this->render('index', [
             'entry' => $entry,
@@ -87,7 +112,7 @@ class SectionController extends Controller
 
     /**
      * @param int $entry
-     * @return string|\yii\web\Response
+     * @return string|Response
      */
     public function actionCreate(int $entry)
     {
@@ -97,6 +122,10 @@ class SectionController extends Controller
 
         if (!$section->entry) {
             throw new NotFoundHttpException();
+        }
+
+        if (!Yii::$app->getUser()->can('sectionCreate', ['section' => $section])) {
+            throw new ForbiddenHttpException();
         }
 
         if (($this->autoCreateSection || $section->load(Yii::$app->getRequest()->post())) && $section->insert()) {
@@ -112,11 +141,11 @@ class SectionController extends Controller
 
     /**
      * @param int $id
-     * @return string|\yii\web\Response
+     * @return string|Response
      */
     public function actionUpdate(int $id)
     {
-        $section = $this->findSection($id);
+        $section = $this->findSection($id, 'sectionUpdate');
 
         if ($section->load(Yii::$app->getRequest()->post())) {
             if ($section->update()) {
@@ -140,7 +169,7 @@ class SectionController extends Controller
     }
 
     /**
-     * @return \yii\web\Response
+     * @return Response
      */
     public function actionUpdateAll()
     {
@@ -151,13 +180,15 @@ class SectionController extends Controller
             $isUpdated = false;
 
             foreach ($sections as $section) {
-                if ($section->load($request->post())) {
-                    if ($section->update()) {
-                        $isUpdated = true;
-                    }
+                if (Yii::$app->getUser()->can('sectionUpdate', ['section' => $section])) {
+                    if ($section->load($request->post())) {
+                        if ($section->update()) {
+                            $isUpdated = true;
+                        }
 
-                    if ($section->hasErrors()) {
-                        $this->error($section->getFirstErrors());
+                        if ($section->hasErrors()) {
+                            $this->error($section->getFirstErrors());
+                        }
                     }
                 }
             }
@@ -175,11 +206,11 @@ class SectionController extends Controller
      * copying the section to another entry).
      *
      * @param int $id
-     * @return \yii\web\Response
+     * @return Response
      */
     public function actionClone(int $id)
     {
-        $section = $this->findSection($id);
+        $section = $this->findSection($id, 'sectionUpdate');
         $entryId = $section->entry_id;
 
         $section->load(Yii::$app->getRequest()->post());
@@ -196,11 +227,11 @@ class SectionController extends Controller
 
     /**
      * @param int $id
-     * @return string|\yii\web\Response
+     * @return string|Response
      */
     public function actionDelete(int $id)
     {
-        $section = $this->findSection($id);
+        $section = $this->findSection($id, 'sectionDelete');
 
         if ($section->delete()) {
             if (Yii::$app->getRequest()->getIsAjax()) {
@@ -208,7 +239,6 @@ class SectionController extends Controller
             }
 
             $this->success(Yii::t('cms', 'The section was deleted.'));
-
         }
 
         if ($errors = $section->getFirstErrors()) {
@@ -223,11 +253,13 @@ class SectionController extends Controller
      */
     public function actionOrder(int $entry)
     {
+        $entry = $this->findEntry($entry, 'sectionOrder');
+
         $sectionIds = array_map('intval', array_filter(Yii::$app->getRequest()->post('section', [])));
 
         if ($sectionIds) {
             $sections = Section::find()->select(['id', 'position'])
-                ->where(['entry_id' => $entry, 'id' => $sectionIds])
+                ->where(['entry_id' => $entry->id, 'id' => $sectionIds])
                 ->orderBy(['position' => SORT_ASC])
                 ->all();
 
@@ -236,6 +268,8 @@ class SectionController extends Controller
     }
 
     /**
+     * Displays a list of entries for copying / moving section.
+     *
      * @param int $id
      * @param int|null $category
      * @param int|null $type
@@ -244,7 +278,7 @@ class SectionController extends Controller
      */
     public function actionEntries(int $id, $category = null, $type = null, $q = null)
     {
-        $section = $this->findSection($id);
+        $section = $this->findSection($id, 'sectionUpdate');
 
         /** @var EntryActiveDataProvider $provider */
         $provider = Yii::createObject([
@@ -259,19 +293,5 @@ class SectionController extends Controller
             'section' => $section,
             'provider' => $provider,
         ]);
-    }
-
-    /**
-     * @param int $id
-     * @return Section
-     * @throws NotFoundHttpException
-     */
-    protected function findSection(int $id)
-    {
-        if (!$section = Section::findOne((int)$id)) {
-            throw new NotFoundHttpException();
-        }
-
-        return $section;
     }
 }

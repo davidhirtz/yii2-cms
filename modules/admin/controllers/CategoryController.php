@@ -2,14 +2,17 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\controllers;
 
+use davidhirtz\yii2\cms\modules\admin\controllers\traits\CategoryTrait;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider;
 use davidhirtz\yii2\skeleton\web\Controller;
+use Exception;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
-use yii\web\NotFoundHttpException;
+use yii\web\ForbiddenHttpException;
+use yii\web\Response;
 use yii\web\ServerErrorHttpException;
 
 /**
@@ -18,6 +21,7 @@ use yii\web\ServerErrorHttpException;
  */
 class CategoryController extends Controller
 {
+    use CategoryTrait;
     use ModuleTrait;
 
     /**
@@ -31,8 +35,23 @@ class CategoryController extends Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['create', 'index', 'order', 'update', 'delete'],
-                        'roles' => ['author'],
+                        'actions' => ['index', 'update'],
+                        'roles' => ['categoryUpdate'],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['create'],
+                        'roles' => ['categoryCreate'],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['delete'],
+                        'roles' => ['categoryDelete'],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['order'],
+                        'roles' => ['categoryOrder'],
                     ],
                 ],
             ],
@@ -68,12 +87,16 @@ class CategoryController extends Controller
 
     /**
      * @param int|null $id
-     * @return string|\yii\web\Response
+     * @return string|Response
      */
     public function actionCreate($id = null)
     {
         $category = new Category();
         $category->parent_id = $id;
+
+        if (!Yii::$app->getUser()->can('categoryCreate', ['category' => $category])) {
+            throw new ForbiddenHttpException();
+        }
 
         if ($category->load(Yii::$app->getRequest()->post()) && $category->insert()) {
             $this->success(Yii::t('cms', 'The category was created.'));
@@ -88,16 +111,13 @@ class CategoryController extends Controller
 
     /**
      * @param int $id
-     * @return string|\yii\web\Response
+     * @return string|Response
      */
     public function actionUpdate($id)
     {
-        if (!$category = Category::findOne((int)$id)) {
-            throw new NotFoundHttpException();
-        }
+        $category = $this->findCategory($id, 'categoryUpdate');
 
         if ($category->load(Yii::$app->getRequest()->post())) {
-
             if ($category->update()) {
                 $this->success(Yii::t('cms', 'The category was updated.'));
             }
@@ -122,13 +142,11 @@ class CategoryController extends Controller
 
     /**
      * @param int $id
-     * @return string|\yii\web\Response
+     * @return string|Response
      */
-    public function actionDelete($id)
+    public function actionDelete(int $id)
     {
-        if (!$category = Category::findOne((int)$id)) {
-            throw new NotFoundHttpException();
-        }
+        $category = $this->findCategory($id, 'categoryDelete');
 
         if ($category->delete()) {
             $this->success(Yii::t('cms', 'The category was deleted.'));
@@ -142,18 +160,16 @@ class CategoryController extends Controller
     /**
      * @param int|null $id
      */
-    public function actionOrder($id=null)
+    public function actionOrder($id = null)
     {
-        $order=array_flip(Yii::$app->getRequest()->post('category'));
-        $transaction=Yii::$app->getDb()->beginTransaction();
+        $order = array_flip(Yii::$app->getRequest()->post('category'));
+        $transaction = Yii::$app->getDb()->beginTransaction();
 
-        try
-        {
+        try {
             Category::rebuildNestedTree(Category::findOne((int)$id), $order);
             $transaction->commit();
-        }
-        catch(\Exception $exception)
-        {
+
+        } catch (Exception $exception) {
             $transaction->rollBack();
             throw $exception;
         }

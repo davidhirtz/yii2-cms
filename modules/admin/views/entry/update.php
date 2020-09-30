@@ -3,13 +3,15 @@
  * Update entry.
  * @see \davidhirtz\yii2\cms\modules\admin\controllers\EntryController::actionUpdate()
  *
- * @var \davidhirtz\yii2\skeleton\web\View $this
- * @var \davidhirtz\yii2\cms\models\Entry $entry
+ * @var View $this
+ * @var Entry $entry
  */
 
+use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\modules\admin\widgets\grid\AssetGridView;
 use davidhirtz\yii2\cms\modules\admin\widgets\nav\Submenu;
 use davidhirtz\yii2\skeleton\helpers\Html;
+use davidhirtz\yii2\skeleton\web\View;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
 use davidhirtz\yii2\skeleton\widgets\forms\DeleteActiveForm;
 use davidhirtz\yii2\cms\modules\admin\widgets\panels\EntryHelpPanel;
@@ -30,8 +32,7 @@ $this->setTitle(Yii::t('cms', 'Edit Entry'));
     ]),
 ]); ?>
 
-<?php
-if ($entry->hasAssetsEnabled()) {
+<?php if ($entry->hasAssetsEnabled()) {
     echo Panel::widget([
         'id' => 'assets',
         'title' => $entry->getAttributeLabel('asset_count'),
@@ -46,11 +47,13 @@ if ($entry->hasAssetsEnabled()) {
     'model' => $entry,
 ]); ?>
 
-<?= Panel::widget([
-    'type' => 'danger',
-    'title' => Yii::t('cms', 'Delete Entry'),
-    'content' => DeleteActiveForm::widget([
-        'model' => $entry,
-        'message' => Yii::t('cms', 'Warning: Deleting this entry cannot be undone. All related sections will also be unrecoverably deleted. Please be certain!')
-    ]),
-]); ?>
+<?php if (Yii::$app->getUser()->can('entryDelete', ['entry' => $entry])) {
+    echo Panel::widget([
+        'type' => 'danger',
+        'title' => Yii::t('cms', 'Delete Entry'),
+        'content' => DeleteActiveForm::widget([
+            'model' => $entry,
+            'message' => Yii::t('cms', 'Warning: Deleting this entry cannot be undone. All related sections will also be unrecoverably deleted. Please be certain!')
+        ]),
+    ]);
+} ?>

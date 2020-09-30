@@ -20,7 +20,7 @@ trait UpdateFileButtonTrait
      */
     protected function getUpdateFileButton()
     {
-        if (Yii::$app->getUser()->can('upload')) {
+        if (Yii::$app->getUser()->can('fileCreate')) {
             return Html::a(Html::iconText('image', Yii::t('media', 'Edit File')), ['/admin/file/update', 'id' => $this->model->file_id], [
                 'class' => 'btn btn-secondary',
             ]);

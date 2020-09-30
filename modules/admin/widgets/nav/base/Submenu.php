@@ -99,6 +99,7 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
      */
     protected function getEntryGridViewItems(): array
     {
+        $canEntryUpdate = Yii::$app->getUser()->can('entryUpdate');
         $items = [];
 
         if ($this->showEntryTypes) {
@@ -106,6 +107,7 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
                 $items[] = [
                     'label' => $attributes['plural'] ?? $attributes['name'],
                     'url' => ['/admin/entry/index', 'type' => $type],
+                    'visible' => $canEntryUpdate,
                     'active' => ['admin/entry' => ['type' => $type]],
                     'icon' => $attributes['icon'] ?? 'book',
                     'labelOptions' => [
@@ -117,6 +119,7 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
             $items[] = [
                 'label' => Yii::t('cms', 'Entries'),
                 'url' => ['/admin/entry/index'],
+                'visible' => $canEntryUpdate,
                 'active' => ['admin/entry/'],
                 'icon' => 'book',
                 'labelOptions' => [
@@ -137,6 +140,7 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
             [
                 'label' => Yii::t('cms', 'Categories'),
                 'url' => ['/admin/category/index'],
+                'visible' => Yii::$app->getUser()->can('categoryUpdate'),
                 'active' => ['admin/category/'],
                 'icon' => 'folder-open',
                 'labelOptions' => [
@@ -159,12 +163,13 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
      */
     protected function getEntryFormItems(): array
     {
-        $model = $this->isSection() ? $this->model->entry : $this->model;
+        $entry = $this->isSection() ? $this->model->entry : $this->model;
 
         return [
             [
-                'label' => $this->showEntryTypes ? $model->getTypeName() : Yii::t('cms', 'Entry'),
-                'url' => ['/admin/entry/update', 'id' => $model->id],
+                'label' => $this->showEntryTypes ? $entry->getTypeName() : Yii::t('cms', 'Entry'),
+                'url' => ['/admin/entry/update', 'id' => $entry->id],
+                'visible' => Yii::$app->getUser()->can('entryUpdate', ['entry' => $entry]),
                 'active' => array_filter([
                     'admin/entry/',
                     'admin/cms/asset/' => ['entry'],
@@ -183,14 +188,15 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
      */
     protected function getEntryCategoryItems(): array
     {
-        $model = $this->isSection() ? $this->model->entry : $this->model;
+        $entry = $this->isSection() ? $this->model->entry : $this->model;
 
         return !$this->showEntryCategories ? [] : [
             [
                 'label' => Yii::t('cms', 'Categories'),
-                'url' => ['/admin/entry-category/index', 'entry' => $model->id],
+                'url' => ['/admin/entry-category/index', 'entry' => $entry->id],
+                'visible' => Yii::$app->getUser()->can('entryCategoryUpdate', ['entry' => $entry]),
                 'active' => ['admin/entry-category/'],
-                'badge' => $model->getCategoryCount() ?: false,
+                'badge' => $entry->getCategoryCount() ?: false,
                 'badgeOptions' => [
                     'id' => 'entry-category-count',
                     'class' => 'badge d-none d-md-inline-block',
@@ -211,18 +217,19 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
      */
     protected function getEntrySectionItems(): array
     {
-        $model = $this->isSection() ? $this->model->entry : $this->model;
+        $entry = $this->isSection() ? $this->model->entry : $this->model;
 
         return !$this->showEntrySections ? [] : [
             [
                 'label' => Yii::t('cms', 'Sections'),
-                'url' => ['/admin/section/index', 'entry' => $model->id],
+                'url' => ['/admin/section/index', 'entry' => $entry->id],
+                'visible' => Yii::$app->getUser()->can('sectionUpdate', ['entry' => $entry]),
                 'active' => array_filter([
                     'admin/section/',
                     'admin/cms/asset/' => ['section'],
                     $this->isSection() ? 'admin/cms/asset/update' : null,
                 ]),
-                'badge' => $model->section_count ?: false,
+                'badge' => $entry->section_count ?: false,
                 'badgeOptions' => [
                     'id' => 'entry-section-count',
                     'class' => 'badge d-none d-md-inline-block',

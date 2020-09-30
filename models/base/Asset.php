@@ -7,6 +7,7 @@ use davidhirtz\yii2\cms\models\queries\AssetQuery;
 use davidhirtz\yii2\cms\models\queries\EntryQuery;
 use davidhirtz\yii2\cms\models\queries\SectionQuery;
 use davidhirtz\yii2\cms\models\Section;
+use davidhirtz\yii2\cms\modules\admin\Module;
 use davidhirtz\yii2\cms\modules\admin\widgets\forms\AssetActiveForm;
 use davidhirtz\yii2\cms\modules\admin\widgets\grid\AssetParentGridView;
 use davidhirtz\yii2\datetime\DateTime;
@@ -33,6 +34,7 @@ use yii\base\Widget;
  * @property int $updated_by_user_id
  * @property DateTime $updated_at
  * @property DateTime $created_at
+ *
  * @property Entry $entry
  * @property Section $section
  * @property File $file
@@ -40,7 +42,7 @@ use yii\base\Widget;
  *
  * @method static \davidhirtz\yii2\cms\models\Asset findOne($condition)
  */
-class Asset extends \davidhirtz\yii2\cms\models\base\ActiveRecord implements AssetInterface
+class Asset extends ActiveRecord implements AssetInterface
 {
     /**
      * Constants.
@@ -159,7 +161,6 @@ class Asset extends \davidhirtz\yii2\cms\models\base\ActiveRecord implements Ass
      */
     public static function find()
     {
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return Yii::createObject(AssetQuery::class, [get_called_class()]);
     }
 
@@ -281,7 +282,7 @@ class Asset extends \davidhirtz\yii2\cms\models\base\ActiveRecord implements Ass
      */
     public function getParentName(): string
     {
-        /** @var \davidhirtz\yii2\cms\modules\admin\Module $module */
+        /** @var Module $module */
         $module = Yii::$app->getModule('admin')->getModule('cms');
         return $module->name;
     }
@@ -300,6 +301,22 @@ class Asset extends \davidhirtz\yii2\cms\models\base\ActiveRecord implements Ass
     public function getRoute()
     {
         return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEntryAsset(): bool
+    {
+        return !$this->section_id;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSectionAsset(): bool
+    {
+        return (bool)$this->section_id;
     }
 
     /**

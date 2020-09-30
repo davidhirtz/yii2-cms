@@ -1,16 +1,19 @@
 <?php
 /**
- * Update category.
+ * Update category
  * @see \davidhirtz\yii2\cms\modules\admin\controllers\CategoryController::actionUpdate()
  *
- * @var \davidhirtz\yii2\skeleton\web\View $this
- * @var \davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider $provider
- * @var \davidhirtz\yii2\cms\models\Category $category
+ * @var View $this
+ * @var CategoryActiveDataProvider $provider
+ * @var Category $category
  */
 
+use davidhirtz\yii2\cms\models\Category;
+use davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider;
 use davidhirtz\yii2\cms\modules\admin\widgets\grid\CategoryGridView;
 use davidhirtz\yii2\cms\modules\admin\widgets\nav\Submenu;
 use davidhirtz\yii2\skeleton\helpers\Html;
+use davidhirtz\yii2\skeleton\web\View;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
 use davidhirtz\yii2\skeleton\widgets\forms\DeleteActiveForm;
 use davidhirtz\yii2\cms\modules\admin\widgets\panels\CategoryHelpPanel;
@@ -31,8 +34,7 @@ $this->setTitle(Yii::t('cms', 'Edit Category'));
     ]),
 ]); ?>
 
-<?php
-if ($category->getBranchCount()) {
+<?php if ($category->getBranchCount()) {
     echo Panel::widget([
         'title' => Yii::t('cms', 'Subcategories'),
         'content' => CategoryGridView::widget([
@@ -48,11 +50,13 @@ if ($category->getBranchCount()) {
     'model' => $category,
 ]); ?>
 
-<?= Panel::widget([
-    'type' => 'danger',
-    'title' => Yii::t('cms', 'Delete Category'),
-    'content' => DeleteActiveForm::widget([
-        'model' => $category,
-        'message' => Yii::t('cms', 'Warning: Deleting this category cannot be undone. All related sections will also be unrecoverably deleted. All subcategories will also be unrecoverably deleted. Please be certain!')
-    ]),
-]); ?>
+<?php if (Yii::$app->getUser()->can('categoryDelete', ['category' => $category])) {
+    echo Panel::widget([
+        'type' => 'danger',
+        'title' => Yii::t('cms', 'Delete Category'),
+        'content' => DeleteActiveForm::widget([
+            'model' => $category,
+            'message' => Yii::t('cms', 'Warning: Deleting this category cannot be undone. All related sections will also be unrecoverably deleted. All subcategories will also be unrecoverably deleted. Please be certain!')
+        ]),
+    ]);
+} ?>

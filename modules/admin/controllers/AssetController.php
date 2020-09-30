@@ -3,7 +3,9 @@
 namespace davidhirtz\yii2\cms\modules\admin\controllers;
 
 use davidhirtz\yii2\cms\models\Entry;
-use davidhirtz\yii2\cms\models\Section;
+use davidhirtz\yii2\cms\modules\admin\controllers\traits\AssetTrait;
+use davidhirtz\yii2\cms\modules\admin\controllers\traits\EntryTrait;
+use davidhirtz\yii2\cms\modules\admin\controllers\traits\SectionTrait;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\media\models\File;
@@ -13,7 +15,8 @@ use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\BadRequestHttpException;
-use yii\web\NotFoundHttpException;
+use yii\web\ForbiddenHttpException;
+use yii\web\Response;
 
 /**
  * Class AssetController
@@ -21,10 +24,13 @@ use yii\web\NotFoundHttpException;
  */
 class AssetController extends Controller
 {
+    use AssetTrait;
+    use EntryTrait;
+    use SectionTrait;
     use ModuleTrait;
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function behaviors()
     {
@@ -34,8 +40,23 @@ class AssetController extends Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['create', 'index', 'order', 'update', 'delete'],
-                        'roles' => ['author'],
+                        'actions' => ['index', 'update'],
+                        'roles' => ['entryAssetUpdate', 'sectionAssetUpdate'],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['create'],
+                        'roles' => ['entryAssetCreate', 'sectionAssetCreate'],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['delete'],
+                        'roles' => ['entryAssetDelete', 'sectionAssetDelete'],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['order'],
+                        'roles' => ['entryAssetOrder', 'sectionAssetOrder'],
                     ],
                 ],
             ],
@@ -50,23 +71,17 @@ class AssetController extends Controller
     }
 
     /**
-     * @param int $entry
-     * @param int $section
-     * @param int $folder
-     * @param int $type
-     * @param string $q
+     * @param int|null $entry
+     * @param int|null $section
+     * @param int|null $folder
+     * @param int|null $type
+     * @param string|null $q
      * @return string
      */
     public function actionIndex($entry = null, $section = null, $folder = null, $type = null, $q = null)
     {
-        if ($section) {
-            if (!$parent = Section::findOne((int)$section)) {
-                throw new NotFoundHttpException;
-            }
-
-        } elseif (!$entry || !$parent = Entry::findOne((int)$entry)) {
-            throw new NotFoundHttpException;
-        }
+        $parent = $section ? $this->findSection($section, 'sectionAssetUpdate') :
+            $this->findEntry($entry, 'entryAssetUpdate');
 
         if ($parent instanceof Entry) {
             // Populate assets without sections for file grid
@@ -91,26 +106,29 @@ class AssetController extends Controller
     }
 
     /**
-     * @param int $entry
-     * @param int $section
-     * @param int $file
-     * @param int $folder
-     * @return string|\yii\web\Response
+     * @param int|null $entry
+     * @param int|null $section
+     * @param int|null $file
+     * @param int|null $folder
+     * @return string|Response
      */
     public function actionCreate($entry = null, $section = null, $file = null, $folder = null)
     {
         $request = Yii::$app->getRequest();
-        $file = $file ? File::findOne($file) : new File;
+        $user = Yii::$app->getUser();
+
+        $file = $file ? File::findOne($file) : new File();
         $file->folder_id = $folder;
 
-        $isNew = $file->getIsNewRecord();
+        if ($isNew = $file->getIsNewRecord()) {
+            if (!$user->can('fileCreate', ['file' => $file])) {
+                throw new ForbiddenHttpException();
+            }
 
-        if ($file->getIsNewRecord()) {
             // This is not very elegant right now. But copy errors need to be handled by validation
             // and upload errors might be a partial upload that should simply end the request.
             if ($url = $request->post('url')) {
                 $file->copy($request->post('url'));
-
             } elseif (!$file->upload()) {
                 return '';
             }
@@ -121,10 +139,14 @@ class AssetController extends Controller
             }
         }
 
-        $asset = new Asset;
+        $asset = new Asset();
         $asset->entry_id = $entry;
         $asset->section_id = $section;
         $asset->file_id = $file->id;
+
+        if (!$user->can($asset->isEntryAsset() ? 'entryAssetCreate' : 'sectionAssetCreate', ['asset' => $asset])) {
+            throw new ForbiddenHttpException();
+        }
 
         if (!$asset->insert()) {
             $errors = $asset->getFirstErrors();
@@ -141,12 +163,14 @@ class AssetController extends Controller
 
     /**
      * @param int $id
-     * @return string|\yii\web\Response
+     * @return string|Response
      */
-    public function actionUpdate($id)
+    public function actionUpdate(int $id)
     {
-        if (!$asset = Asset::findOne($id)) {
-            throw new NotFoundHttpException;
+        $asset = $this->findAsset($id);
+
+        if (!Yii::$app->getUser()->can($asset->isEntryAsset() ? 'entryAssetUpdate' : 'sectionAssetUpdate', ['asset' => $asset])) {
+            throw new ForbiddenHttpException();
         }
 
         if ($asset->load(Yii::$app->getRequest()->post())) {
@@ -167,12 +191,14 @@ class AssetController extends Controller
 
     /**
      * @param int $id
-     * @return string|\yii\web\Response
+     * @return string|Response
      */
     public function actionDelete($id)
     {
-        if (!$asset = Asset::findOne($id)) {
-            throw new NotFoundHttpException;
+        $asset = $this->findAsset($id);
+
+        if (!Yii::$app->getUser()->can($asset->isEntryAsset() ? 'entryAssetDelete' : 'sectionAssetDelete', ['asset' => $asset])) {
+            throw new ForbiddenHttpException();
         }
 
         if ($asset->delete()) {
@@ -189,28 +215,30 @@ class AssetController extends Controller
     }
 
     /**
-     * @param int $entry
-     * @param int $section
+     * @param int|null $entry
+     * @param int|null $section
      */
     public function actionOrder($entry = null, $section = null)
     {
-        if ($entry || $section) {
-            $asset = Asset::find()->select(['id', 'position'])
-                ->andWhere($entry ? ['entry_id' => $entry, 'section_id' => null] : ['section_id' => $section])
-                ->orderBy(['position' => SORT_ASC])
-                ->all();
+        $parent = $section ? $this->findSection($section, 'sectionAssetOrder') :
+            $this->findEntry($entry, 'entryAssetOrder');
 
-            Asset::updatePosition($asset, array_flip(Yii::$app->getRequest()->post('asset')));
-        }
+        $asset = Asset::find()->select(['id', 'position'])
+            ->andWhere($parent instanceof Entry ? ['entry_id' => $parent->id, 'section_id' => null] : ['section_id' => $parent->id])
+            ->orderBy(['position' => SORT_ASC])
+            ->all();
+
+        Asset::updatePosition($asset, array_flip(Yii::$app->getRequest()->post('asset')));
     }
 
     /**
      * @param Asset $asset
      * @param bool $isDeleted
-     * @return \yii\web\Response
+     * @return Response
      */
     private function redirectToParent(Asset $asset, $isDeleted = false)
     {
-        return $this->redirect(($asset->section_id ? ['/admin/section/update', 'id' => $asset->section_id] : ['/admin/entry/update', 'id' => $asset->entry_id]) + ['#' => $isDeleted ? 'assets' : ('asset-' . $asset->id)]);
+        $route = $asset->section_id ? ['/admin/section/update', 'id' => $asset->section_id] : ['/admin/entry/update', 'id' => $asset->entry_id];
+        return $this->redirect($route + ['#' => $isDeleted ? 'assets' : ('asset-' . $asset->id)]);
     }
 }

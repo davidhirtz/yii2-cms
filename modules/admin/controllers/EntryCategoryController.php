@@ -4,14 +4,16 @@ namespace davidhirtz\yii2\cms\modules\admin\controllers;
 
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\EntryCategory;
+use davidhirtz\yii2\cms\modules\admin\controllers\traits\CategoryTrait;
+use davidhirtz\yii2\cms\modules\admin\controllers\traits\EntryTrait;
 use davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
-use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\skeleton\web\Controller;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
-use yii\web\NotFoundHttpException;
+use yii\web\ForbiddenHttpException;
+use yii\web\Response;
 
 /**
  * Class EntryCategoryController
@@ -19,6 +21,8 @@ use yii\web\NotFoundHttpException;
  */
 class EntryCategoryController extends Controller
 {
+    use CategoryTrait;
+    use EntryTrait;
     use ModuleTrait;
 
     /**
@@ -32,8 +36,13 @@ class EntryCategoryController extends Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['create', 'index', 'order', 'delete'],
-                        'roles' => ['author'],
+                        'actions' => ['index', 'create', 'delete'],
+                        'roles' => ['entryCategoryUpdate'],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['order'],
+                        'roles' => ['entryOrder'],
                     ],
                 ],
             ],
@@ -56,9 +65,7 @@ class EntryCategoryController extends Controller
      */
     public function actionIndex($entry = null, $category = null, $q = null)
     {
-        if (!$entry = Entry::findOne((int)$entry)) {
-            throw new NotFoundHttpException();
-        }
+        $entry = $this->findEntry($entry, 'entryUpdate');
 
         /** @var CategoryActiveDataProvider $provider */
         $provider = Yii::createObject([
@@ -77,41 +84,52 @@ class EntryCategoryController extends Controller
     /**
      * @param int $entry
      * @param int $category
-     * @return string|\yii\web\Response
+     * @return string|Response
      */
-    public function actionCreate($entry, $category)
+    public function actionCreate(int $entry, int $category)
     {
-        $junction = new EntryCategory([
+        $entryCategory = new EntryCategory([
             'entry_id' => $entry,
             'category_id' => $category,
         ]);
 
-        $junction->insert();
-        return $this->redirect(['index', 'entry' => $junction->entry_id]);
+        if (!Yii::$app->getUser()->can('entryCategoryUpdate', ['entryCategory' => $entryCategory])) {
+            throw new ForbiddenHttpException();
+        }
+
+        $entryCategory->insert();
+        return $this->redirect(['index', 'entry' => $entryCategory->entry_id]);
     }
 
     /**
      * @param int $entry
      * @param int $category
-     * @return string|\yii\web\Response
+     * @return string|Response
      */
-    public function actionDelete($entry, $category)
+    public function actionDelete(int $entry, int $category)
     {
-        if (!$junction = EntryCategory::findOne(['entry_id' => $entry, 'category_id' => $category])) {
-            throw new NotFoundHttpException();
+        $entryCategory = EntryCategory::findOne([
+            'entry_id' => $entry,
+            'category_id' => $category,
+        ]);
+
+        if (!Yii::$app->getUser()->can('entryCategoryUpdate', ['entryCategory' => $entryCategory])) {
+            throw new ForbiddenHttpException();
         }
 
-        $junction->delete();
-        return $this->redirect(['index', 'entry' => $junction->entry_id]);
+        $entryCategory->delete();
+        return $this->redirect(['index', 'entry' => $entryCategory->entry_id]);
     }
 
     /**
      * @param int $category
      */
-    public function actionOrder($category)
+    public function actionOrder(int $category)
     {
-        $entries = EntryCategory::find()->select(['entry_id', 'category_id', 'position'])
-            ->where(['category_id' => $category])
+        $category = $this->findCategory($category, 'entryOrder');
+
+        $entries = EntryCategory::find()
+            ->where(['category_id' => $category->id])
             ->orderBy(['position' => SORT_ASC])
             ->all();
 

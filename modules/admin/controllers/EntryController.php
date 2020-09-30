@@ -3,6 +3,7 @@
 namespace davidhirtz\yii2\cms\modules\admin\controllers;
 
 use davidhirtz\yii2\cms\models\Category;
+use davidhirtz\yii2\cms\modules\admin\controllers\traits\EntryTrait;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider;
@@ -11,7 +12,8 @@ use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\helpers\Url;
-use yii\web\NotFoundHttpException;
+use yii\web\ForbiddenHttpException;
+use yii\web\Response;
 
 /**
  * Class EntryController
@@ -19,6 +21,7 @@ use yii\web\NotFoundHttpException;
  */
 class EntryController extends Controller
 {
+    use EntryTrait;
     use ModuleTrait;
 
     /**
@@ -32,8 +35,23 @@ class EntryController extends Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['clone', 'create', 'delete', 'index', 'order', 'update', 'update-all'],
-                        'roles' => ['author'],
+                        'actions' => ['index', 'update', 'update-all'],
+                        'roles' => ['entryUpdate'],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['clone', 'create'],
+                        'roles' => ['entryCreate'],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['delete'],
+                        'roles' => ['entryDelete'],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['order'],
+                        'roles' => ['entryOrder'],
                     ],
                 ],
             ],
@@ -77,13 +95,17 @@ class EntryController extends Controller
 
     /**
      * @param int|null $type
-     * @return string|\yii\web\Response
+     * @return string|Response
      */
     public function actionCreate($type = null)
     {
         $entry = new Entry();
         $entry->type = $type ?: static::getModule()->defaultEntryType;
         $request = Yii::$app->getRequest();
+
+        if (!Yii::$app->getUser()->can('entryCreate', ['entry' => $entry])) {
+            throw new ForbiddenHttpException();
+        }
 
         if ($entry->load($request->post()) && $entry->insert()) {
             $this->success(Yii::t('cms', 'The entry was created.'));
@@ -98,11 +120,11 @@ class EntryController extends Controller
 
     /**
      * @param int $id
-     * @return string|\yii\web\Response
+     * @return string|Response
      */
     public function actionUpdate(int $id)
     {
-        $entry = $this->findEntry($id);
+        $entry = $this->findEntry($id, 'entryUpdate');
         $request = Yii::$app->getRequest();
 
         if ($entry->load($request->post())) {
@@ -128,7 +150,7 @@ class EntryController extends Controller
     }
 
     /**
-     * @return \yii\web\Response
+     * @return Response
      */
     public function actionUpdateAll()
     {
@@ -139,13 +161,15 @@ class EntryController extends Controller
             $isUpdated = false;
 
             foreach ($entries as $entry) {
-                if ($entry->load($request->post())) {
-                    if ($entry->update()) {
-                        $isUpdated = true;
-                    }
+                if (Yii::$app->getUser()->can('entryUpdate', ['entry' => $entry])) {
+                    if ($entry->load($request->post())) {
+                        if ($entry->update()) {
+                            $isUpdated = true;
+                        }
 
-                    if ($entry->hasErrors()) {
-                        $this->error($entry->getFirstErrors());
+                        if ($entry->hasErrors()) {
+                            $this->error($entry->getFirstErrors());
+                        }
                     }
                 }
             }
@@ -160,16 +184,15 @@ class EntryController extends Controller
 
     /**
      * @param int $id
-     * @return string|\yii\web\Response
+     * @return string|Response
      */
     public function actionClone(int $id)
     {
-        $entry = $this->findEntry($id);
+        $entry = $this->findEntry($id, 'entryUpdate');
         $clone = $entry->clone();
 
         if ($errors = $clone->getFirstErrors()) {
             $this->error($errors);
-
         } else {
             $this->success(Yii::t('cms', 'The entry was duplicated.'));
         }
@@ -179,15 +202,14 @@ class EntryController extends Controller
 
     /**
      * @param int $id
-     * @return string|\yii\web\Response
+     * @return string|Response
      */
     public function actionDelete(int $id)
     {
-        $entry = $this->findEntry($id);
+        $entry = $this->findEntry($id, 'entryDelete');
 
         if ($entry->delete()) {
             $this->success(Yii::t('cms', 'The entry was deleted.'));
-
         } elseif ($errors = $entry->getFirstErrors()) {
             $this->error($errors);
         }
@@ -210,19 +232,5 @@ class EntryController extends Controller
 
             Entry::updatePosition($entries, array_flip($entryIds));
         }
-    }
-
-    /**
-     * @param int $id
-     * @return Entry
-     * @throws NotFoundHttpException
-     */
-    protected function findEntry(int $id)
-    {
-        if (!$entry = Entry::findOne((int)$id)) {
-            throw new NotFoundHttpException();
-        }
-
-        return $entry;
     }
 }

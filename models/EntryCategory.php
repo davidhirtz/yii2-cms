@@ -3,7 +3,7 @@
 namespace davidhirtz\yii2\cms\models;
 
 /**
- * Class EntryCategory.
+ * Class EntryCategory
  * @package davidhirtz\yii2\cms\models
  *
  */

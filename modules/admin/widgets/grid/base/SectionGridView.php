@@ -8,15 +8,15 @@ use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grid\GridView;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grid\StatusGridViewTrait;
-use davidhirtz\yii2\skeleton\widgets\fontawesome\Icon;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\data\ArrayDataProvider;
 use yii\helpers\StringHelper;
 
 /**
- * Class SectionGridView.
+ * Class SectionGridView
  * @package davidhirtz\yii2\cms\modules\admin\widgets\grid\base
+ * @see \davidhirtz\yii2\cms\modules\admin\widgets\grid\SectionGridView
  *
  * @property ActiveDataProvider $dataProvider
  */
@@ -36,18 +36,7 @@ class SectionGridView extends GridView
     public $showDeleteButton = false;
 
     /**
-     * @var array
-     */
-    public $columns = [
-        'status',
-        'type',
-        'name',
-        'asset_count',
-        'buttons',
-    ];
-
-    /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function init()
     {
@@ -57,8 +46,16 @@ class SectionGridView extends GridView
                 'pagination' => false,
                 'sort' => false,
             ]);
+        }
 
-            $this->setModel(Section::instance());
+        if(!$this->columns) {
+            $this->columns = [
+                $this->statusColumn(),
+                $this->typeColumn(),
+                $this->nameColumn(),
+                $this->assetCountColumn(),
+                $this->buttonsColumn(),
+            ];
         }
 
         $this->orderRoute = ['order', 'entry' => $this->entry->id];
@@ -91,6 +88,10 @@ class SectionGridView extends GridView
      */
     protected function getCreateSectionButton(): string
     {
+        if (!Yii::$app->getUser()->can('sectionCreate', ['entry' => $this->entry])) {
+            return '';
+        }
+
         return Html::a(Html::iconText('plus', Yii::t('cms', 'New Section')), ['create', 'entry' => $this->entry->id], ['class' => 'btn btn-primary']);
     }
 
@@ -99,6 +100,10 @@ class SectionGridView extends GridView
      */
     protected function getSelectionButtonItems(): array
     {
+        if (!Yii::$app->getUser()->can('sectionUpdate', ['entry' => $this->entry])) {
+            return [];
+        }
+
         return $this->statusSelectionButtonItems();
     }
 
@@ -192,37 +197,26 @@ class SectionGridView extends GridView
      */
     protected function getRowButtons(Section $section): array
     {
+        $user = Yii::$app->getUser();
         $buttons = [];
 
-        if ($this->dataProvider->getCount() > 1) {
+        if($this->isSortedByPosition() && $this->dataProvider->getCount() > 1 && $user->can('sectionOrder')) {
             $buttons[] = $this->getSortableButton();
         }
 
-        $buttons[] = $this->getUpdateButton($section);
+        if($user->can('sectionUpdate', ['section' => $section])) {
+            $buttons[] = $this->getUpdateButton($section);
+        }
 
-        if ($this->showDeleteButton) {
-            $buttons[] = $this->getSectionDeleteButton($section);
+        if($this->showDeleteButton && $user->can('sectionDelete', ['section' => $section])) {
+            $buttons[] = $this->getDeleteButton($section);
         }
 
         return $buttons;
     }
 
     /**
-     * @param Section $section
-     * @return string
-     */
-    protected function getSectionDeleteButton(Section $section): string
-    {
-        return Html::a(Icon::tag('trash'), ['delete', 'id' => $section->id], [
-            'class' => 'btn btn-danger',
-            'data-confirm' => 'Wollen Sie diese Sektion sicher löschen?',
-            'data-ajax' => 'remove',
-            'data-target' => '#' . $this->getRowId($section),
-        ]);
-    }
-
-    /**
-     * @return \davidhirtz\yii2\skeleton\db\ActiveRecord|Section
+     * @return Section
      */
     public function getModel()
     {
