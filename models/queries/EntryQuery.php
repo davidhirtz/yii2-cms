@@ -93,7 +93,7 @@ class EntryQuery extends ActiveQuery
      */
     public function whereSlug(string $slug)
     {
-        return $this->where([Entry::tableName() . '.[[' . Entry::instance()->getI18nAttributeName('slug') . ']]' => $slug]);
+        return $this->andWhere([Entry::tableName() . '.[[' . Entry::instance()->getI18nAttributeName('slug') . ']]' => $slug]);
     }
 
     /**
