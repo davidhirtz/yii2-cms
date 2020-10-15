@@ -14,6 +14,7 @@ use davidhirtz\yii2\skeleton\helpers\ArrayHelper;
 use Yii;
 use yii\base\Widget;
 use yii\caching\TagDependency;
+use yii\db\ActiveQuery;
 use yii\helpers\Inflector;
 
 /**
@@ -195,6 +196,8 @@ class Category extends ActiveRecord
             }
         }
 
+        $this->invalidateCategoriesCache();
+
         parent::afterSave($insert, $changedAttributes);
     }
 
@@ -226,7 +229,7 @@ class Category extends ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getEntryCategory()
     {
@@ -245,7 +248,7 @@ class Category extends ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getEntryCategories()
     {
