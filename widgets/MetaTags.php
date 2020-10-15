@@ -28,9 +28,24 @@ class MetaTags extends BaseObject
     public $languages;
 
     /**
+     * @var bool whether href links should be registered, defaults to `true`.
+     */
+    public $enableHrefLangLinks = true;
+
+    /**
+     * @var bool whether the canonical url should be registered, defaults to `false`.
+     */
+    public $enableCanonicalUrl = false;
+
+    /**
      * @var bool whether assets should be registered as meta images
      */
-    public $registerImages = true;
+    public $enableImages = true;
+
+    /**
+     * @var bool whether social meta tags should be registered as meta images
+     */
+    public $enableSocialMetaTags = true;
 
     /**
      * @var int the asset type for meta images, if empty all assets of the entry will be included
@@ -71,8 +86,8 @@ class MetaTags extends BaseObject
      */
     public function init()
     {
-        if ($this->registerImages) {
-            $this->registerImages = $this->model instanceof Entry && static::getModule()->enableEntryAssets;
+        if ($this->enableImages) {
+            $this->enableImages = $this->model instanceof Entry && static::getModule()->enableEntryAssets;
         }
 
         if (!$this->languages && $this->languages !== false) {
@@ -80,6 +95,10 @@ class MetaTags extends BaseObject
             if ($manager->i18nUrl || $manager->i18nSubdomain) {
                 $this->languages = array_keys($manager->languages);
             }
+        }
+
+        if (!$this->languages) {
+            $this->enableHrefLangLinks = false;
         }
 
         parent::init();
@@ -92,9 +111,22 @@ class MetaTags extends BaseObject
     {
         $this->setTitle();
         $this->setDescription();
-        $this->registerHrefLangLinkTags();
-        $this->registerSocialMetaTags();
-        $this->registerImageMetaTags();
+
+        if ($this->enableHrefLangLinks) {
+            $this->registerHrefLangLinkTags();
+        }
+
+        if ($this->enableCanonicalUrl) {
+            $this->registerCanonicalUrlTags();
+        }
+
+        if ($this->enableImages) {
+            $this->registerImageMetaTags();
+        }
+
+        if ($this->enableSocialMetaTags) {
+            $this->registerSocialMetaTags();
+        }
     }
 
     /**
@@ -114,12 +146,40 @@ class MetaTags extends BaseObject
     }
 
     /**
-     * Sets href language tags.
+     * Registers href language tags.
      */
     public function registerHrefLangLinkTags()
     {
-        if ($this->languages) {
-            $this->getView()->registerHrefLangLinkTags($this->languages);
+        if ($route = $this->model->getRoute()) {
+            $urlManager = Yii::$app->getUrlManager();
+            $currentLanguage = Yii::$app->language;
+            $view = $this->getView();
+
+            foreach ($this->languages as $language) {
+                Yii::$app->language = $language;
+                $view->registerHrefLangLinkTag($language, $urlManager->createAbsoluteUrl($route, true));
+            }
+
+            Yii::$app->language = $currentLanguage;
+            $this->registerDefaultHrefLangLinkTag();
+        }
+    }
+
+    /**
+     * Registers default language tag.
+     */
+    public function registerDefaultHrefLangLinkTag()
+    {
+        $this->getView()->registerDefaultHrefLangLinkTag(Yii::$app->getUrlManager()->defaultLanguage);
+    }
+
+    /**
+     * Registers canonical url.
+     */
+    public function registerCanonicalUrlTags()
+    {
+        if ($route = $this->model->getRoute()) {
+            $this->getView()->registerCanonicalTag(Yii::$app->getUrlManager()->createAbsoluteUrl($route));
         }
     }
 
@@ -133,7 +193,7 @@ class MetaTags extends BaseObject
         }
 
         if ($this->twitterCard) {
-            if ($this->twitterCard == 'summary_large_image' && (!$this->registerImages || !$this->model->asset_count)) {
+            if ($this->twitterCard == 'summary_large_image' && (!$this->enableImages || !$this->model->asset_count)) {
                 $this->twitterCard = 'summary';
             }
 
@@ -146,19 +206,17 @@ class MetaTags extends BaseObject
      */
     public function registerImageMetaTags()
     {
-        if ($this->registerImages) {
-            foreach ($this->model->assets as $asset) {
-                if (!$asset->section_id && (!$this->assetType || $this->assetType == $asset->type)) {
-                    $file = $asset->file;
-                    if ($this->transformationName) {
-                        if ($url = $file->getTransformationUrl($this->transformationName)) {
-                            $width = $file->getTransformationOptions($this->transformationName, 'width');
-                            $height = $file->getTransformationOptions($this->transformationName, 'height') ?: ceil($width * $file->getHeightPercentage() / 100);
-                            $this->getView()->registerImageMetaTags($url, $width, $height);
-                        }
-                    } else {
-                        $this->getView()->registerImageMetaTags($file->getUrl(), $file->width, $file->height);
+        foreach ($this->model->assets as $asset) {
+            if (!$asset->section_id && (!$this->assetType || $this->assetType == $asset->type)) {
+                $file = $asset->file;
+                if ($this->transformationName) {
+                    if ($url = $file->getTransformationUrl($this->transformationName)) {
+                        $width = $file->getTransformationOptions($this->transformationName, 'width');
+                        $height = $file->getTransformationOptions($this->transformationName, 'height') ?: ceil($width * $file->getHeightPercentage() / 100);
+                        $this->getView()->registerImageMetaTags($url, $width, $height);
                     }
+                } else {
+                    $this->getView()->registerImageMetaTags($file->getUrl(), $file->width, $file->height);
                 }
             }
         }
