@@ -340,7 +340,7 @@ class Category extends ActiveRecord
             }
 
             foreach (static::getCategories() as $category) {
-                if ($category->slug == $slug && ($category->parent_id == $parentId)) {
+                if ($category->getI18nAttribute('slug') == $slug && ($category->parent_id == $parentId)) {
                     return $category;
                 }
             }
