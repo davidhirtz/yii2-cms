@@ -11,6 +11,7 @@ use davidhirtz\yii2\skeleton\modules\admin\widgets\forms\ModelTimestampTrait;
 use davidhirtz\yii2\skeleton\widgets\forms\CKEditor;
 use Yii;
 use yii\helpers\ArrayHelper;
+use yii\widgets\ActiveField;
 
 /**
  * Class ActiveForm
@@ -23,13 +24,8 @@ class ActiveForm extends \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm
     use ModelTimestampTrait;
 
     /**
-     * @var bool
-     */
-    public $showUnsafeAttributes = true;
-
-    /**
      * @param array $options
-     * @return \yii\widgets\ActiveField|string
+     * @return ActiveField|string
      */
     public function statusField($options = [])
     {
@@ -38,7 +34,7 @@ class ActiveForm extends \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm
 
     /**
      * @param array $options
-     * @return \yii\widgets\ActiveField|string
+     * @return ActiveField|string
      */
     public function typeField($options = [])
     {
@@ -118,6 +114,22 @@ class ActiveForm extends \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm
     protected function getTypes(): array
     {
         return ArrayHelper::getColumn($this->model::getTypes(), 'name');
+    }
+
+    /**
+     * @return array
+     */
+    public function getTypeToggleOptions()
+    {
+        $toggle = [];
+
+        foreach ($this->model::getTypes() as $type => $typeOptions) {
+            if ($hidden = ($typeOptions['hiddenFields'] ?? false)) {
+                $toggle[] = [$type, $hidden];
+            }
+        }
+
+        return $this->getToggleOptions($toggle);
     }
 
     /**
