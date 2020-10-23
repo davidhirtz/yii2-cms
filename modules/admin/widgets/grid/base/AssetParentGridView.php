@@ -4,7 +4,6 @@ namespace davidhirtz\yii2\cms\modules\admin\widgets\grid\base;
 
 use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\media\models\File;
-use davidhirtz\yii2\skeleton\db\ActiveRecord;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grid\GridView;
 use davidhirtz\yii2\skeleton\widgets\fontawesome\Icon;

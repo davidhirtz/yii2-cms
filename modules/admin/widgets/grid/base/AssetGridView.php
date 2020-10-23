@@ -8,7 +8,6 @@ use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\media\assets\AdminAsset;
 use davidhirtz\yii2\media\models\AssetParentInterface;
 use davidhirtz\yii2\media\modules\admin\widgets\UploadTrait;
-use davidhirtz\yii2\skeleton\db\ActiveRecord;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grid\GridView;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grid\StatusGridViewTrait;

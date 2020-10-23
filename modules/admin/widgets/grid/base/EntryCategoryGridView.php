@@ -7,7 +7,6 @@ use davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider;
 use davidhirtz\yii2\cms\modules\admin\widgets\CategoryTrait;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\cms\models\Category;
-use davidhirtz\yii2\skeleton\db\ActiveRecord;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grid\GridView;
 use davidhirtz\yii2\timeago\Timeago;
