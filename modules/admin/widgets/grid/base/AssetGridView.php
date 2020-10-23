@@ -243,13 +243,11 @@ class AssetGridView extends GridView
     }
 
     /**
-     * @param ActiveRecord $model
+     * @param Asset $model
      * @return string
      */
-    protected function getDeleteButton(ActiveRecord $model)
+    protected function getDeleteButton($model)
     {
-        /** @var Asset $model */
-
         $options = [
             'class' => 'btn btn-danger btn-delete-asset d-none d-md-inline-block',
             'data-confirm' => Yii::t('yii', 'Are you sure you want to remove this asset?'),
@@ -276,11 +274,12 @@ class AssetGridView extends GridView
     }
 
     /**
-     * @inheritDoc
+     * @param Asset $model
+     * @param array $params
+     * @return array|false
      */
-    protected function getRoute(ActiveRecord $model, $params = [])
+    protected function getRoute($model, $params = [])
     {
-        /** @var Asset $model */
         if (!Yii::$app->getUser()->can($model->isEntryAsset() ? 'entryAssetUpdate' : 'sectionAssetUpdate', ['asset' => $model])) {
             return false;
         }

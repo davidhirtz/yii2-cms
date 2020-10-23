@@ -176,11 +176,12 @@ class AssetParentGridView extends GridView
     }
 
     /**
-     * @inheritDoc
+     * @param Asset $model
+     * @param array $params
+     * @return array|false
      */
-    protected function getRoute(ActiveRecord $model, $params = [])
+    protected function getRoute($model, $params = [])
     {
-        /** @var Asset $model */
         $user = Yii::$app->getUser();
         $parent = $model->getParent();
 

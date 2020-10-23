@@ -104,13 +104,12 @@ class EntryCategoryGridView extends GridView
     }
 
     /**
-     * @param ActiveRecord $model
+     * @param Category $model
      * @param array $params
      * @return array|false
      */
-    protected function getRoute(ActiveRecord $model, $params = [])
+    protected function getRoute($model, $params = [])
     {
-        /** @var Category $model */
         return ['category/update', 'id' => $model->id];
     }
 

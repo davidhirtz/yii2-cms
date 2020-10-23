@@ -393,13 +393,12 @@ class EntryGridView extends GridView
     }
 
     /**
-     * @param ActiveRecord $model
+     * @param Entry $model
      * @param array $params
      * @return array
      */
-    protected function getRoute(ActiveRecord $model, $params = []): array
+    protected function getRoute($model, $params = []): array
     {
-        /** @var Entry $model */
         return array_merge(Yii::$app->getRequest()->get(), ['/admin/entry/update', 'id' => $model->id], $params);
     }
 
