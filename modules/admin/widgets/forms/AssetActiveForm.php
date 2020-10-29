@@ -3,11 +3,9 @@
 namespace davidhirtz\yii2\cms\modules\admin\widgets\forms;
 
 use davidhirtz\yii2\cms\models\Asset;
-use davidhirtz\yii2\skeleton\widgets\forms\CKEditor;
-use davidhirtz\yii2\timeago\Timeago;
-use Yii;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+use yii\widgets\ActiveField;
 
 /**
  * Class AssetActiveForm
@@ -29,8 +27,6 @@ class AssetActiveForm extends ActiveForm
     {
         if (!$this->fields) {
             $this->fields = [
-                'thumbnail',
-                '-',
                 'status',
                 'type',
                 'name',
@@ -44,6 +40,19 @@ class AssetActiveForm extends ActiveForm
     }
 
     /**
+     * @inheritDoc
+     */
+    public function renderHeader()
+    {
+        if ($thumbnailField = $this->thumbnailField()) {
+            echo $thumbnailField;
+            echo $this->horizontalLine();
+        }
+
+        parent::renderHeader();
+    }
+
+    /**
      * @return string
      */
     public function thumbnailField()
@@ -54,7 +63,7 @@ class AssetActiveForm extends ActiveForm
 
     /**
      * @param array $options
-     * @return \yii\widgets\ActiveField|string
+     * @return ActiveField|string
      */
     public function statusField($options = [])
     {
@@ -63,7 +72,7 @@ class AssetActiveForm extends ActiveForm
 
     /**
      * @param array $options
-     * @return \yii\widgets\ActiveField|string
+     * @return ActiveField|string
      */
     public function typeField($options = [])
     {
