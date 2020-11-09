@@ -308,6 +308,14 @@ class Section extends ActiveRecord implements AssetParentInterface
     }
 
     /**
+     * @return string|null
+     */
+    public function getViewFile()
+    {
+        return $this->getTypeOptions()['viewFile'] ?? null;
+    }
+
+    /**
      * @return bool
      */
     public function hasAssetsEnabled(): bool
