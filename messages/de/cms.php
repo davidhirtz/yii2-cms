@@ -64,7 +64,7 @@ return [
     'Move Section' => 'Sektion verschieben',
     'Name' => 'Name',
     'New Category' => 'Neue Kategorie',
-    'New Entry' => 'Neuen Eintrag',
+    'New Entry' => 'Neuer Eintrag',
     'New Section' => 'Neue Sektion',
     'Notice: Removing an asset will not delete the actual file.' => 'Bitte beachten Sie, dass die Löschung eines Assets nicht die dazugehörige Datei löscht.',
     'Open website' => 'Webseite öffnen',
