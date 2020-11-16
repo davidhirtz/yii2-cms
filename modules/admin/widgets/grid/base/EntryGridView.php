@@ -176,7 +176,7 @@ class EntryGridView extends GridView
             return '';
         }
 
-        return Html::a(Html::iconText('plus', Yii::t('cms', 'New Entry')), ['create', 'type' => $this->dataProvider->type], ['class' => 'btn btn-primary']);
+        return Html::a(Html::iconText('plus', Yii::t('cms', 'New Entry')), ['/admin/entry/create', 'type' => $this->dataProvider->type], ['class' => 'btn btn-primary']);
     }
 
     /**

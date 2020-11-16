@@ -92,7 +92,7 @@ class SectionGridView extends GridView
             return '';
         }
 
-        return Html::a(Html::iconText('plus', Yii::t('cms', 'New Section')), ['create', 'entry' => $this->entry->id], ['class' => 'btn btn-primary']);
+        return Html::a(Html::iconText('plus', Yii::t('cms', 'New Section')), ['/admin/section/create', 'entry' => $this->entry->id], ['class' => 'btn btn-primary']);
     }
 
     /**

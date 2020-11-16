@@ -119,7 +119,7 @@ class CategoryGridView extends GridView
      */
     protected function getCreateCategoryButton()
     {
-        return Html::a(Html::iconText('plus', Yii::t('cms', 'New Category')), ['create', 'id' => $this->dataProvider->category->id ?? null], ['class' => 'btn btn-primary']);
+        return Html::a(Html::iconText('plus', Yii::t('cms', 'New Category')), ['/admin/category/create', 'id' => $this->dataProvider->category->id ?? null], ['class' => 'btn btn-primary']);
     }
 
     /**
