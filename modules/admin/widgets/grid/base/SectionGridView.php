@@ -48,7 +48,7 @@ class SectionGridView extends GridView
             ]);
         }
 
-        if(!$this->columns) {
+        if (!$this->columns) {
             $this->columns = [
                 $this->statusColumn(),
                 $this->typeColumn(),
@@ -173,7 +173,12 @@ class SectionGridView extends GridView
             'contentOptions' => ['class' => 'd-none d-md-table-cell text-center'],
             'visible' => static::getModule()->enableSectionAssets,
             'content' => function (Section $section) {
-                return Html::a(Yii::$app->getFormatter()->asInteger($section->asset_count), ['update', 'id' => $section->id, '#' => 'assets'], ['class' => 'badge']);
+                if (!$section->hasAssetsEnabled()) {
+                    return '';
+                }
+
+                $assetCount = Yii::$app->getFormatter()->asInteger($section->asset_count);
+                return Html::a($assetCount, $this->getRoute($section, ['#' => 'assets']), ['class' => 'badge']);
             }
         ];
     }
@@ -200,15 +205,15 @@ class SectionGridView extends GridView
         $user = Yii::$app->getUser();
         $buttons = [];
 
-        if($this->isSortedByPosition() && $this->dataProvider->getCount() > 1 && $user->can('sectionOrder')) {
+        if ($this->isSortedByPosition() && $this->dataProvider->getCount() > 1 && $user->can('sectionOrder')) {
             $buttons[] = $this->getSortableButton();
         }
 
-        if($user->can('sectionUpdate', ['section' => $section])) {
+        if ($user->can('sectionUpdate', ['section' => $section])) {
             $buttons[] = $this->getUpdateButton($section);
         }
 
-        if($this->showDeleteButton && $user->can('sectionDelete', ['section' => $section])) {
+        if ($this->showDeleteButton && $user->can('sectionDelete', ['section' => $section])) {
             $buttons[] = $this->getDeleteButton($section);
         }
 
