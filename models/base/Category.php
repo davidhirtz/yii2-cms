@@ -51,6 +51,11 @@ class Category extends ActiveRecord
     use NestedTreeTrait;
 
     /**
+     * Cache.
+     */
+    public const CATEGORIES_CACHE_KEY = 'get-categories-cache';
+
+    /**
      * @var bool|string
      */
     public $contentType = false;
@@ -66,11 +71,6 @@ class Category extends ActiveRecord
      * @see Category::getCategories()
      */
     protected static $_categories;
-
-    /**
-     * Cache.
-     */
-    public const CATEGORIES_CACHE_KEY = 'get-categories-cache';
 
     /**
      * @inheritdoc
@@ -131,9 +131,8 @@ class Category extends ActiveRecord
             $this->slug = Inflector::slug($this->slug);
         }
 
-        if (!static::getModule()->enableNestedCategories) {
-            $this->parent_id = null;
-        }
+        // Make sure parent_id is correct type before running the validation
+        $this->parent_id = $this->parent_id && static::getModule()->enableNestedCategories ? (int)$this->parent_id : null;
 
         return parent::beforeValidate();
     }
@@ -196,7 +195,7 @@ class Category extends ActiveRecord
             }
         }
 
-        $this->invalidateCategoriesCache();
+        static::invalidateCategoriesCache();
 
         parent::afterSave($insert, $changedAttributes);
     }
@@ -280,7 +279,7 @@ class Category extends ActiveRecord
      */
     public function findSiblings()
     {
-        return $this->find()->where(['parent_id' => $this->parent_id]);
+        return static::find()->where(['parent_id' => $this->parent_id]);
     }
 
     /**
