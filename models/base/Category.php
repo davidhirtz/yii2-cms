@@ -80,6 +80,11 @@ class Category extends ActiveRecord
         return array_merge(parent::rules(), $this->getI18nRules([
             [
                 ['parent_id'],
+                'number',
+                'integerOnly' => true,
+            ],
+            [
+                ['parent_id'],
                 'validateParentId',
                 'skipOnEmpty' => false,
             ],
@@ -131,8 +136,9 @@ class Category extends ActiveRecord
             $this->slug = Inflector::slug($this->slug);
         }
 
-        // Make sure parent_id is correct type before running the validation
-        $this->parent_id = $this->parent_id && static::getModule()->enableNestedCategories ? (int)$this->parent_id : null;
+        if (!static::getModule()->enableNestedCategories) {
+            $this->parent_id = null;
+        }
 
         return parent::beforeValidate();
     }
