@@ -231,12 +231,12 @@ class Asset extends ActiveRecord implements AssetInterface
     {
         if ($this->id) {
             return Yii::t('skeleton', '{model} #{id}', [
-                'model' => Yii::t('cms', 'Asset'),
+                'model' => $this->getTrailModelType(),
                 'id' => $this->id,
             ]);
         }
 
-        return parent::getTrailModelName();
+        return $this->getTrailModelType();
     }
 
     /**

@@ -127,6 +127,11 @@ class EntryCategoryController extends Controller
     public function actionOrder(int $category)
     {
         $category = $this->findCategory($category, 'entryOrder');
+        $entryIds = array_map('intval', array_filter(Yii::$app->getRequest()->post('entry', [])));
+
+        if($entryIds) {
+            $category->updateEntryOrder($entryIds);
+        }
 
         $entries = EntryCategory::find()
             ->where(['category_id' => $category->id])

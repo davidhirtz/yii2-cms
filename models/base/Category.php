@@ -11,6 +11,7 @@ use davidhirtz\yii2\cms\models\EntryCategory;
 use davidhirtz\yii2\cms\modules\admin\widgets\forms\CategoryActiveForm;
 use davidhirtz\yii2\skeleton\db\NestedTreeTrait;
 use davidhirtz\yii2\skeleton\helpers\ArrayHelper;
+use davidhirtz\yii2\skeleton\models\Trail;
 use Yii;
 use yii\base\Widget;
 use yii\caching\TagDependency;
@@ -324,6 +325,21 @@ class Category extends ActiveRecord
     }
 
     /**
+     * @param array $entryIds
+     */
+    public function updateEntryOrder($entryIds)
+    {
+        $entries = $this->getEntryCategories()
+            ->andWhere(['entry_id' => $entryIds])
+            ->orderBy(['position' => SORT_ASC])
+            ->all();
+
+        if (EntryCategory::updatePosition($entries, array_flip($entryIds))) {
+            Trail::createOrderTrail($this, Yii::t('cms', 'Entry order changed'));
+        }
+    }
+
+    /**
      * @param string $slug
      * @param int|null $parentId
      * @return \davidhirtz\yii2\cms\models\Category|null
@@ -372,12 +388,12 @@ class Category extends ActiveRecord
     {
         if ($this->id) {
             return $this->getI18nAttribute('name') ?: Yii::t('skeleton', '{model} #{id}', [
-                'model' => $this->getTypeName() ?: Yii::t('cms', 'Category'),
+                'model' => $this->getTrailModelType(),
                 'id' => $this->id,
             ]);
         }
 
-        return parent::getTrailModelName();
+        return $this->getTrailModelType();
     }
 
     /**

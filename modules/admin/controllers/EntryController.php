@@ -7,6 +7,7 @@ use davidhirtz\yii2\cms\modules\admin\controllers\traits\EntryTrait;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider;
+use davidhirtz\yii2\skeleton\models\Trail;
 use davidhirtz\yii2\skeleton\web\Controller;
 use Yii;
 use yii\filters\AccessControl;
@@ -230,7 +231,9 @@ class EntryController extends Controller
                 ->orderBy(['position' => SORT_ASC])
                 ->all();
 
-            Entry::updatePosition($entries, array_flip($entryIds));
+            if (Entry::updatePosition($entries, array_flip($entryIds))) {
+                Trail::createOrderTrail(null, Yii::t('cms', 'Entry order changed'));
+            }
         }
     }
 }

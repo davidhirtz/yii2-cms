@@ -223,12 +223,11 @@ class AssetController extends Controller
         $parent = $section ? $this->findSection($section, 'sectionAssetOrder') :
             $this->findEntry($entry, 'entryAssetOrder');
 
-        $asset = Asset::find()->select(['id', 'position'])
-            ->andWhere($parent instanceof Entry ? ['entry_id' => $parent->id, 'section_id' => null] : ['section_id' => $parent->id])
-            ->orderBy(['position' => SORT_ASC])
-            ->all();
+        $assetIds = array_map('intval', array_filter(Yii::$app->getRequest()->post('asset', [])));
 
-        Asset::updatePosition($asset, array_flip(Yii::$app->getRequest()->post('asset')));
+        if ($assetIds) {
+            $parent->updateAssetOrder($assetIds);
+        }
     }
 
     /**

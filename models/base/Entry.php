@@ -12,6 +12,7 @@ use davidhirtz\yii2\cms\modules\admin\widgets\forms\EntryActiveForm;
 use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\media\models\AssetParentInterface;
 use davidhirtz\yii2\skeleton\helpers\ArrayHelper;
+use davidhirtz\yii2\skeleton\models\Trail;
 use Yii;
 use yii\base\Widget;
 use yii\db\ActiveQuery;
@@ -220,6 +221,37 @@ class Entry extends ActiveRecord implements AssetParentInterface
     }
 
     /**
+     * @param array $assetIds
+     */
+    public function updateAssetOrder($assetIds)
+    {
+        $assets = $this->getAssets()
+            ->select(['id', 'position'])
+            ->andWhere(['id' => $assetIds])
+            ->withoutSections()
+            ->all();
+
+        if (Asset::updatePosition($assets, array_flip($assetIds))) {
+            Trail::createOrderTrail($this, Yii::t('cms', 'Asset order changed'));
+        }
+    }
+
+    /**
+     * @param array $sectionIds
+     */
+    public function updateSectionOrder($sectionIds)
+    {
+        $sections = $this->getSections()
+            ->select(['id', 'position'])
+            ->andWhere(['id' => $sectionIds])
+            ->all();
+
+        if (Section::updatePosition($sections, array_flip($sectionIds))) {
+            Trail::createOrderTrail($this, Yii::t('cms', 'Section order changed'));
+        }
+    }
+
+    /**
      * @param array $attributes
      * @return \davidhirtz\yii2\cms\models\Entry
      */
@@ -342,12 +374,12 @@ class Entry extends ActiveRecord implements AssetParentInterface
     {
         if ($this->id) {
             return $this->getI18nAttribute('name') ?: Yii::t('skeleton', '{model} #{id}', [
-                'model' => $this->getTypeName() ?: Yii::t('cms', 'Entry'),
+                'model' => $this->getTrailModelType(),
                 'id' => $this->id,
             ]);
         }
 
-        return parent::getTrailModelName();
+        return $this->getTrailModelType();
     }
 
     /**

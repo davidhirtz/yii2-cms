@@ -41,6 +41,16 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     /**
      * @inheritDoc
      */
+    public function behaviors(): array
+    {
+        return array_merge(parent::behaviors(), [
+            'TrailBehavior' => 'davidhirtz\yii2\skeleton\behaviors\TrailBehavior',
+        ]);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function rules()
     {
         return array_merge(parent::rules(), [
@@ -278,13 +288,38 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     /**
      * @return array
      */
+    public function getTrailParents()
+    {
+        return [$this->entry, $this->category];
+    }
+
+    /**
+     * @return string
+     */
+    public function getTrailModelName()
+    {
+        return Yii::t('cms', 'Entry–Category');
+    }
+
+    /**
+     * @return string
+     */
+    public function getTrailModelType(): string
+    {
+        return Yii::t('skeleton', 'Relation');
+    }
+
+    /**
+     * @return array
+     */
     public function attributeLabels()
     {
         return array_merge(parent::attributeLabels(), [
+            'entry_id' => Yii::t('cms', 'Entry'),
+            'category_id' => Yii::t('cms', 'Category'),
             'updated_at' => Yii::t('cms', 'Added'),
         ]);
     }
-
 
     /**
      * @return string

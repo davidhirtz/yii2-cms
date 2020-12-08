@@ -200,16 +200,6 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     }
 
     /**
-     * @return string
-     */
-    public function getTrailModelName()
-    {
-        /** @var TrailBehavior $behavior */
-        $behavior = $this->getBehavior('TrailBehavior');
-        return $behavior->getTrailModelName();
-    }
-
-    /**
      * @return int
      */
     public function getMaxPosition(): int

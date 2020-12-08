@@ -251,19 +251,13 @@ class SectionController extends Controller
     /**
      * @param int $entry
      */
-    public function actionOrder(int $entry)
+    public function actionOrder($entry)
     {
         $entry = $this->findEntry($entry, 'sectionOrder');
-
         $sectionIds = array_map('intval', array_filter(Yii::$app->getRequest()->post('section', [])));
 
         if ($sectionIds) {
-            $sections = Section::find()->select(['id', 'position'])
-                ->where(['entry_id' => $entry->id, 'id' => $sectionIds])
-                ->orderBy(['position' => SORT_ASC])
-                ->all();
-
-            Section::updatePosition($sections, array_flip($sectionIds));
+            $entry->updateSectionOrder($sectionIds);
         }
     }
 

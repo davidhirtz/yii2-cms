@@ -10,6 +10,7 @@ use davidhirtz\yii2\cms\models\queries\SectionQuery;
 use davidhirtz\yii2\cms\modules\admin\widgets\forms\SectionActiveForm;
 use davidhirtz\yii2\cms\modules\admin\widgets\grid\SectionGridView;
 use davidhirtz\yii2\media\models\AssetParentInterface;
+use davidhirtz\yii2\skeleton\models\Trail;
 use Yii;
 use yii\base\Widget;
 use yii\helpers\Inflector;
@@ -227,6 +228,24 @@ class Section extends ActiveRecord implements AssetParentInterface
     }
 
     /**
+     * @param array $assetIds
+     */
+    public function updateAssetOrder($assetIds)
+    {
+        $assets = $this->getAssets()
+            ->select(['id', 'position'])
+            ->andWhere(['id' => $assetIds])
+            ->all();
+
+        if (Asset::updatePosition($assets, array_flip($assetIds))) {
+            $trail = Trail::createOrderTrail($this, Yii::t('cms', 'Asset order changed'));
+            Trail::createOrderTrail($this->entry, Yii::t('cms', 'Section asset order changed'), [
+                'trail_id' => $trail->id,
+            ]);
+        }
+    }
+
+    /**
      * @param array $attributes
      * @return $this
      */
@@ -294,16 +313,16 @@ class Section extends ActiveRecord implements AssetParentInterface
     /**
      * @return string
      */
-    public function getTrailModelName(): string
+    public function getTrailModelName()
     {
         if ($this->id) {
             return Yii::t('skeleton', '{model} #{id}', [
-                'model' => $this->getTypeName() ?: Yii::t('cms', 'Section'),
+                'model' => $this->getTypeName() ?: $this->getTrailModelType(),
                 'id' => $this->id,
             ]);
         }
 
-        return parent::getTrailModelName();
+        return $this->getTrailModelType();
     }
 
     /**
