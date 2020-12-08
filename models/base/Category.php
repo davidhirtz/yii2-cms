@@ -354,6 +354,49 @@ class Category extends ActiveRecord
     }
 
     /**
+     * @return array
+     */
+    public function getTrailAttributes(): array
+    {
+        return array_diff(parent::getTrailAttributes(), [
+            'lft',
+            'rgt',
+            'entry_count',
+        ]);
+    }
+
+    /**
+     * @return string
+     */
+    public function getTrailModelName()
+    {
+        if ($this->id) {
+            return $this->getI18nAttribute('name') ?: Yii::t('skeleton', '{model} #{id}', [
+                'model' => $this->getTypeName() ?: Yii::t('cms', 'Category'),
+                'id' => $this->id,
+            ]);
+        }
+
+        return parent::getTrailModelName();
+    }
+
+    /**
+     * @return string
+     */
+    public function getTrailModelType(): string
+    {
+        return $this->getTypeName() ?: Yii::t('cms', 'Category');
+    }
+
+    /**
+     * @return array|false
+     */
+    public function getAdminRoute()
+    {
+        return ['/admin/category/update', 'id' => $this->id];
+    }
+
+    /**
      * @return array|false
      */
     public function getRoute()
@@ -368,7 +411,6 @@ class Category extends ActiveRecord
     {
         $slugs = [];
 
-        /** @var static $ancestor */
         foreach ($this->getAncestors() as $ancestor) {
             $slugs[] = $ancestor->getI18nAttribute('slug');
         }

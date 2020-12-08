@@ -14,6 +14,7 @@ use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\media\models\AssetInterface;
 use davidhirtz\yii2\media\models\File;
 use davidhirtz\yii2\media\models\queries\FileQuery;
+use davidhirtz\yii2\skeleton\behaviors\TrailBehavior;
 use davidhirtz\yii2\skeleton\models\User;
 use Yii;
 use yii\base\Widget;
@@ -216,6 +217,37 @@ class Asset extends ActiveRecord implements AssetInterface
     }
 
     /**
+     * @return array
+     */
+    public function getTrailParents()
+    {
+        return $this->section_id ? [$this->section, $this->entry] : [$this->entry];
+    }
+
+    /**
+     * @return string
+     */
+    public function getTrailModelName()
+    {
+        if ($this->id) {
+            return Yii::t('skeleton', '{model} #{id}', [
+                'model' => Yii::t('cms', 'Asset'),
+                'id' => $this->id,
+            ]);
+        }
+
+        return parent::getTrailModelName();
+    }
+
+    /**
+     * @return string
+     */
+    public function getTrailModelType(): string
+    {
+        return Yii::t('cms', 'Asset');
+    }
+
+    /**
      * @param array|string|null $transformations
      * @param string|null $extension
      * @return array|string
@@ -296,6 +328,14 @@ class Asset extends ActiveRecord implements AssetInterface
     }
 
     /**
+     * @return array|false
+     */
+    public function getAdminRoute()
+    {
+        return ['/admin/cms/asset/update', 'id' => $this->id];
+    }
+
+    /**
      * @return false|mixed
      */
     public function getRoute()
@@ -325,6 +365,8 @@ class Asset extends ActiveRecord implements AssetInterface
     public function attributeLabels()
     {
         return array_merge(parent::attributeLabels(), [
+            'section_id' => Yii::t('cms', 'Section'),
+            'file_id' => Yii::t('media', 'File'),
             'alt_text' => Yii::t('cms', 'Alt text'),
             'link' => Yii::t('cms', 'Link'),
         ]);

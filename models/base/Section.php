@@ -37,6 +37,11 @@ class Section extends ActiveRecord implements AssetParentInterface
     public $slugTargetAttribute = ['entry_id', 'slug'];
 
     /**
+     * @var array {@see \davidhirtz\yii2\cms\models\Section::getTrailParents()}
+     */
+    private $_trailParents;
+
+    /**
      * @inheritDoc
      */
     public function rules(): array
@@ -139,11 +144,8 @@ class Section extends ActiveRecord implements AssetParentInterface
                 $prevEntry = Entry::findOne($changedAttributes['entry_id']);
 
                 if ($prevEntry) {
-                    $prevEntry->recalculateSectionCount()->updateAttributes([
-                        'section_count',
-                        'updated_by_user_id' => $this->updated_by_user_id,
-                        'updated_at' => $this->updated_at,
-                    ]);
+                    $prevEntry->recalculateSectionCount()->update();
+                    $this->_trailParents = [$prevEntry, $this->entry];
                 }
             }
 
@@ -278,6 +280,41 @@ class Section extends ActiveRecord implements AssetParentInterface
     }
 
     /**
+     * @return array
+     */
+    public function getTrailParents()
+    {
+        if ($this->_trailParents === null) {
+            $this->_trailParents = [$this->entry];
+        }
+
+        return $this->_trailParents;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTrailModelName(): string
+    {
+        if ($this->id) {
+            return Yii::t('skeleton', '{model} #{id}', [
+                'model' => $this->getTypeName() ?: Yii::t('cms', 'Section'),
+                'id' => $this->id,
+            ]);
+        }
+
+        return parent::getTrailModelName();
+    }
+
+    /**
+     * @return string
+     */
+    public function getTrailModelType(): string
+    {
+        return Yii::t('cms', 'Section');
+    }
+
+    /**
      * @return callable||string|null custom name for {@link SectionGridView::nameColumn()}
      */
     public function getNameColumnContent()
@@ -297,6 +334,14 @@ class Section extends ActiveRecord implements AssetParentInterface
     {
         /** @noinspection PhpIncompatibleReturnTypeInspection */
         return static::getTypes()[$this->type]['activeForm'] ?? SectionActiveForm::class;
+    }
+
+    /**
+     * @return array|false
+     */
+    public function getAdminRoute()
+    {
+        return ['/admin/section/update', 'id' => $this->id];
     }
 
     /**

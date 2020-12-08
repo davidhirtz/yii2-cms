@@ -4,7 +4,7 @@ namespace davidhirtz\yii2\cms\models\base;
 
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\datetime\DateTime;
-use davidhirtz\yii2\datetime\DateTimeBehavior;
+use davidhirtz\yii2\skeleton\behaviors\TrailBehavior;
 use davidhirtz\yii2\skeleton\db\ActiveQuery;
 use davidhirtz\yii2\skeleton\db\I18nAttributesTrait;
 use davidhirtz\yii2\skeleton\db\StatusAttributeTrait;
@@ -71,17 +71,18 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     private $_isSlugRequired;
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function behaviors(): array
     {
         return array_merge(parent::behaviors(), [
-            'DateTimeBehavior' => DateTimeBehavior::class,
+            'DateTimeBehavior' => 'davidhirtz\yii2\datetime\DateTimeBehavior',
+            'TrailBehavior' => 'davidhirtz\yii2\skeleton\behaviors\TrailBehavior',
         ]);
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function rules(): array
     {
@@ -100,7 +101,7 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function beforeSave($insert)
     {
@@ -185,12 +186,49 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     }
 
     /**
+     * @return array
+     */
+    public function getTrailAttributes(): array
+    {
+        return array_diff($this->attributes(), [
+            'position',
+            'asset_count',
+            'updated_by_user_id',
+            'updated_at',
+            'created_at',
+        ]);
+    }
+
+    /**
+     * @return string
+     */
+    public function getTrailModelName()
+    {
+        /** @var TrailBehavior $behavior */
+        $behavior = $this->getBehavior('TrailBehavior');
+        return $behavior->getTrailModelName();
+    }
+
+    /**
      * @return int
      */
     public function getMaxPosition(): int
     {
         return (int)$this->findSiblings()->max('[[position]]');
     }
+
+    /**
+     * @return array|false
+     */
+    public function getTrailModelAdminRoute()
+    {
+        return $this->getAdminRoute();
+    }
+
+    /**
+     * @return mixed
+     */
+    abstract public function getAdminRoute();
 
     /**
      * @return mixed
@@ -226,6 +264,7 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     public function attributeLabels()
     {
         return array_merge(parent::attributeLabels(), [
+            'entry_id' => Yii::t('cms', 'Entry'),
             'name' => Yii::t('cms', 'Title'),
             'content' => Yii::t('cms', 'Content'),
             'asset_count' => Yii::t('cms', 'Assets'),

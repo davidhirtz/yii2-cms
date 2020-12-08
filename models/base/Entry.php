@@ -14,6 +14,7 @@ use davidhirtz\yii2\media\models\AssetParentInterface;
 use davidhirtz\yii2\skeleton\helpers\ArrayHelper;
 use Yii;
 use yii\base\Widget;
+use yii\db\ActiveQuery;
 use yii\helpers\Inflector;
 
 /**
@@ -160,7 +161,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getEntryCategory()
     {
@@ -169,7 +170,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getEntryCategories()
     {
@@ -322,6 +323,67 @@ class Entry extends ActiveRecord implements AssetParentInterface
     }
 
     /**
+     * @return array
+     */
+    public function getTrailAttributes(): array
+    {
+        return array_diff(parent::getTrailAttributes(), [
+            'category_ids',
+            'section_count',
+            'updated_at',
+            'created_at',
+        ]);
+    }
+
+    /**
+     * @return string
+     */
+    public function getTrailModelName()
+    {
+        if ($this->id) {
+            return $this->getI18nAttribute('name') ?: Yii::t('skeleton', '{model} #{id}', [
+                'model' => $this->getTypeName() ?: Yii::t('cms', 'Entry'),
+                'id' => $this->id,
+            ]);
+        }
+
+        return parent::getTrailModelName();
+    }
+
+    /**
+     * @return string
+     */
+    public function getTrailModelType(): string
+    {
+        return $this->getTypeName() ?: Yii::t('cms', 'Entry');
+    }
+
+    /**
+     * @return array|false
+     */
+    public function getAdminRoute()
+    {
+        return ['/admin/entry/update', 'id' => $this->id];
+    }
+
+    /**
+     * @return array|false
+     */
+    public function getRoute()
+    {
+        return array_filter(['/cms/site/view', 'entry' => $this->getI18nAttribute('slug')]);
+    }
+
+    /**
+     * @return EntryActiveForm|Widget
+     */
+    public function getActiveForm()
+    {
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
+        return static::getTypes()[$this->type]['activeForm'] ?? EntryActiveForm::class;
+    }
+
+    /**
      * @return bool
      */
     public function hasAssetsEnabled(): bool
@@ -343,23 +405,6 @@ class Entry extends ActiveRecord implements AssetParentInterface
     public function hasSectionsEnabled(): bool
     {
         return static::getModule()->enableSections;
-    }
-
-    /**
-     * @return array|false
-     */
-    public function getRoute()
-    {
-        return array_filter(['/cms/site/view', 'entry' => $this->getI18nAttribute('slug')]);
-    }
-
-    /**
-     * @return EntryActiveForm|Widget
-     */
-    public function getActiveForm()
-    {
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return static::getTypes()[$this->type]['activeForm'] ?? EntryActiveForm::class;
     }
 
     /**
