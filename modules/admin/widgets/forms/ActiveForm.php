@@ -7,7 +7,6 @@ use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\skeleton\helpers\Html;
-use davidhirtz\yii2\skeleton\models\Trail;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\forms\ModelTimestampTrait;
 use davidhirtz\yii2\skeleton\widgets\forms\CKEditor;
 use Yii;
@@ -30,7 +29,7 @@ class ActiveForm extends \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm
      */
     public function statusField($options = [])
     {
-        return ($statuses = $this->getStatuses()) ? $this->field($this->model, 'status', $options)->dropDownList($statuses) : '';
+        return count($statuses = $this->getStatuses()) > 1 ? $this->field($this->model, 'status', $options)->dropdownList($statuses) : '';
     }
 
     /**
@@ -39,7 +38,7 @@ class ActiveForm extends \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm
      */
     public function typeField($options = [])
     {
-        return ($types = $this->getTypes()) ? $this->field($this->model, 'type', $options)->dropDownList($types) : '';
+        return count($types = $this->getTypes()) > 1 ? $this->field($this->model, 'type', $options)->dropdownList($types) : '';
     }
 
     /**

@@ -4,7 +4,6 @@ namespace davidhirtz\yii2\cms\models\base;
 
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\datetime\DateTime;
-use davidhirtz\yii2\skeleton\behaviors\TrailBehavior;
 use davidhirtz\yii2\skeleton\db\ActiveQuery;
 use davidhirtz\yii2\skeleton\db\I18nAttributesTrait;
 use davidhirtz\yii2\skeleton\db\StatusAttributeTrait;
@@ -88,15 +87,13 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     {
         return array_merge(parent::rules(), [
             [
-                ['status'],
-                'validateStatus',
+                ['status', 'type'],
+                'davidhirtz\yii2\skeleton\validators\DynamicRangeValidator',
             ],
-            [
-                ['type'],
-                'validateType',
-                'skipOnEmpty' => false,
-            ],
-            array_merge([$this->getI18nAttributesNames(['content'])], (array)($this->contentType == 'html' && $this->htmlValidator ? $this->htmlValidator : 'safe')),
+            array_merge(
+                [$this->getI18nAttributesNames(['content'])],
+                (array)($this->contentType == 'html' && $this->htmlValidator ? $this->htmlValidator : 'safe')
+            ),
         ]);
     }
 

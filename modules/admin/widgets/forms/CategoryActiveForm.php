@@ -78,7 +78,7 @@ class CategoryActiveForm extends ActiveForm
                 }
 
                 $items = Category::indentNestedTree($categories, $this->model->getI18nAttributeName('name'));
-                return $this->field($this->model, 'parent_id')->dropDownList($items, ArrayHelper::merge($defaultOptions, $options));
+                return $this->field($this->model, 'parent_id')->dropdownList($items, ArrayHelper::merge($defaultOptions, $options));
             }
         }
 
