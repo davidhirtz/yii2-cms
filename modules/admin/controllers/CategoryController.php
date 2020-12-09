@@ -6,6 +6,7 @@ use davidhirtz\yii2\cms\modules\admin\controllers\traits\CategoryTrait;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider;
+use davidhirtz\yii2\skeleton\models\Trail;
 use davidhirtz\yii2\skeleton\web\Controller;
 use Exception;
 use Yii;
@@ -162,13 +163,14 @@ class CategoryController extends Controller
      */
     public function actionOrder($id = null)
     {
-        $order = array_flip(Yii::$app->getRequest()->post('category'));
+        $category = Category::findOne((int)$id);
+        $categoryIds = array_map('intval', array_filter(Yii::$app->getRequest()->post('category', [])));
         $transaction = Yii::$app->getDb()->beginTransaction();
 
         try {
-            Category::rebuildNestedTree(Category::findOne((int)$id), $order);
+            Category::rebuildNestedTree($category, array_flip($categoryIds));
+            Trail::createOrderTrail($category, Yii::t('cms', 'Category order changed'));
             $transaction->commit();
-
         } catch (Exception $exception) {
             $transaction->rollBack();
             throw $exception;

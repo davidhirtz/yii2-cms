@@ -29,6 +29,12 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
     public $showDefaultCategories = true;
 
     /**
+     * @var int the amount of parent categories should be shown in the breadcrumb. Set to `0` to disable parent
+     * category breadcrumbs.
+     */
+    public $parentCategoryBreadcrumbCount = 2;
+
+    /**
      * @var bool whether entry types should be listed as items
      */
     public $showEntryTypes = false;
@@ -59,13 +65,15 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
     public function init()
     {
         $model = $this->isSection() ? $this->model->entry : $this->model;
+        $isEntry = $model instanceof Entry;
 
         if ($this->showDefaultCategories) {
             $this->showDefaultCategories = static::getModule()->enableCategories;
         }
 
         if (!$this->title) {
-            $this->title = $model instanceof Entry ? Html::a($model->getI18nAttribute('name'), ['/admin/entry/update', 'id' => $model->id]) : Html::a($this->getParentModule()->name, $this->getParentModule()->url);
+            $this->title = $isEntry ? Html::a($model->getI18nAttribute('name'), ['/admin/entry/update', 'id' => $model->id]) :
+                Html::a($this->getParentModule()->name, $this->getParentModule()->url);
         }
 
         if ($this->title && $this->showUrl) {
@@ -73,17 +81,25 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
         }
 
         if ($this->showEntryCategories) {
-            $this->showEntryCategories = $model instanceof Entry ? $model->hasCategoriesEnabled() : static::getModule()->enableCategories;
+            $this->showEntryCategories = $isEntry ? $model->hasCategoriesEnabled() : static::getModule()->enableCategories;
         }
 
         if ($this->showEntrySections) {
-            $this->showEntrySections = $model instanceof Entry ? $model->hasSectionsEnabled() : static::getModule()->enableSections;
+            $this->showEntrySections = $isEntry ? $model->hasSectionsEnabled() : static::getModule()->enableSections;
         }
 
-        $this->items = array_merge($this->items, $model instanceof Entry ? $this->getEntryItems() : $this->getDefaultItems());
-        $this->setBreadcrumbs();
+        $this->items = array_merge($this->items, $isEntry ? $this->getEntryItems() : $this->getDefaultItems());
 
         parent::init();
+    }
+
+    /**
+     * @return string
+     */
+    public function run()
+    {
+        $this->setBreadcrumbs();
+        return parent::run();
     }
 
     /**
@@ -250,22 +266,25 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
      */
     protected function setBreadcrumbs()
     {
-        $params = Yii::$app->getRequest()->get();
-        unset($params['id']);
+        $this->setModuleBreadcrumbs();
 
-        $view = $this->getView();
-        $view->setBreadcrumb($this->getParentModule()->name, array_merge($params, ['/admin/entry/index', 'type' => static::getModule()->defaultEntryType]));
-        $model = $this->isSection() ? $this->model->entry : $this->model;
-
-        if ($model instanceof Entry) {
-            if ($this->showEntryTypes) {
-                if (isset(Entry::getTypes()[$model->type])) {
-                    $view->setBreadcrumb(Entry::getTypes()[$model->type]['plural'] ?? Entry::getTypes()[$model->type]['name'], array_merge($params, ['/admin/entry/index', 'type' => $model->type]));
-                }
-            }
-
+        if ($this->model instanceof Category) {
+            $this->setCategoryBreadcrumbs();
+        } elseif ($this->model) {
             $this->setEntryBreadcrumbs();
         }
+    }
+
+    /**
+     * Sets module breadcrumbs.
+     */
+    protected function setModuleBreadcrumbs()
+    {
+        $this->getView()->setBreadcrumb($this->getParentModule()->name, array_merge($this->params, [
+            '/admin/entry/index', '
+            type' => static::getModule()->defaultEntryType,
+            'id' => null,
+        ]));
     }
 
     /**
@@ -276,10 +295,46 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
         $model = $this->isSection() ? $this->model->entry : $this->model;
         $view = $this->getView();
 
+        if ($this->showEntryTypes) {
+            if (isset(Entry::getTypes()[$model->type])) {
+                $view->setBreadcrumb(Entry::getTypes()[$model->type]['plural'] ?? Entry::getTypes()[$model->type]['name'], array_merge($this->params, [
+                    '/admin/entry/index',
+                    'type' => $model->type,
+                    'id' => null,
+                ]));
+            }
+        }
+
         $view->setBreadcrumb($this->showEntryTypes ? $model->getTypeName() : Yii::t('cms', 'Entry'), ['/admin/entry/update', 'id' => $model->id]);
 
         if ($this->isSection()) {
             $view->setBreadcrumb(Yii::t('cms', 'Section'), ['/admin/section/update', 'id' => $this->model->id]);
+        }
+    }
+
+    /**
+     * Sets category breadcrumbs.
+     */
+    protected function setCategoryBreadcrumbs()
+    {
+        $view = $this->getView();
+        $view->setBreadcrumb(Yii::t('cms', 'Categories'), ['/admin/category/index']);
+
+        if ($this->parentCategoryBreadcrumbCount > 0) {
+            $categories = $this->model->ancestors;
+            $count = count($categories);
+
+            if ($count > $this->parentCategoryBreadcrumbCount) {
+                $view->setBreadcrumb('…');
+            }
+
+            foreach ($categories as $category) {
+                if (--$count < $this->parentCategoryBreadcrumbCount) {
+                    $view->setBreadcrumb($category->getI18nAttribute('name'), ['/admin/category/update', 'id' => $category->id]);
+                }
+            }
+
+            $view->setBreadcrumb($this->model->getI18nAttribute('name'), ['/admin/category/update', 'id' => $this->model->id]);
         }
     }
 

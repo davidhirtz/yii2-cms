@@ -26,6 +26,7 @@ return [
     'Assets' => 'Assets',
     'Categories' => 'Kategorien',
     'Category' => 'Kategorie',
+    'Category order changed' => 'Reihenfolge der Kategorien geändert',
     'Change category order' => 'Reihenfolge der Kategorien ändern',
     'Change entry asset order' => 'Reihenfolge der Eintrag-Assets ändern',
     'Change entry order' => 'Reihenfolge der Einträge ändern',

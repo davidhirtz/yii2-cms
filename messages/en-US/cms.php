@@ -26,6 +26,7 @@ return [
     'Assets' => '',
     'Categories' => '',
     'Category' => '',
+    'Category order changed' => '',
     'Change category order' => '',
     'Change entry asset order' => '',
     'Change entry order' => '',

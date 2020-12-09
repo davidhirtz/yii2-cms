@@ -7,6 +7,7 @@ use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\skeleton\helpers\Html;
+use davidhirtz\yii2\skeleton\models\Trail;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\forms\ModelTimestampTrait;
 use davidhirtz\yii2\skeleton\widgets\forms\CKEditor;
 use Yii;
@@ -77,7 +78,7 @@ class ActiveForm extends \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm
         $attribute = $this->model->getI18nAttributeName('slug', $language);
         $options = array_merge(['enableClientValidation' => false], $options);
 
-        return  $this->field($this->model, $attribute, $options)->slug([
+        return $this->field($this->model, $attribute, $options)->slug([
             'baseUrl' => Html::tag('span', $this->getSlugBaseUrl($language), ['id' => $this->getSlugId($language)]),
         ]);
     }
