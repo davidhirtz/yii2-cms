@@ -360,7 +360,7 @@ class Section extends ActiveRecord implements AssetParentInterface
      */
     public function getAdminRoute()
     {
-        return ['/admin/section/update', 'id' => $this->id];
+        return $this->id ? ['/admin/section/update', 'id' => $this->id] : false;
     }
 
     /**

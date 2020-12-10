@@ -409,7 +409,7 @@ class Category extends ActiveRecord
      */
     public function getAdminRoute()
     {
-        return ['/admin/category/update', 'id' => $this->id];
+        return $this->id ? ['/admin/category/update', 'id' => $this->id] : false;
     }
 
     /**

@@ -332,7 +332,7 @@ class Asset extends ActiveRecord implements AssetInterface
      */
     public function getAdminRoute()
     {
-        return ['/admin/cms/asset/update', 'id' => $this->id];
+        return $this->id ? ['/admin/cms/asset/update', 'id' => $this->id] : false;
     }
 
     /**

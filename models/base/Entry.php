@@ -395,7 +395,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
      */
     public function getAdminRoute()
     {
-        return ['/admin/entry/update', 'id' => $this->id];
+        return $this->id ? ['/admin/entry/update', 'id' => $this->id] : false;
     }
 
     /**
