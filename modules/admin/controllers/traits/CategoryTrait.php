@@ -18,7 +18,7 @@ trait CategoryTrait
      * @param string|null $permissionName
      * @return Category
      */
-    protected function findCategory(int $id, $permissionName = null)
+    protected function findCategory($id, $permissionName = null)
     {
         if (!$category = Category::findOne((int)$id)) {
             throw new NotFoundHttpException();

@@ -18,7 +18,7 @@ trait AssetTrait
      * @param string|null $permissionName
      * @return Asset
      */
-    protected function findAsset(int $id, $permissionName = null)
+    protected function findAsset($id, $permissionName = null)
     {
         if (!$asset = Asset::findOne((int)$id)) {
             throw new NotFoundHttpException();

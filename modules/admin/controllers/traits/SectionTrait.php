@@ -18,7 +18,7 @@ trait SectionTrait
      * @param string|null $permissionName
      * @return Section
      */
-    protected function findSection(int $id, $permissionName = null)
+    protected function findSection($id, $permissionName = null)
     {
         if (!$section = Section::findOne((int)$id)) {
             throw new NotFoundHttpException();

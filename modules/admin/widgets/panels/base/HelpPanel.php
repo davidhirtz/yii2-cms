@@ -31,7 +31,7 @@ abstract class HelpPanel extends \davidhirtz\yii2\skeleton\modules\admin\widgets
     public function init()
     {
         if ($this->title === null) {
-            $this->title = Yii::t('cms', 'Operations');
+            $this->title = Yii::t('skeleton', 'Operations');
         }
 
         if ($this->content === null) {
