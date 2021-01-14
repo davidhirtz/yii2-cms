@@ -272,11 +272,8 @@ class Section extends ActiveRecord implements AssetParentInterface
      */
     public function updateEntrySectionCount()
     {
-        return $this->entry->recalculateSectionCount()->updateAttributes([
-            'section_count',
-            'updated_by_user_id' => $this->updated_by_user_id,
-            'updated_at' => $this->updated_at,
-        ]);
+        return $this->entry->recalculateSectionCount()
+            ->update();
     }
 
     /**

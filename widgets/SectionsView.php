@@ -89,7 +89,7 @@ class SectionsView extends Widget
      */
     public function renderSectionsByType($types, $viewFile = null)
     {
-        return $this->renderSectionsByCallback(function (Section $section) use ($types) {
+        $this->renderSectionsByCallback(function (Section $section) use ($types) {
             return in_array($section->type, (array)$types);
         }, $viewFile);
     }
