@@ -2,7 +2,6 @@
 
 namespace davidhirtz\yii2\cms\composer;
 
-use davidhirtz\yii2\skeleton\composer\BootstrapTrait;
 use davidhirtz\yii2\skeleton\web\Application;
 use yii\base\BootstrapInterface;
 use Yii;
@@ -13,8 +12,6 @@ use Yii;
  */
 class Bootstrap implements BootstrapInterface
 {
-    use BootstrapTrait;
-
     /**
      * @param Application $app
      */
@@ -22,7 +19,7 @@ class Bootstrap implements BootstrapInterface
     {
         Yii::setAlias('@cms', dirname(__DIR__));
 
-        $this->extendComponent($app, 'i18n', [
+        $app->extendComponent('i18n', [
             'translations' => [
                 'cms' => [
                     'class' => 'yii\i18n\PhpMessageSource',
@@ -31,7 +28,7 @@ class Bootstrap implements BootstrapInterface
             ],
         ]);
 
-        $this->extendModules($app, [
+        $app->extendModules([
             'admin' => [
                 'modules' => [
                     'cms' => [
@@ -50,6 +47,6 @@ class Bootstrap implements BootstrapInterface
             ],
         ]);
 
-        $this->setMigrationNamespace($app, 'davidhirtz\yii2\cms\migrations');
+        $app->setMigrationNamespace('davidhirtz\yii2\cms\migrations');
     }
 }
