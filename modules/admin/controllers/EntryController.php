@@ -180,7 +180,7 @@ class EntryController extends Controller
             }
         }
 
-        return $this->redirect(array_merge($request->get(), ['index']));
+        return $this->redirect($request->get('redirect', array_merge($request->get(), ['index'])));
     }
 
     /**
