@@ -36,6 +36,11 @@ class SectionGridView extends GridView
     public $showDeleteButton = false;
 
     /**
+     * @var array the url route for selection update
+     */
+    public $selectionRoute = ['/admin/section/update-all'];
+
+    /**
      * @inheritDoc
      */
     public function init()

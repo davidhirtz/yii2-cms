@@ -62,6 +62,11 @@ class EntryGridView extends GridView
     public $showDeleteButton = false;
 
     /**
+     * @var array the url route for selection update
+     */
+    public $selectionRoute = ['/admin/entry/update-all'];
+
+    /**
      * @var string
      */
     public $dateFormat;
