@@ -51,8 +51,7 @@ class EntryQuery extends ActiveQuery
             }
         }
 
-        return $this->addSelectPrefixed(['position', 'updated_at'])
-            ->innerJoinWithEntryCategory($category->id ?? $category, $eagerLoading);
+        return $this->innerJoinWithEntryCategory($category->id ?? $category, $eagerLoading);
     }
 
     /**
@@ -66,7 +65,7 @@ class EntryQuery extends ActiveQuery
             $this->innerJoinWithEntryCategory($category->id ?? $category, $eagerLoading, true);
         }
 
-        return $this->addSelectPrefixed(['position', 'updated_at']);
+        return $this;
     }
 
     /**

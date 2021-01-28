@@ -89,8 +89,7 @@ class SectionController extends Controller
                 'sections' => function (SectionQuery $query) {
                     $query->with([
                         'assets' => function (AssetQuery $query) {
-                            $query->replaceI18nAttributes()
-                                ->with(['file', 'file.folder']);
+                            $query->with(['file', 'file.folder']);
                         }
                     ]);
                 },

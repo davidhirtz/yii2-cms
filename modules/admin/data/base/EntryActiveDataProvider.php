@@ -57,12 +57,7 @@ class EntryActiveDataProvider extends ActiveDataProvider
             $this->query->orderBy(static::getModule()->defaultEntryOrderBy);
         }
 
-        if (!$this->query->select) {
-            $this->query->select(Entry::tableName() . '.*');
-
-        } else {
-            $this->query->replaceI18nAttributes();
-        }
+        $this->query->selectAllColumns()->replaceI18nAttributes();
 
         if ($type = (Entry::getTypes()[$this->type] ?? false)) {
             if (isset($type['orderBy'])) {

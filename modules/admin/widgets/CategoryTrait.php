@@ -18,7 +18,6 @@ trait CategoryTrait
     {
         if (static::$_categories === null) {
             static::$_categories = Category::find()
-                ->replaceI18nAttributes()
                 ->indexBy('id')
                 ->all();
         }

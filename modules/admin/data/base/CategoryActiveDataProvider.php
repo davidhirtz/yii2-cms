@@ -58,10 +58,6 @@ class CategoryActiveDataProvider extends ActiveDataProvider
      */
     protected function initQuery()
     {
-        if ($this->query->select) {
-            $this->query->replaceI18nAttributes();
-        }
-
         if ($this->entry) {
             $this->query->joinWith([
                 'entryCategory' => function (ActiveQuery $query) {
