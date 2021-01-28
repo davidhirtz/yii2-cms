@@ -3,6 +3,7 @@
 namespace davidhirtz\yii2\cms\models\queries;
 
 use davidhirtz\yii2\cms\models\Category;
+use davidhirtz\yii2\skeleton\db\ActiveQuery;
 
 /**
  * Class CategoryQuery
@@ -11,7 +12,7 @@ use davidhirtz\yii2\cms\models\Category;
  * @method Category[] all($db = null)
  * @method Category one($db = null)
  */
-class CategoryQuery extends \davidhirtz\yii2\skeleton\db\ActiveQuery
+class CategoryQuery extends ActiveQuery
 {
     /**
      * @var array
@@ -23,8 +24,8 @@ class CategoryQuery extends \davidhirtz\yii2\skeleton\db\ActiveQuery
      */
     public function selectSiteAttributes()
     {
-        return $this->addSelect(array_diff($this->getModelInstance()->attributes(),
-            ['updated_by_user_id', 'created_at']));
+        return $this->addSelect($this->prefixColumns(array_diff($this->getModelInstance()->attributes(),
+            ['updated_by_user_id', 'created_at'])));
     }
 
     /**

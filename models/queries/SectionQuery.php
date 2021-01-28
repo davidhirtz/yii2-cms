@@ -18,7 +18,7 @@ class SectionQuery extends \davidhirtz\yii2\skeleton\db\ActiveQuery
      */
     public function selectSiteAttributes()
     {
-        return $this->addSelect(array_diff($this->getModelInstance()->attributes(),
-            ['updated_by_user_id', 'updated_at', 'created_at']));
+        return $this->addSelect($this->prefixColumns(array_diff($this->getModelInstance()->attributes(),
+            ['updated_by_user_id', 'updated_at', 'created_at'])));
     }
 }

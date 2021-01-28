@@ -21,8 +21,8 @@ class EntryQuery extends ActiveQuery
      */
     public function selectSiteAttributes()
     {
-        return $this->addSelect(array_diff($this->getModelInstance()->attributes(),
-            ['updated_by_user_id', 'created_at']));
+        return $this->addSelect($this->prefixColumns(array_diff($this->getModelInstance()->attributes(),
+            ['updated_by_user_id', 'created_at'])));
     }
 
     /**
@@ -107,6 +107,7 @@ class EntryQuery extends ActiveQuery
                 }
 
                 $query->selectSiteAttributes()
+                    ->replaceI18nAttributes()
                     ->whereStatus()
                     ->withFiles();
             },
@@ -121,6 +122,7 @@ class EntryQuery extends ActiveQuery
         return $this->with([
             'sections' => function (SectionQuery $query) {
                 $query->selectSiteAttributes()
+                    ->replaceI18nAttributes()
                     ->whereStatus();
             }
         ]);
