@@ -98,6 +98,22 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     }
 
     /**
+     * @return bool
+     */
+    public function beforeValidate()
+    {
+        if (!$this->status) {
+            $this->status = static::STATUS_DEFAULT;
+        }
+
+        if (!$this->type) {
+            $this->type = static::TYPE_DEFAULT;
+        }
+
+        return parent::beforeValidate();
+    }
+
+    /**
      * @inheritDoc
      */
     public function beforeSave($insert)

@@ -9,6 +9,7 @@ use davidhirtz\yii2\cms\models\queries\EntryQuery;
 use davidhirtz\yii2\cms\models\queries\SectionQuery;
 use davidhirtz\yii2\cms\modules\admin\widgets\forms\SectionActiveForm;
 use davidhirtz\yii2\cms\modules\admin\widgets\grid\SectionGridView;
+use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\media\models\AssetParentInterface;
 use davidhirtz\yii2\skeleton\models\Trail;
 use Yii;
@@ -140,13 +141,15 @@ class Section extends ActiveRecord implements AssetParentInterface
      */
     public function afterSave($insert, $changedAttributes)
     {
+        $entry = $this->entry;
+
         if (array_key_exists('entry_id', $changedAttributes)) {
             if (!empty($changedAttributes['entry_id'])) {
                 $prevEntry = Entry::findOne($changedAttributes['entry_id']);
 
                 if ($prevEntry) {
                     $prevEntry->recalculateSectionCount()->update();
-                    $this->_trailParents = [$prevEntry, $this->entry];
+                    $this->_trailParents = [$prevEntry, $entry];
                 }
             }
 
@@ -154,8 +157,14 @@ class Section extends ActiveRecord implements AssetParentInterface
                 Asset::updateAll(['entry_id' => $this->entry_id], ['section_id' => $this->id]);
             }
 
-            $this->updateEntrySectionCount();
+            $entry->recalculateSectionCount();
         }
+
+        if ($changedAttributes) {
+            $entry->updated_at = $this->updated_at;
+        }
+
+        $entry->update();
 
         parent::afterSave($insert, $changedAttributes);
     }
@@ -165,17 +174,19 @@ class Section extends ActiveRecord implements AssetParentInterface
      */
     public function beforeDelete()
     {
-        if ($isValid = parent::beforeDelete()) {
-            if (!$this->entry->isDeleted()) {
-                if ($this->asset_count) {
-                    foreach ($this->assets as $asset) {
-                        $asset->delete();
-                    }
+        if (!parent::beforeDelete()) {
+            return false;
+        }
+
+        if (!$this->entry->isDeleted()) {
+            if ($this->asset_count) {
+                foreach ($this->assets as $asset) {
+                    $asset->delete();
                 }
             }
         }
 
-        return $isValid;
+        return true;
     }
 
     /**
@@ -184,7 +195,7 @@ class Section extends ActiveRecord implements AssetParentInterface
     public function afterDelete()
     {
         if (!$this->entry->isDeleted()) {
-            $this->updateEntrySectionCount();
+            $this->entry->recalculateSectionCount()->update();
         }
 
         parent::afterDelete();
@@ -242,6 +253,9 @@ class Section extends ActiveRecord implements AssetParentInterface
             Trail::createOrderTrail($this->entry, Yii::t('cms', 'Section asset order changed'), [
                 'trail_id' => $trail->id,
             ]);
+
+            $this->updated_at = new DateTime();
+            $this->update();
         }
     }
 
@@ -265,15 +279,6 @@ class Section extends ActiveRecord implements AssetParentInterface
         }
 
         return $clone;
-    }
-
-    /**
-     * @return int
-     */
-    public function updateEntrySectionCount()
-    {
-        return $this->entry->recalculateSectionCount()
-            ->update();
     }
 
     /**

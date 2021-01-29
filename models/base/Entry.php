@@ -53,7 +53,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
     public $dateTimeValidator = '\davidhirtz\yii2\datetime\DateTimeValidator';
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function rules(): array
     {
@@ -98,7 +98,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function beforeValidate(): bool
     {
@@ -114,7 +114,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function beforeSave($insert): bool
     {
@@ -204,7 +204,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      * @return EntryQuery
      */
     public static function find()
@@ -233,6 +233,9 @@ class Entry extends ActiveRecord implements AssetParentInterface
 
         if (Asset::updatePosition($assets, array_flip($assetIds))) {
             Trail::createOrderTrail($this, Yii::t('cms', 'Asset order changed'));
+
+            $this->updated_at = new DateTime();
+            $this->update();
         }
     }
 
@@ -248,6 +251,9 @@ class Entry extends ActiveRecord implements AssetParentInterface
 
         if (Section::updatePosition($sections, array_flip($sectionIds))) {
             Trail::createOrderTrail($this, Yii::t('cms', 'Section order changed'));
+
+            $this->updated_at = new DateTime();
+            $this->update();
         }
     }
 
@@ -440,7 +446,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function attributeLabels(): array
     {
@@ -463,7 +469,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public static function tableName(): string
     {
