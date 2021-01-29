@@ -14,7 +14,6 @@ use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\media\models\AssetInterface;
 use davidhirtz\yii2\media\models\File;
 use davidhirtz\yii2\media\models\queries\FileQuery;
-use davidhirtz\yii2\skeleton\behaviors\TrailBehavior;
 use davidhirtz\yii2\skeleton\models\User;
 use Yii;
 use yii\base\Widget;
@@ -22,6 +21,7 @@ use yii\base\Widget;
 /**
  * Class Asset.
  * @package davidhirtz\yii2\cms\models\base
+ * @see \davidhirtz\yii2\cms\models\Asset
  *
  * @property int $id
  * @property int $entry_id
@@ -52,7 +52,7 @@ class Asset extends ActiveRecord implements AssetInterface
     public const TYPE_VIEWPORT_DESKTOP = 3;
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function rules(): array
     {
@@ -78,21 +78,19 @@ class Asset extends ActiveRecord implements AssetInterface
     }
 
     /**
-     * Validates section relation and sets entry id, thus this needs to be called before entry validation.
+     * Validates section relation and sets entry relation, thus this needs to be called before entry validation. As
+     * this method gets skipped on empty `section_id` this only sets the relation while {@link Section::validateEntryId()}
+     * will validate the section's entry_id.
      */
     public function validateSectionId()
     {
         if ($this->section) {
-            if ($this->getIsNewRecord()) {
-                $this->entry_id = $this->section->entry_id;
-            } elseif ($this->isAttributeChanged('entry_id')) {
-                $this->addInvalidAttributeError('section_id');
-            }
+            $this->populateEntryRelation($this->section->entry);
         }
     }
 
     /**
-     * Validates entry and populates relation.
+     * Validates entry relation.
      */
     public function validateEntryId()
     {
@@ -102,7 +100,7 @@ class Asset extends ActiveRecord implements AssetInterface
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function afterSave($insert, $changedAttributes)
     {
@@ -110,15 +108,23 @@ class Asset extends ActiveRecord implements AssetInterface
             $this->recalculateAssetCount();
         }
 
+        if ($changedAttributes) {
+            $parent = $this->getParent();
+            $parent->updated_at = $this->updated_at;
+            $parent->update();
+        }
+
         parent::afterSave($insert, $changedAttributes);
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function afterDelete()
     {
         $this->recalculateAssetCount();
+        $this->getParent()->update();
+
         parent::afterDelete();
     }
 
@@ -197,23 +203,28 @@ class Asset extends ActiveRecord implements AssetInterface
     }
 
     /**
-     * Recalculates related asset count.
+     * Recalculates related asset count, does NOT update the parent.
      */
     public function recalculateAssetCount()
     {
-        $parent = $this->getParent();
-
         // Entry needs to be checked separately here because Entry::beforeDelete() deletes
         // all related assets before deleting the sections.
         if (!$this->entry->isDeleted() && (!$this->section_id || !$this->section->isDeleted())) {
-            $parent->asset_count = $this->findSiblings()->count();
-            $parent->update(false);
+            $this->getParent()->asset_count = $this->findSiblings()->count();
         }
 
         if (!$this->file->isDeleted()) {
-            $this->file->setAttribute($this->getFileCountAttribute(), static::find()->where(['file_id' => $this->file_id])->count());
-            $this->file->update(false);
+            $this->updateFileAssetCount();
         }
+    }
+
+    /**
+     * Updates the related file's asset count.
+     */
+    public function updateFileAssetCount()
+    {
+        $this->file->setAttribute($this->getFileCountAttribute(), static::find()->where(['file_id' => $this->file_id])->count());
+        $this->file->update();
     }
 
     /**
@@ -381,7 +392,7 @@ class Asset extends ActiveRecord implements AssetInterface
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public static function tableName(): string
     {
