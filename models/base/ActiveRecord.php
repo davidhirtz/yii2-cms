@@ -102,11 +102,11 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
      */
     public function beforeValidate()
     {
-        if (!$this->status) {
+        if ($this->status === null) {
             $this->status = static::STATUS_DEFAULT;
         }
 
-        if (!$this->type) {
+        if ($this->type === null) {
             $this->type = static::TYPE_DEFAULT;
         }
 

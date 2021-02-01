@@ -42,7 +42,7 @@ class M190909152855Category extends Migration
                 'title' => $this->string(250)->notNull(),
                 'description' => $this->string(250)->null(),
                 'content' => $this->text()->null(),
-                'entry_count' => $this->smallInteger()->unsigned()->notNull()->defaultValue(0),
+                'entry_count' => $this->integer()->unsigned()->notNull()->defaultValue(0),
                 'updated_by_user_id' => $this->integer()->unsigned()->null(),
                 'updated_at' => $this->dateTime(),
                 'created_at' => $this->dateTime()->notNull(),
