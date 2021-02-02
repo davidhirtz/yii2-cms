@@ -98,13 +98,14 @@ trait CategoryGridTrait
     public function entryCountColumn()
     {
         return [
+            'class' => 'davidhirtz\yii2\skeleton\modules\admin\widgets\grid\CounterColumn',
             'attribute' => 'entry_count',
-            'headerOptions' => ['class' => 'd-none d-md-table-cell text-center'],
-            'contentOptions' => ['class' => 'd-none d-md-table-cell text-center'],
-            'visible' => static::getModule()->enableSections,
-            'content' => function (Category $category) {
-                return Html::a(Yii::$app->getFormatter()->asInteger($category->entry_count), ['entry/index', 'category' => $category->id], ['class' => 'badge']);
-            }
+            'route' => function (Category $category) {
+                return ['entry/index', 'category' => $category->id];
+            },
+            'value' => function (Category $category) {
+                return $category->hasEntriesEnabled() ? $category->entry_count : null;
+            },
         ];
     }
 
