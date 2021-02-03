@@ -108,7 +108,7 @@ class Asset extends ActiveRecord implements AssetInterface
             $this->recalculateAssetCount();
         }
 
-        if ($insert || $changedAttributes) {
+        if ($changedAttributes) {
             $parent = $this->getParent();
             $parent->updated_at = $this->updated_at;
             $parent->update();
