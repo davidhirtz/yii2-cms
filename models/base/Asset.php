@@ -203,7 +203,8 @@ class Asset extends ActiveRecord implements AssetInterface
     }
 
     /**
-     * Recalculates related asset count, does NOT update the parent.
+     * Recalculates related asset count, does NOT update the parent
+     * ({@see \davidhirtz\yii2\cms\models\Asset::afterSave()}).
      */
     public function recalculateAssetCount()
     {
@@ -214,17 +215,8 @@ class Asset extends ActiveRecord implements AssetInterface
         }
 
         if (!$this->file->isDeleted()) {
-            $this->updateFileAssetCount();
+            $this->file->recalculateAssetCountByAsset($this)->update();
         }
-    }
-
-    /**
-     * Updates the related file's asset count.
-     */
-    public function updateFileAssetCount()
-    {
-        $this->file->setAttribute($this->getFileCountAttribute(), static::find()->where(['file_id' => $this->file_id])->count());
-        $this->file->update();
     }
 
     /**
