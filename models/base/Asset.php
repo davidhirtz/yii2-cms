@@ -224,7 +224,7 @@ class Asset extends ActiveRecord implements AssetInterface
      */
     public function getTrailParents()
     {
-        return $this->section_id ? [$this->section, $this->entry] : [$this->entry];
+        return $this->section_id ? [$this->section, $this->entry, $this->file] : [$this->entry, $this->file];
     }
 
     /**
