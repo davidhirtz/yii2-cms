@@ -249,7 +249,7 @@ class AssetGridView extends GridView
     {
         $options = [
             'class' => 'btn btn-danger btn-delete-asset d-none d-md-inline-block',
-            'data-confirm' => Yii::t('yii', 'Are you sure you want to remove this asset?'),
+            'data-confirm' => Yii::t('cms', 'Are you sure you want to remove this asset?'),
             'data-target' => '#' . $this->getRowId($model),
             'data-ajax' => 'remove',
         ];

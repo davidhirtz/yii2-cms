@@ -163,7 +163,7 @@ class AssetParentGridView extends GridView
                 if ($user->can($asset->isEntryAsset() ? 'entryAssetDelete' : 'sectionAssetDelete', ['asset' => $asset])) {
                     $buttons[] = Html::a(Icon::tag('trash'), ['cms/asset/delete', 'id' => $asset->id], [
                         'class' => 'btn btn-danger btn-delete-asset d-none d-md-inline-block',
-                        'data-confirm' => Yii::t('yii', 'Are you sure you want to remove this asset?'),
+                        'data-confirm' => Yii::t('cms', 'Are you sure you want to remove this asset?'),
                         'data-ajax' => 'remove',
                         'data-target' => '#' . $this->getRowId($asset),
                     ]);

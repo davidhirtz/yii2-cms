@@ -89,6 +89,7 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
             [
                 ['status', 'type'],
                 'davidhirtz\yii2\skeleton\validators\DynamicRangeValidator',
+                'skipOnEmpty' => false,
             ],
             array_merge(
                 [$this->getI18nAttributesNames(['content'])],
