@@ -53,7 +53,7 @@ class CategoryActiveForm extends ActiveForm
 
     /**
      * @param array $options
-     * @return \yii\bootstrap4\ActiveField|string
+     * @return string
      */
     public function parentIdField($options = [])
     {
@@ -92,7 +92,8 @@ class CategoryActiveForm extends ActiveForm
     protected function getSlugBaseUrl($language = null): string
     {
         if ($route = $this->model->getRoute()) {
-            return rtrim(Yii::$app->getUrlManager()->createAbsoluteUrl(array_merge($route, ['category' => '', 'language' => $language])), '/') . '/';
+            $urlManager = Yii::$app->getUrlManager();
+            return rtrim($urlManager->createAbsoluteUrl(array_merge($route, ['category' => '', 'language' => $urlManager->i18nUrl || $urlManager->i18nSubdomain ? $language : null])), '/') . '/';
         }
 
         return '';
