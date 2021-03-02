@@ -74,6 +74,16 @@ class Category extends ActiveRecord
     protected static $_categories;
 
     /**
+     * @inheritDoc
+     */
+    public function behaviors(): array
+    {
+        return array_merge(parent::behaviors(), [
+            'RedirectBehavior' => 'davidhirtz\yii2\skeleton\behaviors\RedirectBehavior',
+        ]);
+    }
+
+    /**
      * @inheritdoc
      */
     public function rules(): array

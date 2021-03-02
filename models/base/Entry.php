@@ -55,6 +55,16 @@ class Entry extends ActiveRecord implements AssetParentInterface
     /**
      * @inheritDoc
      */
+    public function behaviors(): array
+    {
+        return array_merge(parent::behaviors(), [
+            'RedirectBehavior' => 'davidhirtz\yii2\skeleton\behaviors\RedirectBehavior',
+        ]);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function rules(): array
     {
         return array_merge(parent::rules(), $this->getI18nRules([
