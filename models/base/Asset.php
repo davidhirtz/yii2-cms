@@ -46,6 +46,12 @@ use yii\base\Widget;
 class Asset extends ActiveRecord implements AssetInterface
 {
     /**
+     * @var bool whether the related file should also be deleted on delete if the current record was it's only linked
+     * asset. Defaults to `false`.
+     */
+    public $deleteFileOnDelete = false;
+
+    /**
      * Constants.
      */
     public const TYPE_VIEWPORT_MOBILE = 2;
@@ -105,13 +111,11 @@ class Asset extends ActiveRecord implements AssetInterface
     public function afterSave($insert, $changedAttributes)
     {
         if ($insert) {
-            $this->recalculateAssetCount();
-        }
-
-        if ($changedAttributes) {
             $parent = $this->getParent();
-            $parent->updated_at = $this->updated_at;
+            $parent->asset_count = $this->findSiblings()->count();
             $parent->update();
+
+            $this->file->recalculateAssetCountByAsset($this)->update();
         }
 
         parent::afterSave($insert, $changedAttributes);
@@ -122,8 +126,23 @@ class Asset extends ActiveRecord implements AssetInterface
      */
     public function afterDelete()
     {
-        $this->recalculateAssetCount();
-        $this->getParent()->update();
+        // Entry needs to be checked separately here because Entry::beforeDelete() deletes
+        // all related assets before deleting the sections.
+        if (!$this->entry->isDeleted() && (!$this->section_id || !$this->section->isDeleted())) {
+            $parent = $this->getParent();
+            $parent->asset_count = $this->findSiblings()->count();
+            $parent->update();
+        }
+
+        if (!$this->file->isDeleted()) {
+            $this->file->recalculateAssetCountByAsset($this);
+
+            if ($this->deleteFileOnDelete && !$this->file->getAssetCount()) {
+                $this->file->delete();
+            } else {
+                $this->file->update();
+            }
+        }
 
         parent::afterDelete();
     }
@@ -200,23 +219,6 @@ class Asset extends ActiveRecord implements AssetInterface
 
         $this->populateRelation('section', $section);
         $this->section_id = $section->id ?? null;
-    }
-
-    /**
-     * Recalculates related asset count, does NOT update the parent
-     * ({@see \davidhirtz\yii2\cms\models\Asset::afterSave()}).
-     */
-    public function recalculateAssetCount()
-    {
-        // Entry needs to be checked separately here because Entry::beforeDelete() deletes
-        // all related assets before deleting the sections.
-        if (!$this->entry->isDeleted() && (!$this->section_id || !$this->section->isDeleted())) {
-            $this->getParent()->asset_count = $this->findSiblings()->count();
-        }
-
-        if (!$this->file->isDeleted()) {
-            $this->file->recalculateAssetCountByAsset($this)->update();
-        }
     }
 
     /**
