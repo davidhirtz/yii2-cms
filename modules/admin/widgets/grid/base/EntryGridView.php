@@ -367,10 +367,11 @@ class EntryGridView extends GridView
      */
     public function renderCategoryButtons(Entry $entry, $options = [])
     {
+        $categoryIds = $entry->getCategoryIds();
         $categories = [];
 
-        foreach ($entry->getCategoryIds() as $categoryId) {
-            if ($category = static::getCategories()[$categoryId] ?? false) {
+        foreach (static::getCategories() as $category) {
+            if (in_array($category->id, $categoryIds)) {
                 $categories[] = Html::a(Html::encode($category->getI18nAttribute('name')), Url::current(['category' => $category->id]), ['class' => 'btn btn-secondary btn-sm']);
             }
         }
