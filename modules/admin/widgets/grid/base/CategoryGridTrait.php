@@ -179,7 +179,7 @@ trait CategoryGridTrait
     protected function initAncestors()
     {
         if ($this->dataProvider->category) {
-            $categories = $this->dataProvider->category->ancestors;
+            $categories = [$this->dataProvider->category->id => $this->dataProvider->category] + $this->dataProvider->category->ancestors;
         } else {
             $categories = !$this->dataProvider->searchString ? $this->dataProvider->getModels() : Category::find()
                 ->indexBy('id')

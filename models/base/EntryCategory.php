@@ -34,11 +34,6 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     use ModuleTrait;
 
     /**
-     * @var bool
-     */
-    public $isInherited = false;
-
-    /**
      * @inheritDoc
      */
     public function behaviors(): array
@@ -115,8 +110,8 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
             ],
         ]);
 
-        if ($insert) {
-            $this->position = static::find()->where(['category_id' => $this->category_id])->max('[[position]]') + 1;
+        if ($this->position === null) {
+            $this->position = $this->getMaxPosition() + 1;
         }
 
         return parent::beforeSave($insert);
@@ -128,7 +123,7 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     public function afterSave($insert, $changedAttributes)
     {
         if ($insert) {
-            if (!$this->isInherited) {
+            if (!$this->getIsBatch()) {
                 if ($this->category->inheritNestedCategories()) {
                     $this->insertCategoryAncestors();
                 }
@@ -147,7 +142,7 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
      */
     public function afterDelete()
     {
-        if (!$this->isInherited) {
+        if (!$this->getIsBatch()) {
             if ($this->category->inheritNestedCategories()) {
                 $this->deleteDescendantCategories();
             }
@@ -215,11 +210,8 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
      */
     public function updateEntryCategoryIds()
     {
-        return $this->entry->recalculateCategoryIds()->updateAttributes([
-            'category_ids',
-            'updated_by_user_id' => $this->updated_by_user_id,
-            'updated_at' => $this->updated_at,
-        ]);
+        $this->entry->recalculateCategoryIds();
+        return $this->entry->update();
     }
 
     /**
@@ -228,11 +220,8 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
      */
     public function updateCategoryEntryCount()
     {
-        return $this->category->recalculateEntryCount()->updateAttributes([
-            'entry_count',
-            'updated_by_user_id' => $this->updated_by_user_id,
-            'updated_at' => $this->updated_at,
-        ]);
+        $this->category->recalculateEntryCount();
+        return $this->category->update();
     }
 
     /**
@@ -240,7 +229,7 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
      */
     public function insertCategoryAncestors()
     {
-        if ($categories = $this->category->ancestors) {
+        if ($categories = $this->category->getAncestors(true)) {
             foreach ($categories as $category) {
                 if ($category->inheritNestedCategories()) {
                     $junction = new static();
@@ -259,7 +248,7 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     {
         $this->populateEntryRelation($entryCategory->entry);
         $this->populateCategoryRelation($category);
-        $this->isInherited = true;
+        $this->setIsBatch(true);
     }
 
     /**
@@ -278,11 +267,19 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
                 if ($category->inheritNestedCategories()) {
                     $junction->populateCategoryRelation($category);
                     $junction->populateEntryRelation($this->entry);
-                    $junction->isInherited = true;
+                    $this->setIsBatch(true);
                     $junction->delete();
                 }
             }
         }
+    }
+
+    /**
+     * @return int
+     */
+    public function getMaxPosition(): int
+    {
+        return (int)static::find()->where(['category_id' => $this->category_id])->max('[[position]]');
     }
 
     /**

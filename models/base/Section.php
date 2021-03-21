@@ -126,7 +126,7 @@ class Section extends ActiveRecord implements AssetParentInterface
         $this->slug = $this->slug ? (string)$this->slug : null;
 
         // Handle section move / clone.
-        if (!$insert && $this->isAttributeChanged('entry_id')) {
+        if ($this->isAttributeChanged('entry_id')) {
             $this->position = $this->getMaxPosition() + 1;
         }
 
@@ -134,37 +134,27 @@ class Section extends ActiveRecord implements AssetParentInterface
     }
 
     /**
-     * Updates related entries after save.
+     * Updates related entries after save if {@link \davidhirtz\yii2\cms\models\Section::getIsBatch()} is false.
      *
      * @param bool $insert
      * @param array $changedAttributes
      */
     public function afterSave($insert, $changedAttributes)
     {
-        $entry = $this->entry;
+        if (!$this->getIsBatch()) {
+            if (array_key_exists('entry_id', $changedAttributes)) {
+                $this->updateOldEntryRelation($changedAttributes['entry_id'] ?? false);
+                $this->updateRelatedAssets();
 
-        if (array_key_exists('entry_id', $changedAttributes)) {
-            if (!empty($changedAttributes['entry_id'])) {
-                $prevEntry = Entry::findOne($changedAttributes['entry_id']);
-
-                if ($prevEntry) {
-                    $prevEntry->recalculateSectionCount()->update();
-                    $this->_trailParents = [$prevEntry, $entry];
-                }
+                $this->entry->recalculateSectionCount();
             }
 
-            if ($this->asset_count) {
-                Asset::updateAll(['entry_id' => $this->entry_id], ['section_id' => $this->id]);
+            if ($changedAttributes) {
+                $this->entry->updated_at = $this->updated_at;
             }
 
-            $entry->recalculateSectionCount();
+            $this->entry->update();
         }
-
-        if ($changedAttributes) {
-            $entry->updated_at = $this->updated_at;
-        }
-
-        $entry->update();
 
         parent::afterSave($insert, $changedAttributes);
     }
@@ -298,6 +288,35 @@ class Section extends ActiveRecord implements AssetParentInterface
         }
 
         $this->populateRelation('assets', $relations);
+    }
+
+    /**
+     * Updates the old entry relation after section was moved to another entry. Override this method if the old entry
+     * should be further manipulated after the section's entry was changed.
+     *
+     * @param int $entryId
+     */
+    protected function updateOldEntryRelation($entryId)
+    {
+        if ($entryId) {
+            $entry = Entry::findOne($entryId);
+
+            if ($entry) {
+                $entry->recalculateSectionCount()->update();
+                $this->_trailParents = [$entry, $this->entry];
+            }
+        }
+    }
+
+    /**
+     * Updates related asset relations after section was moved to another entry. Override this method if assets should
+     * be further manipulated after the section's entry was changed.
+     */
+    protected function updateRelatedAssets()
+    {
+        if ($this->asset_count) {
+            Asset::updateAll(['entry_id' => $this->entry_id], ['section_id' => $this->id]);
+        }
     }
 
     /**

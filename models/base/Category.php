@@ -10,7 +10,6 @@ use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\models\EntryCategory;
 use davidhirtz\yii2\cms\modules\admin\widgets\forms\CategoryActiveForm;
 use davidhirtz\yii2\skeleton\db\NestedTreeTrait;
-use davidhirtz\yii2\skeleton\helpers\ArrayHelper;
 use davidhirtz\yii2\skeleton\models\Trail;
 use Yii;
 use yii\base\Widget;
@@ -42,19 +41,14 @@ use yii\helpers\Inflector;
  * @property \davidhirtz\yii2\cms\models\Category[] $ancestors
  * @property \davidhirtz\yii2\cms\models\Category[] $descendants
  *
- * @method \davidhirtz\yii2\cms\models\Category[] getAncestors()
- * @method \davidhirtz\yii2\cms\models\Category[] getDescendants()
+ * @method \davidhirtz\yii2\cms\models\Category[] getAncestors($refresh = false)
+ * @method \davidhirtz\yii2\cms\models\Category[] getDescendants($refresh = false)
  * @method static \davidhirtz\yii2\cms\models\Category findOne($condition)
  * @method static \davidhirtz\yii2\cms\models\Category[] findAll($condition)
  */
 class Category extends ActiveRecord
 {
     use NestedTreeTrait;
-
-    /**
-     * Cache.
-     */
-    public const CATEGORIES_CACHE_KEY = 'get-categories-cache';
 
     /**
      * @var bool|string
@@ -72,6 +66,11 @@ class Category extends ActiveRecord
      * @see Category::getCategories()
      */
     protected static $_categories;
+
+    /**
+     * Cache.
+     */
+    public const CATEGORIES_CACHE_KEY = 'get-categories-cache';
 
     /**
      * @inheritDoc
@@ -179,35 +178,9 @@ class Category extends ActiveRecord
     public function afterSave($insert, $changedAttributes)
     {
         if (!$insert) {
-            if (array_key_exists('parent_id', $changedAttributes)) {
-                if (static::getModule()->inheritNestedCategories && $this->parent_id) {
-                    $categories = [$this->id => $this] + $this->getDescendants();
-
-                    /** @var EntryCategory[] $entryCategories */
-                    $entryCategories = EntryCategory::find()
-                        ->where(['category_id' => array_keys($categories)])
-                        ->all();
-
-                    $entryIds = array_unique(ArrayHelper::getColumn($entryCategories, 'entry_id'));
-
-                    $entries = Entry::find()
-                        ->where(['id' => $entryIds])
-                        ->indexBy('id')
-                        ->all();
-
-                    foreach ($entryCategories as $entryCategory) {
-                        $entryCategory->populateCategoryRelation($categories[$entryCategory->category_id]);
-                        $entryCategory->populateEntryRelation($entries[$entryCategory->entry_id]);
-                        $entryCategory->insertCategoryAncestors();
-                    }
-
-                    foreach ($entries as $entry) {
-                        $entry->recalculateCategoryIds()->updateAttributes([
-                            'category_ids',
-                            'updated_by_user_id' => $this->updated_by_user_id,
-                            'updated_at' => $this->updated_at,
-                        ]);
-                    }
+            if ($this->parent_id && array_key_exists('parent_id', $changedAttributes)) {
+                if ($this->inheritNestedCategories()) {
+                    $this->insertEntryCategoryAncestors();
                 }
             }
         }
@@ -226,9 +199,7 @@ class Category extends ActiveRecord
             $this->deleteNestedTreeItems();
 
             if ($this->entry_count) {
-                foreach ($this->entryCategories as $entryCategory) {
-                    $entryCategory->delete();
-                }
+                $this->deleteEntryCategories();
             }
         }
 
@@ -280,6 +251,53 @@ class Category extends ActiveRecord
     {
         $this->entry_count = (int)$this->getEntryCategories()->count();
         return $this;
+    }
+
+    /**
+     * Inserts related {@link EntryCategory} records to this records ancestor categories. This method is called after
+     * the parent id was changed and can insert quite a lot of records. Because the current category might not have
+     * `inheritNestedCategories` enabled descendant categories need to be checked too.
+     *
+     * This might need to be overridden on applications with MANY entry-category relations.
+     */
+    protected function insertEntryCategoryAncestors()
+    {
+        $categories = array_filter([$this->id => $this] + $this->getDescendants(), function (self $category) {
+            return $category->inheritNestedCategories();
+        });
+
+        if ($categories) {
+            $entries = Entry::find()
+                ->innerJoinWith([
+                    'entryCategory' => function (ActiveQuery $query) use ($categories) {
+                        $query->onCondition([EntryCategory::tableName() . '.[[category_id]]' => array_keys($categories)]);
+                    }
+                ])
+                ->all();
+
+            foreach ($entries as $entry) {
+                $entryCategory = $entry->entryCategory;
+                $entryCategory->populateCategoryRelation($categories[$entryCategory->category_id]);
+                $entryCategory->insertCategoryAncestors();
+                $entryCategory->updateEntryCategoryIds();
+            }
+        }
+    }
+
+    /**
+     * Deletes all related entry categories before the {@link EntryCategory} records would be deleted by the database's
+     * foreign key relation. This enables recalculating the related record as well as adding {@link Trail} records.
+     * This might need to be overridden on applications with MANY entry-category relations.
+     */
+    protected function deleteEntryCategories()
+    {
+        $entryCategories = $this->getEntryCategories()
+            ->with('entry')
+            ->all();
+
+        foreach ($entryCategories as $entryCategory) {
+            $entryCategory->delete();
+        }
     }
 
     /**
