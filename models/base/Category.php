@@ -259,29 +259,31 @@ class Category extends ActiveRecord
     protected function insertEntryCategoryAncestors()
     {
         // If the category doesn't have `inheritNestedCategories` enabled descendant categories need to be used.
-        $categories = $this->inheritNestedCategories() ? [$this->id => $this] : array_filter($this->getDescendants(), function (self $category) {
+        $categoryIds = $this->inheritNestedCategories() ? $this->id : array_keys(array_filter($this->getDescendants(), function (self $category) {
             return $category->inheritNestedCategories();
-        });
+        }));
 
-        if ($categories) {
+        if ($categoryIds) {
             $entries = Entry::find()
                 ->innerJoinWith([
-                    'entryCategory' => function (ActiveQuery $query) use ($categories) {
-                        $query->onCondition([EntryCategory::tableName() . '.[[category_id]]' => array_keys($categories)]);
+                    'entryCategory' => function (ActiveQuery $query) use ($categoryIds) {
+                        $query->onCondition([EntryCategory::tableName() . '.[[category_id]]' => $categoryIds]);
                     }
                 ])
                 ->all();
 
-            // Refresh all categories' ancestors once to prevent duplicate queries.
-            foreach ($categories as $category) {
-                $category->getAncestors(true);
-            }
+            if ($entries) {
+                // Refresh category ancestors once to prevent duplicate queries.
+                $this->getAncestors(true);
 
-            foreach ($entries as $entry) {
-                $entryCategory = $entry->entryCategory;
-                $entryCategory->populateCategoryRelation($categories[$entryCategory->category_id]);
-                $entryCategory->insertCategoryAncestors();
-                $entryCategory->updateEntryCategoryIds();
+                foreach ($entries as $entry) {
+                    $entryCategory = $entry->entryCategory;
+
+                    /** @noinspection PhpParamsInspection */
+                    $entryCategory->populateCategoryRelation($this);
+                    $entryCategory->insertCategoryAncestors();
+                    $entryCategory->updateEntryCategoryIds();
+                }
             }
         }
     }
