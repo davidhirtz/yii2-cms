@@ -124,9 +124,7 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     {
         if ($insert) {
             if (!$this->getIsBatch()) {
-                if ($this->category->inheritNestedCategories()) {
-                    $this->insertCategoryAncestors();
-                }
+                $this->insertCategoryAncestors();
 
                 $this->updateEntryCategoryIds();
             }
@@ -143,9 +141,7 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     public function afterDelete()
     {
         if (!$this->getIsBatch()) {
-            if ($this->category->inheritNestedCategories()) {
-                $this->deleteDescendantCategories();
-            }
+            $this->deleteDescendantCategories();
 
             if (!$this->entry->isDeleted()) {
                 $this->updateEntryCategoryIds();
@@ -256,7 +252,7 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
      */
     public function deleteDescendantCategories()
     {
-        if ($categories = $this->category->descendants) {
+        if ($categories = $this->category->getDescendants()) {
             $junctions = static::findAll([
                 'category_id' => array_keys($categories),
                 'entry_id' => $this->entry_id,
