@@ -179,9 +179,7 @@ class Category extends ActiveRecord
     {
         if (!$insert) {
             if ($this->parent_id && array_key_exists('parent_id', $changedAttributes)) {
-                if ($this->inheritNestedCategories()) {
-                    $this->insertEntryCategoryAncestors();
-                }
+                $this->insertEntryCategoryAncestors();
             }
         }
 
@@ -255,14 +253,13 @@ class Category extends ActiveRecord
 
     /**
      * Inserts related {@link EntryCategory} records to this records ancestor categories. This method is called after
-     * the parent id was changed and can insert quite a lot of records. Because the current category might not have
-     * `inheritNestedCategories` enabled descendant categories need to be checked too.
-     *
-     * This might need to be overridden on applications with MANY entry-category relations.
+     * the parent id was changed and can insert quite a lot of records. This might need to be overridden on applications
+     * with MANY entry-category relations.
      */
     protected function insertEntryCategoryAncestors()
     {
-        $categories = array_filter([$this->id => $this] + $this->getDescendants(), function (self $category) {
+        // If the category doesn't have `inheritNestedCategories` enabled descendant categories need to be used.
+        $categories = $this->inheritNestedCategories() ? [$this->id => $this] : array_filter($this->getDescendants(), function (self $category) {
             return $category->inheritNestedCategories();
         });
 
@@ -274,6 +271,11 @@ class Category extends ActiveRecord
                     }
                 ])
                 ->all();
+
+            // Refresh all categories' ancestors once to prevent duplicate queries.
+            foreach ($categories as $category) {
+                $category->getAncestors(true);
+            }
 
             foreach ($entries as $entry) {
                 $entryCategory = $entry->entryCategory;

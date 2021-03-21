@@ -229,7 +229,7 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
      */
     public function insertCategoryAncestors()
     {
-        if ($categories = $this->category->getAncestors(true)) {
+        if ($categories = $this->category->getAncestors()) {
             foreach ($categories as $category) {
                 if ($category->inheritNestedCategories()) {
                     $junction = new static();
