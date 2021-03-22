@@ -371,7 +371,7 @@ class EntryGridView extends GridView
         $categories = [];
 
         foreach (static::getCategories() as $category) {
-            if (in_array($category->id, $categoryIds)) {
+            if ($category->hasEntriesEnabled() && in_array($category->id, $categoryIds)) {
                 $categories[] = Html::a(Html::encode($category->getI18nAttribute('name')), Url::current(['category' => $category->id]), ['class' => 'btn btn-secondary btn-sm']);
             }
         }
