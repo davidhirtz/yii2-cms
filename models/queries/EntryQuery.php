@@ -12,6 +12,7 @@ use davidhirtz\yii2\skeleton\db\ActiveQuery;
  * @package davidhirtz\yii2\cms\models\queries
  *
  * @method Entry[] all($db = null)
+ * @method Entry[] each($batchSize = 100, $db = null)
  * @method Entry one($db = null)
  */
 class EntryQuery extends ActiveQuery

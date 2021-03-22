@@ -10,6 +10,7 @@ use davidhirtz\yii2\skeleton\db\ActiveQuery;
  * @package davidhirtz\yii2\cms\models\queries
  *
  * @method Category[] all($db = null)
+ * @method Category[] each($batchSize = 100, $db = null)
  * @method Category one($db = null)
  */
 class CategoryQuery extends ActiveQuery
