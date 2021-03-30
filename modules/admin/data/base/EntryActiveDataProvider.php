@@ -8,6 +8,7 @@ use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use yii\data\ActiveDataProvider;
+use yii\data\Sort;
 
 /**
  * Class EntryActiveDataProvider
@@ -15,6 +16,7 @@ use yii\data\ActiveDataProvider;
  * @see \davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider
  *
  * @property EntryQuery $query
+ * @method Entry[] getModels()
  */
 class EntryActiveDataProvider extends ActiveDataProvider
 {
@@ -87,7 +89,7 @@ class EntryActiveDataProvider extends ActiveDataProvider
     }
 
     /**
-     * @return bool|\yii\data\Sort
+     * @return bool|Sort
      */
     public function getSort()
     {
@@ -95,7 +97,7 @@ class EntryActiveDataProvider extends ActiveDataProvider
     }
 
     /**
-     * @param array|bool|\yii\data\Sort $value
+     * @param array|bool|Sort $value
      */
     public function setSort($value)
     {
