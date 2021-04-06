@@ -22,7 +22,22 @@ class CategoryHelpPanel extends HelpPanel
     {
         return array_filter([
             $this->getCreateCategoryButton(),
+            $this->getEntryGridViewButton(),
             $this->getLinkButton(),
+        ]);
+    }
+
+    /**
+     * @return string
+     */
+    protected function getEntryGridViewButton()
+    {
+        if (!$this->model->hasEntriesEnabled()) {
+            return '';
+        }
+
+        return Html::a(Html::iconText('book', Yii::t('cms', 'View All Entries')), ['entry/index', 'category' => $this->model->id], [
+            'class' => 'btn btn-primary',
         ]);
     }
 
