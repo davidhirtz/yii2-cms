@@ -27,6 +27,14 @@ class EntryQuery extends ActiveQuery
     }
 
     /**
+     * @return $this
+     */
+    public function selectSitemapAttributes()
+    {
+        return $this->addSelect($this->prefixColumns(['id', 'status', 'type', 'slug']));
+    }
+
+    /**
      * @param string $search
      * @return $this
      */

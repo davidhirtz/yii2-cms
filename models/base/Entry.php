@@ -231,6 +231,14 @@ class Entry extends ActiveRecord implements AssetParentInterface
     }
 
     /**
+     * @return ActiveQuery
+     */
+    public function getSitemapQuery()
+    {
+        return static::find()->selectSitemapAttributes();
+    }
+
+    /**
      * @param array $assetIds
      */
     public function updateAssetOrder($assetIds)

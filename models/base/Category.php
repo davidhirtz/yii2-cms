@@ -322,6 +322,14 @@ class Category extends ActiveRecord
     }
 
     /**
+     * @return ActiveQuery
+     */
+    public function getSitemapQuery()
+    {
+        return static::find()->selectSitemapAttributes();
+    }
+
+    /**
      * @return static[]
      */
     public static function findCategories()

@@ -30,6 +30,14 @@ class CategoryQuery extends ActiveQuery
     }
 
     /**
+     * @return $this
+     */
+    public function selectSitemapAttributes()
+    {
+        return $this->addSelect($this->prefixColumns(['id', 'status', 'type', 'parent_id', 'lft', 'rgt', 'slug']));
+    }
+
+    /**
      * @param string $search
      * @return $this
      */
