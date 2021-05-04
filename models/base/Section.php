@@ -385,11 +385,19 @@ class Section extends ActiveRecord implements AssetParentInterface
     }
 
     /**
+     * @return mixed|string
+     */
+    public function getHtmlId()
+    {
+        return $this->getI18nAttribute('slug') ?: ('section-' . $this->id);
+    }
+
+    /**
      * @return array|false
      */
     public function getRoute()
     {
-        return ($route = $this->entry->getRoute()) ? array_merge($route, ['#' => $this->getI18nAttribute('slug') ?: ('section-' . $this->id)]) : false;
+        return ($route = $this->entry->getRoute()) ? array_merge($route, ['#' => $this->getHtmlId()]) : false;
     }
 
     /**
