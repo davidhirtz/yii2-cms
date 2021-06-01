@@ -305,11 +305,20 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
             }
         }
 
-        $view->setBreadcrumb($this->showEntryTypes ? $model->getTypeName() : Yii::t('cms', 'Entry'), ['/admin/entry/update', 'id' => $model->id]);
+        $this->setEntryBreadcrumb();
 
         if ($this->isSection()) {
             $view->setBreadcrumb(Yii::t('cms', 'Section'), ['/admin/section/update', 'id' => $this->model->id]);
         }
+    }
+
+    /**
+     * Sets entry breadcrumb.
+     */
+    protected function setEntryBreadcrumb()
+    {
+        $model = $this->isSection() ? $this->model->entry : $this->model;
+        $this->getView()->setBreadcrumb($this->showEntryTypes ? $model->getTypeName() : Yii::t('cms', 'Entry'), ['/admin/entry/update', 'id' => $model->id]);
     }
 
     /**

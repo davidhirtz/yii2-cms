@@ -260,11 +260,13 @@ class Section extends ActiveRecord implements AssetParentInterface
         $clone->generateUniqueSlug();
 
         if ($clone->insert()) {
-            foreach ($this->assets as $asset) {
-                $assetClone = new Asset();
-                $assetClone->setAttributes(array_merge($asset->getAttributes(), ['section_id' => $clone->id]));
-                $assetClone->populateRelation('section', $clone);
-                $assetClone->insert();
+            if ($this->asset_count) {
+                foreach ($this->assets as $asset) {
+                    $assetClone = new Asset();
+                    $assetClone->setAttributes(array_merge($asset->getAttributes(), ['section_id' => $clone->id]));
+                    $assetClone->populateRelation('section', $clone);
+                    $assetClone->insert();
+                }
             }
         }
 

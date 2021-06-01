@@ -300,10 +300,12 @@ class Entry extends ActiveRecord implements AssetParentInterface
             $assets = $this->getAssets()->withoutSections()->all();
 
             foreach ($assets as $asset) {
-                $assetClone = new Asset();
-                $assetClone->setAttributes(array_merge($asset->getAttributes(), ['entry_id' => $clone->id]));
-                $assetClone->populateRelation('entry', $clone);
-                $assetClone->insert();
+                if ($this->asset_count) {
+                    $assetClone = new Asset();
+                    $assetClone->setAttributes(array_merge($asset->getAttributes(), ['entry_id' => $clone->id]));
+                    $assetClone->populateRelation('entry', $clone);
+                    $assetClone->insert();
+                }
             }
         }
 
