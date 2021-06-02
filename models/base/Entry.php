@@ -98,10 +98,6 @@ class Entry extends ActiveRecord implements AssetParentInterface
                 ['slug'],
                 $this->slugUniqueValidator,
                 'targetAttribute' => $this->slugTargetAttribute,
-                'comboNotUnique' => Yii::t('yii', '{attribute} "{value}" has already been taken.'),
-                'when' => function () {
-                    return $this->isAttributeChanged('slug');
-                }
             ],
             array_merge([$this->getI18nAttributeNames('publish_date')], (array)$this->dateTimeValidator),
         ]));

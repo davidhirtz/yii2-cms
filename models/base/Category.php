@@ -128,7 +128,6 @@ class Category extends ActiveRecord
                 ['slug'],
                 $this->slugUniqueValidator,
                 'targetAttribute' => $this->slugTargetAttribute,
-                'comboNotUnique' => Yii::t('yii', '{attribute} "{value}" has already been taken.'),
             ],
         ]));
     }
