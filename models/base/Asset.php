@@ -341,6 +341,14 @@ class Asset extends ActiveRecord implements AssetInterface
     }
 
     /**
+     * @return string
+     */
+    public function getAltText()
+    {
+        return $this->getI18nAttribute('alt_text') ?: $this->file->getI18nAttribute('alt_text');
+    }
+
+    /**
      * @return false|mixed
      */
     public function getRoute()
