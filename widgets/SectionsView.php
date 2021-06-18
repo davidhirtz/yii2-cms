@@ -133,7 +133,7 @@ class SectionsView extends Widget
             $sections = array_filter($sections, $this->isVisible);
         }
 
-        return !$viewFile ? '' : $this->render($viewFile, array_merge($this->viewParams, [
+        return !$viewFile || !$sections ? '' : $this->render($viewFile, array_merge($this->viewParams, [
             'sections' => $sections,
         ]));
     }
