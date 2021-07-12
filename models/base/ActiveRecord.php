@@ -197,7 +197,7 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
                 $iteration = 1;
 
                 // Make sure the loop is limited in case a persistent error prevents the validation.
-                while (!$this->validate($attributeName) && $iteration < 100) {
+                while (!$this->validate() && $iteration < 100) {
                     $baseSlug = mb_substr($baseSlug, 0, static::SLUG_MAX_LENGTH - 1 - ceil($iteration / 10), Yii::$app->charset);
                     $this->setAttribute($attributeName, $baseSlug . '-' . $iteration++);
                 }
