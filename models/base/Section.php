@@ -293,6 +293,15 @@ class Section extends ActiveRecord implements AssetParentInterface
     }
 
     /**
+     * @param Entry $entry
+     */
+    public function populateEntryRelation($entry)
+    {
+        $this->populateRelation('entry', $entry);
+        $this->entry_id = $entry->id ?? null;
+    }
+
+    /**
      * Updates the old entry relation after section was moved to another entry. Override this method if the old entry
      * should be further manipulated after the section's entry was changed.
      *
