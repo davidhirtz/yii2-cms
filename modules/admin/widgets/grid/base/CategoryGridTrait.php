@@ -87,7 +87,8 @@ trait CategoryGridTrait
             'contentOptions' => ['class' => 'd-none d-md-table-cell text-center'],
             'visible' => static::getModule()->enableNestedCategories,
             'content' => function (Category $category) {
-                return Html::a(Yii::$app->getFormatter()->asInteger($category->getBranchCount()), Url::current([$this->categoryParamName => $category->id, 'page' => null]), ['class' => 'badge']);
+                $route = [$this->categoryParamName => $category->id, 'page' => null, 'q' => null];
+                return Html::a(Yii::$app->getFormatter()->asInteger($category->getBranchCount()), Url::current($route), ['class' => 'badge']);
             }
         ];
     }
