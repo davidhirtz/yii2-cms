@@ -77,7 +77,7 @@ class EntryCategoryGridView extends GridView
     {
         return [
             'label' => EntryCategory::instance()->getAttributeLabel('updated_at'),
-            'headerOptions' => ['class' => 'd-none d-lg-table-cell'],
+            'headerOptions' => ['class' => 'd-none d-lg-table-cell text-nowrap'],
             'contentOptions' => ['class' => 'd-none d-lg-table-cell text-nowrap'],
             'content' => function (Category $category) {
                 return $category->entryCategory ? ($this->dateFormat ? $category->entryCategory->updated_at->format($this->dateFormat) : Timeago::tag($category->entryCategory->updated_at)) : null;

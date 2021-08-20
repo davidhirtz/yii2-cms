@@ -268,7 +268,7 @@ class EntryGridView extends GridView
     {
         return [
             'attribute' => 'publish_date',
-            'headerOptions' => ['class' => 'd-none d-lg-table-cell'],
+            'headerOptions' => ['class' => 'd-none d-lg-table-cell text-nowrap'],
             'contentOptions' => ['class' => 'd-none d-lg-table-cell text-nowrap'],
             'content' => function (Entry $entry) {
                 return $this->dateFormat ? $entry->publish_date->format($this->dateFormat) : Yii::$app->getFormatter()->asDate($entry->publish_date);
@@ -283,7 +283,7 @@ class EntryGridView extends GridView
     {
         return [
             'attribute' => 'updated_at',
-            'headerOptions' => ['class' => 'd-none d-lg-table-cell'],
+            'headerOptions' => ['class' => 'd-none d-lg-table-cell text-nowrap'],
             'contentOptions' => ['class' => 'd-none d-lg-table-cell text-nowrap'],
             'content' => function (Entry $entry) {
                 return $this->dateFormat ? $entry->updated_at->format($this->dateFormat) : Timeago::tag($entry->updated_at);

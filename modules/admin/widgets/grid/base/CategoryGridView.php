@@ -86,7 +86,7 @@ class CategoryGridView extends GridView
     {
         return [
             'attribute' => 'updated_at',
-            'headerOptions' => ['class' => 'd-none d-lg-table-cell'],
+            'headerOptions' => ['class' => 'd-none d-lg-table-cell text-nowrap'],
             'contentOptions' => ['class' => 'd-none d-lg-table-cell text-nowrap'],
             'content' => function (Category $category) {
                 return $this->dateFormat ? $category->updated_at->format($this->dateFormat) : Timeago::tag($category->updated_at);
