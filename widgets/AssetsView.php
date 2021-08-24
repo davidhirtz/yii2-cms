@@ -3,6 +3,7 @@
 namespace davidhirtz\yii2\cms\widgets;
 
 use davidhirtz\yii2\cms\models\Asset;
+use Yii;
 use yii\base\Widget;
 use yii\helpers\Html;
 
@@ -81,27 +82,8 @@ class AssetsView extends Widget
      */
     public function run()
     {
-        $sameViewport = true;
-        $viewports = [];
+        $viewports = $this->getAssetsByViewports();
         $output = '';
-
-        if ($this->viewports) {
-            foreach ($this->assets as $asset) {
-                foreach ($this->viewports as $cssClass => $types) {
-                    if (in_array($asset->type, $types)) {
-                        $viewports[$cssClass][] = $asset;
-                    }
-
-                    if ($sameViewport && !in_array($asset->type, $this->sharedViewports)) {
-                        $sameViewport = false;
-                    }
-                }
-            }
-        }
-
-        if ($sameViewport) {
-            $viewports = [$this->assets];
-        }
 
         foreach ($viewports as $cssClass => $assets) {
             if ($this->start !== null || $this->limit !== null) {
@@ -119,6 +101,31 @@ class AssetsView extends Widget
         }
 
         return $output;
+    }
+
+    /**
+     * @return Asset[][]
+     */
+    public function getAssetsByViewports()
+    {
+        $sameViewport = true;
+        $viewports = [];
+
+        if ($this->viewports) {
+            foreach ($this->assets as $asset) {
+                foreach ($this->viewports as $cssClass => $types) {
+                    if (in_array($asset->type, $types)) {
+                        $viewports[$cssClass][] = $asset;
+                    }
+
+                    if ($sameViewport && !in_array($asset->type, $this->sharedViewports)) {
+                        $sameViewport = false;
+                    }
+                }
+            }
+        }
+
+        return $sameViewport ? [$this->assets] : $viewports;
     }
 
     /**
@@ -141,6 +148,6 @@ class AssetsView extends Widget
      */
     public function getViewPath()
     {
-        return \Yii::$app->controller->getViewPath();
+        return Yii::$app->controller->getViewPath();
     }
 }
