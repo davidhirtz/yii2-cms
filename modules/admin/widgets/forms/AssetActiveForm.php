@@ -43,8 +43,8 @@ class AssetActiveForm extends ActiveForm
      */
     public function renderHeader()
     {
-        if ($thumbnailField = $this->thumbnailField()) {
-            echo $thumbnailField;
+        if ($previewField = $this->previewField()) {
+            echo $previewField;
             echo $this->horizontalLine();
         }
 
@@ -54,7 +54,7 @@ class AssetActiveForm extends ActiveForm
     /**
      * @return string
      */
-    public function thumbnailField()
+    public function previewField()
     {
         $file = $this->model->file;
         return $file->hasPreview() ? $this->row($this->offset(Html::img($file->folder->getUploadUrl() . $file->getFilename(), ['class' => 'img-transparent']))) : '';
