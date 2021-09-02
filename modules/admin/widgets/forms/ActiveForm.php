@@ -7,8 +7,8 @@ use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\skeleton\helpers\Html;
-use davidhirtz\yii2\skeleton\modules\admin\widgets\forms\ModelTimestampTrait;
-use davidhirtz\yii2\skeleton\widgets\forms\CKEditor;
+use davidhirtz\yii2\skeleton\modules\admin\widgets\forms\traits\ModelTimestampTrait;
+use davidhirtz\yii2\skeleton\modules\admin\widgets\forms\traits\ContentFieldTrait;
 use Yii;
 use yii\helpers\ArrayHelper;
 use yii\widgets\ActiveField;
@@ -21,7 +21,8 @@ use yii\widgets\ActiveField;
  */
 class ActiveForm extends \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm
 {
-    use ModelTimestampTrait;
+    use \davidhirtz\yii2\skeleton\modules\admin\widgets\forms\traits\ModelTimestampTrait;
+    use ContentFieldTrait;
 
     /**
      * @param array $options
@@ -49,22 +50,6 @@ class ActiveForm extends \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm
     {
         $attribute = $this->model->getI18nAttributeName('description', ArrayHelper::remove($options, 'language'));
         return $this->field($this->model, $attribute, $options)->textarea();
-    }
-
-    /**
-     * @param array $options
-     * @return string
-     */
-    public function contentField($options = [])
-    {
-        if ($this->model->contentType) {
-            $attribute = $this->model->getI18nAttributeName('content', ArrayHelper::remove($options, 'language'));
-            $field = $this->field($this->model, $attribute, $options);
-
-            return $this->model->contentType === 'html' ? $field->widget(CKEditor::class, $this->getContentConfig()) : $field->textarea();
-        }
-
-        return '';
     }
 
     /**
@@ -130,19 +115,6 @@ class ActiveForm extends \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm
         }
 
         return $this->getToggleOptions($toggle);
-    }
-
-    /**
-     * @return array
-     */
-    protected function getContentConfig(): array
-    {
-        return [
-            'validator' => $this->model->htmlValidator,
-            'clientOptions' => $this->model->htmlValidator !== false ? [] : [
-                'allowedContent' => true,
-            ],
-        ];
     }
 
     /**
