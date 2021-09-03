@@ -13,13 +13,13 @@ use davidhirtz\yii2\cms\modules\admin\widgets\grid\AssetParentGridView;
 use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\media\models\AssetInterface;
 use davidhirtz\yii2\media\models\File;
-use davidhirtz\yii2\media\models\queries\FileQuery;
+use davidhirtz\yii2\media\models\traits\AssetTrait;
 use davidhirtz\yii2\skeleton\models\User;
 use Yii;
 use yii\base\Widget;
 
 /**
- * Class Asset.
+ * Class Asset
  * @package davidhirtz\yii2\cms\models\base
  * @see \davidhirtz\yii2\cms\models\Asset
  *
@@ -45,17 +45,7 @@ use yii\base\Widget;
  */
 class Asset extends ActiveRecord implements AssetInterface
 {
-    /**
-     * @var bool whether the related file should also be deleted on delete if the current record was it's only linked
-     * asset. Defaults to `false`.
-     */
-    public $deleteFileOnDelete = false;
-
-    /**
-     * Constants.
-     */
-    public const TYPE_VIEWPORT_MOBILE = 2;
-    public const TYPE_VIEWPORT_DESKTOP = 3;
+    use AssetTrait;
 
     /**
      * @inheritDoc
@@ -115,7 +105,7 @@ class Asset extends ActiveRecord implements AssetInterface
             $parent->asset_count = $this->findSiblings()->count();
             $parent->update();
 
-            $this->file->recalculateAssetCountByAsset($this)->update();
+            $this->updateOrDeleteFileByAssetCount();
         }
 
         parent::afterSave($insert, $changedAttributes);
@@ -134,15 +124,7 @@ class Asset extends ActiveRecord implements AssetInterface
             $parent->update();
         }
 
-        if (!$this->file->isDeleted()) {
-            $this->file->recalculateAssetCountByAsset($this);
-
-            if ($this->deleteFileOnDelete && !$this->file->getAssetCount()) {
-                $this->file->delete();
-            } else {
-                $this->file->update();
-            }
-        }
+        $this->updateOrDeleteFileByAssetCount();
 
         parent::afterDelete();
     }
@@ -163,15 +145,6 @@ class Asset extends ActiveRecord implements AssetInterface
     {
         /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $this->hasOne(Section::class, ['id' => 'section_id']);
-    }
-
-    /**
-     * @return FileQuery
-     */
-    public function getFile(): FileQuery
-    {
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return $this->hasOne(File::class, ['id' => 'file_id']);
     }
 
     /**
@@ -200,15 +173,6 @@ class Asset extends ActiveRecord implements AssetInterface
     }
 
     /**
-     * @param File $file
-     */
-    public function populateFileRelation($file)
-    {
-        $this->populateRelation('file', $file);
-        $this->file_id = $file->id;
-    }
-
-    /**
      * @param Section $section
      */
     public function populateSectionRelation($section)
@@ -232,61 +196,9 @@ class Asset extends ActiveRecord implements AssetInterface
     /**
      * @return string
      */
-    public function getTrailModelName()
-    {
-        if ($this->id) {
-            return Yii::t('skeleton', '{model} #{id}', [
-                'model' => $this->getTrailModelType(),
-                'id' => $this->id,
-            ]);
-        }
-
-        return $this->getTrailModelType();
-    }
-
-    /**
-     * @return string
-     */
     public function getTrailModelType(): string
     {
         return Yii::t('cms', 'Asset');
-    }
-
-    /**
-     * @param array|string|null $transformations
-     * @param string|null $extension
-     * @return array|string
-     */
-    public function getSrcset($transformations = null, $extension = null)
-    {
-        return $this->file->getSrcset($transformations, $extension);
-    }
-
-    /**
-     * @param string|null $language
-     * @return string
-     */
-    public function getAutoplayLink($language = null): string
-    {
-        return ($link = $this->getI18nAttribute('link', $language)) ? ($link . (strpos($link, '?') !== false ? '&' : '?') . 'autoplay=1') : '';
-    }
-
-    /**
-     * @return array
-     */
-    public static function getViewportTypes(): array
-    {
-        return [
-            static::TYPE_DEFAULT => [
-                'name' => Yii::t('cms', 'All devices'),
-            ],
-            static::TYPE_VIEWPORT_MOBILE => [
-                'name' => Yii::t('cms', 'Mobile'),
-            ],
-            static::TYPE_VIEWPORT_DESKTOP => [
-                'name' => Yii::t('cms', 'Desktop'),
-            ],
-        ];
     }
 
     /**
@@ -341,14 +253,6 @@ class Asset extends ActiveRecord implements AssetInterface
     }
 
     /**
-     * @return string
-     */
-    public function getAltText()
-    {
-        return $this->getI18nAttribute('alt_text') ?: $this->file->getI18nAttribute('alt_text');
-    }
-
-    /**
      * @return false|mixed
      */
     public function getRoute()
@@ -383,14 +287,6 @@ class Asset extends ActiveRecord implements AssetInterface
             'alt_text' => Yii::t('cms', 'Alt text'),
             'link' => Yii::t('cms', 'Link'),
         ]);
-    }
-
-    /**
-     * @return string
-     */
-    public function formName(): string
-    {
-        return 'Asset';
     }
 
     /**

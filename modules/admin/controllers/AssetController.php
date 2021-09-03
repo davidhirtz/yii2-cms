@@ -9,6 +9,7 @@ use davidhirtz\yii2\cms\modules\admin\controllers\traits\SectionTrait;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\media\models\File;
+use davidhirtz\yii2\media\modules\admin\controllers\traits\FileTrait;
 use davidhirtz\yii2\media\modules\admin\data\FileActiveDataProvider;
 use davidhirtz\yii2\skeleton\web\Controller;
 use Yii;
@@ -28,6 +29,7 @@ class AssetController extends Controller
     use EntryTrait;
     use SectionTrait;
     use ModuleTrait;
+    use FileTrait;
 
     /**
      * @inheritDoc
@@ -117,32 +119,14 @@ class AssetController extends Controller
         $request = Yii::$app->getRequest();
         $user = Yii::$app->getUser();
 
-        $file = $file ? File::findOne($file) : new File();
-        $file->folder_id = $folder;
-
-        if ($isNew = $file->getIsNewRecord()) {
-            if (!$user->can('fileCreate', ['file' => $file])) {
-                throw new ForbiddenHttpException();
-            }
-
-            // This is not very elegant right now. But copy errors need to be handled by validation
-            // and upload errors might be a partial upload that should simply end the request.
-            if ($url = $request->post('url')) {
-                $file->copy($request->post('url'));
-            } elseif (!$file->upload()) {
-                return '';
-            }
-
-            if (!$file->insert()) {
-                $errors = $file->getFirstErrors();
-                throw new BadRequestHttpException(reset($errors));
-            }
+        if(!($file = File::findOne($file) ?: $this->insertFileFromRequest($folder))) {
+            return '';
         }
 
         $asset = new Asset();
         $asset->entry_id = $entry;
         $asset->section_id = $section;
-        $asset->file_id = $file->id;
+        $asset->populateFileRelation($file);
 
         if (!$user->can($asset->isEntryAsset() ? 'entryAssetCreate' : 'sectionAssetCreate', ['asset' => $asset])) {
             throw new ForbiddenHttpException();
@@ -157,7 +141,7 @@ class AssetController extends Controller
             return '';
         }
 
-        $this->success($isNew ? Yii::t('cms', 'The asset was created.') : Yii::t('cms', 'The asset was added.'));
+        $this->success(Yii::t('cms', 'The asset was added.'));
         return $this->redirectToParent($asset);
     }
 
