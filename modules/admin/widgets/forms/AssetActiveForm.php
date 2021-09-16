@@ -57,7 +57,19 @@ class AssetActiveForm extends ActiveForm
     public function previewField()
     {
         $file = $this->model->file;
-        return $file->hasPreview() ? $this->row($this->offset(Html::img($file->folder->getUploadUrl() . $file->getFilename(), ['class' => 'img-transparent']))) : '';
+
+        if ($file->hasPreview()) {
+            $image = Html::img($file->getUrl(), [
+                'id' => 'image',
+                'class' => 'img-transparent',
+            ]);
+
+            return $this->row($this->offset(!($width = $this->model->file->width) ? $image : Html::tag('div', $image, [
+                'style' => "max-width:{$width}px",
+            ])));
+        }
+
+        return '';
     }
 
     /**

@@ -21,7 +21,7 @@ use yii\widgets\ActiveField;
  */
 class ActiveForm extends \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm
 {
-    use \davidhirtz\yii2\skeleton\modules\admin\widgets\forms\traits\ModelTimestampTrait;
+    use ModelTimestampTrait;
     use ContentFieldTrait;
 
     /**

@@ -241,7 +241,7 @@ class Asset extends ActiveRecord implements AssetInterface
      */
     public function getFileCountAttribute(): string
     {
-        return 'cms_asset_count';
+        return static::getModule()->enableI18nTables ? Yii::$app->getI18n()->getAttributeName('cms_asset_count') : 'cms_asset_count';
     }
 
     /**
