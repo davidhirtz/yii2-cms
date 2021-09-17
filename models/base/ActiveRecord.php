@@ -75,7 +75,10 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     {
         return array_merge(parent::behaviors(), [
             'DateTimeBehavior' => 'davidhirtz\yii2\datetime\DateTimeBehavior',
-            'TrailBehavior' => 'davidhirtz\yii2\skeleton\behaviors\TrailBehavior',
+            'TrailBehavior' => [
+                'class' => 'davidhirtz\yii2\skeleton\behaviors\TrailBehavior',
+                'modelClass' => static::class . (static::getModule()->enableI18nTables ? ('::' . Yii::$app->language) : ''),
+            ],
         ]);
     }
 
