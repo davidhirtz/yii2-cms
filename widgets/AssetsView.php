@@ -91,11 +91,13 @@ class AssetsView extends Widget
             }
 
             if ($assets) {
-                $this->viewParams['assets'] = $assets;
-                $content = $this->render($this->viewFile, $this->viewParams);
+                $content = $this->render($this->viewFile, array_merge($this->viewParams, ['assets' => $assets]));
                 $options = $this->prepareOptions($this->options, $assets);
 
-                $content = Html::tag('div', $content, $options);
+                if ($options) {
+                    $content = Html::tag('div', $content, $options);
+                }
+
                 $output .= is_string($cssClass) ? Html::tag('div', $content, ['class' => $cssClass]) : $content;
             }
         }
@@ -131,7 +133,7 @@ class AssetsView extends Widget
     /**
      * @param array $options
      * @param Asset[] $assets
-     * @return array
+     * @return array|false
      */
     protected function prepareOptions($options, $assets)
     {
