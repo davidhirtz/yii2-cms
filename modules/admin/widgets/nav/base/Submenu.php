@@ -11,7 +11,7 @@ use davidhirtz\yii2\skeleton\helpers\Html;
 use Yii;
 
 /**
- * Class Submenu.
+ * Class Submenu
  * @package davidhirtz\yii2\cms\modules\admin\widgets\nav\base
  */
 class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
@@ -187,7 +187,7 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
                 'url' => ['/admin/entry/update', 'id' => $entry->id],
                 'visible' => Yii::$app->getUser()->can('entryUpdate', ['entry' => $entry]),
                 'active' => array_filter([
-                    'admin/entry/',
+                    'admin/entry/update',
                     'admin/cms/asset/' => ['entry'],
                     !$this->isSection() ? 'admin/cms/asset/update' : null,
                 ]),
