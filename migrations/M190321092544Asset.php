@@ -29,12 +29,10 @@ class M190321092544Asset extends Migration
         $schema = $this->getDb()->getSchema();
 
         foreach ($this->getLanguages() as $language) {
-
             if ($language) {
                 Yii::$app->language = $language;
             }
 
-            // Asset.
             $this->createTable(Asset::tableName(), [
                 'id' => $this->primaryKey()->unsigned(),
                 'status' => $this->tinyInteger(1)->unsigned()->notNull()->defaultValue(Asset::STATUS_ENABLED),

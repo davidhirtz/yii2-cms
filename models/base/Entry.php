@@ -200,7 +200,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
     /**
      * @return AssetQuery
      */
-    public function getAssets(): AssetQuery
+    public function getAssets()
     {
         /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $this->hasMany(Asset::class, ['entry_id' => 'id'])

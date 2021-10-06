@@ -194,7 +194,7 @@ class Section extends ActiveRecord implements AssetParentInterface
     /**
      * @return AssetQuery
      */
-    public function getAssets(): AssetQuery
+    public function getAssets()
     {
         /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $this->hasMany(Asset::class, ['section_id' => 'id'])
