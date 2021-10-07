@@ -151,11 +151,7 @@ class AssetController extends Controller
      */
     public function actionUpdate(int $id)
     {
-        $asset = $this->findAsset($id);
-
-        if (!Yii::$app->getUser()->can($asset->isEntryAsset() ? 'entryAssetUpdate' : 'sectionAssetUpdate', ['asset' => $asset])) {
-            throw new ForbiddenHttpException();
-        }
+        $asset = $this->findAsset($id, 'assetUpdate');
 
         if ($asset->load(Yii::$app->getRequest()->post())) {
             if ($asset->update()) {
@@ -179,11 +175,7 @@ class AssetController extends Controller
      */
     public function actionDelete($id)
     {
-        $asset = $this->findAsset($id);
-
-        if (!Yii::$app->getUser()->can($asset->isEntryAsset() ? 'entryAssetDelete' : 'sectionAssetDelete', ['asset' => $asset])) {
-            throw new ForbiddenHttpException();
-        }
+        $asset = $this->findAsset($id, 'assetDelete');
 
         if ($asset->delete()) {
             if (Yii::$app->getRequest()->getIsAjax()) {

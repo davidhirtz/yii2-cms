@@ -201,7 +201,7 @@ class SectionController extends Controller
     }
 
     /**
-     * Clones or copies section. Additional changes can be set via POST (eg. the entry id for
+     * Clones or copies section. Additional changes can be set via POST (e.g. the entry id for
      * copying the section to another entry).
      *
      * @param int $id

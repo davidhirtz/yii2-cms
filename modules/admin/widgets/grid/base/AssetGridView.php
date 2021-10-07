@@ -6,6 +6,7 @@ use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\media\assets\AdminAsset;
+use davidhirtz\yii2\media\models\AssetInterface;
 use davidhirtz\yii2\media\models\AssetParentInterface;
 use davidhirtz\yii2\media\modules\admin\widgets\UploadTrait;
 use davidhirtz\yii2\skeleton\helpers\Html;
@@ -48,6 +49,7 @@ class AssetGridView extends GridView
     public function init()
     {
         if (!$this->dataProvider) {
+            /** @noinspection PhpPossiblePolymorphicInvocationInspection */
             $this->dataProvider = new ArrayDataProvider([
                 'allModels' => $this->parent->assets,
                 'pagination' => false,
@@ -124,7 +126,7 @@ class AssetGridView extends GridView
      */
     protected function getAssetsButton()
     {
-        return Html::a(Html::iconText('images', Yii::t('cms', 'Library')), $this->getParentRoute('cms/asset/index'), [
+        return Html::a(Html::iconText('images', Yii::t('cms', 'Library')), $this->getIndexRoute(), [
             'class' => 'btn btn-primary',
         ]);
     }
@@ -144,7 +146,7 @@ class AssetGridView extends GridView
     {
         return [
             'headerOptions' => ['style' => 'width:150px'],
-            'content' => function (Asset $asset) {
+            'content' => function (AssetInterface $asset) {
                 return !$asset->file->hasPreview() ? '' : Html::tag('div', '', [
                     'style' => 'background-image:url(' . ($asset->file->getTransformationUrl('admin') ?: $asset->file->getUrl()) . ');',
                     'class' => 'thumb',
@@ -160,7 +162,8 @@ class AssetGridView extends GridView
     {
         return [
             'attribute' => $this->getModel()->getI18nAttributeName('name'),
-            'content' => function (Asset $asset) {
+            'content' => function ($asset) {
+                /** @var Asset $asset */
                 if ($name = $asset->getI18nAttribute('name')) {
                     return Html::tag('strong', Html::a($name, $this->getRoute($asset)));
                 }
@@ -177,7 +180,7 @@ class AssetGridView extends GridView
     {
         return [
             'attribute' => $this->getModel()->getI18nAttributeName('dimensions'),
-            'content' => function (Asset $asset) {
+            'content' => function (AssetInterface $asset) {
                 return $asset->file->hasDimensions() ? $asset->file->getDimensions() : '-';
             }
         ];
@@ -190,7 +193,7 @@ class AssetGridView extends GridView
     {
         return [
             'contentOptions' => ['class' => 'text-right text-nowrap'],
-            'content' => function (Asset $asset) {
+            'content' => function ($asset) {
                 return Html::buttons($this->getRowButtons($asset));
             }
         ];
@@ -200,7 +203,7 @@ class AssetGridView extends GridView
      * @param Asset $asset
      * @return array
      */
-    protected function getRowButtons(Asset $asset)
+    protected function getRowButtons($asset)
     {
         $user = Yii::$app->getUser();
         $buttons = [];
@@ -228,7 +231,7 @@ class AssetGridView extends GridView
     }
 
     /**
-     * @param Asset $asset
+     * @param AssetInterface $asset
      * @return string
      */
     protected function getFileUpdateButton($asset)
@@ -259,7 +262,7 @@ class AssetGridView extends GridView
             $options['data-delete-url'] = Url::to(['file/delete', 'id' => $model->file_id]);
         }
 
-        return Html::a(Icon::tag('trash'), ['cms/asset/delete', 'id' => $model->id], $options);
+        return Html::a(Icon::tag('trash'), $this->getDeleteRoute($model) , $options);
     }
 
     /**
@@ -294,6 +297,24 @@ class AssetGridView extends GridView
         return $this->getParentRoute('/admin/cms/asset/create', [
             'folder' => Yii::$app->getRequest()->get('folder'),
         ]);
+    }
+
+    /**
+     * @param Asset $model
+     * @param array $params
+     * @return array|false
+     */
+    protected function getDeleteRoute($model, $params = [])
+    {
+        return array_merge(['/admin/asset/delete', 'id' => $model->id], $params);
+    }
+
+    /**
+     * @return array
+     */
+    protected function getIndexRoute()
+    {
+        return $this->getParentRoute('cms/asset/index');
     }
 
     /**

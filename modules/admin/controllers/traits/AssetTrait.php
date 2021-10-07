@@ -24,6 +24,10 @@ trait AssetTrait
             throw new NotFoundHttpException();
         }
 
+        if (in_array($permissionName, ['assetDelete', 'assetUpdate'])) {
+            $permissionName = ($asset->isEntryAsset() ? 'entry' : 'section') . ucfirst($permissionName);
+        }
+
         if ($permissionName && !Yii::$app->getUser()->can($permissionName, ['asset' => $asset])) {
             throw new ForbiddenHttpException();
         }

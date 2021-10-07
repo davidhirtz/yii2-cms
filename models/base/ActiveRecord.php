@@ -35,6 +35,7 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     use TypeAttributeTrait;
 
     public const SLUG_MAX_LENGTH = 100;
+    public const EVENT_AFTER_CLONE = 'afterClone';
 
     /**
      * @var bool whether slugs should not automatically be checked and processed.
@@ -134,6 +135,19 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     }
 
     /**
+     * Triggers event after `$clone` was inserted. This can be used to hook into the clone process after the model was
+     * successfully moved or copied.
+     * @param static $clone
+     */
+    public function afterClone($clone)
+    {
+        $event = new ModelCloneEvent();
+        $event->clone = $clone;
+
+        $this->trigger(static::EVENT_AFTER_CLONE, $event);
+    }
+
+    /**
      * @return UserQuery
      */
     public function getUpdated(): UserQuery
@@ -209,6 +223,14 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     }
 
     /**
+     * @return int
+     */
+    public function getMaxPosition(): int
+    {
+        return (int)$this->findSiblings()->max('[[position]]');
+    }
+
+    /**
      * @return array
      */
     public function getTrailAttributes(): array
@@ -220,14 +242,6 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
             'updated_at',
             'created_at',
         ]);
-    }
-
-    /**
-     * @return int
-     */
-    public function getMaxPosition(): int
-    {
-        return (int)$this->findSiblings()->max('[[position]]');
     }
 
     /**

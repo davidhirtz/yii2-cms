@@ -255,19 +255,20 @@ class Section extends ActiveRecord implements AssetParentInterface
      */
     public function clone($attributes = [])
     {
-        $clone = new static();
+        $clone = new \davidhirtz\yii2\cms\models\Section();
         $clone->setAttributes(array_merge($this->getAttributes(), $attributes ?: ['status' => static::STATUS_DRAFT]));
         $clone->generateUniqueSlug();
 
         if ($clone->insert()) {
             if ($this->asset_count) {
-                foreach ($this->assets as $asset) {
-                    $assetClone = new Asset();
-                    $assetClone->setAttributes(array_merge($asset->getAttributes(), ['section_id' => $clone->id]));
-                    $assetClone->populateRelation('section', $clone);
-                    $assetClone->insert();
+                $assets = $this->getAssets()->all();
+
+                foreach ($assets as $asset) {
+                    $asset->clone(['entry_id' => $clone->entry_id, 'section_id' => $clone->id]);
                 }
             }
+
+            $this->afterClone($clone);
         }
 
         return $clone;

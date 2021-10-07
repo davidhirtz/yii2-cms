@@ -16,6 +16,7 @@ use davidhirtz\yii2\media\models\File;
 use davidhirtz\yii2\media\models\traits\AssetTrait;
 use davidhirtz\yii2\skeleton\models\User;
 use Yii;
+use yii\base\ModelEvent;
 use yii\base\Widget;
 
 /**
@@ -164,6 +165,22 @@ class Asset extends ActiveRecord implements AssetInterface
     }
 
     /**
+     * @param array $attributes
+     * @return $this
+     */
+    public function clone($attributes = [])
+    {
+        $clone = new \davidhirtz\yii2\cms\models\Asset();
+        $clone->setAttributes(array_merge($this->getAttributes(), $attributes));
+
+        if ($clone->insert()) {
+            $this->afterClone($clone);
+        }
+
+        return $clone;
+    }
+
+    /**
      * @param Entry $entry
      */
     public function populateEntryRelation($entry)
@@ -190,7 +207,7 @@ class Asset extends ActiveRecord implements AssetInterface
      */
     public function getTrailParents()
     {
-        return $this->section_id ? [$this->section, $this->entry, $this->file] : [$this->entry, $this->file];
+        return $this->isSectionAsset() ? [$this->section, $this->entry, $this->file] : [$this->entry, $this->file];
     }
 
     /**

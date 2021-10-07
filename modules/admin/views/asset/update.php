@@ -19,19 +19,8 @@ $this->setTitle(Yii::t('cms', 'Edit Asset'));
 ?>
 
 <?= Submenu::widget([
-    'model' => $asset->getParent(),
+    'model' => $asset,
 ]); ?>
-
-<?php
-if ($asset->isSectionAsset()) {
-    $this->setBreadcrumbs([
-        Yii::t('cms', 'Sections') => ['/admin/section/index', 'entry' => $asset->entry_id],
-        Yii::t('cms', 'Assets') => ['/admin/section/update', 'id' => $asset->section_id, '#' => 'assets'],
-    ]);
-} else {
-    $this->setBreadcrumb(Yii::t('cms', 'Assets'), ['/admin/entry/update', 'id' => $asset->entry_id, '#' => 'assets']);
-}
-?>
 
 <?= Html::errorSummary($asset); ?>
 

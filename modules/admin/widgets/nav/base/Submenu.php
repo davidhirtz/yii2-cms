@@ -2,6 +2,7 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\widgets\nav\base;
 
+use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\models\Entry;
@@ -19,7 +20,7 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
     use ModuleTrait;
 
     /**
-     * @var Category|Entry|Section
+     * @var Asset|Category|Entry|Section
      */
     public $model;
 
@@ -60,10 +61,20 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
     private $_parentModule;
 
     /**
+     * @var bool
+     */
+    private $_isAsset = false;
+
+    /**
      * Initializes the nav items.
      */
     public function init()
     {
+        if ($this->model instanceof Asset) {
+            $this->model = $this->model->getParent();
+            $this->_isAsset = true;
+        }
+
         $model = $this->isSection() ? $this->model->entry : $this->model;
         $isEntry = $model instanceof Entry;
 
@@ -273,6 +284,10 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
         } elseif ($this->model) {
             $this->setEntryBreadcrumbs();
         }
+
+        if ($this->isAsset()) {
+            $this->setAssetBreadcrumbs();
+        }
     }
 
     /**
@@ -348,6 +363,15 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
     }
 
     /**
+     * Sets asset breadcrumbs.
+     */
+    protected function setAssetBreadcrumbs()
+    {
+        $route = $this->isSection() ? '/admin/section/update' : '/admin/entry/update';
+        $this->getView()->setBreadcrumb(Yii::t('cms', 'Assets'), [$route, 'id' => $this->model->id, '#' => 'assets']);
+    }
+
+    /**
      * @return Module
      */
     protected function getParentModule(): Module
@@ -390,5 +414,13 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
     protected function isSection(): bool
     {
         return $this->model instanceof Section;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isAsset(): bool
+    {
+        return $this->_isAsset;
     }
 }
