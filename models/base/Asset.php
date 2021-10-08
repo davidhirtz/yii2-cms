@@ -16,7 +16,6 @@ use davidhirtz\yii2\media\models\File;
 use davidhirtz\yii2\media\models\traits\AssetTrait;
 use davidhirtz\yii2\skeleton\models\User;
 use Yii;
-use yii\base\ModelEvent;
 use yii\base\Widget;
 
 /**

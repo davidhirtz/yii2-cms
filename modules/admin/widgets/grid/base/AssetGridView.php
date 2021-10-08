@@ -49,7 +49,6 @@ class AssetGridView extends GridView
     public function init()
     {
         if (!$this->dataProvider) {
-            /** @noinspection PhpPossiblePolymorphicInvocationInspection */
             $this->dataProvider = new ArrayDataProvider([
                 'allModels' => $this->parent->assets,
                 'pagination' => false,
@@ -147,7 +146,11 @@ class AssetGridView extends GridView
         return [
             'headerOptions' => ['style' => 'width:150px'],
             'content' => function (AssetInterface $asset) {
-                return !$asset->file->hasPreview() ? '' : Html::tag('div', '', [
+                if (!$asset->file->hasPreview()) {
+                    return '';
+                }
+
+                return Html::tag('div', '', [
                     'style' => 'background-image:url(' . ($asset->file->getTransformationUrl('admin') ?: $asset->file->getUrl()) . ');',
                     'class' => 'thumb',
                 ]);
@@ -262,7 +265,7 @@ class AssetGridView extends GridView
             $options['data-delete-url'] = Url::to(['file/delete', 'id' => $model->file_id]);
         }
 
-        return Html::a(Icon::tag('trash'), $this->getDeleteRoute($model) , $options);
+        return Html::a(Icon::tag('trash'), $this->getDeleteRoute($model), $options);
     }
 
     /**
