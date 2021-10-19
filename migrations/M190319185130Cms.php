@@ -16,7 +16,8 @@ use yii\db\Migration;
  */
 class M190319185130Cms extends Migration
 {
-    use ModuleTrait, MigrationTrait;
+    use MigrationTrait;
+    use ModuleTrait;
 
     /**
      * @return bool|void
@@ -50,7 +51,7 @@ class M190319185130Cms extends Migration
                 'created_at' => $this->dateTime()->notNull(),
             ], $this->getTableOptions());
 
-            $entry = new Entry;
+            $entry = new Entry();
             $this->addI18nColumns(Entry::tableName(), $entry->i18nAttributes);
 
             foreach($entry->getI18nAttributeNames('slug') as $attributeName) {
@@ -76,12 +77,8 @@ class M190319185130Cms extends Migration
                 'created_at' => $this->dateTime()->notNull(),
             ], $this->getTableOptions());
 
-            $section = new Section;
+            $section = new Section();
             $this->addI18nColumns(Section::tableName(), $section->i18nAttributes);
-
-            foreach($section->getI18nAttributeNames('slug') as $attributeName) {
-                $this->createIndex($attributeName, Section::tableName(), ['entry_id', $attributeName], true);
-            }
 
             $this->createIndex('entry_id', Section::tableName(), ['entry_id', 'status', 'position']);
 

@@ -42,15 +42,5 @@ class M191106150324Slugs extends Migration
             } catch (Exception $ex) {
             }
         }
-
-        $section = Section::instance();
-
-        foreach ($section->getI18nAttributeNames('slug') as $attributeName) {
-            try {
-                $this->dropIndex($attributeName, Section::tableName());
-                $this->createIndex($attributeName, Section::tableName(), $section->slugTargetAttribute ?: $attributeName, true);
-            } catch (Exception $ex) {
-            }
-        }
     }
 }
