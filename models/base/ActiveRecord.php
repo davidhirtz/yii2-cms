@@ -169,7 +169,7 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     {
         $manager = Yii::$app->getUrlManager();
         $sitemap = Yii::$app->sitemap;
-        $languages = static::getModule()->enableI18nTables || !$manager->hasI18nUrls() ? [Yii::$app->language] : Yii::$app->getI18n()->getLanguages();
+        $languages = static::getModule()->enableI18nTables && $manager->hasI18nUrls() ? array_keys($manager->languages) : [null];
         $urls = [];
 
         $query = $this->getSitemapQuery();
