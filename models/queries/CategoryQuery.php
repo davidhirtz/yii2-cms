@@ -34,7 +34,10 @@ class CategoryQuery extends ActiveQuery
      */
     public function selectSitemapAttributes()
     {
-        return $this->addSelect($this->prefixColumns(['id', 'status', 'type', 'parent_id', 'lft', 'rgt', 'slug', 'updated_at']));
+        return $this->addSelect($this->prefixColumns(array_merge(
+            ['id', 'status', 'type', 'parent_id', 'lft', 'rgt', 'updated_at'],
+            Category::instance()->getI18nAttributesNames(['slug'])
+        )));
     }
 
     /**
