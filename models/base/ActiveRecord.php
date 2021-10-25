@@ -2,6 +2,7 @@
 
 namespace davidhirtz\yii2\cms\models\base;
 
+use davidhirtz\yii2\cms\Module;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\skeleton\db\ActiveQuery;
@@ -167,9 +168,8 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
      */
     public function generateSitemapUrls($offset = 0): array
     {
-        $manager = Yii::$app->getUrlManager();
+        $languages = $this->getSitemapLanguages();
         $sitemap = Yii::$app->sitemap;
-        $languages = static::getModule()->enableI18nTables && $manager->hasI18nUrls() ? array_keys($manager->languages) : [null];
         $urls = [];
 
         $query = $this->getSitemapQuery();
@@ -194,6 +194,19 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         }
 
         return $urls;
+    }
+
+    /**
+     * Returns an array of languages used for I18N URLs. This is only intended for {@link ActiveRecord::$i18nAttributes}
+     * tables and not for {@link Module::$enableI18nTables} as the website structure might be different and thus rather
+     * single sitemaps per language should be submitted.
+     *
+     * @return array
+     */
+    protected function getSitemapLanguages(): array
+    {
+        $manager = Yii::$app->getUrlManager();
+        return $this->i18nAttributes && $manager->hasI18nUrls() ? array_keys($manager->languages) : [null];
     }
 
     /**
