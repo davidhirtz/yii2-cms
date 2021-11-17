@@ -113,11 +113,10 @@ class SectionController extends Controller
      * @param int $entry
      * @return string|Response
      */
-    public function actionCreate(int $entry)
+    public function actionCreate($entry)
     {
-        $section = new Section([
-            'entry_id' => $entry,
-        ]);
+        $section = new Section(['entry_id' => (int)$entry]);
+        $section->loadDefaultValues();
 
         if (!$section->entry) {
             throw new NotFoundHttpException();

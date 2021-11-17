@@ -93,6 +93,7 @@ class CategoryController extends Controller
     public function actionCreate($id = null)
     {
         $category = new Category();
+        $category->loadDefaultValues();
         $category->parent_id = $id;
 
         if (!Yii::$app->getUser()->can('categoryCreate', ['category' => $category])) {

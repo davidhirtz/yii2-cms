@@ -124,6 +124,7 @@ class AssetController extends Controller
         }
 
         $asset = new Asset();
+        $asset->loadDefaultValues();
         $asset->entry_id = $entry;
         $asset->section_id = $section;
         $asset->populateFileRelation($file);

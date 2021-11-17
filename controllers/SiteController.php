@@ -4,9 +4,11 @@ namespace davidhirtz\yii2\cms\controllers;
 
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\Entry;
+use davidhirtz\yii2\cms\models\queries\EntryQuery;
 use davidhirtz\yii2\media\Module;
 use davidhirtz\yii2\skeleton\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 
 /**
  * Class SiteController.
@@ -19,7 +21,7 @@ class SiteController extends Controller
 
     /**
      * @param string $category
-     * @return string|\yii\web\Response
+     * @return string|Response
      * @todo
      */
     public function actionIndex($category = null)
@@ -36,7 +38,7 @@ class SiteController extends Controller
 
     /**
      * @param string $entry
-     * @return string|\yii\web\Response
+     * @return string|Response
      */
     public function actionView($entry)
     {
@@ -48,7 +50,7 @@ class SiteController extends Controller
             ->one();
 
         if (!$entry) {
-            throw new NotFoundHttpException;
+            throw new NotFoundHttpException();
         }
 
         $entry->populateAssetRelations();
@@ -60,7 +62,7 @@ class SiteController extends Controller
     }
 
     /**
-     * @return \davidhirtz\yii2\cms\models\queries\EntryQuery
+     * @return EntryQuery
      */
     protected function getQuery()
     {

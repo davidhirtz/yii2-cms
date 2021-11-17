@@ -72,7 +72,7 @@ class EntryController extends Controller
      * @param int|null $category
      * @param int|null $type
      * @param string|null $q
-     * @return string
+     * @return string|Response
      */
     public function actionIndex($category = null, $type = null, $q = null)
     {
@@ -101,7 +101,9 @@ class EntryController extends Controller
     public function actionCreate($type = null)
     {
         $entry = new Entry();
+        $entry->loadDefaultValues();
         $entry->type = $type ?: static::getModule()->defaultEntryType;
+
         $request = Yii::$app->getRequest();
 
         if (!Yii::$app->getUser()->can('entryCreate', ['entry' => $entry])) {
