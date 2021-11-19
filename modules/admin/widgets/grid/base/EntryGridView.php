@@ -86,7 +86,7 @@ class EntryGridView extends GridView
             $this->orderRoute = ['entry-category/order', 'category' => $this->dataProvider->category->id];
         }
 
-        $enableCategories = static::getModule()->enableCategories && count(static::getCategories()) > 1;
+        $enableCategories = static::getModule()->enableCategories;
 
         if ($this->showCategories) {
             $this->showCategories = $enableCategories;
@@ -313,15 +313,15 @@ class EntryGridView extends GridView
         $user = Yii::$app->getUser();
         $buttons = [];
 
-        if($this->isSortedByPosition() && $this->dataProvider->getCount() > 1 && $user->can('entryOrder')) {
+        if ($this->isSortedByPosition() && $this->dataProvider->getCount() > 1 && $user->can('entryOrder')) {
             $buttons[] = $this->getSortableButton();
         }
 
-        if($user->can('entryUpdate', ['entry' => $entry])) {
+        if ($user->can('entryUpdate', ['entry' => $entry])) {
             $buttons[] = $this->getUpdateButton($entry);
         }
 
-        if($this->showDeleteButton && $user->can('entryDelete', ['entry' => $entry])) {
+        if ($this->showDeleteButton && $user->can('entryDelete', ['entry' => $entry])) {
             $buttons[] = $this->getDeleteButton($entry);
         }
 
@@ -333,14 +333,16 @@ class EntryGridView extends GridView
      */
     public function categoryDropdown()
     {
-        $categoryCount = count(static::getCategories());
+        if ($items = $this->categoryDropdownItems()) {
+            return ButtonDropdown::widget([
+                'label' => $this->dataProvider->category ? (Yii::t('cms', 'Category') . ': ' . Html::tag('strong', Html::encode($this->dataProvider->category->getI18nAttribute('name')))) : Yii::t('cms', 'Categories'),
+                'showFilter' => $this->showCategoryDropdownFilterMinCount && $this->showCategoryDropdownFilterMinCount < count($items),
+                'items' => $items,
+                'paramName' => 'category',
+            ]);
+        }
 
-        return !$categoryCount ? '' : ButtonDropdown::widget([
-            'label' => $this->dataProvider->category ? (Yii::t('cms', 'Category') . ': ' . Html::tag('strong', Html::encode($this->dataProvider->category->getI18nAttribute('name')))) : Yii::t('cms', 'Categories'),
-            'showFilter' => $this->showCategoryDropdownFilterMinCount && $this->showCategoryDropdownFilterMinCount < $categoryCount,
-            'items' => $this->categoryDropdownItems(),
-            'paramName' => 'category',
-        ]);
+        return '';
     }
 
     /**
