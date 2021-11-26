@@ -128,8 +128,8 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
             'TimestampBehavior' => 'davidhirtz\yii2\skeleton\behaviors\TimestampBehavior',
         ]);
 
-        if (!$this->position && $this->position !== false) {
-            $this->position = $this->getMaxPosition() + 1;
+        if (!$this->position) {
+            $this->position = $this->position !== false ? ($this->getMaxPosition() + 1) : 0;
         }
 
         return parent::beforeSave($insert);
