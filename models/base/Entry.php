@@ -147,18 +147,21 @@ class Entry extends ActiveRecord implements AssetParentInterface
         if ($isValid = parent::beforeDelete()) {
             if ($this->asset_count || $this->section_count) {
                 foreach ($this->assets as $asset) {
+                    $asset->setIsBatch($this->getIsBatch());
                     $asset->delete();
                 }
             }
 
             if ($this->section_count) {
                 foreach ($this->sections as $section) {
+                    $section->setIsBatch($this->getIsBatch());
                     $section->delete();
                 }
             }
 
             if ($this->category_ids) {
                 foreach ($this->entryCategories as $entryCategory) {
+                    $entryCategory->setIsBatch($this->getIsBatch());
                     $entryCategory->delete();
                 }
             }

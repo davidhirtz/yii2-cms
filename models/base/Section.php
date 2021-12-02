@@ -171,6 +171,7 @@ class Section extends ActiveRecord implements AssetParentInterface
         if (!$this->entry->isDeleted()) {
             if ($this->asset_count) {
                 foreach ($this->assets as $asset) {
+                    $asset->setIsBatch($this->getIsBatch());
                     $asset->delete();
                 }
             }
