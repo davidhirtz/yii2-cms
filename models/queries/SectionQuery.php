@@ -3,6 +3,7 @@
 namespace davidhirtz\yii2\cms\models\queries;
 
 use davidhirtz\yii2\cms\models\Section;
+use davidhirtz\yii2\skeleton\db\ActiveQuery;
 
 /**
  * Class SectionQuery
@@ -11,9 +12,10 @@ use davidhirtz\yii2\cms\models\Section;
  * @method Section[] all($db = null)
  * @method Section one($db = null)
  */
-class SectionQuery extends \davidhirtz\yii2\skeleton\db\ActiveQuery
+class SectionQuery extends ActiveQuery
 {
     /**
+     * Override this method to select only the attributes needed for frontend display.
      * @return $this
      */
     public function selectSiteAttributes()

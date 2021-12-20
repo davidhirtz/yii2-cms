@@ -8,11 +8,13 @@ use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\models\queries\AssetQuery;
 use davidhirtz\yii2\cms\models\queries\EntryQuery;
 use davidhirtz\yii2\cms\models\queries\SectionQuery;
+use davidhirtz\yii2\cms\Module;
 use davidhirtz\yii2\cms\modules\admin\widgets\forms\EntryActiveForm;
 use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\media\models\AssetParentInterface;
 use davidhirtz\yii2\skeleton\helpers\ArrayHelper;
 use davidhirtz\yii2\skeleton\models\Trail;
+use davidhirtz\yii2\skeleton\web\Sitemap;
 use Yii;
 use yii\base\Widget;
 use yii\db\ActiveQuery;
@@ -230,11 +232,17 @@ class Entry extends ActiveRecord implements AssetParentInterface
     }
 
     /**
-     * @return ActiveQuery
+     * @return EntryQuery
      */
     public function getSitemapQuery()
     {
-        return static::find()->selectSitemapAttributes();
+        $query = static::find()->selectSitemapAttributes();
+
+        if (static::getModule()->enableImageSitemaps) {
+            $query->withSitemapAssets();
+        }
+
+        return $query;
     }
 
     /**
@@ -376,6 +384,31 @@ class Entry extends ActiveRecord implements AssetParentInterface
     public function getCategoryCount(): int
     {
         return count($this->getCategoryIds());
+    }
+
+    /**
+     * Extends the default XML sitemap url by image URLs if related assets were found. This is automatically the
+     * case if {@link Module::$enableImageSitemaps} is set to `true`.
+     *
+     * @param string $language
+     * @return array|false
+     */
+    public function getSitemapUrl($language)
+    {
+        if ($url = parent::getSitemapUrl($language)) {
+            /** @var Asset[]|false $assets */
+            if ($assets = $this->getRelatedRecords()['assets'] ?? false) {
+                foreach ($assets as $asset) {
+                    if ($imageUrl = $asset->getSitemapUrl($language)) {
+                        $url['images'][] = $imageUrl;
+                    }
+                }
+            }
+        }
+
+        Yii::debug($url);
+
+        return $url;
     }
 
     /**

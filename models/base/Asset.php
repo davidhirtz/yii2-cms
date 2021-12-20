@@ -202,6 +202,34 @@ class Asset extends ActiveRecord implements AssetInterface
     }
 
     /**
+     * @param string $language
+     * @return array|false
+     */
+    public function getSitemapUrl($language)
+    {
+        if ($this->includeInSitemap($language)) {
+            return array_filter([
+                'loc' => $this->file->getUrl(),
+                'title' => $this->getAltText(),
+                'caption' => $this->contentType == 'html' ? strip_tags($this->getI18nAttribute('content')) : $this->getI18nAttribute('content'),
+            ]);
+        }
+
+        return false;
+    }
+
+    /**
+     * Includes only assets which are considered an image.
+     *
+     * @param null $language
+     * @return bool
+     */
+    public function includeInSitemap($language = null): bool
+    {
+        return $this->isEnabled() && $this->file->hasPreview();
+    }
+
+    /**
      * @return array
      */
     public function getTrailParents()

@@ -16,12 +16,22 @@ use davidhirtz\yii2\skeleton\db\ActiveQuery;
 class AssetQuery extends ActiveQuery
 {
     /**
+     * Override this method to select only the attributes needed for frontend display.
      * @return AssetQuery
      */
     public function selectSiteAttributes()
     {
         return $this->addSelect($this->prefixColumns(array_diff($this->getModelInstance()->attributes(),
             ['updated_by_user_id', 'created_at'])));
+    }
+
+    /**
+     * Override this method to select only the attributes needed for XML sitemap generation.
+     * @return $this
+     */
+    public function selectSitemapAttributes()
+    {
+        return $this->selectSiteAttributes();
     }
 
     /**

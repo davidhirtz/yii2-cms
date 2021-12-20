@@ -182,13 +182,8 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         /** @var self $record */
         foreach ($query->each() as $record) {
             foreach ($languages as $language) {
-                if ($record->includeInSitemap($language)) {
-                    if ($route = $record->getRoute()) {
-                        $urls [] = [
-                            'loc' => $route + ['language' => $language],
-                            'lastmod' => $record->updated_at,
-                        ];
-                    }
+                if ($url = $record->getSitemapUrl($language)) {
+                    $urls [] = $url;
                 }
             }
         }
@@ -207,6 +202,27 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     {
         $manager = Yii::$app->getUrlManager();
         return $this->i18nAttributes && $manager->hasI18nUrls() ? array_keys($manager->languages) : [null];
+    }
+
+    /**
+     * Returns an array with the attributes needed for the XML sitemap. This can be overridden to add additional fields
+     * such as priority or images.
+     *
+     * @param string $language
+     * @return array|false
+     */
+    public function getSitemapUrl($language)
+    {
+        if ($this->includeInSitemap($language)) {
+            if ($route = $this->getRoute()) {
+                return [
+                    'loc' => $route + ['language' => $language],
+                    'lastmod' => $this->updated_at,
+                ];
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -278,7 +294,6 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     /**
      * @param string|null $language
      * @return bool
-     * @noinspection PhpUnusedParameterInspection
      */
     public function includeInSitemap($language = null): bool
     {

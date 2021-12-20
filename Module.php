@@ -64,6 +64,11 @@ class Module extends \yii\base\Module
     public $defaultCategoryType;
 
     /**
+     * @var bool whether image assets should be added to CML sitemap URLs
+     */
+    public $enableImageSitemaps = false;
+
+    /**
      * @inheritDoc
      */
     public function init()

@@ -18,6 +18,7 @@ use davidhirtz\yii2\skeleton\db\ActiveQuery;
 class EntryQuery extends ActiveQuery
 {
     /**
+     * Override this method to select only the attributes needed for frontend display.
      * @return $this
      */
     public function selectSiteAttributes()
@@ -27,6 +28,7 @@ class EntryQuery extends ActiveQuery
     }
 
     /**
+     * Override this method to select only the attributes needed for XML sitemap generation.
      * @return $this
      */
     public function selectSitemapAttributes()
@@ -137,6 +139,21 @@ class EntryQuery extends ActiveQuery
                     ->replaceI18nAttributes()
                     ->whereStatus();
             }
+        ]);
+    }
+
+    /**
+     * @return $this
+     */
+    public function withSitemapAssets()
+    {
+        return $this->with([
+            'assets' => function (AssetQuery $query) {
+                $query->selectSitemapAttributes()
+                    ->replaceI18nAttributes()
+                    ->whereStatus()
+                    ->withFiles();
+            },
         ]);
     }
 }
