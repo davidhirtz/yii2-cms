@@ -183,6 +183,7 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         foreach ($query->each() as $record) {
             foreach ($languages as $language) {
                 if ($language) {
+                    // Temporarily set location for I18n attributes to work
                     Yii::$app->language = $language;
                 }
 
