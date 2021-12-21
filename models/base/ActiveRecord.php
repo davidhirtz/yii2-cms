@@ -182,6 +182,10 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         /** @var self $record */
         foreach ($query->each() as $record) {
             foreach ($languages as $language) {
+                if ($language) {
+                    Yii::$app->language = $language;
+                }
+
                 if ($url = $record->getSitemapUrl($language)) {
                     $urls [] = $url;
                 }
