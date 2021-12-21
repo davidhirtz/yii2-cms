@@ -182,7 +182,11 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         /** @var self $record */
         foreach ($query->each() as $record) {
             foreach ($languages as $language) {
-                if ($url = $record->getSitemapUrl($language)) {
+                if ($language) {
+                    Yii::$app->language = $language;
+                }
+
+                if ($url = $record->getSitemapUrl()) {
                     $urls [] = $url;
                 }
             }
@@ -208,15 +212,14 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
      * Returns an array with the attributes needed for the XML sitemap. This can be overridden to add additional fields
      * such as priority or images.
      *
-     * @param string $language
      * @return array|false
      */
-    public function getSitemapUrl($language)
+    public function getSitemapUrl()
     {
-        if ($this->includeInSitemap($language)) {
+        if ($this->includeInSitemap()) {
             if ($route = $this->getRoute()) {
                 return [
-                    'loc' => $route + ['language' => $language],
+                    'loc' => $route,
                     'lastmod' => $this->updated_at,
                 ];
             }
@@ -292,10 +295,9 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     abstract public function getRoute();
 
     /**
-     * @param string|null $language
      * @return bool
      */
-    public function includeInSitemap($language = null): bool
+    public function includeInSitemap(): bool
     {
         return $this->isEnabled();
     }
