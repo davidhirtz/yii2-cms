@@ -202,11 +202,12 @@ class Asset extends ActiveRecord implements AssetInterface
     }
 
     /**
+     * @param string $language
      * @return array|false
      */
-    public function getSitemapUrl()
+    public function getSitemapUrl($language)
     {
-        if ($this->includeInSitemap()) {
+        if ($this->includeInSitemap($language)) {
             return array_filter([
                 'loc' => $this->file->getUrl(),
                 'title' => $this->getAltText(),
@@ -220,9 +221,10 @@ class Asset extends ActiveRecord implements AssetInterface
     /**
      * Includes only assets which are considered an image.
      *
+     * @param null $language
      * @return bool
      */
-    public function includeInSitemap(): bool
+    public function includeInSitemap($language = null): bool
     {
         return $this->isEnabled() && $this->file->hasPreview();
     }

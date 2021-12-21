@@ -390,15 +390,16 @@ class Entry extends ActiveRecord implements AssetParentInterface
      * Extends the default XML sitemap url by image URLs if related assets were found. This is automatically the
      * case if {@link Module::$enableImageSitemaps} is set to `true`.
      *
+     * @param string $language
      * @return array|false
      */
-    public function getSitemapUrl()
+    public function getSitemapUrl($language)
     {
-        if ($url = parent::getSitemapUrl()) {
+        if ($url = parent::getSitemapUrl($language)) {
             /** @var Asset[]|false $assets */
             if ($assets = $this->getRelatedRecords()['assets'] ?? false) {
                 foreach ($assets as $asset) {
-                    if ($imageUrl = $asset->getSitemapUrl()) {
+                    if ($imageUrl = $asset->getSitemapUrl($language)) {
                         $url['images'][] = $imageUrl;
                     }
                 }
