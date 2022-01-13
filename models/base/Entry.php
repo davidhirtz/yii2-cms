@@ -406,8 +406,6 @@ class Entry extends ActiveRecord implements AssetParentInterface
             }
         }
 
-        Yii::debug($url);
-
         return $url;
     }
 
