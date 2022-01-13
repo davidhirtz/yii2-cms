@@ -325,7 +325,9 @@ class Category extends ActiveRecord
      */
     public function getSitemapQuery()
     {
-        return static::find()->selectSitemapAttributes();
+        return static::find()
+            ->selectSitemapAttributes()
+            ->orderBy(['id' => SORT_ASC]);
     }
 
     /**

@@ -236,7 +236,9 @@ class Entry extends ActiveRecord implements AssetParentInterface
      */
     public function getSitemapQuery()
     {
-        $query = static::find()->selectSitemapAttributes();
+        $query = static::find()
+            ->selectSitemapAttributes()
+            ->orderBy(['id' => SORT_ASC]);
 
         if (static::getModule()->enableImageSitemaps) {
             $query->withSitemapAssets();
