@@ -11,6 +11,7 @@ use davidhirtz\yii2\cms\modules\admin\widgets\forms\SectionActiveForm;
 use davidhirtz\yii2\cms\modules\admin\widgets\grid\SectionGridView;
 use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\media\models\AssetParentInterface;
+use davidhirtz\yii2\skeleton\helpers\ArrayHelper;
 use davidhirtz\yii2\skeleton\models\Trail;
 use Yii;
 use yii\base\Widget;
@@ -256,8 +257,17 @@ class Section extends ActiveRecord implements AssetParentInterface
      */
     public function clone($attributes = [])
     {
-        $clone = new \davidhirtz\yii2\cms\models\Section();
-        $clone->setAttributes(array_merge($this->getAttributes(), $attributes ?: ['status' => static::STATUS_DRAFT]));
+        $entry = ArrayHelper::remove($attributes, 'entry');
+
+        $clone = new static();
+        $clone->setAttributes(array_merge($this->getAttributes($this->safeAttributes()), $attributes ?: [
+            'status' => static::STATUS_DRAFT,
+        ]));
+
+        if ($entry) {
+            $clone->populateEntryRelation($entry);
+        }
+
         $clone->generateUniqueSlug();
 
         if ($clone->insert()) {
@@ -265,7 +275,7 @@ class Section extends ActiveRecord implements AssetParentInterface
                 $assets = $this->getAssets()->all();
 
                 foreach ($assets as $asset) {
-                    $asset->clone(['entry_id' => $clone->entry_id, 'section_id' => $clone->id]);
+                    $asset->clone(['section' => $clone]);
                 }
             }
 

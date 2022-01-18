@@ -292,7 +292,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
     {
         /** @var \davidhirtz\yii2\cms\models\Entry $clone */
         $clone = new static();
-        $clone->setAttributes(array_merge($this->getAttributes(), $attributes ?: ['status' => static::STATUS_DRAFT]));
+        $clone->setAttributes(array_merge($this->getAttributes($this->safeAttributes()), $attributes ?: ['status' => static::STATUS_DRAFT]));
         $clone->generateUniqueSlug();
 
         if ($clone->insert()) {
@@ -303,14 +303,14 @@ class Entry extends ActiveRecord implements AssetParentInterface
             }
 
             foreach ($this->sections as $section) {
-                $section->clone(['entry_id' => $clone->id]);
+                $section->clone(['entry' => $clone]);
             }
 
             $assets = $this->getAssets()->withoutSections()->all();
 
             foreach ($assets as $asset) {
                 if ($this->asset_count) {
-                    $asset->clone(['entry_id' => $clone->id]);
+                    $asset->clone(['entry' => $clone]);
                 }
             }
 

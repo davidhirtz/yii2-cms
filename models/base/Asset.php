@@ -14,6 +14,7 @@ use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\media\models\AssetInterface;
 use davidhirtz\yii2\media\models\File;
 use davidhirtz\yii2\media\models\traits\AssetTrait;
+use davidhirtz\yii2\skeleton\helpers\ArrayHelper;
 use davidhirtz\yii2\skeleton\models\User;
 use Yii;
 use yii\base\Widget;
@@ -169,8 +170,19 @@ class Asset extends ActiveRecord implements AssetInterface
      */
     public function clone($attributes = [])
     {
-        $clone = new \davidhirtz\yii2\cms\models\Asset();
-        $clone->setAttributes(array_merge($this->getAttributes(), $attributes));
+        $entry = ArrayHelper::remove($attributes, 'entry');
+        $section = ArrayHelper::remove($attributes, 'section');
+
+        $clone = new static();
+        $clone->setAttributes(array_merge($this->getAttributes($this->safeAttributes()), $attributes));
+
+        if ($entry) {
+            $clone->populateEntryRelation($entry);
+        }
+
+        if ($section) {
+            $clone->populateSectionRelation($section);
+        }
 
         if ($clone->insert()) {
             $this->afterClone($clone);
@@ -185,7 +197,7 @@ class Asset extends ActiveRecord implements AssetInterface
     public function populateEntryRelation($entry)
     {
         $this->populateRelation('entry', $entry);
-        $this->entry_id = $entry->id;
+        $this->entry_id = $entry->id ?? null;
     }
 
     /**
