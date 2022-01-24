@@ -49,7 +49,7 @@ class SiteController extends Controller
             ->limit(1)
             ->one();
 
-        if (!$entry) {
+        if (!$entry || !$entry->getRoute()) {
             throw new NotFoundHttpException();
         }
 
