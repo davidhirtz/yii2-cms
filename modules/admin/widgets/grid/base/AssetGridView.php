@@ -168,10 +168,10 @@ class AssetGridView extends GridView
             'content' => function ($asset) {
                 /** @var Asset $asset */
                 if ($name = $asset->getI18nAttribute('name')) {
-                    return Html::tag('strong', Html::a($name, $this->getRoute($asset)));
+                    return Html::tag('strong', Html::a(Html::encode($name), $this->getRoute($asset)));
                 }
 
-                return Html::a($asset->file->name, $this->getRoute($asset), ['class' => 'text-muted']);
+                return Html::a(Html::encode($asset->file->name), $this->getRoute($asset), ['class' => 'text-muted']);
             }
         ];
     }
