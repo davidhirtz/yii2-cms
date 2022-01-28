@@ -296,8 +296,8 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
     protected function setModuleBreadcrumbs()
     {
         $this->getView()->setBreadcrumb($this->getParentModule()->name, array_merge($this->params, [
-            '/admin/entry/index', '
-            type' => static::getModule()->defaultEntryType,
+            '/admin/entry/index',
+            'type' => static::getModule()->defaultEntryType,
             'id' => null,
         ]));
     }
