@@ -89,7 +89,7 @@ class M190319185130Cms extends Migration
         }
 
         $auth = Yii::$app->getAuthManager();
-        $admin = $auth->getRole('admin');
+        $admin = $auth->getRole(User::AUTH_ROLE_ADMIN);
 
         $author = $auth->createRole('author');
         $auth->add($author);
