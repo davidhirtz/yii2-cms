@@ -6,8 +6,8 @@
 	"minimum-stability":"dev",
 	"prefer-stable":true,
 	"require":{
-		"davidhirtz/yii2-skeleton":"dev-master",
-		"davidhirtz/yii2-media":"dev-master"
+		"davidhirtz/yii2-skeleton":"*",
+		"davidhirtz/yii2-media":"*"
 	},
 	"autoload":{
 		"psr-4":{
