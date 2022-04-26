@@ -34,7 +34,7 @@ class EntryQuery extends ActiveQuery
     public function selectSitemapAttributes()
     {
         return $this->addSelect($this->prefixColumns(array_merge(
-            ['id', 'status', 'type', 'updated_at'],
+            ['id', 'status', 'type', 'section_count', 'updated_at'],
             Entry::instance()->getI18nAttributesNames(['slug'])
         )));
     }
