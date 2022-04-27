@@ -89,7 +89,7 @@ class EntryGridView extends GridView
         $enableCategories = static::getModule()->enableCategories;
 
         if ($this->showCategories) {
-            $this->showCategories = $enableCategories;
+            $this->showCategories = $enableCategories && count(static::getCategories()) > 0;
         }
 
         if ($this->showCategoryDropdown) {
