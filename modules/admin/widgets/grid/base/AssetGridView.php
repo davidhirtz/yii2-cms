@@ -3,6 +3,7 @@
 namespace davidhirtz\yii2\cms\modules\admin\widgets\grid\base;
 
 use davidhirtz\yii2\cms\models\Entry;
+use davidhirtz\yii2\cms\modules\admin\widgets\grid\columns\AssetThumbnailColumn;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\media\assets\AdminAsset;
@@ -143,19 +144,7 @@ class AssetGridView extends GridView
      */
     public function thumbnailColumn(): array
     {
-        return [
-            'headerOptions' => ['style' => 'width:150px'],
-            'content' => function (AssetInterface $asset) {
-                if (!$asset->file->hasPreview()) {
-                    return '';
-                }
-
-                return Html::tag('div', '', [
-                    'style' => 'background-image:url(' . ($asset->file->getTransformationUrl('admin') ?: $asset->file->getUrl()) . ');',
-                    'class' => 'thumb',
-                ]);
-            }
-        ];
+        return ['class' => AssetThumbnailColumn::class];
     }
 
     /**
