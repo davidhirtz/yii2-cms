@@ -1,14 +1,16 @@
 <?php
 /**
- * Entries.
+ * Entries
  * @see \davidhirtz\yii2\cms\modules\admin\controllers\EntryController::actionIndex()
  *
- * @var \davidhirtz\yii2\skeleton\web\View $this
- * @var \davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider $provider
+ * @var View $this
+ * @var EntryActiveDataProvider $provider
  */
 
+use davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider;
 use davidhirtz\yii2\cms\modules\admin\widgets\grid\EntryGridView;
 use davidhirtz\yii2\cms\modules\admin\widgets\nav\Submenu;
+use davidhirtz\yii2\skeleton\web\View;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
 
 $this->setTitle(Yii::t('cms', 'Entries'));

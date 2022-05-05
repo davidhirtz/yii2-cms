@@ -19,7 +19,7 @@
 return [
     'Added' => 'Hinzugefügt',
     'Alt text' => 'Alt text',
-    'Are you sure you want to remove this asset?' => 'Sind sie sicher, dass sie dieses Asset löschen wollen?',
+    'Are you sure you want to remove this asset?' => 'Sind Sie sicher, dass sie dieses Asset löschen wollen?',
     'Asset' => 'Asset',
     'Asset order changed' => 'Reihenfolge de Assets geändert',
     'Assets' => 'Assets',
