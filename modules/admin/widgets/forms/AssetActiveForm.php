@@ -3,17 +3,18 @@
 namespace davidhirtz\yii2\cms\modules\admin\widgets\forms;
 
 use davidhirtz\yii2\cms\models\Asset;
-use yii\helpers\ArrayHelper;
-use yii\helpers\Html;
+use davidhirtz\yii2\media\modules\admin\widgets\forms\traits\AssetFieldsTrait;
 
 /**
- * Class AssetActiveForm
- * @package davidhirtz\yii2\cms\modules\admin\widgets\forms
+ * AssetActiveForm is a widget that builds an interactive HTML form for {@see Asset}. By default, it implements fields
+ * for all safe attributes defined in the model.
  *
  * @property Asset $model
  */
 class AssetActiveForm extends ActiveForm
 {
+    use AssetFieldsTrait;
+
     /**
      * @var bool
      */
@@ -24,67 +25,12 @@ class AssetActiveForm extends ActiveForm
      */
     public function init()
     {
-        if (!$this->fields) {
-            $this->fields = [
-                'status',
-                'type',
-                'name',
-                'content',
-                'alt_text',
-                'link',
-            ];
-        }
+        $this->fields = $this->fields ?: array_diff($this->getDefaultFieldNames(), [
+            'file_id',
+            'entry_id',
+            'section_id',
+        ]);
 
         parent::init();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function renderHeader()
-    {
-        if ($previewField = $this->previewField()) {
-            echo $previewField;
-            echo $this->horizontalLine();
-        }
-
-        parent::renderHeader();
-    }
-
-    /**
-     * @return string
-     */
-    public function previewField()
-    {
-        $file = $this->model->file;
-
-        if ($file->hasPreview()) {
-            $image = Html::img($file->getUrl(), [
-                'id' => 'image',
-                'class' => 'img-transparent',
-            ]);
-
-            return $this->row($this->offset(!($width = $this->model->file->width) ? $image : Html::tag('div', $image, [
-                'style' => "max-width:{$width}px",
-            ])));
-        }
-
-        return '';
-    }
-
-    /**
-     * @param array $options
-     * @return string
-     */
-    public function altTextField($options = [])
-    {
-        $language = ArrayHelper::remove($options, 'language');
-        $attribute = $this->model->getI18nAttributeName('alt_text', $language);
-
-        if (!isset($options['inputOptions']['placeholder'])) {
-            $options['inputOptions']['placeholder'] = $this->model->file->getI18nAttribute('alt_text', $language);
-        }
-
-        return $this->field($this->model, $attribute, $options);
     }
 }

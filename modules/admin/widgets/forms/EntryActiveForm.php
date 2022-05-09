@@ -6,10 +6,11 @@ use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\skeleton\widgets\jui\DatePicker;
 use Yii;
+use yii\widgets\ActiveField;
 
 /**
- * Class EntryActiveForm
- * @package davidhirtz\yii2\cms\modules\admin\widgets\forms
+ * EntryActiveForm is a widget that builds an interactive HTML form for {@see Entry}. By default, it implements fields
+ * only for default attributes defined in the base model.
  *
  * @property Entry $model
  */
@@ -28,33 +29,33 @@ class EntryActiveForm extends ActiveForm
     public $hasStickyButtons = true;
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function init()
     {
-        if (!$this->fields) {
-            $this->fields = [
-                'status',
-                'type',
-                'name',
-                'content',
-                'publish_date',
-                '-',
-                'title',
-                'description',
-                'slug',
-            ];
-        }
+        $this->fields = $this->fields ?: [
+            'status',
+            'type',
+            'name',
+            'content',
+            'publish_date',
+            '-',
+            'title',
+            'description',
+            'slug',
+        ];
 
         parent::init();
     }
 
     /**
-     * @return \yii\bootstrap4\ActiveField|\yii\widgets\ActiveField
+     * @return ActiveField
      */
     public function publishDateField()
     {
-        return $this->field($this->model, 'publish_date')->appendInput(Yii::$app->getUser()->getIdentity()->getTimezoneOffset())->widget(DatePicker::class, $this->getPublishDateConfig());
+        return $this->field($this->model, 'publish_date')
+            ->appendInput(Yii::$app->getUser()->getIdentity()->getTimezoneOffset())
+            ->widget(DatePicker::class, $this->getPublishDateConfig());
     }
 
     /**
