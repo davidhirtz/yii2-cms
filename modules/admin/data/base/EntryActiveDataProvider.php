@@ -7,13 +7,12 @@ use davidhirtz\yii2\cms\models\queries\EntryQuery;
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
-use yii\data\ActiveDataProvider;
+use davidhirtz\yii2\skeleton\data\ActiveDataProvider;
 use yii\data\Sort;
 
 /**
- * Class EntryActiveDataProvider
- * @package davidhirtz\yii2\cms\modules\admin\data\base
- * @see \davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider
+ * EntryActiveDataProvider implements a data provider based on {@see Entry::find()}. To make changes, override the parent
+ * class {@see \davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider}.
  *
  * @property EntryQuery $query
  * @method Entry[] getModels()
@@ -42,12 +41,17 @@ class EntryActiveDataProvider extends ActiveDataProvider
      */
     public function init()
     {
-        if (!$this->query) {
-            $this->query = Entry::find();
-        }
-
-        $this->initQuery();
+        $this->query = $this->query ?: Entry::find();
         parent::init();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function prepareQuery()
+    {
+        $this->initQuery();
+        parent::prepareQuery();
     }
 
     /**
