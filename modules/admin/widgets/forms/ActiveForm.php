@@ -121,7 +121,7 @@ class ActiveForm extends \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm
      * @param string|null $language
      * @return string
      */
-    protected function getSlugBaseUrl($language = null): string
+    public function getSlugBaseUrl($language = null): string
     {
         $manager = Yii::$app->getUrlManager();
         return rtrim($manager->createAbsoluteUrl(['/', 'language' => $manager->i18nUrl || $manager->i18nSubdomain ? $language : null]), '/') . '/';
@@ -131,7 +131,7 @@ class ActiveForm extends \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm
      * @param string|null $language
      * @return string
      */
-    protected function getSlugId($language = null): string
+    public function getSlugId($language = null): string
     {
         return $this->getId() . '-' . $this->model->getI18nAttributeName('slug', $language);
     }
