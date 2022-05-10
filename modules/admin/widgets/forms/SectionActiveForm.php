@@ -49,7 +49,7 @@ class SectionActiveForm extends ActiveForm
      * @param string|null $language
      * @return string
      */
-    protected function getSlugBaseUrl($language = null): string
+    public function getSlugBaseUrl($language = null): string
     {
         $draftHostInfo = Yii::$app->getRequest()->getDraftHostInfo();
         $urlManager = Yii::$app->getUrlManager();
