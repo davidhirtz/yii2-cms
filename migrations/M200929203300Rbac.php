@@ -2,13 +2,12 @@
 
 namespace davidhirtz\yii2\cms\migrations;
 
+use davidhirtz\yii2\cms\Module;
 use davidhirtz\yii2\skeleton\db\MigrationTrait;
 use Yii;
 use yii\db\Migration;
 
 /**
-* Class M200929203300Rbac
-* @package davidhirtz\yii2\cms\migrations
 * @noinspection PhpUnused
 */
 class M200929203300Rbac extends Migration
@@ -23,7 +22,7 @@ class M200929203300Rbac extends Migration
         $sourceLanguage = Yii::$app->sourceLanguage;
 
         $auth = Yii::$app->getAuthManager();
-        $author = $auth->getRole('author');
+        $author = $auth->getRole(Module::AUTH_ROLE_AUTHOR);
 
         // Category.
         $categoryUpdate = $auth->createPermission('categoryUpdate');

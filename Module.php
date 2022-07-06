@@ -5,12 +5,13 @@ namespace davidhirtz\yii2\cms;
 use davidhirtz\yii2\skeleton\modules\ModuleTrait;
 
 /**
- * Class Module
- * @package davidhirtz\yii2\cms
+ * The CMS Module.
  */
 class Module extends \yii\base\Module
 {
     use ModuleTrait;
+
+    public const AUTH_ROLE_AUTHOR = 'author';
 
     /**
      * @var bool whether categories should be enabled

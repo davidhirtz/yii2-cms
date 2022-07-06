@@ -4,6 +4,7 @@ namespace davidhirtz\yii2\cms\migrations;
 
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\Section;
+use davidhirtz\yii2\cms\Module;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\skeleton\db\MigrationTrait;
 use davidhirtz\yii2\skeleton\models\User;
@@ -91,7 +92,7 @@ class M190319185130Cms extends Migration
         $auth = Yii::$app->getAuthManager();
         $admin = $auth->getRole(User::AUTH_ROLE_ADMIN);
 
-        $author = $auth->createRole('author');
+        $author = $auth->createRole(Module::AUTH_ROLE_AUTHOR);
         $auth->add($author);
 
         $auth->addChild($admin, $author);
@@ -110,7 +111,7 @@ class M190319185130Cms extends Migration
         }
 
         $auth = Yii::$app->getAuthManager();
-        $this->delete($auth->itemTable, ['name' => 'author']);
+        $this->delete($auth->itemTable, ['name' => Module::AUTH_ROLE_AUTHOR]);
 
         $auth->invalidateCache();
     }
