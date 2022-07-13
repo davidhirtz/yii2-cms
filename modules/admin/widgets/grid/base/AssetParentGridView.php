@@ -44,6 +44,7 @@ class AssetParentGridView extends GridView
                     ->where(['file_id' => $this->file->id])
                     ->with(['entry', 'section'])
                     ->orderBy(['updated_at' => SORT_DESC])
+                    ->limit(100)
                     ->all()
             ]);
         }
