@@ -8,12 +8,11 @@ use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grid\GridView;
 use davidhirtz\yii2\skeleton\widgets\fontawesome\Icon;
 use davidhirtz\yii2\timeago\Timeago;
-use yii\data\ArrayDataProvider;
+use yii\data\ActiveDataProvider;
 use Yii;
 
 /**
- * Class AssetParentGridView
- * @package davidhirtz\yii2\cms\modules\admin\widgets\grid\base
+ * The AssetParentGridView widget is used to display {@see Asset} models in a grid related to {@link File}.
  * @see \davidhirtz\yii2\cms\modules\admin\widgets\grid\AssetParentGridView
  */
 class AssetParentGridView extends GridView
@@ -31,7 +30,7 @@ class AssetParentGridView extends GridView
     /**
      * @var string
      */
-    public $layout = '{items}';
+    public $layout = '{items}{pager}';
 
     /**
      * @inheritDoc
@@ -39,13 +38,11 @@ class AssetParentGridView extends GridView
     public function init()
     {
         if (!$this->dataProvider) {
-            $this->dataProvider = new ArrayDataProvider([
-                'allModels' => Asset::find()
+            $this->dataProvider = new ActiveDataProvider([
+                'query' => Asset::find()
                     ->where(['file_id' => $this->file->id])
                     ->with(['entry', 'section'])
-                    ->orderBy(['updated_at' => SORT_DESC])
-                    ->limit(100)
-                    ->all()
+                    ->orderBy(['updated_at' => SORT_DESC]),
             ]);
         }
 
