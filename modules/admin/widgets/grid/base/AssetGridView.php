@@ -2,8 +2,8 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\widgets\grid\base;
 
+use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\models\Entry;
-use davidhirtz\yii2\cms\modules\admin\widgets\grid\columns\AssetThumbnailColumn;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\media\assets\AdminAsset;
@@ -17,7 +17,7 @@ use davidhirtz\yii2\skeleton\modules\admin\widgets\grid\TypeGridViewTrait;
 use davidhirtz\yii2\skeleton\widgets\fontawesome\Icon;
 use Yii;
 use yii\data\ActiveDataProvider;
-use yii\data\ArrayDataProvider;
+use yii\db\ActiveQuery;
 use yii\helpers\Url;
 
 /**
@@ -42,7 +42,12 @@ class AssetGridView extends GridView
     /**
      * @var string
      */
-    public $layout = '{items}{footer}';
+    public $layout = '{header}{items}{footer}';
+
+    /**
+     * @var int the maximum amount of assets loaded for `$parent`
+     */
+    public $maxAssetCount = 100;
 
     /**
      * @inheritDoc
@@ -50,13 +55,11 @@ class AssetGridView extends GridView
     public function init()
     {
         if (!$this->dataProvider) {
-            $this->dataProvider = new ArrayDataProvider([
-                'allModels' => $this->parent->assets,
+            $this->dataProvider = new ActiveDataProvider([
+                'query' => $this->getParentAssetQuery(),
                 'pagination' => false,
                 'sort' => false,
             ]);
-
-            $this->setModel(Asset::instance());
         }
 
         if (!$this->columns) {
@@ -77,6 +80,7 @@ class AssetGridView extends GridView
         }
 
         $this->orderRoute = $this->getParentRoute('cms/asset/order');
+
         $this->initFooter();
 
         parent::init();
@@ -144,7 +148,9 @@ class AssetGridView extends GridView
      */
     public function thumbnailColumn(): array
     {
-        return ['class' => AssetThumbnailColumn::class];
+        // Use string here to prevent PhpStrom warnings for multiple declarations. The module `yii2-cms-hotspot` offers
+        // a replacement class for the thumbnail , which replaces the default implementation on bootstrap.
+        return ['class' => '\davidhirtz\yii2\cms\modules\admin\widgets\grid\columns\AssetThumbnailColumn'];
     }
 
     /**
@@ -176,6 +182,17 @@ class AssetGridView extends GridView
                 return $asset->file->hasDimensions() ? $asset->file->getDimensions() : '-';
             }
         ];
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    protected function getParentAssetQuery()
+    {
+        return $this->parent->getAssets()
+            ->andWhere(['section_id' => $this->parent instanceof Section ? $this->parent->id : null])
+            ->with(['file', 'file.folder'])
+            ->limit($this->maxAssetCount);
     }
 
     /**

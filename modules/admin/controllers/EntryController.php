@@ -17,8 +17,7 @@ use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
 /**
- * Class EntryController
- * @package davidhirtz\yii2\cms\modules\admin\controllers
+ * Admin CRUD actions for {@see Entry}.
  */
 class EntryController extends Controller
 {
@@ -115,7 +114,6 @@ class EntryController extends Controller
             return $this->redirect(array_merge($request->get(), ['update', 'id' => $entry->id]));
         }
 
-        /** @noinspection MissedViewInspection */
         return $this->render('create', [
             'entry' => $entry,
         ]);
@@ -140,13 +138,6 @@ class EntryController extends Controller
             }
         }
 
-        // Populate assets without sections for asset grid
-        $entry->populateRelation('assets', $entry->getAssets()
-            ->withoutSections()
-            ->with(['file', 'file.folder'])
-            ->all());
-
-        /** @noinspection MissedViewInspection */
         return $this->render('update', [
             'entry' => $entry,
         ]);

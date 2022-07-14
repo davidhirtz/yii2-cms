@@ -21,8 +21,7 @@ use yii\web\Response;
 
 
 /**
- * Class SectionController
- * @package app\modules\content\modules\admin\controllers
+ * Admin CRUD actions for {@see Section}.
  */
 class SectionController extends Controller
 {
@@ -31,7 +30,7 @@ class SectionController extends Controller
     use ModuleTrait;
 
     /**
-     * @var bool
+     * @var bool whether sections should be saved directly on create
      */
     public $autoCreateSection = true;
 
@@ -154,11 +153,6 @@ class SectionController extends Controller
                 return $this->refresh();
             }
         }
-
-        // Populate assets with file and folder relations.
-        $section->populateRelation('assets', $section->getAssets()
-            ->with(['file', 'file.folder'])
-            ->all());
 
         /** @noinspection MissedViewInspection */
         return $this->render('update', [
