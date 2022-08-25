@@ -4,9 +4,7 @@ namespace davidhirtz\yii2\cms\modules\admin\widgets\forms;
 
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
-use davidhirtz\yii2\skeleton\widgets\jui\DatePicker;
-use Yii;
-use yii\widgets\ActiveField;
+use davidhirtz\yii2\datetime\DateTimeInput;
 
 /**
  * EntryActiveForm is a widget that builds an interactive HTML form for {@see Entry}. By default, it implements fields
@@ -38,7 +36,7 @@ class EntryActiveForm extends ActiveForm
             'type',
             'name',
             'content',
-            'publish_date',
+            ['publish_date', DateTimeInput::class],
             '-',
             'title',
             'description',
@@ -46,26 +44,5 @@ class EntryActiveForm extends ActiveForm
         ];
 
         parent::init();
-    }
-
-    /**
-     * @return ActiveField
-     */
-    public function publishDateField()
-    {
-        return $this->field($this->model, 'publish_date')
-            ->appendInput(Yii::$app->getUser()->getIdentity()->getTimezoneOffset())
-            ->widget(DatePicker::class, $this->getPublishDateConfig());
-    }
-
-    /**
-     * @return array
-     */
-    protected function getPublishDateConfig(): array
-    {
-        return [
-            'options' => ['class' => 'form-control', 'autocomplete' => 'off'],
-            'showTime' => true,
-        ];
     }
 }
