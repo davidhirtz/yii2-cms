@@ -11,18 +11,21 @@ use davidhirtz\yii2\cms\models\queries\SectionQuery;
 use davidhirtz\yii2\cms\Module;
 use davidhirtz\yii2\cms\modules\admin\widgets\forms\EntryActiveForm;
 use davidhirtz\yii2\datetime\DateTime;
+use davidhirtz\yii2\datetime\DateTimeValidator;
 use davidhirtz\yii2\media\models\AssetParentInterface;
+use davidhirtz\yii2\skeleton\behaviors\RedirectBehavior;
 use davidhirtz\yii2\skeleton\helpers\ArrayHelper;
 use davidhirtz\yii2\skeleton\models\Trail;
-use davidhirtz\yii2\skeleton\web\Sitemap;
 use Yii;
 use yii\base\Widget;
 use yii\db\ActiveQuery;
 use yii\helpers\Inflector;
 
 /**
- * Class Entry
- * @package davidhirtz\yii2\cms\models\base
+ * Entry is the base model class for all CMS entries, which can contain related {@link Section} models and
+ * {@link Asset} models. Entries can be organized by {@link EntryCategory} relations.
+ *
+ * @see \davidhirtz\yii2\cms\models\Entry
  *
  * @property int $position
  * @property string $name
@@ -52,7 +55,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
     /**
      * @var array|string
      */
-    public $dateTimeValidator = '\davidhirtz\yii2\datetime\DateTimeValidator';
+    public $dateTimeValidator = DateTimeValidator::class;
 
     /**
      * @inheritDoc
@@ -60,7 +63,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
     public function behaviors(): array
     {
         return array_merge(parent::behaviors(), [
-            'RedirectBehavior' => 'davidhirtz\yii2\skeleton\behaviors\RedirectBehavior',
+            'RedirectBehavior' => RedirectBehavior::class,
         ]);
     }
 

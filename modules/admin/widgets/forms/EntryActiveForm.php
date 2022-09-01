@@ -54,8 +54,6 @@ class EntryActiveForm extends ActiveForm
      */
     public function publishDateField()
     {
-        return $this->field($this->model, 'publish_date')->widget(DateTimeInput::class, [
-            'options' => ['id' => 'bla'],
-        ]);
+        return $this->field($this->model, 'publish_date')->widget(DateTimeInput::class);
     }
 }
