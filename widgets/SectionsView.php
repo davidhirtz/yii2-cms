@@ -8,8 +8,8 @@ use Yii;
 use yii\base\Widget;
 
 /**
- * Class SectionsView
- * @package davidhirtz\yii2\cms\widgets
+ * SectionsView renders {@link Section} models. Sections will be rendered in their template set by `viewFile` or their
+ * {@link Section::getViewFile()} method grouped by adjacent sections with the same template.
  */
 class SectionsView extends Widget
 {
@@ -34,8 +34,8 @@ class SectionsView extends Widget
     public $viewFile = '_sections';
 
     /**
-     * @var callable|null an anonymous function with the signature `function ($section)`, where `$section`
-     * is the {@link Section} object that you can modify in the function.
+     * @var callable|null an anonymous function with the signature `function ($section)`, where `$section` is the
+     * {@link Section} object that you can modify in the function.
      */
     public $isVisible;
 
@@ -60,7 +60,7 @@ class SectionsView extends Widget
         $prevViewFile = null;
         $sections = [];
 
-        while ($section = current($this->sections)) {
+        foreach ($this->sections as $section) {
             $viewFile = $this->getSectionViewFile($section);
 
             if ($prevViewFile != $viewFile) {
@@ -70,7 +70,7 @@ class SectionsView extends Widget
                 }
             }
 
-            $sections[] = array_shift($this->sections);
+            $sections[] = $section;
             $prevViewFile = $viewFile;
         }
 
@@ -82,14 +82,40 @@ class SectionsView extends Widget
     }
 
     /**
+     * Renders adjacent sections by type starting with the given section. Rendered sections are then removed them from
+     * the stack.
+     *
+     * @param Section $section
+     * @param string|null $viewFile
+     */
+    public function renderAdjacentSectionsByType($section, $viewFile = null)
+    {
+        $sections = [];
+
+        foreach ($this->sections as $key => $current) {
+            if ($section->id == $current->id || $sections) {
+                if ($current->type != $section->type) {
+                    break;
+                }
+
+                $sections[] = $current;
+                unset($this->sections[$key]);
+            }
+        }
+
+        return $sections ? $this->renderSectionsInternal($sections, $viewFile) : '';
+    }
+
+    /**
      * Renders sections by type, removing them from the stack.
      *
      * @param array|int $types
      * @param string|null $viewFile
+     * @return string
      */
     public function renderSectionsByType($types, $viewFile = null)
     {
-        $this->renderSectionsByCallback(function (Section $section) use ($types) {
+        return $this->renderSectionsByCallback(function (Section $section) use ($types) {
             return in_array($section->type, (array)$types);
         }, $viewFile);
     }
@@ -97,6 +123,7 @@ class SectionsView extends Widget
     /**
      * @param callable $callback
      * @param null $viewFile
+     * @return string
      */
     public function renderSectionsByCallback($callback, $viewFile = null)
     {
@@ -113,9 +140,7 @@ class SectionsView extends Widget
             }
         }
 
-        if ($sections) {
-            $this->renderSectionsInternal($sections, $viewFile);
-        }
+        return $sections ? $this->renderSectionsInternal($sections, $viewFile) : '';
     }
 
     /**
