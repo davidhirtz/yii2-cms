@@ -36,6 +36,8 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     use TypeAttributeTrait;
 
     public const SLUG_MAX_LENGTH = 100;
+
+    public const EVENT_BEFORE_CLONE = 'beforeClone';
     public const EVENT_AFTER_CLONE = 'afterClone';
 
     /**
@@ -133,6 +135,20 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         }
 
         return parent::beforeSave($insert);
+    }
+
+    /**
+     * Triggers event before `$clone` was inserted. This can be used to hook into the clone process before the model is
+     * validated and saved.
+     * @param static $clone
+     */
+    public function beforeClone($clone)
+    {
+        $event = new ModelCloneEvent();
+        $event->clone = $clone;
+
+        $this->trigger(static::EVENT_BEFORE_CLONE, $event);
+        return $event->isValid;
     }
 
     /**

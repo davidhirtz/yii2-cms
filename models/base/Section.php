@@ -270,7 +270,7 @@ class Section extends ActiveRecord implements AssetParentInterface
 
         $clone->generateUniqueSlug();
 
-        if ($clone->insert()) {
+        if ($this->beforeClone($clone) && $clone->insert()) {
             if ($this->asset_count) {
                 $assets = $this->getAssets()->all();
 

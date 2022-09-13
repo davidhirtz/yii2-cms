@@ -298,7 +298,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
         $clone->setAttributes(array_merge($this->getAttributes($this->safeAttributes()), $attributes ?: ['status' => static::STATUS_DRAFT]));
         $clone->generateUniqueSlug();
 
-        if ($clone->insert()) {
+        if ($this->beforeClone($clone) && $clone->insert()) {
             foreach ($this->getCategoryIds() as $categoryId) {
                 $entryCategory = new EntryCategory(['category_id' => $categoryId]);
                 $entryCategory->populateEntryRelation($clone);
