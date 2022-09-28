@@ -61,7 +61,8 @@ class M190321092544Asset extends Migration
             $this->addForeignKey($tableName . '_file_id_ibfk', Asset::tableName(), 'file_id', File::tableName(), 'id', 'CASCADE');
             $this->addForeignKey($tableName . '_updated_by_ibfk', Asset::tableName(), 'updated_by_user_id', User::tableName(), 'id', 'SET NULL');
 
-            $this->addColumn(File::tableName(), Yii::$app->getI18n()->getAttributeName('cms_asset_count', $language), $this->smallInteger()->notNull()->defaultValue(0)->after('transformation_count'));
+            $columnName = static::getModule()->enableI18nTables ? Yii::$app->getI18n()->getAttributeName('cms_asset_count', $language) : 'cms_asset_count';
+            $this->addColumn(File::tableName(), $columnName, $this->smallInteger()->notNull()->defaultValue(0)->after('transformation_count'));
         }
     }
 

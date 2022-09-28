@@ -16,7 +16,8 @@ use yii\db\Migration;
  */
 class M190909152855Category extends Migration
 {
-    use ModuleTrait, MigrationTrait;
+    use MigrationTrait;
+    use ModuleTrait;
 
     public function safeUp()
     {
@@ -48,7 +49,7 @@ class M190909152855Category extends Migration
                 'created_at' => $this->dateTime()->notNull(),
             ], $this->getTableOptions());
 
-            $category = new Category;
+            $category = new Category();
             $this->addI18nColumns(Category::tableName(), $category->i18nAttributes);
 
             foreach($category->getI18nAttributeNames('slug') as $attributeName) {
