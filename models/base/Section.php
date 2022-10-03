@@ -72,8 +72,7 @@ class Section extends ActiveRecord implements AssetParentInterface
             ],
             [
                 ['name', 'slug', 'content'],
-                'filter',
-                'filter' => 'trim',
+                'trim',
             ],
             [
                 ['name'],

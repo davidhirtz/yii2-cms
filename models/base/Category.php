@@ -111,8 +111,7 @@ class Category extends ActiveRecord
             ],
             [
                 ['name', 'slug', 'title', 'description', 'content'],
-                'filter',
-                'filter' => 'trim',
+                'trim',
             ],
             [
                 ['name', 'title', 'description'],

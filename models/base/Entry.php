@@ -86,8 +86,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
             ],
             [
                 ['name', 'slug', 'title', 'description', 'content'],
-                'filter',
-                'filter' => 'trim',
+                'trim',
             ],
             [
                 ['name', 'title', 'description'],
