@@ -42,8 +42,8 @@ class AssetsView extends Widget
      * @var array containing CSS class as key and related asset types as value.
      *
      * [
-     *     'hidden-md' => [Asset::TYPE_MOBILE],
-     *     'hidden block-md' => [Asset::TYPE_TABLET, Asset::TYPE_DESKTOP],
+     *     'hidden-sm' => [Asset::TYPE_DEFAULT, Asset::TYPE_VIEWPORT_MOBILE],
+     *     'hidden block-sm' => [Asset::TYPE_DEFAULT, Asset::TYPE_VIEWPORT_DESKTOP],
      * ]
      */
     public $viewports = [];
