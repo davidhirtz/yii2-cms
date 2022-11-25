@@ -223,7 +223,9 @@ class Asset extends ActiveRecord implements AssetInterface
             return array_filter([
                 'loc' => $this->file->getUrl(),
                 'title' => $this->getAltText(),
-                'caption' => $this->contentType == 'html' ? strip_tags($this->getI18nAttribute('content')) : $this->getI18nAttribute('content'),
+                'caption' => ($content = $this->getI18nAttribute('content')) && $this->contentType == 'html' ?
+                    strip_tags($content) :
+                    $content,
             ]);
         }
 
