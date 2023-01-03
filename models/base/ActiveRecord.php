@@ -213,6 +213,15 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     }
 
     /**
+     * @return int
+     */
+    public function getSitemapUrlCount(): int
+    {
+        $languages = $this->getSitemapLanguages();
+        return $this->getSitemapQuery()->count() * count($languages);
+    }
+
+    /**
      * Returns an array of languages used for I18N URLs. This is only intended for {@link ActiveRecord::$i18nAttributes}
      * tables and not for {@link Module::$enableI18nTables} as the website structure might be different and thus rather
      * single sitemaps per language should be submitted.
