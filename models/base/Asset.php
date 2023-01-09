@@ -20,8 +20,7 @@ use Yii;
 use yii\base\Widget;
 
 /**
- * Class Asset
- * @package davidhirtz\yii2\cms\models\base
+ * The base implementation of the media module Asset class.
  * @see \davidhirtz\yii2\cms\models\Asset
  *
  * @property int $id
@@ -72,6 +71,18 @@ class Asset extends ActiveRecord implements AssetInterface
                 'max' => 250,
             ],
         ]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function beforeValidate()
+    {
+        if ($this->autoplayLinkAttributeName) {
+            $this->validateAutoplayLink();
+        }
+
+        return parent::beforeValidate();
     }
 
     /**
@@ -285,7 +296,7 @@ class Asset extends ActiveRecord implements AssetInterface
     }
 
     /**
-     * @return mixed|string
+     * @return string
      */
     public function getParentName(): string
     {
