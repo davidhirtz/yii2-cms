@@ -3,9 +3,8 @@
 namespace davidhirtz\yii2\cms\modules\admin\data;
 
 /**
- * Class EntryActiveDataProvider
- * @package davidhirtz\yii2\cms\modules\admin\data
+ * EntryActiveDataProvider extends the base data provider with additional functionality.
  */
-class EntryActiveDataProvider extends \davidhirtz\yii2\cms\modules\admin\data\base\EntryActiveDataProvider
+class EntryActiveDataProvider extends base\EntryActiveDataProvider
 {
 }

@@ -106,8 +106,8 @@ class EntryActiveDataProvider extends ActiveDataProvider
     public function setSort($value)
     {
         // Try to set default order from query if it's a single order.
-        if (!isset($value['defaultOrder']) && is_array($this->query->orderBy) && count($this->query->orderBy) === 1) {
-            $value['defaultOrder'] = $this->query->orderBy;
+        if (is_array($value) && is_array($this->query->orderBy) && count($this->query->orderBy) === 1) {
+            $value['defaultOrder'] ??= $this->query->orderBy;
         }
 
         parent::setSort($value);
