@@ -19,6 +19,16 @@ class AssetsView extends Widget
     public $assets;
 
     /**
+     * @var int number of assets to skip
+     */
+    public $start;
+
+    /**
+     * @var int number of assets to show
+     */
+    public $limit;
+
+    /**
      * @var array containing additional view parameters.
      */
     public $viewParams = [];
@@ -29,14 +39,9 @@ class AssetsView extends Widget
     public $viewFile = '_assets';
 
     /**
-     * @var int
+     * @var array
      */
-    public $start;
-
-    /**
-     * @var int
-     */
-    public $limit;
+    public $wrapperOptions = [];
 
     /**
      * @var array containing CSS class as key and related asset types as value.
@@ -87,22 +92,36 @@ class AssetsView extends Widget
 
         foreach ($viewports as $cssClass => $assets) {
             if ($this->start !== null || $this->limit !== null) {
-                $assets = array_slice($assets, (int)$this->start, $this->limit);
+                $assets = array_slice($assets, $this->start ?: 0, $this->limit);
             }
 
-            if ($assets) {
-                $content = $this->render($this->viewFile, array_merge($this->viewParams, ['assets' => $assets]));
-                $options = $this->prepareOptions($this->options, $assets);
+            $content = $this->renderAssetsInternal($assets);
+            $wrapperOptions = $this->wrapperOptions;
 
-                if ($options) {
-                    $content = Html::tag('div', $content, $options);
-                }
-
-                $output .= is_string($cssClass) ? Html::tag('div', $content, ['class' => $cssClass]) : $content;
+            if (is_string($cssClass)) {
+                Html::addCssClass($wrapperOptions, $cssClass);
             }
+
+            $output .= $wrapperOptions ? Html::tag('div', $content, $wrapperOptions) : $content;
         }
 
         return $output;
+    }
+
+    /**
+     * @param Asset[] $assets
+     * @return string
+     */
+    protected function renderAssetsInternal($assets)
+    {
+        if ($assets) {
+            $content = $this->render($this->viewFile, array_merge($this->viewParams, ['assets' => $assets]));
+            $options = $this->prepareOptions($this->options, $assets);
+
+            return $options ? Html::tag('div', $content, $options) : $content;
+        }
+
+        return '';
     }
 
     /**
