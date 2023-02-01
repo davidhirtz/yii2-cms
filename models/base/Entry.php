@@ -112,12 +112,16 @@ class Entry extends ActiveRecord implements AssetParentInterface
      */
     public function beforeValidate(): bool
     {
-        if (!$this->slug && $this->isSlugRequired()) {
-            $this->slug = mb_substr($this->name, 0, static::SLUG_MAX_LENGTH);
+        if ($this->isSlugRequired()) {
+            foreach ($this->getI18nAttributeNames('slug') as $language => $attributeName) {
+                $this->$attributeName = mb_substr($this->getI18nAttribute('name', $language), 0, static::SLUG_MAX_LENGTH);
+            }
         }
 
         if (!$this->customSlugBehavior) {
-            $this->slug = Inflector::slug($this->slug);
+            foreach ($this->getI18nAttributeNames('slug') as $attributeName) {
+                $this->$attributeName = Inflector::slug($this->$attributeName);
+            }
         }
 
         return parent::beforeValidate();
