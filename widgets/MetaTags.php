@@ -90,8 +90,9 @@ class MetaTags extends BaseObject
             $this->enableImages = $this->model instanceof Entry && static::getModule()->enableEntryAssets;
         }
 
-        if (!$this->languages && $this->languages !== false) {
+        if ($this->languages === null) {
             $manager = Yii::$app->getUrlManager();
+
             if ($manager->i18nUrl || $manager->i18nSubdomain) {
                 $this->languages = array_keys($manager->languages);
             }
@@ -150,19 +151,15 @@ class MetaTags extends BaseObject
      */
     public function registerHrefLangLinkTags()
     {
-        if ($route = $this->model->getRoute()) {
-            $urlManager = Yii::$app->getUrlManager();
-            $currentLanguage = Yii::$app->language;
-            $view = $this->getView();
-
-            foreach ($this->languages as $language) {
-                Yii::$app->language = $language;
-                $view->registerHrefLangLinkTag($language, $urlManager->createAbsoluteUrl($route, true));
-            }
-
-            Yii::$app->language = $currentLanguage;
-            $this->registerDefaultHrefLangLinkTag();
+        foreach ($this->languages as $language) {
+            Yii::$app->getI18n()->callback($language, function () use ($language) {
+                if ($route = $this->model->getRoute()) {
+                    $this->getView()->registerHrefLangLinkTag($language, Yii::$app->getUrlManager()->createAbsoluteUrl($route, true));
+                }
+            });
         }
+
+        $this->registerDefaultHrefLangLinkTag();
     }
 
     /**
