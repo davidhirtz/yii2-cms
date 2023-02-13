@@ -113,9 +113,9 @@ class Asset extends ActiveRecord implements AssetInterface
     public function afterSave($insert, $changedAttributes)
     {
         if ($insert) {
-            $parent = $this->getParent();
-            $parent->asset_count = $this->findSiblings()->count();
-            $parent->update();
+            if (!$this->getIsBatch()) {
+                $this->updateParentAfterInsert();
+            }
 
             $this->updateOrDeleteFileByAssetCount();
         }
@@ -185,7 +185,7 @@ class Asset extends ActiveRecord implements AssetInterface
         $section = ArrayHelper::remove($attributes, 'section');
 
         $clone = new static();
-        $clone->setAttributes(array_merge($this->getAttributes($this->safeAttributes()), $attributes));
+        $clone->setAttributes(array_merge($this->getAttributes($this->safeAttributes()), $attributes), false);
 
         if ($entry) {
             $clone->populateEntryRelation($entry);
@@ -193,6 +193,10 @@ class Asset extends ActiveRecord implements AssetInterface
 
         if ($section) {
             $clone->populateSectionRelation($section);
+        }
+
+        if ($entry || $section) {
+            $clone->setIsBatch(true);
         }
 
         if ($clone->insert()) {
@@ -222,6 +226,16 @@ class Asset extends ActiveRecord implements AssetInterface
 
         $this->populateRelation('section', $section);
         $this->section_id = $section->id ?? null;
+    }
+
+    /**
+     * @return false|int
+     */
+    public function updateParentAfterInsert()
+    {
+        $parent = $this->getParent();
+        $parent->asset_count = $this->findSiblings()->count();
+        return $parent->update();
     }
 
     /**

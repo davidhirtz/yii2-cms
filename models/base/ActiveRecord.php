@@ -5,18 +5,22 @@ namespace davidhirtz\yii2\cms\models\base;
 use davidhirtz\yii2\cms\Module;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\datetime\DateTime;
+use davidhirtz\yii2\datetime\DateTimeBehavior;
+use davidhirtz\yii2\skeleton\behaviors\BlameableBehavior;
+use davidhirtz\yii2\skeleton\behaviors\TimestampBehavior;
+use davidhirtz\yii2\skeleton\behaviors\TrailBehavior;
 use davidhirtz\yii2\skeleton\db\ActiveQuery;
 use davidhirtz\yii2\skeleton\db\I18nAttributesTrait;
 use davidhirtz\yii2\skeleton\db\StatusAttributeTrait;
 use davidhirtz\yii2\skeleton\db\TypeAttributeTrait;
 use davidhirtz\yii2\skeleton\models\queries\UserQuery;
 use davidhirtz\yii2\skeleton\models\User;
+use davidhirtz\yii2\skeleton\validators\DynamicRangeValidator;
 use Yii;
 
 
 /**
- * Class ActiveRecord
- * @package davidhirtz\yii2\cms\models\base
+ * ActiveRecord is the base class for all `davidhirtz/yii2-cms` active record classes.
  *
  * @property int $id
  * @property int $status
@@ -78,9 +82,9 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     public function behaviors(): array
     {
         return array_merge(parent::behaviors(), [
-            'DateTimeBehavior' => 'davidhirtz\yii2\datetime\DateTimeBehavior',
+            'DateTimeBehavior' => DateTimeBehavior::class,
             'TrailBehavior' => [
-                'class' => 'davidhirtz\yii2\skeleton\behaviors\TrailBehavior',
+                'class' => TrailBehavior::class,
                 'modelClass' => static::class . (static::getModule()->enableI18nTables ? ('::' . Yii::$app->language) : ''),
             ],
         ]);
@@ -94,7 +98,7 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         return array_merge(parent::rules(), [
             [
                 ['status', 'type'],
-                'davidhirtz\yii2\skeleton\validators\DynamicRangeValidator',
+                DynamicRangeValidator::class,
                 'skipOnEmpty' => false,
             ],
             array_merge(
@@ -126,8 +130,8 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     public function beforeSave($insert)
     {
         $this->attachBehaviors([
-            'BlameableBehavior' => 'davidhirtz\yii2\skeleton\behaviors\BlameableBehavior',
-            'TimestampBehavior' => 'davidhirtz\yii2\skeleton\behaviors\TimestampBehavior',
+            'BlameableBehavior' => BlameableBehavior::class,
+            'TimestampBehavior' => TimestampBehavior::class,
         ]);
 
         if (!$this->position) {
@@ -323,6 +327,7 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
 
     /**
      * @param string|null $language
+     * @noinspection PhpUnusedParameterInspection
      * @return bool
      */
     public function includeInSitemap($language = null): bool

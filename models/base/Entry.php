@@ -298,9 +298,13 @@ class Entry extends ActiveRecord implements AssetParentInterface
      */
     public function clone($attributes = [])
     {
+        $attributes['status'] ??= static::STATUS_DRAFT;
+
         /** @var \davidhirtz\yii2\cms\models\Entry $clone */
         $clone = new static();
-        $clone->setAttributes(array_merge($this->getAttributes($this->safeAttributes()), $attributes ?: ['status' => static::STATUS_DRAFT]));
+        $clone->setAttributes(array_merge($this->getAttributes($this->safeAttributes()), $attributes), false);
+        $clone->asset_count = $this->asset_count;
+        $clone->section_count = $this->section_count;
         $clone->generateUniqueSlug();
 
         if ($this->beforeClone($clone) && $clone->insert()) {
@@ -310,15 +314,26 @@ class Entry extends ActiveRecord implements AssetParentInterface
                 $entryCategory->insert();
             }
 
-            foreach ($this->sections as $section) {
-                $section->clone(['entry' => $clone]);
+            if ($this->section_count) {
+                $sectionCount = 1;
+
+                foreach ($this->sections as $section) {
+                    $section->clone([
+                        'entry' => $clone,
+                        'position' => $sectionCount++,
+                    ]);
+                }
             }
 
-            $assets = $this->getAssets()->withoutSections()->all();
+            if ($this->asset_count) {
+                $assets = $this->getAssets()->withoutSections()->all();
+                $assetCount = 1;
 
-            foreach ($assets as $asset) {
-                if ($this->asset_count) {
-                    $asset->clone(['entry' => $clone]);
+                foreach ($assets as $asset) {
+                    $asset->clone([
+                        'entry' => $clone,
+                        'position' => $assetCount++,
+                    ]);
                 }
             }
 

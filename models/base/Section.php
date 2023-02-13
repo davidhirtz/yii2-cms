@@ -258,13 +258,17 @@ class Section extends ActiveRecord implements AssetParentInterface
     {
         $entry = ArrayHelper::remove($attributes, 'entry');
 
+        if (!$entry) {
+            // Only set status to draft if clone is not triggered by entry
+            $attributes['status'] ??= static::STATUS_DRAFT;
+        }
+
         $clone = new static();
-        $clone->setAttributes(array_merge($this->getAttributes($this->safeAttributes()), $attributes ?: [
-            'status' => static::STATUS_DRAFT,
-        ]));
+        $clone->setAttributes(array_merge($this->getAttributes($this->safeAttributes()), $attributes), false);
 
         if ($entry) {
             $clone->populateEntryRelation($entry);
+            $clone->setIsBatch(true);
         }
 
         $clone->generateUniqueSlug();
@@ -272,10 +276,16 @@ class Section extends ActiveRecord implements AssetParentInterface
         if ($this->beforeClone($clone) && $clone->insert()) {
             if ($this->asset_count) {
                 $assets = $this->getAssets()->all();
+                $assetCount = 1;
 
                 foreach ($assets as $asset) {
-                    $asset->clone(['section' => $clone]);
+                    $asset->clone([
+                        'section' => $clone,
+                        'position' => $assetCount++,
+                    ]);
                 }
+
+                $clone->updateAttributes(['asset_count' => $assetCount]);
             }
 
             $this->afterClone($clone);
