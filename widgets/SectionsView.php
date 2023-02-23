@@ -57,25 +57,23 @@ class SectionsView extends Widget
     public function run()
     {
         $html = '';
-        $prevViewFile = null;
+        $prevSection = null;
         $sections = [];
 
         foreach ($this->sections as $section) {
-            $viewFile = $this->getSectionViewFile($section);
-
-            if ($prevViewFile != $viewFile) {
+            if (!$this->hasSameViewFile($section, $prevSection)) {
                 if ($sections) {
-                    $html .= $this->renderSectionsInternal($sections, $prevViewFile);
+                    $html .= $this->renderSectionsInternal($sections, $this->getSectionViewFile($prevSection));
                     $sections = [];
                 }
             }
 
             $sections[] = $section;
-            $prevViewFile = $viewFile;
+            $prevSection = $section;
         }
 
         if ($sections) {
-            $html .= $this->renderSectionsInternal($sections, $prevViewFile);
+            $html .= $this->renderSectionsInternal($sections, $this->getSectionViewFile($prevSection));
         }
 
         return $html;
@@ -179,5 +177,15 @@ class SectionsView extends Widget
     public function getViewPath()
     {
         return Yii::$app->controller->getViewPath();
+    }
+
+    /**
+     * @param Section $section
+     * @param Section|null $prevSection
+     * @return bool
+     */
+    protected function hasSameViewFile($section, $prevSection): bool
+    {
+        return $prevSection && $this->getSectionViewFile($prevSection) == $this->getSectionViewFile($section);
     }
 }
