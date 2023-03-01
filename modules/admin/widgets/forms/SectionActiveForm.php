@@ -4,10 +4,10 @@ namespace davidhirtz\yii2\cms\modules\admin\widgets\forms;
 
 use davidhirtz\yii2\cms\models\Section;
 use Yii;
+use yii\helpers\Html;
 
 /**
- * Class SectionActiveForm
- * @package davidhirtz\yii2\cms\modules\admin\widgets\forms
+ * Renders an active form for the {@link Section} model.
  *
  * @property Section $model
  */
@@ -17,6 +17,11 @@ class SectionActiveForm extends ActiveForm
      * @var bool
      */
     public $hasStickyButtons = true;
+
+    /**
+     * @var int|false
+     */
+    public $maxBaseUrlLength = 70;
 
     /**
      * @inheritdoc
@@ -55,7 +60,13 @@ class SectionActiveForm extends ActiveForm
         $urlManager = Yii::$app->getUrlManager();
         $route = array_merge($this->model->entry->getRoute(), ['language' => $urlManager->i18nUrl || $urlManager->i18nSubdomain ? $language : null, '#' => '']);
 
-        return $this->model->entry->isEnabled() || !$draftHostInfo ? $urlManager->createAbsoluteUrl($route) : $urlManager->createDraftUrl($route);
+        $url = $this->model->entry->isEnabled() || !$draftHostInfo ? $urlManager->createAbsoluteUrl($route) : $urlManager->createDraftUrl($route);
+
+        if ($this->maxBaseUrlLength && strlen($url) > $this->maxBaseUrlLength) {
+            $url = Html::tag('span', substr($url, 0, $this->maxBaseUrlLength) . '…#', ['title' => $url]);
+        }
+
+        return $url;
     }
 
     /**
