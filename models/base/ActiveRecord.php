@@ -16,7 +16,10 @@ use davidhirtz\yii2\skeleton\db\TypeAttributeTrait;
 use davidhirtz\yii2\skeleton\models\queries\UserQuery;
 use davidhirtz\yii2\skeleton\models\User;
 use davidhirtz\yii2\skeleton\validators\DynamicRangeValidator;
+use davidhirtz\yii2\skeleton\validators\HtmlValidator;
+use davidhirtz\yii2\skeleton\validators\UniqueValidator;
 use Yii;
+use yii\helpers\Inflector;
 
 
 /**
@@ -54,7 +57,7 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
      * validator class, following keys can be used to configure the validator, string containing the class
      * name or false for disabling the validation.
      */
-    public $htmlValidator = 'davidhirtz\yii2\skeleton\validators\HtmlValidator';
+    public $htmlValidator = HtmlValidator::class;
 
     /**
      * @var string|false the content type, "html" enables html validators and WYSIWYG editor
@@ -64,7 +67,7 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     /**
      * @var string the class name of the unique validator
      */
-    public $slugUniqueValidator = 'davidhirtz\yii2\skeleton\validators\UniqueValidator';
+    public $slugUniqueValidator = UniqueValidator::class;
 
     /**
      * @var string|array {@see \yii\validators\UniqueValidator::$targetAttribute}
@@ -214,6 +217,27 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         }
 
         return $urls;
+    }
+
+    /**
+     * @param string $attribute
+     * @return void
+     */
+    public function ensureSlug(string $attribute = 'name'): void
+    {
+        if ($this->isSlugRequired()) {
+            foreach ($this->getI18nAttributeNames('slug') as $language => $attributeName) {
+                if (!$this->$attributeName && ($name = $this->getI18nAttribute($attribute, $language))) {
+                    $this->$attributeName = mb_substr($name, 0, static::SLUG_MAX_LENGTH);
+                }
+            }
+        }
+
+        if (!$this->customSlugBehavior) {
+            foreach ($this->getI18nAttributeNames('slug') as $attributeName) {
+                $this->$attributeName = Inflector::slug($this->$attributeName);
+            }
+        }
     }
 
     /**

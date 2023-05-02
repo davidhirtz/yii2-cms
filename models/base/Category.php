@@ -9,17 +9,17 @@ use davidhirtz\yii2\cms\models\queries\EntryQuery;
 use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\models\EntryCategory;
 use davidhirtz\yii2\cms\modules\admin\widgets\forms\CategoryActiveForm;
+use davidhirtz\yii2\skeleton\behaviors\RedirectBehavior;
 use davidhirtz\yii2\skeleton\db\NestedTreeTrait;
 use davidhirtz\yii2\skeleton\models\Trail;
 use Yii;
 use yii\base\Widget;
 use yii\caching\TagDependency;
 use yii\db\ActiveQuery;
-use yii\helpers\Inflector;
 
 /**
- * Class Category.
- * @package davidhirtz\yii2\cms\models\base
+ * Category is the base model class for all CMS categories, which can be linked to multiple {@link Entry} records by
+ * {@link EntryCategory} relations.
  *
  * @property int $parent_id
  * @property int $lft
@@ -78,7 +78,7 @@ class Category extends ActiveRecord
     public function behaviors(): array
     {
         return array_merge(parent::behaviors(), [
-            'RedirectBehavior' => 'davidhirtz\yii2\skeleton\behaviors\RedirectBehavior',
+            'RedirectBehavior' => RedirectBehavior::class,
         ]);
     }
 
@@ -136,13 +136,7 @@ class Category extends ActiveRecord
      */
     public function beforeValidate(): bool
     {
-        if (!$this->slug && $this->isSlugRequired()) {
-            $this->slug = $this->name;
-        }
-
-        if (!$this->customSlugBehavior) {
-            $this->slug = Inflector::slug($this->slug);
-        }
+        $this->ensureSlug();
 
         if (!static::getModule()->enableNestedCategories) {
             $this->parent_id = null;
