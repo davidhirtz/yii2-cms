@@ -153,7 +153,7 @@ class SectionGridView extends GridView
                 }
 
                 if (!$text) {
-                    $text = $section->getI18nAttribute('content');
+                    $text = $section->getI18nAttribute('content') ?? '';
                     $text = StringHelper::truncate($section->contentType == 'html' ? strip_tags($text) : $text, 100);
                 }
 
