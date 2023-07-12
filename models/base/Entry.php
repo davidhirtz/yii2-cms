@@ -516,7 +516,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
             'title' => Yii::t('cms', 'Meta title'),
             'description' => Yii::t('cms', 'Meta description'),
             'publish_date' => Yii::t('cms', 'Published'),
-            'branchCount' => Yii::t('cms', 'Entries'),
+            'entry_count' => Yii::t('cms', 'Entries'),
             'section_count' => Yii::t('cms', 'Sections'),
         ]);
     }
