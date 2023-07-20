@@ -2,7 +2,11 @@
 
 namespace davidhirtz\yii2\cms;
 
+use davidhirtz\yii2\skeleton\filters\PageCache;
 use davidhirtz\yii2\skeleton\modules\ModuleTrait;
+use Yii;
+use yii\caching\CacheInterface;
+use yii\caching\TagDependency;
 
 /**
  * The CMS Module.
@@ -87,5 +91,22 @@ class Module extends \yii\base\Module
         }
 
         parent::init();
+    }
+    /**
+     * @return void
+     */
+    public function invalidatePageCache(): void
+    {
+        if ($cache = $this->getCache()) {
+            TagDependency::invalidate($cache, PageCache::TAG_DEPENDENCY_KEY);
+        }
+    }
+
+    /**
+     * @return CacheInterface|null
+     */
+    public function getCache()
+    {
+        return Yii::$app->getCache();
     }
 }

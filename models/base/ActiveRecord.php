@@ -116,13 +116,8 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
      */
     public function beforeValidate()
     {
-        if ($this->status === null) {
-            $this->status = static::STATUS_DEFAULT;
-        }
-
-        if ($this->type === null) {
-            $this->type = static::TYPE_DEFAULT;
-        }
+        $this->status ??= static::STATUS_DEFAULT;
+        $this->type ??= static::TYPE_DEFAULT;
 
         return parent::beforeValidate();
     }
@@ -142,6 +137,24 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         }
 
         return parent::beforeSave($insert);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function afterSave($insert, $changedAttributes)
+    {
+        static::getModule()->invalidatePageCache();
+        parent::afterSave($insert, $changedAttributes);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function afterDelete()
+    {
+        static::getModule()->invalidatePageCache();
+        parent::afterDelete();
     }
 
     /**
@@ -315,6 +328,15 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     public function getMaxPosition(): int
     {
         return (int)$this->findSiblings()->max('[[position]]');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function updatePosition($models, $order = [], $attribute = 'position', $index = null)
+    {
+        static::getModule()->invalidatePageCache();
+        return parent::updatePosition($models, $order, $attribute, $index);
     }
 
     /**

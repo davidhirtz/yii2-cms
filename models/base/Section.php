@@ -13,6 +13,7 @@ use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\media\models\AssetParentInterface;
 use davidhirtz\yii2\skeleton\helpers\ArrayHelper;
 use davidhirtz\yii2\skeleton\models\Trail;
+use davidhirtz\yii2\skeleton\validators\RelationValidator;
 use Yii;
 use yii\base\Widget;
 use yii\helpers\Inflector;
@@ -61,7 +62,7 @@ class Section extends ActiveRecord implements AssetParentInterface
             ],
             [
                 ['entry_id'],
-                'davidhirtz\yii2\skeleton\validators\RelationValidator',
+                RelationValidator::class,
                 'relation' => 'entry',
                 'required' => true,
             ],

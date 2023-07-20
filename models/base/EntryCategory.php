@@ -8,13 +8,16 @@ use davidhirtz\yii2\cms\models\queries\CategoryQuery;
 use davidhirtz\yii2\cms\models\queries\EntryQuery;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\datetime\DateTime;
+use davidhirtz\yii2\skeleton\behaviors\BlameableBehavior;
+use davidhirtz\yii2\skeleton\behaviors\TimestampBehavior;
+use davidhirtz\yii2\skeleton\behaviors\TrailBehavior;
 use davidhirtz\yii2\skeleton\models\queries\UserQuery;
 use davidhirtz\yii2\skeleton\models\User;
+use davidhirtz\yii2\skeleton\validators\RelationValidator;
 use Yii;
 
 /**
- * Class EntryCategory
- * @package davidhirtz\yii2\cms\models\base
+ * Represents a relation between an entry and a category.
  *
  * @property int $entry_id
  * @property int $category_id
@@ -39,7 +42,7 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     public function behaviors(): array
     {
         return array_merge(parent::behaviors(), [
-            'TrailBehavior' => 'davidhirtz\yii2\skeleton\behaviors\TrailBehavior',
+            'TrailBehavior' => TrailBehavior::class,
         ]);
     }
 
@@ -51,13 +54,13 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         return array_merge(parent::rules(), [
             [
                 ['category_id'],
-                'davidhirtz\yii2\skeleton\validators\RelationValidator',
+                RelationValidator::class,
                 'relation' => 'category',
                 'required' => true,
             ],
             [
                 ['entry_id'],
-                'davidhirtz\yii2\skeleton\validators\RelationValidator',
+                RelationValidator::class,
                 'relation' => 'entry',
                 'required' => true,
             ],
@@ -103,16 +106,14 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     public function beforeSave($insert)
     {
         $this->attachBehaviors([
-            'BlameableBehavior' => 'davidhirtz\yii2\skeleton\behaviors\BlameableBehavior',
+            'BlameableBehavior' => BlameableBehavior::class,
             'TimestampBehavior' => [
-                'class' => 'davidhirtz\yii2\skeleton\behaviors\TimestampBehavior',
+                'class' => TimestampBehavior::class,
                 'createdAtAttribute' => null,
             ],
         ]);
 
-        if ($this->position === null) {
-            $this->position = $this->getMaxPosition() + 1;
-        }
+        $this->position ??= $this->getMaxPosition() + 1;
 
         return parent::beforeSave($insert);
     }
@@ -131,6 +132,8 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
 
             $this->updateCategoryEntryCount();
         }
+
+        static::getModule()->invalidatePageCache();
 
         parent::afterSave($insert, $changedAttributes);
     }
@@ -151,6 +154,8 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         if (!$this->category->isDeleted()) {
             $this->updateCategoryEntryCount();
         }
+
+        static::getModule()->invalidatePageCache();
 
         parent::afterDelete();
     }
