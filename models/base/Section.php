@@ -277,12 +277,12 @@ class Section extends ActiveRecord implements AssetParentInterface
         if ($this->beforeClone($clone) && $clone->insert()) {
             if ($this->asset_count) {
                 $assets = $this->getAssets()->all();
-                $assetCount = 1;
+                $assetCount = 0;
 
                 foreach ($assets as $asset) {
                     $asset->clone([
                         'section' => $clone,
-                        'position' => $assetCount++,
+                        'position' => ++$assetCount,
                     ]);
                 }
 
