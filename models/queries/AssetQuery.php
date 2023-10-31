@@ -7,19 +7,16 @@ use davidhirtz\yii2\media\models\queries\FileQuery;
 use davidhirtz\yii2\skeleton\db\ActiveQuery;
 
 /**
- * Class AssetQuery
- * @package davidhirtz\yii2\cms\models\queries
- *
  * @method Asset[] all($db = null)
+ * @method Asset[] each($batchSize = 100, $db = null)
  * @method Asset one($db = null)
  */
 class AssetQuery extends ActiveQuery
 {
     /**
      * Override this method to select only the attributes needed for frontend display.
-     * @return AssetQuery
      */
-    public function selectSiteAttributes()
+    public function selectSiteAttributes(): static
     {
         return $this->addSelect($this->prefixColumns(array_diff($this->getModelInstance()->attributes(),
             ['updated_by_user_id', 'created_at'])));
@@ -27,17 +24,13 @@ class AssetQuery extends ActiveQuery
 
     /**
      * Override this method to select only the attributes needed for XML sitemap generation.
-     * @return $this
      */
-    public function selectSitemapAttributes()
+    public function selectSitemapAttributes(): static
     {
         return $this->selectSiteAttributes();
     }
 
-    /**
-     * @return AssetQuery
-     */
-    public function withFiles()
+    public function withFiles(): static
     {
         return $this->with([
             'file' => function (FileQuery $query) {
@@ -48,10 +41,7 @@ class AssetQuery extends ActiveQuery
         ]);
     }
 
-    /**
-     * @return AssetQuery
-     */
-    public function withoutSections()
+    public function withoutSections(): static
     {
         return $this->andWhere(['section_id' => null]);
     }

@@ -6,33 +6,21 @@ use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\skeleton\db\ActiveQuery;
 
 /**
- * Class CategoryQuery
- * @package davidhirtz\yii2\cms\models\queries
- *
  * @method Category[] all($db = null)
  * @method Category[] each($batchSize = 100, $db = null)
  * @method Category one($db = null)
  */
 class CategoryQuery extends ActiveQuery
 {
-    /**
-     * @var array
-     */
     public $orderBy = ['lft' => SORT_ASC];
 
-    /**
-     * @return $this
-     */
-    public function selectSiteAttributes()
+    public function selectSiteAttributes(): static
     {
         return $this->addSelect($this->prefixColumns(array_diff($this->getModelInstance()->attributes(),
             ['updated_by_user_id', 'created_at'])));
     }
 
-    /**
-     * @return $this
-     */
-    public function selectSitemapAttributes()
+    public function selectSitemapAttributes(): static
     {
         return $this->addSelect($this->prefixColumns(array_merge(
             ['id', 'status', 'type', 'parent_id', 'lft', 'rgt', 'updated_at'],
@@ -40,11 +28,7 @@ class CategoryQuery extends ActiveQuery
         )));
     }
 
-    /**
-     * @param string $search
-     * @return $this
-     */
-    public function matching($search)
+    public function matching(?string $search): static
     {
         if ($search = $this->sanitizeSearchString($search)) {
             $tableName = $this->getModelInstance()::tableName();

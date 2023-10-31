@@ -9,22 +9,17 @@ use davidhirtz\yii2\skeleton\widgets\fontawesome\Icon;
 use Yii;
 
 /**
- * Class SectionEntryGridView
- * @package davidhirtz\yii2\cms\modules\admin\widgets\grid\base
- * @see \davidhirtz\yii2\cms\modules\admin\widgets\grid\SectionEntryGridView
+ * Displays a grid of {@link Entry} models to move or copy the given {@link Section} record to.
+ * @see \davidhirtz\yii2\cms\modules\admin\widgets\grid\SectionParentEntryGridView
  */
-class SectionEntryGridView extends \davidhirtz\yii2\cms\modules\admin\widgets\grid\EntryGridView
+class SectionParentEntryGridView extends \davidhirtz\yii2\cms\modules\admin\widgets\grid\EntryGridView
 {
     /**
      * @var Section|null see {@link SectionController::actionEntries()}
      */
-    public $section;
+    public ?Section $section = null;
 
-    /**
-     * @param Entry $entry
-     * @return array
-     */
-    protected function getRowButtons(Entry $entry)
+    protected function getRowButtons(Entry $entry): array
     {
         $user = Yii::$app->getUser();
         $buttons = [];
@@ -49,16 +44,5 @@ class SectionEntryGridView extends \davidhirtz\yii2\cms\modules\admin\widgets\gr
         }
 
         return $buttons;
-    }
-
-    /**
-     * @param Section $section
-     * @return string
-     */
-    protected function getSectionUpdateButton(Section $section)
-    {
-        return Html::a(Icon::tag('wrench'), ['update', 'id' => $section->id], [
-            'class' => 'btn btn-primary',
-        ]);
     }
 }

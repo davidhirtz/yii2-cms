@@ -4,9 +4,9 @@ namespace davidhirtz\yii2\cms\models\base;
 
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\queries\AssetQuery;
-use davidhirtz\yii2\cms\models\queries\EntryQuery;
-use davidhirtz\yii2\cms\models\queries\SectionQuery;
 use davidhirtz\yii2\cms\models\Section;
+use davidhirtz\yii2\cms\models\traits\EntryRelationTrait;
+use davidhirtz\yii2\cms\models\traits\SectionRelationTrait;
 use davidhirtz\yii2\cms\modules\admin\Module;
 use davidhirtz\yii2\cms\modules\admin\widgets\forms\AssetActiveForm;
 use davidhirtz\yii2\cms\modules\admin\widgets\grid\AssetParentGridView;
@@ -17,7 +17,6 @@ use davidhirtz\yii2\media\models\traits\AssetTrait;
 use davidhirtz\yii2\skeleton\helpers\ArrayHelper;
 use davidhirtz\yii2\skeleton\models\User;
 use Yii;
-use yii\base\Widget;
 
 /**
  * The base implementation of the media module Asset class.
@@ -36,7 +35,6 @@ use yii\base\Widget;
  * @property DateTime $updated_at
  * @property DateTime $created_at
  *
- * @property Entry $entry
  * @property Section $section
  * @property File $file
  * @property User $updated
@@ -46,6 +44,8 @@ use yii\base\Widget;
 class Asset extends ActiveRecord implements AssetInterface
 {
     use AssetTrait;
+    use EntryRelationTrait;
+    use SectionRelationTrait;
 
     /**
      * @inheritDoc
@@ -73,10 +73,7 @@ class Asset extends ActiveRecord implements AssetInterface
         ]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function beforeValidate()
+    public function beforeValidate(): bool
     {
         if ($this->autoplayLinkAttributeName) {
             $this->validateAutoplayLink();
@@ -87,10 +84,12 @@ class Asset extends ActiveRecord implements AssetInterface
 
     /**
      * Validates section relation and sets entry relation, thus this needs to be called before entry validation. As
-     * this method gets skipped on empty `section_id` this only sets the relation while {@link Section::validateEntryId()}
-     * will validate the section's entry_id.
+     * this method gets skipped on empty `section_id`, this only sets the relation while
+     * {@link Section::validateEntryId()} will validate the section's entry_id.
+     *
+     * @noinspection PhpUnused {@see static::rules()}
      */
-    public function validateSectionId()
+    public function validateSectionId(): void
     {
         if ($this->section) {
             $this->populateEntryRelation($this->section->entry);
@@ -99,18 +98,16 @@ class Asset extends ActiveRecord implements AssetInterface
 
     /**
      * Validates entry relation.
+     * @noinspection PhpUnused {@see static::rules()}
      */
-    public function validateEntryId()
+    public function validateEntryId(): void
     {
         if (!$this->entry || (!$this->getIsNewRecord() && $this->isAttributeChanged('entry_id'))) {
             $this->addInvalidAttributeError('entry_id');
         }
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function afterSave($insert, $changedAttributes)
+    public function afterSave($insert, $changedAttributes): void
     {
         if ($insert) {
             if (!$this->getIsBatch()) {
@@ -123,10 +120,7 @@ class Asset extends ActiveRecord implements AssetInterface
         parent::afterSave($insert, $changedAttributes);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function afterDelete()
+    public function afterDelete(): void
     {
         // Entry needs to be checked separately here because Entry::beforeDelete() deletes
         // all related assets before deleting the sections.
@@ -141,45 +135,17 @@ class Asset extends ActiveRecord implements AssetInterface
         parent::afterDelete();
     }
 
-    /**
-     * @return EntryQuery
-     */
-    public function getEntry()
-    {
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return $this->hasOne(Entry::class, ['id' => 'entry_id']);
-    }
-
-    /**
-     * @return SectionQuery
-     */
-    public function getSection()
-    {
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return $this->hasOne(Section::class, ['id' => 'section_id']);
-    }
-
-    /**
-     * @return AssetQuery
-     */
-    public function findSiblings()
+    public function findSiblings(): AssetQuery
     {
         return static::find()->where(['entry_id' => $this->entry_id, 'section_id' => $this->section_id]);
     }
 
-    /**
-     * @return AssetQuery
-     */
-    public static function find()
+    public static function find(): AssetQuery
     {
         return Yii::createObject(AssetQuery::class, [get_called_class()]);
     }
 
-    /**
-     * @param array $attributes
-     * @return $this
-     */
-    public function clone($attributes = [])
+    public function clone(array $attributes = []): static
     {
         $entry = ArrayHelper::remove($attributes, 'entry');
         $section = ArrayHelper::remove($attributes, 'section');
@@ -206,19 +172,7 @@ class Asset extends ActiveRecord implements AssetInterface
         return $clone;
     }
 
-    /**
-     * @param Entry $entry
-     */
-    public function populateEntryRelation($entry)
-    {
-        $this->populateRelation('entry', $entry);
-        $this->entry_id = $entry->id ?? null;
-    }
-
-    /**
-     * @param Section $section
-     */
-    public function populateSectionRelation($section)
+    public function populateSectionRelation(?Section $section): void
     {
         if ($section) {
             $this->populateRelation('entry', $section->entry);
@@ -228,21 +182,14 @@ class Asset extends ActiveRecord implements AssetInterface
         $this->section_id = $section->id ?? null;
     }
 
-    /**
-     * @return false|int
-     */
-    public function updateParentAfterInsert()
+    public function updateParentAfterInsert(): bool|int
     {
         $parent = $this->getParent();
         $parent->asset_count = $this->findSiblings()->count();
         return $parent->update();
     }
 
-    /**
-     * @param string $language
-     * @return array|false
-     */
-    public function getSitemapUrl($language)
+    public function getSitemapUrl(string $language): array|false
     {
         if ($this->includeInSitemap($language)) {
             return array_filter([
@@ -271,7 +218,7 @@ class Asset extends ActiveRecord implements AssetInterface
     /**
      * @return array
      */
-    public function getTrailParents()
+    public function getTrailParents(): array
     {
         return $this->isSectionAsset() ? [$this->section, $this->entry, $this->file] : [$this->entry, $this->file];
     }
@@ -285,33 +232,26 @@ class Asset extends ActiveRecord implements AssetInterface
     }
 
     /**
-     * @return AssetActiveForm|Widget
+     * @return class-string
      */
-    public function getActiveForm()
+    public function getActiveForm(): string
     {
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return static::getTypes()[$this->type]['activeForm'] ?? AssetActiveForm::class;
     }
 
-    /**
-     * @return Entry|Section
-     */
-    public function getParent()
+    public function getParent(): Entry|Section
     {
         return $this->section_id ? $this->section : $this->entry;
     }
 
     /**
-     * @return string
+     * @return class-string
      */
     public function getParentGridView(): string
     {
         return AssetParentGridView::class;
     }
 
-    /**
-     * @return string
-     */
     public function getParentName(): string
     {
         /** @var Module $module */
@@ -319,26 +259,17 @@ class Asset extends ActiveRecord implements AssetInterface
         return $module->name;
     }
 
-    /**
-     * @return string
-     */
     public function getFileCountAttribute(): string
     {
         return static::getModule()->enableI18nTables ? Yii::$app->getI18n()->getAttributeName('cms_asset_count') : 'cms_asset_count';
     }
 
-    /**
-     * @return array|false
-     */
-    public function getAdminRoute()
+    public function getAdminRoute(): false|array
     {
         return $this->id ? ['/admin/cms/asset/update', 'id' => $this->id] : false;
     }
 
-    /**
-     * @return false|mixed
-     */
-    public function getRoute()
+    public function getRoute(): array|false
     {
         return false;
     }
@@ -362,7 +293,7 @@ class Asset extends ActiveRecord implements AssetInterface
     /**
      * @return array
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return array_merge(parent::attributeLabels(), [
             'section_id' => Yii::t('cms', 'Section'),

@@ -20,63 +20,60 @@ class Module extends \yii\base\Module
     /**
      * @var bool whether categories should be enabled
      */
-    public $enableCategories = false;
+    public bool $enableCategories = false;
 
     /**
      * @var bool whether categories should be stored in a nested tree
      */
-    public $enableNestedCategories = true;
+    public bool $enableNestedCategories = true;
 
     /**
      * @var bool whether entries should automatically inherit parent categories
      */
-    public $inheritNestedCategories = true;
+    public bool $inheritNestedCategories = true;
 
     /**
-     * @var int duration in seconds for the caching the Category::getCategories() category query
+     * @var int|false duration in seconds for the caching the Category::getCategories() category query
      */
-    public $categoryCachedQueryDuration = 60;
+    public int|false $categoryCachedQueryDuration = 60;
 
     /**
      * @var bool whether entries should have sections
      */
-    public $enableSections = true;
+    public bool $enableSections = true;
 
     /**
      * @var bool whether entries should have assets
      */
-    public $enableEntryAssets = true;
+    public bool $enableEntryAssets = true;
 
     /**
      * @var bool whether sections should have assets
      */
-    public $enableSectionAssets = true;
+    public bool $enableSectionAssets = true;
 
     /**
-     * @var array the default sort when neither type nor category apply an order
+     * @var bool whether entries should be linkable to sections
+     * @since 1.4.0
      */
-    public $defaultEntryOrderBy;
+    public bool $enableSectionEntries = false;
 
     /**
-     * @var int the default entry type which is applied to all default admin urls
+     * @var array|null the default sort order when neither type nor category previously applied an order
      */
-    public $defaultEntryType;
+    public ?array $defaultEntryOrderBy;
 
     /**
-     * @todo currently not fully implemented
-     * @var array the default category type which is applied to all default admin urls
+     * @var int|null the default entry type which is applied to all default admin urls
      */
-    public $defaultCategoryType;
+    public ?int $defaultEntryType = null;
 
     /**
      * @var bool whether image assets should be added to CML sitemap URLs
      */
-    public $enableImageSitemaps = false;
+    public bool $enableImageSitemaps = false;
 
-    /**
-     * @inheritDoc
-     */
-    public function init()
+    public function init(): void
     {
         if (!$this->enableSections) {
             $this->enableSectionAssets = false;
@@ -92,9 +89,7 @@ class Module extends \yii\base\Module
 
         parent::init();
     }
-    /**
-     * @return void
-     */
+
     public function invalidatePageCache(): void
     {
         if ($cache = $this->getCache()) {
@@ -102,10 +97,7 @@ class Module extends \yii\base\Module
         }
     }
 
-    /**
-     * @return CacheInterface|null
-     */
-    public function getCache()
+    public function getCache(): ?CacheInterface
     {
         return Yii::$app->getCache();
     }

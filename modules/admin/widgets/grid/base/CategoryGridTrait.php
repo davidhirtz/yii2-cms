@@ -6,6 +6,7 @@ namespace davidhirtz\yii2\cms\modules\admin\widgets\grid\base;
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider;
 use davidhirtz\yii2\skeleton\helpers\Html;
+use davidhirtz\yii2\skeleton\modules\admin\widgets\grid\CounterColumn;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grid\StatusGridViewTrait;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grid\TypeGridViewTrait;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\ButtonDropdown;
@@ -13,9 +14,6 @@ use Yii;
 use yii\helpers\Url;
 
 /**
- * Class CategoryGridTrait
- * @package davidhirtz\yii2\cms\modules\admin\widgets\grid\base
- *
  * @property CategoryActiveDataProvider $dataProvider
  */
 trait CategoryGridTrait
@@ -24,14 +22,11 @@ trait CategoryGridTrait
     use TypeGridViewTrait;
 
     /**
-     * @var string
+     * @var string|null the format used to format the date values.
      */
-    public $dateFormat;
+    public ?string $dateFormat = null;
 
-    /**
-     * Inits header.
-     */
-    protected function initHeader()
+    protected function initHeader(): void
     {
         if ($this->header === null) {
             $this->header = [
@@ -52,10 +47,7 @@ trait CategoryGridTrait
         }
     }
 
-    /**
-     * @return array
-     */
-    public function nameColumn()
+    public function nameColumn(): array
     {
         return [
             'attribute' => $this->getModel()->getI18nAttributeName('name'),
@@ -76,10 +68,7 @@ trait CategoryGridTrait
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function branchCountColumn()
+    public function branchCountColumn(): array
     {
         return [
             'attribute' => 'branchCount',
@@ -93,28 +82,17 @@ trait CategoryGridTrait
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function entryCountColumn()
+    public function entryCountColumn(): array
     {
         return [
-            'class' => 'davidhirtz\yii2\skeleton\modules\admin\widgets\grid\CounterColumn',
+            'class' => CounterColumn::class,
             'attribute' => 'entry_count',
-            'route' => function (Category $category) {
-                return ['entry/index', 'category' => $category->id];
-            },
-            'value' => function (Category $category) {
-                return $category->hasEntriesEnabled() ? $category->entry_count : null;
-            },
+            'route' => fn(Category $category) => ['entry/index', 'category' => $category->id],
+            'value' => fn(Category $category) => $category->hasEntriesEnabled() ? $category->entry_count : null,
         ];
     }
 
-    /**
-     * @param Category $category
-     * @return string
-     */
-    public function getUrl($category)
+    public function getUrl(Category $category): string
     {
         if ($route = $category->getRoute()) {
             $urlManager = Yii::$app->getUrlManager();
@@ -128,11 +106,7 @@ trait CategoryGridTrait
         return '';
     }
 
-    /**
-     * @param Category $category
-     * @return string
-     */
-    protected function getCategoryAncestors($category)
+    protected function getCategoryAncestors(Category $category): string
     {
         if ($category->parent_id) {
             $parents = [];
@@ -147,11 +121,7 @@ trait CategoryGridTrait
         return '';
     }
 
-    /**
-     * @param array $config
-     * @return string|null
-     */
-    protected function categoryDropdown($config = [])
+    protected function categoryDropdown(array $config = []): ?string
     {
         if ($category = $this->dataProvider->category) {
             $config['label'] = Html::tag('strong', Html::encode($category->getI18nAttribute('name')));
@@ -173,11 +143,11 @@ trait CategoryGridTrait
     }
 
     /**
-     * Sets ancestors for all categories to avoid each record loading it's ancestors from the database.
+     * Sets ancestors for all categories to avoid each record loading its ancestors from the database.
      * If no parent category is set simply set all loaded models and let {@link Category::setAncestors}
      * work it's magic.
      */
-    protected function initAncestors()
+    protected function initAncestors(): void
     {
         if ($this->dataProvider->category) {
             $categories = [$this->dataProvider->category->id => $this->dataProvider->category] + $this->dataProvider->category->ancestors;
@@ -192,10 +162,7 @@ trait CategoryGridTrait
         }
     }
 
-    /**
-     * @return Category
-     */
-    public function getModel()
+    public function getModel(): Category
     {
         return Category::instance();
     }

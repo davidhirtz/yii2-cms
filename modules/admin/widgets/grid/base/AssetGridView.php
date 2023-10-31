@@ -18,6 +18,8 @@ use davidhirtz\yii2\skeleton\widgets\fontawesome\Icon;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\db\ActiveQuery;
+use yii\db\ActiveRecordInterface;
+use yii\db\ExpressionInterface;
 use yii\helpers\Url;
 
 /**
@@ -34,10 +36,7 @@ class AssetGridView extends GridView
     use TypeGridViewTrait;
     use UploadTrait;
 
-    /**
-     * @var AssetParentInterface
-     */
-    public $parent;
+    public ?AssetParentInterface $parent = null;
 
     /**
      * @var string
@@ -45,14 +44,14 @@ class AssetGridView extends GridView
     public $layout = '{header}{items}{footer}';
 
     /**
-     * @var int the maximum amount of assets loaded for `$parent`
+     * @var int|ExpressionInterface|null the maximum number of assets loaded for `$parent`
      */
-    public $maxAssetCount = 100;
+    public int|ExpressionInterface|null $maxAssetCount = 100;
 
     /**
      * @inheritDoc
      */
-    public function init()
+    public function init(): void
     {
         if (!$this->dataProvider) {
             $this->dataProvider = new ActiveDataProvider([
@@ -89,7 +88,7 @@ class AssetGridView extends GridView
     /**
      * Sets up grid footer.
      */
-    protected function initFooter()
+    protected function initFooter(): void
     {
         if ($this->footer === null) {
             $this->footer = [
@@ -106,7 +105,7 @@ class AssetGridView extends GridView
     /**
      * @return array
      */
-    protected function getFooterButtons()
+    protected function getFooterButtons(): array
     {
         $isEntry = $this->parent instanceof Entry;
         $user = Yii::$app->getUser();
@@ -128,7 +127,7 @@ class AssetGridView extends GridView
     /**
      * @return string
      */
-    protected function getAssetsButton()
+    protected function getAssetsButton(): string
     {
         return Html::a(Html::iconText('images', Yii::t('cms', 'Library')), $this->getIndexRoute(), [
             'class' => 'btn btn-primary',
@@ -149,7 +148,7 @@ class AssetGridView extends GridView
     public function thumbnailColumn(): array
     {
         // Use string here to prevent PhpStrom warnings for multiple declarations. The module `yii2-cms-hotspot` offers
-        // a replacement class for the thumbnail , which replaces the default implementation on bootstrap.
+        // a replacement class for the thumbnail, which replaces the default implementation on bootstrap.
         return ['class' => '\davidhirtz\yii2\cms\modules\admin\widgets\grid\columns\AssetThumbnailColumn'];
     }
 
@@ -187,7 +186,7 @@ class AssetGridView extends GridView
     /**
      * @return ActiveQuery
      */
-    protected function getParentAssetQuery()
+    protected function getParentAssetQuery(): ActiveQuery
     {
         return $this->parent->getAssets()
             ->andWhere(['section_id' => $this->parent instanceof Section ? $this->parent->id : null])
@@ -210,9 +209,8 @@ class AssetGridView extends GridView
 
     /**
      * @param Asset $asset
-     * @return array
      */
-    protected function getRowButtons($asset)
+    protected function getRowButtons(AssetInterface $asset): array
     {
         $user = Yii::$app->getUser();
         $buttons = [];
@@ -239,11 +237,7 @@ class AssetGridView extends GridView
         return $buttons;
     }
 
-    /**
-     * @param AssetInterface $asset
-     * @return string
-     */
-    protected function getFileUpdateButton($asset)
+    protected function getFileUpdateButton(AssetInterface $asset): string
     {
         return Html::a(Icon::tag('image'), ['file/update', 'id' => $asset->file_id], [
             'class' => 'btn btn-secondary d-none d-md-inline-block',
@@ -254,10 +248,9 @@ class AssetGridView extends GridView
     }
 
     /**
-     * @param Asset $model
-     * @return string
+     * @param AssetInterface $model
      */
-    protected function getDeleteButton($model)
+    protected function getDeleteButton(ActiveRecordInterface $model): string
     {
         $options = [
             'class' => 'btn btn-danger btn-delete-asset d-none d-md-inline-block',
@@ -274,11 +267,6 @@ class AssetGridView extends GridView
         return Html::a(Icon::tag('trash'), $this->getDeleteRoute($model), $options);
     }
 
-    /**
-     * @param string $action
-     * @param array $params
-     * @return array
-     */
     protected function getParentRoute(string $action, $params = []): array
     {
         return array_merge([$action, ($this->parent instanceof Entry ? 'entry' : 'section') => $this->parent->id], $params);
@@ -286,10 +274,8 @@ class AssetGridView extends GridView
 
     /**
      * @param Asset $model
-     * @param array $params
-     * @return array|false
      */
-    protected function getRoute($model, $params = [])
+    protected function getRoute(ActiveRecordInterface $model, array $params = []): false|array
     {
         if (!Yii::$app->getUser()->can($model->isEntryAsset() ? 'entryAssetUpdate' : 'sectionAssetUpdate', ['asset' => $model])) {
             return false;
@@ -298,30 +284,19 @@ class AssetGridView extends GridView
         return array_merge(['cms/asset/update', 'id' => $model->id], $params);
     }
 
-    /**
-     * @return array
-     */
-    protected function getCreateRoute()
+    protected function getCreateRoute(): array
     {
         return $this->getParentRoute('/admin/cms/asset/create', [
             'folder' => Yii::$app->getRequest()->get('folder'),
         ]);
     }
 
-    /**
-     * @param Asset $model
-     * @param array $params
-     * @return array|false
-     */
-    protected function getDeleteRoute($model, $params = [])
+    protected function getDeleteRoute(ActiveRecordInterface $model, array $params = []): array
     {
-        return array_merge(['/admin/asset/delete', 'id' => $model->id], $params);
+        return array_merge(['/admin/asset/delete', 'id' => $model->getPrimaryKey()], $params);
     }
 
-    /**
-     * @return array
-     */
-    protected function getIndexRoute()
+    protected function getIndexRoute(): array
     {
         return $this->getParentRoute('cms/asset/index');
     }
@@ -329,7 +304,7 @@ class AssetGridView extends GridView
     /**
      * @return Asset
      */
-    public function getModel()
+    public function getModel(): ActiveRecordInterface
     {
         return Asset::instance();
     }

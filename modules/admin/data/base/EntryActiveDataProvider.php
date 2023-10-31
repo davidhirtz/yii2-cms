@@ -8,6 +8,7 @@ use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\skeleton\data\ActiveDataProvider;
+use yii\data\Pagination;
 use yii\data\Sort;
 
 /**
@@ -22,42 +23,33 @@ class EntryActiveDataProvider extends ActiveDataProvider
     use ModuleTrait;
 
     /**
-     * @var Category
+     * @var Category|null the category to filter by
      */
-    public $category;
+    public ?Category $category = null;
 
     /**
-     * @var string
+     * @var string|null
      */
-    public $searchString;
+    public ?string $searchString = null;
 
     /**
-     * @var int
+     * @var int|null the entry type
      */
-    public $type;
+    public ?int $type = null;
 
-    /**
-     * @inheritDoc
-     */
-    public function init()
+    public function init(): void
     {
         $this->query = $this->query ?: Entry::find();
         parent::init();
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function prepareQuery()
+    public function prepareQuery(): void
     {
         $this->initQuery();
         parent::prepareQuery();
     }
 
-    /**
-     * Inits query.
-     */
-    protected function initQuery()
+    protected function initQuery(): void
     {
         if (static::getModule()->defaultEntryOrderBy) {
             $this->query->orderBy(static::getModule()->defaultEntryOrderBy);
@@ -84,18 +76,12 @@ class EntryActiveDataProvider extends ActiveDataProvider
         }
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getPagination()
+    public function getPagination(): Pagination|false
     {
         return !$this->isOrderedByPosition() ? parent::getPagination() : false;
     }
 
-    /**
-     * @return bool|Sort
-     */
-    public function getSort()
+    public function getSort(): Sort|false
     {
         return !$this->isOrderedByPosition() ? parent::getSort() : false;
     }
@@ -103,9 +89,9 @@ class EntryActiveDataProvider extends ActiveDataProvider
     /**
      * @param array|bool|Sort $value
      */
-    public function setSort($value)
+    public function setSort($value): void
     {
-        // Try to set default order from query if it's a single order.
+        // Try to set the default order from the query if it's a single order.
         if (is_array($value) && is_array($this->query->orderBy) && count($this->query->orderBy) === 1) {
             $value['defaultOrder'] ??= $this->query->orderBy;
         }
@@ -113,10 +99,7 @@ class EntryActiveDataProvider extends ActiveDataProvider
         parent::setSort($value);
     }
 
-    /**
-     * @return bool
-     */
-    public function isOrderedByPosition()
+    public function isOrderedByPosition(): bool
     {
         return isset($this->query->orderBy) && in_array(key($this->query->orderBy), [
                 EntryCategory::tableName() . '.[[position]]',

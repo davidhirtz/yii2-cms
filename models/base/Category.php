@@ -13,7 +13,6 @@ use davidhirtz\yii2\skeleton\behaviors\RedirectBehavior;
 use davidhirtz\yii2\skeleton\db\NestedTreeTrait;
 use davidhirtz\yii2\skeleton\models\Trail;
 use Yii;
-use yii\base\Widget;
 use yii\caching\TagDependency;
 use yii\db\ActiveQuery;
 
@@ -32,49 +31,37 @@ use yii\db\ActiveQuery;
  * @property string $content
  * @property int $entry_count
  *
- * @property Section[] $sections
- * @property Asset[] $assets
- * @property Entry[] $entry {@see \davidhirtz\yii2\cms\models\Category::getEntries()}
- * @property EntryCategory $entryCategory {@see \davidhirtz\yii2\cms\models\Category::getEntryCategory()}
- * @property EntryCategory[] $entryCategories {@see \davidhirtz\yii2\cms\models\Category::getEntryCategories()}
- * @property \davidhirtz\yii2\cms\models\Category $parent {@see \davidhirtz\yii2\cms\models\Category::getParent()}
- * @property \davidhirtz\yii2\cms\models\Category[] $ancestors
- * @property \davidhirtz\yii2\cms\models\Category[] $descendants
+ * @property-read Section[] $sections
+ * @property-read Asset[] $assets
+ * @property-read Entry[] $entry {@see static::getEntries()}
+ * @property-read EntryCategory $entryCategory {@see static::getEntryCategory()}
+ * @property-read EntryCategory[] $entryCategories {@see static::getEntryCategories()}
+ * @property-read static $parent {@see static::getParent()}
+ * @property-read static[] $ancestors {@see static::getDescendants()}
+ * @property-read static[] $descendants {@see static::getDescendants()}
  *
  * @method \davidhirtz\yii2\cms\models\Category[] getAncestors($refresh = false)
  * @method \davidhirtz\yii2\cms\models\Category[] getDescendants($refresh = false)
- * @method static \davidhirtz\yii2\cms\models\Category findOne($condition)
- * @method static \davidhirtz\yii2\cms\models\Category[] findAll($condition)
+ * @method static static findOne($condition)
+ * @method static static[] findAll($condition)
  */
 class Category extends ActiveRecord
 {
     use NestedTreeTrait;
 
     /**
-     * @var bool|string
-     */
-    public $contentType = false;
-
-    /**
-     * @see \yii\validators\UniqueValidator::$targetAttribute
-     * @var string|array
-     */
-    public $slugTargetAttribute = ['parent_id', 'slug'];
-
-    /**
-     * @var \davidhirtz\yii2\cms\models\Category[]
-     * @see Category::getCategories()
-     */
-    protected static $_categories;
-
-    /**
      * Cache.
      */
     public const CATEGORIES_CACHE_KEY = 'get-categories-cache';
 
+    public string|false $contentType = false;
+    public array|string|null $slugTargetAttribute = ['parent_id', 'slug'];
+
     /**
-     * @inheritDoc
+     * @see Category::getCategories()
      */
+    protected static ?array $_categories = null;
+
     public function behaviors(): array
     {
         return array_merge(parent::behaviors(), [
@@ -82,9 +69,6 @@ class Category extends ActiveRecord
         ]);
     }
 
-    /**
-     * @inheritdoc
-     */
     public function rules(): array
     {
         return array_merge(parent::rules(), $this->getI18nRules([
@@ -131,9 +115,6 @@ class Category extends ActiveRecord
         ]));
     }
 
-    /**
-     * @inheritDoc
-     */
     public function beforeValidate(): bool
     {
         $this->ensureSlug();
@@ -145,10 +126,6 @@ class Category extends ActiveRecord
         return parent::beforeValidate();
     }
 
-
-    /**
-     * @inheritDoc
-     */
     public function beforeSave($insert): bool
     {
         if (!$this->slug) {
@@ -167,7 +144,7 @@ class Category extends ActiveRecord
      * @param bool $insert
      * @param array $changedAttributes
      */
-    public function afterSave($insert, $changedAttributes)
+    public function afterSave($insert, $changedAttributes): void
     {
         if (!$insert) {
             if ($this->parent_id && array_key_exists('parent_id', $changedAttributes)) {
@@ -180,10 +157,7 @@ class Category extends ActiveRecord
         parent::afterSave($insert, $changedAttributes);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function beforeDelete()
+    public function beforeDelete(): bool
     {
         if ($isValid = parent::beforeDelete()) {
             $this->deleteNestedTreeItems();
@@ -196,48 +170,32 @@ class Category extends ActiveRecord
         return $isValid;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function afterDelete()
+    public function afterDelete(): void
     {
         $this->updateNestedTreeAfterDelete();
         parent::afterDelete();
     }
 
-    /**
-     * @return ActiveQuery
-     */
-    public function getEntryCategory()
+    public function getEntryCategory(): ActiveQuery
     {
         return $this->hasOne(EntryCategory::class, ['category_id' => 'id'])
             ->inverseOf('category');
     }
 
-    /**
-     * @return EntryQuery
-     */
-    public function getEntries()
+    public function getEntries(): EntryQuery
     {
         /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $this->hasMany(Entry::class, ['id' => 'entry_id'])
             ->via('entryCategory');
     }
 
-    /**
-     * @return ActiveQuery
-     */
-    public function getEntryCategories()
+    public function getEntryCategories(): ActiveQuery
     {
         return $this->hasMany(EntryCategory::class, ['category_id' => 'id'])
             ->inverseOf('category');
     }
 
-    /**
-     * Updates {@link \davidhirtz\yii2\cms\models\Category::$entry_count}.
-     * @return $this
-     */
-    public function recalculateEntryCount()
+    public function recalculateEntryCount(): static
     {
         $this->entry_count = (int)$this->getEntryCategories()->count();
         return $this;
@@ -248,10 +206,10 @@ class Category extends ActiveRecord
      * the parent id was changed and can insert quite a lot of records. This might need to be overridden on applications
      * with MANY entry-category relations.
      */
-    protected function insertEntryCategoryAncestors()
+    protected function insertEntryCategoryAncestors(): void
     {
-        // If the category doesn't have `inheritNestedCategories` enabled descendant categories need to be used.
-        $categoryIds = $this->inheritNestedCategories() ? $this->id : array_keys(array_filter($this->getDescendants(), function (self $category) {
+        // If the category doesn't have `inheritNestedCategories` enabled, descendant categories need to be used.
+        $categoryIds = $this->inheritNestedCategories() ? $this->id : array_keys(array_filter($this->descendants, function (self $category) {
             return $category->inheritNestedCategories();
         }));
 
@@ -285,7 +243,7 @@ class Category extends ActiveRecord
      * foreign key relation. This enables recalculating the related record as well as adding {@link Trail} records.
      * This might need to be overridden on applications with MANY entry-category relations.
      */
-    protected function deleteEntryCategories()
+    protected function deleteEntryCategories(): void
     {
         $entryCategories = $this->getEntryCategories()
             ->with('entry')
@@ -296,27 +254,17 @@ class Category extends ActiveRecord
         }
     }
 
-    /**
-     * @inheritdoc
-     * @return CategoryQuery
-     */
-    public static function find()
+    public static function find(): CategoryQuery
     {
         return new CategoryQuery(get_called_class());
     }
 
-    /**
-     * @return CategoryQuery
-     */
-    public function findSiblings()
+    public function findSiblings(): CategoryQuery
     {
         return static::find()->where(['parent_id' => $this->parent_id]);
     }
 
-    /**
-     * @return ActiveQuery
-     */
-    public function getSitemapQuery()
+    public function getSitemapQuery(): CategoryQuery
     {
         return static::find()
             ->selectSitemapAttributes()
@@ -326,7 +274,7 @@ class Category extends ActiveRecord
     /**
      * @return static[]
      */
-    public static function findCategories()
+    public static function findCategories(): array
     {
         return static::find()
             ->selectSiteAttributes()
@@ -338,7 +286,7 @@ class Category extends ActiveRecord
     /**
      * @return static[]
      */
-    public static function getCategories()
+    public static function getCategories(): array
     {
         if (static::$_categories === null) {
             $dependency = new TagDependency(['tags' => static::CATEGORIES_CACHE_KEY]);
@@ -348,20 +296,14 @@ class Category extends ActiveRecord
         return static::$_categories;
     }
 
-    /**
-     * Invalidates cache.
-     */
-    public static function invalidateCategoriesCache()
+    public static function invalidateCategoriesCache(): void
     {
         if (static::getModule()->categoryCachedQueryDuration > 0) {
             TagDependency::invalidate(Yii::$app->getCache(), static::CATEGORIES_CACHE_KEY);
         }
     }
 
-    /**
-     * @param array $entryIds
-     */
-    public function updateEntryOrder($entryIds)
+    public function updateEntryOrder(array $entryIds): void
     {
         $entries = $this->getEntryCategories()
             ->andWhere(['entry_id' => $entryIds])
@@ -373,12 +315,7 @@ class Category extends ActiveRecord
         }
     }
 
-    /**
-     * @param string $slug
-     * @param int|null $parentId
-     * @return \davidhirtz\yii2\cms\models\Category|null
-     */
-    public static function getBySlug($slug, $parentId = null)
+    public static function getBySlug(string $slug, int $parentId = null): ?static
     {
         if ($slug) {
             if (strpos($slug, '/')) {
@@ -403,9 +340,6 @@ class Category extends ActiveRecord
         return null;
     }
 
-    /**
-     * @return array
-     */
     public function getTrailAttributes(): array
     {
         return array_diff(parent::getTrailAttributes(), [
@@ -415,10 +349,7 @@ class Category extends ActiveRecord
         ]);
     }
 
-    /**
-     * @return string
-     */
-    public function getTrailModelName()
+    public function getTrailModelName(): string
     {
         if ($this->id) {
             return $this->getI18nAttribute('name') ?: Yii::t('skeleton', '{model} #{id}', [
@@ -430,80 +361,56 @@ class Category extends ActiveRecord
         return $this->getTrailModelType();
     }
 
-    /**
-     * @return string
-     */
     public function getTrailModelType(): string
     {
         return $this->getTypeName() ?: Yii::t('cms', 'Category');
     }
 
-    /**
-     * @return array|false
-     */
-    public function getAdminRoute()
+    public function getAdminRoute(): false|array
     {
         return $this->id ? ['/admin/category/update', 'id' => $this->id] : false;
     }
 
-    /**
-     * @return array|false
-     */
-    public function getRoute()
+    public function getRoute(): false|array
     {
         return array_filter(['/cms/site/index', 'category' => $this->getNestedSlug()]);
     }
 
-    /**
-     * @return string
-     */
-    public function getNestedSlug()
+    public function getNestedSlug(): string
     {
         $slugs = [];
 
-        foreach ($this->getAncestors() as $ancestor) {
+        foreach ($this->ancestors as $ancestor) {
             $slugs[] = $ancestor->getI18nAttribute('slug');
         }
 
         return implode('/', array_merge($slugs, [$this->getI18nAttribute('slug')]));
     }
 
-    /**
-     * @return array|false
-     */
-    public function getEntryOrderBy()
+    public function getEntryOrderBy(): bool|array
     {
         return [EntryCategory::tableName() . '.[[position]]' => SORT_ASC];
     }
 
     /**
-     * @return CategoryActiveForm|Widget
+     * @return class-string
      */
-    public function getActiveForm()
+    public function getActiveForm(): string
     {
         /** @noinspection PhpIncompatibleReturnTypeInspection */
         return static::getTypes()[$this->type]['activeForm'] ?? CategoryActiveForm::class;
     }
 
-    /**
-     * @return bool
-     */
     public function hasEntriesEnabled(): bool
     {
         return true;
     }
 
-    /**
-     * @return bool
-     */
     public function inheritNestedCategories(): bool
     {
         return static::getModule()->inheritNestedCategories;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function attributeLabels(): array
     {
         return array_merge(parent::attributeLabels(), [
@@ -517,17 +424,11 @@ class Category extends ActiveRecord
         ]);
     }
 
-    /**
-     * @return string
-     */
     public function formName(): string
     {
         return 'Category';
     }
 
-    /**
-     * @inheritdoc
-     */
     public static function tableName(): string
     {
         return static::getModule()->getTableName('category');

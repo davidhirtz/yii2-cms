@@ -9,6 +9,7 @@
 
 use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\modules\admin\widgets\grid\AssetGridView;
+use davidhirtz\yii2\cms\modules\admin\widgets\grid\base\SectionParentEntryGridView;
 use davidhirtz\yii2\cms\modules\admin\widgets\nav\Submenu;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\web\View;
@@ -41,8 +42,17 @@ $this->setTitle(Yii::t('cms', 'Edit Section'));
             'parent' => $section,
         ]),
     ]);
-}
-?>
+} ?>
+
+<?php if ($section->hasEntriesEnabled()) {
+    echo Panel::widget([
+        'id' => 'entries',
+        'title' => $section->getAttributeLabel('entry_count'),
+        'content' => SectionParentEntryGridView::widget([
+            'parent' => $section,
+        ]),
+    ]);
+} ?>
 
 <?= SectionHelpPanel::widget([
     'id' => 'operations',

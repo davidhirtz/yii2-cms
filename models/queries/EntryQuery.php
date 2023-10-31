@@ -8,9 +8,6 @@ use davidhirtz\yii2\cms\models\EntryCategory;
 use davidhirtz\yii2\skeleton\db\ActiveQuery;
 
 /**
- * Class EntryQuery
- * @package davidhirtz\yii2\cms\models\queries
- *
  * @method Entry[] all($db = null)
  * @method Entry[] each($batchSize = 100, $db = null)
  * @method Entry one($db = null)
@@ -19,9 +16,8 @@ class EntryQuery extends ActiveQuery
 {
     /**
      * Override this method to select only the attributes needed for frontend display.
-     * @return $this
      */
-    public function selectSiteAttributes()
+    public function selectSiteAttributes(): static
     {
         return $this->addSelect($this->prefixColumns(array_diff($this->getModelInstance()->attributes(),
             ['updated_by_user_id', 'created_at'])));
@@ -29,9 +25,8 @@ class EntryQuery extends ActiveQuery
 
     /**
      * Override this method to select only the attributes needed for XML sitemap generation.
-     * @return $this
      */
-    public function selectSitemapAttributes()
+    public function selectSitemapAttributes(): static
     {
         return $this->addSelect($this->prefixColumns(array_merge(
             ['id', 'status', 'type', 'section_count', 'updated_at'],
@@ -39,11 +34,7 @@ class EntryQuery extends ActiveQuery
         )));
     }
 
-    /**
-     * @param string $search
-     * @return $this
-     */
-    public function matching(string $search)
+    public function matching(?string $search): static
     {
         if ($search = $this->sanitizeSearchString($search)) {
             $this->andWhere(Entry::tableName() . '.[[' . Entry::instance()->getI18nAttributeName('name') . ']] LIKE :search', [':search' => "%{$search}%"]);
@@ -52,12 +43,7 @@ class EntryQuery extends ActiveQuery
         return $this;
     }
 
-    /**
-     * @param int|int[]|Category $category
-     * @param bool $eagerLoading
-     * @return $this
-     */
-    public function whereCategory($category, $eagerLoading = false)
+    public function whereCategory(array|Category|int $category, bool $eagerLoading = false): static
     {
         if ($category instanceof Category) {
             if ($orderBy = $category->getEntryOrderBy()) {
@@ -69,11 +55,9 @@ class EntryQuery extends ActiveQuery
     }
 
     /**
-     * @param int[]|Category[] $categories
-     * @param bool $eagerLoading
-     * @return $this
+     * @noinspection PhpUnused
      */
-    public function whereCategories(array $categories, $eagerLoading = false)
+    public function whereCategories(array $categories, bool $eagerLoading = false): static
     {
         foreach ($categories as $category) {
             $this->innerJoinWithEntryCategory($category->id ?? $category, $eagerLoading, true);
@@ -83,15 +67,10 @@ class EntryQuery extends ActiveQuery
     }
 
     /**
-     * Prepends alias to inner join to allow multiple categories. Keeps original table name
-     * for single joins to use of {@link Category::getEntryOrderBy()} order.
-     *
-     * @param int $categoryId
-     * @param bool $eagerLoading
-     * @param false $useAlias
-     * @return $this
+     * Prepends alias to inner join to allow multiple categories. Keeps original table name for single joins to use of
+     * {@link Category::getEntryOrderBy()} order.
      */
-    protected function innerJoinWithEntryCategory($categoryId, $eagerLoading = false, $useAlias = false)
+    protected function innerJoinWithEntryCategory(int $categoryId, bool $eagerLoading = false, bool $useAlias = false): static
     {
         return $this->innerJoinWith([
             ($useAlias ? "entryCategory entryCategory{$categoryId}" : 'entryCategory') => function (ActiveQuery $query) use ($categoryId, $useAlias) {
@@ -100,19 +79,12 @@ class EntryQuery extends ActiveQuery
         ], $eagerLoading);
     }
 
-    /**
-     * @param string $slug
-     * @return $this
-     */
-    public function whereSlug(string $slug)
+    public function whereSlug(string $slug): static
     {
         return $this->andWhere([Entry::tableName() . '.[[' . Entry::instance()->getI18nAttributeName('slug') . ']]' => trim($slug, '/')]);
     }
 
-    /**
-     * @return $this
-     */
-    public function withAssets()
+    public function withAssets(): static
     {
         return $this->with([
             'assets' => function (AssetQuery $query) {
@@ -128,10 +100,7 @@ class EntryQuery extends ActiveQuery
         ]);
     }
 
-    /**
-     * @return $this
-     */
-    public function withSections()
+    public function withSections(): static
     {
         return $this->with([
             'sections' => function (SectionQuery $query) {
@@ -142,10 +111,7 @@ class EntryQuery extends ActiveQuery
         ]);
     }
 
-    /**
-     * @return $this
-     */
-    public function withSitemapAssets()
+    public function withSitemapAssets(): static
     {
         return $this->with([
             'assets' => function (AssetQuery $query) {

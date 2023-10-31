@@ -15,11 +15,10 @@ use davidhirtz\yii2\skeleton\modules\admin\widgets\grid\TypeGridViewTrait;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\ButtonDropdown;
 use davidhirtz\yii2\timeago\Timeago;
 use Yii;
+use yii\db\ActiveRecordInterface;
 use yii\helpers\Url;
 
 /**
- * Class EntryGridView
- * @package davidhirtz\yii2\cms\modules\admin\widgets\grid\base
  * @see \davidhirtz\yii2\cms\modules\admin\widgets\grid\EntryGridView
  *
  * @property EntryActiveDataProvider $dataProvider
@@ -34,52 +33,43 @@ class EntryGridView extends GridView
     /**
      * @var bool whether entry urls should be displayed in the name column
      */
-    public $showUrl = true;
+    public bool $showUrl = true;
 
     /**
      * @var bool whether category column should be visible when {@link EntryActiveDataProvider::$type} is null
      */
-    public $showCategories = true;
+    public bool $showCategories = true;
 
     /**
      * @var bool whether categories should be selectable via dropdown
      */
-    public $showCategoryDropdown = true;
+    public bool $showCategoryDropdown = true;
 
     /**
      * @var int|false defines when dropdown filter text field is shown for category dropdown
      */
-    public $showCategoryDropdownFilterMinCount = 50;
+    public int|false $showCategoryDropdownFilterMinCount = 50;
 
     /**
      * @var bool whether entry types should be selectable via dropdown
      */
-    public $showTypeDropdown = true;
+    public bool $showTypeDropdown = true;
 
     /**
-     * @var bool whether the delete button should be visible in the entry grid
+     * @var bool whether the delete-button should be visible in the entry grid
      */
-    public $showDeleteButton = false;
+    public bool $showDeleteButton = false;
+
+    public array $selectionRoute = ['/admin/entry/update-all'];
 
     /**
-     * @var array the url route for selection update
+     * @var string|null the date format used in the date column, defaults to null which means the date format is
      */
-    public $selectionRoute = ['/admin/entry/update-all'];
+    public ?string $dateFormat = null;
 
-    /**
-     * @var string
-     */
-    public $dateFormat;
+    private ?array $_categoryNames = null;
 
-    /**
-     * @var array {@link \davidhirtz\yii2\cms\modules\admin\widgets\grid\EntryGridView::getNestedCategoryNames()}
-     */
-    private $_categoryNames;
-
-    /**
-     * @inheritdoc
-     */
-    public function init()
+    public function init(): void
     {
         if ($this->dataProvider->category) {
             /** {@link EntryCategoryController::actionOrder()} */
@@ -128,7 +118,7 @@ class EntryGridView extends GridView
     /**
      * Sets up grid header.
      */
-    protected function initHeader()
+    protected function initHeader(): void
     {
         if ($this->header === null) {
             $this->header = [
@@ -158,7 +148,7 @@ class EntryGridView extends GridView
     /**
      * Sets up grid footer.
      */
-    protected function initFooter()
+    protected function initFooter(): void
     {
         if ($this->footer === null) {
             $this->footer = [
@@ -172,10 +162,7 @@ class EntryGridView extends GridView
         }
     }
 
-    /**
-     * @return string
-     */
-    protected function getCreateEntryButton()
+    protected function getCreateEntryButton(): string
     {
         if (!Yii::$app->getUser()->can('entryCreate')) {
             return '';
@@ -197,10 +184,7 @@ class EntryGridView extends GridView
         return $this->statusSelectionButtonItems();
     }
 
-    /**
-     * @return array
-     */
-    public function nameColumn()
+    public function nameColumn(): array
     {
         return [
             'attribute' => $this->getModel()->getI18nAttributeName('name'),
@@ -221,10 +205,7 @@ class EntryGridView extends GridView
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function sectionCountColumn()
+    public function sectionCountColumn(): array
     {
         return [
             'attribute' => 'section_count',
@@ -237,10 +218,7 @@ class EntryGridView extends GridView
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function assetCountColumn()
+    public function assetCountColumn(): array
     {
         return [
             'attribute' => 'asset_count',
@@ -253,19 +231,13 @@ class EntryGridView extends GridView
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function dateColumn()
+    public function dateColumn(): array
     {
         // The Query object reflects the initial order even if Sort changed the query.
         return $this->dataProvider->query->orderBy && key($this->dataProvider->query->orderBy) === 'publish_date' ? $this->publishDateColumn() : $this->updatedAtColumn();
     }
 
-    /**
-     * @return array
-     */
-    public function publishDateColumn()
+    public function publishDateColumn(): array
     {
         return [
             'attribute' => 'publish_date',
@@ -277,10 +249,7 @@ class EntryGridView extends GridView
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function updatedAtColumn()
+    public function updatedAtColumn(): array
     {
         return [
             'attribute' => 'updated_at',
@@ -292,10 +261,7 @@ class EntryGridView extends GridView
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function buttonsColumn()
+    public function buttonsColumn(): array
     {
         return [
             'contentOptions' => ['class' => 'text-right text-nowrap'],
@@ -305,11 +271,7 @@ class EntryGridView extends GridView
         ];
     }
 
-    /**
-     * @param Entry $entry
-     * @return array
-     */
-    protected function getRowButtons(Entry $entry)
+    protected function getRowButtons(Entry $entry): array
     {
         $user = Yii::$app->getUser();
         $buttons = [];
@@ -329,10 +291,7 @@ class EntryGridView extends GridView
         return $buttons;
     }
 
-    /**
-     * @return string
-     */
-    public function categoryDropdown()
+    public function categoryDropdown(): string
     {
         if ($items = $this->categoryDropdownItems()) {
             return ButtonDropdown::widget([
@@ -346,9 +305,6 @@ class EntryGridView extends GridView
         return '';
     }
 
-    /**
-     * @return array
-     */
     protected function categoryDropdownItems(): array
     {
         $items = [];
@@ -363,12 +319,7 @@ class EntryGridView extends GridView
         return $items;
     }
 
-    /**
-     * @param Entry $entry
-     * @param array $options
-     * @return string
-     */
-    public function renderCategoryButtons(Entry $entry, $options = [])
+    public function renderCategoryButtons(Entry $entry, array $options = []): string
     {
         $categoryIds = $entry->getCategoryIds();
         $categories = [];
@@ -382,10 +333,6 @@ class EntryGridView extends GridView
         return $categories ? Html::tag('div', implode('', $categories), $options ?: ['class' => 'btn-list']) : '';
     }
 
-    /**
-     * @param Entry $entry
-     * @return string
-     */
     public function getUrl(Entry $entry): string
     {
         if ($route = $entry->getRoute()) {
@@ -400,19 +347,11 @@ class EntryGridView extends GridView
         return '';
     }
 
-    /**
-     * @param Entry $model
-     * @param array $params
-     * @return array
-     */
-    protected function getRoute($model, $params = []): array
+    protected function getRoute(ActiveRecordInterface $model, array $params = []): array|false
     {
-        return array_merge(Yii::$app->getRequest()->get(), ['/admin/entry/update', 'id' => $model->id], $params);
+        return array_merge(Yii::$app->getRequest()->get(), ['/admin/entry/update', 'id' => $model->getPrimaryKey()], $params);
     }
 
-    /**
-     * @return array|mixed
-     */
     public function getNestedCategoryNames(): array
     {
         if ($this->_categoryNames === null) {
@@ -422,10 +361,7 @@ class EntryGridView extends GridView
         return $this->_categoryNames;
     }
 
-    /**
-     * @return Entry
-     */
-    public function getModel()
+    public function getModel(): Entry
     {
         return Entry::instance();
     }

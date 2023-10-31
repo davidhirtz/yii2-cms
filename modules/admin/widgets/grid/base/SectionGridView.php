@@ -26,24 +26,18 @@ class SectionGridView extends GridView
     use StatusGridViewTrait;
 
     /**
-     * @var Entry
+     * @var Entry|null
      */
-    public $entry;
+    public ?Entry $entry = null;
 
     /**
-     * @var bool whether the delete button should be visible in the section grid.
+     * @var bool whether the delete-button should be visible in the section grid.
      */
-    public $showDeleteButton = false;
+    public bool $showDeleteButton = false;
 
-    /**
-     * @var array the url route for selection update
-     */
-    public $selectionRoute = ['/admin/section/update-all'];
+    public array $selectionRoute = ['/admin/section/update-all'];
 
-    /**
-     * @inheritDoc
-     */
-    public function init()
+    public function init(): void
     {
         if (!$this->dataProvider) {
             $this->dataProvider = new ArrayDataProvider([
@@ -74,7 +68,7 @@ class SectionGridView extends GridView
     /**
      * Sets up grid footer.
      */
-    protected function initFooter()
+    protected function initFooter(): void
     {
         if ($this->footer === null) {
             $this->footer = [
@@ -225,10 +219,7 @@ class SectionGridView extends GridView
         return $buttons;
     }
 
-    /**
-     * @return Section
-     */
-    public function getModel()
+    public function getModel(): Section
     {
         return Section::instance();
     }

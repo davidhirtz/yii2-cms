@@ -13,11 +13,12 @@ use davidhirtz\yii2\skeleton\db\ActiveQuery;
 use davidhirtz\yii2\skeleton\db\I18nAttributesTrait;
 use davidhirtz\yii2\skeleton\db\StatusAttributeTrait;
 use davidhirtz\yii2\skeleton\db\TypeAttributeTrait;
-use davidhirtz\yii2\skeleton\models\queries\UserQuery;
+use davidhirtz\yii2\skeleton\models\traits\UpdatedByUserTrait;
 use davidhirtz\yii2\skeleton\models\User;
 use davidhirtz\yii2\skeleton\validators\DynamicRangeValidator;
 use davidhirtz\yii2\skeleton\validators\HtmlValidator;
 use davidhirtz\yii2\skeleton\validators\UniqueValidator;
+use davidhirtz\yii2\skeleton\web\Sitemap;
 use Yii;
 use yii\helpers\Inflector;
 
@@ -41,6 +42,7 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     use ModuleTrait;
     use StatusAttributeTrait;
     use TypeAttributeTrait;
+    use UpdatedByUserTrait;
 
     public const SLUG_MAX_LENGTH = 100;
 
@@ -50,29 +52,29 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     /**
      * @var bool whether slugs should not automatically be checked and processed.
      */
-    public $customSlugBehavior = false;
+    public bool $customSlugBehavior = false;
 
     /**
      * @var mixed used when $contentType is set to "html". use array with the first value containing the
      * validator class, following keys can be used to configure the validator, string containing the class
      * name or false for disabling the validation.
      */
-    public $htmlValidator = HtmlValidator::class;
+    public array|string|null $htmlValidator = HtmlValidator::class;
 
     /**
      * @var string|false the content type, "html" enables html validators and WYSIWYG editor
      */
-    public $contentType = 'html';
+    public string|false $contentType = 'html';
 
     /**
-     * @var string the class name of the unique validator
+     * @var array|string the class name of the unique validator
      */
-    public $slugUniqueValidator = UniqueValidator::class;
+    public array|string $slugUniqueValidator = UniqueValidator::class;
 
     /**
-     * @var string|array {@see \yii\validators\UniqueValidator::$targetAttribute}
+     * @var array|string|null {@see \yii\validators\UniqueValidator::$targetAttribute}
      */
-    public $slugTargetAttribute;
+    public array|string|null $slugTargetAttribute = null;
 
     /**
      * @var bool {@link ActiveRecord::isSlugRequired()}
@@ -111,10 +113,7 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         ]);
     }
 
-    /**
-     * @return bool
-     */
-    public function beforeValidate()
+    public function beforeValidate(): bool
     {
         $this->status ??= static::STATUS_DEFAULT;
         $this->type ??= static::TYPE_DEFAULT;
@@ -122,10 +121,7 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         return parent::beforeValidate();
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function beforeSave($insert)
+    public function beforeSave($insert): bool
     {
         $this->attachBehaviors([
             'BlameableBehavior' => BlameableBehavior::class,
@@ -139,19 +135,13 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         return parent::beforeSave($insert);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function afterSave($insert, $changedAttributes)
+    public function afterSave($insert, $changedAttributes): void
     {
         static::getModule()->invalidatePageCache();
         parent::afterSave($insert, $changedAttributes);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function afterDelete()
+    public function afterDelete(): void
     {
         static::getModule()->invalidatePageCache();
         parent::afterDelete();
@@ -160,9 +150,10 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     /**
      * Triggers event before `$clone` was inserted. This can be used to hook into the clone process before the model is
      * validated and saved.
+     *
      * @param static $clone
      */
-    public function beforeClone($clone)
+    public function beforeClone($clone): bool
     {
         $event = new ModelCloneEvent();
         $event->clone = $clone;
@@ -174,9 +165,10 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     /**
      * Triggers event after `$clone` was inserted. This can be used to hook into the clone process after the model was
      * successfully moved or copied.
+     *
      * @param static $clone
      */
-    public function afterClone($clone)
+    public function afterClone($clone): void
     {
         $event = new ModelCloneEvent();
         $event->clone = $clone;
@@ -185,22 +177,14 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     }
 
     /**
-     * @return UserQuery
-     */
-    public function getUpdated(): UserQuery
-    {
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return $this->hasOne(User::class, ['id' => 'updated_by_user_id']);
-    }
-
-    /**
      * @return ActiveQuery
      */
-    abstract public function findSiblings();
+    abstract public function findSiblings(): ActiveQuery;
 
     /**
      * @param int $offset
      * @return array
+     * @noinspection PhpUnused {@see Sitemap::generateUrls()}
      */
     public function generateSitemapUrls($offset = 0): array
     {
@@ -254,7 +238,7 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     }
 
     /**
-     * @return int
+     * @noinspection PhpUnused {@see Sitemap::generateIndexUrls()}
      */
     public function getSitemapUrlCount(): int
     {
@@ -278,11 +262,8 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     /**
      * Returns an array with the attributes needed for the XML sitemap. This can be overridden to add additional fields
      * such as priority or images.
-     *
-     * @param string $language
-     * @return array|false
      */
-    public function getSitemapUrl($language)
+    public function getSitemapUrl(string $language): array|false
     {
         if ($this->includeInSitemap($language)) {
             if ($route = $this->getRoute()) {
@@ -296,10 +277,7 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         return false;
     }
 
-    /**
-     * @return ActiveQuery
-     */
-    public function getSitemapQuery()
+    public function getSitemapQuery(): ActiveQuery
     {
         return static::find();
     }
@@ -307,7 +285,7 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     /**
      * Generates a unique slug if the slug is already taken.
      */
-    public function generateUniqueSlug()
+    public function generateUniqueSlug(): void
     {
         foreach ($this->getI18nAttributeNames('slug') as $attributeName) {
             if ($baseSlug = $this->getAttribute($attributeName)) {
@@ -330,18 +308,12 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         return (int)$this->findSiblings()->max('[[position]]');
     }
 
-    /**
-     * @inheritDoc
-     */
-    public static function updatePosition($models, $order = [], $attribute = 'position', $index = null)
+    public static function updatePosition($models, $order = [], $attribute = 'position', $index = null): int
     {
         static::getModule()->invalidatePageCache();
         return parent::updatePosition($models, $order, $attribute, $index);
     }
 
-    /**
-     * @return array
-     */
     public function getTrailAttributes(): array
     {
         return array_diff($this->attributes(), [
@@ -353,30 +325,19 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         ]);
     }
 
-    /**
-     * @return array|false
-     */
-    public function getTrailModelAdminRoute()
+    public function getTrailModelAdminRoute(): array|false
     {
         return $this->getAdminRoute();
     }
 
-    /**
-     * @return mixed
-     */
-    abstract public function getAdminRoute();
+    abstract public function getAdminRoute(): array|false;
+
+    abstract public function getRoute(): array|false;
 
     /**
-     * @return mixed
-     */
-    abstract public function getRoute();
-
-    /**
-     * @param string|null $language
      * @noinspection PhpUnusedParameterInspection
-     * @return bool
      */
-    public function includeInSitemap($language = null): bool
+    public function includeInSitemap(?string $language = null): bool
     {
         return $this->isEnabled();
     }
@@ -394,10 +355,7 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         return $this->_isSlugRequired;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return array_merge(parent::attributeLabels(), [
             'entry_id' => Yii::t('cms', 'Entry'),

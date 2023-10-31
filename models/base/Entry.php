@@ -17,9 +17,7 @@ use davidhirtz\yii2\skeleton\behaviors\RedirectBehavior;
 use davidhirtz\yii2\skeleton\helpers\ArrayHelper;
 use davidhirtz\yii2\skeleton\models\Trail;
 use Yii;
-use yii\base\Widget;
 use yii\db\ActiveQuery;
-use yii\helpers\Inflector;
 
 /**
  * Entry is the base model class for all CMS entries, which can contain related {@link Section} models and
@@ -38,28 +36,22 @@ use yii\helpers\Inflector;
  * @property int $section_count
  * @property int $asset_count
  *
- * @property Asset[] $assets {@link \davidhirtz\yii2\cms\models\Entry::getAssets()}
- * @property Section[] $sections {@link \davidhirtz\yii2\cms\models\Entry::getSections()}
- * @property EntryCategory $entryCategory {@link \davidhirtz\yii2\cms\models\Entry::getEntryCategory()}
- * @property EntryCategory[] $entryCategories {@link \davidhirtz\yii2\cms\models\Entry::getEntryCategories()}
+ * @property Asset[] $assets {@link static::getAssets()}
+ * @property Section[] $sections {@link static::getSections()}
+ * @property EntryCategory $entryCategory {@link static::getEntryCategory()}
+ * @property EntryCategory[] $entryCategories {@link static::getEntryCategories()}
  *
- * @method static \davidhirtz\yii2\cms\models\Entry findOne($condition)
+ * @method static static findOne($condition)
  */
 class Entry extends ActiveRecord implements AssetParentInterface
 {
-    /**
-     * @var bool|string
-     */
-    public $contentType = false;
+    public string|false $contentType = false;
 
     /**
-     * @var array|string
+     * @var array|string the validator used to verify the publish date.
      */
-    public $dateTimeValidator = DateTimeValidator::class;
+    public array|string $dateTimeValidator = DateTimeValidator::class;
 
-    /**
-     * @inheritDoc
-     */
     public function behaviors(): array
     {
         return array_merge(parent::behaviors(), [
@@ -67,9 +59,6 @@ class Entry extends ActiveRecord implements AssetParentInterface
         ]);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function rules(): array
     {
         return array_merge(parent::rules(), $this->getI18nRules([
@@ -107,18 +96,12 @@ class Entry extends ActiveRecord implements AssetParentInterface
         ]));
     }
 
-    /**
-     * @inheritDoc
-     */
     public function beforeValidate(): bool
     {
         $this->ensureSlug();
         return parent::beforeValidate();
     }
 
-    /**
-     * @inheritDoc
-     */
     public function beforeSave($insert): bool
     {
         if (!$this->slug) {
@@ -136,10 +119,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
         return parent::beforeSave($insert);
     }
 
-    /**
-     * @return bool
-     */
-    public function beforeDelete()
+    public function beforeDelete(): bool
     {
         if ($isValid = parent::beforeDelete()) {
             if ($this->asset_count || $this->section_count) {
@@ -167,28 +147,19 @@ class Entry extends ActiveRecord implements AssetParentInterface
         return $isValid;
     }
 
-    /**
-     * @return ActiveQuery
-     */
-    public function getEntryCategory()
+    public function getEntryCategory(): ActiveQuery
     {
         return $this->hasOne(EntryCategory::class, ['entry_id' => 'id'])
             ->inverseOf('entry');
     }
 
-    /**
-     * @return ActiveQuery
-     */
-    public function getEntryCategories()
+    public function getEntryCategories(): ActiveQuery
     {
         return $this->hasMany(EntryCategory::class, ['entry_id' => 'id'])
             ->inverseOf('entry');
     }
 
-    /**
-     * @return SectionQuery
-     */
-    public function getSections()
+    public function getSections(): SectionQuery
     {
         /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $this->hasMany(Section::class, ['entry_id' => 'id'])
@@ -197,10 +168,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
             ->inverseOf('entry');
     }
 
-    /**
-     * @return AssetQuery
-     */
-    public function getAssets()
+    public function getAssets(): AssetQuery
     {
         /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $this->hasMany(Asset::class, ['entry_id' => 'id'])
@@ -209,27 +177,17 @@ class Entry extends ActiveRecord implements AssetParentInterface
             ->inverseOf('entry');
     }
 
-    /**
-     * @inheritDoc
-     * @return EntryQuery
-     */
-    public static function find()
+    public static function find(): EntryQuery
     {
         return new EntryQuery(get_called_class());
     }
 
-    /**
-     * @return EntryQuery
-     */
-    public function findSiblings()
+    public function findSiblings(): EntryQuery
     {
         return static::find();
     }
 
-    /**
-     * @return EntryQuery
-     */
-    public function getSitemapQuery()
+    public function getSitemapQuery(): EntryQuery
     {
         $query = static::find()
             ->selectSitemapAttributes()
@@ -242,10 +200,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
         return $query;
     }
 
-    /**
-     * @param array $assetIds
-     */
-    public function updateAssetOrder($assetIds)
+    public function updateAssetOrder(array $assetIds): void
     {
         $assets = $this->getAssets()
             ->select(['id', 'position'])
@@ -261,10 +216,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
         }
     }
 
-    /**
-     * @param array $sectionIds
-     */
-    public function updateSectionOrder($sectionIds)
+    public function updateSectionOrder(array $sectionIds): void
     {
         $sections = $this->getSections()
             ->select(['id', 'position'])
@@ -279,11 +231,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
         }
     }
 
-    /**
-     * @param array $attributes
-     * @return \davidhirtz\yii2\cms\models\Entry
-     */
-    public function clone($attributes = [])
+    public function clone(array $attributes = []): static
     {
         $attributes['status'] ??= static::STATUS_DRAFT;
 
@@ -333,7 +281,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
     /**
      * @param Asset[]|null $assets
      */
-    public function populateAssetRelations($assets = null)
+    public function populateAssetRelations(?array $assets = null): void
     {
         if ($assets === null) {
             $assets = $this->assets;
@@ -359,11 +307,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
         }
     }
 
-    /**
-     * Recalculates {@link \davidhirtz\yii2\cms\models\Entry::$category_ids}.
-     * @return $this
-     */
-    public function recalculateCategoryIds()
+    public function recalculateCategoryIds(): static
     {
         $this->category_ids = ArrayHelper::createCacheString($this->getEntryCategories()
             ->select(['category_id'])
@@ -372,27 +316,17 @@ class Entry extends ActiveRecord implements AssetParentInterface
         return $this;
     }
 
-    /**
-     * Recalculates {@link \davidhirtz\yii2\cms\models\Entry::$section_count}.
-     * @return $this
-     */
-    public function recalculateSectionCount()
+    public function recalculateSectionCount(): static
     {
         $this->section_count = (int)$this->getSections()->count();
         return $this;
     }
 
-    /**
-     * @return array
-     */
     public function getCategoryIds(): array
     {
         return ArrayHelper::cacheStringToArray($this->category_ids);
     }
 
-    /**
-     * @return int
-     */
     public function getCategoryCount(): int
     {
         return count($this->getCategoryIds());
@@ -401,11 +335,8 @@ class Entry extends ActiveRecord implements AssetParentInterface
     /**
      * Extends the default XML sitemap url by image URLs if related assets were found. This is automatically the
      * case if {@link Module::$enableImageSitemaps} is set to `true`.
-     *
-     * @param string $language
-     * @return array|false
      */
-    public function getSitemapUrl($language)
+    public function getSitemapUrl(string $language): false|array
     {
         if ($url = parent::getSitemapUrl($language)) {
             /** @var Asset[]|false $assets */
@@ -421,9 +352,6 @@ class Entry extends ActiveRecord implements AssetParentInterface
         return $url;
     }
 
-    /**
-     * @return array
-     */
     public function getTrailAttributes(): array
     {
         return array_diff(parent::getTrailAttributes(), [
@@ -434,10 +362,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
         ]);
     }
 
-    /**
-     * @return string
-     */
-    public function getTrailModelName()
+    public function getTrailModelName(): string
     {
         if ($this->id) {
             return $this->getI18nAttribute('name') ?: Yii::t('skeleton', '{model} #{id}', [
@@ -449,66 +374,45 @@ class Entry extends ActiveRecord implements AssetParentInterface
         return $this->getTrailModelType();
     }
 
-    /**
-     * @return string
-     */
     public function getTrailModelType(): string
     {
         return $this->getTypeName() ?: Yii::t('cms', 'Entry');
     }
 
-    /**
-     * @return array|false
-     */
-    public function getAdminRoute()
+    public function getAdminRoute(): false|array
     {
         return $this->id ? ['/admin/entry/update', 'id' => $this->id] : false;
     }
 
-    /**
-     * @return array|false
-     */
-    public function getRoute()
+    public function getRoute(): false|array
     {
         return array_filter(['/cms/site/view', 'entry' => $this->getI18nAttribute('slug')]);
     }
 
     /**
-     * @return EntryActiveForm|Widget
+     * @return class-string
      */
-    public function getActiveForm()
+    public function getActiveForm(): string
     {
         /** @noinspection PhpIncompatibleReturnTypeInspection */
         return static::getTypes()[$this->type]['activeForm'] ?? EntryActiveForm::class;
     }
 
-    /**
-     * @return bool
-     */
     public function hasAssetsEnabled(): bool
     {
         return static::getModule()->enableEntryAssets;
     }
 
-    /**
-     * @return bool
-     */
     public function hasCategoriesEnabled(): bool
     {
         return static::getModule()->enableCategories;
     }
 
-    /**
-     * @return bool
-     */
     public function hasSectionsEnabled(): bool
     {
         return static::getModule()->enableSections;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function attributeLabels(): array
     {
         return array_merge(parent::attributeLabels(), [
@@ -521,17 +425,11 @@ class Entry extends ActiveRecord implements AssetParentInterface
         ]);
     }
 
-    /**
-     * @return string
-     */
     public function formName(): string
     {
         return 'Entry';
     }
 
-    /**
-     * @inheritDoc
-     */
     public static function tableName(): string
     {
         return static::getModule()->getTableName('entry');

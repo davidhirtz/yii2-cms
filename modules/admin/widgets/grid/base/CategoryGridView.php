@@ -12,8 +12,6 @@ use davidhirtz\yii2\skeleton\widgets\fontawesome\Icon;
 use Yii;
 
 /**
- * Class CategoryGridView
- * @package davidhirtz\yii2\cms\modules\admin\widgets\grid\base
  * @see \davidhirtz\yii2\cms\modules\admin\widgets\grid\CategoryGridView
  *
  * @property CategoryActiveDataProvider $dataProvider
@@ -26,17 +24,14 @@ class CategoryGridView extends GridView
     /**
      * @var string the category param name used in urls on {@link CategoryGridTrait}.
      */
-    public $categoryParamName = 'id';
+    public string $categoryParamName = 'id';
 
     /**
      * @var bool whether frontend url should be displayed, defaults to true
      */
-    public $showUrl = true;
+    public bool $showUrl = true;
 
-    /**
-     * @inheritDoc
-     */
-    public function init()
+    public function init(): void
     {
         if ($this->dataProvider->category) {
             $this->orderRoute = ['order', 'id' => $this->dataProvider->category->id];
@@ -61,10 +56,7 @@ class CategoryGridView extends GridView
         parent::init();
     }
 
-    /**
-     * Sets up grid footer.
-     */
-    protected function initFooter()
+    protected function initFooter(): void
     {
         if ($this->footer === null) {
             $this->footer = [
@@ -79,10 +71,7 @@ class CategoryGridView extends GridView
         }
     }
 
-    /**
-     * @return array
-     */
-    public function updatedAtColumn()
+    public function updatedAtColumn(): array
     {
         return [
             'attribute' => 'updated_at',
@@ -94,10 +83,7 @@ class CategoryGridView extends GridView
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function buttonsColumn()
+    public function buttonsColumn(): array
     {
         return [
             'contentOptions' => ['class' => 'text-right text-nowrap'],
@@ -114,25 +100,20 @@ class CategoryGridView extends GridView
         ];
     }
 
-    /**
-     * @return string
-     */
-    protected function getCreateCategoryButton()
+    protected function getCreateCategoryButton(): string
     {
-        return Html::a(Html::iconText('plus', Yii::t('cms', 'New Category')), ['/admin/category/create', 'id' => $this->dataProvider->category->id ?? null], ['class' => 'btn btn-primary']);
+        $route = ['/admin/category/create', 'id' => $this->dataProvider->category->id ?? null];
+
+        return Html::a(Html::iconText('plus', Yii::t('cms', 'New Category')), $route, [
+            'class' => 'btn btn-primary'
+        ]);
     }
 
-    /**
-     * @return bool
-     */
     public function isSortedByPosition(): bool
     {
         return parent::isSortedByPosition() && !$this->dataProvider->searchString;
     }
 
-    /**
-     * @return bool
-     */
     public function showCategoryAncestors(): bool
     {
         return (bool)$this->dataProvider->searchString;

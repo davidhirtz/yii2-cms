@@ -13,10 +13,7 @@ use davidhirtz\yii2\timeago\Timeago;
 use davidhirtz\yii2\skeleton\widgets\fontawesome\Icon;
 
 /**
- * Class EntryCategoryGridView
- * @package davidhirtz\yii2\cms\modules\admin\widgets\grid\base
  * @see \davidhirtz\yii2\cms\modules\admin\widgets\grid\EntryCategoryGridView
- *
  * @property CategoryActiveDataProvider $dataProvider
  */
 class EntryCategoryGridView extends GridView
