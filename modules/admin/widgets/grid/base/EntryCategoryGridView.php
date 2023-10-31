@@ -2,7 +2,7 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\widgets\grid\base;
 
-use davidhirtz\yii2\cms\models\base\EntryCategory;
+use davidhirtz\yii2\cms\models\EntryCategory;
 use davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider;
 use davidhirtz\yii2\cms\modules\admin\widgets\CategoryTrait;
 use davidhirtz\yii2\cms\modules\ModuleTrait;

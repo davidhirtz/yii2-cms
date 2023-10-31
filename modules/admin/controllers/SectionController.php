@@ -30,14 +30,11 @@ class SectionController extends Controller
     use ModuleTrait;
 
     /**
-     * @var bool whether sections should be saved directly on create
+     * @var bool whether sections should be inserted directly in {@link static::actionCreate()}.
      */
-    public $autoCreateSection = true;
+    public bool $autoCreateSection = true;
 
-    /**
-     * @inheritdoc
-     */
-    public function behaviors()
+    public function behaviors(): array
     {
         return array_merge(parent::behaviors(), [
             'access' => [
@@ -76,11 +73,7 @@ class SectionController extends Controller
         ]);
     }
 
-    /**
-     * @param int $entry
-     * @return string|Response
-     */
-    public function actionIndex(int $entry)
+    public function actionIndex(int $entry): Response|string
     {
         $query = Entry::find()
             ->where(['id' => $entry])
@@ -131,11 +124,7 @@ class SectionController extends Controller
         ]);
     }
 
-    /**
-     * @param int $id
-     * @return string|Response
-     */
-    public function actionUpdate(int $id)
+    public function actionUpdate(int $id): Response|string
     {
         $section = $this->findSection($id, 'sectionUpdate');
 
@@ -149,16 +138,12 @@ class SectionController extends Controller
             }
         }
 
-        /** @noinspection MissedViewInspection */
         return $this->render('update', [
             'section' => $section,
         ]);
     }
 
-    /**
-     * @return Response
-     */
-    public function actionUpdateAll()
+    public function actionUpdateAll(): Response|string
     {
         $request = Yii::$app->getRequest();
 
@@ -188,14 +173,7 @@ class SectionController extends Controller
         return $this->redirect(array_merge($request->get(), ['index']));
     }
 
-    /**
-     * Clones or copies section. Additional changes can be set via POST (e.g. the entry id for
-     * copying the section to another entry).
-     *
-     * @param int $id
-     * @return Response
-     */
-    public function actionClone(int $id)
+    public function actionClone(int $id): Response|string
     {
         $section = $this->findSection($id, 'sectionUpdate');
         $entryId = $section->entry_id;
@@ -212,11 +190,7 @@ class SectionController extends Controller
         return $this->redirect(['update', 'id' => $clone->id]);
     }
 
-    /**
-     * @param int $id
-     * @return string|Response
-     */
-    public function actionDelete(int $id)
+    public function actionDelete(int $id): Response|string
     {
         $section = $this->findSection($id, 'sectionDelete');
 
@@ -235,10 +209,7 @@ class SectionController extends Controller
         return $this->redirect(['index', 'entry' => $section->entry_id]);
     }
 
-    /**
-     * @param int $entry
-     */
-    public function actionOrder($entry)
+    public function actionOrder(int $entry): void
     {
         $entry = $this->findEntry($entry, 'sectionOrder');
         $sectionIds = array_map('intval', array_filter(Yii::$app->getRequest()->post('section', [])));
@@ -248,28 +219,16 @@ class SectionController extends Controller
         }
     }
 
-    /**
-     * Displays a list of entries for copying / moving section.
-     *
-     * @param int $id
-     * @param int|null $category
-     * @param int|null $type
-     * @param string|null $q
-     * @return string
-     */
-    public function actionEntries(int $id, $category = null, $type = null, $q = null)
+    public function actionEntries(int $id, ?int $category = null, ?int $type = null, ?string $q = null): Response|string
     {
         $section = $this->findSection($id, 'sectionUpdate');
 
-        /** @var EntryActiveDataProvider $provider */
-        $provider = Yii::createObject([
-            'class' => 'davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider',
+        $provider = Yii::$container->get(EntryActiveDataProvider::class, [], [
             'category' => $category ? Category::findOne((int)$category) : null,
             'searchString' => $q,
             'type' => $type,
         ]);
 
-        /** @noinspection MissedViewInspection */
         return $this->render('entries', [
             'section' => $section,
             'provider' => $provider,

@@ -1,7 +1,8 @@
 <?php
 
-namespace davidhirtz\yii2\cms\models\base;
+namespace davidhirtz\yii2\cms\models;
 
+use davidhirtz\yii2\cms\models\ModelCloneEvent;
 use davidhirtz\yii2\cms\Module;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\datetime\DateTime;

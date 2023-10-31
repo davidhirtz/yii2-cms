@@ -1,6 +1,6 @@
 <?php
 
-namespace davidhirtz\yii2\cms\models\base;
+namespace davidhirtz\yii2\cms\models;
 
 use yii\base\ModelEvent;
 

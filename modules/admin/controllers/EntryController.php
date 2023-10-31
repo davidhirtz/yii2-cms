@@ -24,10 +24,7 @@ class EntryController extends Controller
     use EntryTrait;
     use ModuleTrait;
 
-    /**
-     * @inheritdoc
-     */
-    public function behaviors()
+    public function behaviors(): array
     {
         return array_merge(parent::behaviors(), [
             'access' => [
@@ -67,27 +64,18 @@ class EntryController extends Controller
         ]);
     }
 
-    /**
-     * @param int|null $category
-     * @param int|null $type
-     * @param string|null $q
-     * @return string|Response
-     */
-    public function actionIndex($category = null, $type = null, $q = null)
+    public function actionIndex(?int $category = null, ?int $type = null, ?string $q = null): Response|string
     {
         if (!$type && static::getModule()->defaultEntryType) {
             return $this->redirect(Url::current(['type' => static::getModule()->defaultEntryType]));
         }
 
-        /** @var EntryActiveDataProvider $provider */
-        $provider = Yii::createObject([
-            'class' => 'davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider',
+        $provider = Yii::$container->get(EntryActiveDataProvider::class, [], [
             'category' => $category ? Category::findOne((int)$category) : null,
             'searchString' => $q,
             'type' => $type,
         ]);
 
-        /** @noinspection MissedViewInspection */
         return $this->render('index', [
             'provider' => $provider,
         ]);

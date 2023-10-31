@@ -19,22 +19,11 @@ class EntryActiveForm extends ActiveForm
 {
     use ModuleTrait;
 
-    /**
-     * @var int
-     */
-    public $slugMaxLength = 20;
+    public bool $hasStickyButtons = true;
 
-    /**
-     * @var bool
-     */
-    public $hasStickyButtons = true;
-
-    /**
-     * @inheritDoc
-     */
-    public function init()
+    public function init(): void
     {
-        $this->fields = $this->fields ?: [
+        $this->fields ??= [
             'status',
             'type',
             'name',
@@ -50,9 +39,9 @@ class EntryActiveForm extends ActiveForm
     }
 
     /**
-     * @return ActiveField
+     * @noinspection PhpUnused {@see static::init()}
      */
-    public function publishDateField()
+    public function publishDateField(): ActiveField|string
     {
         return $this->field($this->model, 'publish_date')->widget(DateTimeInput::class);
     }

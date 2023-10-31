@@ -2,6 +2,7 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\widgets\grid\base;
 
+use davidhirtz\yii2\cms\modules\admin\controllers\SectionController;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\Section;
@@ -35,6 +36,9 @@ class SectionGridView extends GridView
      */
     public bool $showDeleteButton = false;
 
+    /**
+     * @var array|string[] {@see SectionController::actionUpdateAll()}
+     */
     public array $selectionRoute = ['/admin/section/update-all'];
 
     public function init(): void

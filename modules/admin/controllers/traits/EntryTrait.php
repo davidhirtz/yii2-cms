@@ -15,8 +15,6 @@ trait EntryTrait
             throw new NotFoundHttpException();
         }
 
-        dump($entry::class);
-
         if ($permissionName && !Yii::$app->getUser()->can($permissionName, ['entry' => $entry])) {
             throw new ForbiddenHttpException();
         }

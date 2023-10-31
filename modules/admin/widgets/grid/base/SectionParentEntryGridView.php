@@ -4,6 +4,7 @@ namespace davidhirtz\yii2\cms\modules\admin\widgets\grid\base;
 
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\Section;
+use davidhirtz\yii2\cms\modules\admin\controllers\SectionController;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\widgets\fontawesome\Icon;
 use Yii;
@@ -19,6 +20,10 @@ class SectionParentEntryGridView extends \davidhirtz\yii2\cms\modules\admin\widg
      */
     public ?Section $section = null;
 
+    /**
+     * @see SectionController::actionClone()
+     * @see SectionController::actionUpdate()
+     */
     protected function getRowButtons(Entry $entry): array
     {
         $user = Yii::$app->getUser();
