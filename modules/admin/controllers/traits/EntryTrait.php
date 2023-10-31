@@ -11,9 +11,11 @@ trait EntryTrait
 {
     protected function findEntry(int $id, ?string $permissionName = null): Entry
     {
-        if (!$entry = Entry::instance()::findOne((int)$id)) {
+        if (!$entry = Entry::findOne((int)$id)) {
             throw new NotFoundHttpException();
         }
+
+        dump($entry::class);
 
         if ($permissionName && !Yii::$app->getUser()->can($permissionName, ['entry' => $entry])) {
             throw new ForbiddenHttpException();

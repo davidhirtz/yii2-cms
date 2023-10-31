@@ -187,7 +187,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
 
     public static function find(): EntryQuery
     {
-        return new EntryQuery(get_called_class());
+        return Yii::createObject(EntryQuery::class, [get_called_class()]);
     }
 
     public function findSiblings(): EntryQuery
@@ -252,7 +252,8 @@ class Entry extends ActiveRecord implements AssetParentInterface
 
         if ($this->beforeClone($clone) && $clone->insert()) {
             foreach ($this->getCategoryIds() as $categoryId) {
-                $entryCategory = new EntryCategory(['category_id' => $categoryId]);
+                $entryCategory = EntryCategory::create();
+                $entryCategory->category_id = $categoryId;
                 $entryCategory->populateEntryRelation($clone);
                 $entryCategory->insert();
             }

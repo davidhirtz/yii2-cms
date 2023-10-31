@@ -57,7 +57,6 @@ class EntryCategoryGridView extends GridView
             ];
         }
 
-        $this->initHeader();
         $this->initAncestors();
         parent::init();
     }

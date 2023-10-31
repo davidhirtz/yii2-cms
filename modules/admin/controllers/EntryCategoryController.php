@@ -71,10 +71,9 @@ class EntryCategoryController extends Controller
 
     public function actionCreate(int $entry, int $category): Response
     {
-        $entryCategory = new EntryCategory([
-            'entry_id' => $entry,
-            'category_id' => $category,
-        ]);
+        $entryCategory = EntryCategory::create();
+        $entryCategory->entry_id = $entry;
+        $entryCategory->category_id = $category;
 
         if (!Yii::$app->getUser()->can('entryCategoryUpdate', ['entryCategory' => $entryCategory])) {
             throw new ForbiddenHttpException();
@@ -104,7 +103,7 @@ class EntryCategoryController extends Controller
         $category = $this->findCategory($category, 'entryOrder');
         $entryIds = array_map('intval', array_filter(Yii::$app->getRequest()->post('entry', [])));
 
-        if($entryIds) {
+        if ($entryIds) {
             $category->updateEntryOrder($entryIds);
         }
     }

@@ -64,10 +64,9 @@ class SectionEntryController extends Controller
 
     public function actionCreate(int $section, int $entry): Response
     {
-        $sectionEntry = new SectionEntry([
-            'section_id' => $section,
-            'entry_id' => $entry,
-        ]);
+        $sectionEntry = SectionEntry::create();
+        $sectionEntry->section_id = $section;
+        $sectionEntry->entry_id = $entry;
 
         if (!Yii::$app->getUser()->can('sectionUpdate', ['sectionEntry' => $sectionEntry])) {
             throw new ForbiddenHttpException();

@@ -123,7 +123,7 @@ class AssetController extends Controller
             return '';
         }
 
-        $asset = new Asset();
+        $asset = Asset::create();
         $asset->loadDefaultValues();
         $asset->entry_id = $entry;
         $asset->section_id = $section;

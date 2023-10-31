@@ -256,7 +256,7 @@ class Category extends ActiveRecord
 
     public static function find(): CategoryQuery
     {
-        return new CategoryQuery(get_called_class());
+        return Yii::createObject(CategoryQuery::class, [get_called_class()]);
     }
 
     public function findSiblings(): CategoryQuery

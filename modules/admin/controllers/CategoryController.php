@@ -25,10 +25,7 @@ class CategoryController extends Controller
     use CategoryTrait;
     use ModuleTrait;
 
-    /**
-     * @inheritdoc
-     */
-    public function behaviors()
+    public function behaviors(): array
     {
         return array_merge(parent::behaviors(), [
             'access' => [
@@ -66,33 +63,21 @@ class CategoryController extends Controller
         ]);
     }
 
-    /**
-     * @param int|null $id
-     * @param string|null $q
-     * @return string
-     */
-    public function actionIndex($id = null, $q = null)
+    public function actionIndex(?int $id = null, ?string $q = null): Response|string
     {
-        /** @var CategoryActiveDataProvider $provider */
-        $provider = Yii::createObject([
-            'class' => 'davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider',
+        $provider = Yii::$container->get(CategoryActiveDataProvider::class, [], [
             'category' => $id ? Category::findOne((int)$id) : null,
             'searchString' => $q,
         ]);
 
-        /** @noinspection MissedViewInspection */
         return $this->render('index', [
             'provider' => $provider,
         ]);
     }
 
-    /**
-     * @param int|null $id
-     * @return string|Response
-     */
-    public function actionCreate($id = null)
+    public function actionCreate(?int $id = null): Response|string
     {
-        $category = new Category();
+        $category = Category::create();
         $category->loadDefaultValues();
         $category->parent_id = $id;
 
@@ -105,17 +90,12 @@ class CategoryController extends Controller
             return $this->redirect(['update', 'id' => $category->id]);
         }
 
-        /** @noinspection MissedViewInspection */
         return $this->render('create', [
             'category' => $category,
         ]);
     }
 
-    /**
-     * @param int $id
-     * @return string|Response
-     */
-    public function actionUpdate($id)
+    public function actionUpdate(int $id): Response|string
     {
         $category = $this->findCategory($id, 'categoryUpdate');
 
@@ -129,13 +109,10 @@ class CategoryController extends Controller
             }
         }
 
-        /** @var CategoryActiveDataProvider $provider */
-        $provider = Yii::createObject([
-            'class' => 'davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider',
+        $provider = Yii::$container->get(CategoryActiveDataProvider::class, [], [
             'category' => $category,
         ]);
 
-        /** @noinspection MissedViewInspection */
         return $this->render('update', [
             'provider' => $provider,
             'category' => $category,
@@ -146,7 +123,7 @@ class CategoryController extends Controller
      * @param int $id
      * @return string|Response
      */
-    public function actionDelete(int $id)
+    public function actionDelete(int $id): Response|string
     {
         $category = $this->findCategory($id, 'categoryDelete');
 
@@ -159,10 +136,7 @@ class CategoryController extends Controller
         throw new ServerErrorHttpException(reset($errors));
     }
 
-    /**
-     * @param int|null $id
-     */
-    public function actionOrder($id = null)
+    public function actionOrder(?int $id = null): void
     {
         $category = Category::findOne((int)$id);
         $categoryIds = array_map('intval', array_filter(Yii::$app->getRequest()->post('category', [])));

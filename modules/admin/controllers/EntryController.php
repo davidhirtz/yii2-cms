@@ -95,7 +95,7 @@ class EntryController extends Controller
 
     public function actionCreate(?int $type = null): Response|string
     {
-        $entry = Entry::instance(true);
+        $entry = Entry::create();
         $entry->loadDefaultValues();
         $entry->type = $type ?: static::getModule()->defaultEntryType;
 

@@ -102,20 +102,16 @@ class SectionController extends Controller
             throw new ForbiddenHttpException();
         }
 
-        /** @noinspection MissedViewInspection */
         return $this->render('index', [
             'entry' => $entry,
         ]);
     }
 
-    /**
-     * @param int $entry
-     * @return string|Response
-     */
-    public function actionCreate($entry)
+    public function actionCreate(?int $entry = null): Response|string
     {
-        $section = new Section(['entry_id' => (int)$entry]);
+        $section = Section::create();
         $section->loadDefaultValues();
+        $section->entry_id = $entry;
 
         if (!$section->entry) {
             throw new NotFoundHttpException();
@@ -130,7 +126,6 @@ class SectionController extends Controller
             return $this->redirect(['update', 'id' => $section->id]);
         }
 
-        /** @noinspection MissedViewInspection */
         return $this->render('create', [
             'section' => $section,
         ]);
