@@ -7,7 +7,7 @@ use davidhirtz\yii2\media\models\File;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grid\GridView;
 use davidhirtz\yii2\skeleton\widgets\fontawesome\Icon;
-use davidhirtz\yii2\timeago\Timeago;
+use davidhirtz\yii2\timeago\TimeagoColumn;
 use yii\data\ActiveDataProvider;
 use Yii;
 use yii\db\ActiveRecordInterface;
@@ -107,11 +107,8 @@ class AssetParentGridView extends GridView
     public function updatedAtColumn(): array
     {
         return [
-            'headerOptions' => ['class' => 'd-none d-lg-table-cell'],
-            'contentOptions' => ['class' => 'd-none d-lg-table-cell text-nowrap'],
-            'content' => function (Asset $asset) {
-                return Timeago::tag($asset->updated_at);
-            }
+            'attribute' => 'updated_at',
+            'class' => TimeagoColumn::class,
         ];
     }
 
