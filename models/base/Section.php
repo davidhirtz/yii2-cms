@@ -413,6 +413,7 @@ class Section extends ActiveRecord implements AssetParentInterface
     {
         return array_merge(parent::attributeLabels(), [
             'entry_id' => Yii::t('cms', 'Entry'),
+            'entry_count' => Yii::t('cms', 'Entries'),
             'slug' => Yii::t('cms', 'Url'),
             'section_count' => Yii::t('cms', 'Sections'),
         ]);

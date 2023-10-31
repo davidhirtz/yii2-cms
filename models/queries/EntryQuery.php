@@ -5,6 +5,8 @@ namespace davidhirtz\yii2\cms\models\queries;
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\EntryCategory;
+use davidhirtz\yii2\cms\models\Section;
+use davidhirtz\yii2\cms\models\SectionEntry;
 use davidhirtz\yii2\skeleton\db\ActiveQuery;
 
 /**
@@ -37,7 +39,7 @@ class EntryQuery extends ActiveQuery
     public function matching(?string $search): static
     {
         if ($search = $this->sanitizeSearchString($search)) {
-            $this->andWhere(Entry::tableName() . '.[[' . Entry::instance()->getI18nAttributeName('name') . ']] LIKE :search', [':search' => "%{$search}%"]);
+            $this->andWhere(Entry::tableName() . '.[[' . Entry::instance()->getI18nAttributeName('name') . ']] LIKE :search', [':search' => "%$search%"]);
         }
 
         return $this;
@@ -73,10 +75,18 @@ class EntryQuery extends ActiveQuery
     protected function innerJoinWithEntryCategory(int $categoryId, bool $eagerLoading = false, bool $useAlias = false): static
     {
         return $this->innerJoinWith([
-            ($useAlias ? "entryCategory entryCategory{$categoryId}" : 'entryCategory') => function (ActiveQuery $query) use ($categoryId, $useAlias) {
-                $query->onCondition([($useAlias ? "[[entryCategory{$categoryId}]]" : EntryCategory::tableName()) . '.[[category_id]]' => $categoryId]);
+            ($useAlias ? "entryCategory entryCategory$categoryId" : 'entryCategory') => function (ActiveQuery $query) use ($categoryId, $useAlias) {
+                $query->onCondition([($useAlias ? "[[entryCategory$categoryId]]" : EntryCategory::tableName()) . '.[[category_id]]' => $categoryId]);
             }
         ], $eagerLoading);
+    }
+
+    public function whereSection(Section $section, bool $eagerLoading = false): static
+    {
+        $tableName = SectionEntry::tableName();
+
+        return $this->innerJoinWith(['sectionEntry' => fn(ActiveQuery $query) => $query->onCondition(["$tableName.[[section_id]]" => $section->id])], $eagerLoading)
+            ->orderBy(["$tableName.position" => SORT_ASC]);
     }
 
     public function whereSlug(string $slug): static

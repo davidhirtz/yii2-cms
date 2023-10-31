@@ -6,6 +6,7 @@ use davidhirtz\yii2\cms\models\EntryCategory;
 use davidhirtz\yii2\cms\models\queries\EntryQuery;
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\Entry;
+use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\skeleton\data\ActiveDataProvider;
 use yii\data\Pagination;
@@ -21,6 +22,11 @@ use yii\data\Sort;
 class EntryActiveDataProvider extends ActiveDataProvider
 {
     use ModuleTrait;
+
+    /**
+     * @var Section|null the section to filter by
+     */
+    public ?Section $section = null;
 
     /**
      * @var Category|null the category to filter by
@@ -69,6 +75,10 @@ class EntryActiveDataProvider extends ActiveDataProvider
 
         if ($this->category) {
             $this->query->whereCategory($this->category);
+        }
+
+        if($this->section) {
+            $this->query->whereSection($this->section);
         }
 
         if ($this->searchString) {

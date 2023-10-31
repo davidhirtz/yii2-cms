@@ -5,6 +5,7 @@ namespace davidhirtz\yii2\cms\models\base;
 use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\cms\models\EntryCategory;
 use davidhirtz\yii2\cms\models\Section;
+use davidhirtz\yii2\cms\models\SectionEntry;
 use davidhirtz\yii2\cms\models\queries\AssetQuery;
 use davidhirtz\yii2\cms\models\queries\EntryQuery;
 use davidhirtz\yii2\cms\models\queries\SectionQuery;
@@ -37,6 +38,7 @@ use yii\db\ActiveQuery;
  * @property int $asset_count
  *
  * @property Asset[] $assets {@link static::getAssets()}
+ * @property SectionEntry $sectionEntry {@link static::getSectionEntry()}
  * @property Section[] $sections {@link static::getSections()}
  * @property EntryCategory $entryCategory {@link static::getEntryCategory()}
  * @property EntryCategory[] $entryCategories {@link static::getEntryCategories()}
@@ -48,7 +50,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
     public string|false $contentType = false;
 
     /**
-     * @var array|string the validator used to verify the publish date.
+     * @var array|string the validator used to verify the publishing date.
      */
     public array|string $dateTimeValidator = DateTimeValidator::class;
 
@@ -156,6 +158,12 @@ class Entry extends ActiveRecord implements AssetParentInterface
     public function getEntryCategories(): ActiveQuery
     {
         return $this->hasMany(EntryCategory::class, ['entry_id' => 'id'])
+            ->inverseOf('entry');
+    }
+
+    public function getSectionEntry(): ActiveQuery
+    {
+        return $this->hasOne(SectionEntry::class, ['entry_id' => 'id'])
             ->inverseOf('entry');
     }
 

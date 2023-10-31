@@ -16,10 +16,11 @@ use Yii;
 /**
  * Represents a relation between a section and an entry.
  *
+ * @property int $id
  * @property int $section_id
  * @property int $entry_id
  * @property int $position
- * @property int $updated_by_user_id
+ * @property int|null $updated_by_user_id
  * @property DateTime $updated_at
  *
  * @method static static findOne($condition)
