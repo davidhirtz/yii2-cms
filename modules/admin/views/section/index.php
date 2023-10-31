@@ -9,8 +9,8 @@
 
 $this->setTitle(Yii::t('cms', 'Sections'));
 
-use davidhirtz\yii2\cms\modules\admin\widgets\grid\SectionGridView;
-use davidhirtz\yii2\cms\modules\admin\widgets\nav\Submenu;
+use davidhirtz\yii2\cms\modules\admin\widgets\grids\SectionGridView;
+use davidhirtz\yii2\cms\modules\admin\widgets\navs\Submenu;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
 ?>
 

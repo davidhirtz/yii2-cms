@@ -1,6 +1,6 @@
 <?php
 
-namespace davidhirtz\yii2\cms\modules\admin\widgets\grid\base;
+namespace davidhirtz\yii2\cms\modules\admin\widgets\grids;
 
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\Section;
@@ -10,9 +10,8 @@ use Yii;
 
 /**
  * Displays a grid of {@link Entry} models that can be linked to the given {@link Section} record.
- * @see \davidhirtz\yii2\cms\modules\admin\widgets\grid\SectionEntryGridView
  */
-class SectionEntryGridView extends \davidhirtz\yii2\cms\modules\admin\widgets\grid\EntryGridView
+class SectionEntryGridView extends EntryGridView
 {
     public function init(): void
     {

@@ -1,6 +1,6 @@
 <?php
 
-namespace davidhirtz\yii2\cms\modules\admin\widgets\nav\base;
+namespace davidhirtz\yii2\cms\modules\admin\widgets\navs;
 
 use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\cms\models\Category;
@@ -11,64 +11,47 @@ use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use Yii;
 
-/**
- * Class Submenu
- * @package davidhirtz\yii2\cms\modules\admin\widgets\nav\base
- */
 class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
 {
     use ModuleTrait;
 
-    /**
-     * @var Asset|Category|Entry|Section
-     */
-    public $model;
+    public Asset|Category|Entry|Section|null $model = null;
 
     /**
      * @var bool whether default categories should be shown as nav items
      */
-    public $showDefaultCategories = true;
+    public bool $showDefaultCategories = true;
 
     /**
-     * @var int the amount of parent categories should be shown in the breadcrumb. Set to `0` to disable parent
+     * @var int the number of parent categories should be shown in the breadcrumb. Set to `0` to disable parent
      * category breadcrumbs.
      */
-    public $parentCategoryBreadcrumbCount = 2;
+    public int $parentCategoryBreadcrumbCount = 2;
 
     /**
      * @var bool whether entry types should be listed as items
      */
-    public $showEntryTypes = false;
+    public bool $showEntryTypes = false;
 
     /**
      * @var bool whether entry categories should be visible
      */
-    public $showEntryCategories = true;
+    public bool $showEntryCategories = true;
 
     /**
      * @var bool whether entry sections should be visible
      */
-    public $showEntrySections = true;
+    public bool $showEntrySections = true;
 
     /**
      * @var bool whether the website url to given model should be displayed
      */
-    public $showUrl = true;
+    public bool $showUrl = true;
 
-    /**
-     * @var string
-     */
-    private $_parentModule;
+    private ?Module $_parentModule = null;
+    private bool $_isAsset = false;
 
-    /**
-     * @var bool
-     */
-    private $_isAsset = false;
-
-    /**
-     * Initializes the nav items.
-     */
-    public function init()
+    public function init(): void
     {
         if ($this->model instanceof Asset) {
             $this->model = $this->model->getParent();
@@ -376,11 +359,7 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
      */
     protected function getParentModule(): Module
     {
-        if ($this->_parentModule === null) {
-            $this->_parentModule = Yii::$app->getModule('admin')->getModule('cms');
-        }
-
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
+        $this->_parentModule ??= Yii::$app->getModule('admin')->getModule('cms');
         return $this->_parentModule;
     }
 

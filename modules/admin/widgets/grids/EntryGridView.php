@@ -1,6 +1,6 @@
 <?php
 
-namespace davidhirtz\yii2\cms\modules\admin\widgets\grid\base;
+namespace davidhirtz\yii2\cms\modules\admin\widgets\grids;
 
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\modules\admin\controllers\EntryCategoryController;
@@ -19,8 +19,7 @@ use yii\db\ActiveRecordInterface;
 use yii\helpers\Url;
 
 /**
- * @see \davidhirtz\yii2\cms\modules\admin\widgets\grid\EntryGridView
- *
+ * Displays a grid of {@link Entry} models.
  * @property EntryActiveDataProvider $dataProvider
  */
 class EntryGridView extends GridView

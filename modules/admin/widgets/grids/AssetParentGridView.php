@@ -1,6 +1,6 @@
 <?php
 
-namespace davidhirtz\yii2\cms\modules\admin\widgets\grid\base;
+namespace davidhirtz\yii2\cms\modules\admin\widgets\grids;
 
 use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\media\models\File;
@@ -13,8 +13,7 @@ use Yii;
 use yii\db\ActiveRecordInterface;
 
 /**
- * The AssetParentGridView widget is used to display {@see Asset} models in a grid related to {@link File}.
- * @see \davidhirtz\yii2\cms\modules\admin\widgets\grid\AssetParentGridView
+ * Displays all {@see Asset} models related to given {@link File}.
  */
 class AssetParentGridView extends GridView
 {

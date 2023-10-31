@@ -1,32 +1,17 @@
 <?php
 
-namespace davidhirtz\yii2\cms\modules\admin\widgets\grid\columns;
+namespace davidhirtz\yii2\cms\modules\admin\widgets\grids\columns;
 
-use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use yii\grid\Column;
 
-/**
- * Class AssetThumbnailColumn
- * @package davidhirtz\yii2\cms\modules\admin\widgets\grid\columns
- * @noinspection PhpMultipleClassDeclarationsInspection
- */
 class AssetThumbnailColumn extends Column
 {
-    /**
-     * @var string[]
-     */
     public $headerOptions = [
         'style' => 'width:150px',
     ];
 
-    /**
-     * @param Asset $model
-     * @param string $key
-     * @param $index
-     * @return string
-     */
-    protected function renderDataCellContent($model, $key, $index)
+    protected function renderDataCellContent($model, $key, $index): string
     {
         if (!$model->file->hasPreview()) {
             return '';

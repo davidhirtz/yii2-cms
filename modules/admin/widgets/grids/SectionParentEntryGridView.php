@@ -1,6 +1,6 @@
 <?php
 
-namespace davidhirtz\yii2\cms\modules\admin\widgets\grid\base;
+namespace davidhirtz\yii2\cms\modules\admin\widgets\grids;
 
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\Section;
@@ -11,9 +11,8 @@ use Yii;
 
 /**
  * Displays a grid of {@link Entry} models to move or copy the given {@link Section} record to.
- * @see \davidhirtz\yii2\cms\modules\admin\widgets\grid\SectionParentEntryGridView
  */
-class SectionParentEntryGridView extends \davidhirtz\yii2\cms\modules\admin\widgets\grid\EntryGridView
+class SectionParentEntryGridView extends EntryGridView
 {
     /**
      * @var Section|null see {@link SectionController::actionEntries()}

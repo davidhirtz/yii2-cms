@@ -1,6 +1,6 @@
 <?php
 
-namespace davidhirtz\yii2\cms\modules\admin\widgets\grid\base;
+namespace davidhirtz\yii2\cms\modules\admin\widgets\grids;
 
 use davidhirtz\yii2\cms\modules\admin\controllers\SectionController;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
@@ -15,10 +15,7 @@ use yii\data\ArrayDataProvider;
 use yii\helpers\StringHelper;
 
 /**
- * Class SectionGridView
- * @package davidhirtz\yii2\cms\modules\admin\widgets\grid\base
- * @see \davidhirtz\yii2\cms\modules\admin\widgets\grid\SectionGridView
- *
+ * Displays a grid of {@link Section} models for given {@link Entry}.
  * @property ActiveDataProvider $dataProvider
  */
 class SectionGridView extends GridView

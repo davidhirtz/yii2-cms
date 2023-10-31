@@ -1,10 +1,12 @@
 <?php
 
-namespace davidhirtz\yii2\cms\modules\admin\widgets\grid\base;
+namespace davidhirtz\yii2\cms\modules\admin\widgets\grids;
 
+use app\models\Entry;
 use davidhirtz\yii2\cms\models\EntryCategory;
 use davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider;
 use davidhirtz\yii2\cms\modules\admin\widgets\CategoryTrait;
+use davidhirtz\yii2\cms\modules\admin\widgets\grids\traits\CategoryGridTrait;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\skeleton\helpers\Html;
@@ -14,7 +16,7 @@ use davidhirtz\yii2\skeleton\widgets\fontawesome\Icon;
 use yii\db\ActiveRecordInterface;
 
 /**
- * @see \davidhirtz\yii2\cms\modules\admin\widgets\grid\EntryCategoryGridView
+ * Displays a grid of {@link Category} models linked via {@link EntryCategory}.
  * @property CategoryActiveDataProvider $dataProvider
  */
 class EntryCategoryGridView extends GridView

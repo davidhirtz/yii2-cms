@@ -9,8 +9,8 @@
 
 $this->setTitle(Yii::t('cms', 'Categories'));
 
-use davidhirtz\yii2\cms\modules\admin\widgets\grid\EntryCategoryGridView;
-use davidhirtz\yii2\cms\modules\admin\widgets\nav\Submenu;
+use davidhirtz\yii2\cms\modules\admin\widgets\grids\EntryCategoryGridView;
+use davidhirtz\yii2\cms\modules\admin\widgets\navs\Submenu;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
 
 ?>

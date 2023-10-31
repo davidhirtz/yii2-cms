@@ -1,8 +1,9 @@
 <?php
 
-namespace davidhirtz\yii2\cms\modules\admin\widgets\grid\base;
+namespace davidhirtz\yii2\cms\modules\admin\widgets\grids;
 
 use davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider;
+use davidhirtz\yii2\cms\modules\admin\widgets\grids\traits\CategoryGridTrait;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\skeleton\helpers\Html;
@@ -12,8 +13,7 @@ use davidhirtz\yii2\skeleton\widgets\fontawesome\Icon;
 use Yii;
 
 /**
- * @see \davidhirtz\yii2\cms\modules\admin\widgets\grid\CategoryGridView
- *
+ * Displays a grid of {@link Category} models.
  * @property CategoryActiveDataProvider $dataProvider
  */
 class CategoryGridView extends GridView

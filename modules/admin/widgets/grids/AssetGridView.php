@@ -1,6 +1,6 @@
 <?php
 
-namespace davidhirtz\yii2\cms\modules\admin\widgets\grid\base;
+namespace davidhirtz\yii2\cms\modules\admin\widgets\grids;
 
 use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\models\Entry;
@@ -23,10 +23,7 @@ use yii\db\ExpressionInterface;
 use yii\helpers\Url;
 
 /**
- * Class AssetGridView
- * @package davidhirtz\yii2\cms\modules\admin\widgets\grid\base
- * @see \davidhirtz\yii2\cms\modules\admin\widgets\grid\AssetGridView
- *
+ * Displays a grid of {@link Asset} models.
  * @property ActiveDataProvider $dataProvider
  */
 class AssetGridView extends GridView
@@ -149,7 +146,7 @@ class AssetGridView extends GridView
     {
         // Use string here to prevent PhpStrom warnings for multiple declarations. The module `yii2-cms-hotspot` offers
         // a replacement class for the thumbnail, which replaces the default implementation on bootstrap.
-        return ['class' => '\davidhirtz\yii2\cms\modules\admin\widgets\grid\columns\AssetThumbnailColumn'];
+        return ['class' => '\davidhirtz\yii2\cms\modules\admin\widgets\grids\columns\AssetThumbnailColumn'];
     }
 
     /**
