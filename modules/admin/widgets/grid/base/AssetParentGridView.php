@@ -10,6 +10,7 @@ use davidhirtz\yii2\skeleton\widgets\fontawesome\Icon;
 use davidhirtz\yii2\timeago\Timeago;
 use yii\data\ActiveDataProvider;
 use Yii;
+use yii\db\ActiveRecordInterface;
 
 /**
  * The AssetParentGridView widget is used to display {@see Asset} models in a grid related to {@link File}.
@@ -18,24 +19,14 @@ use Yii;
 class AssetParentGridView extends GridView
 {
     /**
-     * @var File
+     * @var File|null the file to display assets from
      */
-    public $file;
+    public ?File $file = null;
 
-    /**
-     * @var bool
-     */
     public $showHeader = false;
-
-    /**
-     * @var string
-     */
     public $layout = '{items}{pager}';
 
-    /**
-     * @inheritDoc
-     */
-    public function init()
+    public function init(): void
     {
         if (!$this->dataProvider) {
             $this->dataProvider = new ActiveDataProvider([
@@ -65,10 +56,7 @@ class AssetParentGridView extends GridView
         parent::init();
     }
 
-    /**
-     * @return array
-     */
-    public function statusColumn()
+    public function statusColumn(): array
     {
         return [
             'contentOptions' => ['class' => 'text-center'],
@@ -81,10 +69,7 @@ class AssetParentGridView extends GridView
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function typeColumn()
+    public function typeColumn(): array
     {
         return [
             'content' => function (Asset $asset) {
@@ -99,10 +84,7 @@ class AssetParentGridView extends GridView
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function nameColumn()
+    public function nameColumn(): array
     {
         return [
             'content' => function (Asset $asset) {
@@ -111,10 +93,7 @@ class AssetParentGridView extends GridView
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function assetCountColumn()
+    public function assetCountColumn(): array
     {
         return [
             'headerOptions' => ['class' => 'd-none d-md-table-cell text-center'],
@@ -125,10 +104,7 @@ class AssetParentGridView extends GridView
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function updatedAtColumn()
+    public function updatedAtColumn(): array
     {
         return [
             'headerOptions' => ['class' => 'd-none d-lg-table-cell'],
@@ -139,10 +115,7 @@ class AssetParentGridView extends GridView
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function buttonsColumn()
+    public function buttonsColumn(): array
     {
         return [
             'contentOptions' => ['class' => 'text-right text-nowrap'],
@@ -174,10 +147,8 @@ class AssetParentGridView extends GridView
 
     /**
      * @param Asset $model
-     * @param array $params
-     * @return array|false
      */
-    protected function getRoute($model, $params = [])
+    protected function getRoute(ActiveRecordInterface $model, array $params = []): array|false
     {
         $user = Yii::$app->getUser();
         $parent = $model->getParent();
@@ -197,10 +168,7 @@ class AssetParentGridView extends GridView
         return false;
     }
 
-    /**
-     * @return Asset
-     */
-    public function getModel()
+    public function getModel(): Asset
     {
         return Asset::instance();
     }
