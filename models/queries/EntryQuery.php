@@ -81,12 +81,16 @@ class EntryQuery extends ActiveQuery
         ], $eagerLoading);
     }
 
-    public function whereSection(Section $section, bool $eagerLoading = false): static
+    public function whereSection(Section $section, bool $eagerLoading = true, string $joinType = 'INNER JOIN'): static
     {
         $tableName = SectionEntry::tableName();
+        $onCondition = fn(ActiveQuery $query) => $query->onCondition(["$tableName.[[section_id]]" => $section->id]);
 
-        return $this->innerJoinWith(['sectionEntry' => fn(ActiveQuery $query) => $query->onCondition(["$tableName.[[section_id]]" => $section->id])], $eagerLoading)
-            ->orderBy(["$tableName.position" => SORT_ASC]);
+        if ($eagerLoading) {
+            $this->orderBy(["$tableName.[[position]]" => SORT_ASC]);
+        }
+
+        return $this->joinWith(['sectionEntry' => $onCondition], $eagerLoading, $joinType);
     }
 
     public function whereSlug(string $slug): static

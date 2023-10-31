@@ -10,7 +10,7 @@
 use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider;
 use davidhirtz\yii2\cms\modules\admin\widgets\grid\AssetGridView;
-use davidhirtz\yii2\cms\modules\admin\widgets\grid\SectionEntryGridView;
+use davidhirtz\yii2\cms\modules\admin\widgets\grid\SectionLinkedEntryGridView;
 use davidhirtz\yii2\cms\modules\admin\widgets\nav\Submenu;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\web\View;
@@ -49,11 +49,8 @@ $this->setTitle(Yii::t('cms', 'Edit Section'));
     echo Panel::widget([
         'id' => 'entries',
         'title' => $section->getAttributeLabel('entry_count'),
-        'content' => SectionEntryGridView::widget([
-            'showSectionEntriesOnly' => true,
-            'dataProvider' => new EntryActiveDataProvider([
-                'section' => $section,
-            ]),
+        'content' => SectionLinkedEntryGridView::widget([
+            'section' => $section,
         ]),
     ]);
 } ?>

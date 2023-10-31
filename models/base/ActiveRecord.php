@@ -20,6 +20,7 @@ use davidhirtz\yii2\skeleton\validators\HtmlValidator;
 use davidhirtz\yii2\skeleton\validators\UniqueValidator;
 use davidhirtz\yii2\skeleton\web\Sitemap;
 use Yii;
+use yii\db\ActiveRecordInterface;
 use yii\helpers\Inflector;
 
 
@@ -55,9 +56,9 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     public bool $customSlugBehavior = false;
 
     /**
-     * @var mixed used when $contentType is set to "html". use array with the first value containing the
-     * validator class, following keys can be used to configure the validator, string containing the class
-     * name or false for disabling the validation.
+     * @var mixed used when $contentType is set to "html". Use an array with the first value containing the validator
+     * class, following keys can be used to configure the validator, string containing the class name or false for
+     * disabling the validation.
      */
     public array|string|null $htmlValidator = HtmlValidator::class;
 
@@ -79,7 +80,7 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     /**
      * @var bool {@link ActiveRecord::isSlugRequired()}
      */
-    private $_isSlugRequired;
+    private ?bool $_isSlugRequired = null;
 
     /**
      * @inheritDoc
@@ -153,7 +154,7 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
      *
      * @param static $clone
      */
-    public function beforeClone($clone): bool
+    public function beforeClone(ActiveRecordInterface $clone): bool
     {
         $event = new ModelCloneEvent();
         $event->clone = $clone;
@@ -168,7 +169,7 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
      *
      * @param static $clone
      */
-    public function afterClone($clone): void
+    public function afterClone(ActiveRecordInterface $clone): void
     {
         $event = new ModelCloneEvent();
         $event->clone = $clone;
@@ -182,11 +183,9 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     abstract public function findSiblings(): ActiveQuery;
 
     /**
-     * @param int $offset
-     * @return array
      * @noinspection PhpUnused {@see Sitemap::generateUrls()}
      */
-    public function generateSitemapUrls($offset = 0): array
+    public function generateSitemapUrls(int $offset = 0): array
     {
         $languages = $this->getSitemapLanguages();
         $sitemap = Yii::$app->sitemap;
@@ -319,6 +318,7 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         return array_diff($this->attributes(), [
             'position',
             'asset_count',
+            'entry_count',
             'updated_by_user_id',
             'updated_at',
             'created_at',

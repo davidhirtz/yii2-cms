@@ -7,20 +7,11 @@ use Yii;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 
-/**
- * Trait SectionTrait
- * @package davidhirtz\yii2\cms\modules\admin\controllers\traits
- */
 trait SectionTrait
 {
-    /**
-     * @param int $id
-     * @param string|null $permissionName
-     * @return Section
-     */
-    protected function findSection($id, $permissionName = null)
+    protected function findSection(int $id, ?string $permissionName = null): Section
     {
-        if (!$section = Section::findOne((int)$id)) {
+        if (!$section = Section::findOne($id)) {
             throw new NotFoundHttpException();
         }
 

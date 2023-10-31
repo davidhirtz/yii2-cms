@@ -36,9 +36,9 @@ class EntryGridView extends GridView
     public bool $showUrl = true;
 
     /**
-     * @var bool whether category column should be visible when {@link EntryActiveDataProvider::$type} is null
+     * @var bool|null whether category column should be visible when {@link EntryActiveDataProvider::$type} is null
      */
-    public bool $showCategories = true;
+    public ?bool $showCategories = null;
 
     /**
      * @var bool whether categories should be selectable via dropdown
@@ -77,10 +77,7 @@ class EntryGridView extends GridView
         }
 
         $enableCategories = static::getModule()->enableCategories;
-
-        if ($this->showCategories) {
-            $this->showCategories = $enableCategories && count(static::getCategories()) > 0;
-        }
+        $this->showCategories ??= $enableCategories && count(static::getCategories()) > 0;
 
         if ($this->showCategoryDropdown) {
             $this->showCategoryDropdown = $enableCategories;
@@ -109,57 +106,56 @@ class EntryGridView extends GridView
             ];
         }
 
-        $this->initHeader();
-        $this->initFooter();
-
         parent::init();
     }
 
-    /**
-     * Sets up grid header.
-     */
     protected function initHeader(): void
     {
-        if ($this->header === null) {
-            $this->header = [
+        $this->header ??= [
+            [
                 [
-                    [
-                        'content' => $this->typeDropdown(),
-                        'options' => ['class' => 'col-12 col-md-3'],
-                        'visible' => $this->showTypeDropdown,
-                    ],
-                    [
-                        'content' => $this->categoryDropdown(),
-                        'options' => ['class' => 'col-12 col-md-3'],
-                        'visible' => $this->showCategoryDropdown,
-                    ],
-                    [
-                        'content' => $this->getSearchInput(),
-                        'options' => ['class' => 'col-12 col-md-6'],
-                    ],
-                    'options' => [
-                        'class' => $this->showCategoryDropdown || $this->showTypeDropdown ? 'justify-content-between' : 'justify-content-end',
-                    ],
+                    'content' => $this->typeDropdown(),
+                    'options' => ['class' => 'col-12 col-md-3'],
+                    'visible' => $this->showTypeDropdown,
                 ],
-            ];
-        }
+                [
+                    'content' => $this->categoryDropdown(),
+                    'options' => ['class' => 'col-12 col-md-3'],
+                    'visible' => $this->showCategoryDropdown,
+                ],
+                [
+                    'content' => $this->getSearchInput(),
+                    'options' => ['class' => 'col-12 col-md-6'],
+                ],
+                'options' => [
+                    'class' => $this->showCategoryDropdown || $this->showTypeDropdown ? 'justify-content-between' : 'justify-content-end',
+                ],
+            ],
+        ];
     }
 
-    /**
-     * Sets up grid footer.
-     */
+    public function renderHeader(): string
+    {
+        $this->initHeader();
+        return parent::renderHeader();
+    }
+
     protected function initFooter(): void
     {
-        if ($this->footer === null) {
-            $this->footer = [
+        $this->footer ??= [
+            [
                 [
-                    [
-                        'content' => $this->getCreateEntryButton() . ($this->showSelection ? $this->getSelectionButton() : ''),
-                        'options' => ['class' => 'col'],
-                    ],
+                    'content' => $this->getCreateEntryButton() . ($this->showSelection ? $this->getSelectionButton() : ''),
+                    'options' => ['class' => 'col'],
                 ],
-            ];
-        }
+            ],
+        ];
+    }
+
+    public function renderFooter(): string
+    {
+        $this->initFooter();
+        return parent::renderFooter();
     }
 
     protected function getCreateEntryButton(): string

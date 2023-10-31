@@ -70,6 +70,12 @@ class M231031063715SectionEntry extends Migration
                 'id',
                 'SET NULL'
             );
+
+            $this->addColumn(Section::tableName(), 'entry_count', $this->smallInteger()
+                ->unsigned()
+                ->notNull()
+                ->defaultValue(0)
+                ->after('asset_count'));
         }
 
         parent::safeUp();
@@ -79,7 +85,9 @@ class M231031063715SectionEntry extends Migration
     {
         foreach ($this->getLanguages() as $language) {
             Yii::$app->language = $language;
+
             $this->dropTable(SectionEntry::tableName());
+            $this->dropColumn(Section::tableName(), 'entry_count');
         }
 
         parent::safeDown();

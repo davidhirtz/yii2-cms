@@ -13,14 +13,14 @@ use yii\helpers\ArrayHelper;
 class Module extends \yii\base\Module
 {
     /**
-     * @var string the module display name, defaults to "Entries"
+     * @var string|null the module display name, defaults to "Entries"
      */
-    public $name;
+    public ?string $name = null;
 
     /**
-     * @var mixed the navbar item url
+     * @var array|string the navbar item url
      */
-    public $url = ['/admin/entry/index'];
+    public array|string $url = ['/admin/entry/index'];
 
     /**
      * @var string
@@ -30,17 +30,17 @@ class Module extends \yii\base\Module
     /**
      * @var array containing the admin menu items
      */
-    public $navbarItems = [];
+    public array $navbarItems = [];
 
     /**
      * @var array containing the panel items
      */
-    public $panels = [];
+    public array $panels = [];
 
     /**
      * @var array
      */
-    protected $defaultControllerMap = [
+    protected array $defaultControllerMap = [
         'asset' => [
             'class' => 'davidhirtz\yii2\cms\modules\admin\controllers\AssetController',
             'viewPath' => '@cms/modules/admin/views/asset',
@@ -61,12 +61,13 @@ class Module extends \yii\base\Module
             'class' => 'davidhirtz\yii2\cms\modules\admin\controllers\SectionController',
             'viewPath' => '@cms/modules/admin/views/section',
         ],
+        'section-entry' => [
+            'class' => 'davidhirtz\yii2\cms\modules\admin\controllers\SectionEntryController',
+            'viewPath' => '@cms/modules/admin/views/section-entry',
+        ],
     ];
 
-    /**
-     * @inheritdoc
-     */
-    public function init()
+    public function init(): void
     {
         if (!$this->name) {
             $this->name = Yii::t('cms', 'Entries');

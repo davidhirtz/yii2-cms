@@ -25,10 +25,7 @@ class EntryCategoryController extends Controller
     use EntryTrait;
     use ModuleTrait;
 
-    /**
-     * @inheritdoc
-     */
-    public function behaviors()
+    public function behaviors(): array
     {
         return array_merge(parent::behaviors(), [
             'access' => [
@@ -57,36 +54,22 @@ class EntryCategoryController extends Controller
         ]);
     }
 
-    /**
-     * @param int|null $entry
-     * @param int|null $category
-     * @param string|null $q
-     * @return string
-     */
-    public function actionIndex($entry = null, $category = null, $q = null)
+    public function actionIndex(int $entry, ?int $category = null, ?string $q = null): string
     {
         $entry = $this->findEntry($entry, 'entryUpdate');
 
-        /** @var CategoryActiveDataProvider $provider */
-        $provider = Yii::createObject([
-            'class' => 'davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider',
+        $provider = Yii::$container->get(CategoryActiveDataProvider::class, [], [
             'category' => $category ? Category::findOne((int)$category) : null,
             'entry' => $entry,
             'searchString' => $q,
         ]);
 
-        /** @noinspection MissedViewInspection */
         return $this->render('index', [
             'provider' => $provider,
         ]);
     }
 
-    /**
-     * @param int $entry
-     * @param int $category
-     * @return string|Response
-     */
-    public function actionCreate(int $entry, int $category)
+    public function actionCreate(int $entry, int $category): Response
     {
         $entryCategory = new EntryCategory([
             'entry_id' => $entry,
@@ -101,12 +84,7 @@ class EntryCategoryController extends Controller
         return $this->redirect(['index', 'entry' => $entryCategory->entry_id]);
     }
 
-    /**
-     * @param int $entry
-     * @param int $category
-     * @return string|Response
-     */
-    public function actionDelete(int $entry, int $category)
+    public function actionDelete(int $entry, int $category): Response
     {
         $entryCategory = EntryCategory::findOne([
             'entry_id' => $entry,
@@ -121,10 +99,7 @@ class EntryCategoryController extends Controller
         return $this->redirect(['index', 'entry' => $entryCategory->entry_id]);
     }
 
-    /**
-     * @param int $category
-     */
-    public function actionOrder(int $category)
+    public function actionOrder(int $category): void
     {
         $category = $this->findCategory($category, 'entryOrder');
         $entryIds = array_map('intval', array_filter(Yii::$app->getRequest()->post('entry', [])));
@@ -132,12 +107,5 @@ class EntryCategoryController extends Controller
         if($entryIds) {
             $category->updateEntryOrder($entryIds);
         }
-
-        $entries = EntryCategory::find()
-            ->where(['category_id' => $category->id])
-            ->orderBy(['position' => SORT_ASC])
-            ->all();
-
-        EntryCategory::updatePosition($entries, array_flip(Yii::$app->getRequest()->post('entry')));
     }
 }

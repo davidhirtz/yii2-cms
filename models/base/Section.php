@@ -237,6 +237,19 @@ class Section extends ActiveRecord implements AssetParentInterface
         }
     }
 
+    public function updateSectionEntryOrder(array $sectionEntryIds): void
+    {
+        $sectionEntries = $this->getSectionEntry()
+            ->select(['id', 'position'])
+            ->andWhere(['id' => $sectionEntryIds])
+            ->all();
+
+        if (SectionEntry::updatePosition($sectionEntries, array_flip($sectionEntryIds))) {
+            Trail::createOrderTrail($this, Yii::t('cms', 'Entry order changed'));
+            $this->updateAttributesBlameable(['updated_by_user_id', 'updated_at']);
+        }
+    }
+
     public function clone(array $attributes = []): static
     {
         $entry = ArrayHelper::remove($attributes, 'entry');
@@ -298,7 +311,7 @@ class Section extends ActiveRecord implements AssetParentInterface
 
     public function recalculateEntryCount(): static
     {
-        $this->entry_count = $this->findSiblings()->count();
+        $this->entry_count = $this->getSectionEntries()->count();
         return $this;
     }
 

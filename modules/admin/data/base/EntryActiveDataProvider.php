@@ -7,6 +7,7 @@ use davidhirtz\yii2\cms\models\queries\EntryQuery;
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\Section;
+use davidhirtz\yii2\cms\models\SectionEntry;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\skeleton\data\ActiveDataProvider;
 use yii\data\Pagination;
@@ -27,6 +28,7 @@ class EntryActiveDataProvider extends ActiveDataProvider
      * @var Section|null the section to filter by
      */
     public ?Section $section = null;
+    public bool $innerJoinSection = true;
 
     /**
      * @var Category|null the category to filter by
@@ -77,8 +79,8 @@ class EntryActiveDataProvider extends ActiveDataProvider
             $this->query->whereCategory($this->category);
         }
 
-        if($this->section) {
-            $this->query->whereSection($this->section);
+        if ($this->section) {
+            $this->query->whereSection($this->section, true, $this->innerJoinSection ? 'INNER JOIN' : 'LEFT JOIN');
         }
 
         if ($this->searchString) {
@@ -113,6 +115,7 @@ class EntryActiveDataProvider extends ActiveDataProvider
     {
         return isset($this->query->orderBy) && in_array(key($this->query->orderBy), [
                 EntryCategory::tableName() . '.[[position]]',
+                SectionEntry::tableName() . '.[[position]]',
                 'position',
             ]);
     }

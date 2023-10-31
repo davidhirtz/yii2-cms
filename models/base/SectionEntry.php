@@ -109,6 +109,17 @@ class SectionEntry extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         return (int)static::find()->where(['section_id' => $this->section_id])->max('[[position]]');
     }
 
+    public function getTrailAttributes(): array
+    {
+        return array_diff($this->attributes(), [
+            'id',
+            'position',
+            'updated_by_user_id',
+            'updated_at',
+            'created_at',
+        ]);
+    }
+
     public function getTrailParents(): ?array
     {
         return [$this->entry, $this->section];

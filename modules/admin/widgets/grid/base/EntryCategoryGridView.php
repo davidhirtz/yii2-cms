@@ -11,6 +11,7 @@ use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grid\GridView;
 use davidhirtz\yii2\timeago\Timeago;
 use davidhirtz\yii2\skeleton\widgets\fontawesome\Icon;
+use yii\db\ActiveRecordInterface;
 
 /**
  * @see \davidhirtz\yii2\cms\modules\admin\widgets\grid\EntryCategoryGridView
@@ -25,22 +26,16 @@ class EntryCategoryGridView extends GridView
     /**
      * @var string the category param name used in urls on {@link CategoryGridTrait}
      */
-    public $categoryParamName = 'category';
+    public string $categoryParamName = 'category';
 
     /**
      * @var bool whether frontend url should be displayed, defaults to false
      */
-    public $showUrl = false;
+    public bool $showUrl = false;
 
-    /**
-     * @var array
-     */
-    private $_names;
+    private ?array $_names = null;
 
-    /**
-     * @inheritDoc
-     */
-    public function init()
+    public function init(): void
     {
         if (!$this->rowOptions) {
             $this->rowOptions = function (Category $category) {
@@ -67,10 +62,7 @@ class EntryCategoryGridView extends GridView
         parent::init();
     }
 
-    /**
-     * @return array
-     */
-    public function updatedAtColumn()
+    public function updatedAtColumn(): array
     {
         return [
             'label' => EntryCategory::instance()->getAttributeLabel('updated_at'),
@@ -82,10 +74,7 @@ class EntryCategoryGridView extends GridView
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function buttonsColumn()
+    public function buttonsColumn(): array
     {
         return [
             'contentOptions' => ['class' => 'text-right text-nowrap'],
@@ -101,20 +90,14 @@ class EntryCategoryGridView extends GridView
 
     /**
      * @param Category $model
-     * @param array $params
-     * @return array|false
      */
-    protected function getRoute($model, $params = [])
+    protected function getRoute(ActiveRecordInterface $model, array $params = []): array|false
     {
         return ['category/update', 'id' => $model->id];
     }
 
-    /**
-     * @param Category $category
-     * @return bool
-     */
-    public function showCategoryAncestors($category): bool
+    public function showCategoryAncestors(Category $category): bool
     {
-        return (bool)$this->dataProvider->searchString || $category->entryCategory;
+        return $this->dataProvider->searchString || $category->entryCategory;
     }
 }
