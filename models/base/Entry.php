@@ -291,10 +291,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
      */
     public function populateAssetRelations(?array $assets = null): void
     {
-        if ($assets === null) {
-            $assets = $this->assets;
-        }
-
+        $assets ??= $this->assets;
         $relations = [];
 
         if ($assets) {

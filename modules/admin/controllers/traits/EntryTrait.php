@@ -7,20 +7,11 @@ use Yii;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 
-/**
- * Trait EntryTrait
- * @package davidhirtz\yii2\cms\modules\admin\controllers\traits
- */
 trait EntryTrait
 {
-    /**
-     * @param int $id
-     * @param string|null $permissionName
-     * @return Entry
-     */
-    protected function findEntry($id, $permissionName = null)
+    protected function findEntry(int $id, ?string $permissionName = null): Entry
     {
-        if (!$entry = Entry::findOne((int)$id)) {
+        if (!$entry = Entry::instance()::findOne((int)$id)) {
             throw new NotFoundHttpException();
         }
 

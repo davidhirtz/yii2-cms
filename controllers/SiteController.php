@@ -20,11 +20,9 @@ class SiteController extends Controller
 {
 
     /**
-     * @param string $category
-     * @return string|Response
      * @todo
      */
-    public function actionIndex($category = null)
+    public function actionIndex(?string $category = null): Response|string
     {
         $category = Category::getBySlug($category);
         $entries = [];
@@ -36,11 +34,7 @@ class SiteController extends Controller
         ]);
     }
 
-    /**
-     * @param string $entry
-     * @return string|Response
-     */
-    public function actionView($entry)
+    public function actionView(string $entry): Response|string
     {
         $entry = $this->getQuery()
             ->whereSlug($entry)
@@ -49,7 +43,7 @@ class SiteController extends Controller
             ->limit(1)
             ->one();
 
-        if (!$entry || !$entry->getRoute()) {
+        if (!$entry?->getRoute()) {
             throw new NotFoundHttpException();
         }
 

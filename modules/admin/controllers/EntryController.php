@@ -93,13 +93,9 @@ class EntryController extends Controller
         ]);
     }
 
-    /**
-     * @param int|null $type
-     * @return string|Response
-     */
-    public function actionCreate($type = null)
+    public function actionCreate(?int $type = null): Response|string
     {
-        $entry = new Entry();
+        $entry = Entry::instance(true);
         $entry->loadDefaultValues();
         $entry->type = $type ?: static::getModule()->defaultEntryType;
 
