@@ -351,9 +351,10 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
         if ($route = $this->model?->getRoute()) {
             $manager = Yii::$app->getUrlManager();
             $url = $this->isDraft() ? $manager->createDraftUrl($route) : $manager->createAbsoluteUrl($route);
+            $isDisabled = $this->model->isDisabled() || ($this->isSection() && $this->model->entry->isDisabled());
 
             $content = Html::a(Html::encode($url), $url, [
-                'style' => $this->model->isDisabled() ? 'text-decoration:line-through;' : null,
+                'style' => $isDisabled ? 'text-decoration:line-through;' : null,
                 'target' => '_blank',
             ]);
 
