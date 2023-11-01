@@ -10,7 +10,7 @@
   },
   "autoload": {
     "psr-4": {
-      "davidhirtz\\yii2\\cms\\": ""
+      "davidhirtz\\yii2\\cms\\": "src"
     }
   },
   "extra": {
