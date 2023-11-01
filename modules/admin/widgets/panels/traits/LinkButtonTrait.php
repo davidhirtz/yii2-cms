@@ -1,19 +1,13 @@
 <?php
 
-namespace davidhirtz\yii2\cms\modules\admin\widgets\traits;
+namespace davidhirtz\yii2\cms\modules\admin\widgets\panels\traits;
 
 use davidhirtz\yii2\skeleton\helpers\Html;
 use Yii;
 
-/**
- * Trait LinkButtonTrait
- */
 trait LinkButtonTrait
 {
-    /**
-     * @return string|null
-     */
-    protected function getLinkButton()
+    protected function getLinkButton(): string
     {
         if (!$this->model->isDisabled()) {
             if ($route = $this->model->getRoute()) {
@@ -29,12 +23,9 @@ trait LinkButtonTrait
             }
         }
 
-        return null;
+        return '';
     }
 
-    /**
-     * @return bool
-     */
     protected function isDraft(): bool
     {
         return $this->model->isDraft();

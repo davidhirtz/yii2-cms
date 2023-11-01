@@ -2,10 +2,20 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\widgets\panels;
 
+use davidhirtz\yii2\cms\models\Asset;
+use davidhirtz\yii2\cms\modules\admin\widgets\panels\traits\UpdateFileButtonTrait;
+
 /**
- * Class AssetHelpPanel
- * @package davidhirtz\yii2\cms\modules\admin\widgets
+ * @property Asset $model
  */
-class AssetHelpPanel extends \davidhirtz\yii2\cms\modules\admin\widgets\panels\base\AssetHelpPanel
+class AssetHelpPanel extends HelpPanel
 {
+    use UpdateFileButtonTrait;
+
+    protected function getButtons(): array
+    {
+        return array_filter([
+            $this->getUpdateFileButton(),
+        ]);
+    }
 }

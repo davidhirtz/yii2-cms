@@ -90,7 +90,7 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
     /**
      * @return string
      */
-    public function run()
+    public function run(): string
     {
         $this->setBreadcrumbs();
         return parent::run();

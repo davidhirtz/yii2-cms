@@ -9,12 +9,12 @@ trait CategoryTrait
     /**
      * @var Category[]
      */
-    protected static $_categories;
+    protected static ?array $_categories = null;
 
     /**
      * @return Category[]
      */
-    public static function getCategories()
+    public static function getCategories(): array
     {
         if (static::$_categories === null) {
             static::$_categories = Category::find()

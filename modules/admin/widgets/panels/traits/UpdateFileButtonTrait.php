@@ -1,24 +1,13 @@
 <?php
 
-namespace davidhirtz\yii2\cms\modules\admin\widgets\traits;
+namespace davidhirtz\yii2\cms\modules\admin\widgets\panels\traits;
 
-use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use Yii;
 
-/**
- * Class UpdateFileButtonTrait
- * @package davidhirtz\yii2\cms\modules\admin\widgets\base
- * @see \davidhirtz\yii2\cms\modules\admin\widgets\panels\AssetHelpPanel
- *
- * @property Asset $model
- */
 trait UpdateFileButtonTrait
 {
-    /**
-     * @return string
-     */
-    protected function getUpdateFileButton()
+    protected function getUpdateFileButton(): string
     {
         if (Yii::$app->getUser()->can('fileCreate')) {
             return Html::a(Html::iconText('image', Yii::t('media', 'Edit File')), ['/admin/file/update', 'id' => $this->model->file_id], [

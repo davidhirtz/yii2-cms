@@ -2,10 +2,18 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\widgets\panels;
 
+use davidhirtz\yii2\cms\models\Entry;
+
 /**
- * Class EntryHelpPanel
- * @package davidhirtz\yii2\cms\modules\admin\widgets
+ * @property Entry $model
  */
-class EntryHelpPanel extends \davidhirtz\yii2\cms\modules\admin\widgets\panels\base\EntryHelpPanel
+class EntryHelpPanel extends HelpPanel
 {
+    protected function getButtons(): array
+    {
+        return array_filter([
+            $this->getCloneButton(),
+            $this->getLinkButton(),
+        ]);
+    }
 }

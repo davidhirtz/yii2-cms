@@ -2,10 +2,33 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\widgets\panels;
 
+use davidhirtz\yii2\cms\models\Section;
+use davidhirtz\yii2\skeleton\helpers\Html;
+use Yii;
+
 /**
- * Class SectionHelpPanel
- * @package davidhirtz\yii2\cms\modules\admin\widgets
+ * @property Section $model
  */
-class SectionHelpPanel extends \davidhirtz\yii2\cms\modules\admin\widgets\panels\base\SectionHelpPanel
+class SectionHelpPanel extends HelpPanel
 {
+    protected function getButtons(): array
+    {
+        return array_filter([
+            $this->getCopyButton(),
+            $this->getCloneButton(),
+            $this->getLinkButton(),
+        ]);
+    }
+
+    protected function getCopyButton(): string
+    {
+        return Html::a(Html::iconText('copy', Yii::t('cms', 'Move / Copy')), ['entries', 'id' => $this->model->id], [
+            'class' => 'btn btn-primary',
+        ]);
+    }
+
+    protected function isDraft(): bool
+    {
+        return $this->model->isDraft() || $this->model->entry->isDraft();
+    }
 }

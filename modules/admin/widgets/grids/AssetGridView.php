@@ -4,6 +4,7 @@ namespace davidhirtz\yii2\cms\modules\admin\widgets\grids;
 
 use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\models\Entry;
+use davidhirtz\yii2\cms\modules\admin\widgets\grids\columns\AssetThumbnailColumn;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\media\assets\AdminAsset;
@@ -45,9 +46,6 @@ class AssetGridView extends GridView
      */
     public int|ExpressionInterface|null $maxAssetCount = 100;
 
-    /**
-     * @inheritDoc
-     */
     public function init(): void
     {
         if (!$this->dataProvider) {
@@ -82,9 +80,6 @@ class AssetGridView extends GridView
         parent::init();
     }
 
-    /**
-     * Sets up grid footer.
-     */
     protected function initFooter(): void
     {
         if ($this->footer === null) {
@@ -99,9 +94,6 @@ class AssetGridView extends GridView
         }
     }
 
-    /**
-     * @return array
-     */
     protected function getFooterButtons(): array
     {
         $isEntry = $this->parent instanceof Entry;
@@ -121,9 +113,6 @@ class AssetGridView extends GridView
         return $buttons;
     }
 
-    /**
-     * @return string
-     */
     protected function getAssetsButton(): string
     {
         return Html::a(Html::iconText('images', Yii::t('cms', 'Library')), $this->getIndexRoute(), [
@@ -131,27 +120,16 @@ class AssetGridView extends GridView
         ]);
     }
 
-    /**
-     * @return string
-     */
     public function renderItems(): string
     {
         return Html::tag('div', parent::renderItems(), ['id' => 'files']);
     }
 
-    /**
-     * @return array
-     */
     public function thumbnailColumn(): array
     {
-        // Use string here to prevent PhpStrom warnings for multiple declarations. The module `yii2-cms-hotspot` offers
-        // a replacement class for the thumbnail, which replaces the default implementation on bootstrap.
-        return ['class' => '\davidhirtz\yii2\cms\modules\admin\widgets\grids\columns\AssetThumbnailColumn'];
+        return ['class' => AssetThumbnailColumn::class];
     }
 
-    /**
-     * @return array
-     */
     public function nameColumn(): array
     {
         return [
@@ -167,9 +145,6 @@ class AssetGridView extends GridView
         ];
     }
 
-    /**
-     * @return array
-     */
     public function dimensionsColumn(): array
     {
         return [
@@ -180,9 +155,6 @@ class AssetGridView extends GridView
         ];
     }
 
-    /**
-     * @return ActiveQuery
-     */
     protected function getParentAssetQuery(): ActiveQuery
     {
         return $this->parent->getAssets()
@@ -191,9 +163,6 @@ class AssetGridView extends GridView
             ->limit($this->maxAssetCount);
     }
 
-    /**
-     * @return array
-     */
     public function buttonsColumn(): array
     {
         return [
