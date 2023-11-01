@@ -61,7 +61,7 @@ class Section extends ActiveRecord implements AssetParentInterface
             ],
             [
                 ['entry_id'],
-                'validateEntryId',
+                $this->validateEntryId(...),
             ],
             [
                 ['name', 'slug', 'content'],
@@ -89,9 +89,6 @@ class Section extends ActiveRecord implements AssetParentInterface
         ]));
     }
 
-    /**
-     * @noinspection PhpUnused {@link static::rules()}
-     */
     public function validateEntryId(): void
     {
         if (!$this->entry->hasSectionsEnabled()) {

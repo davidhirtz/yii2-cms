@@ -86,10 +86,10 @@ class CategoryActiveForm extends ActiveForm
     }
 
     /**
-     * @param null $language
+     * @param string|null $language
      * @return string
      */
-    public function getSlugBaseUrl($language = null): string
+    public function getSlugBaseUrl(?string $language = null): string
     {
         if ($route = $this->model->getRoute()) {
             $urlManager = Yii::$app->getUrlManager();

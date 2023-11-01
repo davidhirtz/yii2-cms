@@ -35,9 +35,6 @@ use yii\db\ActiveQuery;
  * @property-read static $parent {@see static::getParent()}
  * @property-read static[] $ancestors {@see static::getDescendants()}
  * @property-read static[] $descendants {@see static::getDescendants()}
- *
- * @method \davidhirtz\yii2\cms\models\Category[] getAncestors($refresh = false)
- * @method \davidhirtz\yii2\cms\models\Category[] getDescendants($refresh = false)
  */
 class Category extends ActiveRecord
 {
@@ -73,7 +70,7 @@ class Category extends ActiveRecord
             ],
             [
                 ['parent_id'],
-                'validateParentId',
+                $this->validateParentId(...),
                 'skipOnEmpty' => false,
             ],
             [

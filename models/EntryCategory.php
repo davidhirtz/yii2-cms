@@ -55,11 +55,11 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
             ],
             [
                 ['category_id'],
-                'validateCategoryId',
+                $this->validateCategoryId(...),
             ],
             [
                 ['entry_id'],
-                'validateEntryId',
+                $this->validateEntryId(...),
             ],
             [
                 ['entry_id'],
@@ -69,9 +69,6 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         ]);
     }
 
-    /**
-     * @noinspection PhpUnused
-     */
     public function validateCategoryId(): void
     {
         if (!$this->category->hasEntriesEnabled()) {
@@ -79,9 +76,6 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         }
     }
 
-    /**
-     * @noinspection PhpUnused{@see EntryCategory::rules()}
-     */
     public function validateEntryId(): void
     {
         if (!$this->entry->hasCategoriesEnabled()) {

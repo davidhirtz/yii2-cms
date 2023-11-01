@@ -300,15 +300,12 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         }
     }
 
-    /**
-     * @return int
-     */
     public function getMaxPosition(): int
     {
         return (int)$this->findSiblings()->max('[[position]]');
     }
 
-    public static function updatePosition($models, $order = [], $attribute = 'position', $index = null): int
+    public static function updatePosition(array $models, array $order = [], string $attribute = 'position', ?string $index = null): int
     {
         static::getModule()->invalidatePageCache();
         return parent::updatePosition($models, $order, $attribute, $index);

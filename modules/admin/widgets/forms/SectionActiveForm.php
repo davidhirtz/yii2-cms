@@ -5,6 +5,7 @@ namespace davidhirtz\yii2\cms\modules\admin\widgets\forms;
 use davidhirtz\yii2\cms\models\Section;
 use Yii;
 use yii\helpers\Html;
+use yii\widgets\ActiveField;
 
 /**
  * Renders an active form for the {@link Section} model.
@@ -26,7 +27,7 @@ class SectionActiveForm extends ActiveForm
     /**
      * @inheritdoc
      */
-    public function init()
+    public function init(): void
     {
         if (!$this->fields) {
             $this->fields = [
@@ -43,9 +44,9 @@ class SectionActiveForm extends ActiveForm
 
     /**
      * @param array $options
-     * @return string
+     * @return string|ActiveField
      */
-    public function slugField($options = []): string
+    public function slugField(array $options = []): ActiveField|string
     {
         return $this->showSlugField() ? parent::slugField($options) : '';
     }
@@ -54,7 +55,7 @@ class SectionActiveForm extends ActiveForm
      * @param string|null $language
      * @return string
      */
-    public function getSlugBaseUrl($language = null): string
+    public function getSlugBaseUrl(?string $language = null): string
     {
         $draftHostInfo = Yii::$app->getRequest()->getDraftHostInfo();
         $urlManager = Yii::$app->getUrlManager();

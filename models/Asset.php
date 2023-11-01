@@ -13,7 +13,6 @@ use davidhirtz\yii2\media\models\AssetInterface;
 use davidhirtz\yii2\media\models\File;
 use davidhirtz\yii2\media\models\traits\AssetTrait;
 use davidhirtz\yii2\skeleton\helpers\ArrayHelper;
-use davidhirtz\yii2\skeleton\models\User;
 use Yii;
 
 /**
@@ -48,7 +47,7 @@ class Asset extends ActiveRecord implements AssetInterface
         return array_merge(parent::rules(), [
             [
                 ['section_id'],
-                'validateSectionId',
+                $this->validateSectionId(...),
             ],
             [
                 ['file_id', 'entry_id'],
@@ -56,7 +55,7 @@ class Asset extends ActiveRecord implements AssetInterface
             ],
             [
                 ['entry_id'],
-                'validateEntryId',
+                $this->validateEntryId(...),
             ],
             [
                 $this->getI18nAttributesNames(['name', 'alt_text', 'link']),
@@ -79,8 +78,6 @@ class Asset extends ActiveRecord implements AssetInterface
      * Validates section relation and sets entry relation, thus this needs to be called before entry validation. As
      * this method gets skipped on empty `section_id`, this only sets the relation while
      * {@link Section::validateEntryId()} will validate the section's entry_id.
-     *
-     * @noinspection PhpUnused {@see static::rules()}
      */
     public function validateSectionId(): void
     {
@@ -89,10 +86,6 @@ class Asset extends ActiveRecord implements AssetInterface
         }
     }
 
-    /**
-     * Validates entry relation.
-     * @noinspection PhpUnused {@see static::rules()}
-     */
     public function validateEntryId(): void
     {
         if (!$this->entry || (!$this->getIsNewRecord() && $this->isAttributeChanged('entry_id'))) {

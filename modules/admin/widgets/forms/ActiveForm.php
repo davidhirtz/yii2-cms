@@ -14,9 +14,6 @@ use yii\helpers\ArrayHelper;
 use yii\widgets\ActiveField;
 
 /**
- * Class ActiveForm
- * @package davidhirtz\yii2\cms\modules\admin\widgets\forms
- *
  * @property Asset|Category|Entry|Section $model
  */
 class ActiveForm extends \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm
@@ -24,39 +21,26 @@ class ActiveForm extends \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm
     use ModelTimestampTrait;
     use ContentFieldTrait;
 
-    /**
-     * @param array $options
-     * @return ActiveField|string
-     */
-    public function statusField($options = [])
+    /** @noinspection PhpUnused {@see static::$fields} */
+    public function statusField(array $options = []): ActiveField|string
     {
         return count($statuses = $this->getStatuses()) > 1 ? $this->field($this->model, 'status', $options)->dropdownList($statuses) : '';
     }
 
-    /**
-     * @param array $options
-     * @return ActiveField|string
-     */
-    public function typeField($options = [])
+    /** @noinspection PhpUnused {@see static::$fields} */
+    public function typeField(array $options = []): ActiveField|string
     {
         return count($types = $this->getTypes()) > 1 ? $this->field($this->model, 'type', $options)->dropdownList($types) : '';
     }
 
-    /**
-     * @param array $options
-     * @return string
-     */
-    public function descriptionField($options = []): string
+    /** @noinspection PhpUnused {@see static::$fields} */
+    public function descriptionField(array $options = []): ActiveField|string
     {
         $attribute = $this->model->getI18nAttributeName('description', ArrayHelper::remove($options, 'language'));
         return $this->field($this->model, $attribute, $options)->textarea();
     }
 
-    /**
-     * @param array $options
-     * @return string
-     */
-    public function slugField($options = []): string
+    public function slugField(array $options = []): ActiveField|string
     {
         $language = ArrayHelper::remove($options, 'language');
         $attribute = $this->model->getI18nAttributeName('slug', $language);
@@ -67,44 +51,29 @@ class ActiveForm extends \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm
         ]);
     }
 
-    /**
-     * Renders user information footer.
-     */
-    public function renderFooter()
+    public function renderFooter(): void
     {
         if ($items = array_filter($this->getFooterItems())) {
             echo $this->listRow($items);
         }
     }
 
-    /**
-     * @return array
-     */
     protected function getFooterItems(): array
     {
         return $this->getTimestampItems();
     }
 
-    /**
-     * @return array
-     */
     protected function getStatuses(): array
     {
         return ArrayHelper::getColumn($this->model::getStatuses(), 'name');
     }
-
-    /**
-     * @return array
-     */
     protected function getTypes(): array
     {
         return ArrayHelper::getColumn($this->model::getTypes(), 'name');
     }
 
-    /**
-     * @return array
-     */
-    public function getTypeToggleOptions()
+    /** @noinspection PhpUnused */
+    public function getTypeToggleOptions(): array
     {
         $toggle = [];
 
@@ -117,21 +86,13 @@ class ActiveForm extends \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm
         return $this->getToggleOptions($toggle);
     }
 
-    /**
-     * @param string|null $language
-     * @return string
-     */
-    public function getSlugBaseUrl($language = null): string
+    public function getSlugBaseUrl(?string $language = null): string
     {
         $manager = Yii::$app->getUrlManager();
         return rtrim($manager->createAbsoluteUrl(['/', 'language' => $manager->i18nUrl || $manager->i18nSubdomain ? $language : null]), '/') . '/';
     }
 
-    /**
-     * @param string|null $language
-     * @return string
-     */
-    public function getSlugId($language = null): string
+    public function getSlugId(?string $language = null): string
     {
         return $this->getId() . '-' . $this->model->getI18nAttributeName('slug', $language);
     }

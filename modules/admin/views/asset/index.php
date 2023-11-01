@@ -11,7 +11,7 @@
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\modules\admin\widgets\navs\Submenu;
-use davidhirtz\yii2\media\modules\admin\widgets\grid\FileGridView;
+use davidhirtz\yii2\media\modules\admin\widgets\grids\FileGridView;
 use davidhirtz\yii2\skeleton\web\View;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
 use yii\data\ActiveDataProvider;
