@@ -75,9 +75,7 @@ class CategoryGridView extends GridView
             'attribute' => 'updated_at',
             'headerOptions' => ['class' => 'd-none d-lg-table-cell text-nowrap'],
             'contentOptions' => ['class' => 'd-none d-lg-table-cell text-nowrap'],
-            'content' => function (Category $category) {
-                return $this->dateFormat ? $category->updated_at->format($this->dateFormat) : Timeago::tag($category->updated_at);
-            }
+            'content' => fn(Category $category) => $this->dateFormat ? $category->updated_at->format($this->dateFormat) : Timeago::tag($category->updated_at)
         ];
     }
 
@@ -85,7 +83,7 @@ class CategoryGridView extends GridView
     {
         return [
             'contentOptions' => ['class' => 'text-right text-nowrap'],
-            'content' => function (Category $category) {
+            'content' => function (Category $category): string {
                 $buttons = [];
 
                 if ($this->isSortedByPosition()) {

@@ -5,6 +5,7 @@ namespace davidhirtz\yii2\cms\modules\admin\widgets\grids;
 use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\media\models\File;
 use davidhirtz\yii2\skeleton\helpers\Html;
+use davidhirtz\yii2\skeleton\modules\admin\widgets\grid\CounterColumn;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grids\GridView;
 use davidhirtz\yii2\skeleton\widgets\fontawesome\Icon;
 use davidhirtz\yii2\timeago\TimeagoColumn;
@@ -59,12 +60,10 @@ class AssetParentGridView extends GridView
     {
         return [
             'contentOptions' => ['class' => 'text-center'],
-            'content' => function (Asset $asset) {
-                return Icon::tag($asset->getParent()->getStatusIcon(), [
-                    'data-toggle' => 'tooltip',
-                    'title' => $asset->getParent()->getStatusName(),
-                ]);
-            }
+            'content' => fn(Asset $asset) => Icon::tag($asset->getParent()->getStatusIcon(), [
+                'data-toggle' => 'tooltip',
+                'title' => $asset->getParent()->getStatusName(),
+            ])
         ];
     }
 
@@ -86,9 +85,7 @@ class AssetParentGridView extends GridView
     public function nameColumn(): array
     {
         return [
-            'content' => function (Asset $asset) {
-                return Html::tag('strong', Html::a($asset->entry->getI18nAttribute('name'), $this->getRoute($asset)));
-            }
+            'content' => fn(Asset $asset) => Html::tag('strong', Html::a($asset->entry->getI18nAttribute('name'), $this->getRoute($asset)))
         ];
     }
 
@@ -97,9 +94,7 @@ class AssetParentGridView extends GridView
         return [
             'headerOptions' => ['class' => 'd-none d-md-table-cell text-center'],
             'contentOptions' => ['class' => 'd-none d-md-table-cell text-center'],
-            'content' => function (Asset $asset) {
-                return Html::a(Yii::$app->getFormatter()->asInteger($asset->getParent()->asset_count), $this->getRoute($asset), ['class' => 'badge']);
-            }
+            'content' => fn(Asset $asset) => Html::a(Yii::$app->getFormatter()->asInteger($asset->getParent()->asset_count), $this->getRoute($asset), ['class' => 'badge'])
         ];
     }
 
@@ -115,7 +110,7 @@ class AssetParentGridView extends GridView
     {
         return [
             'contentOptions' => ['class' => 'text-right text-nowrap'],
-            'content' => function (Asset $asset) {
+            'content' => function (Asset $asset): string {
                 $user = Yii::$app->getUser();
                 $buttons = [];
 
@@ -151,13 +146,13 @@ class AssetParentGridView extends GridView
 
         if ($model->isEntryAsset()) {
             if ($user->can('entryUpdate', ['entry' => $parent])) {
-                return array_merge(['/admin/entry/update', 'id' => $parent->id, '#' => 'asset-' . $model->id], $params);
+                return ['/admin/entry/update', 'id' => $parent->id, '#' => 'asset-' . $model->id, ...$params];
             }
         }
 
         if ($model->isSectionAsset()) {
             if ($user->can('sectionUpdate', ['section' => $parent])) {
-                return array_merge(['/admin/section/update', 'id' => $parent->id, '#' => 'asset-' . $model->id], $params);
+                return ['/admin/section/update', 'id' => $parent->id, '#' => 'asset-' . $model->id, ...$params];
             }
         }
 

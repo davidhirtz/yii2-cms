@@ -71,9 +71,7 @@ class EntryActiveForm extends ActiveForm
                 ->indexBy('id')
                 ->all();
 
-            $this->_entries = array_filter($entries, function (Entry $entry) {
-                return $entry->hasDescendantsEnabled();
-            });
+            $this->_entries = array_filter($entries, fn(Entry $entry): bool => $entry->hasDescendantsEnabled());
         }
 
         return $this->_entries;
@@ -109,9 +107,7 @@ class EntryActiveForm extends ActiveForm
 
     protected function getParentIdOptionDataValue(Entry $entry, ?string $language = null): string
     {
-        return Yii::$app->getI18n()->callback($language, function () use ($entry) {
-            return rtrim(Yii::$app->getUrlManager()->createAbsoluteUrl($entry->getRoute()), '/') . '/';
-        });
+        return Yii::$app->getI18n()->callback($language, fn() => rtrim(Yii::$app->getUrlManager()->createAbsoluteUrl($entry->getRoute()), '/') . '/');
     }
 
     protected function getParentIdItems(?array $entries = null, ?int $parentId = null): array

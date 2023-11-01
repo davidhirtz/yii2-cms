@@ -106,7 +106,6 @@ class EntryController extends Controller
     }
 
     /**
-     * @param int $id
      * @return string|Response
      */
     public function actionUpdate(int $id): Response|string
@@ -163,7 +162,6 @@ class EntryController extends Controller
     }
 
     /**
-     * @param int $id
      * @return string|Response
      */
     public function actionClone(int $id)
@@ -181,7 +179,6 @@ class EntryController extends Controller
     }
 
     /**
-     * @param int $id
      * @return string|Response
      */
     public function actionDelete(int $id)

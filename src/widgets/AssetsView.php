@@ -115,7 +115,7 @@ class AssetsView extends Widget
     protected function renderAssetsInternal($assets)
     {
         if ($assets) {
-            $content = $this->render($this->viewFile, array_merge($this->viewParams, ['assets' => $assets]));
+            $content = $this->render($this->viewFile, [...$this->viewParams, 'assets' => $assets]);
             $options = $this->prepareOptions($this->options, $assets);
 
             return $options ? Html::tag('div', $content, $options) : $content;

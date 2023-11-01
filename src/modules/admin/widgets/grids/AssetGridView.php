@@ -149,9 +149,7 @@ class AssetGridView extends GridView
     {
         return [
             'attribute' => $this->getModel()->getI18nAttributeName('dimensions'),
-            'content' => function (AssetInterface $asset) {
-                return $asset->file->hasDimensions() ? $asset->file->getDimensions() : '-';
-            }
+            'content' => fn(AssetInterface $asset) => $asset->file->hasDimensions() ? $asset->file->getDimensions() : '-'
         ];
     }
 
@@ -167,9 +165,7 @@ class AssetGridView extends GridView
     {
         return [
             'contentOptions' => ['class' => 'text-right text-nowrap'],
-            'content' => function ($asset) {
-                return Html::buttons($this->getRowButtons($asset));
-            }
+            'content' => fn($asset): string => Html::buttons($this->getRowButtons($asset))
         ];
     }
 
@@ -247,7 +243,7 @@ class AssetGridView extends GridView
             return false;
         }
 
-        return array_merge(['cms/asset/update', 'id' => $model->id], $params);
+        return ['cms/asset/update', 'id' => $model->id, ...$params];
     }
 
     protected function getCreateRoute(): array
@@ -259,7 +255,7 @@ class AssetGridView extends GridView
 
     protected function getDeleteRoute(ActiveRecordInterface $model, array $params = []): array
     {
-        return array_merge(['/admin/asset/delete', 'id' => $model->getPrimaryKey()], $params);
+        return ['/admin/asset/delete', 'id' => $model->getPrimaryKey(), ...$params];
     }
 
     protected function getIndexRoute(): array

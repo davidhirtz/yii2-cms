@@ -38,7 +38,7 @@ class Section extends ActiveRecord implements AssetParentInterface
     public array|string|null $slugTargetAttribute = ['entry_id', 'slug'];
 
     /**
-     * @var array|null {@see \davidhirtz\yii2\cms\models\Section::getTrailParents()}
+     * @var array|null {@see static::getTrailParents}
      */
     private ?array $_trailParents = null;
 
@@ -82,9 +82,7 @@ class Section extends ActiveRecord implements AssetParentInterface
                 'unique',
                 'targetAttribute' => $this->slugTargetAttribute,
                 'comboNotUnique' => Yii::t('yii', '{attribute} "{value}" has already been taken.'),
-                'when' => function () {
-                    return $this->isAttributeChanged('slug');
-                }
+                'when' => fn() => $this->isAttributeChanged('slug')
             ],
         ]));
     }
@@ -118,7 +116,7 @@ class Section extends ActiveRecord implements AssetParentInterface
     }
 
     /**
-     * Updates related entries after save if {@link \davidhirtz\yii2\cms\models\Section::getIsBatch()} is false.
+     * Updates related entries after save if {@link Section::getIsBatch} is false.
      *
      * @param bool $insert
      * @param array $changedAttributes
@@ -205,7 +203,7 @@ class Section extends ActiveRecord implements AssetParentInterface
 
     public static function find(): SectionQuery
     {
-        return Yii::createObject(SectionQuery::class, [get_called_class()]);
+        return Yii::createObject(SectionQuery::class, [static::class]);
     }
 
     public function updateAssetOrder(array $assetIds): void
@@ -335,11 +333,7 @@ class Section extends ActiveRecord implements AssetParentInterface
 
     public function getTrailParents(): array
     {
-        if ($this->_trailParents === null) {
-            $this->_trailParents = [$this->entry];
-        }
-
-        return $this->_trailParents;
+        return [$this->entry];
     }
 
     public function getTrailModelName(): string
@@ -413,12 +407,13 @@ class Section extends ActiveRecord implements AssetParentInterface
 
     public function attributeLabels(): array
     {
-        return array_merge(parent::attributeLabels(), [
+        return [
+            ...parent::attributeLabels(),
             'entry_id' => Yii::t('cms', 'Entry'),
             'entry_count' => Yii::t('cms', 'Entries'),
             'slug' => Yii::t('cms', 'Url'),
-            'section_count' => Yii::t('cms', 'Sections'),
-        ]);
+            'section_count' => Yii::t('cms', 'Sections')
+        ];
     }
 
     public function formName(): string

@@ -22,10 +22,7 @@ class UrlRule extends \yii\web\UrlRule
      */
     public $encodeParams = false;
 
-    /**
-     * @var bool
-     */
-    static private $mismatch = false;
+    static private bool $mismatch = false;
 
     /**
      * @param UrlManager $manager

@@ -40,11 +40,9 @@ class EntryCategoryGridView extends GridView
     public function init(): void
     {
         if (!$this->rowOptions) {
-            $this->rowOptions = function (Category $category) {
-                return [
-                    'class' => $category->entryCategory ? 'is-selected' : null,
-                ];
-            };
+            $this->rowOptions = fn(Category $category) => [
+                'class' => $category->entryCategory ? 'is-selected' : null,
+            ];
         }
 
         if (!$this->columns) {
@@ -69,9 +67,7 @@ class EntryCategoryGridView extends GridView
             'label' => EntryCategory::instance()->getAttributeLabel('updated_at'),
             'headerOptions' => ['class' => 'd-none d-lg-table-cell text-nowrap'],
             'contentOptions' => ['class' => 'd-none d-lg-table-cell text-nowrap'],
-            'content' => function (Category $category) {
-                return $category->entryCategory ? ($this->dateFormat ? $category->entryCategory->updated_at->format($this->dateFormat) : Timeago::tag($category->entryCategory->updated_at)) : null;
-            }
+            'content' => fn(Category $category) => $category->entryCategory ? ($this->dateFormat ? $category->entryCategory->updated_at->format($this->dateFormat) : Timeago::tag($category->entryCategory->updated_at)) : null
         ];
     }
 
@@ -79,13 +75,12 @@ class EntryCategoryGridView extends GridView
     {
         return [
             'contentOptions' => ['class' => 'text-right text-nowrap'],
-            'content' => function (Category $category) {
+            'content' => fn(Category $category): string =>
                 // Make sure categories can always be removed even if they were not supposed to have entries enabled.
-                return !$category->hasEntriesEnabled() && !$category->entryCategory ? '' : Html::buttons(Html::a(Icon::tag($category->entryCategory ? 'ban' : 'star'), [$category->entryCategory ? 'delete' : 'create', 'entry' => $this->dataProvider->entry->id, 'category' => $category->id], [
-                    'class' => 'btn btn-primary',
-                    'data-method' => 'post',
-                ]));
-            }
+                !$category->hasEntriesEnabled() && !$category->entryCategory ? '' : Html::buttons(Html::a(Icon::tag($category->entryCategory ? 'ban' : 'star'), [$category->entryCategory ? 'delete' : 'create', 'entry' => $this->dataProvider->entry->id, 'category' => $category->id], [
+                'class' => 'btn btn-primary',
+                'data-method' => 'post',
+            ]))
         ];
     }
 

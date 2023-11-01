@@ -66,7 +66,7 @@ class Module extends \yii\base\Module
     /**
      * @var array|null the default sort order when neither type nor category previously applied an order
      */
-    public ?array $defaultEntryOrderBy;
+    public ?array $defaultEntryOrderBy = null;
 
     /**
      * @var int|null the default entry type which is applied to all default admin urls

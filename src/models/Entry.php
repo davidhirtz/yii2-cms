@@ -60,9 +60,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
 
     public function behaviors(): array
     {
-        return array_merge(parent::behaviors(), [
-            'RedirectBehavior' => RedirectBehavior::class,
-        ]);
+        return [...parent::behaviors(), 'RedirectBehavior' => RedirectBehavior::class];
     }
 
     public function rules(): array
@@ -75,9 +73,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
             [
                 ['slug'],
                 'required',
-                'when' => function () {
-                    return $this->isSlugRequired();
-                }
+                'when' => fn(): bool => $this->isSlugRequired()
             ],
             [
                 ['name', 'slug', 'title', 'description', 'content'],
@@ -102,7 +98,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
                 $this->slugUniqueValidator,
                 'targetAttribute' => $this->slugTargetAttribute,
             ],
-            array_merge([$this->getI18nAttributeNames('publish_date')], (array)$this->dateTimeValidator),
+            [$this->getI18nAttributeNames('publish_date'), ...(array)$this->dateTimeValidator],
         ]));
     }
 
@@ -255,7 +251,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
 
     public static function find(): EntryQuery
     {
-        return Yii::createObject(EntryQuery::class, [get_called_class()]);
+        return Yii::createObject(EntryQuery::class, [static::class]);
     }
 
     public function findSiblings(): EntryQuery
@@ -524,15 +520,16 @@ class Entry extends ActiveRecord implements AssetParentInterface
 
     public function attributeLabels(): array
     {
-        return array_merge(parent::attributeLabels(), [
+        return [
+            ...parent::attributeLabels(),
             'parent_id' => Yii::t('cms', 'Parent'),
             'slug' => Yii::t('cms', 'Url'),
             'title' => Yii::t('cms', 'Meta title'),
             'description' => Yii::t('cms', 'Meta description'),
             'publish_date' => Yii::t('cms', 'Published'),
             'entry_count' => Yii::t('cms', 'Entries'),
-            'section_count' => Yii::t('cms', 'Sections'),
-        ]);
+            'section_count' => Yii::t('cms', 'Sections')
+        ];
     }
 
     public function formName(): string

@@ -20,11 +20,9 @@ class SectionLinkedEntryGridView extends EntryGridView
     public function init(): void
     {
         if (!$this->rowOptions) {
-            $this->rowOptions = function (Entry $entry) {
-                return [
-                    'id' => $this->getRowId($entry->sectionEntry),
-                ];
-            };
+            $this->rowOptions = fn(Entry $entry) => [
+                'id' => $this->getRowId($entry->sectionEntry),
+            ];
         }
 
         $this->dataProvider ??= Yii::$container->get(EntryActiveDataProvider::class, [], [

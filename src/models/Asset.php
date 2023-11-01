@@ -39,12 +39,10 @@ class Asset extends ActiveRecord implements AssetInterface
     use EntryRelationTrait;
     use SectionRelationTrait;
 
-    /**
-     * @inheritDoc
-     */
     public function rules(): array
     {
-        return array_merge(parent::rules(), [
+        return [
+            ...parent::rules(),
             [
                 ['section_id'],
                 $this->validateSectionId(...),
@@ -61,8 +59,8 @@ class Asset extends ActiveRecord implements AssetInterface
                 $this->getI18nAttributesNames(['name', 'alt_text', 'link']),
                 'string',
                 'max' => 250,
-            ],
-        ]);
+            ]
+        ];
     }
 
     public function beforeValidate(): bool
@@ -128,7 +126,7 @@ class Asset extends ActiveRecord implements AssetInterface
 
     public static function find(): AssetQuery
     {
-        return Yii::createObject(AssetQuery::class, [get_called_class()]);
+        return Yii::createObject(AssetQuery::class, [static::class]);
     }
 
     public function clone(array $attributes = []): static
@@ -182,7 +180,7 @@ class Asset extends ActiveRecord implements AssetInterface
                 'loc' => $this->file->getUrl(),
                 'title' => $this->getAltText(),
                 'caption' => ($content = $this->getI18nAttribute('content')) && $this->contentType == 'html' ?
-                    strip_tags($content) :
+                    strip_tags((string)$content) :
                     $content,
             ]);
         }
@@ -281,12 +279,13 @@ class Asset extends ActiveRecord implements AssetInterface
      */
     public function attributeLabels(): array
     {
-        return array_merge(parent::attributeLabels(), [
+        return [
+            ...parent::attributeLabels(),
             'section_id' => Yii::t('cms', 'Section'),
             'file_id' => Yii::t('media', 'File'),
             'alt_text' => Yii::t('cms', 'Alt text'),
-            'link' => Yii::t('cms', 'Link'),
-        ]);
+            'link' => Yii::t('cms', 'Link')
+        ];
     }
 
     /**

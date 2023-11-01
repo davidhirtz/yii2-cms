@@ -245,9 +245,7 @@ class EntryGridView extends GridView
             'attribute' => 'publish_date',
             'headerOptions' => ['class' => 'd-none d-lg-table-cell text-nowrap'],
             'contentOptions' => ['class' => 'd-none d-lg-table-cell text-nowrap'],
-            'content' => function (Entry $entry) {
-                return $this->dateFormat ? $entry->publish_date->format($this->dateFormat) : Yii::$app->getFormatter()->asDate($entry->publish_date);
-            }
+            'content' => fn(Entry $entry) => $this->dateFormat ? $entry->publish_date->format($this->dateFormat) : Yii::$app->getFormatter()->asDate($entry->publish_date)
         ];
     }
 
@@ -257,9 +255,7 @@ class EntryGridView extends GridView
             'attribute' => 'updated_at',
             'headerOptions' => ['class' => 'd-none d-lg-table-cell text-nowrap'],
             'contentOptions' => ['class' => 'd-none d-lg-table-cell text-nowrap'],
-            'content' => function (Entry $entry) {
-                return $this->dateFormat ? $entry->updated_at->format($this->dateFormat) : Timeago::tag($entry->updated_at);
-            }
+            'content' => fn(Entry $entry) => $this->dateFormat ? $entry->updated_at->format($this->dateFormat) : Timeago::tag($entry->updated_at)
         ];
     }
 
@@ -267,9 +263,7 @@ class EntryGridView extends GridView
     {
         return [
             'contentOptions' => ['class' => 'text-right text-nowrap'],
-            'content' => function (Entry $entry) {
-                return Html::buttons($this->getRowButtons($entry));
-            }
+            'content' => fn(Entry $entry): string => Html::buttons($this->getRowButtons($entry))
         ];
     }
 

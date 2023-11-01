@@ -147,7 +147,6 @@ class AssetController extends Controller
     }
 
     /**
-     * @param int $id
      * @return string|Response
      */
     public function actionUpdate(int $id)
@@ -208,7 +207,6 @@ class AssetController extends Controller
     }
 
     /**
-     * @param Asset $asset
      * @param bool $isDeleted
      * @return Response
      */

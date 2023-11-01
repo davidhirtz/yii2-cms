@@ -29,7 +29,7 @@ class M191106150324Slugs extends Migration
             try {
                 $this->dropIndex($attributeName, Category::tableName());
                 $this->createIndex($attributeName, Category::tableName(), $category->slugTargetAttribute ?: $attributeName, true);
-            } catch (Exception $ex) {
+            } catch (Exception) {
             }
         }
 
@@ -39,7 +39,7 @@ class M191106150324Slugs extends Migration
             try {
                 $this->dropIndex($attributeName, Entry::tableName());
                 $this->createIndex($attributeName, Entry::tableName(), $entry->slugTargetAttribute ?: $attributeName, true);
-            } catch (Exception $ex) {
+            } catch (Exception) {
             }
         }
     }

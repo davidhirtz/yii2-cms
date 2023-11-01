@@ -2,7 +2,6 @@
 
 namespace davidhirtz\yii2\cms\models;
 
-use davidhirtz\yii2\cms\models\ModelCloneEvent;
 use davidhirtz\yii2\cms\Module;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\datetime\DateTime;
@@ -108,10 +107,10 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
                 DynamicRangeValidator::class,
                 'skipOnEmpty' => false,
             ],
-            array_merge(
-                [$this->getI18nAttributesNames(['content'])],
-                (array)($this->contentType == 'html' && $this->htmlValidator ? $this->htmlValidator : 'safe')
-            ),
+            [
+                $this->getI18nAttributesNames(['content']),
+                ...(array)($this->contentType == 'html' && $this->htmlValidator ? $this->htmlValidator : 'safe'),
+            ],
         ]);
     }
 
@@ -217,7 +216,6 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     }
 
     /**
-     * @param string $attribute
      * @return void
      */
     public function ensureSlug(string $attribute = 'name'): void
@@ -225,7 +223,7 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         if ($this->isSlugRequired()) {
             foreach ($this->getI18nAttributeNames('slug') as $language => $attributeName) {
                 if (!$this->$attributeName && ($name = $this->getI18nAttribute($attribute, $language))) {
-                    $this->$attributeName = mb_substr($name, 0, static::SLUG_MAX_LENGTH);
+                    $this->$attributeName = mb_substr((string)$name, 0, static::SLUG_MAX_LENGTH);
                 }
             }
         }
@@ -293,7 +291,7 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
 
                 // Make sure the loop is limited in case a persistent error prevents the validation.
                 while (!$this->validate() && $iteration < 100) {
-                    $baseSlug = mb_substr($baseSlug, 0, static::SLUG_MAX_LENGTH - 1 - ceil($iteration / 10), Yii::$app->charset);
+                    $baseSlug = mb_substr((string)$baseSlug, 0, static::SLUG_MAX_LENGTH - 1 - ceil($iteration / 10), Yii::$app->charset);
                     $this->setAttribute($attributeName, $baseSlug . '-' . $iteration++);
                 }
             }

@@ -37,14 +37,10 @@ class SectionParentEntryGridView extends EntryGridView
             ];
 
             if ($user->can('sectionUpdate', ['section' => $this->section])) {
-                $buttons[] = Html::a(Icon::tag('copy'), ['update', 'id' => $this->section->id], array_merge($options, [
-                    'title' => Yii::t('cms', 'Move Section'),
-                ]));
+                $buttons[] = Html::a(Icon::tag('copy'), ['update', 'id' => $this->section->id], [...$options, 'title' => Yii::t('cms', 'Move Section')]);
             }
 
-            $buttons[] = Html::a(Icon::tag('paste'), ['clone', 'id' => $this->section->id], array_merge($options, [
-                'title' => Yii::t('cms', 'Copy Section'),
-            ]));
+            $buttons[] = Html::a(Icon::tag('paste'), ['clone', 'id' => $this->section->id], [...$options, 'title' => Yii::t('cms', 'Copy Section')]);
         }
 
         return $buttons;

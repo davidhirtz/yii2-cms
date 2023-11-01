@@ -16,10 +16,6 @@ use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 use yii\web\ServerErrorHttpException;
 
-/**
- * Class CategoryController
- * @package davidhirtz\yii2\cms\modules\admin\controllers
- */
 class CategoryController extends Controller
 {
     use CategoryTrait;
@@ -120,7 +116,6 @@ class CategoryController extends Controller
     }
 
     /**
-     * @param int $id
      * @return string|Response
      */
     public function actionDelete(int $id): Response|string

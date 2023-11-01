@@ -10,39 +10,38 @@ use yii\base\Widget;
 /**
  * SectionsView renders {@link Section} models. Sections will be rendered in their template set by `viewFile` or their
  * {@link Section::getViewFile()} method grouped by adjacent sections with the same template.
+ *
+ * @noinspection PhpUnused
  */
 class SectionsView extends Widget
 {
     /**
-     * @var Entry
+     * @var Entry|null
      */
-    public $entry;
+    public ?Entry $entry = null;
 
     /**
-     * @var Section[]
+     * @var Section[]|null
      */
-    public $sections;
+    public ?array $sections = null;
 
     /**
      * @var array containing additional view parameters.
      */
-    public $viewParams = [];
+    public array $viewParams = [];
 
     /**
      * @var string the path to the view file
      */
-    public $viewFile = '_sections';
+    public string $viewFile = '_sections';
 
     /**
      * @var callable|null an anonymous function with the signature `function ($section)`, where `$section` is the
      * {@link Section} object that you can modify in the function.
      */
-    public $isVisible;
+    public mixed $isVisible;
 
-    /**
-     * @inheritDoc
-     */
-    public function init()
+    public function init(): void
     {
         if ($this->entry) {
             $this->sections = $this->entry->sections;
@@ -54,7 +53,7 @@ class SectionsView extends Widget
     /**
      * Renders sections grouped by view file.
      */
-    public function run()
+    public function run(): string
     {
         $html = '';
         $prevSection = null;
@@ -83,10 +82,9 @@ class SectionsView extends Widget
      * Renders adjacent sections by type starting with the given section. Rendered sections are then removed them from
      * the stack.
      *
-     * @param Section $section
-     * @param string|null $viewFile
+     * @noinspection PhpUnused
      */
-    public function renderAdjacentSectionsByType($section, $viewFile = null)
+    public function renderAdjacentSectionsByType(Section $section, ?string $viewFile = null): string
     {
         $sections = [];
 
@@ -107,23 +105,14 @@ class SectionsView extends Widget
     /**
      * Renders sections by type, removing them from the stack.
      *
-     * @param array|int $types
-     * @param string|null $viewFile
-     * @return string
+     * @noinspection PhpUnused
      */
-    public function renderSectionsByType($types, $viewFile = null)
+    public function renderSectionsByType(array|int $types, ?string $viewFile = null): string
     {
-        return $this->renderSectionsByCallback(function (Section $section) use ($types) {
-            return in_array($section->type, (array)$types);
-        }, $viewFile);
+        return $this->renderSectionsByCallback(fn(Section $section): bool => in_array($section->type, (array)$types), $viewFile);
     }
 
-    /**
-     * @param callable $callback
-     * @param null $viewFile
-     * @return string
-     */
-    public function renderSectionsByCallback($callback, $viewFile = null)
+    public function renderSectionsByCallback(callable $callback, ?string $viewFile = null): string
     {
         $sections = [];
 
@@ -141,12 +130,7 @@ class SectionsView extends Widget
         return $sections ? $this->renderSectionsInternal($sections, $viewFile) : '';
     }
 
-    /**
-     * @param Section[] $sections
-     * @param string|null $viewFile
-     * @return string
-     */
-    protected function renderSectionsInternal($sections, $viewFile = null)
+    protected function renderSectionsInternal(array $sections, ?string $viewFile = null): string
     {
         if ($viewFile === null) {
             $viewFile = $this->getSectionViewFile(current($sections));
@@ -156,35 +140,23 @@ class SectionsView extends Widget
             $sections = array_filter($sections, $this->isVisible);
         }
 
-        return !$viewFile || !$sections ? '' : $this->render($viewFile, array_merge($this->viewParams, [
-            'sections' => $sections,
-        ]));
+        return !$viewFile || !$sections ? '' : $this->render($viewFile, [...$this->viewParams, 'sections' => $sections]);
     }
 
-    /**
-     * @param Section $section
-     * @return string
-     */
-    protected function getSectionViewFile($section)
+    protected function getSectionViewFile(Section $section): string
     {
         return $section->getViewFile() ?: $this->viewFile;
     }
 
     /**
      * Override Widget::getViewPath() to set current controller's context.
-     * @return array|string
      */
-    public function getViewPath()
+    public function getViewPath(): ?string
     {
         return Yii::$app->controller->getViewPath();
     }
 
-    /**
-     * @param Section $section
-     * @param Section|null $prevSection
-     * @return bool
-     */
-    protected function hasSameViewFile($section, $prevSection): bool
+    protected function hasSameViewFile(Section $section, ?Section $prevSection): bool
     {
         return $prevSection && $this->getSectionViewFile($prevSection) == $this->getSectionViewFile($section);
     }

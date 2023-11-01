@@ -115,9 +115,7 @@ class SectionGridView extends GridView
         return [
             'attribute' => 'type',
             'visible' => count(Section::getTypes()) > 1,
-            'content' => function (Section $section) {
-                return Html::a($section->getTypeName(), ['update', 'id' => $section->id]);
-            }
+            'content' => fn(Section $section) => Html::a($section->getTypeName(), ['update', 'id' => $section->id])
         ];
     }
 
@@ -190,14 +188,11 @@ class SectionGridView extends GridView
     {
         return [
             'contentOptions' => ['class' => 'text-right text-nowrap'],
-            'content' => function (Section $section) {
-                return Html::buttons($this->getRowButtons($section));
-            }
+            'content' => fn(Section $section): string => Html::buttons($this->getRowButtons($section))
         ];
     }
 
     /**
-     * @param Section $section
      * @return  array
      */
     protected function getRowButtons(Section $section): array

@@ -55,55 +55,53 @@ class Category extends ActiveRecord
 
     public function behaviors(): array
     {
-        return array_merge(parent::behaviors(), [
-            'RedirectBehavior' => RedirectBehavior::class,
-        ]);
+        return [...parent::behaviors(), 'RedirectBehavior' => RedirectBehavior::class];
     }
 
     public function rules(): array
     {
-        return array_merge(parent::rules(), $this->getI18nRules([
-            [
-                ['parent_id'],
-                'number',
-                'integerOnly' => true,
-            ],
-            [
-                ['parent_id'],
-                $this->validateParentId(...),
-                'skipOnEmpty' => false,
-            ],
-            [
-                ['name'],
-                'required',
-            ],
-            [
-                ['slug'],
-                'required',
-                'when' => function () {
-                    return $this->isSlugRequired();
-                }
-            ],
-            [
-                ['name', 'slug', 'title', 'description', 'content'],
-                'trim',
-            ],
-            [
-                ['name', 'title', 'description'],
-                'string',
-                'max' => 250,
-            ],
-            [
-                ['slug'],
-                'string',
-                'max' => static::SLUG_MAX_LENGTH,
-            ],
-            [
-                ['slug'],
-                $this->slugUniqueValidator,
-                'targetAttribute' => $this->slugTargetAttribute,
-            ],
-        ]));
+        return [
+            ...parent::rules(), $this->getI18nRules([
+                [
+                    ['parent_id'],
+                    'number',
+                    'integerOnly' => true,
+                ],
+                [
+                    ['parent_id'],
+                    $this->validateParentId(...),
+                    'skipOnEmpty' => false,
+                ],
+                [
+                    ['name'],
+                    'required',
+                ],
+                [
+                    ['slug'],
+                    'required',
+                    'when' => fn(): bool => $this->isSlugRequired()
+                ],
+                [
+                    ['name', 'slug', 'title', 'description', 'content'],
+                    'trim',
+                ],
+                [
+                    ['name', 'title', 'description'],
+                    'string',
+                    'max' => 250,
+                ],
+                [
+                    ['slug'],
+                    'string',
+                    'max' => static::SLUG_MAX_LENGTH,
+                ],
+                [
+                    ['slug'],
+                    $this->slugUniqueValidator,
+                    'targetAttribute' => $this->slugTargetAttribute,
+                ],
+            ])
+        ];
     }
 
     public function beforeValidate(): bool
@@ -200,9 +198,7 @@ class Category extends ActiveRecord
     protected function insertEntryCategoryAncestors(): void
     {
         // If the category doesn't have `inheritNestedCategories` enabled, descendant categories need to be used.
-        $categoryIds = $this->inheritNestedCategories() ? $this->id : array_keys(array_filter($this->descendants, function (self $category) {
-            return $category->inheritNestedCategories();
-        }));
+        $categoryIds = $this->inheritNestedCategories() ? $this->id : array_keys(array_filter($this->descendants, fn(self $category): bool => $category->inheritNestedCategories()));
 
         if ($categoryIds) {
             $entries = Entry::find()
@@ -246,7 +242,7 @@ class Category extends ActiveRecord
 
     public static function find(): CategoryQuery
     {
-        return Yii::createObject(CategoryQuery::class, [get_called_class()]);
+        return Yii::createObject(CategoryQuery::class, [static::class]);
     }
 
     public function findSiblings(): CategoryQuery
@@ -280,7 +276,7 @@ class Category extends ActiveRecord
     {
         if (static::$_categories === null) {
             $dependency = new TagDependency(['tags' => static::CATEGORIES_CACHE_KEY]);
-            static::$_categories = static::getModule()->categoryCachedQueryDuration > 0 ? static::getDb()->cache([static::class, 'findCategories'], static::getModule()->categoryCachedQueryDuration, $dependency) : static::findCategories();
+            static::$_categories = static::getModule()->categoryCachedQueryDuration > 0 ? static::getDb()->cache(static::findCategories(...), static::getModule()->categoryCachedQueryDuration, $dependency) : static::findCategories();
         }
 
         return static::$_categories;
@@ -374,7 +370,7 @@ class Category extends ActiveRecord
             $slugs[] = $ancestor->getI18nAttribute('slug');
         }
 
-        return implode('/', array_merge($slugs, [$this->getI18nAttribute('slug')]));
+        return implode('/', [...$slugs, $this->getI18nAttribute('slug')]);
     }
 
     public function getEntryOrderBy(): bool|array
@@ -403,15 +399,16 @@ class Category extends ActiveRecord
 
     public function attributeLabels(): array
     {
-        return array_merge(parent::attributeLabels(), [
+        return [
+            ...parent::attributeLabels(),
             'name' => Yii::t('cms', 'Name'),
             'parent_id' => Yii::t('cms', 'Category'),
             'slug' => Yii::t('cms', 'Url'),
             'title' => Yii::t('cms', 'Meta title'),
             'description' => Yii::t('cms', 'Meta description'),
             'branchCount' => Yii::t('cms', 'Subcategories'),
-            'entry_count' => Yii::t('cms', 'Entries'),
-        ]);
+            'entry_count' => Yii::t('cms', 'Entries')
+        ];
     }
 
     public function formName(): string

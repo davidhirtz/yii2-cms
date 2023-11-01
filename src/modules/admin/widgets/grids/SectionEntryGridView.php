@@ -16,12 +16,10 @@ class SectionEntryGridView extends EntryGridView
     public function init(): void
     {
         if (!$this->rowOptions) {
-            $this->rowOptions = function (Entry $entry) {
-                return [
-                    'id' => $this->getRowId($entry),
-                    'class' => $entry->sectionEntry ? ['is-selected'] : [],
-                ];
-            };
+            $this->rowOptions = fn(Entry $entry) => [
+                'id' => $this->getRowId($entry),
+                'class' => $entry->sectionEntry ? ['is-selected'] : [],
+            ];
         }
 
         parent::init();

@@ -5,13 +5,11 @@ namespace davidhirtz\yii2\cms\modules\admin\widgets\forms;
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\modules\admin\widgets\CategoryTrait;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
+use davidhirtz\yii2\skeleton\widgets\fontawesome\ActiveField;
 use Yii;
 use yii\helpers\ArrayHelper;
 
 /**
- * Class CategoryActiveForm
- * @package davidhirtz\yii2\cms\modules\admin\widgets\forms
- *
  * @property Category $model
  */
 class CategoryActiveForm extends ActiveForm
@@ -19,43 +17,28 @@ class CategoryActiveForm extends ActiveForm
     use CategoryTrait;
     use ModuleTrait;
 
-    /**
-     * @var int
-     */
-    public $slugMaxLength = 20;
+    public int $slugMaxLength = 20;
 
-    /**
-     * @var bool
-     */
     public bool $hasStickyButtons = true;
 
-    /**
-     * @inheritdoc
-     */
-    public function init()
+    public function init(): void
     {
-        if (!$this->fields) {
-            $this->fields = [
-                'status',
-                'parent_id',
-                'type',
-                'name',
-                'content',
-                '-',
-                'title',
-                'description',
-                'slug',
-            ];
-        }
+        $this->fields ??= [
+            $this->statusField(),
+            $this->parentIdField(),
+            $this->typeField(),
+            $this->nameField(),
+            $this->contentField(),
+            '-',
+            $this->titleField(),
+            $this->descriptionField(),
+            $this->slugField(),
+        ];
 
         parent::init();
     }
 
-    /**
-     * @param array $options
-     * @return string
-     */
-    public function parentIdField($options = [])
+    public function parentIdField(array $options = []): ActiveField|string
     {
         if (static::getModule()->enableNestedCategories) {
             if ($categories = static::getCategories()) {
@@ -93,18 +76,20 @@ class CategoryActiveForm extends ActiveForm
     {
         if ($route = $this->model->getRoute()) {
             $urlManager = Yii::$app->getUrlManager();
-            return rtrim($urlManager->createAbsoluteUrl(array_merge($route, ['category' => '', 'language' => $urlManager->i18nUrl || $urlManager->i18nSubdomain ? $language : null])), '/') . '/';
+
+            $route = [
+                ...$route,
+                'category' => '',
+                'language' => $urlManager->i18nUrl || $urlManager->i18nSubdomain ? $language : null,
+            ];
+
+            return rtrim($urlManager->createAbsoluteUrl($route), '/') . '/';
         }
 
         return '';
     }
 
-    /**
-     * @param Category $category
-     * @param string|null $language
-     * @return string
-     */
-    protected function getCategoryBaseUrl($category, $language = null): string
+    protected function getCategoryBaseUrl(Category $category, ?string $language = null): string
     {
         if ($route = $category->getRoute()) {
             $draftHostInfo = Yii::$app->getRequest()->getDraftHostInfo();
@@ -112,8 +97,8 @@ class CategoryActiveForm extends ActiveForm
 
             $route = array_filter(array_merge($route, ['language' => $urlManager->i18nUrl || $urlManager->i18nSubdomain ? $language : null]));
 
-            if (isset($route['category']) && mb_strlen($route['category'], Yii::$app->charset) > $this->slugMaxLength) {
-                $route['category'] = '...' . mb_substr($route['category'], -$this->slugMaxLength, $this->slugMaxLength, Yii::$app->charset);
+            if (isset($route['category']) && mb_strlen((string)$route['category'], Yii::$app->charset) > $this->slugMaxLength) {
+                $route['category'] = '...' . mb_substr((string)$route['category'], -$this->slugMaxLength, $this->slugMaxLength, Yii::$app->charset);
             }
 
             return rtrim($category->isEnabled() || !$draftHostInfo ? $urlManager->createAbsoluteUrl($route) : $urlManager->createDraftUrl($route), '/') . '/';
