@@ -23,6 +23,11 @@ class Module extends \yii\base\Module
     public bool $enableCategories = false;
 
     /**
+     * @var int|false duration in seconds for the caching the Category::getCategories() category query
+     */
+    public int|false $categoryCachedQueryDuration = 60;
+
+    /**
      * @var bool whether categories should be stored in a nested tree
      */
     public bool $enableNestedCategories = true;
@@ -33,9 +38,9 @@ class Module extends \yii\base\Module
     public bool $inheritNestedCategories = true;
 
     /**
-     * @var int|false duration in seconds for the caching the Category::getCategories() category query
+     * @var bool whether entries should be nested
      */
-    public int|false $categoryCachedQueryDuration = 60;
+    public bool $enableNestedEntries = false;
 
     /**
      * @var bool whether entries should have sections

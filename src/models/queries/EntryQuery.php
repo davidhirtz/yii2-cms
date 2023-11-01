@@ -16,6 +16,15 @@ use davidhirtz\yii2\skeleton\db\ActiveQuery;
  */
 class EntryQuery extends ActiveQuery
 {
+    public function addSelectI18nSlugTargetAttributes(): static
+    {
+        if ($slugTargetAttribute = Entry::instance()->slugTargetAttribute) {
+            $this->addSelect($this->prefixColumns(Entry::instance()->getI18nAttributesNames($slugTargetAttribute)));
+        }
+
+        return $this;
+    }
+
     /**
      * Override this method to select only the attributes needed for frontend display.
      */
@@ -32,7 +41,7 @@ class EntryQuery extends ActiveQuery
     {
         return $this->addSelect($this->prefixColumns(array_merge(
             ['id', 'status', 'type', 'section_count', 'updated_at'],
-            Entry::instance()->getI18nAttributesNames(['slug'])
+            Entry::instance()->getI18nAttributesNames(['slug', 'parent_slug'])
         )));
     }
 
@@ -42,6 +51,11 @@ class EntryQuery extends ActiveQuery
             $this->andWhere(Entry::tableName() . '.[[' . Entry::instance()->getI18nAttributeName('name') . ']] LIKE :search', [':search' => "%$search%"]);
         }
 
+        return $this;
+    }
+
+    public function whereHasDescendantsEnabled(): static
+    {
         return $this;
     }
 
@@ -95,7 +109,17 @@ class EntryQuery extends ActiveQuery
 
     public function whereSlug(string $slug): static
     {
-        return $this->andWhere([Entry::tableName() . '.[[' . Entry::instance()->getI18nAttributeName('slug') . ']]' => trim($slug, '/')]);
+        if (in_array('parent_slug', Entry::instance()->slugTargetAttribute ?? [])) {
+            $slug = explode('/', $slug);
+
+            return $this->andWhere([
+                $this->getI18nAttributeName('slug') => array_pop($slug),
+                $this->getI18nAttributeName('parent_slug') => implode('/', $slug),
+            ]);
+        }
+
+        $attribute = $this->getI18nAttributeName('slug');
+        return $this->andWhere([Entry::tableName() . ".[[$attribute]]" => trim($slug, '/')]);
     }
 
     public function withAssets(): static

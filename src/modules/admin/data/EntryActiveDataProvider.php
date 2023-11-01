@@ -35,6 +35,11 @@ class EntryActiveDataProvider extends ActiveDataProvider
     public ?Category $category = null;
 
     /**
+     * @var Entry|null the parent entry to filter by
+     */
+    public ?Entry $parent = null;
+
+    /**
      * @var string|null
      */
     public ?string $searchString = null;
@@ -74,16 +79,53 @@ class EntryActiveDataProvider extends ActiveDataProvider
             $this->query->andWhere([Entry::tableName() . '.[[type]]' => $this->type]);
         }
 
-        if ($this->category) {
-            $this->query->whereCategory($this->category);
+        if (static::getModule()->enableCategories) {
+            $this->whereCategory();
         }
 
-        if ($this->section) {
-            $this->query->whereSection($this->section, true, $this->innerJoinSection ? 'INNER JOIN' : 'LEFT JOIN');
+        if (static::getModule()->enableNestedEntries) {
+            $this->whereEntry();
+        }
+
+        if (static::getModule()->enableSectionEntries) {
+            $this->whereSection();
         }
 
         if ($this->searchString) {
             $this->query->matching($this->searchString);
+        }
+    }
+
+    protected function whereCategory(): void
+    {
+        if ($this->category) {
+            $this->query->whereCategory($this->category);
+        }
+    }
+
+    /**
+     * Limits results to the scope of `entry` or null as root unless a text search is performed. If no category
+     * is defining the order, the descendant order is applied.
+     */
+    protected function whereEntry(): void
+    {
+        if (!$this->searchString) {
+            if (!$this->category?->getEntryOrderBy()) {
+                if ($orderBy = $this->parent?->getDescendantsOrder()) {
+                    $this->query->orderBy($orderBy);
+                }
+            }
+
+            $this->query->andWhere(['parent_id' => $this->parent?->id]);
+        }
+    }
+
+    protected function whereSection(): void
+    {
+        if ($this->section) {
+            $this->query->whereSection($this->section, true, $this->innerJoinSection
+                ? 'INNER JOIN'
+                : 'LEFT JOIN');
         }
     }
 
@@ -97,9 +139,6 @@ class EntryActiveDataProvider extends ActiveDataProvider
         return !$this->isOrderedByPosition() ? parent::getSort() : false;
     }
 
-    /**
-     * @param array|bool|Sort $value
-     */
     public function setSort($value): void
     {
         // Try to set the default order from the query if it's a single order.

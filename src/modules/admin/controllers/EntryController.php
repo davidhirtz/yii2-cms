@@ -64,14 +64,15 @@ class EntryController extends Controller
         ]);
     }
 
-    public function actionIndex(?int $category = null, ?int $type = null, ?string $q = null): Response|string
+    public function actionIndex(?int $category = null, ?int $parent = null, ?int $type = null, ?string $q = null): Response|string
     {
         if (!$type && static::getModule()->defaultEntryType) {
             return $this->redirect(Url::current(['type' => static::getModule()->defaultEntryType]));
         }
 
         $provider = Yii::$container->get(EntryActiveDataProvider::class, [], [
-            'category' => $category ? Category::findOne((int)$category) : null,
+            'category' => Category::findOne($category),
+            'parent' => Entry::findOne($parent),
             'searchString' => $q,
             'type' => $type,
         ]);
@@ -81,10 +82,11 @@ class EntryController extends Controller
         ]);
     }
 
-    public function actionCreate(?int $type = null): Response|string
+    public function actionCreate(?int $parent = null, ?int $type = null): Response|string
     {
         $entry = Entry::create();
         $entry->loadDefaultValues();
+        $entry->populateParentRelation(Entry::findOne($parent));
         $entry->type = $type ?: static::getModule()->defaultEntryType;
 
         $request = Yii::$app->getRequest();
@@ -107,7 +109,7 @@ class EntryController extends Controller
      * @param int $id
      * @return string|Response
      */
-    public function actionUpdate(int $id)
+    public function actionUpdate(int $id): Response|string
     {
         $entry = $this->findEntry($id, 'entryUpdate');
         $request = Yii::$app->getRequest();

@@ -21,23 +21,30 @@ class ActiveForm extends \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm
     use ModelTimestampTrait;
     use ContentFieldTrait;
 
-    /** @noinspection PhpUnused {@see static::$fields} */
     public function statusField(array $options = []): ActiveField|string
     {
         return count($statuses = $this->getStatuses()) > 1 ? $this->field($this->model, 'status', $options)->dropdownList($statuses) : '';
     }
 
-    /** @noinspection PhpUnused {@see static::$fields} */
     public function typeField(array $options = []): ActiveField|string
     {
         return count($types = $this->getTypes()) > 1 ? $this->field($this->model, 'type', $options)->dropdownList($types) : '';
     }
 
-    /** @noinspection PhpUnused {@see static::$fields} */
     public function descriptionField(array $options = []): ActiveField|string
     {
         $attribute = $this->model->getI18nAttributeName('description', ArrayHelper::remove($options, 'language'));
         return $this->field($this->model, $attribute, $options)->textarea();
+    }
+
+    public function nameField(array $options = []): ActiveField|string
+    {
+        return $this->field($this->model, 'name', $options);
+    }
+
+    public function titleField(array $options = []): ActiveField|string
+    {
+        return $this->field($this->model, 'title', $options);
     }
 
     public function slugField(array $options = []): ActiveField|string

@@ -5,11 +5,6 @@ namespace davidhirtz\yii2\cms\modules\admin;
 use Yii;
 use yii\helpers\ArrayHelper;
 
-/**
- * Class Module
- * @package davidhirtz\yii2\cms\modules\admin
- * @property \davidhirtz\yii2\skeleton\modules\admin\Module $module
- */
 class Module extends \yii\base\Module
 {
     /**

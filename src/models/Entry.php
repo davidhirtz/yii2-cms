@@ -5,12 +5,14 @@ namespace davidhirtz\yii2\cms\models;
 use davidhirtz\yii2\cms\models\queries\AssetQuery;
 use davidhirtz\yii2\cms\models\queries\EntryQuery;
 use davidhirtz\yii2\cms\models\queries\SectionQuery;
+use davidhirtz\yii2\cms\models\validators\ParentIdValidator;
 use davidhirtz\yii2\cms\Module;
 use davidhirtz\yii2\cms\modules\admin\widgets\forms\EntryActiveForm;
 use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\datetime\DateTimeValidator;
 use davidhirtz\yii2\media\models\AssetParentInterface;
 use davidhirtz\yii2\skeleton\behaviors\RedirectBehavior;
+use davidhirtz\yii2\skeleton\db\MaterializedTreeTrait;
 use davidhirtz\yii2\skeleton\helpers\ArrayHelper;
 use davidhirtz\yii2\skeleton\models\Trail;
 use Yii;
@@ -20,6 +22,9 @@ use yii\db\ActiveQuery;
  * Entry is the base model class for all CMS entries, which can contain related {@link Section} models and
  * {@link Asset} models. Entries can be organized by {@link EntryCategory} relations.
  *
+ * @property int $parent_id
+ * @property string $path
+ * @property string $parent_slug
  * @property int $position
  * @property string $name
  * @property string $slug
@@ -28,17 +33,24 @@ use yii\db\ActiveQuery;
  * @property string $content
  * @property DateTime $publish_date
  * @property string $category_ids
+ * @property int $entry_count
  * @property int $section_count
  * @property int $asset_count
  *
- * @property Asset[] $assets {@link static::getAssets()}
- * @property SectionEntry $sectionEntry {@link static::getSectionEntry()}
- * @property Section[] $sections {@link static::getSections()}
- * @property EntryCategory $entryCategory {@link static::getEntryCategory()}
- * @property EntryCategory[] $entryCategories {@link static::getEntryCategories()}
+ *
+ * @property-read Asset[] $assets {@link static::getAssets()}
+ * @property-read EntryCategory $entryCategory {@link static::getEntryCategory()}
+ * @property-read EntryCategory[] $entryCategories {@link static::getEntryCategories()}
+ * @property-read SectionEntry $sectionEntry {@link static::getSectionEntry()}
+ * @property-read Section[] $sections {@link static::getSections()}
  */
 class Entry extends ActiveRecord implements AssetParentInterface
 {
+    use MaterializedTreeTrait;
+
+    /**
+     * @var string|false the content type of the entry defaults to `false`.
+     */
     public string|false $contentType = false;
 
     /**
@@ -77,6 +89,10 @@ class Entry extends ActiveRecord implements AssetParentInterface
                 'max' => 250,
             ],
             [
+                ['parent_id'],
+                ParentIdValidator::class,
+            ],
+            [
                 ['slug'],
                 'string',
                 'max' => static::SLUG_MAX_LENGTH,
@@ -96,6 +112,17 @@ class Entry extends ActiveRecord implements AssetParentInterface
         return parent::beforeValidate();
     }
 
+    public function afterValidate(): void
+    {
+        if ($this->isAttributeChanged('parent_id')) {
+            $this->setAttribute('path', $this->parent
+                ? ArrayHelper::createCacheString(ArrayHelper::cacheStringToArray($this->parent->path, $this->parent_id))
+                : null);
+        }
+
+        parent::afterValidate();
+    }
+
     public function beforeSave($insert): bool
     {
         if (!$this->slug) {
@@ -111,6 +138,36 @@ class Entry extends ActiveRecord implements AssetParentInterface
         }
 
         return parent::beforeSave($insert);
+    }
+
+    public function afterSave($insert, $changedAttributes): void
+    {
+        if ($this->entry_count) {
+            foreach ($this->getI18nAttributesNames(['path', 'slug', 'parent_slug']) as $key) {
+                if (array_key_exists($key, $changedAttributes)) {
+                    foreach ($this->getChildren(true) as $entry) {
+                        foreach ($entry->getI18nAttributeNames('parent_slug') as $language => $attributeName) {
+                            $entry->{$attributeName} = $this->getFormattedSlug($language);
+                        }
+
+                        $entry->path = ArrayHelper::createCacheString(ArrayHelper::cacheStringToArray($this->path, $this->id));
+                        $entry->update();
+                    }
+
+                    break;
+                }
+            }
+        }
+
+        if (array_key_exists('parent_id', $changedAttributes)) {
+            $ancestorIds = ArrayHelper::cacheStringToArray($event->changedAttributes['path'] ?? '', $this->getAncestorIds());
+
+            if ($ancestorIds) {
+                foreach ($this::findAll($ancestorIds) as $ancestor) {
+                    $ancestor->recalculateEntryCount()->update();
+                }
+            }
+        }
     }
 
     public function beforeDelete(): bool
@@ -136,9 +193,37 @@ class Entry extends ActiveRecord implements AssetParentInterface
                     $entryCategory->delete();
                 }
             }
+
+            if ($this->entry_count) {
+                foreach ($this->children as $entry) {
+                    $entry->setIsBatch($this->getIsBatch());
+                    $entry->delete();
+                }
+            }
         }
 
         return $isValid;
+    }
+
+    public function afterDelete(): void
+    {
+        if (!$this->getIsBatch()) {
+            if ($this->parent_id) {
+                foreach ($this->ancestors as $ancestor) {
+                    $ancestor->recalculateEntryCount()->update();
+                }
+            }
+        }
+        parent::afterDelete();
+    }
+
+    public function getAssets(): AssetQuery
+    {
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
+        return $this->hasMany(Asset::class, ['entry_id' => 'id'])
+            ->orderBy(['position' => SORT_ASC])
+            ->indexBy('id')
+            ->inverseOf('entry');
     }
 
     public function getEntryCategory(): ActiveQuery
@@ -163,15 +248,6 @@ class Entry extends ActiveRecord implements AssetParentInterface
     {
         /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $this->hasMany(Section::class, ['entry_id' => 'id'])
-            ->orderBy(['position' => SORT_ASC])
-            ->indexBy('id')
-            ->inverseOf('entry');
-    }
-
-    public function getAssets(): AssetQuery
-    {
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return $this->hasMany(Asset::class, ['entry_id' => 'id'])
             ->orderBy(['position' => SORT_ASC])
             ->indexBy('id')
             ->inverseOf('entry');
@@ -235,7 +311,6 @@ class Entry extends ActiveRecord implements AssetParentInterface
     {
         $attributes['status'] ??= static::STATUS_DRAFT;
 
-        /** @var \davidhirtz\yii2\cms\models\Entry $clone */
         $clone = new static();
         $clone->setAttributes(array_merge($this->getAttributes($this->safeAttributes()), $attributes), false);
         $clone->asset_count = $this->asset_count;
@@ -305,6 +380,12 @@ class Entry extends ActiveRecord implements AssetParentInterface
         }
     }
 
+    public function populateParentRelation(?Entry $parent): void
+    {
+        $this->populateRelation('parent', $parent);
+        $this->parent_id = $parent?->id;
+    }
+
     public function recalculateCategoryIds(): static
     {
         $this->category_ids = ArrayHelper::createCacheString($this->getEntryCategories()
@@ -314,10 +395,21 @@ class Entry extends ActiveRecord implements AssetParentInterface
         return $this;
     }
 
+    public function recalculateEntryCount(): static
+    {
+        $this->entry_count = $this->findDescendants()->count();
+        return $this;
+    }
+
     public function recalculateSectionCount(): static
     {
         $this->section_count = (int)$this->getSections()->count();
         return $this;
+    }
+
+    public function getAdminRoute(): false|array
+    {
+        return $this->id ? ['/admin/entry/update', 'id' => $this->id] : false;
     }
 
     public function getCategoryIds(): array
@@ -328,6 +420,22 @@ class Entry extends ActiveRecord implements AssetParentInterface
     public function getCategoryCount(): int
     {
         return count($this->getCategoryIds());
+    }
+
+    public function getDescendantsOrder(): array
+    {
+        return ['position' => SORT_ASC];
+    }
+
+    public function getFormattedSlug(?string $language = null): string
+    {
+        $slug = $this->getI18nAttribute('parent_slug', $language) . '/' . $this->getI18nAttribute('slug', $language);
+        return substr(trim($slug, '/'), 0, 255);
+    }
+
+    public function getRoute(): false|array
+    {
+        return array_filter(['/cms/site/view', 'entry' => $this->getFormattedSlug()]);
     }
 
     /**
@@ -353,7 +461,10 @@ class Entry extends ActiveRecord implements AssetParentInterface
     public function getTrailAttributes(): array
     {
         return array_diff(parent::getTrailAttributes(), [
+            'path',
+            'parent_slug',
             'category_ids',
+            'entry_count',
             'section_count',
             'updated_at',
             'created_at',
@@ -377,16 +488,6 @@ class Entry extends ActiveRecord implements AssetParentInterface
         return $this->getTypeName() ?: Yii::t('cms', 'Entry');
     }
 
-    public function getAdminRoute(): false|array
-    {
-        return $this->id ? ['/admin/entry/update', 'id' => $this->id] : false;
-    }
-
-    public function getRoute(): false|array
-    {
-        return array_filter(['/cms/site/view', 'entry' => $this->getI18nAttribute('slug')]);
-    }
-
     /**
      * @return class-string
      */
@@ -406,6 +507,16 @@ class Entry extends ActiveRecord implements AssetParentInterface
         return static::getModule()->enableCategories;
     }
 
+    public function hasDescendantsEnabled(): bool
+    {
+        return static::getModule()->enableNestedEntries;
+    }
+
+    public function hasParentEnabled(): bool
+    {
+        return static::getModule()->enableNestedEntries;
+    }
+
     public function hasSectionsEnabled(): bool
     {
         return static::getModule()->enableSections;
@@ -414,6 +525,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
     public function attributeLabels(): array
     {
         return array_merge(parent::attributeLabels(), [
+            'parent_id' => Yii::t('cms', 'Parent'),
             'slug' => Yii::t('cms', 'Url'),
             'title' => Yii::t('cms', 'Meta title'),
             'description' => Yii::t('cms', 'Meta description'),

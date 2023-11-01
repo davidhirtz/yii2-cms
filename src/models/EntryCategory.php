@@ -19,12 +19,9 @@ use Yii;
  * @property int $entry_id
  * @property int $category_id
  * @property int $position
- * @property int $updated_by_user_id
+ * @property int|null $updated_by_user_id
  * @property DateTime $updated_at
  * @property DateTime $created_at
- *
- * @method static \davidhirtz\yii2\cms\models\EntryCategory findOne($condition)
- * @method static \davidhirtz\yii2\cms\models\EntryCategory[] findAll($condition)
  */
 class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
 {

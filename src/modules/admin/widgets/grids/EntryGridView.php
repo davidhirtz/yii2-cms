@@ -7,6 +7,9 @@ use davidhirtz\yii2\cms\modules\admin\controllers\EntryCategoryController;
 use davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider;
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\modules\admin\widgets\CategoryTrait;
+use davidhirtz\yii2\cms\modules\admin\widgets\grids\columns\AssetCountColumn;
+use davidhirtz\yii2\cms\modules\admin\widgets\grids\columns\EntryCountColumn;
+use davidhirtz\yii2\cms\modules\admin\widgets\grids\columns\SectionCountColumn;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grids\GridView;
@@ -98,6 +101,7 @@ class EntryGridView extends GridView
                 $this->statusColumn(),
                 $this->typeColumn(),
                 $this->nameColumn(),
+                $this->entryCountColumn(),
                 $this->sectionCountColumn(),
                 $this->assetCountColumn(),
                 $this->dateColumn(),
@@ -184,8 +188,13 @@ class EntryGridView extends GridView
         return [
             'attribute' => $this->getModel()->getI18nAttributeName('name'),
             'content' => function (Entry $entry) {
-                $html = Html::markKeywords(Html::encode($entry->getI18nAttribute('name')), $this->search);
-                $html = Html::tag('strong', Html::a($html, $this->getRoute($entry)));
+                $html = ($name = $entry->getI18nAttribute('name'))
+                    ? Html::markKeywords(Html::encode($name), $this->search)
+                    : Yii::t('cms', 'Untitled');
+
+                $html = Html::a($html, $this->getRoute($entry), [
+                    'class' => $name ? 'strong' : 'text-muted',
+                ]);
 
                 if ($this->showUrl) {
                     $html .= $this->getUrl($entry);
@@ -200,16 +209,19 @@ class EntryGridView extends GridView
         ];
     }
 
+    public function entryCountColumn(): array
+    {
+        return [
+            'attribute' => 'entry_count',
+            'class' => EntryCountColumn::class,
+        ];
+    }
+
     public function sectionCountColumn(): array
     {
         return [
             'attribute' => 'section_count',
-            'headerOptions' => ['class' => 'd-none d-md-table-cell text-center'],
-            'contentOptions' => ['class' => 'd-none d-md-table-cell text-center'],
-            'visible' => static::getModule()->enableSections,
-            'content' => function (Entry $entry) {
-                return $entry->hasSectionsEnabled() ? Html::a(Yii::$app->getFormatter()->asInteger($entry->section_count), ['section/index', 'entry' => $entry->id], ['class' => 'badge']) : '';
-            }
+            'class' => SectionCountColumn::class,
         ];
     }
 
@@ -217,12 +229,7 @@ class EntryGridView extends GridView
     {
         return [
             'attribute' => 'asset_count',
-            'headerOptions' => ['class' => 'd-none d-md-table-cell text-center'],
-            'contentOptions' => ['class' => 'd-none d-md-table-cell text-center'],
-            'visible' => static::getModule()->enableEntryAssets,
-            'content' => function (Entry $entry) {
-                return $entry->hasAssetsEnabled() ? Html::a(Yii::$app->getFormatter()->asInteger($entry->asset_count), array_merge($this->getRoute($entry), ['#' => 'assets']), ['class' => 'badge']) : '';
-            }
+            'class' => AssetCountColumn::class,
         ];
     }
 
@@ -342,9 +349,12 @@ class EntryGridView extends GridView
         return '';
     }
 
+    /**
+     * @param Entry $model
+     */
     protected function getRoute(ActiveRecordInterface $model, array $params = []): array|false
     {
-        return array_merge(Yii::$app->getRequest()->get(), ['/admin/entry/update', 'id' => $model->getPrimaryKey()], $params);
+        return array_merge(Yii::$app->getRequest()->get(), $model->getAdminRoute(), $params);
     }
 
     public function getNestedCategoryNames(): array

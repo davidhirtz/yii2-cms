@@ -16,7 +16,9 @@ use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
 $this->setTitle(Yii::t('cms', 'Entries'));
 ?>
 
-<?= Submenu::widget(); ?>
+<?= Submenu::widget([
+    'model' => $provider->parent,
+]); ?>
 
 <?= Panel::widget([
     'content' => EntryGridView::widget([

@@ -51,8 +51,13 @@ trait CategoryGridTrait
         return [
             'attribute' => $this->getModel()->getI18nAttributeName('name'),
             'content' => function (Category $category) {
-                $html = Html::markKeywords(Html::encode($category->getI18nAttribute('name')), $this->search);
-                $html = Html::tag('strong', Html::a($html, $this->getRoute($category)));
+                $html = ($name = $category->getI18nAttribute('name'))
+                    ? Html::markKeywords(Html::encode($name), $this->search)
+                    : Yii::t('cms', 'Untitled');
+
+                $html = Html::a($html, $this->getRoute($category), [
+                    'class' => $name ? 'strong' : 'text-muted',
+                ]);
 
                 if ($this->showCategoryAncestors($category)) {
                     $html .= Html::tag('div', $this->getCategoryAncestors($category), ['class' => 'small']);
