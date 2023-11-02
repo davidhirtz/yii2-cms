@@ -29,7 +29,7 @@ use yii\db\ActiveQuery;
  *
  * @property-read Section[] $sections
  * @property-read Asset[] $assets
- * @property-read Entry[] $entry {@see static::getEntries()}
+ * @property-read Entry[] $entries {@see static::getEntries()}
  * @property-read EntryCategory $entryCategory {@see static::getEntryCategory()}
  * @property-read EntryCategory[] $entryCategories {@see static::getEntryCategories()}
  * @property-read static $parent {@see static::getParent()}
@@ -176,7 +176,7 @@ class Category extends ActiveRecord
     {
         /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $this->hasMany(Entry::class, ['id' => 'entry_id'])
-            ->via('entryCategory');
+            ->via('entryCategories');
     }
 
     public function getEntryCategories(): ActiveQuery

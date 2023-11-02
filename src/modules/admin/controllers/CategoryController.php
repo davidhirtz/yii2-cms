@@ -115,9 +115,6 @@ class CategoryController extends Controller
         ]);
     }
 
-    /**
-     * @return string|Response
-     */
     public function actionDelete(int $id): Response|string
     {
         $category = $this->findCategory($id, 'categoryDelete');

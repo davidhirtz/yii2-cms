@@ -181,7 +181,7 @@ class Section extends ActiveRecord implements AssetParentInterface
     {
         /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $this->hasMany(Entry::class, ['id' => 'entry_id'])
-            ->via('sectionEntry');
+            ->via('sectionEntries');
     }
 
     public function getSectionEntry(): ActiveQuery
@@ -269,6 +269,23 @@ class Section extends ActiveRecord implements AssetParentInterface
                 }
 
                 $clone->updateAttributes(['asset_count' => $assetCount]);
+            }
+
+            if ($this->entry_count) {
+                $entries = $this->getEntries()->all();
+                Yii::debug(count($entries));
+                $entryCount = 0;
+
+                foreach ($entries as $entry) {
+                    $sectionEntry = SectionEntry::create();
+                    $sectionEntry->populateEntryRelation($entry);
+                    $sectionEntry->populateSectionRelation($clone);
+                    $sectionEntry->setIsBatch(true);
+                    $sectionEntry->position = ++$entryCount;
+                    $sectionEntry->insert();
+                }
+
+                $clone->updateAttributes(['entry_count' => $entryCount]);
             }
 
             $this->afterClone($clone);
