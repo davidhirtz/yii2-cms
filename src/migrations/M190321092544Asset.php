@@ -13,18 +13,12 @@ use Yii;
 
 use yii\db\Migration;
 
-/**
- * Class M190321092544Asset
- */
 class M190321092544Asset extends Migration
 {
     use MigrationTrait;
     use ModuleTrait;
 
-    /**
-     * @return bool|void
-     */
-    public function safeUp()
+    public function safeUp(): void
     {
         $schema = $this->getDb()->getSchema();
 
@@ -66,10 +60,7 @@ class M190321092544Asset extends Migration
         }
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function safeDown()
+    public function safeDown(): void
     {
         $i18n = Yii::$app->getI18n();
 
@@ -81,10 +72,7 @@ class M190321092544Asset extends Migration
         }
     }
 
-    /**
-     * @return array
-     */
-    private function getLanguages()
+    private function getLanguages(): array
     {
         return static::getModule()->enableI18nTables ? Yii::$app->getI18n()->getLanguages() : [Yii::$app->language];
     }

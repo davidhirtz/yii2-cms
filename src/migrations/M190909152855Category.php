@@ -11,15 +11,12 @@ use davidhirtz\yii2\skeleton\models\User;
 use Yii;
 use yii\db\Migration;
 
-/**
- * Class M190909152855Category
- */
 class M190909152855Category extends Migration
 {
     use MigrationTrait;
     use ModuleTrait;
 
-    public function safeUp()
+    public function safeUp(): void
     {
         $schema = $this->getDb()->getSchema();
 
@@ -83,10 +80,7 @@ class M190909152855Category extends Migration
         }
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function safeDown()
+    public function safeDown(): void
     {
         foreach ($this->getLanguages() as $language) {
             Yii::$app->language = $language;
@@ -98,10 +92,7 @@ class M190909152855Category extends Migration
         }
     }
 
-    /**
-     * @return array
-     */
-    private function getLanguages()
+    private function getLanguages(): array
     {
         return static::getModule()->enableI18nTables ? Yii::$app->getI18n()->getLanguages() : [Yii::$app->language];
     }

@@ -11,19 +11,12 @@ use davidhirtz\yii2\skeleton\models\User;
 use Yii;
 use yii\db\Migration;
 
-/**
- * Class M190319185130Cms
- * @package davidhirtz\yii2\cms\migrations
- */
 class M190319185130Cms extends Migration
 {
     use MigrationTrait;
     use ModuleTrait;
 
-    /**
-     * @return bool|void
-     */
-    public function safeUp()
+    public function safeUp(): void
     {
         $schema = $this->getDb()->getSchema();
 
@@ -98,10 +91,7 @@ class M190319185130Cms extends Migration
         $auth->addChild($admin, $author);
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function safeDown()
+    public function safeDown(): void
     {
         foreach ($this->getLanguages() as $language) {
             Yii::$app->language = $language;
@@ -116,10 +106,7 @@ class M190319185130Cms extends Migration
         $auth->invalidateCache();
     }
 
-    /**
-     * @return array
-     */
-    private function getLanguages()
+    private function getLanguages(): array
     {
         return static::getModule()->enableI18nTables ? Yii::$app->getI18n()->getLanguages() : [Yii::$app->language];
     }
