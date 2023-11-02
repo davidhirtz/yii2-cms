@@ -61,7 +61,8 @@ class Category extends ActiveRecord
     public function rules(): array
     {
         return [
-            ...parent::rules(), $this->getI18nRules([
+            ...parent::rules(),
+            ...$this->getI18nRules([
                 [
                     ['parent_id'],
                     'number',

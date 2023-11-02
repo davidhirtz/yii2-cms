@@ -98,7 +98,10 @@ class Entry extends ActiveRecord implements AssetParentInterface
                 $this->slugUniqueValidator,
                 'targetAttribute' => $this->slugTargetAttribute,
             ],
-            [$this->getI18nAttributeNames('publish_date'), ...(array)$this->dateTimeValidator],
+            [
+                $this->getI18nAttributeNames('publish_date'),
+                ...(array)$this->dateTimeValidator
+            ],
         ]));
     }
 
@@ -164,6 +167,8 @@ class Entry extends ActiveRecord implements AssetParentInterface
                 }
             }
         }
+
+        parent::afterSave($insert, $changedAttributes);
     }
 
     public function beforeDelete(): bool

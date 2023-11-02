@@ -15,15 +15,9 @@ class AssetActiveForm extends ActiveForm
 {
     use AssetFieldsTrait;
 
-    /**
-     * @var bool
-     */
     public bool $hasStickyButtons = true;
 
-    /**
-     * @inheritDoc
-     */
-    public function init()
+    public function init(): void
     {
         $this->fields = $this->fields ?: array_diff($this->getDefaultFieldNames(), [
             'file_id',

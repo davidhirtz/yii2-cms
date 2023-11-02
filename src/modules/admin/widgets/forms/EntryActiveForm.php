@@ -67,7 +67,7 @@ class EntryActiveForm extends ActiveForm
             $entries = Entry::find()
                 ->select($this->model->getI18nAttributesNames(['id', 'parent_id', 'name', 'path', 'slug', 'parent_slug', 'entry_count', 'section_count']))
                 ->whereHasDescendantsEnabled()
-                ->orderBy(static::getModule()->defaultEntryOrderBy)
+                ->orderBy(static::getModule()->defaultEntryOrderBy ?? ['position' => SORT_ASC])
                 ->indexBy('id')
                 ->all();
 
