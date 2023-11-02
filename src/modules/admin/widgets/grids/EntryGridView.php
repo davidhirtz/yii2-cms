@@ -190,7 +190,7 @@ class EntryGridView extends GridView
             'content' => function (Entry $entry) {
                 $html = ($name = $entry->getI18nAttribute('name'))
                     ? Html::markKeywords(Html::encode($name), $this->search)
-                    : Yii::t('cms', 'Untitled');
+                    : Yii::t('cms', ''[ No title ]');
 
                 $html = Html::a($html, $this->getRoute($entry), [
                     'class' => $name ? 'strong' : 'text-muted',
