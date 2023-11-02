@@ -14,10 +14,7 @@ class M200929203300Rbac extends Migration
 {
     use MigrationTrait;
 
-    /**
-     * @inheritDoc
-     */
-    public function safeUp()
+    public function safeUp(): void
     {
         $sourceLanguage = Yii::$app->sourceLanguage;
 
@@ -185,10 +182,7 @@ class M200929203300Rbac extends Migration
         $auth->addChild($author, $sectionAssetOrder);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function safeDown()
+    public function safeDown(): void
     {
         $auth = Yii::$app->getAuthManager();
 

@@ -4,24 +4,19 @@ namespace davidhirtz\yii2\cms\migrations;
 
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\Entry;
-use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\skeleton\db\MigrationTrait;
 use Exception;
 use yii\db\Migration;
 
-/**
- * Class M191106150324Section
- */
+/** @noinspection PhpUnused */
+
 class M191106150324Slugs extends Migration
 {
     use MigrationTrait;
     use ModuleTrait;
 
-    /**
-     * @inheritDoc
-     */
-    public function safeUp()
+    public function safeUp(): void
     {
         $category = Category::instance();
 
