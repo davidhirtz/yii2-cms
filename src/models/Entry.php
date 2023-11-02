@@ -159,10 +159,10 @@ class Entry extends ActiveRecord implements AssetParentInterface
         }
 
         if (array_key_exists('parent_id', $changedAttributes)) {
-            $ancestorIds = ArrayHelper::cacheStringToArray($event->changedAttributes['path'] ?? '', $this->getAncestorIds());
+            $ancestorIds = ArrayHelper::cacheStringToArray($changedAttributes['path'] ?? '', $this->getAncestorIds());
 
             if ($ancestorIds) {
-                foreach ($this::findAll($ancestorIds) as $ancestor) {
+                foreach (static::findAll($ancestorIds) as $ancestor) {
                     $ancestor->recalculateEntryCount()->update();
                 }
             }
