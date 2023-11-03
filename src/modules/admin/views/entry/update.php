@@ -1,13 +1,14 @@
 <?php
 /**
- * Update entry.
- * @see \davidhirtz\yii2\cms\modules\admin\controllers\EntryController::actionUpdate()
+ * @see EntryController::actionUpdate()
  *
  * @var View $this
  * @var Entry $entry
  */
 
 use davidhirtz\yii2\cms\models\Entry;
+use davidhirtz\yii2\cms\modules\admin\controllers\EntryController;
+use davidhirtz\yii2\cms\modules\admin\widgets\forms\EntryActiveForm;
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\AssetGridView;
 use davidhirtz\yii2\cms\modules\admin\widgets\navs\Submenu;
 use davidhirtz\yii2\skeleton\helpers\Html;
@@ -27,7 +28,7 @@ $this->setTitle(Yii::t('cms', 'Edit Entry'));
 
 <?= Panel::widget([
     'title' => $this->title,
-    'content' => $entry->getActiveForm()::widget([
+    'content' => EntryActiveForm::widget([
         'model' => $entry,
     ]),
 ]); ?>
@@ -35,7 +36,7 @@ $this->setTitle(Yii::t('cms', 'Edit Entry'));
 <?php if ($entry->hasAssetsEnabled()) {
     echo Panel::widget([
         'id' => 'assets',
-        'title' => $entry->getAttributeLabel('asset_count'),
+        'title' => Yii::t('cms', 'Assets'),
         'content' => AssetGridView::widget([
             'parent' => $entry,
         ]),

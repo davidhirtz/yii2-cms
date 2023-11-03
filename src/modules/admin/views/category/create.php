@@ -1,14 +1,17 @@
 <?php
 /**
- * Create category.
- * @see \davidhirtz\yii2\cms\modules\admin\controllers\CategoryController::actionCreate()
+ * @see CategoryController::actionCreate()
  *
- * @var \davidhirtz\yii2\skeleton\web\View $this
- * @var \davidhirtz\yii2\cms\models\Category $category
+ * @var View $this
+ * @var Category $category
  */
 
+use davidhirtz\yii2\cms\models\Category;
+use davidhirtz\yii2\cms\modules\admin\controllers\CategoryController;
+use davidhirtz\yii2\cms\modules\admin\widgets\forms\CategoryActiveForm;
 use davidhirtz\yii2\cms\modules\admin\widgets\navs\Submenu;
 use davidhirtz\yii2\skeleton\helpers\Html;
+use davidhirtz\yii2\skeleton\web\View;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
 
 $this->setTitle(Yii::t('cms', 'Create New Category'));
@@ -22,7 +25,7 @@ $this->setTitle(Yii::t('cms', 'Create New Category'));
 
 <?= Panel::widget([
     'title' => $this->title,
-    'content' => $category->getActiveForm()::widget([
+    'content' => CategoryActiveForm::widget([
         'model' => $category,
     ]),
 ]); ?>

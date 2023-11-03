@@ -1,16 +1,19 @@
 <?php
 /**
- * Create section.
- * @see \davidhirtz\yii2\cms\modules\admin\controllers\SectionController::actionCreate()
+ * @see SectionController::actionCreate()
  *
- * @var \davidhirtz\yii2\skeleton\web\View $this
- * @var \davidhirtz\yii2\cms\models\Section $section
+ * @var View $this
+ * @var Section $section
  */
 
 $this->setTitle(Yii::t('cms', 'Create New Section'));
 
+use davidhirtz\yii2\cms\models\Section;
+use davidhirtz\yii2\cms\modules\admin\controllers\SectionController;
+use davidhirtz\yii2\cms\modules\admin\widgets\forms\SectionActiveForm;
 use davidhirtz\yii2\cms\modules\admin\widgets\navs\Submenu;
 use davidhirtz\yii2\skeleton\helpers\Html;
+use davidhirtz\yii2\skeleton\web\View;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel; ?>
 
 <?= Submenu::widget([
@@ -21,7 +24,7 @@ use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel; ?>
 
 <?= Panel::widget([
     'title' => $this->title,
-    'content' => $section->getActiveForm()::widget([
+    'content' => SectionActiveForm::widget([
         'model' => $section,
     ]),
 ]); ?>

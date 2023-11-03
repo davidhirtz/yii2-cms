@@ -6,7 +6,6 @@ use davidhirtz\yii2\cms\models\queries\AssetQuery;
 use davidhirtz\yii2\cms\models\traits\EntryRelationTrait;
 use davidhirtz\yii2\cms\models\traits\SectionRelationTrait;
 use davidhirtz\yii2\cms\modules\admin\Module;
-use davidhirtz\yii2\cms\modules\admin\widgets\forms\AssetActiveForm;
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\AssetParentGridView;
 use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\media\models\AssetInterface;
@@ -16,8 +15,6 @@ use davidhirtz\yii2\skeleton\helpers\ArrayHelper;
 use Yii;
 
 /**
- * The base implementation of the media module Asset class.
- *
  * @property int $id
  * @property int $entry_id
  * @property int $section_id
@@ -106,8 +103,8 @@ class Asset extends ActiveRecord implements AssetInterface
 
     public function afterDelete(): void
     {
-        // Entry needs to be checked separately here because Entry::beforeDelete() deletes
-        // all related assets before deleting the sections.
+        // Entry needs to be checked separately here because `Entry::beforeDelete()` deletes all related assets before
+        // deleting the sections.
         if (!$this->entry->isDeleted() && (!$this->section_id || !$this->section->isDeleted())) {
             $parent = $this->getParent();
             $parent->asset_count = $this->findSiblings()->count();
@@ -213,14 +210,6 @@ class Asset extends ActiveRecord implements AssetInterface
     public function getTrailModelType(): string
     {
         return Yii::t('cms', 'Asset');
-    }
-
-    /**
-     * @return class-string
-     */
-    public function getActiveForm(): string
-    {
-        return static::getTypes()[$this->type]['activeForm'] ?? AssetActiveForm::class;
     }
 
     public function getParent(): Entry|Section

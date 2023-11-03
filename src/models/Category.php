@@ -4,7 +4,6 @@ namespace davidhirtz\yii2\cms\models;
 
 use davidhirtz\yii2\cms\models\queries\CategoryQuery;
 use davidhirtz\yii2\cms\models\queries\EntryQuery;
-use davidhirtz\yii2\cms\modules\admin\widgets\forms\CategoryActiveForm;
 use davidhirtz\yii2\skeleton\behaviors\RedirectBehavior;
 use davidhirtz\yii2\skeleton\db\NestedTreeTrait;
 use davidhirtz\yii2\skeleton\models\Trail;
@@ -12,9 +11,6 @@ use Yii;
 use yii\db\ActiveQuery;
 
 /**
- * Category is the base model class for all CMS categories, which can be linked to multiple {@link Entry} records by
- * {@link EntryCategory} relations.
- *
  * @property int $parent_id
  * @property int $lft
  * @property int $rgt
@@ -26,8 +22,6 @@ use yii\db\ActiveQuery;
  * @property string $content
  * @property int $entry_count
  *
- * @property-read Section[] $sections
- * @property-read Asset[] $assets
  * @property-read Entry[] $entries {@see static::getEntries()}
  * @property-read EntryCategory $entryCategory {@see static::getEntryCategory()}
  * @property-read EntryCategory[] $entryCategories {@see static::getEntryCategories()}
@@ -334,15 +328,6 @@ class Category extends ActiveRecord
     public function getEntryOrderBy(): bool|array
     {
         return [EntryCategory::tableName() . '.[[position]]' => SORT_ASC];
-    }
-
-    /**
-     * @return class-string
-     */
-    public function getActiveForm(): string
-    {
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return static::getTypes()[$this->type]['activeForm'] ?? CategoryActiveForm::class;
     }
 
     public function hasEntriesEnabled(): bool

@@ -10,9 +10,6 @@ use Yii;
 use yii\widgets\ActiveField;
 
 /**
- * EntryActiveForm is a widget that builds an interactive HTML form for {@see Entry}. By default, it implements fields
- * only for default attributes defined in the base model.
- *
  * @property Entry $model
  */
 class EntryActiveForm extends ActiveForm

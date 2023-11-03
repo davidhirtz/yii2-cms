@@ -6,7 +6,6 @@ use davidhirtz\yii2\cms\models\queries\AssetQuery;
 use davidhirtz\yii2\cms\models\queries\EntryQuery;
 use davidhirtz\yii2\cms\models\queries\SectionQuery;
 use davidhirtz\yii2\cms\models\traits\EntryRelationTrait;
-use davidhirtz\yii2\cms\modules\admin\widgets\forms\SectionActiveForm;
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\SectionGridView;
 use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\media\models\AssetParentInterface;
@@ -36,10 +35,6 @@ class Section extends ActiveRecord implements AssetParentInterface
     use EntryRelationTrait;
 
     public array|string|null $slugTargetAttribute = ['entry_id', 'slug'];
-
-    /**
-     * @var array|null {@see static::getTrailParents}
-     */
     private ?array $_trailParents = null;
 
     public function rules(): array
@@ -350,7 +345,7 @@ class Section extends ActiveRecord implements AssetParentInterface
 
     public function getTrailParents(): array
     {
-        return [$this->entry];
+        return $this->_trailParents ?? [$this->entry];
     }
 
     public function getTrailModelName(): string
@@ -381,15 +376,6 @@ class Section extends ActiveRecord implements AssetParentInterface
         }
 
         return null;
-    }
-
-    /**
-     * @return class-string
-     */
-    public function getActiveForm(): string
-    {
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return static::getTypes()[$this->type]['activeForm'] ?? SectionActiveForm::class;
     }
 
     public function getAdminRoute(): array|false

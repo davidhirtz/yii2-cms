@@ -7,7 +7,6 @@ use davidhirtz\yii2\cms\models\queries\EntryQuery;
 use davidhirtz\yii2\cms\models\queries\SectionQuery;
 use davidhirtz\yii2\cms\models\validators\ParentIdValidator;
 use davidhirtz\yii2\cms\Module;
-use davidhirtz\yii2\cms\modules\admin\widgets\forms\EntryActiveForm;
 use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\datetime\DateTimeValidator;
 use davidhirtz\yii2\media\models\AssetParentInterface;
@@ -19,24 +18,20 @@ use Yii;
 use yii\db\ActiveQuery;
 
 /**
- * Entry is the base model class for all CMS entries, which can contain related {@link Section} models and
- * {@link Asset} models. Entries can be organized by {@link EntryCategory} relations.
- *
- * @property int $parent_id
- * @property string $path
+ * @property int|null $parent_id
+ * @property string|null $path
  * @property string $parent_slug
  * @property int $position
  * @property string $name
  * @property string $slug
  * @property string $title
- * @property string $description
+ * @property string|null $description
  * @property string $content
  * @property DateTime $publish_date
- * @property string $category_ids
+ * @property string|null $category_ids
  * @property int $entry_count
  * @property int $section_count
  * @property int $asset_count
- *
  *
  * @property-read Asset[] $assets {@link static::getAssets()}
  * @property-read EntryCategory $entryCategory {@link static::getEntryCategory()}
@@ -490,15 +485,6 @@ class Entry extends ActiveRecord implements AssetParentInterface
     public function getTrailModelType(): string
     {
         return $this->getTypeName() ?: Yii::t('cms', 'Entry');
-    }
-
-    /**
-     * @return class-string
-     */
-    public function getActiveForm(): string
-    {
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return static::getTypes()[$this->type]['activeForm'] ?? EntryActiveForm::class;
     }
 
     public function hasAssetsEnabled(): bool

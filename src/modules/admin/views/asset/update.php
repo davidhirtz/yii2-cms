@@ -1,13 +1,14 @@
 <?php
 /**
- * Update asset
- * @see \davidhirtz\yii2\cms\modules\admin\controllers\AssetController::actionUpdate()
+ * @see AssetController::actionUpdate()
  *
  * @var View $this
  * @var Asset $asset
  */
 
 use davidhirtz\yii2\cms\models\Asset;
+use davidhirtz\yii2\cms\modules\admin\controllers\AssetController;
+use davidhirtz\yii2\cms\modules\admin\widgets\forms\AssetActiveForm;
 use davidhirtz\yii2\cms\modules\admin\widgets\navs\Submenu;
 use davidhirtz\yii2\cms\modules\admin\widgets\panels\AssetHelpPanel;
 use davidhirtz\yii2\skeleton\helpers\Html;
@@ -26,7 +27,7 @@ $this->setTitle(Yii::t('cms', 'Edit Asset'));
 
 <?= Panel::widget([
     'title' => $this->title,
-    'content' => $asset->getActiveForm()::widget([
+    'content' => AssetActiveForm::widget([
         'model' => $asset,
     ]),
 ]); ?>

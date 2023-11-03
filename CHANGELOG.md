@@ -10,3 +10,5 @@
 - Changed namespaces for `LinkButtonTrait` and `UpdateFileButtonTrait`
   to `davidhirtz\yii2\cms\admin\widgets\panels\traits`
 - Removed `CategoryTrait` and `Category::getCategories()` in favor of `davidhirtz\yii2\cms\models\collections\CategoryCollection`
+- Removed `ActiveForm::getActiveForm()`, to override the active forms, use Yii's dependency injection
+  container

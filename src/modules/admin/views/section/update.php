@@ -1,14 +1,14 @@
 <?php
 /**
- * Update section.
- * @see \davidhirtz\yii2\cms\modules\admin\controllers\SectionController::actionUpdate()
+ * @see SectionController::actionUpdate()
  *
  * @var View $this
  * @var Section $section
  */
 
 use davidhirtz\yii2\cms\models\Section;
-use davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider;
+use davidhirtz\yii2\cms\modules\admin\controllers\SectionController;
+use davidhirtz\yii2\cms\modules\admin\widgets\forms\SectionActiveForm;
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\AssetGridView;
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\SectionLinkedEntryGridView;
 use davidhirtz\yii2\cms\modules\admin\widgets\navs\Submenu;
@@ -29,7 +29,7 @@ $this->setTitle(Yii::t('cms', 'Edit Section'));
 
 <?= Panel::widget([
     'title' => $this->title,
-    'content' => $section->getActiveForm()::widget([
+    'content' => SectionActiveForm::widget([
         'model' => $section,
     ]),
 
