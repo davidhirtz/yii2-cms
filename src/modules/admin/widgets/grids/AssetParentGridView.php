@@ -5,7 +5,6 @@ namespace davidhirtz\yii2\cms\modules\admin\widgets\grids;
 use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\media\models\File;
 use davidhirtz\yii2\skeleton\helpers\Html;
-use davidhirtz\yii2\skeleton\modules\admin\widgets\grid\CounterColumn;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grids\GridView;
 use davidhirtz\yii2\skeleton\widgets\fontawesome\Icon;
 use davidhirtz\yii2\timeago\TimeagoColumn;
@@ -28,14 +27,12 @@ class AssetParentGridView extends GridView
 
     public function init(): void
     {
-        if (!$this->dataProvider) {
-            $this->dataProvider = new ActiveDataProvider([
-                'query' => Asset::find()
-                    ->where(['file_id' => $this->file->id])
-                    ->with(['entry', 'section'])
-                    ->orderBy(['updated_at' => SORT_DESC]),
-            ]);
-        }
+        $this->dataProvider ??= new ActiveDataProvider([
+            'query' => Asset::find()
+                ->where(['file_id' => $this->file->id])
+                ->with(['entry', 'section'])
+                ->orderBy(['updated_at' => SORT_DESC]),
+        ]);
 
         if (!$this->columns) {
             $this->columns = [

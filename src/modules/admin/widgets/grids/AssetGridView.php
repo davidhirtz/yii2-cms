@@ -24,7 +24,6 @@ use yii\db\ExpressionInterface;
 use yii\helpers\Url;
 
 /**
- * Displays a grid of {@link Asset} models.
  * @property ActiveDataProvider $dataProvider
  */
 class AssetGridView extends GridView
@@ -48,13 +47,11 @@ class AssetGridView extends GridView
 
     public function init(): void
     {
-        if (!$this->dataProvider) {
-            $this->dataProvider = new ActiveDataProvider([
+            $this->dataProvider ??= new ActiveDataProvider([
                 'query' => $this->getParentAssetQuery(),
                 'pagination' => false,
                 'sort' => false,
             ]);
-        }
 
         if (!$this->columns) {
             $this->columns = [
@@ -115,7 +112,7 @@ class AssetGridView extends GridView
 
     protected function getAssetsButton(): string
     {
-        return Html::a(Html::iconText('images', Yii::t('cms', 'Library')), $this->getIndexRoute(), [
+        return Html::a(Html::iconText('images', Yii::t('cms', 'Link assets')), $this->getIndexRoute(), [
             'class' => 'btn btn-primary',
         ]);
     }

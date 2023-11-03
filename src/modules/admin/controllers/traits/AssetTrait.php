@@ -7,18 +7,9 @@ use Yii;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 
-/**
- * Trait AssetTrait
- * @package davidhirtz\yii2\cms\modules\admin\controllers\traits
- */
 trait AssetTrait
 {
-    /**
-     * @param int $id
-     * @param string|null $permissionName
-     * @return Asset
-     */
-    protected function findAsset($id, $permissionName = null)
+    protected function findAsset(int $id, ?string $permissionName = null): Asset
     {
         if (!$asset = Asset::findOne((int)$id)) {
             throw new NotFoundHttpException();

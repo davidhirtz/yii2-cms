@@ -7,18 +7,9 @@ use Yii;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 
-/**
- * Trait CategoryTrait
- * @package davidhirtz\yii2\cms\modules\admin\controllers\traits
- */
 trait CategoryTrait
 {
-    /**
-     * @param int $id
-     * @param string|null $permissionName
-     * @return Category
-     */
-    protected function findCategory($id, $permissionName = null)
+    protected function findCategory(int $id, ?string $permissionName = null): Category
     {
         if (!$category = Category::findOne((int)$id)) {
             throw new NotFoundHttpException();

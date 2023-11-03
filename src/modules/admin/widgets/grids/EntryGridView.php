@@ -2,7 +2,6 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\widgets\grids;
 
-use davidhirtz\yii2\cms\models\CategoryCollection;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\modules\admin\controllers\EntryCategoryController;
 use davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider;
@@ -68,6 +67,7 @@ class EntryGridView extends GridView
      */
     public ?string $dateFormat = null;
 
+    private ?array $_categories = null;
     private ?array $_categoryNames = null;
 
     public function init(): void
@@ -78,7 +78,7 @@ class EntryGridView extends GridView
         }
 
         $enableCategories = static::getModule()->enableCategories;
-        $this->showCategories ??= $enableCategories && count(CategoryCollection::getAll()) > 0;
+        $this->showCategories ??= $enableCategories && count($this->getCategories()) > 0;
 
         if ($this->showCategoryDropdown) {
             $this->showCategoryDropdown = $enableCategories;
@@ -304,7 +304,7 @@ class EntryGridView extends GridView
     {
         $items = [];
 
-        foreach (CategoryCollection::getAll() as $category) {
+        foreach ($this->getCategories() as $category) {
             $items[] = [
                 'label' => $this->getNestedCategoryNames()[$category->id],
                 'url' => $category->hasEntriesEnabled() ? Url::current(['category' => $category->id, 'page' => null]) : null,
@@ -319,13 +319,25 @@ class EntryGridView extends GridView
         $categoryIds = $entry->getCategoryIds();
         $categories = [];
 
-        foreach (CategoryCollection::getAll() as $category) {
+        foreach ($this->getCategories() as $category) {
             if ($category->hasEntriesEnabled() && in_array($category->id, $categoryIds)) {
                 $categories[] = Html::a(Html::encode($category->getI18nAttribute('name')), Url::current(['category' => $category->id]), ['class' => 'btn btn-secondary btn-sm']);
             }
         }
 
         return $categories ? Html::tag('div', implode('', $categories), $options ?: ['class' => 'btn-list']) : '';
+    }
+
+    public function getCategories(): array
+    {
+        $this->_categories ??= Category::find()->indexBy('id')->all();
+        return $this->_categories;
+    }
+
+    public function getNestedCategoryNames(): array
+    {
+        $this->_categoryNames ??= Category::indentNestedTree($this->getCategories(), Category::instance()->getI18nAttributeName('name'));
+        return $this->_categoryNames;
     }
 
     public function getUrl(Entry $entry): string
@@ -348,15 +360,6 @@ class EntryGridView extends GridView
     protected function getRoute(ActiveRecordInterface $model, array $params = []): array|false
     {
         return array_merge(Yii::$app->getRequest()->get(), $model->getAdminRoute(), $params);
-    }
-
-    public function getNestedCategoryNames(): array
-    {
-        if ($this->_categoryNames === null) {
-            $this->_categoryNames = Category::indentNestedTree(CategoryCollection::getAll(), Category::instance()->getI18nAttributeName('name'));
-        }
-
-        return $this->_categoryNames;
     }
 
     public function getModel(): Entry

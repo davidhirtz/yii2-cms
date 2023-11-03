@@ -107,7 +107,9 @@ class CategoryGridView extends GridView
 
     public function isSortedByPosition(): bool
     {
-        return parent::isSortedByPosition() && !$this->dataProvider->searchString;
+        return parent::isSortedByPosition()
+            && !$this->dataProvider->searchString
+            && count($this->dataProvider->getModels()) > 1;
     }
 
     public function showCategoryAncestors(): bool

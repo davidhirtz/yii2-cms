@@ -1,7 +1,4 @@
-CHANGELOG
-============================
-
-# 2.0.0 (Nov 2, 2023)
+## 2.0.0 (Nov 3, 2023)
 
 - Moved source code to `src` folder
 - Added `davidhirtz\yii2\cms\Module::$enableSectionEntries` option to disable section entries
@@ -12,4 +9,4 @@ CHANGELOG
   and `davidhirtz\yii2\cms\admin\widgets\nav` to `davidhirtz\yii2\cms\admin\widgets\navs`
 - Changed namespaces for `LinkButtonTrait` and `UpdateFileButtonTrait`
   to `davidhirtz\yii2\cms\admin\widgets\panels\traits`
-- Removed `CategoryTrait` in favor of `davidhirtz\yii2\cms\models\collections\CategoryCollection`
+- Removed `CategoryTrait` and `Category::getCategories()` in favor of `davidhirtz\yii2\cms\models\collections\CategoryCollection`

@@ -9,7 +9,6 @@ use davidhirtz\yii2\skeleton\behaviors\RedirectBehavior;
 use davidhirtz\yii2\skeleton\db\NestedTreeTrait;
 use davidhirtz\yii2\skeleton\models\Trail;
 use Yii;
-use yii\caching\TagDependency;
 use yii\db\ActiveQuery;
 
 /**
@@ -40,22 +39,15 @@ class Category extends ActiveRecord
 {
     use NestedTreeTrait;
 
-    /**
-     * Cache.
-     */
-    public const CATEGORIES_CACHE_KEY = 'get-categories-cache';
-
     public string|false $contentType = false;
     public array|string|null $slugTargetAttribute = ['parent_id', 'slug'];
 
-    /**
-     * @see Category::getCategories()
-     */
-    protected static ?array $_categories = null;
-
     public function behaviors(): array
     {
-        return [...parent::behaviors(), 'RedirectBehavior' => RedirectBehavior::class];
+        return [
+            ...parent::behaviors(),
+            'RedirectBehavior' => RedirectBehavior::class,
+        ];
     }
 
     public function rules(): array
@@ -130,9 +122,6 @@ class Category extends ActiveRecord
      * On parent id change all related entries (linked to this category as well as to the child categories)
      * need to be added to the new parent categories, if {@link \davidhirtz\yii2\cms\Module::$inheritNestedCategories}
      * is true. Previous parent {@link EntryCategory} relations will not be deleted.
-     *
-     * @param bool $insert
-     * @param array $changedAttributes
      */
     public function afterSave($insert, $changedAttributes): void
     {
@@ -142,7 +131,7 @@ class Category extends ActiveRecord
             }
         }
 
-        static::invalidateCategoriesCache();
+        CategoryCollection::invalidateCache();
 
         parent::afterSave($insert, $changedAttributes);
     }
@@ -258,38 +247,6 @@ class Category extends ActiveRecord
             ->orderBy(['id' => SORT_ASC]);
     }
 
-    /**
-     * @return static[]
-     */
-    public static function findCategories(): array
-    {
-        return static::find()
-            ->selectSiteAttributes()
-            ->whereStatus()
-            ->indexBy('id')
-            ->all();
-    }
-
-    /**
-     * @return static[]
-     */
-    public static function getCategories(): array
-    {
-        if (static::$_categories === null) {
-            $dependency = new TagDependency(['tags' => static::CATEGORIES_CACHE_KEY]);
-            static::$_categories = static::getModule()->categoryCachedQueryDuration > 0 ? static::getDb()->cache(static::findCategories(...), static::getModule()->categoryCachedQueryDuration, $dependency) : static::findCategories();
-        }
-
-        return static::$_categories;
-    }
-
-    public static function invalidateCategoriesCache(): void
-    {
-        if (static::getModule()->categoryCachedQueryDuration > 0) {
-            TagDependency::invalidate(Yii::$app->getCache(), static::CATEGORIES_CACHE_KEY);
-        }
-    }
-
     public function updateEntryOrder(array $entryIds): void
     {
         $entries = $this->getEntryCategories()
@@ -317,7 +274,7 @@ class Category extends ActiveRecord
                 return $category;
             }
 
-            foreach (static::getCategories() as $category) {
+            foreach (CategoryCollection::getAll() as $category) {
                 if ($category->getI18nAttribute('slug') == $slug && ($category->parent_id == $parentId)) {
                     return $category;
                 }

@@ -2,19 +2,49 @@
 
 namespace davidhirtz\yii2\cms\models;
 
+use davidhirtz\yii2\cms\modules\ModuleTrait;
+use Yii;
+use yii\caching\TagDependency;
+
 class CategoryCollection
 {
-    protected static ?array $_categories = null;
+    use ModuleTrait;
+
+    public const CACHE_KEY = 'category-collection';
+
+    private static ?array $_categories = null;
 
     /**
      * @return Category[]
      */
-    public static function getAll(): array
+    public static function getAll(bool $refresh = false): array
     {
-        static::$_categories ??= Category::find()
-            ->indexBy('id')
-            ->all();
+        if(null === static::$_categories || $refresh) {
+            $dependency = new TagDependency(['tags' => static::CACHE_KEY]);
+            $duration = static::getModule()->categoryCachedQueryDuration;
+
+            static::$_categories = $duration > 0
+                ? Yii::$app->getDb()->cache(static::findAll(...), $duration, $dependency)
+                : static::findAll();
+        }
 
         return static::$_categories;
+    }
+
+    protected static function findAll(): array
+    {
+        return Category::find()
+            ->selectSiteAttributes()
+            ->replaceI18nAttributes()
+            ->whereStatus()
+            ->indexBy('id')
+            ->all();
+    }
+
+    public static function invalidateCache(): void
+    {
+        if (static::getModule()->categoryCachedQueryDuration > 0) {
+            TagDependency::invalidate(Yii::$app->getCache(), CategoryCollection::CACHE_KEY);
+        }
     }
 }
