@@ -355,7 +355,7 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
             'entry_id' => Yii::t('cms', 'Entry'),
             'name' => Yii::t('cms', 'Title'),
             'content' => Yii::t('cms', 'Content'),
-            'asset_count' => Yii::t('cms', 'Assets'),
+            'asset_count' => Yii::t('media', 'Files'),
         ]);
     }
 }

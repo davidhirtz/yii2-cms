@@ -26,21 +26,22 @@ class EntryActiveForm extends ActiveForm
     public function init(): void
     {
         $this->fields ??= [
-            $this->statusField(...),
-            $this->typeField(...),
-            $this->parentIdField(...),
-            $this->nameField(...),
-            $this->contentField(...),
-            $this->publishDateField(...),
+            'status',
+            'type',
+            'parentId',
+            'name',
+            'content',
+            'publishDate',
             '-',
-            $this->titleField(...),
-            $this->descriptionField(...),
-            $this->slugField(...),
+            'title',
+            'description',
+            'slug',
         ];
 
         parent::init();
     }
 
+    /** @noinspection PhpUnused {@see static::$fields} */
     public function parentIdField(): ActiveField|string
     {
         if (!static::getModule()->enableNestedEntries
@@ -52,6 +53,7 @@ class EntryActiveForm extends ActiveForm
         return $this->field($this->model, 'parent_id')->dropDownList($this->getParentIdItems(), $this->getParentIdOptions());
     }
 
+    /** @noinspection PhpUnused {@see static::$fields} */
     public function publishDateField(): ActiveField|string
     {
         return $this->field($this->model, 'publish_date')->widget(DateTimeInput::class);

@@ -23,20 +23,21 @@ class CategoryActiveForm extends ActiveForm
     public function init(): void
     {
         $this->fields ??= [
-            $this->statusField(...),
-            $this->parentIdField(...),
-            $this->typeField(...),
-            $this->nameField(...),
-            $this->contentField(...),
+            'status',
+            'parentId',
+            'type',
+            'name',
+            'content',
             '-',
-            $this->titleField(...),
-            $this->descriptionField(...),
-            $this->slugField(...),
+            'title',
+            'description',
+            'slug',
         ];
 
         parent::init();
     }
 
+    /** @noinspection PhpUnused {@see static::$fields} */
     public function parentIdField(array $options = []): ActiveField|string
     {
         if (static::getModule()->enableNestedCategories) {
