@@ -14,47 +14,31 @@ use yii\widgets\ActiveField;
  */
 class SectionActiveForm extends ActiveForm
 {
-    /**
-     * @var bool
-     */
     public bool $hasStickyButtons = true;
 
     /**
      * @var int|false
      */
-    public $maxBaseUrlLength = 70;
+    public int|false $maxBaseUrlLength = 70;
 
-    /**
-     * @inheritdoc
-     */
     public function init(): void
     {
-        if (!$this->fields) {
-            $this->fields = [
-                'status',
-                'type',
-                'name',
-                'content',
-                'slug',
-            ];
-        }
+        $this->fields ??= [
+            'status',
+            'type',
+            'name',
+            'content',
+            'slug',
+        ];
 
         parent::init();
     }
 
-    /**
-     * @param array $options
-     * @return string|ActiveField
-     */
     public function slugField(array $options = []): ActiveField|string
     {
         return $this->showSlugField() ? parent::slugField($options) : '';
     }
 
-    /**
-     * @param string|null $language
-     * @return string
-     */
     public function getSlugBaseUrl(?string $language = null): string
     {
         $draftHostInfo = Yii::$app->getRequest()->getDraftHostInfo();
@@ -70,9 +54,6 @@ class SectionActiveForm extends ActiveForm
         return $url;
     }
 
-    /**
-     * @return bool
-     */
     protected function showSlugField(): bool
     {
         return $this->model->entry->getRoute() !== false;

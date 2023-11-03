@@ -12,3 +12,4 @@ CHANGELOG
   and `davidhirtz\yii2\cms\admin\widgets\nav` to `davidhirtz\yii2\cms\admin\widgets\navs`
 - Changed namespaces for `LinkButtonTrait` and `UpdateFileButtonTrait`
   to `davidhirtz\yii2\cms\admin\widgets\panels\traits`
+- Removed `CategoryTrait` in favor of `davidhirtz\yii2\cms\models\collections\CategoryCollection`

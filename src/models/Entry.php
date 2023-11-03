@@ -65,44 +65,47 @@ class Entry extends ActiveRecord implements AssetParentInterface
 
     public function rules(): array
     {
-        return array_merge(parent::rules(), $this->getI18nRules([
-            [
-                ['name'],
-                'required',
-            ],
-            [
-                ['slug'],
-                'required',
-                'when' => fn(): bool => $this->isSlugRequired()
-            ],
-            [
-                ['name', 'slug', 'title', 'description', 'content'],
-                'trim',
-            ],
-            [
-                ['name', 'title', 'description'],
-                'string',
-                'max' => 250,
-            ],
-            [
-                ['parent_id'],
-                ParentIdValidator::class,
-            ],
-            [
-                ['slug'],
-                'string',
-                'max' => static::SLUG_MAX_LENGTH,
-            ],
-            [
-                ['slug'],
-                $this->slugUniqueValidator,
-                'targetAttribute' => $this->slugTargetAttribute,
-            ],
-            [
-                $this->getI18nAttributeNames('publish_date'),
-                ...(array)$this->dateTimeValidator
-            ],
-        ]));
+        return [
+            ...parent::rules(),
+            ...$this->getI18nRules([
+                [
+                    ['name'],
+                    'required',
+                ],
+                [
+                    ['slug'],
+                    'required',
+                    'when' => fn(): bool => $this->isSlugRequired()
+                ],
+                [
+                    ['name', 'slug', 'title', 'description', 'content'],
+                    'trim',
+                ],
+                [
+                    ['name', 'title', 'description'],
+                    'string',
+                    'max' => 250,
+                ],
+                [
+                    ['parent_id'],
+                    ParentIdValidator::class,
+                ],
+                [
+                    ['slug'],
+                    'string',
+                    'max' => static::SLUG_MAX_LENGTH,
+                ],
+                [
+                    ['slug'],
+                    $this->slugUniqueValidator,
+                    'targetAttribute' => $this->slugTargetAttribute,
+                ],
+                [
+                    ['publish_date'],
+                    ...(array)$this->dateTimeValidator
+                ],
+            ]),
+        ];
     }
 
     public function beforeValidate(): bool
@@ -527,12 +530,12 @@ class Entry extends ActiveRecord implements AssetParentInterface
     {
         return [
             ...parent::attributeLabels(),
-            'parent_id' => Yii::t('cms', 'Parent'),
+            'parent_id' => Yii::t('cms', 'Parent entry'),
             'slug' => Yii::t('cms', 'Url'),
             'title' => Yii::t('cms', 'Meta title'),
             'description' => Yii::t('cms', 'Meta description'),
             'publish_date' => Yii::t('cms', 'Published'),
-            'entry_count' => Yii::t('cms', 'Entries'),
+            'entry_count' => Yii::t('cms', 'Subentries'),
             'section_count' => Yii::t('cms', 'Sections')
         ];
     }

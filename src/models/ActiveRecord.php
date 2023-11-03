@@ -96,12 +96,10 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         ]);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function rules(): array
     {
-        return array_merge(parent::rules(), [
+        return [
+            ...parent::rules(),
             [
                 ['status', 'type'],
                 DynamicRangeValidator::class,
@@ -111,7 +109,7 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
                 $this->getI18nAttributesNames(['content']),
                 ...(array)($this->contentType == 'html' && $this->htmlValidator ? $this->htmlValidator : 'safe'),
             ],
-        ]);
+        ];
     }
 
     public function beforeValidate(): bool

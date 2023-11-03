@@ -181,7 +181,7 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
 
         return [
             [
-                'label' => Yii::t('cms', 'Entries'),
+                'label' => Yii::t('cms', 'Subentries'),
                 'url' => ['/admin/entry/index', 'parent' => $entry->id],
                 'active' => ['admin/entry/index'],
                 'icon' => 'book',
@@ -329,8 +329,9 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
                     $view->setBreadcrumb($category->getI18nAttribute('name'), $category->getAdminRoute());
                 }
             }
-
-            $view->setBreadcrumb($this->model->getI18nAttribute('name'), $this->model->getAdminRoute());
+            if (!$this->model->getIsNewRecord()) {
+                $view->setBreadcrumb($this->model->getI18nAttribute('name'), $this->model->getAdminRoute());
+            }
         }
     }
 

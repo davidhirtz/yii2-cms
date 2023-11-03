@@ -2,10 +2,8 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\widgets\grids;
 
-use app\models\Entry;
 use davidhirtz\yii2\cms\models\EntryCategory;
 use davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider;
-use davidhirtz\yii2\cms\modules\admin\widgets\CategoryTrait;
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\traits\CategoryGridTrait;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\cms\models\Category;
@@ -22,7 +20,6 @@ use yii\db\ActiveRecordInterface;
 class EntryCategoryGridView extends GridView
 {
     use CategoryGridTrait;
-    use CategoryTrait;
     use ModuleTrait;
 
     /**

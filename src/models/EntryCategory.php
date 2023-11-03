@@ -141,9 +141,6 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         return $this->category->update();
     }
 
-    /**
-     * Inserts ascending categories.
-     */
     public function insertCategoryAncestors(): void
     {
         if ($categories = $this->category->getAncestors()) {

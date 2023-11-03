@@ -2,11 +2,11 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\widgets\grids;
 
+use davidhirtz\yii2\cms\models\CategoryCollection;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\modules\admin\controllers\EntryCategoryController;
 use davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider;
 use davidhirtz\yii2\cms\models\Category;
-use davidhirtz\yii2\cms\modules\admin\widgets\CategoryTrait;
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\columns\AssetCountColumn;
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\columns\EntryCountColumn;
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\columns\SectionCountColumn;
@@ -27,7 +27,6 @@ use yii\helpers\Url;
  */
 class EntryGridView extends GridView
 {
-    use CategoryTrait;
     use ModuleTrait;
     use StatusGridViewTrait;
     use TypeGridViewTrait;
@@ -79,7 +78,7 @@ class EntryGridView extends GridView
         }
 
         $enableCategories = static::getModule()->enableCategories;
-        $this->showCategories ??= $enableCategories && count(static::getCategories()) > 0;
+        $this->showCategories ??= $enableCategories && count(CategoryCollection::getAll()) > 0;
 
         if ($this->showCategoryDropdown) {
             $this->showCategoryDropdown = $enableCategories;
@@ -193,7 +192,7 @@ class EntryGridView extends GridView
                     : Yii::t('cms', '[ No title ]');
 
                 $html = Html::a($html, $this->getRoute($entry), [
-                    'class' => $name ? 'strong' : 'text-muted',
+                    'class' => $name ? 'strong' : 'strong text-muted',
                 ]);
 
                 if ($this->showUrl) {
@@ -305,7 +304,7 @@ class EntryGridView extends GridView
     {
         $items = [];
 
-        foreach (static::getCategories() as $category) {
+        foreach (CategoryCollection::getAll() as $category) {
             $items[] = [
                 'label' => $this->getNestedCategoryNames()[$category->id],
                 'url' => $category->hasEntriesEnabled() ? Url::current(['category' => $category->id, 'page' => null]) : null,
@@ -320,7 +319,7 @@ class EntryGridView extends GridView
         $categoryIds = $entry->getCategoryIds();
         $categories = [];
 
-        foreach (static::getCategories() as $category) {
+        foreach (CategoryCollection::getAll() as $category) {
             if ($category->hasEntriesEnabled() && in_array($category->id, $categoryIds)) {
                 $categories[] = Html::a(Html::encode($category->getI18nAttribute('name')), Url::current(['category' => $category->id]), ['class' => 'btn btn-secondary btn-sm']);
             }
@@ -354,7 +353,7 @@ class EntryGridView extends GridView
     public function getNestedCategoryNames(): array
     {
         if ($this->_categoryNames === null) {
-            $this->_categoryNames = Category::indentNestedTree(static::getCategories(), Category::instance()->getI18nAttributeName('name'));
+            $this->_categoryNames = Category::indentNestedTree(CategoryCollection::getAll(), Category::instance()->getI18nAttributeName('name'));
         }
 
         return $this->_categoryNames;

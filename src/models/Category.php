@@ -403,7 +403,7 @@ class Category extends ActiveRecord
         return [
             ...parent::attributeLabels(),
             'name' => Yii::t('cms', 'Name'),
-            'parent_id' => Yii::t('cms', 'Category'),
+            'parent_id' => Yii::t('cms', 'Parent category'),
             'slug' => Yii::t('cms', 'Url'),
             'title' => Yii::t('cms', 'Meta title'),
             'description' => Yii::t('cms', 'Meta description'),

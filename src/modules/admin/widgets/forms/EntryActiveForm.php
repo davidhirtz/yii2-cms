@@ -26,16 +26,16 @@ class EntryActiveForm extends ActiveForm
     public function init(): void
     {
         $this->fields ??= [
-            $this->statusField(),
-            $this->typeField(),
-            $this->parentIdField(),
-            $this->nameField(),
-            $this->contentField(),
-            $this->publishDateField(),
+            $this->statusField(...),
+            $this->typeField(...),
+            $this->parentIdField(...),
+            $this->nameField(...),
+            $this->contentField(...),
+            $this->publishDateField(...),
             '-',
-            $this->titleField(),
-            $this->descriptionField(),
-            $this->slugField(),
+            $this->titleField(...),
+            $this->descriptionField(...),
+            $this->slugField(...),
         ];
 
         parent::init();
@@ -49,7 +49,7 @@ class EntryActiveForm extends ActiveForm
             return '';
         }
 
-        return $this->field($this->model, 'parent_id')->dropdownList($this->getParentIdItems(), $this->getParentIdOptions());
+        return $this->field($this->model, 'parent_id')->dropDownList($this->getParentIdItems(), $this->getParentIdOptions());
     }
 
     public function publishDateField(): ActiveField|string

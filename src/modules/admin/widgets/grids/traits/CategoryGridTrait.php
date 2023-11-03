@@ -4,6 +4,7 @@ namespace davidhirtz\yii2\cms\modules\admin\widgets\grids\traits;
 
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider;
+use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grids\columns\CounterColumn;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grids\traits\StatusGridViewTrait;
@@ -19,6 +20,7 @@ trait CategoryGridTrait
 {
     use StatusGridViewTrait;
     use TypeGridViewTrait;
+    use ModuleTrait;
 
     /**
      * @var string|null the format used to format the date values.
@@ -56,7 +58,7 @@ trait CategoryGridTrait
                     : Yii::t('cms', '[ No title ]');
 
                 $html = Html::a($html, $this->getRoute($category), [
-                    'class' => $name ? 'strong' : 'text-muted',
+                    'class' => $name ? 'strong' : 'strong text-muted',
                 ]);
 
                 if ($this->showCategoryAncestors($category)) {
