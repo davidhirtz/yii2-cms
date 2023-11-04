@@ -4,8 +4,7 @@ namespace davidhirtz\yii2\cms\widgets;
 
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\Section;
-use Yii;
-use yii\base\Widget;
+use davidhirtz\yii2\skeleton\widgets\Widget;
 
 /**
  * SectionsView renders {@see Section} models. Sections will be rendered in their template set by `viewFile` or their
@@ -140,17 +139,12 @@ class Sections extends Widget
             $sections = array_filter($sections, $this->isVisible);
         }
 
-        return !$viewFile || !$sections ? '' : $this->render($viewFile, [...$this->viewParams, 'sections' => $sections]);
+        return !$viewFile || !$sections ? '' : $this->getView()->render($viewFile, [...$this->viewParams, 'sections' => $sections]);
     }
 
     protected function getSectionViewFile(Section $section): string
     {
         return $section->getViewFile() ?: $this->viewFile;
-    }
-
-    public function getViewPath(): ?string
-    {
-        return Yii::$app->controller->getViewPath();
     }
 
     protected function hasSameViewFile(Section $section, ?Section $prevSection): bool

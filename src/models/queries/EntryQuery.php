@@ -121,33 +121,6 @@ class EntryQuery extends ActiveQuery
         return $this->andWhere([$this->getI18nAttributeName('slug') => trim($slug, '/')]);
     }
 
-    public function withAssets(): static
-    {
-        return $this->with([
-            'assets' => function (AssetQuery $query) {
-                if (!isset($this->with['sections'])) {
-                    $query->andWhere(['section_id' => null]);
-                }
-
-                $query->selectSiteAttributes()
-                    ->replaceI18nAttributes()
-                    ->whereStatus()
-                    ->withFiles();
-            },
-        ]);
-    }
-
-    public function withSections(): static
-    {
-        return $this->with([
-            'sections' => function (SectionQuery $query) {
-                $query->selectSiteAttributes()
-                    ->replaceI18nAttributes()
-                    ->whereStatus();
-            }
-        ]);
-    }
-
     public function withSitemapAssets(): static
     {
         return $this->with([

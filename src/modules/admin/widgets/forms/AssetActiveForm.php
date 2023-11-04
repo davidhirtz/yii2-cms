@@ -6,9 +6,6 @@ use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\media\modules\admin\widgets\forms\traits\AssetFieldsTrait;
 
 /**
- * AssetActiveForm is a widget that builds an interactive HTML form for {@see Asset}. By default, it implements fields
- * for all safe attributes defined in the model.
- *
  * @property Asset $model
  */
 class AssetActiveForm extends ActiveForm
@@ -17,11 +14,15 @@ class AssetActiveForm extends ActiveForm
 
     public function init(): void
     {
-        $this->fields ??= array_diff($this->getDefaultFieldNames(), [
-            'file_id',
-            'entry_id',
-            'section_id',
-        ]);
+        $this->fields ??= [
+            'status',
+            'type',
+            'name',
+            'content',
+            'alt_text',
+            'link',
+            'embed_url',
+        ];
 
         parent::init();
     }

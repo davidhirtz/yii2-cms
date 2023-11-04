@@ -9,8 +9,8 @@ use davidhirtz\yii2\cms\modules\admin\Module;
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\AssetParentGridView;
 use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\media\models\interfaces\AssetInterface;
-use davidhirtz\yii2\media\models\File;
 use davidhirtz\yii2\media\models\traits\AssetTrait;
+use davidhirtz\yii2\media\models\traits\EmbedUrlTrait;
 use davidhirtz\yii2\skeleton\helpers\ArrayHelper;
 use Yii;
 
@@ -24,6 +24,7 @@ use Yii;
  * @property string|null $content
  * @property string|null $alt_text
  * @property string|null $link
+ * @property string|null $embed_url
  * @property int|null $updated_by_user_id
  * @property DateTime $updated_at
  * @property DateTime $created_at
@@ -33,47 +34,44 @@ use Yii;
 class Asset extends ActiveRecord implements AssetInterface
 {
     use AssetTrait;
+    use EmbedUrlTrait;
     use EntryRelationTrait;
     use SectionRelationTrait;
 
+    /**
+     * The section validation needs to be called before the entry validation. As it sets the necessary entry relation
+     * for the entry validation to work.
+     */
     public function rules(): array
     {
         return [
             ...parent::rules(),
+            ...$this->getI18nRules([
+                [
+                    ['name', 'alt_text', 'link', 'embed_url'],
+                    'string',
+                    'max' => 250,
+                ],
+                [
+                    ['embed_url'],
+                    $this->validateEmbedUrl(...),
+                ]
+            ]),
             [
                 ['section_id'],
                 $this->validateSectionId(...),
-            ],
-            [
-                ['file_id', 'entry_id'],
-                'required',
             ],
             [
                 ['entry_id'],
                 $this->validateEntryId(...),
             ],
             [
-                $this->getI18nAttributesNames(['name', 'alt_text', 'link']),
-                'string',
-                'max' => 250,
-            ]
+                ['file_id', 'entry_id'],
+                'required',
+            ],
         ];
     }
 
-    public function beforeValidate(): bool
-    {
-        if ($this->autoplayLinkAttributeName) {
-            $this->validateAutoplayLink();
-        }
-
-        return parent::beforeValidate();
-    }
-
-    /**
-     * Validates section relation and sets entry relation, thus this needs to be called before entry validation. As
-     * this method gets skipped on empty `section_id`, this only sets the relation while
-     * {@see Section::validateEntryId()} will validate the section's entry_id.
-     */
     public function validateSectionId(): void
     {
         if ($this->section) {
@@ -173,43 +171,25 @@ class Asset extends ActiveRecord implements AssetInterface
     public function getSitemapUrl(string $language): array|false
     {
         if ($this->includeInSitemap($language)) {
+            $content = $this->getI18nAttribute('content');
+
+            if ($this->contentType == 'html') {
+                $content = strip_tags((string)$content);
+            }
+
             return array_filter([
                 'loc' => $this->file->getUrl(),
                 'title' => $this->getAltText(),
-                'caption' => ($content = $this->getI18nAttribute('content')) && $this->contentType == 'html' ?
-                    strip_tags((string)$content) :
-                    $content,
+                'caption' => $content,
             ]);
         }
 
         return false;
     }
 
-    /**
-     * Includes only assets which are considered an image.
-     *
-     * @param null $language
-     * @return bool
-     */
     public function includeInSitemap($language = null): bool
     {
         return $this->isEnabled() && $this->file->hasPreview();
-    }
-
-    /**
-     * @return array
-     */
-    public function getTrailParents(): array
-    {
-        return $this->isSectionAsset() ? [$this->section, $this->entry, $this->file] : [$this->entry, $this->file];
-    }
-
-    /**
-     * @return string
-     */
-    public function getTrailModelType(): string
-    {
-        return Yii::t('cms', 'Asset');
     }
 
     public function getParent(): Entry|Section
@@ -247,25 +227,26 @@ class Asset extends ActiveRecord implements AssetInterface
         return false;
     }
 
-    /**
-     * @return bool
-     */
+    public function getTrailModelType(): string
+    {
+        return Yii::t('cms', 'Asset');
+    }
+
+    public function getTrailParents(): array
+    {
+        return array_filter([$this->section, $this->entry, $this->file]);
+    }
+
     public function isEntryAsset(): bool
     {
         return !$this->section_id;
     }
 
-    /**
-     * @return bool
-     */
     public function isSectionAsset(): bool
     {
         return (bool)$this->section_id;
     }
 
-    /**
-     * @return array
-     */
     public function attributeLabels(): array
     {
         return [
@@ -273,13 +254,11 @@ class Asset extends ActiveRecord implements AssetInterface
             'section_id' => Yii::t('cms', 'Section'),
             'file_id' => Yii::t('media', 'File'),
             'alt_text' => Yii::t('cms', 'Alt text'),
-            'link' => Yii::t('cms', 'Link')
+            'link' => Yii::t('cms', 'Link'),
+            'embed_url' => Yii::t('cms', 'Embed URL'),
         ];
     }
 
-    /**
-     * @inheritDoc
-     */
     public static function tableName(): string
     {
         return static::getModule()->getTableName('cms_asset');

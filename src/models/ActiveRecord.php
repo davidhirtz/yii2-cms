@@ -14,7 +14,6 @@ use davidhirtz\yii2\skeleton\db\I18nAttributesTrait;
 use davidhirtz\yii2\skeleton\db\StatusAttributeTrait;
 use davidhirtz\yii2\skeleton\db\TypeAttributeTrait;
 use davidhirtz\yii2\skeleton\models\traits\UpdatedByUserTrait;
-use davidhirtz\yii2\skeleton\models\User;
 use davidhirtz\yii2\skeleton\validators\DynamicRangeValidator;
 use davidhirtz\yii2\skeleton\validators\HtmlValidator;
 use davidhirtz\yii2\skeleton\validators\UniqueValidator;
@@ -23,19 +22,15 @@ use Yii;
 use yii\db\ActiveRecordInterface;
 use yii\helpers\Inflector;
 
-
 /**
- * ActiveRecord is the base class for all `davidhirtz/yii2-cms` active record classes.
- *
  * @property int $id
  * @property int $status
  * @property int $type
- * @property string $content
- * @property int|false $position
+ * @property string|null $content
+ * @property int|null $position
  * @property int $updated_by_user_id
  * @property DateTime $updated_at
  * @property DateTime $created_at
- * @property User $updated
  */
 abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
 {
@@ -82,16 +77,13 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
      */
     private ?bool $_isSlugRequired = null;
 
-    /**
-     * @inheritDoc
-     */
     public function behaviors(): array
     {
         return array_merge(parent::behaviors(), [
             'DateTimeBehavior' => DateTimeBehavior::class,
             'TrailBehavior' => [
                 'class' => TrailBehavior::class,
-                'modelClass' => static::class . (static::getModule()->enableI18nTables ? ('::' . Yii::$app->language) : ''),
+                'modelClass' => static::getModule()->getI18nClassName(static::class),
             ],
         ]);
     }
@@ -213,9 +205,6 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         return $urls;
     }
 
-    /**
-     * @return void
-     */
     public function ensureSlug(string $attribute = 'name'): void
     {
         if ($this->isSlugRequired()) {

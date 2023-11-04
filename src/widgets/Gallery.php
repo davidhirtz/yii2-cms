@@ -6,7 +6,7 @@ use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\skeleton\widgets\Widget;
 use yii\helpers\Html;
 
-class Assets extends Widget
+class Gallery extends Widget
 {
     /**
      * @var Asset[]
