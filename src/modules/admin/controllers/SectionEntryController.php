@@ -2,8 +2,8 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\controllers;
 
-use app\models\Entry;
 use davidhirtz\yii2\cms\models\Category;
+use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\SectionEntry;
 use davidhirtz\yii2\cms\modules\admin\controllers\traits\SectionTrait;
 use davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider;

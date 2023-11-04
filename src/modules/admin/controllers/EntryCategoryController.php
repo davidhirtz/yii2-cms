@@ -3,7 +3,6 @@
 namespace davidhirtz\yii2\cms\modules\admin\controllers;
 
 use davidhirtz\yii2\cms\models\Category;
-use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\EntryCategory;
 use davidhirtz\yii2\cms\modules\admin\controllers\traits\CategoryTrait;
 use davidhirtz\yii2\cms\modules\admin\controllers\traits\EntryTrait;
@@ -51,21 +50,14 @@ class EntryCategoryController extends Controller
         ]);
     }
 
-    public function actionIndex(
-        int $entry,
-        ?int $category = null,
-        ?int $parent = null,
-        ?int $type = null,
-        ?string $q = null
-    ): string {
+    public function actionIndex(int $entry, ?int $category = null, ?string $q = null): string
+    {
         $entry = $this->findEntry($entry, 'entryUpdate');
 
         $provider = Yii::$container->get(CategoryActiveDataProvider::class, [], [
             'entry' => $entry,
             'category' => Category::findOne($category),
-            'parent' => Entry::findOne($parent),
             'searchString' => $q,
-            'type' => $type,
         ]);
 
         return $this->render('index', [

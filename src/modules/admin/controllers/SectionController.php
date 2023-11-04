@@ -219,12 +219,19 @@ class SectionController extends Controller
         }
     }
 
-    public function actionEntries(int $id, ?int $category = null, ?int $type = null, ?string $q = null): Response|string
+    public function actionEntries(
+        int $id,
+        ?int $category = null,
+        ?int $parent = null,
+        ?int $type = null,
+        ?string $q = null
+    ): Response|string
     {
         $section = $this->findSection($id, 'sectionUpdate');
 
         $provider = Yii::$container->get(EntryActiveDataProvider::class, [], [
             'category' => Category::findOne($category),
+            'parent' => $parent ? Entry::findOne($parent) : null,
             'searchString' => $q,
             'type' => $type,
         ]);
