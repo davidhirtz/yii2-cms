@@ -150,7 +150,7 @@ trait CategoryGridTrait
 
     /**
      * Sets ancestors for all categories to avoid each record loading its ancestors from the database.
-     * If no parent category is set simply set all loaded models and let {@link Category::setAncestors}
+     * If no parent category is set simply set all loaded models and let {@see Category::setAncestors}
      * work it's magic.
      */
     protected function initAncestors(): void

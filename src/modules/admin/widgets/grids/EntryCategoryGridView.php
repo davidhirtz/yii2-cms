@@ -14,7 +14,7 @@ use davidhirtz\yii2\skeleton\widgets\fontawesome\Icon;
 use yii\db\ActiveRecordInterface;
 
 /**
- * Displays a grid of {@link Category} models linked via {@link EntryCategory}.
+ * Displays a grid of {@see Category} models linked via {@see EntryCategory}.
  * @property CategoryActiveDataProvider $dataProvider
  */
 class EntryCategoryGridView extends GridView
@@ -23,7 +23,7 @@ class EntryCategoryGridView extends GridView
     use ModuleTrait;
 
     /**
-     * @var string the category param name used in urls on {@link CategoryGridTrait}
+     * @var string the category param name used in urls on {@see CategoryGridTrait}
      */
     public string $categoryParamName = 'category';
 

@@ -26,7 +26,7 @@ class SectionController extends Controller
     use ModuleTrait;
 
     /**
-     * @var bool whether sections should be automatically inserted in {@link static::actionCreate()}.
+     * @var bool whether sections should be automatically inserted in {@see static::actionCreate()}.
      */
     public bool $autoCreateSection = true;
 

@@ -21,7 +21,7 @@ use yii\db\ActiveRecordInterface;
 use yii\helpers\Url;
 
 /**
- * Displays a grid of {@link Entry} models.
+ * Displays a grid of {@see Entry} models.
  * @property EntryActiveDataProvider $dataProvider
  */
 class EntryGridView extends GridView
@@ -36,7 +36,7 @@ class EntryGridView extends GridView
     public bool $showUrl = true;
 
     /**
-     * @var bool|null whether category column should be visible when {@link EntryActiveDataProvider::$type} is null
+     * @var bool|null whether category column should be visible when {@see EntryActiveDataProvider::$type} is null
      */
     public ?bool $showCategories = null;
 
@@ -73,7 +73,7 @@ class EntryGridView extends GridView
     public function init(): void
     {
         if ($this->dataProvider->category) {
-            /** {@link EntryCategoryController::actionOrder()} */
+            /** {@see EntryCategoryController::actionOrder()} */
             $this->orderRoute = ['entry-category/order', 'category' => $this->dataProvider->category->id];
         }
 

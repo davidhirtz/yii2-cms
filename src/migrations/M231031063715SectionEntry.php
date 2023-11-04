@@ -12,7 +12,7 @@ use Yii;
 use yii\db\Migration;
 
 /**
- * Creates the {@link SectionEntry} table if it does not exist due to a previous custom implementation.
+ * Creates the {@see SectionEntry} table if it does not exist due to a previous custom implementation.
  * @since 2.0.0
  *
  * @noinspection PhpUnused

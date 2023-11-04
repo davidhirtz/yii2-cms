@@ -11,7 +11,7 @@ use Yii;
 use yii\db\ActiveRecordInterface;
 
 /**
- * Displays a grid of {@link Entry} models linked to the given {@link Section} record.
+ * Displays a grid of {@see Entry} models linked to the given {@see Section} record.
  */
 class SectionLinkedEntryGridView extends EntryGridView
 {

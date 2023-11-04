@@ -9,7 +9,7 @@ use davidhirtz\yii2\skeleton\widgets\fontawesome\Icon;
 use Yii;
 
 /**
- * Displays a grid of {@link Entry} models that can be linked to the given {@link Section} record.
+ * Displays a grid of {@see Entry} models that can be linked to the given {@see Section} record.
  */
 class SectionEntryGridView extends EntryGridView
 {

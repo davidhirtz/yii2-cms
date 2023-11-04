@@ -15,7 +15,7 @@ use yii\data\ArrayDataProvider;
 use yii\helpers\StringHelper;
 
 /**
- * Displays a grid of {@link Section} models for given {@link Entry}.
+ * Displays a grid of {@see Section} models for given {@see Entry}.
  * @property ActiveDataProvider $dataProvider
  */
 class SectionGridView extends GridView

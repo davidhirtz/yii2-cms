@@ -110,7 +110,7 @@ class Section extends ActiveRecord implements AssetParentInterface
     }
 
     /**
-     * Updates related entries after save if {@link Section::getIsBatch} is false.
+     * Updates related entries after save if {@see Section::getIsBatch} is false.
      *
      * @param bool $insert
      * @param array $changedAttributes

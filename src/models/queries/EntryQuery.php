@@ -84,7 +84,7 @@ class EntryQuery extends ActiveQuery
 
     /**
      * Prepends alias to inner join to allow multiple categories. Keeps original table name for single joins to use of
-     * {@link Category::getEntryOrderBy()} order.
+     * {@see Category::getEntryOrderBy()} order.
      */
     protected function innerJoinWithEntryCategory(int $categoryId, bool $eagerLoading = false, bool $useAlias = false): static
     {

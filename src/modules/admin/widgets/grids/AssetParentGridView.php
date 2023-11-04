@@ -13,7 +13,7 @@ use Yii;
 use yii\db\ActiveRecordInterface;
 
 /**
- * Displays all {@see Asset} models related to given {@link File}.
+ * Displays all {@see Asset} models related to given {@see File}.
  */
 class AssetParentGridView extends GridView
 {

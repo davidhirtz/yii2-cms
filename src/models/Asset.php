@@ -72,7 +72,7 @@ class Asset extends ActiveRecord implements AssetInterface
     /**
      * Validates section relation and sets entry relation, thus this needs to be called before entry validation. As
      * this method gets skipped on empty `section_id`, this only sets the relation while
-     * {@link Section::validateEntryId()} will validate the section's entry_id.
+     * {@see Section::validateEntryId()} will validate the section's entry_id.
      */
     public function validateSectionId(): void
     {

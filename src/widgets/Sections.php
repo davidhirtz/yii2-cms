@@ -8,8 +8,8 @@ use Yii;
 use yii\base\Widget;
 
 /**
- * SectionsView renders {@link Section} models. Sections will be rendered in their template set by `viewFile` or their
- * {@link Section::getViewFile()} method grouped by adjacent sections with the same template.
+ * SectionsView renders {@see Section} models. Sections will be rendered in their template set by `viewFile` or their
+ * {@see Section::getViewFile()} method grouped by adjacent sections with the same template.
  */
 class Sections extends Widget
 {
@@ -40,7 +40,7 @@ class Sections extends Widget
 
     /**
      * @var callable|null an anonymous function with the signature `function ($section)`, where `$section` is the
-     * {@link Section} object that you can modify in the function.
+     * {@see Section} object that you can modify in the function.
      */
     public mixed $isVisible = null;
 

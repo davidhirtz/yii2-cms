@@ -13,7 +13,7 @@ use davidhirtz\yii2\skeleton\widgets\fontawesome\Icon;
 use Yii;
 
 /**
- * Displays a grid of {@link Category} models.
+ * Displays a grid of {@see Category} models.
  * @property CategoryActiveDataProvider $dataProvider
  */
 class CategoryGridView extends GridView
@@ -22,7 +22,7 @@ class CategoryGridView extends GridView
     use ModuleTrait;
 
     /**
-     * @var string the category param name used in urls on {@link CategoryGridTrait}.
+     * @var string the category param name used in urls on {@see CategoryGridTrait}.
      */
     public string $categoryParamName = 'id';
 

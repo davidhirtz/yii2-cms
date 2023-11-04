@@ -10,12 +10,12 @@ use davidhirtz\yii2\skeleton\widgets\fontawesome\Icon;
 use Yii;
 
 /**
- * Displays a grid of {@link Entry} models to move or copy the given {@link Section} record to.
+ * Displays a grid of {@see Entry} models to move or copy the given {@see Section} record to.
  */
 class SectionParentEntryGridView extends EntryGridView
 {
     /**
-     * @var Section|null see {@link SectionController::actionEntries()}
+     * @var Section|null see {@see SectionController::actionEntries()}
      */
     public ?Section $section = null;
 

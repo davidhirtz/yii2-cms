@@ -33,11 +33,11 @@ use yii\db\ActiveQuery;
  * @property int $section_count
  * @property int $asset_count
  *
- * @property-read Asset[] $assets {@link static::getAssets()}
- * @property-read EntryCategory $entryCategory {@link static::getEntryCategory()}
- * @property-read EntryCategory[] $entryCategories {@link static::getEntryCategories()}
- * @property-read SectionEntry $sectionEntry {@link static::getSectionEntry()}
- * @property-read Section[] $sections {@link static::getSections()}
+ * @property-read Asset[] $assets {@see static::getAssets()}
+ * @property-read EntryCategory $entryCategory {@see static::getEntryCategory()}
+ * @property-read EntryCategory[] $entryCategories {@see static::getEntryCategories()}
+ * @property-read SectionEntry $sectionEntry {@see static::getSectionEntry()}
+ * @property-read Section[] $sections {@see static::getSections()}
  */
 class Entry extends ActiveRecord implements AssetParentInterface
 {
@@ -448,7 +448,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
 
     /**
      * Extends the default XML sitemap url by image URLs if related assets were found. This is automatically the
-     * case if {@link Module::$enableImageSitemaps} is set to `true`.
+     * case if {@see Module::$enableImageSitemaps} is set to `true`.
      */
     public function getSitemapUrl(string $language): false|array
     {

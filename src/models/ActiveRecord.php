@@ -78,7 +78,7 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     public array|string|null $slugTargetAttribute = null;
 
     /**
-     * @var bool {@link ActiveRecord::isSlugRequired()}
+     * @var bool {@see ActiveRecord::isSlugRequired()}
      */
     private ?bool $_isSlugRequired = null;
 
@@ -243,8 +243,8 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     }
 
     /**
-     * Returns an array of languages used for I18N URLs. This is only intended for {@link ActiveRecord::$i18nAttributes}
-     * tables and not for {@link Module::$enableI18nTables} as the website structure might be different and thus rather
+     * Returns an array of languages used for I18N URLs. This is only intended for {@see ActiveRecord::$i18nAttributes}
+     * tables and not for {@see Module::$enableI18nTables} as the website structure might be different and thus rather
      * single sitemaps per language should be submitted.
      *
      * @return array

@@ -114,8 +114,8 @@ class Category extends ActiveRecord
 
     /**
      * On parent id change all related entries (linked to this category as well as to the child categories)
-     * need to be added to the new parent categories, if {@link \davidhirtz\yii2\cms\Module::$inheritNestedCategories}
-     * is true. Previous parent {@link EntryCategory} relations will not be deleted.
+     * need to be added to the new parent categories, if {@see \davidhirtz\yii2\cms\Module::$inheritNestedCategories}
+     * is true. Previous parent {@see EntryCategory} relations will not be deleted.
      */
     public function afterSave($insert, $changedAttributes): void
     {
@@ -175,7 +175,7 @@ class Category extends ActiveRecord
     }
 
     /**
-     * Inserts related {@link EntryCategory} records to this records ancestor categories. This method is called after
+     * Inserts related {@see EntryCategory} records to this records ancestor categories. This method is called after
      * the parent id was changed and can insert quite a lot of records. This might need to be overridden on applications
      * with MANY entry-category relations.
      */
@@ -209,8 +209,8 @@ class Category extends ActiveRecord
     }
 
     /**
-     * Deletes all related entry categories before the {@link EntryCategory} records would be deleted by the database's
-     * foreign key relation. This enables recalculating the related record as well as adding {@link Trail} records.
+     * Deletes all related entry categories before the {@see EntryCategory} records would be deleted by the database's
+     * foreign key relation. This enables recalculating the related record as well as adding {@see Trail} records.
      * This might need to be overridden on applications with MANY entry-category relations.
      */
     protected function deleteEntryCategories(): void
