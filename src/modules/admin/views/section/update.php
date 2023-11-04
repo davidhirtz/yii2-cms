@@ -48,7 +48,7 @@ $this->setTitle(Yii::t('cms', 'Edit Section'));
 <?php if ($section->hasEntriesEnabled()) {
     echo Panel::widget([
         'id' => 'entries',
-        'title' => $section->getAttributeLabel('entry_count'),
+        'title' => Yii::t('cms', 'Linked entries'),
         'content' => SectionLinkedEntryGridView::widget([
             'section' => $section,
         ]),

@@ -2,66 +2,65 @@
 
 namespace davidhirtz\yii2\cms\controllers;
 
-use davidhirtz\yii2\cms\models\Category;
+use davidhirtz\yii2\cms\models\builders\EntrySiteRelationsBuilder;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\queries\EntryQuery;
 use davidhirtz\yii2\media\Module;
 use davidhirtz\yii2\skeleton\web\Controller;
+use Yii;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 /**
- * Class SiteController.
- * @package davidhirtz\yii2\cms\controllers
- *
  * @property Module $module
  */
 class SiteController extends Controller
 {
 
-    /**
-     * @todo
-     */
-    public function actionIndex(?string $category = null): Response|string
+    public function actionIndex(): Response|string
     {
-        $category = Category::getBySlug($category);
-        $entries = [];
-
-        /** @noinspection MissedViewInspection */
-        return $this->render('index', [
-            'category' => $category,
-            'entries' => $entries,
-        ]);
+        return $this->actionView(Entry::HOME_SLUG);
     }
 
     public function actionView(string $entry): Response|string
     {
-        $entry = $this->getQuery()
-            ->whereSlug($entry)
-            ->withAssets()
-            ->withSections()
-            ->limit(1)
-            ->one();
+        $entry = $this->findEntry($entry);
+        $this->populateEntryRelations($entry);
 
-        if (!$entry?->getRoute()) {
-            throw new NotFoundHttpException();
-        }
-
-        $entry->populateAssetRelations();
-
-        /** @noinspection MissedViewInspection */
         return $this->render('view', [
             'entry' => $entry,
         ]);
     }
 
-    /**
-     * @return EntryQuery
-     */
-    protected function getQuery()
+    protected function findEntry(string $slug): ?Entry
     {
+        $slug = $this->getQuery()
+            ->whereSlug($slug)
+            ->limit(1)
+            ->one();
+
+        if (!$slug?->getRoute()) {
+            throw new NotFoundHttpException();
+        }
+
+        return $slug;
+    }
+
+    protected function populateEntryRelations(Entry $entry): void
+    {
+        Yii::createObject([
+            'class' => EntrySiteRelationsBuilder::class,
+            'entry' => $entry,
+        ]);
+    }
+
+    protected function getQuery(): EntryQuery
+    {
+        $status = Yii::$app->getRequest()->getIsDraft() ? Entry::STATUS_DRAFT : Entry::STATUS_ENABLED;
+
         return Entry::find()
             ->selectSiteAttributes()
-            ->replaceI18nAttributes();
+            ->replaceI18nAttributes()
+            ->whereStatus($status);
     }
 }

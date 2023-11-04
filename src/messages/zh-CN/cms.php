@@ -65,6 +65,7 @@ return [
     'Link' => '',
     'Link assets' => '',
     'Link entries' => '',
+    'Linked entries' => '',
     'Meta description' => '',
     'Meta title' => '',
     'Move / Copy' => '',

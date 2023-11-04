@@ -52,7 +52,7 @@ class SectionLinkedEntryGridView extends EntryGridView
     {
         $route = ['section-entry/index', 'section' => $this->dataProvider->section->id];
 
-        return Html::a(Html::iconText('link', Yii::t('cms', 'Add entries')), $route, [
+        return Html::a(Html::iconText('link', Yii::t('cms', 'Link entries')), $route, [
             'class' => 'btn btn-primary',
         ]);
     }

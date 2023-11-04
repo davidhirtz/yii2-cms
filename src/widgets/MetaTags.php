@@ -9,82 +9,60 @@ use davidhirtz\yii2\skeleton\web\View;
 use Yii;
 use yii\base\BaseObject;
 
-/**
- * Class MetaTags.
- * @package davidhirtz\yii2\cms\widgets
- */
 class MetaTags extends BaseObject
 {
     use ModuleTrait;
 
-    /**
-     * @var Category|Entry
-     */
-    public $model;
+    public Category|Entry|null $model;
 
     /**
-     * @var array
+     * @var array|null
      */
-    public $languages;
+    public ?array $languages = null;
 
     /**
      * @var bool whether href links should be registered, defaults to `true`.
      */
-    public $enableHrefLangLinks = true;
+    public bool $enableHrefLangLinks = true;
 
     /**
      * @var bool whether the canonical url should be registered, defaults to `false`.
      */
-    public $enableCanonicalUrl = false;
+    public bool $enableCanonicalUrl = false;
 
     /**
      * @var bool whether assets should be registered as meta images
      */
-    public $enableImages = true;
+    public bool $enableImages = true;
 
     /**
      * @var bool whether social meta tags should be registered as meta images
      */
-    public $enableSocialMetaTags = true;
+    public bool $enableSocialMetaTags = true;
 
     /**
-     * @var int the asset type for meta images, if empty all assets of the entry will be included
+     * @var int|null the asset type for meta images, if empty all assets of the entry will be included
      */
-    public $assetType;
+    public ?int $assetType = null;
 
     /**
-     * @var string the transformation for the meta images, if empty the original asset file will
-     * be included
+     * @var string|null the transformation for the meta-images, if null, the original asset file will be included
      */
-    public $transformationName;
-
-    /**
-     * @var string|bool
-     */
-    public $ogType = 'website';
+    public ?string $transformationName = null;
 
     /**
      * @var string|bool
      */
-    public $twitterCard = 'summary_large_image';
+    public string|false $ogType = 'website';
 
     /**
-     * @var View
+     * @var string|bool
      */
-    private $_view;
+    public string|false $twitterCard = 'summary_large_image';
 
-    /**
-     * @param array $config
-     */
-    public static function register($config = [])
-    {
-        (new static($config))->run();
-    }
+    private ?View $_view = null;
 
-    /**
-     * @inheritDoc
-     */
-    public function init()
+    public function init(): void
     {
         if ($this->enableImages) {
             $this->enableImages = $this->model instanceof Entry && static::getModule()->enableEntryAssets;
@@ -105,13 +83,10 @@ class MetaTags extends BaseObject
         parent::init();
     }
 
-    /**
-     * Registers all meta tags.
-     */
-    public function run()
+    public function run(): void
     {
-        $this->setTitle();
-        $this->setDescription();
+        $this->setDocumentTitle();
+        $this->setMetaDescription();
 
         if ($this->enableHrefLangLinks) {
             $this->registerHrefLangLinkTags();
@@ -130,31 +105,25 @@ class MetaTags extends BaseObject
         }
     }
 
-    /**
-     * Sets title.
-     */
-    public function setTitle()
+    protected function setDocumentTitle(): void
     {
-        $this->getView()->setTitle($this->model->getI18nAttribute('title') ?: $this->model->getI18nAttribute('name'));
+        $this->getView()->setTitle($this->model->getI18nAttribute('title')
+            ?: $this->model->getI18nAttribute('name'));
     }
 
-    /**
-     * Sets description.
-     */
-    public function setDescription()
+    protected function setMetaDescription(): void
     {
-        $this->getView()->setDescription($this->model->getI18nAttribute('description') ?: $this->model->getI18nAttribute('content'));
+        $this->getView()->setMetaDescription($this->model->getI18nAttribute('description')
+            ?: $this->model->getI18nAttribute('content'));
     }
 
-    /**
-     * Registers href language tags.
-     */
-    public function registerHrefLangLinkTags()
+    public function registerHrefLangLinkTags(): void
     {
         foreach ($this->languages as $language) {
             Yii::$app->getI18n()->callback($language, function () use ($language) {
                 if ($route = $this->model->getRoute()) {
-                    $this->getView()->registerHrefLangLinkTag($language, Yii::$app->getUrlManager()->createAbsoluteUrl($route, true));
+                    $url = Yii::$app->getUrlManager()->createAbsoluteUrl($route, true);
+                    $this->getView()->registerHrefLangLinkTag($language, $url);
                 }
             });
         }
@@ -162,28 +131,19 @@ class MetaTags extends BaseObject
         $this->registerDefaultHrefLangLinkTag();
     }
 
-    /**
-     * Registers default language tag.
-     */
-    public function registerDefaultHrefLangLinkTag()
+    public function registerDefaultHrefLangLinkTag(): void
     {
         $this->getView()->registerDefaultHrefLangLinkTag(Yii::$app->getUrlManager()->defaultLanguage);
     }
 
-    /**
-     * Registers canonical url.
-     */
-    public function registerCanonicalUrlTags()
+    public function registerCanonicalUrlTags(): void
     {
         if ($route = $this->model->getRoute()) {
             $this->getView()->registerCanonicalTag(Yii::$app->getUrlManager()->createAbsoluteUrl($route));
         }
     }
 
-    /**
-     * Registers social meta tags.
-     */
-    public function registerSocialMetaTags()
+    public function registerSocialMetaTags(): void
     {
         if ($this->ogType) {
             $this->getView()->registerOpenGraphMetaTags($this->ogType);
@@ -198,10 +158,7 @@ class MetaTags extends BaseObject
         }
     }
 
-    /**
-     * Registers images.
-     */
-    public function registerImageMetaTags()
+    public function registerImageMetaTags(): void
     {
         foreach ($this->model->assets as $asset) {
             if (!$asset->section_id && (!$this->assetType || $this->assetType == $asset->type)) {
@@ -219,23 +176,20 @@ class MetaTags extends BaseObject
         }
     }
 
-    /**
-     * @return View
-     */
-    public function getView()
+    public function getView(): View
     {
-        if ($this->_view === null) {
-            $this->_view = Yii::$app->controller->getView();
-        }
-
+        $this->_view ??= Yii::$app->controller->getView();
         return $this->_view;
     }
 
-    /**
-     * @param \yii\base\View $view
-     */
-    public function setView($view)
+    /** @noinspection PhpUnused */
+    public function setView(View $view): void
     {
         $this->_view = $view;
+    }
+
+    public static function register(array $config = []): void
+    {
+        Yii::createObject(static::class, $config)->run();
     }
 }

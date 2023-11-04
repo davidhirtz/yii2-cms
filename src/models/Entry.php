@@ -43,6 +43,8 @@ class Entry extends ActiveRecord implements AssetParentInterface
 {
     use MaterializedTreeTrait;
 
+    public const HOME_SLUG = 'home';
+
     /**
      * @var string|false the content type of the entry defaults to `false`.
      */
@@ -434,7 +436,13 @@ class Entry extends ActiveRecord implements AssetParentInterface
 
     public function getRoute(): false|array
     {
-        return array_filter(['/cms/site/view', 'entry' => $this->getFormattedSlug()]);
+        if (!$this->hasRoute()) {
+            return false;
+        }
+
+        return !$this->isHome()
+            ? array_filter(['/cms/site/view', 'entry' => $this->getFormattedSlug()])
+            : ['/cms/site/index'];
     }
 
     /**
@@ -510,6 +518,16 @@ class Entry extends ActiveRecord implements AssetParentInterface
     public function hasSectionsEnabled(): bool
     {
         return static::getModule()->enableSections;
+    }
+
+    public function hasRoute(): bool
+    {
+        return $this->section_count > 0;
+    }
+
+    public function isHome(): bool
+    {
+        return $this->slug == static::HOME_SLUG;
     }
 
     public function attributeLabels(): array

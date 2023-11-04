@@ -65,6 +65,7 @@ return [
     'Link' => 'Link',
     'Link assets' => 'Dateien verknüpfen',
     'Link entries' => 'Einträge verknüpfen',
+    'Linked entries' => 'Verknüpfte Einträge',
     'Meta description' => 'Meta Beschreibung',
     'Meta title' => 'Meta Titel',
     'Move / Copy' => 'Verschieben / Kopieren',

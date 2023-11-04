@@ -1,7 +1,6 @@
 <?php
 /**
- * Asset file grid.
- * @see \davidhirtz\yii2\cms\modules\admin\controllers\AssetController::actionIndex()
+ * @see AssetController::actionIndex()
  *
  * @var View $this
  * @var ActiveDataProvider $provider
@@ -10,6 +9,7 @@
 
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\Section;
+use davidhirtz\yii2\cms\modules\admin\controllers\AssetController;
 use davidhirtz\yii2\cms\modules\admin\widgets\navs\Submenu;
 use davidhirtz\yii2\media\modules\admin\widgets\grids\FileGridView;
 use davidhirtz\yii2\skeleton\web\View;

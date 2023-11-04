@@ -39,14 +39,11 @@ class SectionsView extends Widget
      * @var callable|null an anonymous function with the signature `function ($section)`, where `$section` is the
      * {@link Section} object that you can modify in the function.
      */
-    public mixed $isVisible;
+    public mixed $isVisible = null;
 
     public function init(): void
     {
-        if ($this->entry) {
-            $this->sections = $this->entry->sections;
-        }
-
+        $this->sections ??= $this->entry?->sections;
         parent::init();
     }
 
@@ -132,9 +129,7 @@ class SectionsView extends Widget
 
     protected function renderSectionsInternal(array $sections, ?string $viewFile = null): string
     {
-        if ($viewFile === null) {
-            $viewFile = $this->getSectionViewFile(current($sections));
-        }
+        $viewFile ??= $this->getSectionViewFile(current($sections));
 
         if (is_callable($this->isVisible)) {
             $sections = array_filter($sections, $this->isVisible);
@@ -148,9 +143,6 @@ class SectionsView extends Widget
         return $section->getViewFile() ?: $this->viewFile;
     }
 
-    /**
-     * Override Widget::getViewPath() to set current controller's context.
-     */
     public function getViewPath(): ?string
     {
         return Yii::$app->controller->getViewPath();

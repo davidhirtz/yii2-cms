@@ -7,71 +7,29 @@ use Yii;
 use yii\base\Widget;
 use yii\helpers\Html;
 
-/**
- * Class AssetsView.
- * @package davidhirtz\yii2\cms\widgets
- */
 class AssetsView extends Widget
 {
     /**
      * @var Asset[]
      */
-    public $assets;
+    public ?array $assets = null;
 
-    /**
-     * @var int number of assets to skip
-     */
-    public $start;
+    public ?int $start = null;
+    public ?int $limit = null;
+    public array $viewParams = [];
+    public string $viewFile = '_assets';
 
-    /**
-     * @var int number of assets to show
-     */
-    public $limit;
+    public array $options = [];
+    public array $wrapperOptions = [];
 
-    /**
-     * @var array containing additional view parameters.
-     */
-    public $viewParams = [];
+    public array $viewports = [
+        'hidden-sm' => [Asset::TYPE_DEFAULT, Asset::TYPE_VIEWPORT_MOBILE],
+        'hidden block-sm' => [Asset::TYPE_DEFAULT, Asset::TYPE_VIEWPORT_DESKTOP]
+    ];
 
-    /**
-     * @var string
-     */
-    public $viewFile = '_assets';
+    protected array $sharedViewports = [];
 
-    /**
-     * @var array
-     */
-    public $wrapperOptions = [];
-
-    /**
-     * @var array containing CSS class as key and related asset types as value.
-     *
-     * [
-     *     'hidden-sm' => [Asset::TYPE_DEFAULT, Asset::TYPE_VIEWPORT_MOBILE],
-     *     'hidden block-sm' => [Asset::TYPE_DEFAULT, Asset::TYPE_VIEWPORT_DESKTOP],
-     * ]
-     */
-    public $viewports = [];
-
-    /**
-     * @var array
-     */
-    public $options = [];
-
-    /**
-     * @var string slider class that will be applied if there is more than one item.
-     */
-    public $sliderClass = 'slider';
-
-    /**
-     * @var array containing asset type as key and an array of shared types as value.
-     */
-    protected $sharedViewports = [];
-
-    /**
-     * Finds assets types that are represented in more than one viewport.
-     */
-    public function init()
+    public function init(): void
     {
         if ($this->viewports) {
             foreach ($this->viewports as $viewport) {
@@ -82,10 +40,7 @@ class AssetsView extends Widget
         parent::init();
     }
 
-    /**
-     * @return string
-     */
-    public function run()
+    public function run(): string
     {
         $viewports = $this->getAssetsByViewports();
         $output = '';
@@ -108,11 +63,7 @@ class AssetsView extends Widget
         return $output;
     }
 
-    /**
-     * @param Asset[] $assets
-     * @return string
-     */
-    protected function renderAssetsInternal($assets)
+    protected function renderAssetsInternal(array $assets): string
     {
         if ($assets) {
             $content = $this->render($this->viewFile, [...$this->viewParams, 'assets' => $assets]);
@@ -127,7 +78,7 @@ class AssetsView extends Widget
     /**
      * @return Asset[][]
      */
-    public function getAssetsByViewports()
+    public function getAssetsByViewports(): array
     {
         $sameViewport = true;
         $viewports = [];
@@ -150,24 +101,15 @@ class AssetsView extends Widget
     }
 
     /**
-     * @param array $options
      * @param Asset[] $assets
-     * @return array|false
+     * @noinspection PhpUnusedParameterInspection
      */
-    protected function prepareOptions($options, $assets)
+    protected function prepareOptions(array $options, array $assets = []): array
     {
-        if (count($assets) > 1 && $this->sliderClass) {
-            Html::addCssClass($options, $this->sliderClass);
-        }
-
         return $options;
     }
 
-    /**
-     * Override Widget::getViewPath() to set current controller's context.
-     * @return array|string
-     */
-    public function getViewPath()
+    public function getViewPath(): ?string
     {
         return Yii::$app->controller->getViewPath();
     }
