@@ -13,7 +13,7 @@ class MetaTags extends BaseObject
 {
     use ModuleTrait;
 
-    public Category|Entry|null $model;
+    public Category|Entry|null $model = null;
 
     /**
      * @var array|null
