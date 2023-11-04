@@ -8,7 +8,7 @@ use davidhirtz\yii2\cms\models\traits\SectionRelationTrait;
 use davidhirtz\yii2\cms\modules\admin\Module;
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\AssetParentGridView;
 use davidhirtz\yii2\datetime\DateTime;
-use davidhirtz\yii2\media\models\AssetInterface;
+use davidhirtz\yii2\media\models\interfaces\AssetInterface;
 use davidhirtz\yii2\media\models\File;
 use davidhirtz\yii2\media\models\traits\AssetTrait;
 use davidhirtz\yii2\skeleton\helpers\ArrayHelper;
@@ -30,7 +30,7 @@ use Yii;
  *
  * @property File $file
  */
-class Asset extends ActiveRecord implements AssetInterface
+class Asset extends ActiveRecord implements \davidhirtz\yii2\media\models\interfaces\AssetInterface
 {
     use AssetTrait;
     use EntryRelationTrait;

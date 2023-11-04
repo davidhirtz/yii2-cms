@@ -15,8 +15,6 @@ class AssetActiveForm extends ActiveForm
 {
     use AssetFieldsTrait;
 
-    public bool $hasStickyButtons = true;
-
     public function init(): void
     {
         $this->fields ??= array_diff($this->getDefaultFieldNames(), [

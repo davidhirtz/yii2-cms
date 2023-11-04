@@ -8,8 +8,8 @@ use davidhirtz\yii2\cms\modules\admin\widgets\grids\columns\AssetThumbnailColumn
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\media\assets\AdminAsset;
-use davidhirtz\yii2\media\models\AssetInterface;
-use davidhirtz\yii2\media\models\AssetParentInterface;
+use davidhirtz\yii2\media\models\interfaces\AssetInterface;
+use davidhirtz\yii2\media\models\interfaces\AssetParentInterface;
 use davidhirtz\yii2\media\modules\admin\widgets\grids\traits\UploadTrait;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grids\GridView;

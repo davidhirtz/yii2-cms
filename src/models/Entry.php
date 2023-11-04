@@ -9,7 +9,7 @@ use davidhirtz\yii2\cms\models\validators\ParentIdValidator;
 use davidhirtz\yii2\cms\Module;
 use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\datetime\DateTimeValidator;
-use davidhirtz\yii2\media\models\AssetParentInterface;
+use davidhirtz\yii2\media\models\interfaces\AssetParentInterface;
 use davidhirtz\yii2\skeleton\behaviors\RedirectBehavior;
 use davidhirtz\yii2\skeleton\db\MaterializedTreeTrait;
 use davidhirtz\yii2\skeleton\helpers\ArrayHelper;
@@ -43,21 +43,16 @@ class Entry extends ActiveRecord implements AssetParentInterface
 {
     use MaterializedTreeTrait;
 
-    public const HOME_SLUG = 'home';
-
-    /**
-     * @var string|false the content type of the entry defaults to `false`.
-     */
     public string|false $contentType = false;
-
-    /**
-     * @var array|string the validator used to verify the publishing date.
-     */
     public array|string $dateTimeValidator = DateTimeValidator::class;
+    public array|string|null $slugTargetAttribute = ['slug', 'parent_slug'];
 
     public function behaviors(): array
     {
-        return [...parent::behaviors(), 'RedirectBehavior' => RedirectBehavior::class];
+        return [
+            ...parent::behaviors(),
+            'RedirectBehavior' => RedirectBehavior::class,
+        ];
     }
 
     public function rules(): array
@@ -387,6 +382,14 @@ class Entry extends ActiveRecord implements AssetParentInterface
         $this->parent_id = $parent?->id;
     }
 
+    /**
+     * @param Section[]|null $sections
+     */
+    public function populateSectionRelations(?array $sections = null): void
+    {
+        $this->populateRelation('sections', $sections);
+    }
+
     public function recalculateCategoryIds(): static
     {
         $this->category_ids = ArrayHelper::createCacheString($this->getEntryCategories()
@@ -440,7 +443,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
             return false;
         }
 
-        return !$this->isHome()
+        return !$this->isIndex()
             ? array_filter(['/cms/site/view', 'entry' => $this->getFormattedSlug()])
             : ['/cms/site/index'];
     }
@@ -463,6 +466,13 @@ class Entry extends ActiveRecord implements AssetParentInterface
         }
 
         return $url;
+    }
+
+    public function getStatusIcon(): string
+    {
+        return !$this->isIndex() || !$this->isEnabled()
+            ? parent::getStatusIcon()
+            : 'home';
     }
 
     public function getTrailAttributes(): array
@@ -525,9 +535,9 @@ class Entry extends ActiveRecord implements AssetParentInterface
         return $this->section_count > 0;
     }
 
-    public function isHome(): bool
+    public function isIndex(): bool
     {
-        return $this->slug == static::HOME_SLUG;
+        return ($slug = static::getModule()->entryIndexSlug) && $this->slug == $slug;
     }
 
     public function attributeLabels(): array

@@ -6,9 +6,8 @@ use davidhirtz\yii2\cms\models\queries\AssetQuery;
 use davidhirtz\yii2\cms\models\queries\EntryQuery;
 use davidhirtz\yii2\cms\models\queries\SectionQuery;
 use davidhirtz\yii2\cms\models\traits\EntryRelationTrait;
-use davidhirtz\yii2\cms\modules\admin\widgets\grids\SectionGridView;
 use davidhirtz\yii2\datetime\DateTime;
-use davidhirtz\yii2\media\models\AssetParentInterface;
+use davidhirtz\yii2\media\models\interfaces\AssetParentInterface;
 use davidhirtz\yii2\skeleton\db\ActiveQuery;
 use davidhirtz\yii2\skeleton\helpers\ArrayHelper;
 use davidhirtz\yii2\skeleton\models\Trail;
@@ -332,10 +331,6 @@ class Section extends ActiveRecord implements AssetParentInterface
         }
     }
 
-    /**
-     * Updates related asset relations after the section was moved to another entry. Override this method if assets
-     * should be further manipulated after the section's entry was changed.
-     */
     protected function updateRelatedAssets(): void
     {
         if ($this->asset_count) {
@@ -365,9 +360,6 @@ class Section extends ActiveRecord implements AssetParentInterface
         return Yii::t('cms', 'Section');
     }
 
-    /**
-     * @return string|null custom name for {@link SectionGridView::nameColumn()}
-     */
     public function getNameColumnContent(): ?string
     {
         if (isset(static::getTypes()[$this->type]['nameColumn'])) {

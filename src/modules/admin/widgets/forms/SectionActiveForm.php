@@ -8,19 +8,18 @@ use yii\helpers\Html;
 use yii\widgets\ActiveField;
 
 /**
- * Renders an active form for the {@link Section} model.
- *
  * @property Section $model
  */
 class SectionActiveForm extends ActiveForm
 {
-    public bool $hasStickyButtons = true;
-
-    /**
-     * @var int|false
-     */
     public int|false $maxBaseUrlLength = 70;
 
+    /**
+     * @uses static::statusField()
+     * @uses static::typeField()
+     * @uses static::contentField()
+     * @uses static::slugField()
+     */
     public function init(): void
     {
         $this->fields ??= [
@@ -43,7 +42,10 @@ class SectionActiveForm extends ActiveForm
     {
         $draftHostInfo = Yii::$app->getRequest()->getDraftHostInfo();
         $urlManager = Yii::$app->getUrlManager();
-        $route = array_merge($this->model->entry->getRoute(), ['language' => $urlManager->i18nUrl || $urlManager->i18nSubdomain ? $language : null, '#' => '']);
+
+        $route = array_merge($this->model->entry->getRoute(), [
+            'language' => $urlManager->i18nUrl || $urlManager->i18nSubdomain ? $language : null, '#' => '',
+        ]);
 
         $url = $this->model->entry->isEnabled() || !$draftHostInfo ? $urlManager->createAbsoluteUrl($route) : $urlManager->createDraftUrl($route);
 

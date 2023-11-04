@@ -2,6 +2,8 @@
 
 - Added `davidhirtz\yii2\cms\models\builders\EntrySiteRelationsBuilder` which loads all relations needed in the
   frontend `SiteController`
+- Added `entryIndexSlug` which automatically loads the entry index page in the frontend `SiteController::actionIndex()`
+- Added `enableUrlRules` to automatically register URL rules in the CMS Module config, defaults to `true`
 
 ## 2.0.0 (Nov 3, 2023)
 

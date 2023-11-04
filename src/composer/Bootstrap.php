@@ -46,6 +46,30 @@ class Bootstrap implements BootstrapInterface
             ],
         ]);
 
+        $this->addDefaultUrlRules();
+
         $app->setMigrationNamespace('davidhirtz\yii2\cms\migrations');
+    }
+
+    /**
+     * @see Module::$enableUrlRules
+     */
+    protected function addDefaultUrlRules(): void
+    {
+        if (Yii::$app->getModules()['cms']['enableUrlRules'] ?? true) {
+            Yii::$app->getUrlManager()->addRules($this->getDefaultUrlRules());
+        }
+    }
+
+    protected function getDefaultUrlRules(): array
+    {
+        return [
+            [
+                'route' => 'cms/site/view',
+                'pattern' => '<entry:.+>',
+                'encodeParams' => false,
+            ],
+            '' => 'cms/site/index',
+        ];
     }
 }

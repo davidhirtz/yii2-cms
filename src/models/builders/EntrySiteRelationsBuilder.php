@@ -68,7 +68,7 @@ class EntrySiteRelationsBuilder extends BaseObject
             }
         }
 
-        $this->entry->populateRelation('section', $sections);
+        $this->entry->populateSectionRelations($sections);
     }
 
     protected function loadSectionEntries(): void
