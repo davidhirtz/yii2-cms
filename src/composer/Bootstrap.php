@@ -66,7 +66,7 @@ class Bootstrap implements BootstrapInterface
         return [
             [
                 'route' => 'cms/site/view',
-                'pattern' => '<entry:.+>',
+                'pattern' => '<slug:.+>',
                 'encodeParams' => false,
             ],
             '' => 'cms/site/index',
