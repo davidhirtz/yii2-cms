@@ -439,13 +439,11 @@ class Entry extends ActiveRecord implements AssetParentInterface
 
     public function getRoute(): false|array
     {
-        if (!$this->hasRoute()) {
-            return false;
+        if ($this->isIndex()) {
+            return ['/cms/site/index'];
         }
-
-        return !$this->isIndex()
-            ? array_filter(['/cms/site/view', 'slug' => $this->getFormattedSlug()])
-            : ['/cms/site/index'];
+        
+        return $this->hasRoute() ? array_filter(['/cms/site/view', 'slug' => $this->getFormattedSlug()]) : false;
     }
 
     /**
@@ -522,7 +520,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
 
     public function hasParentEnabled(): bool
     {
-        return static::getModule()->enableNestedEntries;
+        return static::getModule()->enableNestedEntries && !$this->isIndex();
     }
 
     public function hasSectionsEnabled(): bool
