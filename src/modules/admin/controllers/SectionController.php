@@ -19,10 +19,6 @@ use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
-
-/**
- * Admin CRUD actions for {@see Section}.
- */
 class SectionController extends Controller
 {
     use EntryTrait;
@@ -30,7 +26,7 @@ class SectionController extends Controller
     use ModuleTrait;
 
     /**
-     * @var bool whether sections should be inserted directly in {@link static::actionCreate()}.
+     * @var bool whether sections should be automatically inserted in {@link static::actionCreate()}.
      */
     public bool $autoCreateSection = true;
 
@@ -225,8 +221,7 @@ class SectionController extends Controller
         ?int $parent = null,
         ?int $type = null,
         ?string $q = null
-    ): Response|string
-    {
+    ): Response|string {
         $section = $this->findSection($id, 'sectionUpdate');
 
         $provider = Yii::$container->get(EntryActiveDataProvider::class, [], [
