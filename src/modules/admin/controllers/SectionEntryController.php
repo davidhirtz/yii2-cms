@@ -2,6 +2,7 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\controllers;
 
+use app\models\Entry;
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\SectionEntry;
 use davidhirtz\yii2\cms\modules\admin\controllers\traits\SectionTrait;
@@ -44,15 +45,21 @@ class SectionEntryController extends Controller
         ]);
     }
 
-    public function actionIndex(int $section, ?int $category = null, ?int $parent = null, ?string $q = null, ?int $type = null): string
+    public function actionIndex(
+        int $section,
+        ?int $category = null,
+        ?int $parent = null,
+        ?string $q = null,
+        ?int $type = null
+    ): string
     {
         $section = $this->findSection($section, 'sectionUpdate');
 
         $provider = Yii::$container->get(EntryActiveDataProvider::class, [], [
-            'category' => $category ? Category::findOne($category) : null,
-            'innerJoinSection' => false,
-            //'parent' => $parent ? Entry::findOne($parent) : null,
             'section' => $section,
+            'innerJoinSection' => false,
+            'category' => $category ? Category::findOne($category) : null,
+            'parent' => $parent ? Entry::findOne($parent) : null,
             'searchString' => $q,
             'type' => $type,
         ]);

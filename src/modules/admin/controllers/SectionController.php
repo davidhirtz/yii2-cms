@@ -224,7 +224,7 @@ class SectionController extends Controller
         $section = $this->findSection($id, 'sectionUpdate');
 
         $provider = Yii::$container->get(EntryActiveDataProvider::class, [], [
-            'category' => $category ? Category::findOne((int)$category) : null,
+            'category' => Category::findOne($category),
             'searchString' => $q,
             'type' => $type,
         ]);
