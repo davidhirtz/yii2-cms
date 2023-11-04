@@ -9,6 +9,7 @@ use davidhirtz\yii2\cms\modules\admin\controllers\traits\SectionTrait;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\media\models\File;
+use davidhirtz\yii2\media\models\Folder;
 use davidhirtz\yii2\media\modules\admin\controllers\traits\FileTrait;
 use davidhirtz\yii2\media\modules\admin\data\FileActiveDataProvider;
 use davidhirtz\yii2\skeleton\web\Controller;
@@ -19,10 +20,6 @@ use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
-/**
- * Class AssetController
- * @package davidhirtz\yii2\cms\modules\admin\controllers
- */
 class AssetController extends Controller
 {
     use AssetTrait;
@@ -31,9 +28,6 @@ class AssetController extends Controller
     use ModuleTrait;
     use FileTrait;
 
-    /**
-     * @inheritDoc
-     */
     public function behaviors(): array
     {
         return array_merge(parent::behaviors(), [
@@ -72,54 +66,45 @@ class AssetController extends Controller
         ]);
     }
 
-    /**
-     * @param int|null $entry
-     * @param int|null $section
-     * @param int|null $folder
-     * @param int|null $type
-     * @param string|null $q
-     * @return string
-     */
-    public function actionIndex($entry = null, $section = null, $folder = null, $type = null, $q = null)
-    {
+    public function actionIndex(
+        ?int $entry = null,
+        ?int $section = null,
+        ?int $folder = null,
+        ?int $type = null,
+        ?string $q = null
+    ): Response|string {
         $parent = $section ? $this->findSection($section, 'sectionAssetUpdate') :
             $this->findEntry($entry, 'entryAssetUpdate');
 
         if ($parent instanceof Entry) {
-            // Populate assets without sections for file grid
             $parent->populateRelation('assets', $parent->getAssets()
                 ->withoutSections()
                 ->all());
         }
 
-        /** @var FileActiveDataProvider $provider */
-        $provider = Yii::createObject([
-            'class' => 'davidhirtz\yii2\media\modules\admin\data\FileActiveDataProvider',
-            'folderId' => $folder,
+        $provider = Yii::$container->get(FileActiveDataProvider::class, [], [
+            'folder' => Folder::findOne($folder),
             'type' => $type,
             'search' => $q,
         ]);
 
-        /** @noinspection MissedViewInspection */
         return $this->render('index', [
             'provider' => $provider,
             'parent' => $parent,
         ]);
     }
 
-    /**
-     * @param int|null $entry
-     * @param int|null $section
-     * @param int|null $file
-     * @param int|null $folder
-     * @return string|Response
-     */
-    public function actionCreate($entry = null, $section = null, $file = null, $folder = null)
+    public function actionCreate(
+        ?int $entry = null,
+        ?int $section = null,
+        ?int $file = null,
+        ?int $folder = null
+    ): Response|string
     {
         $request = Yii::$app->getRequest();
         $user = Yii::$app->getUser();
 
-        if(!($file = File::findOne($file) ?: $this->insertFileFromRequest($folder))) {
+        if (!($file = File::findOne($file) ?: $this->insertFileFromRequest($folder))) {
             return '';
         }
 
@@ -146,10 +131,7 @@ class AssetController extends Controller
         return $this->redirectToParent($asset);
     }
 
-    /**
-     * @return string|Response
-     */
-    public function actionUpdate(int $id)
+    public function actionUpdate(int $id): Response|string
     {
         $asset = $this->findAsset($id, 'assetUpdate');
 
@@ -169,11 +151,7 @@ class AssetController extends Controller
         ]);
     }
 
-    /**
-     * @param int $id
-     * @return string|Response
-     */
-    public function actionDelete($id)
+    public function actionDelete(int $id): Response|string
     {
         $asset = $this->findAsset($id, 'assetDelete');
 
@@ -190,11 +168,7 @@ class AssetController extends Controller
         throw new BadRequestHttpException(reset($errors));
     }
 
-    /**
-     * @param int|null $entry
-     * @param int|null $section
-     */
-    public function actionOrder($entry = null, $section = null)
+    public function actionOrder(?int $entry = null, ?int $section = null): void
     {
         $parent = $section ? $this->findSection($section, 'sectionAssetOrder') :
             $this->findEntry($entry, 'entryAssetOrder');
@@ -206,11 +180,7 @@ class AssetController extends Controller
         }
     }
 
-    /**
-     * @param bool $isDeleted
-     * @return Response
-     */
-    private function redirectToParent(Asset $asset, $isDeleted = false)
+    private function redirectToParent(Asset $asset, bool $isDeleted = false): Response
     {
         $route = $asset->section_id ? ['/admin/section/update', 'id' => $asset->section_id] : ['/admin/entry/update', 'id' => $asset->entry_id];
         return $this->redirect($route + ['#' => $isDeleted ? 'assets' : ('asset-' . $asset->id)]);

@@ -23,11 +23,6 @@ class Module extends \yii\base\Module
     public bool $enableCategories = false;
 
     /**
-     * @var int|false duration in seconds for the caching the Category::getCategories() category query
-     */
-    public int|false $categoryCachedQueryDuration = 60;
-
-    /**
      * @var bool whether categories should be stored in a nested tree
      */
     public bool $enableNestedCategories = true;
@@ -64,6 +59,16 @@ class Module extends \yii\base\Module
     public bool $enableSectionEntries = false;
 
     /**
+     * @var bool whether image assets should be added to CML sitemap URLs
+     */
+    public bool $enableImageSitemaps = false;
+
+    /**
+     * @var bool whether the default url rules should be loaded automatically, defaults to true
+     */
+    public bool $enableUrlRules = true;
+
+    /**
      * @var array|null the default sort order when neither type nor category previously applied an order
      */
     public ?array $defaultEntryOrderBy = null;
@@ -74,9 +79,16 @@ class Module extends \yii\base\Module
     public ?int $defaultEntryType = null;
 
     /**
-     * @var bool whether image assets should be added to CML sitemap URLs
+     * @var int|false duration in seconds for caching the category query
+     * @see CategoryCollection::getCategories()
      */
-    public bool $enableImageSitemaps = false;
+    public int|false $categoryCachedQueryDuration = 60;
+
+    /**
+     * @var string|false the default entry slug that will be omitted from the url and redirected to the index action.
+     * Set false to disable this feature.
+     */
+    public string|false $entryIndexSlug = 'home';
 
     public function init(): void
     {

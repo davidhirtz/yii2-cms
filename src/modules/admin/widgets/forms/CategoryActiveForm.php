@@ -4,7 +4,6 @@ namespace davidhirtz\yii2\cms\modules\admin\widgets\forms;
 
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\CategoryCollection;
-use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\skeleton\widgets\fontawesome\ActiveField;
 use Yii;
 use yii\helpers\ArrayHelper;
@@ -14,12 +13,16 @@ use yii\helpers\ArrayHelper;
  */
 class CategoryActiveForm extends ActiveForm
 {
-    use ModuleTrait;
-
     public int $slugMaxLength = 20;
 
-    public bool $hasStickyButtons = true;
-
+    /**
+     * @uses static::statusField()
+     * @uses static::parentIdField()
+     * @uses static::typeField()
+     * @uses static::contentField()
+     * @uses static::descriptionField()
+     * @uses static::slugField()
+     */
     public function init(): void
     {
         $this->fields ??= [
@@ -37,7 +40,6 @@ class CategoryActiveForm extends ActiveForm
         parent::init();
     }
 
-    /** @noinspection PhpUnused {@see static::$fields} */
     public function parentIdField(array $options = []): ActiveField|string
     {
         if (static::getModule()->enableNestedCategories) {
@@ -70,10 +72,6 @@ class CategoryActiveForm extends ActiveForm
         return '';
     }
 
-    /**
-     * @param string|null $language
-     * @return string
-     */
     public function getSlugBaseUrl(?string $language = null): string
     {
         if ($route = $this->model->getRoute()) {

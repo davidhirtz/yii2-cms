@@ -6,6 +6,7 @@ use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\Section;
+use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\forms\traits\ModelTimestampTrait;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\forms\traits\ContentFieldTrait;
@@ -21,11 +22,13 @@ use yii\widgets\ActiveField;
 class ActiveForm extends \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm
 {
     use ModelTimestampTrait;
+    use ModuleTrait;
     use ContentFieldTrait;
     use StatusFieldTrait;
     use TypeFieldTrait;
 
-    /** @noinspection PhpUnused {@see static::$fields} */
+    public bool $hasStickyButtons = true;
+
     public function descriptionField(array $options = []): ActiveField|string
     {
         return $this->field($this->model, 'description', $options)->textarea();

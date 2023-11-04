@@ -118,8 +118,7 @@ class EntryQuery extends ActiveQuery
             ]);
         }
 
-        $attribute = $this->getI18nAttributeName('slug');
-        return $this->andWhere([Entry::tableName() . ".[[$attribute]]" => trim($slug, '/')]);
+        return $this->andWhere([$this->getI18nAttributeName('slug') => trim($slug, '/')]);
     }
 
     public function withAssets(): static

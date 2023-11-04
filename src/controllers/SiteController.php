@@ -5,7 +5,7 @@ namespace davidhirtz\yii2\cms\controllers;
 use davidhirtz\yii2\cms\models\builders\EntrySiteRelationsBuilder;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\queries\EntryQuery;
-use davidhirtz\yii2\media\Module;
+use davidhirtz\yii2\cms\Module;
 use davidhirtz\yii2\skeleton\web\Controller;
 use Yii;
 use yii\web\NotFoundHttpException;
@@ -16,15 +16,16 @@ use yii\web\Response;
  */
 class SiteController extends Controller
 {
-
     public function actionIndex(): Response|string
     {
-        return $this->actionView(Entry::HOME_SLUG);
+        return $this->module->entryIndexSlug
+            ? $this->actionView($this->module->entryIndexSlug)
+            : '';
     }
 
-    public function actionView(string $entry): Response|string
+    public function actionView(string $slug): Response|string
     {
-        $entry = $this->findEntry($entry);
+        $entry = $this->findEntry($slug);
         $this->populateEntryRelations($entry);
 
         return $this->render('view', [
@@ -34,16 +35,16 @@ class SiteController extends Controller
 
     protected function findEntry(string $slug): ?Entry
     {
-        $slug = $this->getQuery()
+        $entry = $this->getQuery()
             ->whereSlug($slug)
             ->limit(1)
             ->one();
 
-        if (!$slug?->getRoute()) {
+        if (!$entry?->getRoute()) {
             throw new NotFoundHttpException();
         }
 
-        return $slug;
+        return $entry;
     }
 
     protected function populateEntryRelations(Entry $entry): void
