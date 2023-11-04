@@ -444,7 +444,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
         }
 
         return !$this->isIndex()
-            ? array_filter(['/cms/site/view', 'entry' => $this->getFormattedSlug()])
+            ? array_filter(['/cms/site/view', 'slug' => $this->getFormattedSlug()])
             : ['/cms/site/index'];
     }
 
