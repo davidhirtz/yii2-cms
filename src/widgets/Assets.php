@@ -3,11 +3,10 @@
 namespace davidhirtz\yii2\cms\widgets;
 
 use davidhirtz\yii2\cms\models\Asset;
-use Yii;
-use yii\base\Widget;
+use davidhirtz\yii2\skeleton\widgets\Widget;
 use yii\helpers\Html;
 
-class AssetsView extends Widget
+class Assets extends Widget
 {
     /**
      * @var Asset[]
@@ -66,7 +65,7 @@ class AssetsView extends Widget
     protected function renderAssetsInternal(array $assets): string
     {
         if ($assets) {
-            $content = $this->render($this->viewFile, [...$this->viewParams, 'assets' => $assets]);
+            $content = $this->getView()->render($this->viewFile, [...$this->viewParams, 'assets' => $assets]);
             $options = $this->prepareOptions($this->options, $assets);
 
             return $options ? Html::tag('div', $content, $options) : $content;
@@ -107,10 +106,5 @@ class AssetsView extends Widget
     protected function prepareOptions(array $options, array $assets = []): array
     {
         return $options;
-    }
-
-    public function getViewPath(): ?string
-    {
-        return Yii::$app->controller->getViewPath();
     }
 }

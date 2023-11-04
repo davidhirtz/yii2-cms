@@ -5,11 +5,10 @@ namespace davidhirtz\yii2\cms\widgets;
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
-use davidhirtz\yii2\skeleton\web\View;
+use davidhirtz\yii2\skeleton\widgets\Widget;
 use Yii;
-use yii\base\BaseObject;
 
-class MetaTags extends BaseObject
+class MetaTags extends Widget
 {
     use ModuleTrait;
 
@@ -60,8 +59,6 @@ class MetaTags extends BaseObject
      */
     public string|false $twitterCard = 'summary_large_image';
 
-    private ?View $_view = null;
-
     public function init(): void
     {
         if ($this->enableImages) {
@@ -80,10 +77,12 @@ class MetaTags extends BaseObject
             $this->enableHrefLangLinks = false;
         }
 
+        $this->registerMetaTags();
+
         parent::init();
     }
 
-    public function run(): void
+    public function registerMetaTags(): void
     {
         $this->setDocumentTitle();
         $this->setMetaDescription();
@@ -174,22 +173,5 @@ class MetaTags extends BaseObject
                 }
             }
         }
-    }
-
-    public function getView(): View
-    {
-        $this->_view ??= Yii::$app->controller->getView();
-        return $this->_view;
-    }
-
-    /** @noinspection PhpUnused */
-    public function setView(View $view): void
-    {
-        $this->_view = $view;
-    }
-
-    public static function register(array $config = []): void
-    {
-        Yii::createObject(static::class, $config)->run();
     }
 }

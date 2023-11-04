@@ -1,3 +1,9 @@
+## 2.0.2 (Nov 5, 2023)
+
+- Renamed `SectionViews` to `Sections` and `AssetViews` to `Assets`
+- Renamed `MetaTags::register()` to `MetaTags::widget()` to match the other widgets
+- Added `Canvas` widget to display the assets in the frontend
+
 ## 2.0.1 (Nov 4, 2023)
 
 - Added `davidhirtz\yii2\cms\models\builders\EntrySiteRelationsBuilder` which loads all relations needed in the

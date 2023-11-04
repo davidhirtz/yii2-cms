@@ -129,8 +129,8 @@ class EntrySiteRelationsBuilder extends BaseObject
         }
 
         foreach ($this->entry->sections as $section) {
-            $entries = array_map(fn(SectionEntry $sectionEntry) => $this->entries[$sectionEntry->id], $section->sectionEntries);
-            $section->populateRelation('entries', $entries);
+            $entries = array_map(fn(SectionEntry $sectionEntry) => $this->entries[$sectionEntry->id] ?? null, $section->sectionEntries);
+            $section->populateRelation('entries', array_filter($entries));
         }
     }
 

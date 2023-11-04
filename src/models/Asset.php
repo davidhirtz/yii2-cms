@@ -20,17 +20,17 @@ use Yii;
  * @property int $section_id
  * @property int $file_id
  * @property int $position
- * @property string $name
- * @property string $content
- * @property string $alt_text
- * @property string $link
- * @property int $updated_by_user_id
+ * @property string|null $name
+ * @property string|null $content
+ * @property string|null $alt_text
+ * @property string|null $link
+ * @property int|null $updated_by_user_id
  * @property DateTime $updated_at
  * @property DateTime $created_at
  *
- * @property File $file
+ * @property-read Entry|Section $parent {@see static::getParent()}
  */
-class Asset extends ActiveRecord implements \davidhirtz\yii2\media\models\interfaces\AssetInterface
+class Asset extends ActiveRecord implements AssetInterface
 {
     use AssetTrait;
     use EntryRelationTrait;

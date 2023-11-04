@@ -375,6 +375,11 @@ class Section extends ActiveRecord implements AssetParentInterface
         return $this->id ? ['/admin/section/update', 'id' => $this->id] : false;
     }
 
+    public function getCssClass(): ?string
+    {
+        return $this->getTypeOptions()['cssClass'] ?? null;
+    }
+
     public function getHtmlId(): ?string
     {
         return $this->getI18nAttribute('slug') ?: ('section-' . $this->id);

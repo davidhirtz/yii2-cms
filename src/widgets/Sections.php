@@ -10,10 +10,8 @@ use yii\base\Widget;
 /**
  * SectionsView renders {@link Section} models. Sections will be rendered in their template set by `viewFile` or their
  * {@link Section::getViewFile()} method grouped by adjacent sections with the same template.
- *
- * @noinspection PhpUnused
  */
-class SectionsView extends Widget
+class Sections extends Widget
 {
     /**
      * @var Entry|null
@@ -36,6 +34,11 @@ class SectionsView extends Widget
     public string $viewFile = '_sections';
 
     /**
+     * @var array|null the generated section blocks
+     */
+    public ?array $groups = null;
+
+    /**
      * @var callable|null an anonymous function with the signature `function ($section)`, where `$section` is the
      * {@link Section} object that you can modify in the function.
      */
@@ -47,19 +50,22 @@ class SectionsView extends Widget
         parent::init();
     }
 
-    /**
-     * Renders sections grouped by view file.
-     */
     public function run(): string
     {
-        $html = '';
+        $this->createSectionGroups();
+        return implode('', $this->groups);
+    }
+
+    protected function createSectionGroups(): void
+    {
         $prevSection = null;
+        $this->groups = [];
         $sections = [];
 
         foreach ($this->sections as $section) {
             if (!$this->hasSameViewFile($section, $prevSection)) {
                 if ($sections) {
-                    $html .= $this->renderSectionsInternal($sections, $this->getSectionViewFile($prevSection));
+                    $this->groups[] = $this->renderSectionsInternal($sections, $this->getSectionViewFile($prevSection));
                     $sections = [];
                 }
             }
@@ -69,16 +75,12 @@ class SectionsView extends Widget
         }
 
         if ($sections) {
-            $html .= $this->renderSectionsInternal($sections, $this->getSectionViewFile($prevSection));
+            $this->groups[] = $this->renderSectionsInternal($sections, $this->getSectionViewFile($prevSection));
         }
-
-        return $html;
     }
 
     /**
-     * Renders adjacent sections by type starting with the given section. Rendered sections are then removed them from
-     * the stack.
-     *
+     * Renders adjacent sections by type starting with the given section ands removes them from the stack.
      * @noinspection PhpUnused
      */
     public function renderAdjacentSectionsByType(Section $section, ?string $viewFile = null): string
@@ -101,7 +103,6 @@ class SectionsView extends Widget
 
     /**
      * Renders sections by type, removing them from the stack.
-     *
      * @noinspection PhpUnused
      */
     public function renderSectionsByType(array|int $types, ?string $viewFile = null): string
@@ -109,6 +110,10 @@ class SectionsView extends Widget
         return $this->renderSectionsByCallback(fn(Section $section): bool => in_array($section->type, (array)$types), $viewFile);
     }
 
+    /**
+     * Renders sections by callback, removing them from the stack.
+     * @noinspection PhpUnused
+     */
     public function renderSectionsByCallback(callable $callback, ?string $viewFile = null): string
     {
         $sections = [];
