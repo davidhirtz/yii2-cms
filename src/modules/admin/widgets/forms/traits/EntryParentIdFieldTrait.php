@@ -3,12 +3,15 @@
 namespace davidhirtz\yii2\cms\modules\admin\widgets\forms\traits;
 
 use davidhirtz\yii2\cms\models\Entry;
+use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use Yii;
 use yii\widgets\ActiveField;
 
 trait EntryParentIdFieldTrait
 {
+    use ModuleTrait;
+
     private ?array $_entries = null;
 
     public function parentIdField(): ActiveField|string
@@ -31,7 +34,7 @@ trait EntryParentIdFieldTrait
             $entries = Entry::find()
                 ->select($this->model->getI18nAttributesNames(['id', 'parent_id', 'name', 'path', 'slug', 'parent_slug', 'entry_count', 'section_count']))
                 ->whereHasDescendantsEnabled()
-                ->orderBy(static::getModule()->defaultEntryOrderBy ?? ['position' => SORT_ASC])
+                ->orderBy($this->getParentIdItemsOrderBy())
                 ->indexBy('id')
                 ->all();
 
@@ -88,5 +91,10 @@ trait EntryParentIdFieldTrait
         }
 
         return $parentIdItems;
+    }
+
+    protected function getParentIdItemsOrderBy(): array
+    {
+        return static::getModule()->defaultEntryOrderBy ?? ['position' => SORT_ASC];
     }
 }

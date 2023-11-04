@@ -1,10 +1,13 @@
 ## 2.0.1 (Nov 4, 2023)
+
 - Added `davidhirtz\yii2\cms\models\builders\EntrySiteRelationsBuilder` which loads all relations needed in the
   frontend `SiteController`
 - Added `entryIndexSlug` which automatically loads the entry index page in the frontend `SiteController::actionIndex()`
 - Added `enableUrlRules` to automatically register URL rules in the CMS Module config, defaults to `true`
+- Changed `Module::$defaultEntryOrderBy` to `position` ascending
 
 ## 2.0.0 (Nov 3, 2023)
+
 - Moved source code to `src` folder
 - Added `davidhirtz\yii2\cms\Module::$enableSectionEntries` option to disable section entries
 - Merged `davidhirtz\yii2\cms\yii2-cms-parent` into this package
