@@ -7,6 +7,7 @@ use davidhirtz\yii2\cms\models\queries\EntryQuery;
 use davidhirtz\yii2\cms\models\queries\SectionQuery;
 use davidhirtz\yii2\cms\models\traits\AssetParentTrait;
 use davidhirtz\yii2\cms\models\traits\EntryRelationTrait;
+use davidhirtz\yii2\cms\models\traits\SlugAttributeTrait;
 use davidhirtz\yii2\media\models\interfaces\AssetParentInterface;
 use davidhirtz\yii2\skeleton\db\ActiveQuery;
 use davidhirtz\yii2\skeleton\helpers\ArrayHelper;
@@ -32,6 +33,7 @@ class Section extends ActiveRecord implements AssetParentInterface
 {
     use AssetParentTrait;
     use EntryRelationTrait;
+    use SlugAttributeTrait;
 
     public array|string|null $slugTargetAttribute = ['entry_id', 'slug'];
     private ?array $_trailParents = null;
@@ -69,7 +71,7 @@ class Section extends ActiveRecord implements AssetParentInterface
             [
                 ['slug'],
                 'string',
-                'max' => static::SLUG_MAX_LENGTH,
+                'max' => $this->slugMaxLength,
             ],
             [
                 ['slug'],

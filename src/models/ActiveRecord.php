@@ -2,8 +2,8 @@
 
 namespace davidhirtz\yii2\cms\models;
 
+use davidhirtz\yii2\cms\models\traits\SitemapTrait;
 use davidhirtz\yii2\cms\models\traits\VisibleAttributeTrait;
-use davidhirtz\yii2\cms\Module;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\datetime\DateTimeBehavior;
@@ -17,11 +17,8 @@ use davidhirtz\yii2\skeleton\db\TypeAttributeTrait;
 use davidhirtz\yii2\skeleton\models\traits\UpdatedByUserTrait;
 use davidhirtz\yii2\skeleton\validators\DynamicRangeValidator;
 use davidhirtz\yii2\skeleton\validators\HtmlValidator;
-use davidhirtz\yii2\skeleton\validators\UniqueValidator;
-use davidhirtz\yii2\skeleton\web\Sitemap;
 use Yii;
 use yii\db\ActiveRecordInterface;
-use yii\helpers\Inflector;
 
 /**
  * @property int $id
@@ -38,26 +35,13 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     use I18nAttributesTrait;
     use ModuleTrait;
     use StatusAttributeTrait;
+    use SitemapTrait;
     use TypeAttributeTrait;
     use UpdatedByUserTrait;
     use VisibleAttributeTrait;
 
-    public const SLUG_MAX_LENGTH = 100;
-
     public const EVENT_BEFORE_CLONE = 'beforeClone';
     public const EVENT_AFTER_CLONE = 'afterClone';
-
-    /**
-     * @var bool whether slugs should not automatically be checked and processed.
-     */
-    public bool $customSlugBehavior = false;
-
-    /**
-     * @var mixed used when $contentType is set to "html". Use an array with the first value containing the validator
-     * class, following keys can be used to configure the validator, string containing the class name or false for
-     * disabling the validation.
-     */
-    public array|string|null $htmlValidator = HtmlValidator::class;
 
     /**
      * @var string|false the content type, "html" enables html validators and WYSIWYG editor
@@ -65,19 +49,11 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     public string|false $contentType = 'html';
 
     /**
-     * @var array|string the class name of the unique validator
+     * @var mixed used when $contentType is set to "html". Use an array with the first value containing the validator
+     * class, following keys can be used to configure the validator, string containing the class name or false for
+     * disabling the validation.
      */
-    public array|string $slugUniqueValidator = UniqueValidator::class;
-
-    /**
-     * @var array|string|null {@see \yii\validators\UniqueValidator::$targetAttribute}
-     */
-    public array|string|null $slugTargetAttribute = null;
-
-    /**
-     * @var bool {@see ActiveRecord::isSlugRequired()}
-     */
-    private ?bool $_isSlugRequired = null;
+    public array|string|null $htmlValidator = HtmlValidator::class;
 
     public function behaviors(): array
     {
@@ -172,123 +148,10 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
      */
     abstract public function findSiblings(): ActiveQuery;
 
-    /**
-     * @noinspection PhpUnused {@see Sitemap::generateUrls()}
-     */
-    public function generateSitemapUrls(int $offset = 0): array
-    {
-        $languages = $this->getSitemapLanguages();
-        $sitemap = Yii::$app->sitemap;
-        $urls = [];
-
-        $query = $this->getSitemapQuery();
-
-        if ($sitemap->useSitemapIndex) {
-            $limit = $sitemap->maxUrlCount / count($languages);
-            $query->limit($limit)->offset($offset * $limit);
-        }
-
-        /** @var self $record */
-        foreach ($query->each() as $record) {
-            foreach ($languages as $language) {
-                if ($language) {
-                    // Temporarily set location for I18n attributes to work
-                    Yii::$app->language = $language;
-                }
-
-                if ($url = $record->getSitemapUrl($language)) {
-                    $urls [] = $url;
-                }
-            }
-        }
-
-        return $urls;
-    }
-
-    public function ensureSlug(string $attribute = 'name'): void
-    {
-        if ($this->isSlugRequired()) {
-            foreach ($this->getI18nAttributeNames('slug') as $language => $attributeName) {
-                if (!$this->$attributeName && ($name = $this->getI18nAttribute($attribute, $language))) {
-                    $this->$attributeName = mb_substr((string)$name, 0, static::SLUG_MAX_LENGTH);
-                }
-            }
-        }
-
-        if (!$this->customSlugBehavior) {
-            foreach ($this->getI18nAttributeNames('slug') as $attributeName) {
-                $this->$attributeName = Inflector::slug($this->$attributeName);
-            }
-        }
-    }
-
     protected function setDefaultPosition(): void
     {
         if (!$this->position) {
             $this->position = $this->position !== false ? ($this->getMaxPosition() + 1) : 0;
-        }
-    }
-
-    /**
-     * @noinspection PhpUnused {@see Sitemap::generateIndexUrls()}
-     */
-    public function getSitemapUrlCount(): int
-    {
-        $languages = $this->getSitemapLanguages();
-        return $this->getSitemapQuery()->count() * count($languages);
-    }
-
-    /**
-     * Returns an array of languages used for I18N URLs. This is only intended for {@see ActiveRecord::$i18nAttributes}
-     * tables and not for {@see Module::$enableI18nTables} as the website structure might be different and thus rather
-     * single sitemaps per language should be submitted.
-     *
-     * @return array
-     */
-    protected function getSitemapLanguages(): array
-    {
-        $manager = Yii::$app->getUrlManager();
-        return $this->i18nAttributes && $manager->hasI18nUrls() ? array_keys($manager->languages) : [null];
-    }
-
-    /**
-     * Returns an array with the attributes needed for the XML sitemap. This can be overridden to add additional fields
-     * such as priority or images.
-     */
-    public function getSitemapUrl(string $language): array|false
-    {
-        if ($this->includeInSitemap($language)) {
-            if ($route = $this->getRoute()) {
-                return [
-                    'loc' => $route + ['language' => $language],
-                    'lastmod' => $this->updated_at,
-                ];
-            }
-        }
-
-        return false;
-    }
-
-    public function getSitemapQuery(): ActiveQuery
-    {
-        return static::find();
-    }
-
-    /**
-     * Generates a unique slug if the slug is already taken.
-     */
-    public function generateUniqueSlug(): void
-    {
-        foreach ($this->getI18nAttributeNames('slug') as $attributeName) {
-            if ($baseSlug = $this->getAttribute($attributeName)) {
-                $iteration = 1;
-
-                // Make sure the loop is limited in case a persistent error prevents the validation.
-                while (!$this->validate() && $iteration < 100) {
-                    $baseSlug = mb_substr((string)$baseSlug, 0, static::SLUG_MAX_LENGTH - 1 - ceil($iteration / 10), Yii::$app->charset);
-                    $this->setAttribute($attributeName, $baseSlug . '-' . $iteration++);
-                }
-            }
         }
     }
 
@@ -329,19 +192,6 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     public function includeInSitemap(?string $language = null): bool
     {
         return $this->isEnabled();
-    }
-
-    /**
-     * @return bool whether slugs are required, override this method to not rely on db schema.
-     */
-    public function isSlugRequired(): bool
-    {
-        if ($this->_isSlugRequired === null) {
-            $schema = static::getDb()->getSchema();
-            $this->_isSlugRequired = !$schema->getTableSchema(static::tableName())->getColumn('slug')->allowNull;
-        }
-
-        return $this->_isSlugRequired;
     }
 
     public function attributeLabels(): array

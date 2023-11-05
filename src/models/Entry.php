@@ -6,6 +6,7 @@ use davidhirtz\yii2\cms\models\queries\AssetQuery;
 use davidhirtz\yii2\cms\models\queries\EntryQuery;
 use davidhirtz\yii2\cms\models\queries\SectionQuery;
 use davidhirtz\yii2\cms\models\traits\AssetParentTrait;
+use davidhirtz\yii2\cms\models\traits\SlugAttributeTrait;
 use davidhirtz\yii2\cms\models\validators\ParentIdValidator;
 use davidhirtz\yii2\cms\Module;
 use davidhirtz\yii2\datetime\DateTime;
@@ -43,6 +44,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
 {
     use AssetParentTrait;
     use MaterializedTreeTrait;
+    use SlugAttributeTrait;
 
     public string|false $contentType = false;
     public array|string $dateTimeValidator = DateTimeValidator::class;
@@ -86,7 +88,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
                 [
                     ['slug'],
                     'string',
-                    'max' => static::SLUG_MAX_LENGTH,
+                    'max' => $this->slugMaxLength,
                 ],
                 [
                     ['slug'],

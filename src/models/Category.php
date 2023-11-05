@@ -4,6 +4,7 @@ namespace davidhirtz\yii2\cms\models;
 
 use davidhirtz\yii2\cms\models\queries\CategoryQuery;
 use davidhirtz\yii2\cms\models\queries\EntryQuery;
+use davidhirtz\yii2\cms\models\traits\SlugAttributeTrait;
 use davidhirtz\yii2\skeleton\behaviors\RedirectBehavior;
 use davidhirtz\yii2\skeleton\db\NestedTreeTrait;
 use davidhirtz\yii2\skeleton\models\Trail;
@@ -32,6 +33,7 @@ use yii\db\ActiveQuery;
 class Category extends ActiveRecord
 {
     use NestedTreeTrait;
+    use SlugAttributeTrait;
 
     public string|false $contentType = false;
     public array|string|null $slugTargetAttribute = ['parent_id', 'slug'];
@@ -82,7 +84,7 @@ class Category extends ActiveRecord
                 [
                     ['slug'],
                     'string',
-                    'max' => static::SLUG_MAX_LENGTH,
+                    'max' => $this->slugMaxLength,
                 ],
                 [
                     ['slug'],
