@@ -2,6 +2,7 @@
 
 namespace davidhirtz\yii2\cms\models;
 
+use davidhirtz\yii2\cms\models\traits\VisibleAttributeTrait;
 use davidhirtz\yii2\cms\Module;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\datetime\DateTime;
@@ -39,6 +40,7 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     use StatusAttributeTrait;
     use TypeAttributeTrait;
     use UpdatedByUserTrait;
+    use VisibleAttributeTrait;
 
     public const SLUG_MAX_LENGTH = 100;
 
@@ -294,6 +296,11 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     {
         static::getModule()->invalidatePageCache();
         return parent::updatePosition($models, $order, $attribute, $index);
+    }
+
+    public function getCssClass(): string
+    {
+        return $this->getTypeOptions()['cssClass'] ?? '';
     }
 
     public function getTrailAttributes(): array

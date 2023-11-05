@@ -5,6 +5,7 @@ namespace davidhirtz\yii2\cms\models;
 use davidhirtz\yii2\cms\models\queries\AssetQuery;
 use davidhirtz\yii2\cms\models\queries\EntryQuery;
 use davidhirtz\yii2\cms\models\queries\SectionQuery;
+use davidhirtz\yii2\cms\models\traits\AssetParentTrait;
 use davidhirtz\yii2\cms\models\validators\ParentIdValidator;
 use davidhirtz\yii2\cms\Module;
 use davidhirtz\yii2\datetime\DateTime;
@@ -41,6 +42,7 @@ use yii\db\ActiveQuery;
  */
 class Entry extends ActiveRecord implements AssetParentInterface
 {
+    use AssetParentTrait;
     use MaterializedTreeTrait;
 
     public string|false $contentType = false;
@@ -501,6 +503,11 @@ class Entry extends ActiveRecord implements AssetParentInterface
     public function getTrailModelType(): string
     {
         return $this->getTypeName() ?: Yii::t('cms', 'Entry');
+    }
+
+    public function getViewFile(): ?string
+    {
+        return $this->getTypeOptions()['viewFile'] ?? null;
     }
 
     public function hasAssetsEnabled(): bool

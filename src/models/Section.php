@@ -5,6 +5,7 @@ namespace davidhirtz\yii2\cms\models;
 use davidhirtz\yii2\cms\models\queries\AssetQuery;
 use davidhirtz\yii2\cms\models\queries\EntryQuery;
 use davidhirtz\yii2\cms\models\queries\SectionQuery;
+use davidhirtz\yii2\cms\models\traits\AssetParentTrait;
 use davidhirtz\yii2\cms\models\traits\EntryRelationTrait;
 use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\media\models\interfaces\AssetParentInterface;
@@ -31,6 +32,7 @@ use yii\helpers\Inflector;
  */
 class Section extends ActiveRecord implements AssetParentInterface
 {
+    use AssetParentTrait;
     use EntryRelationTrait;
 
     public array|string|null $slugTargetAttribute = ['entry_id', 'slug'];
@@ -373,11 +375,6 @@ class Section extends ActiveRecord implements AssetParentInterface
     public function getAdminRoute(): array|false
     {
         return $this->id ? ['/admin/section/update', 'id' => $this->id] : false;
-    }
-
-    public function getCssClass(): ?string
-    {
-        return $this->getTypeOptions()['cssClass'] ?? null;
     }
 
     public function getHtmlId(): ?string

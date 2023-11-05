@@ -1,4 +1,5 @@
 <?php
+
 namespace davidhirtz\yii2\cms\widgets;
 
 use davidhirtz\yii2\cms\models\Asset;
@@ -16,8 +17,9 @@ class Canvas extends Widget
     public array $pictureOptions = [];
     public array $wrapperOptions = [];
 
-    public bool $enableCaption = true;
-    public bool $enableEmbedUrl = true;
+    public string $template = '{media}{embed}{caption}';
+    public array $parts = [];
+
     public bool $enableLinkWrapper = true;
     public bool $enableWrapperHeight = true;
 
@@ -30,12 +32,16 @@ class Canvas extends Widget
             $this->setWrapperHeight();
         }
 
+        if ($this->enableLinkWrapper) {
+            $this->enableLinkWrapper = !str_contains($this->template, '{link}');
+        }
+
         if ($this->lazyLoadingParentPosition !== false
             && $this->asset->parent->position > $this->lazyLoadingParentPosition) {
             $this->pictureOptions['imgOptions']['loading'] ??= 'lazy';
         }
 
-        $this->linkOptions['aria-label'] ??= $this->asset->getI18nAttribute('name');
+        $this->linkOptions['aria-label'] ??= $this->asset->getVisibleAttribute('name');
 
         $this->wrapperOptions = array_filter($this->wrapperOptions);
 
@@ -44,33 +50,29 @@ class Canvas extends Widget
 
     public function run(): string
     {
-        $content = $this->renderContent();
-        return $this->renderWrapper($content);
+        $content = $this->getContent();
+        return $this->wrapContent($content);
     }
 
-    protected function renderContent(): string
+    /**
+     * @uses static::renderCaption()
+     * @uses static::renderEmbed()
+     * @uses static::renderLink()
+     * @uses static::renderMedia()
+     */
+    protected function getContent(): string
     {
-        $content = $this->renderMediaTag();
-
-        if ($this->enableEmbedUrl) {
-            $content .= $this->renderEmbed();
-        }
-
-        if ($this->enableCaption) {
-            $content .= $this->renderCaption();
-        }
-
-        return $content;
-    }
-
-    protected function renderMediaTag(): string
-    {
-        return Picture::tag($this->asset, $this->pictureOptions);
+        return preg_replace_callback('/{(\\w+)}/',
+            function ($matches) {
+                $methodName = 'render' . ucfirst($matches[1]);
+                return method_exists($this, $methodName) ? $this->$methodName() : $matches[0];
+            },
+            $this->template);
     }
 
     protected function renderCaption(): string
     {
-        if (!$content = $this->asset->getI18nAttribute('content')) {
+        if (!$content = $this->asset->getVisibleAttribute('content')) {
             return '';
         }
 
@@ -82,7 +84,7 @@ class Canvas extends Widget
 
     protected function renderEmbed(): string
     {
-        if (!$this->asset->getI18nAttribute('embed_url')) {
+        if (!$this->asset->getVisibleAttribute('embed_url')) {
             return '';
         }
 
@@ -91,9 +93,20 @@ class Canvas extends Widget
         ]);
     }
 
-    protected function renderWrapper(string $content): string
+    protected function renderLink(): string
     {
-        if ($this->enableLinkWrapper && ($link = $this->asset->getI18nAttribute('link'))) {
+        $link = $this->asset->getVisibleAttribute('link');
+        return $link ? Html::a('', $link, $this->linkOptions) : '';
+    }
+
+    protected function renderMedia(): string
+    {
+        return Picture::tag($this->asset, $this->pictureOptions);
+    }
+
+    protected function wrapContent(string $content): string
+    {
+        if ($this->enableLinkWrapper && ($link = $this->asset->getVisibleAttribute('link'))) {
             $options = ArrayHelper::merge($this->wrapperOptions, $this->linkOptions);
             return Html::a($content, $link, $options);
         }

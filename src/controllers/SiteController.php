@@ -28,7 +28,7 @@ class SiteController extends Controller
         $entry = $this->findEntry($slug);
         $this->populateEntryRelations($entry);
 
-        return $this->render('view', [
+        return $this->render($entry->getViewFile() ?? 'view', [
             'entry' => $entry,
         ]);
     }
