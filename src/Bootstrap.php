@@ -1,9 +1,8 @@
 <?php
 
-namespace davidhirtz\yii2\cms\composer;
+namespace davidhirtz\yii2\cms;
 
 use davidhirtz\yii2\cms\models\Asset;
-use davidhirtz\yii2\cms\Module;
 use davidhirtz\yii2\skeleton\web\Application;
 use yii\base\BootstrapInterface;
 use Yii;
@@ -16,7 +15,7 @@ class Bootstrap implements BootstrapInterface
      */
     public function bootstrap($app): void
     {
-        Yii::setAlias('@cms', dirname(__DIR__));
+        Yii::setAlias('@cms', __DIR__);
 
         $app->extendComponent('i18n', [
             'translations' => [
@@ -31,7 +30,7 @@ class Bootstrap implements BootstrapInterface
             'admin' => [
                 'modules' => [
                     'cms' => [
-                        'class' => \davidhirtz\yii2\cms\modules\admin\Module::class,
+                        'class' => modules\admin\Module::class,
                     ],
                 ],
             ],
