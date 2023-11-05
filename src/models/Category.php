@@ -6,7 +6,7 @@ use davidhirtz\yii2\cms\models\queries\CategoryQuery;
 use davidhirtz\yii2\cms\models\queries\EntryQuery;
 use davidhirtz\yii2\cms\models\traits\SlugAttributeTrait;
 use davidhirtz\yii2\skeleton\behaviors\RedirectBehavior;
-use davidhirtz\yii2\skeleton\db\NestedTreeTrait;
+use davidhirtz\yii2\skeleton\models\traits\NestedTreeTrait;
 use davidhirtz\yii2\skeleton\models\Trail;
 use Yii;
 use yii\db\ActiveQuery;

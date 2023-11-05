@@ -13,7 +13,7 @@ use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\datetime\DateTimeValidator;
 use davidhirtz\yii2\media\models\interfaces\AssetParentInterface;
 use davidhirtz\yii2\skeleton\behaviors\RedirectBehavior;
-use davidhirtz\yii2\skeleton\db\MaterializedTreeTrait;
+use davidhirtz\yii2\skeleton\models\traits\MaterializedTreeTrait;
 use davidhirtz\yii2\skeleton\helpers\ArrayHelper;
 use Yii;
 use yii\db\ActiveQuery;

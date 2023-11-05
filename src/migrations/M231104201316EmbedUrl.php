@@ -3,7 +3,7 @@
 namespace davidhirtz\yii2\cms\migrations;
 
 use davidhirtz\yii2\cms\models\Asset;
-use davidhirtz\yii2\skeleton\db\MigrationTrait;
+use davidhirtz\yii2\skeleton\db\traits\MigrationTrait;
 use yii\db\Migration;
 
 /**

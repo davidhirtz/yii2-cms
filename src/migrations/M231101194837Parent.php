@@ -4,7 +4,7 @@ namespace davidhirtz\yii2\cms\migrations;
 
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
-use davidhirtz\yii2\skeleton\db\MigrationTrait;
+use davidhirtz\yii2\skeleton\db\traits\MigrationTrait;
 use Exception;
 use Yii;
 use yii\db\Migration;
