@@ -97,14 +97,8 @@ class EntryCategoryController extends Controller
 
     public function actionOrder(int $category): void
     {
-        $category = $this->findCategory($category, 'entryOrder');
-        $entryIds = array_map('intval', array_filter(Yii::$app->getRequest()->post('entry', [])));
-
-        if ($entryIds) {
-            Yii::createObject(ReorderEntryCategoriesAction::class, [
-                'category' => $category,
-                'entryIds' => $entryIds,
-            ]);
-        }
+        ReorderEntryCategoriesAction::createFromPostRequest('entry', [
+            'category' => $this->findCategory($category, 'entryOrder'),
+        ]);
     }
 }

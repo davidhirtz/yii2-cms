@@ -43,11 +43,11 @@ trait SlugAttributeTrait
     {
         foreach ($this->getI18nAttributeNames('slug') as $attributeName) {
             if ($baseSlug = $this->getAttribute($attributeName)) {
-                $iteration = 1;
+                $i = 1;
 
-                while (!$this->validate($attributeName) && $iteration < 100) {
-                    $baseSlug = mb_substr((string)$baseSlug, 0, $this->slugMaxLength - 1 - ceil($iteration / 10), Yii::$app->charset);
-                    $this->setAttribute($attributeName, $baseSlug . '-' . $iteration++);
+                while (!$this->validate($attributeName) && $i < 100) {
+                    $baseSlug = mb_substr((string)$baseSlug, 0, $this->slugMaxLength - 1 - ceil($i / 10), Yii::$app->charset);
+                    $this->setAttribute($attributeName, $baseSlug . '-' . $i++);
                 }
             }
         }

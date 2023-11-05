@@ -174,14 +174,9 @@ class AssetController extends Controller
             ? $this->findSection($section, 'sectionAssetOrder')
             : $this->findEntry($entry, 'entryAssetOrder');
 
-        $assetIds = array_map('intval', array_filter(Yii::$app->getRequest()->post('asset', [])));
-
-        if ($assetIds) {
-            Yii::createObject(ReorderAssetsAction::class, [
-                'parent' => $parent,
-                'assetIds' => $assetIds,
-            ]);
-        }
+        ReorderAssetsAction::createFromPostRequest('asset', [
+            'parent' => $parent,
+        ]);
     }
 
     private function redirectToParent(Asset $asset, bool $isDeleted = false): Response

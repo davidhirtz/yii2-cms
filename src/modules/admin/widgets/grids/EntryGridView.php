@@ -67,6 +67,11 @@ class EntryGridView extends GridView
     public array $selectionRoute = ['/admin/entry/update-all'];
 
     /**
+     * @var array|null set to null for inheritors to override
+     */
+    public ?array $orderRoute = null;
+
+    /**
      * @var string|null the date format used in the date column, defaults to null which means the date format is
      */
     public ?string $dateFormat = null;
@@ -111,7 +116,7 @@ class EntryGridView extends GridView
          * @see EntryController::actionOrder()
          * @see EntryCategoryController::actionOrder()
          */
-        $this->orderRoute = $this->dataProvider->category
+        $this->orderRoute ??= $this->dataProvider->category
             ? ['entry-category/order', 'category' => $this->dataProvider->category->id]
             : ['order', 'parent' => $this->dataProvider->parent?->id];
 

@@ -128,6 +128,9 @@ class CategoryController extends Controller
         throw new ServerErrorHttpException(reset($errors));
     }
 
+    /**
+     * @todo extract to class
+     */
     public function actionOrder(?int $id = null): void
     {
         $category = Category::findOne((int)$id);

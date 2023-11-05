@@ -186,15 +186,8 @@ class EntryController extends Controller
 
     public function actionOrder(?int $parent = null): void
     {
-        $parent = $parent ? $this->findEntry($parent, 'entryOrder') : null;
-        $entryIds = array_map('intval', array_filter(Yii::$app->getRequest()->post('entry', [])));
-
-        if ($entryIds) {
-            Yii::createObject(ReorderEntriesAction::class, [
-                'parent' => $parent,
-                'entryIds' => $entryIds,
-            ]);
-
-        }
+        ReorderEntriesAction::createFromPostRequest('entry', [
+            'parent' => $parent ? $this->findEntry($parent, 'entryOrder') : null,
+        ]);
     }
 }

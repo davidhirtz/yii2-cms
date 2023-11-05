@@ -10,7 +10,6 @@ use davidhirtz\yii2\cms\models\traits\EntryRelationTrait;
 use davidhirtz\yii2\cms\models\traits\SlugAttributeTrait;
 use davidhirtz\yii2\media\models\interfaces\AssetParentInterface;
 use davidhirtz\yii2\skeleton\db\ActiveQuery;
-use davidhirtz\yii2\skeleton\helpers\ArrayHelper;
 use davidhirtz\yii2\skeleton\validators\RelationValidator;
 use Yii;
 use yii\helpers\Inflector;
@@ -43,15 +42,6 @@ class Section extends ActiveRecord implements AssetParentInterface
         return array_merge(parent::rules(), $this->getI18nRules([
             [
                 ['entry_id'],
-                'required',
-            ],
-            [
-                ['entry_id'],
-                'filter',
-                'filter' => 'intval',
-            ],
-            [
-                ['entry_id'],
                 RelationValidator::class,
                 'required' => true,
             ],
@@ -81,6 +71,11 @@ class Section extends ActiveRecord implements AssetParentInterface
                 'when' => fn() => $this->isAttributeChanged('slug')
             ],
         ]));
+    }
+
+    public function safeAttributes(): array
+    {
+        return array_diff(parent::safeAttributes(), ['entry_id']);
     }
 
     public function validateEntryId(): void
@@ -200,63 +195,6 @@ class Section extends ActiveRecord implements AssetParentInterface
     public static function find(): SectionQuery
     {
         return Yii::createObject(SectionQuery::class, [static::class]);
-    }
-
-    public function clone(array $attributes = []): static
-    {
-        $entry = ArrayHelper::remove($attributes, 'entry');
-
-        if (!$entry) {
-            // Only set status to draft if clone is not triggered by entry
-            $attributes['status'] ??= static::STATUS_DRAFT;
-        }
-
-        $clone = new static();
-        $clone->setAttributes(array_merge($this->getAttributes($this->safeAttributes()), $attributes), false);
-
-        if ($entry) {
-            $clone->populateEntryRelation($entry);
-            $clone->setIsBatch(true);
-        }
-
-        $clone->generateUniqueSlug();
-
-        if ($this->beforeClone($clone) && $clone->insert()) {
-            if ($this->asset_count) {
-                $assets = $this->getAssets()->all();
-                $assetCount = 0;
-
-                foreach ($assets as $asset) {
-                    $asset->clone([
-                        'section' => $clone,
-                        'position' => ++$assetCount,
-                    ]);
-                }
-
-                $clone->updateAttributes(['asset_count' => $assetCount]);
-            }
-
-            if ($this->entry_count) {
-                $entries = $this->getEntries()->all();
-                Yii::debug(count($entries));
-                $entryCount = 0;
-
-                foreach ($entries as $entry) {
-                    $sectionEntry = SectionEntry::create();
-                    $sectionEntry->populateEntryRelation($entry);
-                    $sectionEntry->populateSectionRelation($clone);
-                    $sectionEntry->setIsBatch(true);
-                    $sectionEntry->position = ++$entryCount;
-                    $sectionEntry->insert();
-                }
-
-                $clone->updateAttributes(['entry_count' => $entryCount]);
-            }
-
-            $this->afterClone($clone);
-        }
-
-        return $clone;
     }
 
     /**

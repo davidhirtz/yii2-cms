@@ -18,7 +18,6 @@ use davidhirtz\yii2\skeleton\models\traits\UpdatedByUserTrait;
 use davidhirtz\yii2\skeleton\validators\DynamicRangeValidator;
 use davidhirtz\yii2\skeleton\validators\HtmlValidator;
 use Yii;
-use yii\db\ActiveRecordInterface;
 
 /**
  * @property int $id
@@ -39,9 +38,6 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     use TypeAttributeTrait;
     use UpdatedByUserTrait;
     use VisibleAttributeTrait;
-
-    public const EVENT_BEFORE_CLONE = 'beforeClone';
-    public const EVENT_AFTER_CLONE = 'afterClone';
 
     /**
      * @var string|false the content type, "html" enables html validators and WYSIWYG editor
@@ -112,35 +108,6 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     {
         static::getModule()->invalidatePageCache();
         parent::afterDelete();
-    }
-
-    /**
-     * Triggers event before `$clone` was inserted. This can be used to hook into the clone process before the model is
-     * validated and saved.
-     *
-     * @param static $clone
-     */
-    public function beforeClone(ActiveRecordInterface $clone): bool
-    {
-        $event = new ModelCloneEvent();
-        $event->clone = $clone;
-
-        $this->trigger(static::EVENT_BEFORE_CLONE, $event);
-        return $event->isValid;
-    }
-
-    /**
-     * Triggers event after `$clone` was inserted. This can be used to hook into the clone process after the model was
-     * successfully moved or copied.
-     *
-     * @param static $clone
-     */
-    public function afterClone(ActiveRecordInterface $clone): void
-    {
-        $event = new ModelCloneEvent();
-        $event->clone = $clone;
-
-        $this->trigger(static::EVENT_AFTER_CLONE, $event);
     }
 
     /**

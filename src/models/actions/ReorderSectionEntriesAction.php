@@ -8,14 +8,14 @@ use Yii;
 
 class ReorderSectionEntriesAction extends ReorderActiveRecordsAction
 {
-    public function __construct(protected Section $section, array $sectionEntryIds)
+    public function __construct(protected Section $section, array $folderIds)
     {
         $sectionEntries = $section->getSectionEntries()
-            ->andWhere(['id' => $sectionEntryIds])
+            ->andWhere(['id' => $folderIds])
             ->orderBy(['position' => SORT_ASC])
             ->all();
 
-        $order = array_flip($sectionEntryIds);
+        $order = array_flip($folderIds);
 
         parent::__construct($sectionEntries, $order);
     }

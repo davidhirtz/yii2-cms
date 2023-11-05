@@ -28,7 +28,7 @@ abstract class HelpPanel extends \davidhirtz\yii2\skeleton\modules\admin\widgets
 
     protected function getCloneButton() :string
     {
-        return Html::a(Html::iconText('paste', Yii::t('cms', 'Duplicate')), ['clone', 'id' => $this->model->id], [
+        return Html::a(Html::iconText('paste', Yii::t('cms', 'Duplicate')), ['duplicate', 'id' => $this->model->id], [
             'class' => 'btn btn-primary',
             'data-method' => 'post',
         ]);

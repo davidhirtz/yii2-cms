@@ -20,8 +20,8 @@ class SectionParentEntryGridView extends EntryGridView
     public ?Section $section = null;
 
     /**
-     * @see SectionController::actionClone()
-     * @see SectionController::actionUpdate()
+     * @see SectionController::actionDuplicate()
+     * @see SectionController::actionMove()
      */
     protected function getRowButtons(Entry $entry): array
     {
@@ -29,18 +29,27 @@ class SectionParentEntryGridView extends EntryGridView
         $buttons = [];
 
         if ($user->can('sectionUpdate', ['entry' => $entry])) {
+            $route = [
+                'id' => $this->section->id,
+                'entry' => $entry->id,
+            ];
             $options = [
                 'class' => 'btn btn-primary',
                 'data-toggle' => 'tooltip',
                 'data-method' => 'post',
-                'data-params' => [Html::getInputName($this->section, 'entry_id') => $entry->id],
             ];
 
             if ($user->can('sectionUpdate', ['section' => $this->section])) {
-                $buttons[] = Html::a(Icon::tag('copy'), ['update', 'id' => $this->section->id], [...$options, 'title' => Yii::t('cms', 'Move Section')]);
+                $buttons[] = Html::a(Icon::tag('copy'), ['move'] + $route, [
+                    ...$options,
+                    'title' => Yii::t('cms', 'Move Section'),
+                ]);
             }
 
-            $buttons[] = Html::a(Icon::tag('paste'), ['clone', 'id' => $this->section->id], [...$options, 'title' => Yii::t('cms', 'Copy Section')]);
+            $buttons[] = Html::a(Icon::tag('paste'), ['duplicate'] + $route, [
+                ...$options,
+                'title' => Yii::t('cms', 'Copy Section'),
+            ]);
         }
 
         return $buttons;

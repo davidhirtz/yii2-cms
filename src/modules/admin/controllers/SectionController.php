@@ -2,6 +2,7 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\controllers;
 
+use davidhirtz\yii2\cms\models\actions\DuplicateSectionAction;
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\queries\AssetQuery;
 use davidhirtz\yii2\cms\models\queries\SectionQuery;
@@ -44,7 +45,7 @@ class SectionController extends Controller
                     ],
                     [
                         'allow' => true,
-                        'actions' => ['clone', 'create'],
+                        'actions' => ['create', 'duplicate', 'move'],
                         'roles' => ['sectionCreate'],
                     ],
                     [
@@ -62,9 +63,10 @@ class SectionController extends Controller
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
-                    'clone' => ['post'],
                     'delete' => ['post'],
+                    'duplicate' => ['post'],
                     'order' => ['post'],
+                    'move' => ['post'],
                 ],
             ],
         ]);
@@ -97,19 +99,13 @@ class SectionController extends Controller
         ]);
     }
 
-    public function actionCreate(?int $entry = null): Response|string
+    public function actionCreate($entry): Response|string
     {
+        $entry = $this->findEntry($entry, 'sectionCreate');
         $section = Section::create();
+
+        $section->populateEntryRelation($entry);
         $section->loadDefaultValues();
-        $section->entry_id = $entry;
-
-        if (!$section->entry) {
-            throw new NotFoundHttpException();
-        }
-
-        if (!Yii::$app->getUser()->can('sectionCreate', ['section' => $section])) {
-            throw new ForbiddenHttpException();
-        }
 
         if (($this->autoCreateSection || $section->load(Yii::$app->getRequest()->post())) && $section->insert()) {
             $this->success(Yii::t('cms', 'The section was created.'));
@@ -144,8 +140,8 @@ class SectionController extends Controller
     {
         $request = Yii::$app->getRequest();
 
-        if ($entryIds = array_map('intval', $request->post('selection', []))) {
-            $sections = Section::findAll(['id' => $entryIds]);
+        if ($sectionIds = array_map('intval', $request->post('selection', []))) {
+            $sections = Section::findAll(['id' => $sectionIds]);
             $isUpdated = false;
 
             foreach ($sections as $section) {
@@ -170,21 +166,42 @@ class SectionController extends Controller
         return $this->redirect(array_merge($request->get(), ['index']));
     }
 
-    public function actionClone(int $id): Response|string
+
+    public function actionMove(int $id, int $entry): Response|string
     {
         $section = $this->findSection($id, 'sectionUpdate');
-        $entryId = $section->entry_id;
+        $entry = $this->findEntry($entry, 'sectionUpdate');
 
-        $section->load(Yii::$app->getRequest()->post());
-        $clone = $section->clone();
+        $section->populateEntryRelation($entry);
 
-        if ($errors = $clone->getFirstErrors()) {
+        if ($section->update()) {
+            $this->success(Yii::t('cms', 'The section was moved.'));
+        }
+
+        if ($errors = $section->getFirstErrors()) {
             $this->error($errors);
-            return $this->redirect(['index', 'entry' => $entryId]);
+        }
+
+        return $this->redirect(['update', 'id' => $section->id]);
+    }
+
+    public function actionDuplicate(int $id, ?int $entry = null): Response|string
+    {
+        $section = $this->findSection($id, 'sectionUpdate');
+        $entry = $entry ? $this->findEntry($entry, 'sectionUpdate') : null;
+
+        $result = Yii::createObject(DuplicateSectionAction::class, [
+            'section' => $section,
+            'entry' => $entry,
+        ]);
+
+        if ($errors = $result->duplicate->getFirstErrors()) {
+            $this->error($errors);
+            return $this->redirect(['index', 'entry' => $section->entry_id]);
         }
 
         $this->success(Yii::t('cms', 'The section was duplicated.'));
-        return $this->redirect(['update', 'id' => $clone->id]);
+        return $this->redirect(['update', 'id' => $result->duplicate->id]);
     }
 
     public function actionDelete(int $id): Response|string
@@ -208,15 +225,9 @@ class SectionController extends Controller
 
     public function actionOrder(int $entry): void
     {
-        $entry = $this->findEntry($entry, 'sectionOrder');
-        $sectionIds = array_map('intval', array_filter(Yii::$app->getRequest()->post('section', [])));
-
-        if ($sectionIds) {
-            Yii::createObject(ReorderSectionsAction::class, [
-                'entry' => $entry,
-                'sectionIds' => $sectionIds,
-            ]);
-        }
+        ReorderSectionsAction::createFromPostRequest('section', [
+            'entry' => $this->findEntry($entry, 'sectionOrder'),
+        ]);
     }
 
     public function actionEntries(

@@ -117,14 +117,8 @@ class SectionEntryController extends Controller
 
     public function actionOrder(int $section): void
     {
-        $section = $this->findSection($section, 'sectionUpdate');
-        $sectionEntryIds = array_map('intval', array_filter(Yii::$app->getRequest()->post('entry', [])));
-
-        if ($sectionEntryIds) {
-            Yii::createObject(ReorderSectionEntriesAction::class, [
-                'section' => $section,
-                'sectionEntryIds' => $sectionEntryIds,
-            ]);
-        }
+        ReorderSectionEntriesAction::createFromPostRequest('entry', [
+            'section' => $this->findSection($section, 'sectionUpdate'),
+        ]);
     }
 }
