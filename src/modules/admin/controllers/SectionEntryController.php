@@ -8,6 +8,7 @@ use davidhirtz\yii2\cms\models\SectionEntry;
 use davidhirtz\yii2\cms\modules\admin\controllers\traits\SectionTrait;
 use davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
+use davidhirtz\yii2\cms\models\actions\ReorderSectionEntriesAction;
 use davidhirtz\yii2\skeleton\web\Controller;
 use Yii;
 use yii\filters\AccessControl;
@@ -120,7 +121,10 @@ class SectionEntryController extends Controller
         $sectionEntryIds = array_map('intval', array_filter(Yii::$app->getRequest()->post('entry', [])));
 
         if ($sectionEntryIds) {
-            $section->updateSectionEntryOrder($sectionEntryIds);
+            Yii::createObject(ReorderSectionEntriesAction::class, [
+                'section' => $section,
+                'sectionEntryIds' => $sectionEntryIds,
+            ]);
         }
     }
 }

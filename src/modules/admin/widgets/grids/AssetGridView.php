@@ -4,6 +4,7 @@ namespace davidhirtz\yii2\cms\modules\admin\widgets\grids;
 
 use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\models\Entry;
+use davidhirtz\yii2\cms\modules\admin\controllers\EntryController;
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\columns\AssetThumbnailColumn;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\cms\models\Asset;
@@ -70,6 +71,10 @@ class AssetGridView extends GridView
             $view->registerJs('Skeleton.mediaFileImport();');
         }
 
+        /**
+         * @see EntryController::actionOrder()
+         * @see SectionController::actionOrder()
+         */
         $this->orderRoute = $this->getParentRoute('cms/asset/order');
 
         $this->initFooter();

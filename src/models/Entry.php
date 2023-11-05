@@ -14,7 +14,6 @@ use davidhirtz\yii2\media\models\interfaces\AssetParentInterface;
 use davidhirtz\yii2\skeleton\behaviors\RedirectBehavior;
 use davidhirtz\yii2\skeleton\db\MaterializedTreeTrait;
 use davidhirtz\yii2\skeleton\helpers\ArrayHelper;
-use davidhirtz\yii2\skeleton\models\Trail;
 use Yii;
 use yii\db\ActiveQuery;
 
@@ -272,37 +271,6 @@ class Entry extends ActiveRecord implements AssetParentInterface
         }
 
         return $query;
-    }
-
-    public function updateAssetOrder(array $assetIds): void
-    {
-        $assets = $this->getAssets()
-            ->select(['id', 'position'])
-            ->andWhere(['id' => $assetIds])
-            ->withoutSections()
-            ->all();
-
-        if (Asset::updatePosition($assets, array_flip($assetIds))) {
-            Trail::createOrderTrail($this, Yii::t('cms', 'Asset order changed'));
-
-            $this->updated_at = new DateTime();
-            $this->update();
-        }
-    }
-
-    public function updateSectionOrder(array $sectionIds): void
-    {
-        $sections = $this->getSections()
-            ->select(['id', 'position'])
-            ->andWhere(['id' => $sectionIds])
-            ->all();
-
-        if (Section::updatePosition($sections, array_flip($sectionIds))) {
-            Trail::createOrderTrail($this, Yii::t('cms', 'Section order changed'));
-
-            $this->updated_at = new DateTime();
-            $this->update();
-        }
     }
 
     public function clone(array $attributes = []): static

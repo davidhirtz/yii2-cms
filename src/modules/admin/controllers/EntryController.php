@@ -2,12 +2,12 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\controllers;
 
+use davidhirtz\yii2\cms\models\actions\ReorderEntriesAction;
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\modules\admin\controllers\traits\EntryTrait;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider;
-use davidhirtz\yii2\skeleton\models\Trail;
 use davidhirtz\yii2\skeleton\web\Controller;
 use Yii;
 use yii\filters\AccessControl;
@@ -16,9 +16,6 @@ use yii\helpers\Url;
 use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
-/**
- * Admin CRUD actions for {@see Entry}.
- */
 class EntryController extends Controller
 {
     use EntryTrait;
@@ -64,7 +61,12 @@ class EntryController extends Controller
         ]);
     }
 
-    public function actionIndex(?int $category = null, ?int $parent = null, ?int $type = null, ?string $q = null): Response|string
+    public function actionIndex(
+        ?int $category = null,
+        ?int $parent = null,
+        ?int $type = null,
+        ?string $q = null
+    ): Response|string
     {
         if (!$type && static::getModule()->defaultEntryType) {
             return $this->redirect(Url::current(['type' => static::getModule()->defaultEntryType]));
@@ -105,9 +107,6 @@ class EntryController extends Controller
         ]);
     }
 
-    /**
-     * @return string|Response
-     */
     public function actionUpdate(int $id): Response|string
     {
         $entry = $this->findEntry($id, 'entryUpdate');
@@ -128,10 +127,7 @@ class EntryController extends Controller
         ]);
     }
 
-    /**
-     * @return Response
-     */
-    public function actionUpdateAll()
+    public function actionUpdateAll(): Response|string
     {
         $request = Yii::$app->getRequest();
 
@@ -161,10 +157,7 @@ class EntryController extends Controller
         return $this->redirect($request->get('redirect', array_merge($request->get(), ['index'])));
     }
 
-    /**
-     * @return string|Response
-     */
-    public function actionClone(int $id)
+    public function actionClone(int $id): Response|string
     {
         $entry = $this->findEntry($id, 'entryUpdate');
         $clone = $entry->clone();
@@ -178,10 +171,7 @@ class EntryController extends Controller
         return $this->redirect($clone->id ? ['update', 'id' => $clone->id] : ['index']);
     }
 
-    /**
-     * @return string|Response
-     */
-    public function actionDelete(int $id)
+    public function actionDelete(int $id): Response|string
     {
         $entry = $this->findEntry($id, 'entryDelete');
 
@@ -194,22 +184,17 @@ class EntryController extends Controller
         return $this->redirect(array_merge(Yii::$app->getRequest()->get(), ['index']));
     }
 
-    /**
-     * Order entries based on position.
-     */
-    public function actionOrder()
+    public function actionOrder(?int $parent = null): void
     {
+        $parent = $parent ? $this->findEntry($parent, 'entryOrder') : null;
         $entryIds = array_map('intval', array_filter(Yii::$app->getRequest()->post('entry', [])));
 
         if ($entryIds) {
-            $entries = Entry::find()->select(['id', 'position'])
-                ->where(['id' => $entryIds])
-                ->orderBy(['position' => SORT_ASC])
-                ->all();
+            Yii::createObject(ReorderEntriesAction::class, [
+                'parent' => $parent,
+                'entryIds' => $entryIds,
+            ]);
 
-            if (Entry::updatePosition($entries, array_flip($entryIds))) {
-                Trail::createOrderTrail(null, Yii::t('cms', 'Entry order changed'));
-            }
         }
     }
 }

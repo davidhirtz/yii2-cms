@@ -26,7 +26,7 @@ use yii\db\ActiveQuery;
  * @property-read EntryCategory $entryCategory {@see static::getEntryCategory()}
  * @property-read EntryCategory[] $entryCategories {@see static::getEntryCategories()}
  * @property-read static $parent {@see static::getParent()}
- * @property-read static[] $ancestors {@see static::getDescendants()}
+ * @property-read static[] $ancestors {@see static::getAncestors()}
  * @property-read static[] $descendants {@see static::getDescendants()}
  */
 class Category extends ActiveRecord
@@ -35,6 +35,8 @@ class Category extends ActiveRecord
 
     public string|false $contentType = false;
     public array|string|null $slugTargetAttribute = ['parent_id', 'slug'];
+
+    private ?array $_nestedSlugs = null;
 
     public function behaviors(): array
     {
@@ -241,18 +243,6 @@ class Category extends ActiveRecord
             ->orderBy(['id' => SORT_ASC]);
     }
 
-    public function updateEntryOrder(array $entryIds): void
-    {
-        $entries = $this->getEntryCategories()
-            ->andWhere(['entry_id' => $entryIds])
-            ->orderBy(['position' => SORT_ASC])
-            ->all();
-
-        if (EntryCategory::updatePosition($entries, array_flip($entryIds))) {
-            Trail::createOrderTrail($this, Yii::t('cms', 'Entry order changed'));
-        }
-    }
-
     public static function getBySlug(string $slug, int $parentId = null): ?static
     {
         if ($slug) {
@@ -316,13 +306,17 @@ class Category extends ActiveRecord
 
     public function getNestedSlug(): string
     {
-        $slugs = [];
+        if ($this->_nestedSlugs === null) {
+            // Use cached ancestors here to prevent multiple queries.
+//            $this->setAncestors(CategoryCollection::getAll());
+            $this->_nestedSlugs = [];
 
-        foreach ($this->ancestors as $ancestor) {
-            $slugs[] = $ancestor->getI18nAttribute('slug');
+            foreach ($this->ancestors as $ancestor) {
+                $this->_nestedSlugs[] = $ancestor->getI18nAttribute('slug');
+            }
         }
 
-        return implode('/', [...$slugs, $this->getI18nAttribute('slug')]);
+        return implode('/', [...$this->_nestedSlugs, $this->getI18nAttribute('slug')]);
     }
 
     public function getEntryOrderBy(): bool|array

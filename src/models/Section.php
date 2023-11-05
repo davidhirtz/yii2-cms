@@ -7,11 +7,9 @@ use davidhirtz\yii2\cms\models\queries\EntryQuery;
 use davidhirtz\yii2\cms\models\queries\SectionQuery;
 use davidhirtz\yii2\cms\models\traits\AssetParentTrait;
 use davidhirtz\yii2\cms\models\traits\EntryRelationTrait;
-use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\media\models\interfaces\AssetParentInterface;
 use davidhirtz\yii2\skeleton\db\ActiveQuery;
 use davidhirtz\yii2\skeleton\helpers\ArrayHelper;
-use davidhirtz\yii2\skeleton\models\Trail;
 use davidhirtz\yii2\skeleton\validators\RelationValidator;
 use Yii;
 use yii\helpers\Inflector;
@@ -200,37 +198,6 @@ class Section extends ActiveRecord implements AssetParentInterface
     public static function find(): SectionQuery
     {
         return Yii::createObject(SectionQuery::class, [static::class]);
-    }
-
-    public function updateAssetOrder(array $assetIds): void
-    {
-        $assets = $this->getAssets()
-            ->select(['id', 'position'])
-            ->andWhere(['id' => $assetIds])
-            ->all();
-
-        if (Asset::updatePosition($assets, array_flip($assetIds))) {
-            $trail = Trail::createOrderTrail($this, Yii::t('cms', 'Asset order changed'));
-            Trail::createOrderTrail($this->entry, Yii::t('cms', 'Section asset order changed'), [
-                'trail_id' => $trail->id,
-            ]);
-
-            $this->updated_at = new DateTime();
-            $this->update();
-        }
-    }
-
-    public function updateSectionEntryOrder(array $sectionEntryIds): void
-    {
-        $sectionEntries = $this->getSectionEntry()
-            ->select(['id', 'position'])
-            ->andWhere(['id' => $sectionEntryIds])
-            ->all();
-
-        if (SectionEntry::updatePosition($sectionEntries, array_flip($sectionEntryIds))) {
-            Trail::createOrderTrail($this, Yii::t('cms', 'Entry order changed'));
-            $this->updateAttributesBlameable(['updated_by_user_id', 'updated_at']);
-        }
     }
 
     public function clone(array $attributes = []): static

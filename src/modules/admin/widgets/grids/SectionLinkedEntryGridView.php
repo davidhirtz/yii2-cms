@@ -4,6 +4,7 @@ namespace davidhirtz\yii2\cms\modules\admin\widgets\grids;
 
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\Section;
+use davidhirtz\yii2\cms\modules\admin\controllers\SectionEntryController;
 use davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\widgets\fontawesome\Icon;
@@ -31,6 +32,10 @@ class SectionLinkedEntryGridView extends EntryGridView
         ]);
 
         $this->layout = $this->section->entry_count ? '{items}{footer}' : '{footer}';
+
+        /**
+         * @see SectionEntryController::actionOrder()
+         */
         $this->orderRoute = ['section-entry/order', 'section' => $this->dataProvider->section->id];
 
         parent::init();

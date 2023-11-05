@@ -4,6 +4,7 @@ namespace davidhirtz\yii2\cms\modules\admin\widgets\grids;
 
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\modules\admin\controllers\EntryCategoryController;
+use davidhirtz\yii2\cms\modules\admin\controllers\EntryController;
 use davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider;
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\columns\AssetCountColumn;
@@ -60,6 +61,9 @@ class EntryGridView extends GridView
      */
     public bool $showDeleteButton = false;
 
+    /**
+     * @see EntryController::actionUpdateAll()
+     */
     public array $selectionRoute = ['/admin/entry/update-all'];
 
     /**
@@ -72,11 +76,6 @@ class EntryGridView extends GridView
 
     public function init(): void
     {
-        if ($this->dataProvider->category) {
-            /** {@see EntryCategoryController::actionOrder()} */
-            $this->orderRoute = ['entry-category/order', 'category' => $this->dataProvider->category->id];
-        }
-
         $enableCategories = static::getModule()->enableCategories;
         $this->showCategories ??= $enableCategories && count($this->getCategories()) > 0;
 
@@ -107,6 +106,14 @@ class EntryGridView extends GridView
                 $this->buttonsColumn(),
             ];
         }
+
+        /**
+         * @see EntryController::actionOrder()
+         * @see EntryCategoryController::actionOrder()
+         */
+        $this->orderRoute = $this->dataProvider->category
+            ? ['entry-category/order', 'category' => $this->dataProvider->category->id]
+            : ['order', 'parent' => $this->dataProvider->parent?->id];
 
         parent::init();
     }

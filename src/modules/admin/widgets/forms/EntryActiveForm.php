@@ -28,10 +28,10 @@ class EntryActiveForm extends ActiveForm
         $this->fields ??= [
             'status',
             'type',
-            'parentId',
+            'parent_id',
             'name',
             'content',
-            'publishDate',
+            'publish_date',
             '-',
             'title',
             'description',

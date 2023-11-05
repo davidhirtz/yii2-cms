@@ -10,6 +10,7 @@
 
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider;
+use davidhirtz\yii2\cms\modules\admin\widgets\forms\CategoryActiveForm;
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\CategoryGridView;
 use davidhirtz\yii2\cms\modules\admin\widgets\navs\Submenu;
 use davidhirtz\yii2\skeleton\helpers\Html;
@@ -29,7 +30,7 @@ $this->setTitle(Yii::t('cms', 'Edit Category'));
 
 <?= Panel::widget([
     'title' => $this->title,
-    'content' => $category->getActiveForm()::widget([
+    'content' => CategoryActiveForm::widget([
         'model' => $category,
     ]),
 ]); ?>

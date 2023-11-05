@@ -121,9 +121,7 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
             'TimestampBehavior' => TimestampBehavior::class,
         ]);
 
-        if (!$this->position) {
-            $this->position = $this->position !== false ? ($this->getMaxPosition() + 1) : 0;
-        }
+        $this->setDefaultPosition();
 
         return parent::beforeSave($insert);
     }
@@ -224,6 +222,13 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         }
     }
 
+    protected function setDefaultPosition(): void
+    {
+        if (!$this->position) {
+            $this->position = $this->position !== false ? ($this->getMaxPosition() + 1) : 0;
+        }
+    }
+
     /**
      * @noinspection PhpUnused {@see Sitemap::generateIndexUrls()}
      */
@@ -290,12 +295,6 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     public function getMaxPosition(): int
     {
         return (int)$this->findSiblings()->max('[[position]]');
-    }
-
-    public static function updatePosition(array $models, array $order = [], string $attribute = 'position', ?string $index = null): int
-    {
-        static::getModule()->invalidatePageCache();
-        return parent::updatePosition($models, $order, $attribute, $index);
     }
 
     public function getCssClass(): string

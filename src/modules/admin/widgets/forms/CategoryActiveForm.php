@@ -27,7 +27,7 @@ class CategoryActiveForm extends ActiveForm
     {
         $this->fields ??= [
             'status',
-            'parentId',
+            'parent_id',
             'type',
             'name',
             'content',

@@ -8,6 +8,7 @@ use davidhirtz\yii2\cms\modules\admin\controllers\traits\CategoryTrait;
 use davidhirtz\yii2\cms\modules\admin\controllers\traits\EntryTrait;
 use davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
+use davidhirtz\yii2\cms\models\actions\ReorderEntryCategoriesAction;
 use davidhirtz\yii2\skeleton\web\Controller;
 use Yii;
 use yii\filters\AccessControl;
@@ -100,7 +101,10 @@ class EntryCategoryController extends Controller
         $entryIds = array_map('intval', array_filter(Yii::$app->getRequest()->post('entry', [])));
 
         if ($entryIds) {
-            $category->updateEntryOrder($entryIds);
+            Yii::createObject(ReorderEntryCategoriesAction::class, [
+                'category' => $category,
+                'entryIds' => $entryIds,
+            ]);
         }
     }
 }

@@ -84,7 +84,7 @@ return [
     'Remove Asset' => 'Dateiverknüpfung entfernen',
     'Remove from section' => 'Von Sektion entfernen',
     'Section' => 'Sektion',
-    'Section asset order changed' => 'Reihenfolge der Sektion-Dateiverknüpfungen geändert',
+    'Section asset order changed' => 'Reihenfolge der Dateiverknüpfungen in Sektion geändert',
     'Section order changed' => 'Reihenfolge der Sektionen geändert',
     'Section-Entry' => 'Sektion-Eintrag',
     'Sections' => 'Sektionen',

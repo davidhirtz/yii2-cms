@@ -12,6 +12,7 @@ use davidhirtz\yii2\media\models\File;
 use davidhirtz\yii2\media\models\Folder;
 use davidhirtz\yii2\media\modules\admin\controllers\traits\FileTrait;
 use davidhirtz\yii2\media\modules\admin\data\FileActiveDataProvider;
+use davidhirtz\yii2\cms\models\actions\ReorderAssetsAction;
 use davidhirtz\yii2\skeleton\web\Controller;
 use Yii;
 use yii\filters\AccessControl;
@@ -99,8 +100,7 @@ class AssetController extends Controller
         ?int $section = null,
         ?int $file = null,
         ?int $folder = null
-    ): Response|string
-    {
+    ): Response|string {
         $request = Yii::$app->getRequest();
         $user = Yii::$app->getUser();
 
@@ -170,13 +170,17 @@ class AssetController extends Controller
 
     public function actionOrder(?int $entry = null, ?int $section = null): void
     {
-        $parent = $section ? $this->findSection($section, 'sectionAssetOrder') :
-            $this->findEntry($entry, 'entryAssetOrder');
+        $parent = $section
+            ? $this->findSection($section, 'sectionAssetOrder')
+            : $this->findEntry($entry, 'entryAssetOrder');
 
         $assetIds = array_map('intval', array_filter(Yii::$app->getRequest()->post('asset', [])));
 
         if ($assetIds) {
-            $parent->updateAssetOrder($assetIds);
+            Yii::createObject(ReorderAssetsAction::class, [
+                'parent' => $parent,
+                'assetIds' => $assetIds,
+            ]);
         }
     }
 

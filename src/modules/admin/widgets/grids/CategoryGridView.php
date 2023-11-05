@@ -13,7 +13,6 @@ use davidhirtz\yii2\skeleton\widgets\fontawesome\Icon;
 use Yii;
 
 /**
- * Displays a grid of {@see Category} models.
  * @property CategoryActiveDataProvider $dataProvider
  */
 class CategoryGridView extends GridView
