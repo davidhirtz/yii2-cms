@@ -35,6 +35,8 @@ class Section extends ActiveRecord implements AssetParentInterface
     use SlugAttributeTrait;
 
     public array|string|null $slugTargetAttribute = ['entry_id', 'slug'];
+    public bool|null $shouldUpdateEntryAfterSave = null;
+
     private ?array $_trailParents = null;
 
     public function rules(): array
@@ -97,6 +99,7 @@ class Section extends ActiveRecord implements AssetParentInterface
     public function beforeSave($insert): bool
     {
         $this->slug = $this->slug ? (string)$this->slug : null;
+        $this->shouldUpdateEntryAfterSave ??= !$this->getIsBatch();
 
         // Handle section move / clone, inserts will be handled by parent implementation
         if (!$insert && $this->isAttributeChanged('entry_id')) {
@@ -114,9 +117,9 @@ class Section extends ActiveRecord implements AssetParentInterface
      */
     public function afterSave($insert, $changedAttributes): void
     {
-        if (!$this->getIsBatch()) {
+        if ($this->shouldUpdateEntryAfterSave) {
             if (array_key_exists('entry_id', $changedAttributes)) {
-                $this->updateOldEntryRelation($changedAttributes['entry_id'] ?? false);
+                $this->updateOldEntryRelation($changedAttributes['entry_id'] ?? null);
                 $this->updateRelatedAssets();
 
                 $this->entry->recalculateSectionCount();
@@ -230,13 +233,11 @@ class Section extends ActiveRecord implements AssetParentInterface
      */
     protected function updateOldEntryRelation(?int $entryId): void
     {
-        if ($entryId) {
-            $entry = Entry::findOne($entryId);
+        $entry = Entry::findOne($entryId);
 
-            if ($entry) {
-                $entry->recalculateSectionCount()->update();
-                $this->_trailParents = [$entry, $this->entry];
-            }
+        if ($entry) {
+            $entry->recalculateSectionCount()->update();
+            $this->_trailParents = [$entry, $this->entry];
         }
     }
 

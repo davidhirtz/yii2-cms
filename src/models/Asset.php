@@ -11,7 +11,6 @@ use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\media\models\interfaces\AssetInterface;
 use davidhirtz\yii2\media\models\traits\AssetTrait;
 use davidhirtz\yii2\media\models\traits\EmbedUrlTrait;
-use davidhirtz\yii2\skeleton\helpers\ArrayHelper;
 use Yii;
 
 /**
@@ -37,6 +36,8 @@ class Asset extends ActiveRecord implements AssetInterface
     use EmbedUrlTrait;
     use EntryRelationTrait;
     use SectionRelationTrait;
+
+    public bool|null $shouldUpdateParentAfterInsert = null;
 
     /**
      * The section validation needs to be called before the entry validation. As it sets the necessary entry relation
@@ -86,10 +87,16 @@ class Asset extends ActiveRecord implements AssetInterface
         }
     }
 
+    public function beforeSave($insert): bool
+    {
+        $this->shouldUpdateParentAfterInsert ??= !$this->getIsBatch();
+        return parent::beforeSave($insert);
+    }
+
     public function afterSave($insert, $changedAttributes): void
     {
         if ($insert) {
-            if (!$this->getIsBatch()) {
+            if ($this->shouldUpdateParentAfterInsert) {
                 $this->updateParentAfterInsert();
             }
 
@@ -124,38 +131,18 @@ class Asset extends ActiveRecord implements AssetInterface
         return Yii::createObject(AssetQuery::class, [static::class]);
     }
 
-    public function clone(array $attributes = []): static
+    public function populateParentRelation(Entry|Section $parent): void
     {
-        $entry = ArrayHelper::remove($attributes, 'entry');
-        $section = ArrayHelper::remove($attributes, 'section');
-
-        $clone = new static();
-        $clone->setAttributes(array_merge($this->getAttributes($this->safeAttributes()), $attributes), false);
-
-        if ($entry) {
-            $clone->populateEntryRelation($entry);
+        if ($parent instanceof Entry) {
+            $this->populateEntryRelation($parent);
+        } else {
+            $this->populateSectionRelation($parent);
         }
-
-        if ($section) {
-            $clone->populateSectionRelation($section);
-        }
-
-        if ($entry || $section) {
-            $clone->setIsBatch(true);
-        }
-
-        if ($clone->insert()) {
-            $this->afterClone($clone);
-        }
-
-        return $clone;
     }
 
     public function populateSectionRelation(?Section $section): void
     {
-        if ($section) {
-            $this->populateRelation('entry', $section->entry);
-        }
+        $this->populateEntryRelation($section?->entry);
 
         $this->populateRelation('section', $section);
         $this->section_id = $section->id ?? null;
@@ -257,6 +244,11 @@ class Asset extends ActiveRecord implements AssetInterface
             'link' => Yii::t('cms', 'Link'),
             'embed_url' => Yii::t('cms', 'Embed URL'),
         ];
+    }
+
+    public function formName(): string
+    {
+        return 'Asset';
     }
 
     public static function tableName(): string

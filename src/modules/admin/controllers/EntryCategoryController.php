@@ -97,7 +97,7 @@ class EntryCategoryController extends Controller
 
     public function actionOrder(int $category): void
     {
-        ReorderEntryCategoriesAction::createFromPostRequest('entry', [
+        ReorderEntryCategoriesAction::runWithBodyParam('entry', [
             'category' => $this->findCategory($category, 'entryOrder'),
         ]);
     }

@@ -7,7 +7,7 @@ use Yii;
 
 trait LinkButtonTrait
 {
-    protected function getLinkButton(): string
+    protected function getLinkButton(array $options = []): string
     {
         if (!$this->model->isDisabled()) {
             if ($route = $this->model->getRoute()) {
@@ -18,6 +18,7 @@ trait LinkButtonTrait
                     return Html::a(Html::iconText('external-link-alt', Yii::t('cms', 'Open website')), $url, [
                         'class' => 'btn btn-secondary',
                         'target' => 'blank',
+                        ...$options,
                     ]);
                 }
             }

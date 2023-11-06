@@ -60,7 +60,7 @@ class CategoryActiveDataProvider extends ActiveDataProvider
                 }
             }
         } else {
-            $this->query->andWhere(['parent_id' => $this->category->id ?? null]);
+            $this->query->andWhere(['parent_id' => $this->category?->id]);
         }
     }
 

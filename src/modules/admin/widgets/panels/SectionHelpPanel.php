@@ -15,7 +15,7 @@ class SectionHelpPanel extends HelpPanel
     {
         return array_filter([
             $this->getCopyButton(),
-            $this->getCloneButton(),
+            $this->getDuplicateButton(),
             $this->getLinkButton(),
         ]);
     }

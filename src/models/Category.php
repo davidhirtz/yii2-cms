@@ -112,8 +112,12 @@ class Category extends ActiveRecord
             $this->slug = null;
         }
 
+        if (!parent::beforeSave($insert)) {
+            return false;
+        }
+
         $this->updateTreeBeforeSave();
-        return parent::beforeSave($insert);
+        return true;
     }
 
     /**

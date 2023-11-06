@@ -45,9 +45,17 @@ trait SlugAttributeTrait
             if ($baseSlug = $this->getAttribute($attributeName)) {
                 $i = 1;
 
-                while (!$this->validate($attributeName) && $i < 100) {
+                // This needs to run the full validation, not just on the attribute to make sure the slug is unique
+                while ($i < 100 && !$this->validate()) {
+                    if (!$this->hasErrors($attributeName)) {
+                        break;
+                    }
+
+                    $prevSlug = $baseSlug;
                     $baseSlug = mb_substr((string)$baseSlug, 0, $this->slugMaxLength - 1 - ceil($i / 10), Yii::$app->charset);
                     $this->setAttribute($attributeName, $baseSlug . '-' . $i++);
+
+                    Yii::debug("Slug '$prevSlug' already exists, trying '{$this->getAttribute($attributeName)}' instead ...");
                 }
             }
         }

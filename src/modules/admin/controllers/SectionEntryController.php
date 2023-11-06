@@ -117,7 +117,7 @@ class SectionEntryController extends Controller
 
     public function actionOrder(int $section): void
     {
-        ReorderSectionEntriesAction::createFromPostRequest('entry', [
+        ReorderSectionEntriesAction::runWithBodyParam('entry', [
             'section' => $this->findSection($section, 'sectionUpdate'),
         ]);
     }

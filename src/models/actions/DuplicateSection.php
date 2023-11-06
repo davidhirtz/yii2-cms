@@ -3,34 +3,45 @@
 namespace davidhirtz\yii2\cms\models\actions;
 
 use app\models\Entry;
+use davidhirtz\yii2\cms\models\actions\traits\DuplicateAssetsTrait;
 use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\models\SectionEntry;
-use davidhirtz\yii2\skeleton\models\actions\DuplicateActiveRecordAction;
 use Yii;
 
 /**
- * @property Section $model
- * @property Section $duplicate
+ * @template-implements \davidhirtz\yii2\skeleton\models\actions\DuplicateActiveRecord<Section>
  */
-class DuplicateSectionAction extends DuplicateActiveRecordAction
+class DuplicateSection extends DuplicateActiveRecord
 {
-    public int $defaultStatus = Section::STATUS_DRAFT;
+    use DuplicateAssetsTrait;
 
-    public function __construct(Section $section, protected ?Entry $entry = null, array $attributes = [])
-    {
-        $attributes['status'] ??= $this->defaultStatus;
+    public function __construct(
+        Section $section,
+        protected ?Entry $entry = null,
+        protected bool $shouldUpdateEntryAfterInsert = true,
+        array $attributes = []
+    ) {
         parent::__construct($section, $attributes);
     }
 
     protected function beforeDuplicate(): bool
     {
+        if (!parent::beforeDuplicate()) {
+            return false;
+        }
+
         $this->duplicate->populateEntryRelation(!$this->entry || $this->entry->getIsNewRecord()
             ? $this->model->entry
             : $this->entry);
 
+        $this->duplicate->shouldUpdateEntryAfterSave = $this->shouldUpdateEntryAfterInsert;
+
+        $this->duplicate->asset_count = $this->model->asset_count;
+        $this->duplicate->entry_count = $this->model->entry_count;
+
         $this->duplicate->generateUniqueSlug();
 
-        return parent::beforeDuplicate();
+        return true;
     }
 
     protected function afterDuplicate(): void
@@ -44,25 +55,6 @@ class DuplicateSectionAction extends DuplicateActiveRecordAction
         if ($this->model->entry_count) {
             $this->duplicateSectionEntries();
         }
-
-        $this->duplicate->update();
-    }
-
-    protected function duplicateAssets(): void
-    {
-        Yii::debug('Duplicating section assets ...');
-
-        $assets = $this->model->getAssets()->all();
-        $assetCount = 0;
-
-        foreach ($assets as $asset) {
-            $asset->clone([
-                'section' => $this->duplicate,
-                'position' => ++$assetCount,
-            ]);
-        }
-
-        $this->duplicate->asset_count = $assetCount;
     }
 
     protected function duplicateSectionEntries(): void
@@ -70,17 +62,15 @@ class DuplicateSectionAction extends DuplicateActiveRecordAction
         Yii::debug('Duplicating section entries ...');
 
         $entries = $this->model->getEntries()->all();
-        $entryCount = 0;
+        $position = 0;
 
         foreach ($entries as $entry) {
             $sectionEntry = SectionEntry::create();
             $sectionEntry->populateEntryRelation($entry);
             $sectionEntry->populateSectionRelation($this->duplicate);
             $sectionEntry->setIsBatch(true);
-            $sectionEntry->position = ++$entryCount;
+            $sectionEntry->position = ++$position;
             $sectionEntry->insert();
         }
-
-        $this->duplicate->entry_count = $entryCount;
     }
 }

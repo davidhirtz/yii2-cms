@@ -28,6 +28,8 @@ use Yii;
  * @property int $updated_by_user_id
  * @property DateTime $updated_at
  * @property DateTime $created_at
+ *
+ * @mixin TrailBehavior
  */
 abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
 {

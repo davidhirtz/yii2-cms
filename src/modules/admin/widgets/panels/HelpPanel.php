@@ -15,22 +15,18 @@ abstract class HelpPanel extends \davidhirtz\yii2\skeleton\modules\admin\widgets
 
     public function init(): void
     {
-        if ($this->title === null) {
-            $this->title = Yii::t('skeleton', 'Operations');
-        }
-
-        if ($this->content === null) {
-            $this->content = $this->renderButtonToolbar($this->getButtons());
-        }
+        $this->title ??= Yii::t('skeleton', 'Operations');
+        $this->content ??= $this->renderButtonToolbar($this->getButtons());
 
         parent::init();
     }
 
-    protected function getCloneButton() :string
+    protected function getDuplicateButton(array $options = []): string
     {
         return Html::a(Html::iconText('paste', Yii::t('cms', 'Duplicate')), ['duplicate', 'id' => $this->model->id], [
             'class' => 'btn btn-primary',
             'data-method' => 'post',
+            ...$options,
         ]);
     }
 

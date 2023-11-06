@@ -49,6 +49,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
     public string|false $contentType = false;
     public array|string $dateTimeValidator = DateTimeValidator::class;
     public array|string|null $slugTargetAttribute = ['slug', 'parent_slug'];
+    public bool|null $shouldUpdateParentAfterSave = null;
 
     public function behaviors(): array
     {
@@ -105,7 +106,9 @@ class Entry extends ActiveRecord implements AssetParentInterface
 
     public function beforeValidate(): bool
     {
+        $this->ensureRequiredI18nAttributes();
         $this->ensureSlug();
+
         return parent::beforeValidate();
     }
 
@@ -134,12 +137,14 @@ class Entry extends ActiveRecord implements AssetParentInterface
             $this->description = null;
         }
 
+        $this->shouldUpdateParentAfterSave ??= !$this->getIsBatch();
+
         return parent::beforeSave($insert);
     }
 
     public function afterSave($insert, $changedAttributes): void
     {
-        if ($this->entry_count) {
+        if (!$insert && $this->entry_count) {
             foreach ($this->getI18nAttributesNames(['path', 'slug', 'parent_slug']) as $key) {
                 if (array_key_exists($key, $changedAttributes)) {
                     foreach ($this->getChildren(true) as $entry) {
@@ -156,7 +161,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
             }
         }
 
-        if (array_key_exists('parent_id', $changedAttributes)) {
+        if ($this->shouldUpdateParentAfterSave && array_key_exists('parent_id', $changedAttributes)) {
             $ancestorIds = ArrayHelper::cacheStringToArray($changedAttributes['path'] ?? '', $this->getAncestorIds());
 
             if ($ancestorIds) {
@@ -275,51 +280,17 @@ class Entry extends ActiveRecord implements AssetParentInterface
         return $query;
     }
 
-    public function clone(array $attributes = []): static
+    protected function ensureRequiredI18nAttributes(): void
     {
-        $attributes['status'] ??= static::STATUS_DRAFT;
-
-        $clone = new static();
-        $clone->setAttributes(array_merge($this->getAttributes($this->safeAttributes()), $attributes), false);
-        $clone->asset_count = $this->asset_count;
-        $clone->section_count = $this->section_count;
-        $clone->generateUniqueSlug();
-
-        if ($this->beforeClone($clone) && $clone->insert()) {
-            foreach ($this->getCategoryIds() as $categoryId) {
-                $entryCategory = EntryCategory::create();
-                $entryCategory->category_id = $categoryId;
-                $entryCategory->populateEntryRelation($clone);
-                $entryCategory->insert();
-            }
-
-            if ($this->section_count) {
-                $sectionCount = 1;
-
-                foreach ($this->sections as $section) {
-                    $section->clone([
-                        'entry' => $clone,
-                        'position' => $sectionCount++,
-                    ]);
+        foreach ($this->i18nAttributes as $attribute) {
+            if ($this->isAttributeRequired($attribute)) {
+                foreach ($this->getI18nAttributeNames($attribute) as $i18nAttributeName) {
+                    if (!$this->$i18nAttributeName) {
+                        $this->$i18nAttributeName = $this->$attribute;
+                    }
                 }
             }
-
-            if ($this->asset_count) {
-                $assets = $this->getAssets()->withoutSections()->all();
-                $assetCount = 1;
-
-                foreach ($assets as $asset) {
-                    $asset->clone([
-                        'entry' => $clone,
-                        'position' => $assetCount++,
-                    ]);
-                }
-            }
-
-            $this->afterClone($clone);
         }
-
-        return $clone;
     }
 
     /**

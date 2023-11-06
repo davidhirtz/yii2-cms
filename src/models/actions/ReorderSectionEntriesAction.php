@@ -6,7 +6,7 @@ use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\skeleton\models\Trail;
 use Yii;
 
-class ReorderSectionEntriesAction extends ReorderActiveRecordsAction
+class ReorderSectionEntriesAction extends ReorderActiveRecords
 {
     public function __construct(protected Section $section, array $folderIds)
     {

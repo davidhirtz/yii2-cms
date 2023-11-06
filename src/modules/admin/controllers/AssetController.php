@@ -2,6 +2,7 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\controllers;
 
+use davidhirtz\yii2\cms\models\actions\DuplicateAsset;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\modules\admin\controllers\traits\AssetTrait;
 use davidhirtz\yii2\cms\modules\admin\controllers\traits\EntryTrait;
@@ -42,7 +43,7 @@ class AssetController extends Controller
                     ],
                     [
                         'allow' => true,
-                        'actions' => ['create'],
+                        'actions' => ['create', 'duplicate'],
                         'roles' => ['entryAssetCreate', 'sectionAssetCreate'],
                     ],
                     [
@@ -61,6 +62,7 @@ class AssetController extends Controller
                 'class' => VerbFilter::class,
                 'actions' => [
                     'delete' => ['post'],
+                    'duplicate' => ['post'],
                     'order' => ['post'],
                 ],
             ],
@@ -145,7 +147,6 @@ class AssetController extends Controller
             }
         }
 
-        /** @noinspection MissedViewInspection */
         return $this->render('update', [
             'asset' => $asset,
         ]);
@@ -168,13 +169,30 @@ class AssetController extends Controller
         throw new BadRequestHttpException(reset($errors));
     }
 
+    public function actionDuplicate(int $id): Response|string
+    {
+        $asset = $this->findAsset($id, 'assetUpdate');
+
+        $duplicate = DuplicateAsset::create([
+            'asset' => $asset,
+        ]);
+
+        if ($errors = $duplicate->getFirstErrors()) {
+            $this->error($errors);
+            return $this->redirect(['update', 'id' => $asset->id]);
+        }
+
+        $this->success(Yii::t('cms', 'The asset was duplicated.'));
+        return $this->redirect(['update', 'id' => $duplicate->id]);
+    }
+
     public function actionOrder(?int $entry = null, ?int $section = null): void
     {
         $parent = $section
             ? $this->findSection($section, 'sectionAssetOrder')
             : $this->findEntry($entry, 'entryAssetOrder');
 
-        ReorderAssetsAction::createFromPostRequest('asset', [
+        ReorderAssetsAction::runWithBodyParam('asset', [
             'parent' => $parent,
         ]);
     }

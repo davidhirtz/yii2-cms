@@ -1,13 +1,14 @@
 ## 2.0.2 (Nov 5, 2023)
 
-- Removed `ActiveRecord::updatePosition()`, `Category::updateEntryOrder()`, `Entry::updateAssetOrder()`,
-  `Entry::updateSectionOrder()`, `Section::updateAssetOrder()`, `Section::updateSectionOrder()` use model actions found
-  in `davidhirtz\yii2\cms\models\actions`
 - Added `Canvas` widget to display the assets in the frontend
 - Renamed `AssetViews` to `Gallery`
 - Renamed `SectionViews` to `Sections`
 - Renamed `MetaTags::register()` to `MetaTags::widget()` to match the other widgets
 - Moved `Bootstrap` class to base package namespace for consistency
+- Removed `ActiveRecord::updatePosition()`, `Category::updateEntryOrder()`, `Category::clone()`,
+  `Entry::updateAssetOrder()`,`Entry::clone()`, `Entry::updateSectionOrder()`, `Section::clone()`,
+  `Section::updateAssetOrder()`, `Section::updateSectionOrder()` use model actions found in
+  `davidhirtz\yii2\cms\models\actions`
 
 ## 2.0.1 (Nov 4, 2023)
 

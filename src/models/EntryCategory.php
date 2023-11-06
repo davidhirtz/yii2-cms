@@ -22,6 +22,8 @@ use Yii;
  * @property int|null $updated_by_user_id
  * @property DateTime $updated_at
  * @property DateTime $created_at
+ *
+ * @mixin TrailBehavior
  */
 class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
 {
@@ -29,6 +31,8 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     use EntryRelationTrait;
     use ModuleTrait;
     use UpdatedByUserTrait;
+
+    public bool|null $shouldUpdateEntryAfterInsert = null;
 
     public function behaviors(): array
     {
@@ -91,6 +95,7 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         ]);
 
         $this->position ??= $this->getMaxPosition() + 1;
+        $this->shouldUpdateEntryAfterInsert ??= !$this->getIsBatch();
 
         return parent::beforeSave($insert);
     }
@@ -98,7 +103,7 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     public function afterSave($insert, $changedAttributes): void
     {
         if ($insert) {
-            if (!$this->getIsBatch()) {
+            if ($this->shouldUpdateEntryAfterInsert) {
                 $this->insertCategoryAncestors();
                 $this->updateEntryCategoryIds();
             }
@@ -132,13 +137,11 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
 
     public function updateEntryCategoryIds(): bool|int
     {
-        $this->entry->recalculateCategoryIds();
-        return $this->entry->update();
+        return $this->entry->recalculateCategoryIds()->update();
     }
     public function updateCategoryEntryCount(): bool|int
     {
-        $this->category->recalculateEntryCount();
-        return $this->category->update();
+        return $this->category->recalculateEntryCount()->update();
     }
 
     public function insertCategoryAncestors(): void

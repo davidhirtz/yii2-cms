@@ -4,7 +4,7 @@ namespace davidhirtz\yii2\cms\models\actions;
 
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 
-class ReorderActiveRecordsAction extends \davidhirtz\yii2\skeleton\models\actions\ReorderActiveRecordsAction
+class ReorderActiveRecords extends \davidhirtz\yii2\skeleton\models\actions\ReorderActiveRecords
 {
     use ModuleTrait;
 

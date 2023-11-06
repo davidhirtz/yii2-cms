@@ -15,7 +15,7 @@ class CategoryCollection
     private static ?array $_categories = null;
 
     /**
-     * @return Category[]
+     * @return array<int, Category>
      */
     public static function getAll(bool $refresh = false): array
     {
@@ -31,6 +31,9 @@ class CategoryCollection
         return static::$_categories;
     }
 
+    /**
+     * @return array<int, Category>
+     */
     protected static function findAll(): array
     {
         return Category::find()

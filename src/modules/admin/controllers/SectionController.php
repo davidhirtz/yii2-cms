@@ -2,7 +2,7 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\controllers;
 
-use davidhirtz\yii2\cms\models\actions\DuplicateSectionAction;
+use davidhirtz\yii2\cms\models\actions\DuplicateSection;
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\queries\AssetQuery;
 use davidhirtz\yii2\cms\models\queries\SectionQuery;
@@ -190,18 +190,18 @@ class SectionController extends Controller
         $section = $this->findSection($id, 'sectionUpdate');
         $entry = $entry ? $this->findEntry($entry, 'sectionUpdate') : null;
 
-        $result = Yii::createObject(DuplicateSectionAction::class, [
+        $duplicate = DuplicateSection::create([
             'section' => $section,
             'entry' => $entry,
         ]);
 
-        if ($errors = $result->duplicate->getFirstErrors()) {
+        if ($errors = $duplicate->getFirstErrors()) {
             $this->error($errors);
             return $this->redirect(['index', 'entry' => $section->entry_id]);
         }
 
         $this->success(Yii::t('cms', 'The section was duplicated.'));
-        return $this->redirect(['update', 'id' => $result->duplicate->id]);
+        return $this->redirect(['update', 'id' => $duplicate->id]);
     }
 
     public function actionDelete(int $id): Response|string
@@ -225,7 +225,7 @@ class SectionController extends Controller
 
     public function actionOrder(int $entry): void
     {
-        ReorderSectionsAction::createFromPostRequest('section', [
+        ReorderSectionsAction::runWithBodyParam('section', [
             'entry' => $this->findEntry($entry, 'sectionOrder'),
         ]);
     }

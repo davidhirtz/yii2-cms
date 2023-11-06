@@ -2,6 +2,7 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\controllers;
 
+use davidhirtz\yii2\cms\models\actions\DuplicateEntry;
 use davidhirtz\yii2\cms\models\actions\ReorderEntriesAction;
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\modules\admin\controllers\traits\EntryTrait;
@@ -34,7 +35,7 @@ class EntryController extends Controller
                     ],
                     [
                         'allow' => true,
-                        'actions' => ['clone', 'create'],
+                        'actions' => ['duplicate', 'create'],
                         'roles' => ['entryCreate'],
                     ],
                     [
@@ -52,8 +53,8 @@ class EntryController extends Controller
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
-                    'clone' => ['post'],
                     'delete' => ['post'],
+                    'duplicate' => ['post'],
                     'order' => ['post'],
                     'update-all' => ['post'],
                 ],
@@ -66,8 +67,7 @@ class EntryController extends Controller
         ?int $parent = null,
         ?int $type = null,
         ?string $q = null
-    ): Response|string
-    {
+    ): Response|string {
         if (!$type && static::getModule()->defaultEntryType) {
             return $this->redirect(Url::current(['type' => static::getModule()->defaultEntryType]));
         }
@@ -157,18 +157,21 @@ class EntryController extends Controller
         return $this->redirect($request->get('redirect', array_merge($request->get(), ['index'])));
     }
 
-    public function actionClone(int $id): Response|string
+    public function actionDuplicate(int $id): Response|string
     {
         $entry = $this->findEntry($id, 'entryUpdate');
-        $clone = $entry->clone();
 
-        if ($errors = $clone->getFirstErrors()) {
+        $duplicate = DuplicateEntry::create([
+            'entry' => $entry,
+        ]);
+
+        if ($errors = $duplicate->getFirstErrors()) {
             $this->error($errors);
         } else {
             $this->success(Yii::t('cms', 'The entry was duplicated.'));
         }
 
-        return $this->redirect($clone->id ? ['update', 'id' => $clone->id] : ['index']);
+        return $this->redirect(['update', 'id' => $duplicate->id ?? $entry->id]);
     }
 
     public function actionDelete(int $id): Response|string
@@ -186,7 +189,7 @@ class EntryController extends Controller
 
     public function actionOrder(?int $parent = null): void
     {
-        ReorderEntriesAction::createFromPostRequest('entry', [
+        ReorderEntriesAction::runWithBodyParam('entry', [
             'parent' => $parent ? $this->findEntry($parent, 'entryOrder') : null,
         ]);
     }
