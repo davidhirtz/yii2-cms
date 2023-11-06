@@ -1,3 +1,7 @@
+## 2.0.3 (Nov 6, 2023)
+
+- Added `AdminLink` widget to display links to the backend
+
 ## 2.0.2 (Nov 6, 2023)
 
 - Added `Canvas` widget to display the assets in the frontend

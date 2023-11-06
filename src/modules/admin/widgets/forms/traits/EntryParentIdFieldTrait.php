@@ -82,7 +82,7 @@ trait EntryParentIdFieldTrait
             if ($entry->parent_id == $parentId) {
                 $count = count($entry->getAncestorIds());
                 $parentIdItems[$entry->id] = ($count ? ('&nbsp;' . str_repeat('–', $count) . ' ') : '')
-                    . Html::encode($entry->getI18nAttribute('name') ?: Yii::t('cms', '[ No Title ]'));
+                    . Html::encode($entry->getI18nAttribute('name') ?: Yii::t('cms', '[ No title ]'));
 
                 if ($entry->entry_count) {
                     $this->getParentIdItems($entries, $entry->id);

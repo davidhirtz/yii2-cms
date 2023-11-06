@@ -17,7 +17,6 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
-    'Add entries' => '',
     'Add to section' => '',
     'Added' => '',
     'Alt text' => '',
@@ -51,11 +50,12 @@ return [
     'Delete entry assets' => '',
     'Delete section assets' => '',
     'Delete sections' => '',
-    'Duplicate' => '',
+    'Do you want to duplicate this entry and its {n} subentries?' => '',
     'Edit Asset' => '',
     'Edit Category' => '',
     'Edit Entry' => '',
     'Edit Section' => '',
+    'Embed URL' => '',
     'Entries' => '',
     'Entry' => '',
     'Entry added to section.' => '',
@@ -66,6 +66,7 @@ return [
     'Link assets' => '',
     'Link entries' => '',
     'Linked entries' => '',
+    'Linked entry order changed' => '',
     'Meta description' => '',
     'Meta title' => '',
     'Move / Copy' => '',
@@ -92,6 +93,7 @@ return [
     'Subentries' => '',
     'The asset was added.' => '',
     'The asset was deleted.' => '',
+    'The asset was duplicated.' => '',
     'The asset was updated.' => '',
     'The category was created.' => '',
     'The category was deleted.' => '',
@@ -103,6 +105,7 @@ return [
     'The section was created.' => '',
     'The section was deleted.' => '',
     'The section was duplicated.' => '',
+    'The section was moved.' => '',
     'The section was updated.' => '',
     'The selected entries were updated.' => '',
     'The selected sections were updated.' => '',
@@ -118,5 +121,6 @@ return [
     'Warning: Deleting this category cannot be undone. All related sections will also be unrecoverably deleted. All subcategories will also be unrecoverably deleted. Please be certain!' => '',
     'Warning: Deleting this entry cannot be undone. All related sections will also be unrecoverably deleted. Please be certain!' => '',
     'Warning: Deleting this file cannot be undone. All related assets will also be unrecoverably deleted. Please be certain!' => '',
+    '[ No title ]' => '',
     '[ No title ]' => '',
 ];

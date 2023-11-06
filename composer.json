@@ -6,7 +6,7 @@
   "minimum-stability": "dev",
   "prefer-stable": true,
   "require": {
-    "davidhirtz/yii2-media": "^2.0.2"
+    "davidhirtz/yii2-media": "^2.0.3"
   },
   "require-dev": {
     "rector/rector": "^0.18.6"
