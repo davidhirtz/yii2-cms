@@ -26,18 +26,17 @@ class DuplicateSection extends DuplicateActiveRecord
 
     protected function beforeDuplicate(): bool
     {
-        if (!parent::beforeDuplicate()) {
-            return false;
-        }
-
         $this->duplicate->populateEntryRelation(!$this->entry || $this->entry->getIsNewRecord()
             ? $this->model->entry
             : $this->entry);
 
         $this->duplicate->shouldUpdateEntryAfterSave = $this->shouldUpdateEntryAfterInsert;
-
         $this->duplicate->asset_count = $this->model->asset_count;
         $this->duplicate->entry_count = $this->model->entry_count;
+
+        if (!parent::beforeDuplicate()) {
+            return false;
+        }
 
         $this->duplicate->generateUniqueSlug();
 

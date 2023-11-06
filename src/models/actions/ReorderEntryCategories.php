@@ -6,7 +6,7 @@ use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\skeleton\models\Trail;
 use Yii;
 
-class ReorderEntryCategoriesAction extends ReorderActiveRecords
+class ReorderEntryCategories extends ReorderActiveRecords
 {
     public function __construct(protected Category $category, array $entryIds)
     {

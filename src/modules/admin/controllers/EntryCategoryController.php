@@ -8,7 +8,7 @@ use davidhirtz\yii2\cms\modules\admin\controllers\traits\CategoryTrait;
 use davidhirtz\yii2\cms\modules\admin\controllers\traits\EntryTrait;
 use davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
-use davidhirtz\yii2\cms\models\actions\ReorderEntryCategoriesAction;
+use davidhirtz\yii2\cms\models\actions\ReorderEntryCategories;
 use davidhirtz\yii2\skeleton\web\Controller;
 use Yii;
 use yii\filters\AccessControl;
@@ -97,7 +97,7 @@ class EntryCategoryController extends Controller
 
     public function actionOrder(int $category): void
     {
-        ReorderEntryCategoriesAction::runWithBodyParam('entry', [
+        ReorderEntryCategories::runWithBodyParam('entry', [
             'category' => $this->findCategory($category, 'entryOrder'),
         ]);
     }

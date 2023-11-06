@@ -3,7 +3,7 @@
 namespace davidhirtz\yii2\cms\modules\admin\controllers;
 
 use davidhirtz\yii2\cms\models\actions\DuplicateEntry;
-use davidhirtz\yii2\cms\models\actions\ReorderEntriesAction;
+use davidhirtz\yii2\cms\models\actions\ReorderEntries;
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\modules\admin\controllers\traits\EntryTrait;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
@@ -189,7 +189,7 @@ class EntryController extends Controller
 
     public function actionOrder(?int $parent = null): void
     {
-        ReorderEntriesAction::runWithBodyParam('entry', [
+        ReorderEntries::runWithBodyParam('entry', [
             'parent' => $parent ? $this->findEntry($parent, 'entryOrder') : null,
         ]);
     }

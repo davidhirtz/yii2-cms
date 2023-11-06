@@ -13,7 +13,7 @@ use davidhirtz\yii2\media\models\File;
 use davidhirtz\yii2\media\models\Folder;
 use davidhirtz\yii2\media\modules\admin\controllers\traits\FileTrait;
 use davidhirtz\yii2\media\modules\admin\data\FileActiveDataProvider;
-use davidhirtz\yii2\cms\models\actions\ReorderAssetsAction;
+use davidhirtz\yii2\cms\models\actions\ReorderAssets;
 use davidhirtz\yii2\skeleton\web\Controller;
 use Yii;
 use yii\filters\AccessControl;
@@ -192,7 +192,7 @@ class AssetController extends Controller
             ? $this->findSection($section, 'sectionAssetOrder')
             : $this->findEntry($entry, 'entryAssetOrder');
 
-        ReorderAssetsAction::runWithBodyParam('asset', [
+        ReorderAssets::runWithBodyParam('asset', [
             'parent' => $parent,
         ]);
     }

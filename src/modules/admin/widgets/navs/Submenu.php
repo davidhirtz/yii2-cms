@@ -44,6 +44,11 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
     public bool $showEntrySections = true;
 
     /**
+     * @var array<string, array> additional active routes, indexed by the item name
+     */
+    public array $additionalActiveRoutes = [];
+
+    /**
      * @var bool whether the website url to given model should be displayed
      */
     public bool $showUrl = true;
@@ -122,7 +127,10 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
                 'label' => Yii::t('cms', 'Entries'),
                 'url' => ['/admin/entry/index'],
                 'visible' => $canEntryUpdate,
-                'active' => ['admin/entry/'],
+                'active' => [
+                    'admin/entry/',
+                    ...$this->additionalActiveRoutes['entries'] ?? [],
+                ],
                 'icon' => 'book',
             ];
         }
@@ -137,7 +145,10 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
                 'label' => Yii::t('cms', 'Categories'),
                 'url' => ['/admin/category/index'],
                 'visible' => Yii::$app->getUser()->can('categoryUpdate'),
-                'active' => ['admin/category/'],
+                'active' => [
+                    'admin/category/',
+                    ...$this->additionalActiveRoutes['categories'] ?? [],
+                ],
                 'icon' => 'folder-open',
             ],
         ];
@@ -169,6 +180,7 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
                     'admin/entry/update',
                     'admin/cms/asset/' => ['entry'],
                     !$this->isSection() ? 'admin/cms/asset/update' : null,
+                    ...$this->additionalActiveRoutes['entry'] ?? [],
                 ]),
                 'icon' => $entry->getStatusIcon(),
             ],
@@ -183,7 +195,10 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
             [
                 'label' => Yii::t('cms', 'Subentries'),
                 'url' => ['/admin/entry/index', 'parent' => $entry->id],
-                'active' => ['admin/entry/index'],
+                'active' => [
+                    'admin/entry/index',
+                    ...$this->additionalActiveRoutes['subentries'] ?? [],
+                ],
                 'icon' => 'book',
                 'badge' => $entry->entry_count ?: false,
                 'visible' => static::getModule()->enableEntryAssets && $entry->hasDescendantsEnabled(),
@@ -200,7 +215,10 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
                 'label' => Yii::t('cms', 'Categories'),
                 'url' => ['/admin/entry-category/index', 'entry' => $entry->id],
                 'visible' => Yii::$app->getUser()->can('entryCategoryUpdate', ['entry' => $entry]),
-                'active' => ['admin/entry-category/'],
+                'active' => [
+                    'admin/entry-category/',
+                    ...$this->additionalActiveRoutes['categories'] ?? [],
+                ],
                 'badge' => $entry->getCategoryCount() ?: false,
                 'badgeOptions' => [
                     'id' => 'entry-category-count',
@@ -230,6 +248,7 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
                     'admin/section/',
                     'admin/cms/asset/' => ['section'],
                     $this->isSection() ? 'admin/cms/asset/update' : null,
+                    ...$this->additionalActiveRoutes['sections'] ?? [],
                 ]),
                 'badge' => $entry->section_count ?: false,
                 'badgeOptions' => [

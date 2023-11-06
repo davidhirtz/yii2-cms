@@ -1,6 +1,7 @@
 ## 2.0.2 (Nov 6, 2023)
 
 - Added `Canvas` widget to display the assets in the frontend
+- Added `DuplicateButtonTrait` to duplicate models
 - Moved `Bootstrap` class to base package namespace for consistency
 - Renamed `AssetViews` to `Gallery`
 - Renamed `SectionViews` to `Sections`

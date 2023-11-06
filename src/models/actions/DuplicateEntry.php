@@ -27,10 +27,6 @@ class DuplicateEntry extends DuplicateActiveRecord
 
     protected function beforeDuplicate(): bool
     {
-        if (!parent::beforeDuplicate()) {
-            return false;
-        }
-
         $this->duplicate->populateParentRelation(!$this->parent || $this->parent->getIsNewRecord()
             ? $this->model->parent
             : $this->parent);
@@ -41,6 +37,10 @@ class DuplicateEntry extends DuplicateActiveRecord
         $this->duplicate->category_ids = $this->model->category_ids;
         $this->duplicate->entry_count = $this->model->entry_count;
         $this->duplicate->section_count = $this->model->section_count;
+
+        if (!parent::beforeDuplicate()) {
+            return false;
+        }
 
         $this->duplicate->generateUniqueSlug();
 

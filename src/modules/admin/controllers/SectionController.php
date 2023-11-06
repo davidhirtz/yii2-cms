@@ -12,7 +12,7 @@ use davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\models\Entry;
-use davidhirtz\yii2\cms\models\actions\ReorderSectionsAction;
+use davidhirtz\yii2\cms\models\actions\ReorderSections;
 use davidhirtz\yii2\skeleton\web\Controller;
 use Yii;
 use yii\filters\AccessControl;
@@ -225,7 +225,7 @@ class SectionController extends Controller
 
     public function actionOrder(int $entry): void
     {
-        ReorderSectionsAction::runWithBodyParam('section', [
+        ReorderSections::runWithBodyParam('section', [
             'entry' => $this->findEntry($entry, 'sectionOrder'),
         ]);
     }

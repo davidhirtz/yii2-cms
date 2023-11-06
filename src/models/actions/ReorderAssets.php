@@ -8,7 +8,7 @@ use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\skeleton\models\Trail;
 use Yii;
 
-class ReorderAssetsAction extends ReorderActiveRecords
+class ReorderAssets extends ReorderActiveRecords
 {
     public function __construct(protected Entry|Section $parent, array $assetIds = [])
     {

@@ -7,7 +7,7 @@ use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\skeleton\models\Trail;
 use Yii;
 
-class ReorderEntriesAction extends ReorderActiveRecords
+class ReorderEntries extends ReorderActiveRecords
 {
     public function __construct(protected ?Entry $parent, array $entryIds)
     {

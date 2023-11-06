@@ -22,16 +22,12 @@ class DuplicateAsset extends DuplicateActiveRecord
 
     protected function beforeDuplicate(): bool
     {
-        if (!parent::beforeDuplicate()) {
-            return false;
-        }
-
         $this->duplicate->populateParentRelation(!$this->parent || $this->parent->getIsNewRecord()
             ? $this->model->parent
             : $this->parent);
 
         $this->duplicate->shouldUpdateParentAfterInsert = $this->shouldUpdateParentAfterInsert;
 
-        return true;
+        return parent::beforeDuplicate();
     }
 }
