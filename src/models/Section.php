@@ -5,7 +5,7 @@ namespace davidhirtz\yii2\cms\models;
 use davidhirtz\yii2\cms\models\queries\AssetQuery;
 use davidhirtz\yii2\cms\models\queries\EntryQuery;
 use davidhirtz\yii2\cms\models\queries\SectionQuery;
-use davidhirtz\yii2\cms\models\traits\AssetParentTrait;
+use davidhirtz\yii2\media\models\traits\AssetParentTrait;
 use davidhirtz\yii2\cms\models\traits\EntryRelationTrait;
 use davidhirtz\yii2\cms\models\traits\SlugAttributeTrait;
 use davidhirtz\yii2\media\models\interfaces\AssetParentInterface;

@@ -1,6 +1,9 @@
 ## 2.0.3 (Nov 6, 2023)
 
 - Added `AdminLink` widget to display links to the backend
+- Added `CategoryCollection::getByEntry()`
+- Added `davidhirtz\yii2\cms\modules\admin\controllers\SetupController` to set up the entries
+- Moved `davidhirtz\yii2\cms\models\traits\AssetParentTrait` to `davidhirtz\yii2\media\models\traits\AssetParentTrait`
 
 ## 2.0.2 (Nov 6, 2023)
 

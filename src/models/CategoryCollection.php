@@ -19,7 +19,7 @@ class CategoryCollection
      */
     public static function getAll(bool $refresh = false): array
     {
-        if(null === static::$_categories || $refresh) {
+        if (null === static::$_categories || $refresh) {
             $dependency = new TagDependency(['tags' => static::CACHE_KEY]);
             $duration = static::getModule()->categoryCachedQueryDuration;
 
@@ -29,6 +29,18 @@ class CategoryCollection
         }
 
         return static::$_categories;
+    }
+
+    /**
+     * @return array<int, Category>
+     * @noinspection PhpUnused
+     */
+    public function getByEntry(Entry $entry): array
+    {
+        $categoryIds = $entry->getCategoryIds();
+
+        return array_filter(static::getAll(), fn(Category $category) => $category->hasEntriesEnabled()
+            && in_array($category->id, $categoryIds));
     }
 
     /**
