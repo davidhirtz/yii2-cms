@@ -64,9 +64,7 @@ class Module extends \yii\base\Module
 
     public function init(): void
     {
-        if (!$this->name) {
-            $this->name = Yii::t('cms', 'Entries');
-        }
+        $this->name ??= Yii::t('cms', 'Entries');
 
         if (!Yii::$app->getRequest()->getIsConsoleRequest()) {
             if (!$this->navbarItems) {

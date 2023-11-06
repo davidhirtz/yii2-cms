@@ -8,9 +8,6 @@ use Yii;
 use yii\caching\CacheInterface;
 use yii\caching\TagDependency;
 
-/**
- * The CMS Module.
- */
 class Module extends \yii\base\Module
 {
     use ModuleTrait;
