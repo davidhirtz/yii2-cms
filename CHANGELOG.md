@@ -1,14 +1,15 @@
-## 2.0.2 (Nov 5, 2023)
+## 2.0.2 (Nov 6, 2023)
 
 - Added `Canvas` widget to display the assets in the frontend
+- Moved `Bootstrap` class to base package namespace for consistency
 - Renamed `AssetViews` to `Gallery`
 - Renamed `SectionViews` to `Sections`
 - Renamed `MetaTags::register()` to `MetaTags::widget()` to match the other widgets
-- Moved `Bootstrap` class to base package namespace for consistency
 - Removed `ActiveRecord::updatePosition()`, `Category::updateEntryOrder()`, `Category::clone()`,
   `Entry::updateAssetOrder()`,`Entry::clone()`, `Entry::updateSectionOrder()`, `Section::clone()`,
   `Section::updateAssetOrder()`, `Section::updateSectionOrder()` use model actions found in
   `davidhirtz\yii2\cms\models\actions`
+- Replaced `ModelCloneEvent` with `davidhirtz\yii2\skeleton\models\events\DuplicateActiveRecordEvent`
 
 ## 2.0.1 (Nov 4, 2023)
 
@@ -20,15 +21,15 @@
 
 ## 2.0.0 (Nov 3, 2023)
 
-- Moved source code to `src` folder
 - Added `davidhirtz\yii2\cms\Module::$enableSectionEntries` option to disable section entries
-- Merged `davidhirtz\yii2\cms\yii2-cms-parent` into this package
-- Moved all models, data providers and widgets out of `base` folder, to override them use Yii's dependency injection
-  container
 - Changed namespaces from `davidhirtz\yii2\cms\admin\widgets\grid` to `davidhirtz\yii2\cms\admin\widgets\grids`
   and `davidhirtz\yii2\cms\admin\widgets\nav` to `davidhirtz\yii2\cms\admin\widgets\navs`
 - Changed namespaces for `LinkButtonTrait` and `UpdateFileButtonTrait`
   to `davidhirtz\yii2\cms\admin\widgets\panels\traits`
+- Merged `davidhirtz\yii2\cms\yii2-cms-parent` into this package
+- Moved source code to `src` folder
+- Moved all models, data providers and widgets out of `base` folder, to override them use Yii's dependency injection
+  container
 - Removed `CategoryTrait` and `Category::getCategories()` in favor
   of `davidhirtz\yii2\cms\models\collections\CategoryCollection`
 - Removed `ActiveForm::getActiveForm()`, to override the active forms, use Yii's dependency injection
