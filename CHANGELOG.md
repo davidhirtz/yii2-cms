@@ -1,3 +1,7 @@
+## 2.0.5 (Nov 7, 2023)
+
+- Changed `davidhirtz\yii2\cms\modules\admin\widgets\forms\AssetActiveForm` to use `TypeFieldTrait` per default
+
 ## 2.0.4 (Nov 7, 2023)
 
 - Added automatic default folder creation in `SetupController`
