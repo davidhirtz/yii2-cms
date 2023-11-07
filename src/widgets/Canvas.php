@@ -15,7 +15,8 @@ class Canvas extends Widget
     public array $captionOptions = [];
     public array $linkOptions = [];
     public array $pictureOptions = [];
-    public array $wrapperOptions = [];
+
+    public ?array $wrapperOptions = null;
 
     public string $template = '{media}{embed}{caption}';
     public array $parts = [];
@@ -24,10 +25,13 @@ class Canvas extends Widget
     public bool $enableWrapperHeight = true;
 
     public int|false $lazyLoadingParentPosition = 2;
-    public string $embedViewFile = '_embed';
+    public string $embedViewFile = '/widgets/_embed';
 
     public function init(): void
     {
+        $this->linkOptions['aria-label'] ??= $this->asset->getVisibleAttribute('name');
+        $this->wrapperOptions ??= ['class' => 'canvas'];
+
         if ($this->enableWrapperHeight && $this->asset->file->hasDimensions()) {
             $this->setWrapperHeight();
         }
@@ -40,8 +44,6 @@ class Canvas extends Widget
             && $this->asset->parent->position > $this->lazyLoadingParentPosition) {
             $this->pictureOptions['imgOptions']['loading'] ??= 'lazy';
         }
-
-        $this->linkOptions['aria-label'] ??= $this->asset->getVisibleAttribute('name');
 
         $this->wrapperOptions = array_filter($this->wrapperOptions);
 
@@ -88,9 +90,7 @@ class Canvas extends Widget
             return '';
         }
 
-        return $this->getView()->render($this->embedViewFile, [
-            'asset' => $this->asset,
-        ]);
+        return $this->getView()->render($this->embedViewFile, ['asset' => $this->asset], $this);
     }
 
     protected function renderLink(): string

@@ -1,4 +1,8 @@
-## v2.0.2 (Nov 6, 2023)
+## v2.0.7 (Nov 8, 2023)
+
+- Changed view path resolution of `Canvas`, `Gallery` and `Sections` widgets
+
+## v2.0.6 (Nov 7, 2023)
 
 - Added default view path to `Sections` widget
 - Enhanced `Entry::getRoute()`, it now also returns the route when it has descendants

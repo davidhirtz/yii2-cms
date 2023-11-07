@@ -16,7 +16,6 @@ class Gallery extends Widget
     public ?int $start = null;
     public ?int $limit = null;
     public array $viewParams = [];
-    public string $viewFile = '_assets';
 
     public array $options = [];
     public array $wrapperOptions = [];
@@ -25,6 +24,8 @@ class Gallery extends Widget
         'hidden-sm' => [Asset::TYPE_DEFAULT, Asset::TYPE_VIEWPORT_MOBILE],
         'hidden block-sm' => [Asset::TYPE_DEFAULT, Asset::TYPE_VIEWPORT_DESKTOP]
     ];
+
+    public string $viewFile = 'widgets/_assets';
 
     protected array $sharedViewports = [];
 
@@ -65,7 +66,7 @@ class Gallery extends Widget
     protected function renderAssetsInternal(array $assets): string
     {
         if ($assets) {
-            $content = $this->getView()->render($this->viewFile, [...$this->viewParams, 'assets' => $assets]);
+            $content = $this->getView()->render($this->viewFile, [...$this->viewParams, 'assets' => $assets], $this);
             $options = $this->prepareOptions($this->options, $assets);
 
             return $options ? Html::tag('div', $content, $options) : $content;
