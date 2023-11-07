@@ -4,6 +4,7 @@ namespace davidhirtz\yii2\cms\modules\admin\controllers;
 
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\Section;
+use davidhirtz\yii2\media\models\Folder;
 use davidhirtz\yii2\skeleton\models\User;
 use davidhirtz\yii2\skeleton\web\Controller;
 use Throwable;
@@ -41,6 +42,7 @@ abstract class SetupController extends Controller
     {
         if ($this->shouldInsertEntries()) {
             $transaction = Yii::$app->getDb()->beginTransaction();
+            Folder::getDefault();
 
             try {
                 foreach ($this->getEntryAttributes() as $attributes) {

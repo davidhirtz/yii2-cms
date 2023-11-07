@@ -1,3 +1,8 @@
+## 2.0.4 (Nov 7, 2023)
+
+- Added automatic default folder creation in `SetupController`
+- Improved `VisibleAttributeTrait`
+
 ## 2.0.3 (Nov 6, 2023)
 
 - Added `AdminLink` widget to display links to the backend

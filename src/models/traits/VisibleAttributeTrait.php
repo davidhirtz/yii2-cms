@@ -11,6 +11,7 @@ trait VisibleAttributeTrait
 
     public function isAttributeVisible(string $attribute): bool
     {
-        return !in_array($attribute, $this->getTypeOptions()['hiddenFields'] ?? []);
+        $typeOptions = $this->getTypeOptions()['hiddenFields'] ?? [];
+        return $typeOptions !== ['*'] && !in_array($attribute, $typeOptions);
     }
 }

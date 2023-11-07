@@ -240,6 +240,7 @@ class Asset extends ActiveRecord implements AssetInterface
             ...parent::attributeLabels(),
             'section_id' => Yii::t('cms', 'Section'),
             'file_id' => Yii::t('media', 'File'),
+            'content' => Yii::t('media', 'Caption'),
             'alt_text' => Yii::t('cms', 'Alt text'),
             'link' => Yii::t('cms', 'Link'),
             'embed_url' => Yii::t('cms', 'Embed URL'),
