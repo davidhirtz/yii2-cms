@@ -1,10 +1,14 @@
 {
   "name": "davidhirtz/yii2-cms",
-  "type": "yii2-extension",
-  "description": "Yii2 CMS Module",
-  "homepage": "https://www.davidhirtz.com/",
-  "minimum-stability": "dev",
-  "prefer-stable": true,
+  "description": "Content management system based on Yii 2.0 framework",
+  "license": "proprietary",
+  "homepage": "https://www.github.com/davidhirtz/yii2-cms",
+  "authors": [
+    {
+      "name": "David Hirtz",
+      "homepage": "https://www.davidhirtz.com/"
+    }
+  ],
   "require": {
     "davidhirtz/yii2-media": "^2.0.5"
   },
