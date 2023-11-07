@@ -5,10 +5,10 @@ namespace davidhirtz\yii2\cms\models;
 use davidhirtz\yii2\cms\models\queries\AssetQuery;
 use davidhirtz\yii2\cms\models\queries\EntryQuery;
 use davidhirtz\yii2\cms\models\queries\SectionQuery;
-use davidhirtz\yii2\media\models\traits\AssetParentTrait;
 use davidhirtz\yii2\cms\models\traits\EntryRelationTrait;
 use davidhirtz\yii2\cms\models\traits\SlugAttributeTrait;
 use davidhirtz\yii2\media\models\interfaces\AssetParentInterface;
+use davidhirtz\yii2\media\models\traits\AssetParentTrait;
 use davidhirtz\yii2\skeleton\db\ActiveQuery;
 use davidhirtz\yii2\skeleton\validators\RelationValidator;
 use Yii;
@@ -109,12 +109,6 @@ class Section extends ActiveRecord implements AssetParentInterface
         return parent::beforeSave($insert);
     }
 
-    /**
-     * Updates related entries after save if {@see Section::getIsBatch} is false.
-     *
-     * @param bool $insert
-     * @param array $changedAttributes
-     */
     public function afterSave($insert, $changedAttributes): void
     {
         if ($this->shouldUpdateEntryAfterSave) {
