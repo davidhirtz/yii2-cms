@@ -1,6 +1,12 @@
+## v2.0.2 (Nov 6, 2023)
+
+- Added default view path to `Sections` widget
+- Enhanced `Entry::getRoute()`, it now also returns the route when it has descendants
+- Enhanced `EntryParentIdFieldTrait` to truncate long parent slugs
+
 ## 2.0.5 (Nov 7, 2023)
 
-- Changed `davidhirtz\yii2\cms\modules\admin\widgets\forms\AssetActiveForm` to use `TypeFieldTrait` per default
+- Changed `davidhirtz\yii2\cms\modules\admin\widgets\forms\AssetActiveForm` to use `TypeFieldTrait` by default
 
 ## 2.0.4 (Nov 7, 2023)
 

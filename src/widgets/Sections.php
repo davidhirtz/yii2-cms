@@ -5,12 +5,13 @@ namespace davidhirtz\yii2\cms\widgets;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\skeleton\widgets\Widget;
+use yii\base\ViewContextInterface;
 
 /**
  * SectionsView renders {@see Section} models. Sections will be rendered in their template set by `viewFile` or their
  * {@see Section::getViewFile()} method grouped by adjacent sections with the same template.
  */
-class Sections extends Widget
+class Sections extends Widget implements ViewContextInterface
 {
     /**
      * @var Entry|null
@@ -42,6 +43,8 @@ class Sections extends Widget
      * {@see Section} object that you can modify in the function.
      */
     public mixed $isVisible = null;
+
+    private ?string $_viewPath = null;
 
     public function init(): void
     {
@@ -139,7 +142,9 @@ class Sections extends Widget
             $sections = array_filter($sections, $this->isVisible);
         }
 
-        return !$viewFile || !$sections ? '' : $this->getView()->render($viewFile, [...$this->viewParams, 'sections' => $sections]);
+        return $viewFile && $sections
+            ? $this->getView()->render($viewFile, [...$this->viewParams, 'sections' => $sections], $this)
+            : '';
     }
 
     protected function getSectionViewFile(Section $section): string
@@ -150,5 +155,19 @@ class Sections extends Widget
     protected function hasSameViewFile(Section $section, ?Section $prevSection): bool
     {
         return $prevSection && $this->getSectionViewFile($prevSection) == $this->getSectionViewFile($section);
+    }
+
+    public function getViewPath(): ?string
+    {
+        if ($this->_viewPath === null) {
+            $this->setViewPath('@views/site');
+        }
+
+        return $this->_viewPath;
+    }
+
+    public function setViewPath(?string $viewPath): void
+    {
+        $this->_viewPath = $viewPath;
     }
 }

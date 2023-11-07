@@ -12,6 +12,8 @@ trait EntryParentIdFieldTrait
 {
     use ModuleTrait;
 
+    public int|false $parentSlugMaxLength = 80;
+
     private ?array $_entries = null;
 
     public function parentIdField(): ActiveField|string
@@ -51,6 +53,10 @@ trait EntryParentIdFieldTrait
             'prompt' => ['text' => ''],
         ];
 
+        if (!in_array('parent_slug', $this->model->slugTargetAttribute)) {
+            return $options;
+        }
+
         foreach ($this->model->getI18nAttributeNames('slug') as $language => $attribute) {
             $options['data-form-target'][] = $this->getSlugId($language);
             $options['prompt']['options']['data-value'][] = $this->getSlugBaseUrl($language);
@@ -71,7 +77,12 @@ trait EntryParentIdFieldTrait
 
     protected function getParentIdOptionDataValue(Entry $entry, ?string $language = null): string
     {
-        return Yii::$app->getI18n()->callback($language, fn() => rtrim(Yii::$app->getUrlManager()->createAbsoluteUrl($entry->getRoute()), '/') . '/');
+        return Yii::$app->getI18n()->callback($language, function () use ($entry) {
+            $url = rtrim(Yii::$app->getUrlManager()->createAbsoluteUrl($entry->getRoute()), '/') . '/';
+            return $this->parentSlugMaxLength && strlen($url) > $this->parentSlugMaxLength
+                ? Html::tag('span', substr($url, 0, $this->parentSlugMaxLength) . '…/', ['title' => $url])
+                : $url;
+        });
     }
 
     protected function getParentIdItems(?array $entries = null, ?int $parentId = null): array
