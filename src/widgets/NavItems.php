@@ -21,6 +21,14 @@ class NavItems
     /**
      * @return array<int, Entry>
      */
+    public static function getMainMenuItems(): array
+    {
+        return array_filter(static::getEntries(), fn($entry) => $entry->show_in_menu && !$entry->parent_id);
+    }
+
+    /**
+     * @return array<int, Entry>
+     */
     public static function getSubmenuItems(Entry $parent): array
     {
         return !$parent->entry_count ? [] : array_filter(
@@ -68,7 +76,7 @@ class NavItems
         $where = [];
         $attributes = Entry::instance()->attributes();
 
-        foreach(['show_in_menu', 'show_in_footer'] as $attribute) {
+        foreach (['show_in_menu', 'show_in_footer'] as $attribute) {
             if (in_array($attribute, $attributes)) {
                 $where[] = [$attribute => 1];
             }

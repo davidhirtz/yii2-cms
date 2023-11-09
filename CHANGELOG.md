@@ -1,3 +1,7 @@
+## 2.0.11 (Nov 9, 2023)
+
+- Added `Navitems::getMainMenuItems()`
+
 ## 2.0.10 (Nov 9, 2023)
 
 - Changed `NavItems` to use `EntryQuery::selectSiteAttributes()` by default
