@@ -79,6 +79,7 @@ return [
     'Open website' => '',
     'Parent category' => '',
     'Parent entry' => '',
+    'Parent entry "{entry}" is not a menu item' => '',
     'Permanently delete related files' => '',
     'Published' => '',
     'Remove' => '',
@@ -89,6 +90,8 @@ return [
     'Section order changed' => '',
     'Section-Entry' => '',
     'Sections' => '',
+    'Show in footer' => '',
+    'Show in menu' => '',
     'Subcategories' => '',
     'Subentries' => '',
     'The asset was added.' => '',
@@ -121,6 +124,5 @@ return [
     'Warning: Deleting this category cannot be undone. All related sections will also be unrecoverably deleted. All subcategories will also be unrecoverably deleted. Please be certain!' => '',
     'Warning: Deleting this entry cannot be undone. All related sections will also be unrecoverably deleted. Please be certain!' => '',
     'Warning: Deleting this file cannot be undone. All related assets will also be unrecoverably deleted. Please be certain!' => '',
-    '[ No title ]' => '',
     '[ No title ]' => '',
 ];

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Message translations.
  *
@@ -79,6 +80,7 @@ return [
     'Open website' => 'Webseite öffnen',
     'Parent category' => 'Übergeordnete Kategorie',
     'Parent entry' => 'Übergeordneter Eintrag',
+    'Parent entry "{entry}" is not a menu item' => 'Der übergeordnete Eintrag "{entry}" ist kein Menüpunkt',
     'Permanently delete related files' => 'Unwiderruflich alle dazugehörige Dateien löschen',
     'Published' => 'Veröffentlichung',
     'Remove' => 'Entfernen',
@@ -89,6 +91,8 @@ return [
     'Section order changed' => 'Reihenfolge der Sektionen geändert',
     'Section-Entry' => 'Sektion-Eintrag',
     'Sections' => 'Sektionen',
+    'Show in footer' => 'In Fußzeile anzeigen',
+    'Show in menu' => 'Im Menü anzeigen',
     'Subcategories' => 'Unterkategorien',
     'Subentries' => 'Untereinträge',
     'The asset was added.' => 'Die Dateiverknüpfung wurde hinzugefügt.',

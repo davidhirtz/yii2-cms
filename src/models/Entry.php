@@ -463,7 +463,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
 
     public function hasDescendantsEnabled(): bool
     {
-        return static::getModule()->enableNestedEntries;
+        return static::getModule()->enableNestedEntries && !$this->isIndex();
     }
 
     public function hasParentEnabled(): bool

@@ -11,8 +11,7 @@ use yii\widgets\ActiveField;
 trait EntryParentIdFieldTrait
 {
     use ModuleTrait;
-
-    public int|false $parentSlugMaxLength = 80;
+    use ParentIdFieldTrait;
 
     private ?array $_entries = null;
 
@@ -46,6 +45,25 @@ trait EntryParentIdFieldTrait
         return $this->_entries;
     }
 
+    protected function getParentIdItems(?array $entries = null, ?int $parentId = null): array
+    {
+        static $parentIdItems = [];
+
+        foreach ($entries ?? $this->getEntries() as $entry) {
+            if ($entry->parent_id == $parentId) {
+                $count = count($entry->getAncestorIds());
+                $parentIdItems[$entry->id] = ($count ? ('&nbsp;' . str_repeat('–', $count) . ' ') : '')
+                    . Html::encode($entry->getI18nAttribute('name') ?: Yii::t('cms', '[ No title ]'));
+
+                if ($entry->entry_count) {
+                    $this->getParentIdItems($entries, $entry->id);
+                }
+            }
+        }
+
+        return $parentIdItems;
+    }
+
     protected function getParentIdOptions(): array
     {
         $options = [
@@ -73,35 +91,6 @@ trait EntryParentIdFieldTrait
         }
 
         return $options;
-    }
-
-    protected function getParentIdOptionDataValue(Entry $entry, ?string $language = null): string
-    {
-        return Yii::$app->getI18n()->callback($language, function () use ($entry) {
-            $url = rtrim(Yii::$app->getUrlManager()->createAbsoluteUrl($entry->getRoute()), '/') . '/';
-            return $this->parentSlugMaxLength && strlen($url) > $this->parentSlugMaxLength
-                ? Html::tag('span', substr($url, 0, $this->parentSlugMaxLength) . '…/', ['title' => $url])
-                : $url;
-        });
-    }
-
-    protected function getParentIdItems(?array $entries = null, ?int $parentId = null): array
-    {
-        static $parentIdItems = [];
-
-        foreach ($entries ?? $this->getEntries() as $entry) {
-            if ($entry->parent_id == $parentId) {
-                $count = count($entry->getAncestorIds());
-                $parentIdItems[$entry->id] = ($count ? ('&nbsp;' . str_repeat('–', $count) . ' ') : '')
-                    . Html::encode($entry->getI18nAttribute('name') ?: Yii::t('cms', '[ No title ]'));
-
-                if ($entry->entry_count) {
-                    $this->getParentIdItems($entries, $entry->id);
-                }
-            }
-        }
-
-        return $parentIdItems;
     }
 
     protected function getParentIdItemsOrderBy(): array

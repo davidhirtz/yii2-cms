@@ -37,4 +37,9 @@ class CategoryQuery extends ActiveQuery
 
         return $this;
     }
+
+    public function whereHasDescendantsEnabled(): static
+    {
+        return $this;
+    }
 }

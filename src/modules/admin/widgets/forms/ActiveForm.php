@@ -36,7 +36,7 @@ class ActiveForm extends \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm
 
     public function slugField(array $options = []): ActiveField|string
     {
-        $language = ArrayHelper::remove($options, 'language');
+        $language = ArrayHelper::remove($options, 'language', Yii::$app->sourceLanguage);
         $attribute = $this->model->getI18nAttributeName('slug', $language);
         $options = array_merge(['enableClientValidation' => false], $options);
 

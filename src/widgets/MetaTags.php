@@ -2,6 +2,7 @@
 
 namespace davidhirtz\yii2\cms\widgets;
 
+use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
@@ -42,7 +43,7 @@ class MetaTags extends Widget
     /**
      * @var int|null the asset type for meta images, if empty all assets of the entry will be included
      */
-    public ?int $assetType = null;
+    public ?int $assetType = Asset::TYPE_META_IMAGE;
 
     /**
      * @var string|null the transformation for the meta-images, if null, the original asset file will be included

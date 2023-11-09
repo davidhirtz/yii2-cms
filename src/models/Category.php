@@ -330,7 +330,17 @@ class Category extends ActiveRecord
         return [EntryCategory::tableName() . '.[[position]]' => SORT_ASC];
     }
 
+    public function hasDescendantsEnabled(): bool
+    {
+        return static::getModule()->inheritNestedCategories;
+    }
+
     public function hasEntriesEnabled(): bool
+    {
+        return true;
+    }
+
+    public function hasParentEnabled(): bool
     {
         return true;
     }

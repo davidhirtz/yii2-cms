@@ -1,3 +1,12 @@
+## v2.0.8 (Nov 9, 2023)
+
+- Added `Category:hasDescendantsEnabled()` and `CategoryQuery::whereHasDescendantsEnabled()`
+- Added `MenuFieldTrait`, `MenuFieldTrait` and `MenuColumn` classes 
+- Added `MenuFooterTrait` and `FooterFieldTrait` classes
+- Changed the default `MetaTags::$assetType`  to `Asset::TYPE_META_IMAGE`
+- Enhanced `CategoryActiveForm::parentIdField()` by extracting all related methods
+  to `davidhirtz\yii2\cms\modules\admin\widgets\forms\traits\CategoryParentIdFieldTrait`
+
 ## v2.0.7 (Nov 8, 2023)
 
 - Changed view path resolution of `Canvas`, `Gallery` and `Sections` widgets
