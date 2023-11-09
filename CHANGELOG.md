@@ -1,4 +1,8 @@
-##2.0.9 (Nov 9, 2023)
+## 2.0.10 (Nov 9, 2023)
+
+- Changed `NavItems` to use `EntryQuery::selectSiteAttributes()` by default
+
+## 2.0.9 (Nov 9, 2023)
 
 - Enhanced `SetupController` to initialize models with the dependency injection container
 
