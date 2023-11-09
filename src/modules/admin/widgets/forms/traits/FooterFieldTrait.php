@@ -18,6 +18,6 @@ trait FooterFieldTrait
             return '';
         }
 
-        return $this->field($this->model, 'showInFooter', $options)->checkbox();
+        return $this->field($this->model, 'show_in_footer', $options)->checkbox();
     }
 }
