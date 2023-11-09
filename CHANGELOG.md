@@ -1,6 +1,7 @@
-## 2.0.13 - under development
+## 2.0.13 (Nov 10, 2023)
 
 - Changed the duplicate actions to keep the status of related records on duplicate
+- Fixed `AdminLink` to use the link options
 
 ## 2.0.12 (Nov 10, 2023)
 

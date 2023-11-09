@@ -21,7 +21,7 @@ class AdminLink extends Widget
     public function run(): string
     {
         return $this->canUpdateModel() && ($route = $this->model->getAdminRoute())
-            ? Html::a('', $route)
+            ? Html::a('', $route, $this->linkOptions)
             : '';
     }
 
