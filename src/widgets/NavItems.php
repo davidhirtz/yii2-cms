@@ -54,31 +54,13 @@ class NavItems
     protected static function getEntryQuery(): EntryQuery
     {
         return Entry::find()
-            ->select(static::getEntryQuerySelect())
+            ->selectSiteAttributes()
             ->replaceI18nAttributes()
             ->addSelect(Entry::instance()->getI18nAttributesNames(['slug', 'parent_slug']))
             ->where(static::getEntryQueryWhere())
             ->whereStatus()
             ->orderBy(['position' => SORT_ASC])
             ->indexBy('id');
-    }
-
-    protected static function getEntryQuerySelect(): array
-    {
-        $select = [
-            'id',
-            'parent_id',
-            'position',
-            'name',
-            'slug',
-            'parent_slug',
-            'section_count',
-            'show_in_menu',
-            'show_in_footer',
-            'entry_count'
-        ];
-
-        return array_intersect($select, Entry::instance()->attributes());
     }
 
     protected static function getEntryQueryWhere(): array
