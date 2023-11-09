@@ -64,7 +64,7 @@ abstract class SetupController extends Controller
         $subentries = ArrayHelper::remove($attributes, 'entries', []);
         $sections = ArrayHelper::remove($attributes, 'sections', []);
 
-        $entry = new Entry();
+        $entry = Entry::create();
         $entry->setAttributes($attributes);
 
         if ($parent instanceof Entry) {
@@ -78,7 +78,8 @@ abstract class SetupController extends Controller
             }
 
             foreach ($sections as $attributes) {
-                $section = new Section($attributes);
+                $section = Section::create();
+                $section->setAttributes($attributes);
                 $section->populateEntryRelation($entry);
                 $section->insert();
             }

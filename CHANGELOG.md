@@ -1,7 +1,11 @@
+##2.0.9 (Nov 9, 2023)
+
+- Enhanced `SetupController` to initialize models with the dependency injection container
+
 ## v2.0.8 (Nov 9, 2023)
 
 - Added `Category:hasDescendantsEnabled()` and `CategoryQuery::whereHasDescendantsEnabled()`
-- Added `MenuFieldTrait`, `MenuFieldTrait` and `MenuColumn` classes 
+- Added `MenuFieldTrait`, `MenuFieldTrait` and `MenuColumn` classes
 - Added `MenuFooterTrait` and `FooterFieldTrait` classes
 - Added `NavItems` widget
 - Changed the default `MetaTags::$assetType`  to `Asset::TYPE_META_IMAGE`
