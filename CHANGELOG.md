@@ -3,6 +3,7 @@
 - Added `Category:hasDescendantsEnabled()` and `CategoryQuery::whereHasDescendantsEnabled()`
 - Added `MenuFieldTrait`, `MenuFieldTrait` and `MenuColumn` classes 
 - Added `MenuFooterTrait` and `FooterFieldTrait` classes
+- Added `NavItems` widget
 - Changed the default `MetaTags::$assetType`  to `Asset::TYPE_META_IMAGE`
 - Enhanced `CategoryActiveForm::parentIdField()` by extracting all related methods
   to `davidhirtz\yii2\cms\modules\admin\widgets\forms\traits\CategoryParentIdFieldTrait`
