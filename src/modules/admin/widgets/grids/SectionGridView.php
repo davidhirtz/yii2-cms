@@ -66,13 +66,9 @@ class SectionGridView extends GridView
         parent::init();
     }
 
-    /**
-     * Sets up grid footer.
-     */
     protected function initFooter(): void
     {
-        if ($this->footer === null) {
-            $this->footer = [
+            $this->footer ??= [
                 [
                     [
                         'content' => $this->getCreateSectionButton() . ($this->showSelection ? $this->getSelectionButton() : ''),
@@ -80,12 +76,8 @@ class SectionGridView extends GridView
                     ],
                 ],
             ];
-        }
     }
 
-    /**
-     * @return string
-     */
     protected function getCreateSectionButton(): string
     {
         if (!Yii::$app->getUser()->can('sectionCreate', ['entry' => $this->entry])) {
@@ -95,9 +87,6 @@ class SectionGridView extends GridView
         return Html::a(Html::iconText('plus', Yii::t('cms', 'New Section')), ['/admin/section/create', 'entry' => $this->entry->id], ['class' => 'btn btn-primary']);
     }
 
-    /**
-     * @return array
-     */
     protected function getSelectionButtonItems(): array
     {
         if (!Yii::$app->getUser()->can('sectionUpdate', ['entry' => $this->entry])) {
@@ -107,21 +96,15 @@ class SectionGridView extends GridView
         return $this->statusSelectionButtonItems();
     }
 
-    /**
-     * @return array
-     */
     public function typeColumn(): array
     {
         return [
             'attribute' => 'type',
-            'visible' => count(Section::getTypes()) > 1,
+            'visible' => count($this->getModel()::getTypes()) > 1,
             'content' => fn(Section $section) => Html::a($section->getTypeName(), ['update', 'id' => $section->id])
         ];
     }
 
-    /**
-     * @return array
-     */
     public function nameColumn(): array
     {
         return [
@@ -160,9 +143,6 @@ class SectionGridView extends GridView
         ];
     }
 
-    /**
-     * @return array
-     */
     public function assetCountColumn(): array
     {
         return [
@@ -181,9 +161,6 @@ class SectionGridView extends GridView
         ];
     }
 
-    /**
-     * @return array
-     */
     public function buttonsColumn(): array
     {
         return [
@@ -192,9 +169,6 @@ class SectionGridView extends GridView
         ];
     }
 
-    /**
-     * @return  array
-     */
     protected function getRowButtons(Section $section): array
     {
         $user = Yii::$app->getUser();

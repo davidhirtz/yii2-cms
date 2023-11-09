@@ -113,7 +113,7 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
         $items = [];
 
         if ($this->showEntryTypes) {
-            foreach (Entry::getTypes() as $type => $attributes) {
+            foreach (Entry::instance()::getTypes() as $type => $attributes) {
                 $items[] = [
                     'label' => $attributes['plural'] ?? $attributes['name'],
                     'url' => ['/admin/entry/index', 'type' => $type],
@@ -295,7 +295,7 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
         $view = $this->getView();
 
         if ($this->showEntryTypes) {
-            if ($typeOptions = (Entry::getTypes()[$model->type] ?? null)) {
+            if ($typeOptions = (Entry::instance()::getTypes()[$model->type] ?? null)) {
                 $view->setBreadcrumb($typeOptions['plural'] ?? $typeOptions['name'], array_merge($this->params, [
                     '/admin/entry/index',
                     'type' => $model->type,

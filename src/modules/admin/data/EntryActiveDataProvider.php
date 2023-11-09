@@ -67,7 +67,7 @@ class EntryActiveDataProvider extends ActiveDataProvider
             $this->query->orderBy(static::getModule()->defaultEntryOrderBy);
         }
 
-        if ($type = (Entry::getTypes()[$this->type] ?? false)) {
+        if ($type = (Entry::instance()::getTypes()[$this->type] ?? false)) {
             if (isset($type['orderBy'])) {
                 $this->query->orderBy($type['orderBy']);
             }

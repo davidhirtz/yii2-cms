@@ -1,3 +1,7 @@
+## 2.0.12 (Nov 10, 2023)
+
+- Enhanced multiple widgets to check for `TypeAttributeTrait::getTypes()` via the dependency injection container
+
 ## 2.0.11 (Nov 9, 2023)
 
 - Added `Navitems::getMainMenuItems()`

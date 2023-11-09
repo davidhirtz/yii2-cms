@@ -88,13 +88,15 @@ class EntryGridView extends GridView
             $this->showCategoryDropdown = $enableCategories;
         }
 
+        $types = $this->getModel()::getTypes();
+
         if ($enableCategories && $this->dataProvider->type) {
-            $this->showCategories = Entry::getTypes()[$this->dataProvider->type]['showCategories'] ?? $this->showCategories;
-            $this->showCategoryDropdown = Entry::getTypes()[$this->dataProvider->type]['showCategoryDropdown'] ?? $this->showCategoryDropdown;
+            $this->showCategories = $types[$this->dataProvider->type]['showCategories'] ?? $this->showCategories;
+            $this->showCategoryDropdown = $types[$this->dataProvider->type]['showCategoryDropdown'] ?? $this->showCategoryDropdown;
         }
 
         if ($this->showTypeDropdown) {
-            $this->showTypeDropdown = count(Entry::getTypes()) > 1;
+            $this->showTypeDropdown = count($types) > 1;
         }
 
         $this->type = $this->dataProvider->type;
