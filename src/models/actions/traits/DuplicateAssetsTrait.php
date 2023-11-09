@@ -21,6 +21,7 @@ trait DuplicateAssetsTrait
                 'parent' => $this->duplicate,
                 'shouldUpdateParentAfterInsert' => false,
                 'attributes' => [
+                    'status' => $asset->status,
                     'position' => ++$position,
                 ],
             ]);

@@ -89,6 +89,7 @@ class DuplicateEntry extends DuplicateActiveRecord
     {
         Yii::debug('Duplicating entries ...');
 
+        /** @var Entry[] $entries */
         $entries = $this->model->getChildren(true);
         $position = 0;
 
@@ -98,6 +99,7 @@ class DuplicateEntry extends DuplicateActiveRecord
                 'parent' => $this->duplicate,
                 'shouldUpdateParentAfterInsert' => false,
                 'attributes' => [
+                    'status' => $entry->status,
                     'position' => ++$position,
                 ],
             ]);
@@ -117,6 +119,7 @@ class DuplicateEntry extends DuplicateActiveRecord
                 'entry' => $this->duplicate,
                 'shouldUpdateEntryAfterInsert' => false,
                 'attributes' => [
+                    'status' => $section->status,
                     'position' => ++$position,
                 ],
             ]);

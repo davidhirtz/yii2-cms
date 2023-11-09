@@ -1,3 +1,7 @@
+## 2.0.13 - under development
+
+- Changed the duplicate actions to keep the status of related records on duplicate
+
 ## 2.0.12 (Nov 10, 2023)
 
 - Enhanced multiple widgets to check for `TypeAttributeTrait::getTypes()` via the dependency injection container
