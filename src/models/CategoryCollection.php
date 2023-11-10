@@ -35,7 +35,7 @@ class CategoryCollection
      * @return array<int, Category>
      * @noinspection PhpUnused
      */
-    public function getByEntry(Entry $entry): array
+    public static function getByEntry(Entry $entry): array
     {
         $categoryIds = $entry->getCategoryIds();
 
