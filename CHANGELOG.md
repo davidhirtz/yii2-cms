@@ -1,4 +1,4 @@
-## 2.0.16 - under development
+## 2.0.16 - (Nov 10, 2023)
 
 - Refactored `CategoryCollection::getByEntry()`
 - Fixed a bug in `CategoryParentIdFieldTrait`where prompt options would not be initialized in some cases

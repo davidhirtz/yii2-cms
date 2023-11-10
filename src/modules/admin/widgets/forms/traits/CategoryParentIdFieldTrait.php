@@ -56,7 +56,8 @@ trait CategoryParentIdFieldTrait
 
     protected function getOptionsForParentSlugDataValue(array $options = []): array
     {
-        if (!in_array('parent_id', $this->model->slugTargetAttribute)) {
+        if (!$this->model->slugTargetAttribute
+            || !in_array('parent_id', (array)$this->model->slugTargetAttribute)) {
             return $options;
         }
 
