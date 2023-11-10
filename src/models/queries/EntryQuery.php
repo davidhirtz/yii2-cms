@@ -100,7 +100,7 @@ class EntryQuery extends ActiveQuery
         $tableName = SectionEntry::tableName();
         $onCondition = fn(ActiveQuery $query) => $query->onCondition(["$tableName.[[section_id]]" => $section->id]);
 
-        if ($eagerLoading) {
+        if ($eagerLoading && $joinType === 'INNER JOIN') {
             $this->orderBy(["$tableName.[[position]]" => SORT_ASC]);
         }
 
