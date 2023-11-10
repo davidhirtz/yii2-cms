@@ -24,7 +24,7 @@ use yii\helpers\Inflector;
  * @property int $entry_count
  *
  * @property-read Asset[] $assets {@see static::getAssets()}
- * @property-read Entry $entries {@see static::getEntries()}
+ * @property-read Entry[] $entries {@see static::getEntries()}
  * @property-read SectionEntry $sectionEntry {@see static::getSectionEntry()}
  * @property-read SectionEntry[] $sectionEntries {@see static::getSectionEntries()}
  */
