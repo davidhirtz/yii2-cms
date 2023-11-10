@@ -1,6 +1,7 @@
 ## 2.0.14 - under development
 
 - Enhanced `Submenu` active nav items
+- Fixed a bug in `EntrySiteRelationsBuilder` which prevented section entries from populating their related records
 
 ## 2.0.13 (Nov 10, 2023)
 

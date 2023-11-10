@@ -46,9 +46,9 @@ class EntrySiteRelationsBuilder extends BaseObject
         $this->loadSections();
 
         $this->loadSectionEntries();
-        $this->populateSectionEntryRelations();
-
         $this->loadEntries();
+
+        $this->populateSectionEntryRelations();
 
         $this->loadAssets();
         $this->loadFiles();
@@ -139,7 +139,7 @@ class EntrySiteRelationsBuilder extends BaseObject
         }
 
         foreach ($this->entry->sections as $section) {
-            $entries = array_map(fn(SectionEntry $sectionEntry) => $this->entries[$sectionEntry->id] ?? null, $section->sectionEntries);
+            $entries = array_map(fn(SectionEntry $sectionEntry) => $this->entries[$sectionEntry->entry_id] ?? null, $section->sectionEntries);
             $section->populateRelation('entries', array_filter($entries));
         }
     }
