@@ -1,7 +1,8 @@
-## 2.0.14 - under development
+## 2.0.14 - (Nov 10, 2023)
 
 - Enhanced `Submenu` active nav items
 - Fixed a bug in `EntrySiteRelationsBuilder` which prevented section entries from populating their related records
+- Fixed a bug in `EntryActiveDataProvider` which would order section entries by their related position in the selection
 
 ## 2.0.13 (Nov 10, 2023)
 

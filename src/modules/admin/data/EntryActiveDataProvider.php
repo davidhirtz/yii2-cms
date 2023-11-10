@@ -83,7 +83,7 @@ class EntryActiveDataProvider extends ActiveDataProvider
             $this->whereCategory();
         }
 
-        if (static::getModule()->enableNestedEntries) {
+        if (static::getModule()->enableNestedEntries && !$this->innerJoinSection) {
             $this->whereEntry();
         }
 
