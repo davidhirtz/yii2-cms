@@ -1,3 +1,7 @@
+## 2.0.15 - (Nov 10, 2023)
+
+- Fixed a bug in `EntryActiveDataProvider` which would ignore the parent entry in some cases
+
 ## 2.0.14 - (Nov 10, 2023)
 
 - Enhanced `Submenu` active nav items
