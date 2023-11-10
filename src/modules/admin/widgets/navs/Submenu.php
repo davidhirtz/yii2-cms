@@ -247,7 +247,12 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
                 'active' => array_filter([
                     'admin/section/',
                     'admin/cms/asset/' => ['section'],
-                    $this->isSection() ? 'admin/cms/asset/update' : null,
+                    ...$this->isSection()
+                        ? [
+                            'admin/cms/asset/update',
+                            'admin/section-entry',
+                        ]
+                        : [],
                     ...$this->additionalActiveRoutes['sections'] ?? [],
                 ]),
                 'badge' => $entry->section_count ?: false,

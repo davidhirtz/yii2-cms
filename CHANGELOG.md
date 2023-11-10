@@ -1,3 +1,7 @@
+## 2.0.14 - under development
+
+- Enhanced `Submenu` active nav items
+
 ## 2.0.13 (Nov 10, 2023)
 
 - Changed the duplicate actions to keep the status of related records on duplicate
