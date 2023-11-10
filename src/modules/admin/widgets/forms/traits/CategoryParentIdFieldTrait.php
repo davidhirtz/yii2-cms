@@ -38,6 +38,7 @@ trait CategoryParentIdFieldTrait
         ];
 
         $defaultOptions['prompt']['text'] ??= '';
+        $defaultOptions['prompt']['options'] ??= [];
 
         return ArrayHelper::merge($defaultOptions, $options);
     }
