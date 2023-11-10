@@ -14,8 +14,6 @@ use yii\data\Pagination;
 use yii\data\Sort;
 
 /**
- * EntryActiveDataProvider implements a data provider based on {@see Entry::find()}.
- *
  * @property EntryQuery $query
  * @method Entry[] getModels()
  */
@@ -83,7 +81,7 @@ class EntryActiveDataProvider extends ActiveDataProvider
             $this->whereCategory();
         }
 
-        if (static::getModule()->enableNestedEntries && !$this->innerJoinSection) {
+        if (static::getModule()->enableNestedEntries) {
             $this->whereEntry();
         }
 
@@ -109,15 +107,21 @@ class EntryActiveDataProvider extends ActiveDataProvider
      */
     protected function whereEntry(): void
     {
-        if (!$this->searchString) {
-            if (!$this->category?->getEntryOrderBy()) {
-                if ($orderBy = $this->parent?->getDescendantsOrder()) {
-                    $this->query->orderBy($orderBy);
-                }
-            }
-
-            $this->query->andWhere(['parent_id' => $this->parent?->id]);
+        if ($this->searchString) {
+            return;
         }
+
+        if ($this->section && $this->innerJoinSection == 'INNER JOIN') {
+            return;
+        }
+
+        if (!$this->category?->getEntryOrderBy()) {
+            if ($orderBy = $this->parent?->getDescendantsOrder()) {
+                $this->query->orderBy($orderBy);
+            }
+        }
+
+        $this->query->andWhere(['parent_id' => $this->parent?->id]);
     }
 
     protected function whereSection(): void

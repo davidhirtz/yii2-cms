@@ -19,7 +19,10 @@ $this->setTitle(Yii::t('cms', 'Link entries'));
     'model' => $provider->section,
 ]); ?>
 
-<?php $this->setBreadcrumb(Yii::t('cms', 'Entries'), $provider->section->getAdminRoute() + ['#' => 'entries']); ?>
+<?php $this->setBreadcrumbs([
+    Yii::t('cms', 'Entries') => $provider->section->getAdminRoute() + ['#' => 'entries'],
+    Yii::t('cms', 'Link entries'),
+]); ?>
 
 <?= Panel::widget([
     'content' => SectionEntryGridView::widget([
