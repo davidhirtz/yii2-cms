@@ -51,13 +51,16 @@ class Gallery extends Widget
             }
 
             $content = $this->renderAssetsInternal($assets);
-            $wrapperOptions = $this->wrapperOptions;
 
-            if (is_string($cssClass)) {
-                Html::addCssClass($wrapperOptions, $cssClass);
+            if ($content) {
+                $wrapperOptions = $this->wrapperOptions;
+
+                if (is_string($cssClass)) {
+                    Html::addCssClass($wrapperOptions, $cssClass);
+                }
+
+                $output .= $wrapperOptions ? Html::tag('div', $content, $wrapperOptions) : $content;
             }
-
-            $output .= $wrapperOptions ? Html::tag('div', $content, $wrapperOptions) : $content;
         }
 
         return $output;

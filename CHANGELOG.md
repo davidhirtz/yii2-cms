@@ -1,3 +1,7 @@
+## 2.0.17 - in development
+
+- Enhanced the `Gallery` widget, to only render the wrapper when there are assets to display
+
 ## 2.0.16 - (Nov 10, 2023)
 
 - Refactored `CategoryCollection::getByEntry()`
