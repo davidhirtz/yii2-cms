@@ -51,6 +51,7 @@ return [
     'Delete section assets' => '',
     'Delete sections' => '',
     'Do you want to duplicate this entry and its {n} subentries?' => '',
+    'Duplicate' => '',
     'Edit Asset' => '',
     'Edit Category' => '',
     'Edit Entry' => '',
