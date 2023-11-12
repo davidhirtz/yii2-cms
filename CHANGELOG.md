@@ -1,17 +1,17 @@
-## 2.0.17 - in development
+## 2.0.17 (Nov 12, 2023)
 
 - Enhanced the `Gallery` widget, to only render the wrapper when there are assets to display
 
-## 2.0.16 - (Nov 10, 2023)
+## 2.0.16 (Nov 10, 2023)
 
 - Refactored `CategoryCollection::getByEntry()`
 - Fixed a bug in `CategoryParentIdFieldTrait`where prompt options would not be initialized in some cases
 
-## 2.0.15 - (Nov 10, 2023)
+## 2.0.15 (Nov 10, 2023)
 
 - Fixed a bug in `EntryActiveDataProvider` which would ignore the parent entry in some cases
 
-## 2.0.14 - (Nov 10, 2023)
+## 2.0.14 (Nov 10, 2023)
 
 - Enhanced `Submenu` active nav items
 - Fixed a bug in `EntrySiteRelationsBuilder` which prevented section entries from populating their related records
@@ -112,6 +112,6 @@
 - Removed `ActiveForm::getActiveForm()`, to override the active forms, use Yii's dependency injection
   container
 
-## 1.3.3 (Sat 4, 2023)
+## 1.3.3 (Nov 3, 2023)
 
 - Locked `davidhirtz/yii2-media` to version `1.3`, upgrade to version 2 to use the new media library
