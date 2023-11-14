@@ -35,6 +35,57 @@ class CategoryCollection
      * @return array<int, Category>
      * @noinspection PhpUnused
      */
+    public static function getAncestors(Category $descendant): array
+    {
+        $ancestors = [];
+
+        if ($descendant->parent_id) {
+            foreach (static::getAll() as $category) {
+                if ($category->lft < $descendant->rgt) {
+                    if ($category->rgt > $descendant->rgt) {
+                        $ancestors[$category->id] = $category;
+                    }
+
+                    continue;
+                }
+
+                break;
+            }
+        }
+
+        return $ancestors;
+    }
+
+    /**
+     * @return array<int, Category>
+     * @noinspection PhpUnused
+     */
+    public static function getChildren(Category $parent): array
+    {
+        if (!static::hasDescendants($parent)) {
+            return [];
+        }
+
+        return array_filter(static::getAll(), fn(Category $category) => $category->parent_id == $parent->id);
+    }
+
+    /**
+     * @return array<int, Category>
+     * @noinspection PhpUnused
+     */
+    public static function getDescendants(Category $ancestor): array
+    {
+        if (!static::hasDescendants($ancestor)) {
+            return [];
+        }
+
+        return array_filter(static::getAll(), fn(Category $category) => $category->lft > $ancestor->lft && $category->rgt < $ancestor->rgt);
+    }
+
+    /**
+     * @return array<int, Category>
+     * @noinspection PhpUnused
+     */
     public static function getByEntry(Entry $entry): array
     {
         $categoryIds = $entry->getCategoryIds();
@@ -54,6 +105,11 @@ class CategoryCollection
             ->whereStatus()
             ->indexBy('id')
             ->all();
+    }
+
+    public static function hasDescendants(Category $ancestor): bool
+    {
+        return $ancestor->lft < $ancestor->rgt + 1;
     }
 
     public static function invalidateCache(): void

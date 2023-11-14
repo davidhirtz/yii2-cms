@@ -1,3 +1,8 @@
+## 2.0.18 (Nov 14, 2023)
+
+- Added helper methods for getting ancestors, children and descendants in `CategoryCollection`
+- Fixed a bug which returned a wrong `Asset` order in `EntrySiteRelationsBuilder`
+
 ## 2.0.17 (Nov 12, 2023)
 
 - Enhanced the `Gallery` widget, to only render the wrapper when there are assets to display

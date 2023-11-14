@@ -170,6 +170,7 @@ class EntrySiteRelationsBuilder extends BaseObject
             ->replaceI18nAttributes()
             ->whereStatus()
             ->andWhere(count($condition) > 1 ? ['or', ...$condition] : $condition[0])
+            ->orderBy(['position' => SORT_ASC])
             ->all();
 
         foreach ($this->assets as $asset) {
