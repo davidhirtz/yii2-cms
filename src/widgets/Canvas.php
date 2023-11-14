@@ -3,8 +3,8 @@
 namespace davidhirtz\yii2\cms\widgets;
 
 use davidhirtz\yii2\cms\models\Asset;
+use davidhirtz\yii2\media\helpers\Html;
 use davidhirtz\yii2\media\helpers\Picture;
-use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\widgets\Widget;
 use yii\helpers\ArrayHelper;
 

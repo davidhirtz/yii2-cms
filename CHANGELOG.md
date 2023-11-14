@@ -1,3 +1,7 @@
+## 2.0.19 (Nov 14, 2023)
+
+- Updated widgets to use `\davidhirtz\yii2\media\helpers\Html` helper class
+
 ## 2.0.18 (Nov 14, 2023)
 
 - Added helper methods for getting ancestors, children and descendants in `CategoryCollection`
