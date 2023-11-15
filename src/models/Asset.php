@@ -155,7 +155,7 @@ class Asset extends ActiveRecord implements AssetInterface
         return $parent->update();
     }
 
-    public function getSitemapUrl(string $language): array|false
+    public function getSitemapUrl(?string $language = null): array|false
     {
         if ($this->includeInSitemap($language)) {
             $content = $this->getI18nAttribute('content');

@@ -66,7 +66,7 @@ trait SitemapTrait
      * Returns an array with the attributes needed for the XML sitemap. This can be overridden to add additional fields
      * such as priority or images.
      */
-    public function getSitemapUrl(string $language): array|false
+    public function getSitemapUrl(?string $language = null): array|false
     {
         if ($this->includeInSitemap($language)) {
             if ($route = $this->getRoute()) {

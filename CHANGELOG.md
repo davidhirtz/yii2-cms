@@ -1,3 +1,8 @@
+## 2.0.20 (Nov 15, 2023)
+
+- Enhanced the `SiteController` to allow entries to be extended to redirect before rendering the view
+- Fixed a bug with the `Sitemap` URL generation
+
 ## 2.0.19 (Nov 14, 2023)
 
 - Updated widgets to use `\davidhirtz\yii2\media\helpers\Html` helper class

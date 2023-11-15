@@ -26,6 +26,11 @@ class SiteController extends Controller
     public function actionView(string $slug): Response|string
     {
         $entry = $this->findEntry($slug);
+
+        if ($response = $this->validateEntryResponse($entry)) {
+            return $response;
+        }
+
         $this->populateEntryRelations($entry);
 
         return $this->render($entry->getViewFile() ?? 'view', [
@@ -35,16 +40,19 @@ class SiteController extends Controller
 
     protected function findEntry(string $slug): ?Entry
     {
-        $entry = $this->getQuery()
+        return $this->getQuery()
             ->whereSlug($slug)
             ->limit(1)
             ->one();
+    }
 
+    protected function validateEntryResponse(?Entry $entry): ?Response
+    {
         if (!$entry?->getRoute()) {
             throw new NotFoundHttpException();
         }
 
-        return $entry;
+        return null;
     }
 
     protected function populateEntryRelations(Entry $entry): void
