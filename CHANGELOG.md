@@ -1,3 +1,7 @@
+## 2.0.21 (Nov 18, 2023)
+
+- Fixed bug in `EntryParentIdFieldTrait` where model status was not loaded correctly
+
 ## 2.0.20 (Nov 15, 2023)
 
 - Enhanced the `SiteController` to allow entries to be extended to redirect before rendering the view
