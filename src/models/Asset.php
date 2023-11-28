@@ -90,6 +90,7 @@ class Asset extends ActiveRecord implements AssetInterface
     public function beforeSave($insert): bool
     {
         $this->shouldUpdateParentAfterInsert ??= !$this->getIsBatch();
+
         return parent::beforeSave($insert);
     }
 
@@ -101,6 +102,9 @@ class Asset extends ActiveRecord implements AssetInterface
             }
 
             $this->updateOrDeleteFileByAssetCount();
+        } elseif ($changedAttributes) {
+            $this->parent->updated_at = $this->updated_at;
+            $this->parent->update();
         }
 
         parent::afterSave($insert, $changedAttributes);
@@ -111,9 +115,7 @@ class Asset extends ActiveRecord implements AssetInterface
         // Entry needs to be checked separately here because `Entry::beforeDelete()` deletes all related assets before
         // deleting the sections.
         if (!$this->entry->isDeleted() && (!$this->section_id || !$this->section->isDeleted())) {
-            $parent = $this->getParent();
-            $parent->asset_count = $this->findSiblings()->count();
-            $parent->update();
+            $this->updateParentAfterDelete();
         }
 
         $this->updateOrDeleteFileByAssetCount();
@@ -148,11 +150,20 @@ class Asset extends ActiveRecord implements AssetInterface
         $this->section_id = $section->id ?? null;
     }
 
-    public function updateParentAfterInsert(): bool|int
+    protected function updateParentAfterDelete(): bool|int
     {
-        $parent = $this->getParent();
-        $parent->asset_count = $this->findSiblings()->count();
-        return $parent->update();
+        return $this->updateParentAssetCount();
+    }
+
+    protected function updateParentAfterInsert(): bool|int
+    {
+        return $this->updateParentAssetCount();
+    }
+
+    protected function updateParentAssetCount(): bool|int
+    {
+        $this->parent->asset_count = $this->findSiblings()->count();
+        return $this->parent->update();
     }
 
     public function getSitemapUrl(?string $language = null): array|false
