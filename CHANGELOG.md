@@ -1,3 +1,9 @@
+## 2.0.22 (Nov 28, 2023)
+
+- Changed default `Category` slug attribute target to prevent n+1 queries created by `RedirectBehavior` (#4)
+- Changed `Asset::afterSave()` to always update the parent `updated_at` when an attribute was changed
+- Removed "New Entry" button in `SectionEntryController::actionIndex` (#6)
+
 ## 2.0.21 (Nov 18, 2023)
 
 - Fixed bug in `EntryParentIdFieldTrait` where model status was not loaded correctly
