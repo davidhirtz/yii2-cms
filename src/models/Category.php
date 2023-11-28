@@ -36,7 +36,7 @@ class Category extends ActiveRecord
     use SlugAttributeTrait;
 
     public string|false $contentType = false;
-    public array|string|null $slugTargetAttribute = ['parent_id', 'slug'];
+    public array|string|null $slugTargetAttribute = 'slug';
 
     private ?array $_nestedSlugs = null;
 
@@ -307,22 +307,7 @@ class Category extends ActiveRecord
 
     public function getRoute(): false|array
     {
-        return array_filter(['/cms/site/index', 'category' => $this->getNestedSlug()]);
-    }
-
-    public function getNestedSlug(): string
-    {
-        if ($this->_nestedSlugs === null) {
-            // Use cached ancestors here to prevent multiple queries.
-//            $this->setAncestors(CategoryCollection::getAll());
-            $this->_nestedSlugs = [];
-
-            foreach ($this->ancestors as $ancestor) {
-                $this->_nestedSlugs[] = $ancestor->getI18nAttribute('slug');
-            }
-        }
-
-        return implode('/', [...$this->_nestedSlugs, $this->getI18nAttribute('slug')]);
+        return array_filter(['/cms/site/index', 'category' => $this->getI18nAttribute('slug')]);
     }
 
     public function getEntryOrderBy(): bool|array
