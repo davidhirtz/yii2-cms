@@ -25,6 +25,10 @@ class SectionEntryGridView extends EntryGridView
         parent::init();
     }
 
+    protected function initFooter(): void
+    {
+    }
+
     /**
      * @see SectionEntryController::actionCreate()
      * @see SectionEntryController::actionDelete()
