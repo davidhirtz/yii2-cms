@@ -6,6 +6,7 @@ use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\SectionEntry;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
+use davidhirtz\yii2\media\models\collections\FolderCollection;
 use davidhirtz\yii2\media\models\File;
 use davidhirtz\yii2\skeleton\helpers\ArrayHelper;
 use Yii;
@@ -190,9 +191,14 @@ class EntrySiteRelationsBuilder extends BaseObject
                 ->selectSiteAttributes()
                 ->replaceI18nAttributes()
                 ->where(['id' => $fileIds])
-                ->withFolder()
                 ->indexBy('id')
                 ->all();
+        }
+
+        $folders = FolderCollection::getAll();
+
+        foreach ($this->files as $file) {
+            $file->populateFolderRelation($folders[$file->folder_id] ?? null);
         }
     }
 

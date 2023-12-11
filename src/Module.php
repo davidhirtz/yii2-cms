@@ -76,10 +76,10 @@ class Module extends \yii\base\Module
     public ?int $defaultEntryType = null;
 
     /**
-     * @var int|false duration in seconds for caching the category query
-     * @see CategoryCollection::getCategories()
+     * @var int|null|false duration in seconds for caching the category query. Set to `false` to disable cache.
+     * @see CategoryCollection::getAll()
      */
-    public int|false $categoryCachedQueryDuration = 60;
+    public int|null|false $categoryCachedQueryDuration = 60;
 
     /**
      * @var string|false the default entry slug that will be omitted from the url and redirected to the index action.

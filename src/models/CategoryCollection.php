@@ -23,7 +23,7 @@ class CategoryCollection
             $dependency = new TagDependency(['tags' => static::CACHE_KEY]);
             $duration = static::getModule()->categoryCachedQueryDuration;
 
-            static::$_categories = $duration > 0
+            static::$_categories = $duration !== false
                 ? Yii::$app->getDb()->cache(static::findAll(...), $duration, $dependency)
                 : static::findAll();
         }
@@ -97,7 +97,7 @@ class CategoryCollection
     /**
      * @return array<int, Category>
      */
-    protected static function findAll(): array
+    public static function findAll(): array
     {
         return Category::find()
             ->selectSiteAttributes()
@@ -114,8 +114,8 @@ class CategoryCollection
 
     public static function invalidateCache(): void
     {
-        if (static::getModule()->categoryCachedQueryDuration > 0) {
-            TagDependency::invalidate(Yii::$app->getCache(), CategoryCollection::CACHE_KEY);
+        if (static::getModule()->categoryCachedQueryDuration !== false) {
+            TagDependency::invalidate(Yii::$app->getCache(), static::CACHE_KEY);
         }
     }
 }

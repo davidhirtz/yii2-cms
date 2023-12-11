@@ -1,3 +1,7 @@
+# 2.0.23 (Dec 11, 2023)
+
+- Enhanced `EntrySiteRelationsBuilder` to use cached folder queries
+
 ## 2.0.22 (Nov 28, 2023)
 
 - Changed default `Category` slug attribute target to prevent n+1 queries created by `RedirectBehavior` (#4)

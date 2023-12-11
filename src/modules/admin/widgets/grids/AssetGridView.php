@@ -265,10 +265,7 @@ class AssetGridView extends GridView
         return $this->getParentRoute('cms/asset/index');
     }
 
-    /**
-     * @return Asset
-     */
-    public function getModel(): ActiveRecordInterface
+    public function getModel(): Asset
     {
         return Asset::instance();
     }
