@@ -7,14 +7,15 @@ use davidhirtz\yii2\cms\models\queries\EntryQuery;
 
 /**
  * @property int|null $entry_id
- * @property-read Entry $entry {@see static::getEntry()}
+ * @property-read Entry|null $entry {@see static::getEntry()}
  */
 trait EntryRelationTrait
 {
     public function getEntry(): EntryQuery
     {
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return $this->hasOne(Entry::class, ['id' => 'entry_id']);
+        /** @var EntryQuery $relation */
+        $relation = $this->hasOne(Entry::class, ['id' => 'entry_id']);
+        return $relation;
     }
 
     public function populateEntryRelation(?Entry $entry): void

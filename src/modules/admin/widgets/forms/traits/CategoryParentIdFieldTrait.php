@@ -103,8 +103,16 @@ trait CategoryParentIdFieldTrait
     {
         if ($this->_categories === null) {
             $entries = Category::find()
-                ->select($this->model->getI18nAttributesNames(['id', 'status', 'parent_id', 'name', 'lft', 'rgt', 'entry_count']))
                 ->whereHasDescendantsEnabled()
+                ->select($this->model->getI18nAttributesNames([
+                    'id',
+                    'status',
+                    'parent_id',
+                    'name',
+                    'lft',
+                    'rgt',
+                    'entry_count',
+                ]))
                 ->indexBy('id')
                 ->all();
 

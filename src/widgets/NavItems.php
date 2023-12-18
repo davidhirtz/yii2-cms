@@ -2,20 +2,20 @@
 
 namespace davidhirtz\yii2\cms\widgets;
 
-use app\models\Entry;
+use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\queries\EntryQuery;
 use Yii;
 
 class NavItems
 {
-    private static ?array $_entries = null;
+    protected static ?array $_entries = null;
 
     /**
      * @return array<int, Entry>
      */
     public static function getMenuItems(): array
     {
-        return array_filter(static::getEntries(), fn($entry) => $entry->show_in_menu);
+        return array_filter(static::getEntries(), fn($entry) => static::getIsMenuItem($entry));
     }
 
     /**
@@ -23,7 +23,7 @@ class NavItems
      */
     public static function getMainMenuItems(): array
     {
-        return array_filter(static::getEntries(), fn($entry) => $entry->show_in_menu && !$entry->parent_id);
+        return array_filter(static::getEntries(), fn($entry) =>  static::getIsMenuItem($entry) && !$entry->parent_id);
     }
 
     /**
@@ -42,7 +42,7 @@ class NavItems
      */
     public static function getFooterItems(): array
     {
-        return array_filter(static::getEntries(), fn($entry) => $entry->show_in_footer);
+        return array_filter(static::getEntries(), fn($entry) =>  static::getIsFooterItem($entry));
     }
 
     /**
@@ -83,5 +83,15 @@ class NavItems
         }
 
         return count($where) > 1 ? ['or', ...$where] : $where[0];
+    }
+
+    protected static function getIsMenuItem(Entry $entry): bool
+    {
+        return method_exists($entry, 'isMenuItem') && $entry->isMenuItem();
+    }
+
+    protected static function getIsFooterItem(Entry $entry): bool
+    {
+        return method_exists($entry, 'isFooterItem') && $entry->isFooterItem();
     }
 }

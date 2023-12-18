@@ -11,7 +11,11 @@ trait ModuleTrait
 
     public static function getModule(): Module
     {
-        static::$_module ??= Yii::$app->getModule('cms');
+        if (static::$_module === null) {
+            /** @var Module $module */
+            $module = Yii::$app->getModule('cms');
+            static::$_module = $module;
+        }
         return static::$_module;
     }
 }

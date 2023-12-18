@@ -6,23 +6,15 @@ use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\skeleton\web\Request;
 use davidhirtz\yii2\skeleton\web\UrlManager;
 
-/**
- * Class UrlManager.
- * @package davidhirtz\yii2\cms\web
- */
 class UrlRule extends \yii\web\UrlRule
 {
     /**
-     * @var string
+     * @var string the name of the GET parameter that contains the category slug.
      */
-    public $paramName = 'category';
+    public string $paramName = 'category';
 
-    /**
-     * @var bool
-     */
     public $encodeParams = false;
-
-    static private bool $mismatch = false;
+    protected static bool $mismatch = false;
 
     /**
      * @param UrlManager $manager

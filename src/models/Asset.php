@@ -11,6 +11,7 @@ use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\media\models\interfaces\AssetInterface;
 use davidhirtz\yii2\media\models\traits\AssetTrait;
 use davidhirtz\yii2\media\models\traits\EmbedUrlTrait;
+use davidhirtz\yii2\skeleton\models\interfaces\DraftStatusAttributeInterface;
 use Yii;
 
 /**
@@ -30,7 +31,7 @@ use Yii;
  *
  * @property-read Entry|Section $parent {@see static::getParent()}
  */
-class Asset extends ActiveRecord implements AssetInterface
+class Asset extends ActiveRecord implements AssetInterface, DraftStatusAttributeInterface
 {
     use AssetTrait;
     use EmbedUrlTrait;

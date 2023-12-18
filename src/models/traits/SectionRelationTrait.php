@@ -7,14 +7,15 @@ use davidhirtz\yii2\cms\models\queries\SectionQuery;
 
 /**
  * @property int|null $section_id
- * @property-read Section $section {@see static::getSection()}
+ * @property-read Section|null $section {@see static::getSection()}
  */
 trait SectionRelationTrait
 {
     public function getSection(): SectionQuery
     {
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return $this->hasOne(Section::class, ['id' => 'section_id']);
+        /** @var SectionQuery $relation */
+        $relation = $this->hasOne(Section::class, ['id' => 'section_id']);
+        return $relation;
     }
 
     public function populateSectionRelation(?Section $section): void

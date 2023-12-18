@@ -2,8 +2,8 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\widgets\grids\columns;
 
-use app\modules\admin\widgets\EntryGridView;
 use davidhirtz\yii2\cms\models\traits\MenuAttributeTrait;
+use davidhirtz\yii2\cms\modules\admin\widgets\grids\EntryGridView;
 use davidhirtz\yii2\skeleton\widgets\fontawesome\Icon;
 use yii\grid\Column;
 
@@ -16,12 +16,10 @@ class MenuColumn extends Column
         'class' => 'text-center',
     ];
 
-    public $visible = null;
-
     public function init(): void
     {
 
-        if ($this->visible === null) {
+        if ($this->visible) {
             $this->visible = false;
 
             /** @var MenuAttributeTrait $model */

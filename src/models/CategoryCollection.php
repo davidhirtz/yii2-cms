@@ -12,7 +12,7 @@ class CategoryCollection
 
     public const CACHE_KEY = 'category-collection';
 
-    private static ?array $_categories = null;
+    protected static ?array $_categories = null;
 
     /**
      * @return array<int, Category>

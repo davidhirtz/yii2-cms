@@ -3,14 +3,12 @@
 namespace davidhirtz\yii2\cms\models\queries;
 
 use davidhirtz\yii2\cms\models\Category;
-use davidhirtz\yii2\skeleton\db\ActiveQuery;
+use davidhirtz\yii2\skeleton\db\I18nActiveQuery;
 
 /**
- * @method Category[] all($db = null)
- * @method Category[] each($batchSize = 100, $db = null)
- * @method Category one($db = null)
+ * @template-extends I18nActiveQuery<Category>
  */
-class CategoryQuery extends ActiveQuery
+class CategoryQuery extends I18nActiveQuery
 {
     public $orderBy = ['lft' => SORT_ASC];
 
@@ -32,7 +30,7 @@ class CategoryQuery extends ActiveQuery
     {
         if ($search = $this->sanitizeSearchString($search)) {
             $tableName = $this->getModelInstance()::tableName();
-            $this->andWhere("{$tableName}.[[name]] LIKE :search", [':search' => "%{$search}%"]);
+            $this->andWhere("$tableName.[[name]] LIKE :search", [':search' => "%$search%"]);
         }
 
         return $this;

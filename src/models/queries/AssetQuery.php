@@ -5,13 +5,12 @@ namespace davidhirtz\yii2\cms\models\queries;
 use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\media\models\queries\FileQuery;
 use davidhirtz\yii2\skeleton\db\ActiveQuery;
+use davidhirtz\yii2\skeleton\db\I18nActiveQuery;
 
 /**
- * @method Asset[] all($db = null)
- * @method Asset[] each($batchSize = 100, $db = null)
- * @method Asset one($db = null)
+ * @template-extends I18nActiveQuery<Asset>
  */
-class AssetQuery extends ActiveQuery
+class AssetQuery extends I18nActiveQuery
 {
     /**
      * Override this method to select only the attributes needed for frontend display.

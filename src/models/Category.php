@@ -12,21 +12,21 @@ use Yii;
 use yii\db\ActiveQuery;
 
 /**
- * @property int $parent_id
+ * @property int|null $parent_id
  * @property int $lft
  * @property int $rgt
  * @property int $position
  * @property string $name
- * @property string $slug
- * @property string $title
- * @property string $description
- * @property string $content
+ * @property string|null $slug
+ * @property string|null $title
+ * @property string|null $description
+ * @property string|null $content
  * @property int $entry_count
  *
  * @property-read Entry[] $entries {@see static::getEntries()}
  * @property-read EntryCategory $entryCategory {@see static::getEntryCategory()}
  * @property-read EntryCategory[] $entryCategories {@see static::getEntryCategories()}
- * @property-read static $parent {@see static::getParent()}
+ * @property-read static|null $parent {@see static::getParent()}
  * @property-read static[] $ancestors {@see static::getAncestors()}
  * @property-read static[] $descendants {@see static::getDescendants()}
  */

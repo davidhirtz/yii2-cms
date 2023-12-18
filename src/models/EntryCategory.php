@@ -149,7 +149,7 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         if ($categories = $this->category->getAncestors()) {
             foreach ($categories as $category) {
                 if ($category->inheritNestedCategories()) {
-                    $junction = new static();
+                    $junction = static::create();
                     $junction->populateInheritedRelation($this, $category);
                     $junction->insert();
                 }

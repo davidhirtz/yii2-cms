@@ -11,12 +11,16 @@ use davidhirtz\yii2\skeleton\behaviors\BlameableBehavior;
 use davidhirtz\yii2\skeleton\behaviors\TimestampBehavior;
 use davidhirtz\yii2\skeleton\behaviors\TrailBehavior;
 use davidhirtz\yii2\skeleton\db\ActiveQuery;
+use davidhirtz\yii2\skeleton\models\interfaces\DraftStatusAttributeInterface;
+use davidhirtz\yii2\skeleton\models\interfaces\TypeAttributeInterface;
+use davidhirtz\yii2\skeleton\models\traits\DraftStatusAttributeTrait;
 use davidhirtz\yii2\skeleton\models\traits\I18nAttributesTrait;
 use davidhirtz\yii2\skeleton\models\traits\StatusAttributeTrait;
 use davidhirtz\yii2\skeleton\models\traits\TypeAttributeTrait;
 use davidhirtz\yii2\skeleton\models\traits\UpdatedByUserTrait;
 use davidhirtz\yii2\skeleton\validators\DynamicRangeValidator;
 use davidhirtz\yii2\skeleton\validators\HtmlValidator;
+use davidhirtz\yii2\skeleton\db\ActiveRecord as BaseActiveRecord;
 use Yii;
 
 /**
@@ -24,18 +28,18 @@ use Yii;
  * @property int $status
  * @property int $type
  * @property string|null $content
- * @property int|null $position
- * @property int $updated_by_user_id
- * @property DateTime $updated_at
+ * @property int|false|null $position
+ * @property int|null $updated_by_user_id
+ * @property DateTime|null $updated_at
  * @property DateTime $created_at
  *
  * @mixin TrailBehavior
  */
-abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
+abstract class ActiveRecord extends BaseActiveRecord implements DraftStatusAttributeInterface, TypeAttributeInterface
 {
+    use DraftStatusAttributeTrait;
     use I18nAttributesTrait;
     use ModuleTrait;
-    use StatusAttributeTrait;
     use SitemapTrait;
     use TypeAttributeTrait;
     use UpdatedByUserTrait;
@@ -47,9 +51,9 @@ abstract class ActiveRecord extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     public string|false $contentType = 'html';
 
     /**
-     * @var mixed used when $contentType is set to "html". Use an array with the first value containing the validator
-     * class, following keys can be used to configure the validator, string containing the class name or false for
-     * disabling the validation.
+     * @var array|string|null used when $contentType is set to "html". Use an array with the first value containing a
+     * validator class, following keys can be used to configure the validator, string containing the class name or null
+     * for disabling the validation.
      */
     public array|string|null $htmlValidator = HtmlValidator::class;
 

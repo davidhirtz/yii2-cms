@@ -24,7 +24,7 @@ use yii\db\ActiveQuery;
  * @property string $parent_slug
  * @property int $position
  * @property string $name
- * @property string $slug
+ * @property string|null $slug
  * @property string $title
  * @property string|null $description
  * @property string $content
@@ -37,7 +37,7 @@ use yii\db\ActiveQuery;
  * @property-read Asset[] $assets {@see static::getAssets()}
  * @property-read EntryCategory $entryCategory {@see static::getEntryCategory()}
  * @property-read EntryCategory[] $entryCategories {@see static::getEntryCategories()}
- * @property-read SectionEntry $sectionEntry {@see static::getSectionEntry()}
+ * @property-read SectionEntry $sectionEntry|null {@see static::getSectionEntry()}
  * @property-read Section[] $sections {@see static::getSections()}
  */
 class Entry extends ActiveRecord implements AssetParentInterface
@@ -223,11 +223,13 @@ class Entry extends ActiveRecord implements AssetParentInterface
 
     public function getAssets(): AssetQuery
     {
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return $this->hasMany(Asset::class, ['entry_id' => 'id'])
+        /** @var AssetQuery $relation */
+        $relation = $this->hasMany(Asset::class, ['entry_id' => 'id'])
             ->orderBy(['position' => SORT_ASC])
             ->indexBy('id')
             ->inverseOf('entry');
+
+        return $relation;
     }
 
     public function getEntryCategory(): ActiveQuery
@@ -250,11 +252,13 @@ class Entry extends ActiveRecord implements AssetParentInterface
 
     public function getSections(): SectionQuery
     {
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return $this->hasMany(Section::class, ['entry_id' => 'id'])
+        /** @var SectionQuery $relation */
+        $relation = $this->hasMany(Section::class, ['entry_id' => 'id'])
             ->orderBy(['position' => SORT_ASC])
             ->indexBy('id')
             ->inverseOf('entry');
+
+        return $relation;
     }
 
     public static function find(): EntryQuery
@@ -397,7 +401,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
     {
         if ($url = parent::getSitemapUrl($language)) {
             /** @var Asset[]|false $assets */
-            if ($assets = $this->getRelatedRecords()['assets'] ?? false) {
+            if ($assets = ($this->getRelatedRecords()['assets'] ?? false)) {
                 foreach ($assets as $asset) {
                     if ($imageUrl = $asset->getSitemapUrl($language)) {
                         $url['images'][] = $imageUrl;

@@ -367,7 +367,11 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
 
     protected function getParentModule(): Module
     {
-        $this->_parentModule ??= Yii::$app->getModule('admin')->getModule('cms');
+        if ($this->_parentModule === null) {
+            /** @var Module $module */
+            $module = Yii::$app->getModule('admin')->getModule('cms');
+            $this->_parentModule = $module;
+        }
         return $this->_parentModule;
     }
 

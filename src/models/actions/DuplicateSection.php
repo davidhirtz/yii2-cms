@@ -2,14 +2,15 @@
 
 namespace davidhirtz\yii2\cms\models\actions;
 
-use app\models\Entry;
 use davidhirtz\yii2\cms\models\actions\traits\DuplicateAssetsTrait;
+use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\models\SectionEntry;
 use Yii;
 
+
 /**
- * @template-implements \davidhirtz\yii2\skeleton\models\actions\DuplicateActiveRecord<Section>
+ * @template-extends DuplicateActiveRecord<Section>
  */
 class DuplicateSection extends DuplicateActiveRecord
 {

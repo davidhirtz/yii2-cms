@@ -7,7 +7,7 @@ use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\Section;
 
 /**
- * @template-extends \davidhirtz\yii2\skeleton\models\actions\DuplicateActiveRecord<Asset>
+ * @template-extends DuplicateActiveRecord<Asset>
  */
 class DuplicateAsset extends DuplicateActiveRecord
 {

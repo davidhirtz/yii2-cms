@@ -15,8 +15,7 @@ use yii\data\ArrayDataProvider;
 use yii\helpers\StringHelper;
 
 /**
- * Displays a grid of {@see Section} models for given {@see Entry}.
- * @property ActiveDataProvider $dataProvider
+ * @property ActiveDataProvider|ArrayDataProvider|null $dataProvider
  */
 class SectionGridView extends GridView
 {

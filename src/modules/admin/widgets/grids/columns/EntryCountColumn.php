@@ -15,14 +15,10 @@ class EntryCountColumn extends CounterColumn
 {
     use ModuleTrait;
 
-    /**
-     * @var bool|null if set to null, the column will only show if at least one model has descendants enabled
-     */
-    public $visible = null;
 
     public function init(): void
     {
-        if ($this->visible === null) {
+        if ($this->visible) {
             $this->visible = false;
 
             if (static::getModule()->enableNestedEntries) {

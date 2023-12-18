@@ -18,7 +18,7 @@ use yii\helpers\Inflector;
  * @property int $entry_id
  * @property int $position
  * @property string $name
- * @property string $slug
+ * @property string|null $slug
  * @property string $content
  * @property int $asset_count
  * @property int $entry_count
@@ -98,7 +98,7 @@ class Section extends ActiveRecord implements AssetParentInterface
 
     public function beforeSave($insert): bool
     {
-        $this->slug = $this->slug ? (string)$this->slug : null;
+        $this->slug = $this->slug ? $this->slug : null;
         $this->shouldUpdateEntryAfterSave ??= !$this->getIsBatch();
 
         // Handle section move / clone, inserts will be handled by parent implementation
@@ -158,18 +158,22 @@ class Section extends ActiveRecord implements AssetParentInterface
 
     public function getAssets(): AssetQuery
     {
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return $this->hasMany(Asset::class, ['section_id' => 'id'])
+        /** @var AssetQuery $relation */
+        $relation = $this->hasMany(Asset::class, ['section_id' => 'id'])
             ->orderBy(['position' => SORT_ASC])
             ->indexBy('id')
             ->inverseOf('section');
+
+        return $relation;
     }
 
     public function getEntries(): EntryQuery
     {
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return $this->hasMany(Entry::class, ['id' => 'entry_id'])
+        /** @var EntryQuery $relation */
+        $relation = $this->hasMany(Entry::class, ['id' => 'entry_id'])
             ->via('sectionEntries');
+
+        return $relation;
     }
 
     public function getSectionEntry(): ActiveQuery

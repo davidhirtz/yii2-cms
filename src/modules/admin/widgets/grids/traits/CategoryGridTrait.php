@@ -127,6 +127,11 @@ trait CategoryGridTrait
         return '';
     }
 
+    public function showCategoryAncestors(Category $category): bool
+    {
+        return $this->dataProvider->searchString || $category->entryCategory;
+    }
+
     protected function categoryDropdown(array $config = []): ?string
     {
         if ($category = $this->dataProvider->category) {

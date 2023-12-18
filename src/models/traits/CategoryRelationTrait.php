@@ -7,14 +7,15 @@ use davidhirtz\yii2\cms\models\queries\CategoryQuery;
 
 /**
  * @property int|null $category_id
- * @property-read Category $category {@see static::getCategory()}
+ * @property-read Category|null $category {@see static::getCategory()}
  */
 trait CategoryRelationTrait
 {
     public function getCategory(): CategoryQuery
     {
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return $this->hasOne(Category::class, ['id' => 'category_id']);
+        /** @var CategoryQuery $relation */
+        $relation = $this->hasOne(Category::class, ['id' => 'category_id']);
+        return $relation;
     }
 
     public function populateCategoryRelation(?Category $category): void

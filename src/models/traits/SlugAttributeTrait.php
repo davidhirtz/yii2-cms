@@ -52,7 +52,7 @@ trait SlugAttributeTrait
                     }
 
                     $prevSlug = $baseSlug;
-                    $baseSlug = mb_substr((string)$baseSlug, 0, $this->slugMaxLength - 1 - ceil($i / 10), Yii::$app->charset);
+                    $baseSlug = mb_substr((string)$baseSlug, 0, (int)($this->slugMaxLength - 1 - ceil($i / 10)), Yii::$app->charset);
                     $this->setAttribute($attributeName, $baseSlug . '-' . $i++);
 
                     Yii::debug("Slug '$prevSlug' already exists, trying '{$this->getAttribute($attributeName)}' instead ...");

@@ -2,15 +2,16 @@
 
 namespace davidhirtz\yii2\cms\models\actions;
 
-use app\models\Entry;
 use davidhirtz\yii2\cms\models\actions\traits\DuplicateAssetsTrait;
 use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\cms\models\Category;
+use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\EntryCategory;
 use Yii;
 
 /**
- * @template-implements \davidhirtz\yii2\skeleton\models\actions\DuplicateActiveRecord<Entry>
+ * @template T of Entry
+ * @template-extends DuplicateActiveRecord<Entry>
  */
 class DuplicateEntry extends DuplicateActiveRecord
 {

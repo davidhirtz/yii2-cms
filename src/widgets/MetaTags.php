@@ -51,12 +51,12 @@ class MetaTags extends Widget
     public ?string $transformationName = null;
 
     /**
-     * @var string|bool
+     * @var string|false the og:type, if false, no og:type will be registered
      */
     public string|false $ogType = 'website';
 
     /**
-     * @var string|bool
+     * @var string|false the twitter:card, if false, no twitter:card will be registered
      */
     public string|false $twitterCard = 'summary_large_image';
 

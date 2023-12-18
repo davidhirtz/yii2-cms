@@ -32,8 +32,6 @@ class EntryCategoryGridView extends GridView
      */
     public bool $showUrl = false;
 
-    private ?array $_names = null;
-
     public function init(): void
     {
         if (!$this->rowOptions) {
@@ -87,10 +85,5 @@ class EntryCategoryGridView extends GridView
     protected function getRoute(ActiveRecordInterface $model, array $params = []): array|false
     {
         return ['category/update', 'id' => $model->id];
-    }
-
-    public function showCategoryAncestors(Category $category): bool
-    {
-        return $this->dataProvider->searchString || $category->entryCategory;
     }
 }

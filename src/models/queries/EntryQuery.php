@@ -8,13 +8,12 @@ use davidhirtz\yii2\cms\models\EntryCategory;
 use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\models\SectionEntry;
 use davidhirtz\yii2\skeleton\db\ActiveQuery;
+use davidhirtz\yii2\skeleton\db\I18nActiveQuery;
 
 /**
- * @method Entry[] all($db = null)
- * @method Entry[] each($batchSize = 100, $db = null)
- * @method Entry one($db = null)
+ * @template-extends I18nActiveQuery<Entry>
  */
-class EntryQuery extends ActiveQuery
+class EntryQuery extends I18nActiveQuery
 {
     public function addSelectI18nSlugTargetAttributes(): static
     {

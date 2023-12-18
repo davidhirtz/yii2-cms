@@ -110,9 +110,4 @@ class CategoryGridView extends GridView
             && !$this->dataProvider->searchString
             && count($this->dataProvider->getModels()) > 1;
     }
-
-    public function showCategoryAncestors(): bool
-    {
-        return (bool)$this->dataProvider->searchString;
-    }
 }
