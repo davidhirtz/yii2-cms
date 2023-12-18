@@ -13,7 +13,7 @@ trait ParentIdFieldTrait
 
     protected function getParentIdOptionDataValue(Category|Entry $model, ?string $language = null): string
     {
-        return Yii::$app->getI18n()->callback($language, function () use ($model) {
+        return Yii::$app->getI18n()->callback($language, function () use ($model): string {
             $draftHostInfo = Yii::$app->getRequest()->getDraftHostInfo();
             $urlManager = Yii::$app->getUrlManager();
             $route = $model->getRoute();

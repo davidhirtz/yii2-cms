@@ -83,7 +83,7 @@ trait CategoryParentIdFieldTrait
             return '';
         }
 
-        return Yii::$app->getI18n()->callback($language, function () {
+        return Yii::$app->getI18n()->callback($language, function (): string {
             $route = [...$this->model->getRoute(), 'category' => ''];
             $url = Yii::$app->getUrlManager()->createAbsoluteUrl($route);
             $url = rtrim($url, '/');
