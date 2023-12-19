@@ -98,7 +98,7 @@ class Section extends ActiveRecord implements AssetParentInterface
 
     public function beforeSave($insert): bool
     {
-        $this->slug = $this->slug ? $this->slug : null;
+        $this->slug = $this->slug ?: null;
         $this->shouldUpdateEntryAfterSave ??= !$this->getIsBatch();
 
         // Handle section move / clone, inserts will be handled by parent implementation
