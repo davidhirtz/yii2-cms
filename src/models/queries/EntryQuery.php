@@ -40,10 +40,14 @@ class EntryQuery extends I18nActiveQuery
      */
     public function selectSitemapAttributes(): static
     {
-        return $this->addSelect($this->prefixColumns(array_merge(
-            ['id', 'status', 'type', 'section_count', 'updated_at'],
-            Entry::instance()->getI18nAttributesNames(['slug', 'parent_slug'])
-        )));
+        return $this->addSelect($this->prefixColumns([
+            'id',
+            'status',
+            'type',
+            ...Entry::instance()->getI18nAttributesNames(['slug', 'parent_slug']),
+            'section_count',
+            'updated_at',
+        ]));
     }
 
     public function matching(?string $search): static
@@ -99,7 +103,7 @@ class EntryQuery extends I18nActiveQuery
     public function whereSection(Section $section, bool $eagerLoading = true, string $joinType = 'INNER JOIN'): static
     {
         $tableName = SectionEntry::tableName();
-        $onCondition = fn (ActiveQuery $query) => $query->onCondition(["$tableName.[[section_id]]" => $section->id]);
+        $onCondition = fn(ActiveQuery $query) => $query->onCondition(["$tableName.[[section_id]]" => $section->id]);
 
         if ($eagerLoading && $joinType === 'INNER JOIN') {
             $this->orderBy(["$tableName.[[position]]" => SORT_ASC]);

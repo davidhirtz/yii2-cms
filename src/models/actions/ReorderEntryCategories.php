@@ -14,6 +14,7 @@ class ReorderEntryCategories extends ReorderActiveRecords
 {
     public function __construct(protected Category $category, array $entryIds)
     {
+        /** @var EntryCategory[] $entryCategories */
         $entryCategories = $category->getEntryCategories()
             ->andWhere(['entry_id' => $entryIds])
             ->orderBy(['position' => SORT_ASC])

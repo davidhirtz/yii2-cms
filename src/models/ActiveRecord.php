@@ -114,7 +114,6 @@ abstract class ActiveRecord extends BaseActiveRecord implements DraftStatusAttri
         static::getModule()->invalidatePageCache();
         parent::afterDelete();
     }
-
     
     abstract public function findSiblings(): ActiveQuery;
 

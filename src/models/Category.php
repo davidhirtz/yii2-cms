@@ -38,8 +38,6 @@ class Category extends ActiveRecord
     public string|false $contentType = false;
     public array|string|null $slugTargetAttribute = 'slug';
 
-    private ?array $_nestedSlugs = null;
-
     public function behaviors(): array
     {
         return [
@@ -70,7 +68,7 @@ class Category extends ActiveRecord
                 [
                     ['slug'],
                     'required',
-                    'when' => fn (): bool => $this->isSlugRequired()
+                    'when' => fn(): bool => $this->isSlugRequired()
                 ],
                 [
                     ['name', 'slug', 'title', 'description', 'content'],
@@ -192,7 +190,7 @@ class Category extends ActiveRecord
     protected function insertEntryCategoryAncestors(): void
     {
         // If the category doesn't have `inheritNestedCategories` enabled, descendant categories need to be used.
-        $categoryIds = $this->inheritNestedCategories() ? $this->id : array_keys(array_filter($this->descendants, fn (self $category): bool => $category->inheritNestedCategories()));
+        $categoryIds = $this->inheritNestedCategories() ? $this->id : array_keys(array_filter($this->descendants, fn(self $category): bool => $category->inheritNestedCategories()));
 
         if ($categoryIds) {
             $entries = Entry::find()
@@ -251,11 +249,12 @@ class Category extends ActiveRecord
             ->orderBy(['id' => SORT_ASC]);
     }
 
-    public static function getBySlug(string $slug, int $parentId = null): ?static
+    public static function getBySlug(string $slug, int $parentId = null): ?self
     {
         if ($slug) {
             if (strpos($slug, '/')) {
-                $category = $prevParentId = null;
+                $prevParentId = null;
+                $category = null;
 
                 foreach (explode('/', $slug) as $part) {
                     if ($category = static::getBySlug($part, $prevParentId)) {

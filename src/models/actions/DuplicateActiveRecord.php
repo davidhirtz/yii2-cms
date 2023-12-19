@@ -9,6 +9,9 @@ use davidhirtz\yii2\skeleton\models\interfaces\DraftStatusAttributeInterface;
 /**
  * @template T of ActiveRecord
  * @template-extends BaseDuplicateActiveRecord<T>
+ *
+ * @property T $model
+ * @property T $duplicate
  */
 abstract class DuplicateActiveRecord extends BaseDuplicateActiveRecord
 {
