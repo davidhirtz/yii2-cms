@@ -1,4 +1,10 @@
-# 2.0.23 (Dec 11, 2023)
+## 2.1.0 (Dec 19, 2023)
+
+- Added Codeception test suite
+- Added GitHub Actions CI workflow
+- Moved `DuplicateButtonTrait` from `yii2-cms` to `yii2-media`
+
+## 2.0.23 (Dec 11, 2023)
 
 - Enhanced `EntrySiteRelationsBuilder` to use cached folder queries
 

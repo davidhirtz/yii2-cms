@@ -16,7 +16,7 @@ use davidhirtz\yii2\skeleton\models\User;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\forms\LoginActiveForm;
 use Yii;
 
-class AuthCest
+class AuthCest extends BaseCest
 {
     public function _fixtures(): array
     {
