@@ -81,6 +81,8 @@ class EntryGridView extends GridView
 
     public function init(): void
     {
+        $this->id = $this->getId(false) ?? 'entries';
+
         $enableCategories = static::getModule()->enableCategories;
         $this->showCategories ??= $enableCategories && count($this->getCategories()) > 0;
 
@@ -184,7 +186,7 @@ class EntryGridView extends GridView
         return Html::a(Html::iconText('plus', Yii::t('cms', 'New Entry')), $route, ['class' => 'btn btn-primary']);
     }
 
-    
+
     protected function getSelectionButtonItems(): array
     {
         if (!Yii::$app->getUser()->can('entryUpdate')) {
