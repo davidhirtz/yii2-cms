@@ -2,14 +2,14 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\widgets\grids;
 
+use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider;
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\traits\CategoryGridTrait;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
-use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grids\GridView;
-use davidhirtz\yii2\timeago\Timeago;
 use davidhirtz\yii2\skeleton\widgets\fontawesome\Icon;
+use davidhirtz\yii2\timeago\Timeago;
 use Yii;
 
 /**
@@ -74,7 +74,7 @@ class CategoryGridView extends GridView
             'attribute' => 'updated_at',
             'headerOptions' => ['class' => 'd-none d-lg-table-cell text-nowrap'],
             'contentOptions' => ['class' => 'd-none d-lg-table-cell text-nowrap'],
-            'content' => fn(Category $category) => $this->dateFormat ? $category->updated_at->format($this->dateFormat) : Timeago::tag($category->updated_at)
+            'content' => fn (Category $category) => $this->dateFormat ? $category->updated_at->format($this->dateFormat) : Timeago::tag($category->updated_at)
         ];
     }
 

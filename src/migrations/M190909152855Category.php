@@ -21,7 +21,6 @@ class M190909152855Category extends Migration
         $schema = $this->getDb()->getSchema();
 
         foreach ($this->getLanguages() as $language) {
-
             if ($language) {
                 Yii::$app->language = $language;
             }
@@ -49,7 +48,7 @@ class M190909152855Category extends Migration
             $category = Category::create();
             $this->addI18nColumns(Category::tableName(), $category->i18nAttributes);
 
-            foreach($category->getI18nAttributeNames('slug') as $attributeName) {
+            foreach ($category->getI18nAttributeNames('slug') as $attributeName) {
                 $this->createIndex($attributeName, Category::tableName(), ['parent_id', $attributeName], true);
             }
 

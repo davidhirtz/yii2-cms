@@ -2,10 +2,10 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\controllers;
 
-use davidhirtz\yii2\cms\modules\admin\controllers\traits\CategoryTrait;
-use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\cms\models\Category;
+use davidhirtz\yii2\cms\modules\admin\controllers\traits\CategoryTrait;
 use davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider;
+use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\skeleton\models\Trail;
 use davidhirtz\yii2\skeleton\web\Controller;
 use Exception;

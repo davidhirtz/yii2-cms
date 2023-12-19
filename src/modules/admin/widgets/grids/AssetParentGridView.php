@@ -8,8 +8,8 @@ use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grids\GridView;
 use davidhirtz\yii2\skeleton\widgets\fontawesome\Icon;
 use davidhirtz\yii2\timeago\TimeagoColumn;
-use yii\data\ActiveDataProvider;
 use Yii;
+use yii\data\ActiveDataProvider;
 use yii\db\ActiveRecordInterface;
 
 /**
@@ -57,7 +57,7 @@ class AssetParentGridView extends GridView
     {
         return [
             'contentOptions' => ['class' => 'text-center'],
-            'content' => fn(Asset $asset) => Icon::tag($asset->getParent()->getStatusIcon(), [
+            'content' => fn (Asset $asset) => Icon::tag($asset->getParent()->getStatusIcon(), [
                 'data-toggle' => 'tooltip',
                 'title' => $asset->getParent()->getStatusName(),
             ])
@@ -82,7 +82,7 @@ class AssetParentGridView extends GridView
     public function nameColumn(): array
     {
         return [
-            'content' => fn(Asset $asset) => Html::tag('strong', Html::a($asset->entry->getI18nAttribute('name'), $this->getRoute($asset)))
+            'content' => fn (Asset $asset) => Html::tag('strong', Html::a($asset->entry->getI18nAttribute('name'), $this->getRoute($asset)))
         ];
     }
 
@@ -91,7 +91,7 @@ class AssetParentGridView extends GridView
         return [
             'headerOptions' => ['class' => 'd-none d-md-table-cell text-center'],
             'contentOptions' => ['class' => 'd-none d-md-table-cell text-center'],
-            'content' => fn(Asset $asset) => Html::a(Yii::$app->getFormatter()->asInteger($asset->getParent()->asset_count), $this->getRoute($asset), ['class' => 'badge'])
+            'content' => fn (Asset $asset) => Html::a(Yii::$app->getFormatter()->asInteger($asset->getParent()->asset_count), $this->getRoute($asset), ['class' => 'badge'])
         ];
     }
 

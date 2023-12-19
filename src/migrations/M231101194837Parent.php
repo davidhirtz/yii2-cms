@@ -40,7 +40,8 @@ class M231101194837Parent extends Migration
                 $this->addForeignKey(
                     $schema->getRawTableName(Entry::tableName()) . '_parent_id',
                     Entry::tableName(),
-                    'parent_id', Entry::tableName(),
+                    'parent_id',
+                    Entry::tableName(),
                     'id',
                     'SET NULL'
                 );

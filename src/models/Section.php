@@ -70,7 +70,7 @@ class Section extends ActiveRecord implements AssetParentInterface
                 'unique',
                 'targetAttribute' => $this->slugTargetAttribute,
                 'comboNotUnique' => Yii::t('yii', '{attribute} "{value}" has already been taken.'),
-                'when' => fn() => $this->isAttributeChanged('slug')
+                'when' => fn () => $this->isAttributeChanged('slug')
             ],
         ]));
     }
@@ -226,8 +226,6 @@ class Section extends ActiveRecord implements AssetParentInterface
     /**
      * Updates the old entry relation after the section was moved to another entry. Override this method if the old
      * entry should be further manipulated after the section's entry was changed.
-     *
-     * @param int|null $entryId
      */
     protected function updateOldEntryRelation(?int $entryId): void
     {

@@ -21,7 +21,7 @@ class SectionLinkedEntryGridView extends EntryGridView
     public function init(): void
     {
         if (!$this->rowOptions) {
-            $this->rowOptions = fn(Entry $entry) => [
+            $this->rowOptions = fn (Entry $entry) => [
                 'id' => $this->getRowId($entry->sectionEntry),
             ];
         }

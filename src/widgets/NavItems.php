@@ -15,7 +15,7 @@ class NavItems
      */
     public static function getMenuItems(): array
     {
-        return array_filter(static::getEntries(), fn($entry) => static::getIsMenuItem($entry));
+        return array_filter(static::getEntries(), fn ($entry) => static::getIsMenuItem($entry));
     }
 
     /**
@@ -23,7 +23,7 @@ class NavItems
      */
     public static function getMainMenuItems(): array
     {
-        return array_filter(static::getEntries(), fn($entry) => static::getIsMenuItem($entry) && !$entry->parent_id);
+        return array_filter(static::getEntries(), fn ($entry) => static::getIsMenuItem($entry) && !$entry->parent_id);
     }
 
     /**
@@ -33,7 +33,7 @@ class NavItems
     {
         return !$parent->entry_count ? [] : array_filter(
             static::getMenuItems(),
-            fn(Entry $entry) => $entry->parent_id == $parent->id
+            fn (Entry $entry) => $entry->parent_id == $parent->id
         );
     }
 
@@ -42,7 +42,7 @@ class NavItems
      */
     public static function getFooterItems(): array
     {
-        return array_filter(static::getEntries(), fn($entry) => static::getIsFooterItem($entry));
+        return array_filter(static::getEntries(), fn ($entry) => static::getIsFooterItem($entry));
     }
 
     /**
@@ -100,7 +100,7 @@ class NavItems
      */
     public static function getIsFooterItem(Entry $entry): bool
     {
-        return  (!method_exists($entry, 'hasShowInFooterEnabled') || $entry->hasShowInFooterEnabled())
+        return (!method_exists($entry, 'hasShowInFooterEnabled') || $entry->hasShowInFooterEnabled())
             && method_exists($entry, 'isFooterItem')
             && $entry->isFooterItem();
     }

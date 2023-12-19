@@ -116,7 +116,7 @@ trait CategoryParentIdFieldTrait
                 ->indexBy('id')
                 ->all();
 
-            $this->_categories = array_filter($entries, fn(Category $category): bool => $category->hasDescendantsEnabled());
+            $this->_categories = array_filter($entries, fn (Category $category): bool => $category->hasDescendantsEnabled());
         }
 
         return $this->_categories;

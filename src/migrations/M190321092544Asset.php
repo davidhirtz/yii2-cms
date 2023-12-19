@@ -2,8 +2,8 @@
 
 namespace davidhirtz\yii2\cms\migrations;
 
-use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\Asset;
+use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\media\models\File;

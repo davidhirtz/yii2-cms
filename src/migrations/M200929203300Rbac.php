@@ -8,8 +8,8 @@ use Yii;
 use yii\db\Migration;
 
 /**
-* @noinspection PhpUnused
-*/
+ * @noinspection PhpUnused
+ */
 class M200929203300Rbac extends Migration
 {
     use MigrationTrait;
@@ -212,8 +212,5 @@ class M200929203300Rbac extends Migration
         $this->delete($auth->itemTable, ['name' => 'entryDelete']);
         $this->delete($auth->itemTable, ['name' => 'entryCreate']);
         $this->delete($auth->itemTable, ['name' => 'entryUpdate']);
-        
-        
-        
     }
 }

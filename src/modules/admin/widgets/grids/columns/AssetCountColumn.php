@@ -31,7 +31,7 @@ class AssetCountColumn extends CounterColumn
             }
         }
 
-        $this->route ??= fn(Entry|Section $model) => $model->getAdminRoute() + ['#' => 'assets'];
+        $this->route ??= fn (Entry|Section $model) => $model->getAdminRoute() + ['#' => 'assets'];
 
         parent::init();
     }

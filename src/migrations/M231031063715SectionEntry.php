@@ -2,9 +2,9 @@
 
 namespace davidhirtz\yii2\cms\migrations;
 
-use davidhirtz\yii2\cms\models\SectionEntry;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\Section;
+use davidhirtz\yii2\cms\models\SectionEntry;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\skeleton\db\traits\MigrationTrait;
 use davidhirtz\yii2\skeleton\models\User;
@@ -55,7 +55,8 @@ class M231031063715SectionEntry extends Migration
                 'CASCADE'
             );
 
-            $this->addForeignKey("{$tableName}_entry_id_ibfk",
+            $this->addForeignKey(
+                "{$tableName}_entry_id_ibfk",
                 SectionEntry::tableName(),
                 'entry_id',
                 Entry::tableName(),
@@ -63,7 +64,8 @@ class M231031063715SectionEntry extends Migration
                 'CASCADE'
             );
 
-            $this->addForeignKey("{$tableName}_updated_by_ibfk",
+            $this->addForeignKey(
+                "{$tableName}_updated_by_ibfk",
                 SectionEntry::tableName(),
                 'updated_by_user_id',
                 User::tableName(),

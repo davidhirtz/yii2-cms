@@ -8,7 +8,6 @@ use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\models\SectionEntry;
 use Yii;
 
-
 /**
  * @extends DuplicateActiveRecord<Section>
  */

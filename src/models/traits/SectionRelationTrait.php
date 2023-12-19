@@ -2,8 +2,8 @@
 
 namespace davidhirtz\yii2\cms\models\traits;
 
-use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\models\queries\SectionQuery;
+use davidhirtz\yii2\cms\models\Section;
 
 /**
  * @property int|null $section_id

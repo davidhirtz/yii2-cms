@@ -18,13 +18,19 @@ class EntrySiteRelationsBuilder extends BaseObject
 
     public Entry $entry;
 
-    /** @var Asset[] */
+    /**
+     * @var Asset[]
+     */
     public array $assets = [];
 
-    /** @var Entry[] */
+    /**
+     * @var Entry[]
+     */
     public array $entries = [];
 
-    /** @var File[] */
+    /**
+     * @var File[]
+     */
     public array $files = [];
 
     protected array $fileIds = [];
@@ -140,14 +146,14 @@ class EntrySiteRelationsBuilder extends BaseObject
         }
 
         foreach ($this->entry->sections as $section) {
-            $entries = array_map(fn(SectionEntry $sectionEntry) => $this->entries[$sectionEntry->entry_id] ?? null, $section->sectionEntries);
+            $entries = array_map(fn (SectionEntry $sectionEntry) => $this->entries[$sectionEntry->entry_id] ?? null, $section->sectionEntries);
             $section->populateRelation('entries', array_filter($entries));
         }
     }
 
     protected function loadAssets(): void
     {
-        $entryIds = array_map(fn(Entry $entry) => $entry->asset_count ? $entry->id : null, $this->entries);
+        $entryIds = array_map(fn (Entry $entry) => $entry->asset_count ? $entry->id : null, $this->entries);
         $entryIds = array_unique(array_filter($entryIds));
 
         $condition = [];

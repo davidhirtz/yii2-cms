@@ -29,7 +29,7 @@ class SectionCountColumn extends CounterColumn
             }
         }
 
-        $this->route ??= fn(Entry $model) => ['section/index', 'entry' => $model->id];
+        $this->route ??= fn (Entry $model) => ['section/index', 'entry' => $model->id];
 
         parent::init();
     }

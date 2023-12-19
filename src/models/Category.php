@@ -6,8 +6,8 @@ use davidhirtz\yii2\cms\models\queries\CategoryQuery;
 use davidhirtz\yii2\cms\models\queries\EntryQuery;
 use davidhirtz\yii2\cms\models\traits\SlugAttributeTrait;
 use davidhirtz\yii2\skeleton\behaviors\RedirectBehavior;
-use davidhirtz\yii2\skeleton\models\traits\NestedTreeTrait;
 use davidhirtz\yii2\skeleton\models\Trail;
+use davidhirtz\yii2\skeleton\models\traits\NestedTreeTrait;
 use Yii;
 use yii\db\ActiveQuery;
 
@@ -70,7 +70,7 @@ class Category extends ActiveRecord
                 [
                     ['slug'],
                     'required',
-                    'when' => fn(): bool => $this->isSlugRequired()
+                    'when' => fn (): bool => $this->isSlugRequired()
                 ],
                 [
                     ['name', 'slug', 'title', 'description', 'content'],
@@ -192,7 +192,7 @@ class Category extends ActiveRecord
     protected function insertEntryCategoryAncestors(): void
     {
         // If the category doesn't have `inheritNestedCategories` enabled, descendant categories need to be used.
-        $categoryIds = $this->inheritNestedCategories() ? $this->id : array_keys(array_filter($this->descendants, fn(self $category): bool => $category->inheritNestedCategories()));
+        $categoryIds = $this->inheritNestedCategories() ? $this->id : array_keys(array_filter($this->descendants, fn (self $category): bool => $category->inheritNestedCategories()));
 
         if ($categoryIds) {
             $entries = Entry::find()

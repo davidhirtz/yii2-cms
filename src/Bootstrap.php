@@ -4,8 +4,8 @@ namespace davidhirtz\yii2\cms;
 
 use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\skeleton\web\Application;
-use yii\base\BootstrapInterface;
 use Yii;
+use yii\base\BootstrapInterface;
 use yii\i18n\PhpMessageSource;
 
 class Bootstrap implements BootstrapInterface

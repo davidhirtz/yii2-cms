@@ -93,8 +93,8 @@ trait CategoryGridTrait
         return [
             'class' => CounterColumn::class,
             'attribute' => 'entry_count',
-            'route' => fn(Category $category) => ['entry/index', 'category' => $category->id],
-            'value' => fn(Category $category) => $category->hasEntriesEnabled() ? $category->entry_count : null,
+            'route' => fn (Category $category) => ['entry/index', 'category' => $category->id],
+            'value' => fn (Category $category) => $category->hasEntriesEnabled() ? $category->entry_count : null,
         ];
     }
 

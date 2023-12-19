@@ -12,9 +12,6 @@ use davidhirtz\yii2\skeleton\widgets\Widget;
  */
 class Sections extends Widget
 {
-    /**
-     * @var Entry|null
-     */
     public ?Entry $entry = null;
 
     /**
@@ -106,7 +103,7 @@ class Sections extends Widget
      */
     public function renderSectionsByType(array|int $types, ?string $viewFile = null): string
     {
-        return $this->renderSectionsByCallback(fn(Section $section): bool => in_array($section->type, (array)$types), $viewFile);
+        return $this->renderSectionsByCallback(fn (Section $section): bool => in_array($section->type, (array)$types), $viewFile);
     }
 
     /**

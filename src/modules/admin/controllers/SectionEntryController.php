@@ -2,13 +2,13 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\controllers;
 
+use davidhirtz\yii2\cms\models\actions\ReorderSectionEntries;
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\SectionEntry;
 use davidhirtz\yii2\cms\modules\admin\controllers\traits\SectionTrait;
 use davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
-use davidhirtz\yii2\cms\models\actions\ReorderSectionEntries;
 use davidhirtz\yii2\skeleton\web\Controller;
 use Yii;
 use yii\filters\AccessControl;
@@ -52,8 +52,7 @@ class SectionEntryController extends Controller
         ?int $parent = null,
         ?string $q = null,
         ?int $type = null
-    ): string
-    {
+    ): Response|string {
         $section = $this->findSection($section, 'sectionUpdate');
 
         $provider = Yii::$container->get(EntryActiveDataProvider::class, [], [
@@ -70,7 +69,7 @@ class SectionEntryController extends Controller
         ]);
     }
 
-    public function actionCreate(int $section, int $entry): Response
+    public function actionCreate(int $section, int $entry): Response|string
     {
         $sectionEntry = SectionEntry::create();
         $sectionEntry->section_id = $section;
@@ -84,7 +83,7 @@ class SectionEntryController extends Controller
             throw new BadRequestHttpException(current($sectionEntry->getFirstErrors()));
         }
 
-        if(!Yii::$app->getRequest()->getIsAjax()) {
+        if (!Yii::$app->getRequest()->getIsAjax()) {
             $this->success(Yii::t('cms', 'Entry added to section.'));
             return $this->redirect(['index', 'section' => $sectionEntry->section_id]);
         }
@@ -92,7 +91,7 @@ class SectionEntryController extends Controller
         return $this->asJson([]);
     }
 
-    public function actionDelete(int $section, int $entry): Response
+    public function actionDelete(int $section, int $entry): Response|string
     {
         $sectionEntry = SectionEntry::findOne([
             'section_id' => $section,

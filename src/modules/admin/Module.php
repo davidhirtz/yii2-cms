@@ -35,9 +35,7 @@ class Module extends \yii\base\Module
      */
     public array $panels = [];
 
-    /**
-     * @var array
-     */
+    
     protected array $defaultControllerMap = [
         'asset' => [
             'class' => 'davidhirtz\yii2\cms\modules\admin\controllers\AssetController',

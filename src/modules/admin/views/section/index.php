@@ -12,14 +12,15 @@ $this->setTitle(Yii::t('cms', 'Sections'));
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\SectionGridView;
 use davidhirtz\yii2\cms\modules\admin\widgets\navs\Submenu;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
+
 ?>
 
 <?= Submenu::widget([
-	'model' => $entry,
+    'model' => $entry,
 ]); ?>
 
 <?= Panel::widget([
-	'content' => SectionGridView::widget([
-		'entry' => $entry,
-	]),
+    'content' => SectionGridView::widget([
+        'entry' => $entry,
+    ]),
 ]); ?>

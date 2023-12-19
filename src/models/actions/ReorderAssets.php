@@ -34,7 +34,7 @@ class ReorderAssets extends ReorderActiveRecords
         $this->parent->updated_at = new DateTime();
         $this->parent->update();
 
-        if($this->parent instanceof Section) {
+        if ($this->parent instanceof Section) {
             $entry = $this->parent->entry;
             Trail::createOrderTrail($entry, Yii::t('cms', 'Section asset order changed'), [
                 'trail_id' => $trail->id,

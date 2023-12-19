@@ -53,8 +53,6 @@ trait SitemapTrait
      * Returns an array of languages used for I18N URLs. This is only intended for {@see ActiveRecord::$i18nAttributes}
      * tables and not for {@see Module::$enableI18nTables} as the website structure might be different and thus rather
      * single sitemaps per language should be submitted.
-     *
-     * @return array
      */
     protected function getSitemapLanguages(): array
     {

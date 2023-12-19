@@ -3,16 +3,16 @@
 namespace davidhirtz\yii2\cms\modules\admin\controllers;
 
 use davidhirtz\yii2\cms\models\actions\DuplicateSection;
+use davidhirtz\yii2\cms\models\actions\ReorderSections;
 use davidhirtz\yii2\cms\models\Category;
+use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\queries\AssetQuery;
 use davidhirtz\yii2\cms\models\queries\SectionQuery;
+use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\modules\admin\controllers\traits\EntryTrait;
 use davidhirtz\yii2\cms\modules\admin\controllers\traits\SectionTrait;
 use davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
-use davidhirtz\yii2\cms\models\Section;
-use davidhirtz\yii2\cms\models\Entry;
-use davidhirtz\yii2\cms\models\actions\ReorderSections;
 use davidhirtz\yii2\skeleton\web\Controller;
 use Yii;
 use yii\filters\AccessControl;

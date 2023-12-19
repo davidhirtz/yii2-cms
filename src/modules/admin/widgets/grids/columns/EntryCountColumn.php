@@ -31,7 +31,7 @@ class EntryCountColumn extends CounterColumn
             }
         }
 
-        $this->route ??= fn(Entry $model) => Url::current(['parent' => $model->id, 'type' => null, 'q' => null]);
+        $this->route ??= fn (Entry $model) => Url::current(['parent' => $model->id, 'type' => null, 'q' => null]);
 
         parent::init();
     }

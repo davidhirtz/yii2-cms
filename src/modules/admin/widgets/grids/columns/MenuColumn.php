@@ -19,7 +19,6 @@ class MenuColumn extends Column
 
     public function init(): void
     {
-
         if ($this->visible) {
             $this->visible = false;
 

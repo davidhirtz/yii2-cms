@@ -4,8 +4,8 @@ namespace davidhirtz\yii2\cms\modules\admin\widgets\navs;
 
 use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\cms\models\Category;
-use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\models\Entry;
+use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\modules\admin\Module;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\skeleton\helpers\Html;
@@ -154,9 +154,7 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
         ];
     }
 
-    /**
-     * @return array
-     */
+    
     protected function getEntryItems(): array
     {
         return array_filter([
@@ -232,9 +230,7 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
         ];
     }
 
-    /**
-     * @return array
-     */
+    
     protected function getEntrySectionItems(): array
     {
         $entry = $this->isSection() ? $this->model->entry : $this->model;

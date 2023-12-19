@@ -66,7 +66,7 @@ class CategoryCollection
             return [];
         }
 
-        return array_filter(static::getAll(), fn(Category $category) => $category->parent_id == $parent->id);
+        return array_filter(static::getAll(), fn (Category $category) => $category->parent_id == $parent->id);
     }
 
     /**
@@ -79,7 +79,7 @@ class CategoryCollection
             return [];
         }
 
-        return array_filter(static::getAll(), fn(Category $category) => $category->lft > $ancestor->lft && $category->rgt < $ancestor->rgt);
+        return array_filter(static::getAll(), fn (Category $category) => $category->lft > $ancestor->lft && $category->rgt < $ancestor->rgt);
     }
 
     /**
@@ -90,7 +90,7 @@ class CategoryCollection
     {
         $categoryIds = $entry->getCategoryIds();
 
-        return array_filter(static::getAll(), fn(Category $category) => $category->hasEntriesEnabled()
+        return array_filter(static::getAll(), fn (Category $category) => $category->hasEntriesEnabled()
             && in_array($category->id, $categoryIds));
     }
 

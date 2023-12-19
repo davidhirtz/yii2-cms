@@ -2,10 +2,10 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\data;
 
-use davidhirtz\yii2\cms\models\EntryCategory;
-use davidhirtz\yii2\cms\models\queries\EntryQuery;
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\Entry;
+use davidhirtz\yii2\cms\models\EntryCategory;
+use davidhirtz\yii2\cms\models\queries\EntryQuery;
 use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\models\SectionEntry;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
@@ -37,9 +37,7 @@ class EntryActiveDataProvider extends ActiveDataProvider
      */
     public ?Entry $parent = null;
 
-    /**
-     * @var string|null
-     */
+    
     public ?string $searchString = null;
 
     /**

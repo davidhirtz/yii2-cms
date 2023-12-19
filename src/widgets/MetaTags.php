@@ -15,9 +15,7 @@ class MetaTags extends Widget
 
     public Category|Entry|null $model = null;
 
-    /**
-     * @var array|null
-     */
+    
     public ?array $languages = null;
 
     /**

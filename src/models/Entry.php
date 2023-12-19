@@ -5,16 +5,16 @@ namespace davidhirtz\yii2\cms\models;
 use davidhirtz\yii2\cms\models\queries\AssetQuery;
 use davidhirtz\yii2\cms\models\queries\EntryQuery;
 use davidhirtz\yii2\cms\models\queries\SectionQuery;
-use davidhirtz\yii2\media\models\traits\AssetParentTrait;
 use davidhirtz\yii2\cms\models\traits\SlugAttributeTrait;
 use davidhirtz\yii2\cms\models\validators\ParentIdValidator;
 use davidhirtz\yii2\cms\Module;
 use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\datetime\DateTimeValidator;
 use davidhirtz\yii2\media\models\interfaces\AssetParentInterface;
+use davidhirtz\yii2\media\models\traits\AssetParentTrait;
 use davidhirtz\yii2\skeleton\behaviors\RedirectBehavior;
-use davidhirtz\yii2\skeleton\models\traits\MaterializedTreeTrait;
 use davidhirtz\yii2\skeleton\helpers\ArrayHelper;
+use davidhirtz\yii2\skeleton\models\traits\MaterializedTreeTrait;
 use Yii;
 use yii\db\ActiveQuery;
 
@@ -71,7 +71,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
                 [
                     ['slug'],
                     'required',
-                    'when' => fn(): bool => $this->isSlugRequired()
+                    'when' => fn (): bool => $this->isSlugRequired()
                 ],
                 [
                     ['name', 'slug', 'title', 'description', 'content'],

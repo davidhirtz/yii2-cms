@@ -39,7 +39,7 @@ trait EntryParentIdFieldTrait
                 ->indexBy('id')
                 ->all();
 
-            $this->_entries = array_filter($entries, fn(Entry $entry): bool => $entry->hasDescendantsEnabled());
+            $this->_entries = array_filter($entries, fn (Entry $entry): bool => $entry->hasDescendantsEnabled());
         }
 
         return $this->_entries;

@@ -21,7 +21,6 @@ class M190319185130Cms extends Migration
         $schema = $this->getDb()->getSchema();
 
         foreach ($this->getLanguages() as $language) {
-
             if ($language) {
                 Yii::$app->language = $language;
             }
@@ -48,7 +47,7 @@ class M190319185130Cms extends Migration
             $entry = Entry::create();
             $this->addI18nColumns(Entry::tableName(), $entry->i18nAttributes);
 
-            foreach($entry->getI18nAttributeNames('slug') as $attributeName) {
+            foreach ($entry->getI18nAttributeNames('slug') as $attributeName) {
                 $this->createIndex($attributeName, Entry::tableName(), $attributeName, true);
             }
 
@@ -79,7 +78,6 @@ class M190319185130Cms extends Migration
             $tableName = $schema->getRawTableName(Section::tableName());
             $this->addForeignKey($tableName . '_entry_id_ibfk', Section::tableName(), 'entry_id', Entry::tableName(), 'id', 'CASCADE');
             $this->addForeignKey($tableName . '_updated_by_ibfk', Section::tableName(), 'updated_by_user_id', User::tableName(), 'id', 'SET NULL');
-
         }
 
         $auth = Yii::$app->getAuthManager();

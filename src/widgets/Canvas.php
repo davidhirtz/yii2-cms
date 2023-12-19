@@ -64,12 +64,14 @@ class Canvas extends Widget
      */
     protected function getContent(): string
     {
-        return preg_replace_callback('/{(\\w+)}/',
+        return preg_replace_callback(
+            '/{(\\w+)}/',
             function ($matches) {
                 $methodName = 'render' . ucfirst($matches[1]);
                 return method_exists($this, $methodName) ? $this->$methodName() : $matches[0];
             },
-            $this->template);
+            $this->template
+        );
     }
 
     protected function renderCaption(): string

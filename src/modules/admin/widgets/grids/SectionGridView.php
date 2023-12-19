@@ -2,10 +2,10 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\widgets\grids;
 
-use davidhirtz\yii2\cms\modules\admin\controllers\SectionController;
-use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\Section;
+use davidhirtz\yii2\cms\modules\admin\controllers\SectionController;
+use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grids\GridView;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grids\traits\StatusGridViewTrait;
@@ -22,9 +22,7 @@ class SectionGridView extends GridView
     use ModuleTrait;
     use StatusGridViewTrait;
 
-    /**
-     * @var Entry|null
-     */
+    
     public ?Entry $entry = null;
 
     /**
@@ -67,14 +65,14 @@ class SectionGridView extends GridView
 
     protected function initFooter(): void
     {
-            $this->footer ??= [
+        $this->footer ??= [
+            [
                 [
-                    [
-                        'content' => $this->getCreateSectionButton() . ($this->showSelection ? $this->getSelectionButton() : ''),
-                        'options' => ['class' => 'col'],
-                    ],
+                    'content' => $this->getCreateSectionButton() . ($this->showSelection ? $this->getSelectionButton() : ''),
+                    'options' => ['class' => 'col'],
                 ],
-            ];
+            ],
+        ];
     }
 
     protected function getCreateSectionButton(): string
@@ -100,7 +98,7 @@ class SectionGridView extends GridView
         return [
             'attribute' => 'type',
             'visible' => count($this->getModel()::getTypes()) > 1,
-            'content' => fn(Section $section) => Html::a($section->getTypeName(), ['update', 'id' => $section->id])
+            'content' => fn (Section $section) => Html::a($section->getTypeName(), ['update', 'id' => $section->id])
         ];
     }
 
@@ -164,7 +162,7 @@ class SectionGridView extends GridView
     {
         return [
             'contentOptions' => ['class' => 'text-right text-nowrap'],
-            'content' => fn(Section $section): string => Html::buttons($this->getRowButtons($section))
+            'content' => fn (Section $section): string => Html::buttons($this->getRowButtons($section))
         ];
     }
 

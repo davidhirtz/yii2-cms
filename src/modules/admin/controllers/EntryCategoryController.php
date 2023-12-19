@@ -2,13 +2,13 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\controllers;
 
+use davidhirtz\yii2\cms\models\actions\ReorderEntryCategories;
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\EntryCategory;
 use davidhirtz\yii2\cms\modules\admin\controllers\traits\CategoryTrait;
 use davidhirtz\yii2\cms\modules\admin\controllers\traits\EntryTrait;
 use davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
-use davidhirtz\yii2\cms\models\actions\ReorderEntryCategories;
 use davidhirtz\yii2\skeleton\web\Controller;
 use Yii;
 use yii\filters\AccessControl;

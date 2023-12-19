@@ -2,12 +2,12 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\widgets\grids;
 
-use davidhirtz\yii2\cms\models\Section;
+use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\cms\models\Entry;
+use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\modules\admin\controllers\EntryController;
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\columns\AssetThumbnailColumn;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
-use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\media\assets\AdminAsset;
 use davidhirtz\yii2\media\models\interfaces\AssetInterface;
 use davidhirtz\yii2\media\models\interfaces\AssetParentInterface;
@@ -48,11 +48,11 @@ class AssetGridView extends GridView
 
     public function init(): void
     {
-            $this->dataProvider ??= new ActiveDataProvider([
-                'query' => $this->getParentAssetQuery(),
-                'pagination' => false,
-                'sort' => false,
-            ]);
+        $this->dataProvider ??= new ActiveDataProvider([
+            'query' => $this->getParentAssetQuery(),
+            'pagination' => false,
+            'sort' => false,
+        ]);
 
         if (!$this->columns) {
             $this->columns = [
@@ -151,7 +151,7 @@ class AssetGridView extends GridView
     {
         return [
             'attribute' => $this->getModel()->getI18nAttributeName('dimensions'),
-            'content' => fn(AssetInterface $asset) => $asset->file->hasDimensions() ? $asset->file->getDimensions() : '-'
+            'content' => fn (AssetInterface $asset) => $asset->file->hasDimensions() ? $asset->file->getDimensions() : '-'
         ];
     }
 
@@ -167,7 +167,7 @@ class AssetGridView extends GridView
     {
         return [
             'contentOptions' => ['class' => 'text-right text-nowrap'],
-            'content' => fn($asset): string => Html::buttons($this->getRowButtons($asset))
+            'content' => fn ($asset): string => Html::buttons($this->getRowButtons($asset))
         ];
     }
 

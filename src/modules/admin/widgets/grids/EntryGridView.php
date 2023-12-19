@@ -2,11 +2,11 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\widgets\grids;
 
+use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\modules\admin\controllers\EntryCategoryController;
 use davidhirtz\yii2\cms\modules\admin\controllers\EntryController;
 use davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider;
-use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\columns\AssetCountColumn;
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\columns\EntryCountColumn;
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\columns\SectionCountColumn;
@@ -184,9 +184,7 @@ class EntryGridView extends GridView
         return Html::a(Html::iconText('plus', Yii::t('cms', 'New Entry')), $route, ['class' => 'btn btn-primary']);
     }
 
-    /**
-     * @return array
-     */
+    
     protected function getSelectionButtonItems(): array
     {
         if (!Yii::$app->getUser()->can('entryUpdate')) {
@@ -258,7 +256,7 @@ class EntryGridView extends GridView
             'attribute' => 'publish_date',
             'headerOptions' => ['class' => 'd-none d-lg-table-cell text-nowrap'],
             'contentOptions' => ['class' => 'd-none d-lg-table-cell text-nowrap'],
-            'content' => fn(Entry $entry) => $this->dateFormat ? $entry->publish_date->format($this->dateFormat) : Yii::$app->getFormatter()->asDate($entry->publish_date)
+            'content' => fn (Entry $entry) => $this->dateFormat ? $entry->publish_date->format($this->dateFormat) : Yii::$app->getFormatter()->asDate($entry->publish_date)
         ];
     }
 
@@ -268,7 +266,7 @@ class EntryGridView extends GridView
             'attribute' => 'updated_at',
             'headerOptions' => ['class' => 'd-none d-lg-table-cell text-nowrap'],
             'contentOptions' => ['class' => 'd-none d-lg-table-cell text-nowrap'],
-            'content' => fn(Entry $entry) => $this->dateFormat ? $entry->updated_at->format($this->dateFormat) : Timeago::tag($entry->updated_at)
+            'content' => fn (Entry $entry) => $this->dateFormat ? $entry->updated_at->format($this->dateFormat) : Timeago::tag($entry->updated_at)
         ];
     }
 
@@ -276,7 +274,7 @@ class EntryGridView extends GridView
     {
         return [
             'contentOptions' => ['class' => 'text-right text-nowrap'],
-            'content' => fn(Entry $entry): string => Html::buttons($this->getRowButtons($entry))
+            'content' => fn (Entry $entry): string => Html::buttons($this->getRowButtons($entry))
         ];
     }
 
