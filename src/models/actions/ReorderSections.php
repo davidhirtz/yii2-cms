@@ -2,8 +2,8 @@
 
 namespace davidhirtz\yii2\cms\models\actions;
 
-use DateTime;
 use davidhirtz\yii2\cms\models\Entry;
+use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\skeleton\models\Trail;
 use Yii;
 

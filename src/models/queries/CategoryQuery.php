@@ -6,7 +6,7 @@ use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\skeleton\db\I18nActiveQuery;
 
 /**
- * @template-extends I18nActiveQuery<Category>
+ * @extends I18nActiveQuery<Category>
  */
 class CategoryQuery extends I18nActiveQuery
 {

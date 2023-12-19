@@ -24,7 +24,7 @@ use yii\db\ActiveQuery;
  * @property int $entry_count
  *
  * @property-read Entry[] $entries {@see static::getEntries()}
- * @property-read EntryCategory $entryCategory {@see static::getEntryCategory()}
+ * @property-read EntryCategory|null $entryCategory {@see static::getEntryCategory()}
  * @property-read EntryCategory[] $entryCategories {@see static::getEntryCategories()}
  * @property-read static|null $parent {@see static::getParent()}
  * @property-read static[] $ancestors {@see static::getAncestors()}
@@ -165,9 +165,11 @@ class Category extends ActiveRecord
 
     public function getEntries(): EntryQuery
     {
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return $this->hasMany(Entry::class, ['id' => 'entry_id'])
+        /** @var EntryQuery $relation */
+        $relation = $this->hasMany(Entry::class, ['id' => 'entry_id'])
             ->via('entryCategories');
+
+        return $relation;
     }
 
     public function getEntryCategories(): ActiveQuery

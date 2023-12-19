@@ -14,7 +14,7 @@ use yii\data\Pagination;
 use yii\data\Sort;
 
 /**
- * @property EntryQuery $query
+ * @property EntryQuery|null $query
  * @method Entry[] getModels()
  */
 class EntryActiveDataProvider extends ActiveDataProvider

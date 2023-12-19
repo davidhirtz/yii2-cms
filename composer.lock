@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d3a481325c925d836d1ec7d47ef25d83",
+    "content-hash": "c175f1bb1d50064982f0f2f8ed432d51",
     "packages": [
         {
             "name": "bower-asset/jquery",
@@ -156,21 +156,34 @@
         },
         {
             "name": "davidhirtz/yii2-media",
-            "version": "v2.0.9",
+            "version": "v2.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/davidhirtz/yii2-media.git",
-                "reference": "77f580db5ee6509c42e3d3d60bec3897752adc68"
+                "reference": "0e9360e59185289107062b79f282474dd862de5a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/davidhirtz/yii2-media/zipball/77f580db5ee6509c42e3d3d60bec3897752adc68",
-                "reference": "77f580db5ee6509c42e3d3d60bec3897752adc68",
+                "url": "https://api.github.com/repos/davidhirtz/yii2-media/zipball/0e9360e59185289107062b79f282474dd862de5a",
+                "reference": "0e9360e59185289107062b79f282474dd862de5a",
                 "shasum": ""
             },
             "require": {
-                "davidhirtz/yii2-skeleton": "^2.0.14",
+                "davidhirtz/yii2-skeleton": "^2.1.1",
                 "npm-asset/cropperjs": "^1.5"
+            },
+            "require-dev": {
+                "codeception/codeception": "^5.0",
+                "codeception/module-asserts": "*",
+                "codeception/module-filesystem": "^3.0",
+                "codeception/module-phpbrowser": "*",
+                "codeception/module-yii2": "*",
+                "codeception/specify": "^2.0",
+                "codeception/verify": "^3.0",
+                "phpunit/phpunit": "^9",
+                "rector/rector": "^0.18.6",
+                "symplify/easy-coding-standard": "^12.0",
+                "yiisoft/yii2-debug": "^2.1"
             },
             "type": "yii2-extension",
             "extra": {
@@ -195,22 +208,22 @@
             "homepage": "https://www.github.com/davidhirtz/yii2-media",
             "support": {
                 "issues": "https://github.com/davidhirtz/yii2-media/issues",
-                "source": "https://github.com/davidhirtz/yii2-media/tree/v2.0.9"
+                "source": "https://github.com/davidhirtz/yii2-media/tree/v2.1.0"
             },
-            "time": "2023-12-11T17:29:49+00:00"
+            "time": "2023-12-18T22:39:47+00:00"
         },
         {
             "name": "davidhirtz/yii2-skeleton",
-            "version": "v2.1.0",
+            "version": "v2.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/davidhirtz/yii2-skeleton.git",
-                "reference": "a919ef55627413b8417f2b91311ab4456adbc35f"
+                "reference": "8a917053c3d3440017943ca5adbc90c6ea1d4514"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/davidhirtz/yii2-skeleton/zipball/a919ef55627413b8417f2b91311ab4456adbc35f",
-                "reference": "a919ef55627413b8417f2b91311ab4456adbc35f",
+                "url": "https://api.github.com/repos/davidhirtz/yii2-skeleton/zipball/8a917053c3d3440017943ca5adbc90c6ea1d4514",
+                "reference": "8a917053c3d3440017943ca5adbc90c6ea1d4514",
                 "shasum": ""
             },
             "require": {
@@ -274,9 +287,9 @@
             "homepage": "https://www.github.com/davidhirtz/yii2-skeleton",
             "support": {
                 "issues": "https://github.com/davidhirtz/yii2-skeleton/issues",
-                "source": "https://github.com/davidhirtz/yii2-skeleton/tree/v2.1.0"
+                "source": "https://github.com/davidhirtz/yii2-skeleton/tree/v2.1.1"
             },
-            "time": "2023-12-18T13:54:56+00:00"
+            "time": "2023-12-18T22:36:42+00:00"
         },
         {
             "name": "davidhirtz/yii2-timeago",

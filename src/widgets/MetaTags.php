@@ -122,7 +122,7 @@ class MetaTags extends Widget
         foreach ($this->languages as $language) {
             Yii::$app->getI18n()->callback($language, function () use ($language) {
                 if ($route = $this->model->getRoute()) {
-                    $url = Yii::$app->getUrlManager()->createAbsoluteUrl($route, true);
+                    $url = Yii::$app->getUrlManager()->createAbsoluteUrl($route, '');
                     $this->getView()->registerHrefLangLinkTag($language, $url);
                 }
             });
@@ -165,8 +165,8 @@ class MetaTags extends Widget
                 $file = $asset->file;
                 if ($this->transformationName) {
                     if ($url = $file->getTransformationUrl($this->transformationName)) {
-                        $width = $file->getTransformationOptions($this->transformationName, 'width');
-                        $height = $file->getTransformationOptions($this->transformationName, 'height') ?: ceil($width * $file->getHeightPercentage() / 100);
+                        $width = (int)$file->getTransformationOptions($this->transformationName, 'width');
+                        $height = (int)$file->getTransformationOptions($this->transformationName, 'height') ?: ceil($width * $file->getHeightPercentage() / 100);
                         $this->getView()->registerImageMetaTags($url, $width, $height);
                     }
                 } else {

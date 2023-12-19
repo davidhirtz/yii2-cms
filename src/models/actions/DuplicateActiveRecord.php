@@ -3,13 +3,13 @@
 namespace davidhirtz\yii2\cms\models\actions;
 
 
-use davidhirtz\yii2\skeleton\db\ActiveRecord;
+use davidhirtz\yii2\cms\models\ActiveRecord;
 use davidhirtz\yii2\skeleton\models\actions\DuplicateActiveRecord as BaseDuplicateActiveRecord;
 use davidhirtz\yii2\skeleton\models\interfaces\DraftStatusAttributeInterface;
 
 /**
- * @template T of ActiveRecord
- * @template-extends BaseDuplicateActiveRecord<T>
+ * @template TActiveRecord of ActiveRecord
+ * @template-extends BaseDuplicateActiveRecord<TActiveRecord>
  */
 class DuplicateActiveRecord extends BaseDuplicateActiveRecord
 {

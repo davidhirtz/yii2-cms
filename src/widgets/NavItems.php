@@ -23,7 +23,7 @@ class NavItems
      */
     public static function getMainMenuItems(): array
     {
-        return array_filter(static::getEntries(), fn($entry) =>  static::getIsMenuItem($entry) && !$entry->parent_id);
+        return array_filter(static::getEntries(), fn($entry) => static::getIsMenuItem($entry) && !$entry->parent_id);
     }
 
     /**
@@ -42,7 +42,7 @@ class NavItems
      */
     public static function getFooterItems(): array
     {
-        return array_filter(static::getEntries(), fn($entry) =>  static::getIsFooterItem($entry));
+        return array_filter(static::getEntries(), fn($entry) => static::getIsFooterItem($entry));
     }
 
     /**
@@ -85,13 +85,23 @@ class NavItems
         return count($where) > 1 ? ['or', ...$where] : $where[0];
     }
 
-    protected static function getIsMenuItem(Entry $entry): bool
+    /**
+     * @uses \davidhirtz\yii2\cms\models\traits\MenuAttributeTrait::isMenuItem()
+     */
+    public static function getIsMenuItem(Entry $entry): bool
     {
-        return method_exists($entry, 'isMenuItem') && $entry->isMenuItem();
+        return (!method_exists($entry, 'hasShowInMenuEnabled') || $entry->hasShowInMenuEnabled())
+            && method_exists($entry, 'isMenuItem')
+            && $entry->isMenuItem();
     }
 
-    protected static function getIsFooterItem(Entry $entry): bool
+    /**
+     * @uses \davidhirtz\yii2\cms\models\traits\FooterAttributeTrait::isFooterItem()
+     */
+    public static function getIsFooterItem(Entry $entry): bool
     {
-        return method_exists($entry, 'isFooterItem') && $entry->isFooterItem();
+        return  (!method_exists($entry, 'hasShowInFooterEnabled') || $entry->hasShowInFooterEnabled())
+            && method_exists($entry, 'isFooterItem')
+            && $entry->isFooterItem();
     }
 }

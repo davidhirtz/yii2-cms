@@ -3,11 +3,10 @@
 namespace davidhirtz\yii2\cms\models\queries;
 
 use davidhirtz\yii2\cms\models\Section;
-use davidhirtz\yii2\skeleton\db\ActiveQuery;
 use davidhirtz\yii2\skeleton\db\I18nActiveQuery;
 
 /**
- * @template-extends I18nActiveQuery<Section>
+ * @extends I18nActiveQuery<Section>
  */
 class SectionQuery extends I18nActiveQuery
 {

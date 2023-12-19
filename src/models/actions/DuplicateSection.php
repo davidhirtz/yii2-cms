@@ -10,7 +10,7 @@ use Yii;
 
 
 /**
- * @template-extends DuplicateActiveRecord<Section>
+ * @extends DuplicateActiveRecord<Section>
  */
 class DuplicateSection extends DuplicateActiveRecord
 {

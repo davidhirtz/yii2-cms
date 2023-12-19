@@ -10,8 +10,7 @@ use davidhirtz\yii2\cms\models\EntryCategory;
 use Yii;
 
 /**
- * @template T of Entry
- * @template-extends DuplicateActiveRecord<Entry>
+ * @extends DuplicateActiveRecord<Entry>
  */
 class DuplicateEntry extends DuplicateActiveRecord
 {

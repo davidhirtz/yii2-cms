@@ -11,7 +11,7 @@ use davidhirtz\yii2\skeleton\db\ActiveQuery;
 use davidhirtz\yii2\skeleton\db\I18nActiveQuery;
 
 /**
- * @template-extends I18nActiveQuery<Entry>
+ * @extends I18nActiveQuery<Entry>
  */
 class EntryQuery extends I18nActiveQuery
 {

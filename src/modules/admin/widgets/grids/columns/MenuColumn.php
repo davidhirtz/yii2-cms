@@ -2,8 +2,9 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\widgets\grids\columns;
 
-use davidhirtz\yii2\cms\models\traits\MenuAttributeTrait;
+use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\EntryGridView;
+use davidhirtz\yii2\cms\widgets\NavItems;
 use davidhirtz\yii2\skeleton\widgets\fontawesome\Icon;
 use yii\grid\Column;
 
@@ -22,9 +23,8 @@ class MenuColumn extends Column
         if ($this->visible) {
             $this->visible = false;
 
-            /** @var MenuAttributeTrait $model */
             foreach ($this->grid->dataProvider->getModels() as $model) {
-                if ($model->hasShowInMenuEnabled() && $model->isMenuItem()) {
+                if ($this->getIsMenuItem($model)) {
                     $this->visible = true;
                     break;
                 }
@@ -35,11 +35,11 @@ class MenuColumn extends Column
     }
 
     /**
-     * @param MenuAttributeTrait $model
+     * @param Entry $model
      */
     protected function renderDataCellContent($model, $key, $index): string
     {
-        if ($model->isMenuItem()) {
+        if ($this->getIsMenuItem($model)) {
             return Icon::solid('stream', [
                 'title' => $model->getAttributeLabel('show_in_menu'),
                 'data-toggle' => 'tooltip',
@@ -47,5 +47,10 @@ class MenuColumn extends Column
         }
 
         return '';
+    }
+
+    protected function getIsMenuItem(Entry $entry): bool
+    {
+        return NavItems::getIsMenuItem($entry);
     }
 }

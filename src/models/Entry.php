@@ -28,7 +28,7 @@ use yii\db\ActiveQuery;
  * @property string $title
  * @property string|null $description
  * @property string $content
- * @property DateTime $publish_date
+ * @property DateTime|null $publish_date
  * @property string|null $category_ids
  * @property int $entry_count
  * @property int $section_count
@@ -37,7 +37,7 @@ use yii\db\ActiveQuery;
  * @property-read Asset[] $assets {@see static::getAssets()}
  * @property-read EntryCategory $entryCategory {@see static::getEntryCategory()}
  * @property-read EntryCategory[] $entryCategories {@see static::getEntryCategories()}
- * @property-read SectionEntry $sectionEntry|null {@see static::getSectionEntry()}
+ * @property-read SectionEntry|null $sectionEntry {@see static::getSectionEntry()}
  * @property-read Section[] $sections {@see static::getSections()}
  */
 class Entry extends ActiveRecord implements AssetParentInterface
@@ -400,12 +400,12 @@ class Entry extends ActiveRecord implements AssetParentInterface
     public function getSitemapUrl(?string $language = null): array|false
     {
         if ($url = parent::getSitemapUrl($language)) {
-            /** @var Asset[]|false $assets */
-            if ($assets = ($this->getRelatedRecords()['assets'] ?? false)) {
-                foreach ($assets as $asset) {
-                    if ($imageUrl = $asset->getSitemapUrl($language)) {
-                        $url['images'][] = $imageUrl;
-                    }
+            /** @var Asset[] $assets */
+            $assets = $this->getRelatedRecords()['assets'] ?? [];
+
+            foreach ($assets as $asset) {
+                if ($imageUrl = $asset->getSitemapUrl($language)) {
+                    $url['images'][] = $imageUrl;
                 }
             }
         }

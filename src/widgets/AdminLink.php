@@ -11,7 +11,7 @@ use yii\helpers\Html;
 
 class AdminLink extends Widget
 {
-    public Asset|Entry|Section $model;
+    public Asset|Entry|Section|null $model;
 
     public array $linkOptions = [
         'class' => 'admin overlay',

@@ -4,11 +4,10 @@ namespace davidhirtz\yii2\cms\models\queries;
 
 use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\media\models\queries\FileQuery;
-use davidhirtz\yii2\skeleton\db\ActiveQuery;
 use davidhirtz\yii2\skeleton\db\I18nActiveQuery;
 
 /**
- * @template-extends I18nActiveQuery<Asset>
+ * @extends I18nActiveQuery<Asset>
  */
 class AssetQuery extends I18nActiveQuery
 {
