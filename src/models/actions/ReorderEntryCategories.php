@@ -3,9 +3,13 @@
 namespace davidhirtz\yii2\cms\models\actions;
 
 use davidhirtz\yii2\cms\models\Category;
+use davidhirtz\yii2\cms\models\EntryCategory;
 use davidhirtz\yii2\skeleton\models\Trail;
 use Yii;
 
+/**
+ * @extends ReorderActiveRecords<EntryCategory>
+ */
 class ReorderEntryCategories extends ReorderActiveRecords
 {
     public function __construct(protected Category $category, array $entryIds)

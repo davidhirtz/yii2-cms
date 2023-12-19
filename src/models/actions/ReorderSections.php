@@ -3,10 +3,14 @@
 namespace davidhirtz\yii2\cms\models\actions;
 
 use davidhirtz\yii2\cms\models\Entry;
+use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\skeleton\models\Trail;
 use Yii;
 
+/**
+ * @extends ReorderActiveRecords<Section>
+ */
 class ReorderSections extends ReorderActiveRecords
 {
     public function __construct(protected Entry $entry, array $sectionIds = [])

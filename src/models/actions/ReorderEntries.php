@@ -7,11 +7,14 @@ use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\skeleton\models\Trail;
 use Yii;
 
+/**
+ * @extends ReorderActiveRecords<Entry>
+ */
 class ReorderEntries extends ReorderActiveRecords
 {
     public function __construct(protected ?Entry $parent, array $entryIds)
     {
-        $entries = ($this->parent?->findChildren() ?? Entry::find())
+        $entries = ($parent?->findChildren() ?? Entry::find())
             ->select(['id', 'position'])
             ->andWhere(['id' => $entryIds])
             ->orderBy(['position' => SORT_ASC])
