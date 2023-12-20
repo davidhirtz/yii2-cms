@@ -239,7 +239,7 @@ class AssetGridView extends GridView
     /**
      * @param Asset $model
      */
-    protected function getRoute(ActiveRecordInterface $model, array $params = []): false|array
+    protected function getRoute(ActiveRecordInterface $model, array $params = []): array|false
     {
         if (!Yii::$app->getUser()->can($model->isEntryAsset() ? 'entryAssetUpdate' : 'sectionAssetUpdate', ['asset' => $model])) {
             return false;
