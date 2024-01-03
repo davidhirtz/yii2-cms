@@ -9,6 +9,7 @@ use yii\widgets\ActiveField;
 /**
  * @property FooterAttributeTrait $model
  * @mixin EntryActiveForm
+ * @noinspection PhpUnused
  */
 trait FooterFieldTrait
 {

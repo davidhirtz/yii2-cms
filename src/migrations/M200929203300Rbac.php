@@ -10,6 +10,7 @@ use yii\db\Migration;
 /**
  * @noinspection PhpUnused
  */
+
 class M200929203300Rbac extends Migration
 {
     use MigrationTrait;
@@ -21,7 +22,7 @@ class M200929203300Rbac extends Migration
         $auth = Yii::$app->getAuthManager();
         $author = $auth->getRole(Module::AUTH_ROLE_AUTHOR);
 
-        // Category.
+        // Category
         $categoryUpdate = $auth->createPermission('categoryUpdate');
         $categoryUpdate->description = Yii::t('cms', 'Update categories', [], $sourceLanguage);
         $auth->add($categoryUpdate);
@@ -49,7 +50,7 @@ class M200929203300Rbac extends Migration
         $auth->addChild($categoryOrder, $categoryUpdate);
         $auth->addChild($author, $categoryOrder);
 
-        // Entry.
+        // Entry
         $entryUpdate = $auth->createPermission('entryUpdate');
         $entryUpdate->description = Yii::t('cms', 'Update entries', [], $sourceLanguage);
         $auth->add($entryUpdate);
@@ -77,7 +78,7 @@ class M200929203300Rbac extends Migration
         $auth->addChild($entryOrder, $entryUpdate);
         $auth->addChild($author, $entryOrder);
 
-        // EntryCategory.
+        // EntryCategory
         $entryCategoryUpdate = $auth->createPermission('entryCategoryUpdate');
         $entryCategoryUpdate->description = Yii::t('cms', 'Update entry categories', [], $sourceLanguage);
         $auth->add($entryCategoryUpdate);
@@ -85,7 +86,7 @@ class M200929203300Rbac extends Migration
         $auth->addChild($entryCategoryUpdate, $entryUpdate);
         $auth->addChild($author, $entryCategoryUpdate);
 
-        // Section.
+        // Section
         $sectionUpdate = $auth->createPermission('sectionUpdate');
         $sectionUpdate->description = Yii::t('cms', 'Update sections', [], $sourceLanguage);
         $auth->add($sectionUpdate);
@@ -117,7 +118,7 @@ class M200929203300Rbac extends Migration
         $auth->addChild($sectionOrder, $sectionUpdate);
         $auth->addChild($author, $sectionOrder);
 
-        // EntryAsset.
+        // EntryAsset
         $entryAssetUpdate = $auth->createPermission('entryAssetUpdate');
         $entryAssetUpdate->description = Yii::t('cms', 'Update entry assets', [], $sourceLanguage);
         $auth->add($entryAssetUpdate);
@@ -149,7 +150,7 @@ class M200929203300Rbac extends Migration
         $auth->addChild($entryAssetOrder, $entryAssetUpdate);
         $auth->addChild($author, $entryAssetOrder);
 
-        // SectionAsset.
+        // SectionAsset
         $sectionAssetUpdate = $auth->createPermission('sectionAssetUpdate');
         $sectionAssetUpdate->description = Yii::t('cms', 'Update section assets', [], $sourceLanguage);
         $auth->add($sectionAssetUpdate);

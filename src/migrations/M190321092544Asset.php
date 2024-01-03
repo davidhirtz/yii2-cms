@@ -2,10 +2,10 @@
 
 namespace davidhirtz\yii2\cms\migrations;
 
+use davidhirtz\yii2\cms\migrations\traits\I18nTablesTrait;
 use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\Section;
-use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\media\models\File;
 use davidhirtz\yii2\skeleton\db\traits\MigrationTrait;
 use davidhirtz\yii2\skeleton\models\User;
@@ -13,19 +13,19 @@ use Yii;
 
 use yii\db\Migration;
 
+/**
+ * @noinspection PhpUnused
+ */
+
 class M190321092544Asset extends Migration
 {
     use MigrationTrait;
-    use ModuleTrait;
+    use I18nTablesTrait;
 
     public function safeUp(): void
     {
-        $schema = $this->getDb()->getSchema();
-
-        foreach ($this->getLanguages() as $language) {
-            if ($language) {
-                Yii::$app->language = $language;
-            }
+        $this->i18nTablesCallback(function () {
+            $schema = $this->getDb()->getSchema();
 
             $this->createTable(Asset::tableName(), [
                 'id' => $this->primaryKey()->unsigned(),
@@ -55,25 +55,16 @@ class M190321092544Asset extends Migration
             $this->addForeignKey($tableName . '_file_id_ibfk', Asset::tableName(), 'file_id', File::tableName(), 'id', 'CASCADE');
             $this->addForeignKey($tableName . '_updated_by_ibfk', Asset::tableName(), 'updated_by_user_id', User::tableName(), 'id', 'SET NULL');
 
-            $columnName = static::getModule()->enableI18nTables ? Yii::$app->getI18n()->getAttributeName('cms_asset_count', $language) : 'cms_asset_count';
+            $columnName = static::getModule()->enableI18nTables ? Yii::$app->getI18n()->getAttributeName('cms_asset_count') : 'cms_asset_count';
             $this->addColumn(File::tableName(), $columnName, $this->smallInteger()->notNull()->defaultValue(0)->after('transformation_count'));
-        }
+        });
     }
 
     public function safeDown(): void
     {
-        $i18n = Yii::$app->getI18n();
-
-        foreach ($this->getLanguages() as $language) {
-            Yii::$app->language = $language;
-
-            $this->dropColumn(File::tableName(), $i18n->getAttributeName('cms_asset_count', $language));
+        $this->i18nTablesCallback(function () {
+            $this->dropI18nColumns(File::tableName(), ['cms_asset_count']);
             $this->dropTable(Asset::tableName());
-        }
-    }
-
-    private function getLanguages(): array
-    {
-        return static::getModule()->enableI18nTables ? Yii::$app->getI18n()->getLanguages() : [Yii::$app->language];
+        });
     }
 }

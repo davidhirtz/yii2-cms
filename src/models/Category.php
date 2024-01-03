@@ -68,7 +68,7 @@ class Category extends ActiveRecord
                 [
                     ['slug'],
                     'required',
-                    'when' => fn(): bool => $this->isSlugRequired()
+                    'when' => fn (): bool => $this->isSlugRequired()
                 ],
                 [
                     ['name', 'slug', 'title', 'description', 'content'],
@@ -190,7 +190,7 @@ class Category extends ActiveRecord
     protected function insertEntryCategoryAncestors(): void
     {
         // If the category doesn't have `inheritNestedCategories` enabled, descendant categories need to be used.
-        $categoryIds = $this->inheritNestedCategories() ? $this->id : array_keys(array_filter($this->descendants, fn(self $category): bool => $category->inheritNestedCategories()));
+        $categoryIds = $this->inheritNestedCategories() ? $this->id : array_keys(array_filter($this->descendants, fn (self $category): bool => $category->inheritNestedCategories()));
 
         if ($categoryIds) {
             $entries = Entry::find()

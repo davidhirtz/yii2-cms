@@ -1,3 +1,9 @@
+## 2.1.1 (Jan 3, 2024)
+
+- Added GrumPHP configuration & pre-commit hook
+- Added `I18nTablesTrait` to streamline the I18N table migrations
+- Added `FooterColumnTrait` and `MenuColumnTrait`
+
 ## 2.1.0 (Dec 19, 2023)
 
 - Added Codeception test suite

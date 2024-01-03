@@ -2,8 +2,8 @@
 
 namespace davidhirtz\yii2\cms\tests\functional;
 
-use davidhirtz\yii2\skeleton\helpers\FileHelper;
 use davidhirtz\yii2\cms\tests\support\FunctionalTester;
+use davidhirtz\yii2\skeleton\helpers\FileHelper;
 use davidhirtz\yii2\skeleton\models\User;
 use Yii;
 

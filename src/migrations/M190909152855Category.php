@@ -2,30 +2,29 @@
 
 namespace davidhirtz\yii2\cms\migrations;
 
+use davidhirtz\yii2\cms\migrations\traits\I18nTablesTrait;
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\EntryCategory;
-use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\skeleton\db\traits\MigrationTrait;
 use davidhirtz\yii2\skeleton\models\User;
-use Yii;
 use yii\db\Migration;
+
+/**
+ * @noinspection PhpUnused
+ */
 
 class M190909152855Category extends Migration
 {
     use MigrationTrait;
-    use ModuleTrait;
+    use I18nTablesTrait;
 
     public function safeUp(): void
     {
-        $schema = $this->getDb()->getSchema();
+        $this->i18nTablesCallback(function () {
+            $schema = $this->getDb()->getSchema();
 
-        foreach ($this->getLanguages() as $language) {
-            if ($language) {
-                Yii::$app->language = $language;
-            }
-
-            // Category.
+            // Category
             $this->createTable(Category::tableName(), [
                 'id' => $this->primaryKey()->unsigned(),
                 'status' => $this->tinyInteger(1)->unsigned()->notNull()->defaultValue(Category::STATUS_ENABLED),
@@ -58,8 +57,7 @@ class M190909152855Category extends Migration
             $this->addForeignKey($tableName . '_parent_id_ibfk', Category::tableName(), 'parent_id', Category::tableName(), 'id', 'SET NULL');
             $this->addForeignKey($tableName . '_updated_by_ibfk', Category::tableName(), 'updated_by_user_id', User::tableName(), 'id', 'SET NULL');
 
-
-            // EntryCategory.
+            // EntryCategory
             $this->createTable(EntryCategory::tableName(), [
                 'entry_id' => $this->integer()->unsigned(),
                 'category_id' => $this->integer()->unsigned(),
@@ -76,23 +74,16 @@ class M190909152855Category extends Migration
             $this->addForeignKey($tableName . '_updated_by_ibfk', EntryCategory::tableName(), 'updated_by_user_id', User::tableName(), 'id', 'SET NULL');
 
             $this->addColumn(Entry::tableName(), 'category_ids', $this->text()->null()->after('publish_date'));
-        }
+        });
     }
 
     public function safeDown(): void
     {
-        foreach ($this->getLanguages() as $language) {
-            Yii::$app->language = $language;
-
+        $this->i18nTablesCallback(function () {
             $this->dropColumn(Entry::tableName(), 'category_ids');
 
             $this->dropTable(EntryCategory::tableName());
             $this->dropTable(Category::tableName());
-        }
-    }
-
-    private function getLanguages(): array
-    {
-        return static::getModule()->enableI18nTables ? Yii::$app->getI18n()->getLanguages() : [Yii::$app->language];
+        });
     }
 }

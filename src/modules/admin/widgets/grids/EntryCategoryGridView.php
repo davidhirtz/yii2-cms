@@ -35,7 +35,7 @@ class EntryCategoryGridView extends GridView
     public function init(): void
     {
         if (!$this->rowOptions) {
-            $this->rowOptions = fn(Category $category) => [
+            $this->rowOptions = fn (Category $category) => [
                 'class' => $category->entryCategory ? 'is-selected' : null,
             ];
         }
@@ -62,7 +62,7 @@ class EntryCategoryGridView extends GridView
             'label' => EntryCategory::instance()->getAttributeLabel('updated_at'),
             'headerOptions' => ['class' => 'd-none d-lg-table-cell text-nowrap'],
             'contentOptions' => ['class' => 'd-none d-lg-table-cell text-nowrap'],
-            'content' => fn(Category $category) => $category->entryCategory
+            'content' => fn (Category $category) => $category->entryCategory
                 ? ($this->dateFormat
                     ? $category->entryCategory->updated_at->format($this->dateFormat)
                     : Timeago::tag($category->entryCategory->updated_at))

@@ -2,11 +2,10 @@
 
 namespace davidhirtz\yii2\cms\migrations;
 
+use davidhirtz\yii2\cms\migrations\traits\I18nTablesTrait;
 use davidhirtz\yii2\cms\models\Entry;
-use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\skeleton\db\traits\MigrationTrait;
 use Exception;
-use Yii;
 use yii\db\Migration;
 
 /**
@@ -20,15 +19,12 @@ use yii\db\Migration;
 class M231101194837Parent extends Migration
 {
     use MigrationTrait;
-    use ModuleTrait;
+    use I18nTablesTrait;
 
     public function safeUp(): void
     {
-        $schema = $this->getDb()->getSchema();
-
-        foreach ($this->getLanguages() as $language) {
-            Yii::$app->language = $language;
-
+        $this->i18nTablesCallback(function () {
+            $schema = $this->getDb()->getSchema();
             $tableSchema = $schema->getTableSchema(Entry::tableName());
 
             if (!$tableSchema->getColumn('parent_id')) {
@@ -86,15 +82,13 @@ class M231101194837Parent extends Migration
                     }
                 }
             }
-        }
+        });
     }
 
     public function safeDown(): void
     {
-        $schema = $this->getDb()->getSchema();
-
-        foreach ($this->getLanguages() as $language) {
-            Yii::$app->language = $language;
+        $this->i18nTablesCallback(function () {
+            $schema = $this->getDb()->getSchema();
             $entry = Entry::instance();
 
             $this->dropSlugIndex();
@@ -116,7 +110,7 @@ class M231101194837Parent extends Migration
             $this->dropColumn(Entry::tableName(), 'parent_id');
             $this->dropColumn(Entry::tableName(), 'path');
             $this->dropColumn(Entry::tableName(), 'entry_count');
-        }
+        });
     }
 
     /**
@@ -132,10 +126,5 @@ class M231101194837Parent extends Migration
             } catch (Exception) {
             }
         }
-    }
-
-    private function getLanguages(): array
-    {
-        return static::getModule()->enableI18nTables ? Yii::$app->getI18n()->getLanguages() : [Yii::$app->language];
     }
 }

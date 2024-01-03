@@ -2,6 +2,7 @@
 
 namespace davidhirtz\yii2\cms\migrations;
 
+use davidhirtz\yii2\cms\migrations\traits\I18nTablesTrait;
 use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\skeleton\db\traits\MigrationTrait;
 use yii\db\Migration;
@@ -13,20 +14,25 @@ use yii\db\Migration;
 class M231104201316EmbedUrl extends Migration
 {
     use MigrationTrait;
+    use I18nTablesTrait;
 
     public function safeUp(): void
     {
-        $linkAttributes = Asset::instance()->getI18nAttributeNames('link');
+        $this->i18nTablesCallback(function () {
+            $linkAttributes = Asset::instance()->getI18nAttributeNames('link');
 
-        $this->addColumn(Asset::tableName(), 'embed_url', $this->string()
-            ->null()
-            ->after(array_pop($linkAttributes)));
+            $this->addColumn(Asset::tableName(), 'embed_url', $this->string()
+                ->null()
+                ->after(array_pop($linkAttributes)));
 
-        $this->addI18nColumns(Asset::tableName(), ['embed_url']);
+            $this->addI18nColumns(Asset::tableName(), ['embed_url']);
+        });
     }
 
     public function safeDown(): void
     {
-        $this->dropI18nColumns(Asset::tableName(), ['embed_url']);
+        $this->i18nTablesCallback(function () {
+            $this->dropI18nColumns(Asset::tableName(), ['embed_url']);
+        });
     }
 }

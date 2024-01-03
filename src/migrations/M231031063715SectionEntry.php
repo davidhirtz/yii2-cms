@@ -2,13 +2,12 @@
 
 namespace davidhirtz\yii2\cms\migrations;
 
+use davidhirtz\yii2\cms\migrations\traits\I18nTablesTrait;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\models\SectionEntry;
-use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\skeleton\db\traits\MigrationTrait;
 use davidhirtz\yii2\skeleton\models\User;
-use Yii;
 use yii\db\Migration;
 
 /**
@@ -20,17 +19,15 @@ use yii\db\Migration;
 class M231031063715SectionEntry extends Migration
 {
     use MigrationTrait;
-    use ModuleTrait;
+    use I18nTablesTrait;
 
     public function safeUp(): void
     {
-        $schema = $this->getDb()->getSchema();
-
-        foreach ($this->getLanguages() as $language) {
-            Yii::$app->language = $language;
+        $this->i18nTablesCallback(function () {
+            $schema = $this->getDb()->getSchema();
 
             if ($schema->getTableSchema(SectionEntry::tableName())) {
-                continue;
+                return;
             }
 
             $this->createTable(SectionEntry::tableName(), [
@@ -78,25 +75,16 @@ class M231031063715SectionEntry extends Migration
                 ->notNull()
                 ->defaultValue(0)
                 ->after('asset_count'));
-        }
-
-        parent::safeUp();
+        });
     }
 
     public function safeDown(): void
     {
-        foreach ($this->getLanguages() as $language) {
-            Yii::$app->language = $language;
-
+        $this->i18nTablesCallback(function () {
             $this->dropTable(SectionEntry::tableName());
             $this->dropColumn(Section::tableName(), 'entry_count');
-        }
+        });
 
         parent::safeDown();
-    }
-
-    private function getLanguages(): array
-    {
-        return static::getModule()->enableI18nTables ? Yii::$app->getI18n()->getLanguages() : [Yii::$app->language];
     }
 }
