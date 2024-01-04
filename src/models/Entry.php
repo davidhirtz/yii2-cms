@@ -268,7 +268,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
 
     public function findSiblings(): EntryQuery
     {
-        return static::find();
+        return static::find()->where(['parent_id' => $this->parent_id]);
     }
 
     public function getSitemapQuery(): EntryQuery

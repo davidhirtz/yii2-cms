@@ -1,3 +1,7 @@
+## 2.1.2 (Jan 4, 2024)
+
+- Fixed `Entry::findSiblings()` to return the correct siblings with `parent_id` enabled
+
 ## 2.1.1 (Jan 3, 2024)
 
 - Added GrumPHP configuration & pre-commit hook
