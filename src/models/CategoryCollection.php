@@ -110,7 +110,7 @@ class CategoryCollection
                 return $category;
             }
 
-            foreach (CategoryCollection::getAll() as $category) {
+            foreach (static::getAll() as $category) {
                 if ($category->getI18nAttribute('slug') == $slug && ($category->parent_id == $parentId)) {
                     return $category;
                 }
