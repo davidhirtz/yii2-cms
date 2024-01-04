@@ -139,6 +139,7 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     {
         return $this->entry->recalculateCategoryIds()->update();
     }
+
     public function updateCategoryEntryCount(): bool|int
     {
         return $this->category->recalculateEntryCount()->update();

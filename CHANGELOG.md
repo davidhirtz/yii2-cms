@@ -1,5 +1,6 @@
 ## 2.1.4 - under development
 
+- Enhanced `SetupController` to also allow setting up categories
 - Removed `withFolder()` from `AssetQuery::withFiles()` query stack
 
 ## 2.1.3 (Jan 4, 2024)
