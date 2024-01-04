@@ -1,3 +1,7 @@
+## 2.1.4 - under development
+
+- Removed `withFolder()` from `AssetQuery::withFiles()` query stack
+
 ## 2.1.3 (Jan 4, 2024)
 
 - Moved `Category::getBySlug()` to `CategoryCollection::getBySlug()`
