@@ -2,7 +2,7 @@
 
 namespace davidhirtz\yii2\cms\web;
 
-use davidhirtz\yii2\cms\models\Category;
+use davidhirtz\yii2\cms\models\CategoryCollection;
 use davidhirtz\yii2\skeleton\web\Request;
 use davidhirtz\yii2\skeleton\web\UrlManager;
 
@@ -19,16 +19,15 @@ class UrlRule extends \yii\web\UrlRule
     /**
      * @param UrlManager $manager
      * @param Request $request
-     * @return mixed
      */
-    public function parseRequest($manager, $request)
+    public function parseRequest($manager, $request): array|bool
     {
         if (!static::$mismatch) {
             $placeholders = array_flip($this->placeholders);
             $placeholder = $placeholders[$this->paramName] ?? null;
 
             if ($placeholder) {
-                $matches = preg_split('~(?<!\\\)\/~', str_replace(['#^', '$#u'], '', $this->pattern));
+                $matches = preg_split('~(?<!\\\)/~', str_replace(['#^', '$#u'], '', $this->pattern));
 
                 $pattern = '(?P<' . $placeholder . '>[^\\/]+)';
                 $start = array_search($pattern, $matches);
@@ -38,7 +37,7 @@ class UrlRule extends \yii\web\UrlRule
                 $branch = 0;
 
                 foreach (array_slice($parts, $start) as $part) {
-                    if ($category = Category::getBySlug($part, $parentId)) {
+                    if ($category = CategoryCollection::getBySlug($part, $parentId)) {
                         $parentId = $category->id;
                         $branch++;
                         continue;

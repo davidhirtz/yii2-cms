@@ -1,3 +1,7 @@
+## 2.1.3 (Jan 4, 2024)
+
+- Moved `Category::getBySlug()` to `CategoryCollection::getBySlug()`
+
 ## 2.1.2 (Jan 4, 2024)
 
 - Fixed `Entry::findSiblings()` to return the correct siblings with `parent_id` enabled

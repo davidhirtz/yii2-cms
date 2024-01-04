@@ -48,15 +48,19 @@ class NavItems
     /**
      * @return array<int, Entry>
      */
-    protected static function getEntries(): array
+    public static function getEntries(): array
     {
-        if (static::$_entries === null) {
-            Yii::debug('Loading menu items ...');
-
-            static::$_entries = static::getEntryQuery()->all();
-        }
-
+        static::$_entries ??= static::findEntries();
         return static::$_entries;
+    }
+
+    /**
+     * @return array<int, Entry>
+     */
+    protected static function findEntries(): array
+    {
+        Yii::debug('Loading menu items ...');
+        return static::getEntryQuery()->all();
     }
 
     protected static function getEntryQuery(): EntryQuery

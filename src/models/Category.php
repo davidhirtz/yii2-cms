@@ -249,32 +249,6 @@ class Category extends ActiveRecord
             ->orderBy(['id' => SORT_ASC]);
     }
 
-    public static function getBySlug(string $slug, int $parentId = null): ?self
-    {
-        if ($slug) {
-            if (strpos($slug, '/')) {
-                $prevParentId = null;
-                $category = null;
-
-                foreach (explode('/', $slug) as $part) {
-                    if ($category = static::getBySlug($part, $prevParentId)) {
-                        $prevParentId = $category->id;
-                    }
-                }
-
-                return $category;
-            }
-
-            foreach (CategoryCollection::getAll() as $category) {
-                if ($category->getI18nAttribute('slug') == $slug && ($category->parent_id == $parentId)) {
-                    return $category;
-                }
-            }
-        }
-
-        return null;
-    }
-
     public function getTrailAttributes(): array
     {
         return array_diff(parent::getTrailAttributes(), [
