@@ -6,12 +6,15 @@ use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\queries\EntryQuery;
 use Yii;
 
+/**
+ * @template T of Entry
+ */
 class NavItems
 {
     protected static ?array $_entries = null;
 
     /**
-     * @return array<int, Entry>
+     * @return array<int, T>
      */
     public static function getMenuItems(): array
     {
@@ -19,7 +22,7 @@ class NavItems
     }
 
     /**
-     * @return array<int, Entry>
+     * @return array<int, T>
      */
     public static function getMainMenuItems(): array
     {
@@ -27,7 +30,7 @@ class NavItems
     }
 
     /**
-     * @return array<int, Entry>
+     * @return array<int, T>
      */
     public static function getSubmenuItems(Entry $parent): array
     {
@@ -38,7 +41,7 @@ class NavItems
     }
 
     /**
-     * @return array<int, Entry>
+     * @return array<int, T>
      */
     public static function getFooterItems(): array
     {
@@ -46,7 +49,7 @@ class NavItems
     }
 
     /**
-     * @return array<int, Entry>
+     * @return array<int, T>
      */
     public static function getEntries(): array
     {
@@ -55,7 +58,7 @@ class NavItems
     }
 
     /**
-     * @return array<int, Entry>
+     * @return array<int, T>
      */
     protected static function findEntries(): array
     {
@@ -89,21 +92,17 @@ class NavItems
         return count($where) > 1 ? ['or', ...$where] : $where[0];
     }
 
-    /**
-     * @uses \davidhirtz\yii2\cms\models\traits\MenuAttributeTrait::isMenuItem()
-     */
     public static function getIsMenuItem(Entry $entry): bool
     {
+        /**  @uses \davidhirtz\yii2\cms\models\traits\MenuAttributeTrait::isMenuItem() */
         return (!method_exists($entry, 'hasShowInMenuEnabled') || $entry->hasShowInMenuEnabled())
             && method_exists($entry, 'isMenuItem')
             && $entry->isMenuItem();
     }
 
-    /**
-     * @uses \davidhirtz\yii2\cms\models\traits\FooterAttributeTrait::isFooterItem()
-     */
     public static function getIsFooterItem(Entry $entry): bool
     {
+        /**  @uses \davidhirtz\yii2\cms\models\traits\FooterAttributeTrait::isFooterItem() */
         return (!method_exists($entry, 'hasShowInFooterEnabled') || $entry->hasShowInFooterEnabled())
             && method_exists($entry, 'isFooterItem')
             && $entry->isFooterItem();

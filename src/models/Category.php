@@ -2,6 +2,7 @@
 
 namespace davidhirtz\yii2\cms\models;
 
+use davidhirtz\yii2\cms\models\collections\CategoryCollection;
 use davidhirtz\yii2\cms\models\queries\CategoryQuery;
 use davidhirtz\yii2\cms\models\queries\EntryQuery;
 use davidhirtz\yii2\cms\models\traits\SlugAttributeTrait;

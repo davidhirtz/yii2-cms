@@ -2,6 +2,7 @@
 
 namespace davidhirtz\yii2\cms;
 
+use davidhirtz\yii2\cms\models\collections\CategoryCollection;
 use davidhirtz\yii2\skeleton\filters\PageCache;
 use davidhirtz\yii2\skeleton\modules\ModuleTrait;
 use Yii;

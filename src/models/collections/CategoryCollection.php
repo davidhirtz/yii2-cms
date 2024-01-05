@@ -1,11 +1,16 @@
 <?php
 
-namespace davidhirtz\yii2\cms\models;
+namespace davidhirtz\yii2\cms\models\collections;
 
+use davidhirtz\yii2\cms\models\Category;
+use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use Yii;
 use yii\caching\TagDependency;
 
+/**
+ * @template T of Category
+ */
 class CategoryCollection
 {
     use ModuleTrait;
@@ -15,7 +20,7 @@ class CategoryCollection
     protected static ?array $_categories = null;
 
     /**
-     * @return array<int, Category>
+     * @return array<int, T>
      */
     public static function getAll(bool $refresh = false): array
     {
@@ -32,7 +37,7 @@ class CategoryCollection
     }
 
     /**
-     * @return array<int, Category>
+     * @return array<int, T>
      * @noinspection PhpUnused
      */
     public static function getAncestors(Category $descendant): array
@@ -57,7 +62,7 @@ class CategoryCollection
     }
 
     /**
-     * @return array<int, Category>
+     * @return array<int, T>
      * @noinspection PhpUnused
      */
     public static function getChildren(Category $parent): array
@@ -70,7 +75,7 @@ class CategoryCollection
     }
 
     /**
-     * @return array<int, Category>
+     * @return array<int, T>
      * @noinspection PhpUnused
      */
     public static function getDescendants(Category $ancestor): array
@@ -83,7 +88,7 @@ class CategoryCollection
     }
 
     /**
-     * @return array<int, Category>
+     * @return array<int, T>
      * @noinspection PhpUnused
      */
     public static function getByEntry(Entry $entry): array
@@ -121,7 +126,7 @@ class CategoryCollection
     }
 
     /**
-     * @return array<int, Category>
+     * @return array<int, T>
      */
     public static function findAll(): array
     {
