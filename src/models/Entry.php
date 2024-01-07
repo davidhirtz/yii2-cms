@@ -399,7 +399,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
             return [];
         }
 
-        return array_filter($this->assets, fn (Asset $asset): bool => $asset->type == $asset::TYPE_META_IMAGE);
+        return array_filter($this->assets, fn (Asset $asset): bool => $asset->type != $asset::TYPE_META_IMAGE);
     }
 
     /**
