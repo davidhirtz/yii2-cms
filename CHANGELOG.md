@@ -1,4 +1,4 @@
-## 2.1.4 - under development
+## 2.1.4 (Jan 7, 2024)
 
 - Enhanced `SetupController` to also allow setting up categories
 - Moved `CategoryCollection` to `davidhirtz\yii2\cms\models\collections`

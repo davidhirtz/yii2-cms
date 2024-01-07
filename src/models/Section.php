@@ -296,6 +296,11 @@ class Section extends ActiveRecord implements AssetParentInterface
         return $this->getTypeOptions()['viewFile'] ?? null;
     }
 
+    public function getVisibleAssets(): array
+    {
+        return $this->hasAssetsEnabled() && $this->isAttributeVisible('#assets') ? $this->assets : [];
+    }
+
     public function hasAssetsEnabled(): bool
     {
         return static::getModule()->enableSectionAssets;

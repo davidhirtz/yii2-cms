@@ -393,6 +393,15 @@ class Entry extends ActiveRecord implements AssetParentInterface
         return $this->hasRoute() ? array_filter(['/cms/site/view', 'slug' => $this->getFormattedSlug()]) : false;
     }
 
+    public function getVisibleAssets(): array
+    {
+        if (!$this->hasAssetsEnabled() || !$this->isAttributeVisible('#assets')) {
+            return [];
+        }
+
+        return array_filter($this->assets, fn (Asset $asset): bool => $asset->type == $asset::TYPE_META_IMAGE);
+    }
+
     /**
      * Extends the default XML sitemap url by image URLs if related assets were found. This is automatically the
      * case if {@see Module::$enableImageSitemaps} is set to `true`.

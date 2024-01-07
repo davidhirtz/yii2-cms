@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "bower-asset/jquery",
-            "version": "3.6.4",
+            "version": "3.7.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:jquery/jquery-dist.git",
-                "reference": "91ef2d8836342875f2519b5815197ea0f23613cf"
+                "url": "https://github.com/jquery/jquery-dist.git",
+                "reference": "fde1f76e2799dd877c176abde0ec836553246991"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jquery/jquery-dist/zipball/91ef2d8836342875f2519b5815197ea0f23613cf",
-                "reference": "91ef2d8836342875f2519b5815197ea0f23613cf"
+                "url": "https://api.github.com/repos/jquery/jquery-dist/zipball/fde1f76e2799dd877c176abde0ec836553246991",
+                "reference": "fde1f76e2799dd877c176abde0ec836553246991"
             },
             "type": "bower-asset",
             "license": [
@@ -156,20 +156,20 @@
         },
         {
             "name": "davidhirtz/yii2-media",
-            "version": "v2.1.2",
+            "version": "v2.1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/davidhirtz/yii2-media.git",
-                "reference": "65246f1ae7aa705aa9f7b07ce7bc39243e46e7a1"
+                "reference": "54501d49bbede028162c3d1a5349a5256306b73b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/davidhirtz/yii2-media/zipball/65246f1ae7aa705aa9f7b07ce7bc39243e46e7a1",
-                "reference": "65246f1ae7aa705aa9f7b07ce7bc39243e46e7a1",
+                "url": "https://api.github.com/repos/davidhirtz/yii2-media/zipball/54501d49bbede028162c3d1a5349a5256306b73b",
+                "reference": "54501d49bbede028162c3d1a5349a5256306b73b",
                 "shasum": ""
             },
             "require": {
-                "davidhirtz/yii2-skeleton": "^2.1.4",
+                "davidhirtz/yii2-skeleton": "^2.1.6",
                 "npm-asset/cropperjs": "^1.5"
             },
             "require-dev": {
@@ -180,6 +180,7 @@
                 "codeception/module-yii2": "*",
                 "codeception/specify": "^2.0",
                 "codeception/verify": "^3.0",
+                "phpro/grumphp-shim": "^2.4",
                 "phpunit/phpunit": "^9",
                 "rector/rector": "^0.18.6",
                 "symplify/easy-coding-standard": "^12.0",
@@ -208,9 +209,9 @@
             "homepage": "https://www.github.com/davidhirtz/yii2-media",
             "support": {
                 "issues": "https://github.com/davidhirtz/yii2-media/issues",
-                "source": "https://github.com/davidhirtz/yii2-media/tree/v2.1.2"
+                "source": "https://github.com/davidhirtz/yii2-media/tree/v2.1.4"
             },
-            "time": "2023-12-20T15:23:25+00:00"
+            "time": "2024-01-07T07:38:47+00:00"
         },
         {
             "name": "davidhirtz/yii2-skeleton",
@@ -4489,16 +4490,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.10.50",
+            "version": "1.10.54",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "06a98513ac72c03e8366b5a0cb00750b487032e4"
+                "reference": "3e25f279dada0adc14ffd7bad09af2e2fc3523bb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/06a98513ac72c03e8366b5a0cb00750b487032e4",
-                "reference": "06a98513ac72c03e8366b5a0cb00750b487032e4",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/3e25f279dada0adc14ffd7bad09af2e2fc3523bb",
+                "reference": "3e25f279dada0adc14ffd7bad09af2e2fc3523bb",
                 "shasum": ""
             },
             "require": {
@@ -4547,7 +4548,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-12-13T10:59:42+00:00"
+            "time": "2024-01-05T15:50:47+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -6836,16 +6837,16 @@
         },
         {
             "name": "symplify/easy-coding-standard",
-            "version": "12.0.13",
+            "version": "12.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/easy-coding-standard/easy-coding-standard.git",
-                "reference": "d15707b14d50b7cb6d656f7a7a5e5b9a17099b3c"
+                "reference": "d082c6f90e83ae85f7e63b03ea06780dcf765834"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/easy-coding-standard/easy-coding-standard/zipball/d15707b14d50b7cb6d656f7a7a5e5b9a17099b3c",
-                "reference": "d15707b14d50b7cb6d656f7a7a5e5b9a17099b3c",
+                "url": "https://api.github.com/repos/easy-coding-standard/easy-coding-standard/zipball/d082c6f90e83ae85f7e63b03ea06780dcf765834",
+                "reference": "d082c6f90e83ae85f7e63b03ea06780dcf765834",
                 "shasum": ""
             },
             "require": {
@@ -6878,7 +6879,7 @@
             ],
             "support": {
                 "issues": "https://github.com/easy-coding-standard/easy-coding-standard/issues",
-                "source": "https://github.com/easy-coding-standard/easy-coding-standard/tree/12.0.13"
+                "source": "https://github.com/easy-coding-standard/easy-coding-standard/tree/12.1.1"
             },
             "funding": [
                 {
@@ -6890,7 +6891,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-12-07T09:18:07+00:00"
+            "time": "2024-01-05T13:20:55+00:00"
         },
         {
             "name": "theseer/tokenizer",
