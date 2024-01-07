@@ -1,3 +1,7 @@
+## 2.1.5 (Jan 7, 2024)
+
+- Fixed `Picture` embed
+
 ## 2.1.4 (Jan 7, 2024)
 
 - Enhanced `SetupController` to also allow setting up categories

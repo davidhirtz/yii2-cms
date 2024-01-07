@@ -103,7 +103,10 @@ class Canvas extends Widget
 
     protected function renderMedia(): string
     {
-        return Picture::tag($this->asset, $this->pictureOptions);
+        return Picture::widget([
+            'asset' => $this->asset,
+            ...$this->pictureOptions
+        ]);
     }
 
     protected function wrapContent(string $content): string

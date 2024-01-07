@@ -51,7 +51,6 @@ return [
     'Delete section assets' => 'Sektion-Dateiverknüpfungen löschen',
     'Delete sections' => 'Sektionen löschen',
     'Do you want to duplicate this entry and its {n} subentries?' => 'Wollen Sie diesen Eintrag und seine {n} Untereinträge duplizieren?',
-    'Duplicate' => 'Duplizieren',
     'Edit Asset' => 'Dateiverknüpfung bearbeiten',
     'Edit Category' => 'Kategorie bearbeiten',
     'Edit Entry' => 'Eintrag bearbeiten',
