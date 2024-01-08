@@ -2,24 +2,28 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\widgets\grids\columns;
 
-use davidhirtz\yii2\skeleton\helpers\Html;
-use yii\grid\Column;
+use davidhirtz\yii2\cms\models\Asset;
+use davidhirtz\yii2\media\modules\admin\widgets\grids\columns\Thumbnail;
+use davidhirtz\yii2\skeleton\modules\admin\widgets\grids\columns\LinkDataColumn;
 
-class AssetThumbnailColumn extends Column
+class AssetThumbnailColumn extends LinkDataColumn
 {
-    public $headerOptions = [
-        'style' => 'width:150px',
-    ];
+    public $headerOptions = ['style' => 'width:150px'];
 
-    protected function renderDataCellContent($model, $key, $index): string
+    public function init(): void
     {
-        if (!$model->file->hasPreview()) {
-            return '';
+        if (!is_callable($this->content)) {
+            $this->content = $this->renderThumbnail(...);
         }
 
-        return Html::tag('div', '', [
-            'style' => 'background-image:url(' . ($model->file->getTransformationUrl('admin') ?: $model->file->getUrl()) . ');',
-            'class' => 'thumb',
-        ]);
+        parent::init();
+    }
+
+    /**
+     * @noinspection PhpUnusedParameterInspection
+     */
+    protected function renderThumbnail(Asset $model, int $key, int $index): string
+    {
+        return Thumbnail::widget(['file' => $model->file]);
     }
 }

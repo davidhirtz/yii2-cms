@@ -1,3 +1,9 @@
+## 2.1.6 (Jan 8, 2024)
+
+- Enhanced `AssetThumbnailColumn` to display the asset
+  via `\davidhirtz\yii2\media\modules\admin\widgets\grids\columns\Thumbnail`
+- Enhanced `SiteController` to remove trailing slashes from the slug (Issue #7)
+
 ## 2.1.5 (Jan 7, 2024)
 
 - Fixed `Picture` embed
@@ -34,9 +40,9 @@
 
 ## 2.0.22 (Nov 28, 2023)
 
-- Changed default `Category` slug attribute target to prevent n+1 queries created by `RedirectBehavior` (#4)
+- Changed default `Category` slug attribute target to prevent n+1 queries created by `RedirectBehavior` (Issue #4)
 - Changed `Asset::afterSave()` to always update the parent `updated_at` when an attribute was changed
-- Removed "New Entry" button in `SectionEntryController::actionIndex` (#6)
+- Removed "New Entry" button in `SectionEntryController::actionIndex` (Issue #6)
 
 ## 2.0.21 (Nov 18, 2023)
 

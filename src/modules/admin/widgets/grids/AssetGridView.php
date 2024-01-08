@@ -129,7 +129,10 @@ class AssetGridView extends GridView
 
     public function thumbnailColumn(): array
     {
-        return ['class' => AssetThumbnailColumn::class];
+        return [
+            'class' => AssetThumbnailColumn::class,
+            'route' => fn (Asset $asset) => $this->getRoute($asset),
+        ];
     }
 
     public function nameColumn(): array
