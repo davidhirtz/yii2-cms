@@ -13,7 +13,7 @@ use davidhirtz\yii2\cms\tests\support\FunctionalTester;
 use davidhirtz\yii2\cms\widgets\Sections;
 use Yii;
 
-class SiteControllerCest extends BaseCest
+class SiteControllerCest
 {
     public function _before(FunctionalTester $I): void
     {
@@ -25,8 +25,6 @@ class SiteControllerCest extends BaseCest
                 'viewFile' => '@tests/data/views/site/_sections',
             ],
         ]);
-
-        parent::_before($I);
     }
 
 
