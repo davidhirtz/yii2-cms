@@ -14,7 +14,7 @@ use davidhirtz\yii2\timeago\Timeago;
 use yii\db\ActiveRecordInterface;
 
 /**
- * Displays a grid of {@see Category} models linked via {@see EntryCategory}.
+ * @extends GridView<Category>
  * @property CategoryActiveDataProvider $dataProvider
  */
 class EntryCategoryGridView extends GridView
@@ -94,9 +94,6 @@ class EntryCategoryGridView extends GridView
         ];
     }
 
-    /**
-     * @param Category $model
-     */
     protected function getRoute(ActiveRecordInterface $model, array $params = []): array|false
     {
         return ['category/update', 'id' => $model->id];

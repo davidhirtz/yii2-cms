@@ -13,7 +13,7 @@ use yii\data\ActiveDataProvider;
 use yii\db\ActiveRecordInterface;
 
 /**
- * Displays all {@see Asset} models related to given {@see File}.
+ * @extends GridView<Asset>
  */
 class AssetParentGridView extends GridView
 {
@@ -133,9 +133,6 @@ class AssetParentGridView extends GridView
         ];
     }
 
-    /**
-     * @param Asset $model
-     */
     protected function getRoute(ActiveRecordInterface $model, array $params = []): array|false
     {
         $user = Yii::$app->getUser();

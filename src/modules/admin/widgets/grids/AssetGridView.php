@@ -8,9 +8,7 @@ use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\modules\admin\controllers\EntryController;
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\columns\AssetThumbnailColumn;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
-use davidhirtz\yii2\media\assets\AdminAsset;
-use davidhirtz\yii2\media\models\interfaces\AssetInterface;
-use davidhirtz\yii2\media\models\interfaces\AssetParentInterface;
+use davidhirtz\yii2\media\modules\admin\widgets\grids\traits\AssetColumnsTrait;
 use davidhirtz\yii2\media\modules\admin\widgets\grids\traits\UploadTrait;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grids\GridView;
@@ -21,38 +19,25 @@ use Yii;
 use yii\data\ActiveDataProvider;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecordInterface;
-use yii\db\ExpressionInterface;
 use yii\helpers\Url;
 
 /**
+ * @extends GridView<Asset>
  * @property ActiveDataProvider $dataProvider
  */
 class AssetGridView extends GridView
 {
+    use AssetColumnsTrait;
     use ModuleTrait;
     use StatusGridViewTrait;
     use TypeGridViewTrait;
     use UploadTrait;
 
-    public ?AssetParentInterface $parent = null;
-
-    /**
-     * @var string
-     */
     public $layout = '{header}{items}{footer}';
-
-    /**
-     * @var int|ExpressionInterface|null the maximum number of assets loaded for `$parent`
-     */
-    public int|ExpressionInterface|null $maxAssetCount = 100;
 
     public function init(): void
     {
-        $this->dataProvider ??= new ActiveDataProvider([
-            'query' => $this->getParentAssetQuery(),
-            'pagination' => false,
-            'sort' => false,
-        ]);
+        $this->dataProvider ??= $this->getAssetActiveDataProvider();
 
         if (!$this->columns) {
             $this->columns = [
@@ -66,9 +51,7 @@ class AssetGridView extends GridView
         }
 
         if (Yii::$app->getUser()->can('fileCreate')) {
-            AdminAsset::register($view = $this->getView());
-            $view->registerJs('Skeleton.deleteFilesWithAssets();');
-            $view->registerJs('Skeleton.mediaFileImport();');
+            $this->registerAssetClientScripts();
         }
 
         /**
@@ -77,33 +60,78 @@ class AssetGridView extends GridView
          */
         $this->orderRoute = $this->getParentRoute('cms/asset/order');
 
-        $this->initFooter();
 
         parent::init();
     }
 
     protected function initFooter(): void
     {
-        if ($this->footer === null) {
-            $this->footer = [
+        $this->footer ??= [
+            [
                 [
-                    [
-                        'content' => Html::buttons($this->getFooterButtons()),
-                        'options' => ['class' => 'offset-md-3 col-md-9'],
-                    ],
+                    'content' => Html::buttons($this->getFooterButtons()),
+                    'options' => ['class' => 'offset-md-3 col-md-9'],
                 ],
-            ];
-        }
+            ],
+        ];
+    }
+
+    public function buttonsColumn(): array
+    {
+        return [
+            'contentOptions' => ['class' => 'text-right text-nowrap'],
+            'content' => fn ($asset): string => Html::buttons($this->getRowButtons($asset))
+        ];
+    }
+
+    public function nameColumn(): array
+    {
+        return [
+            'attribute' => $this->getModel()->getI18nAttributeName('name'),
+            'content' => function (Asset $asset) {
+                $name = $asset->getI18nAttribute('name');
+                $route = $this->getRoute($asset);
+
+                $tag = $name
+                    ? Html::tag('strong', Html::encode($asset->getI18nAttribute('name')))
+                    : Html::tag('span', Html::encode($asset->file->name), ['class' => 'text-muted']);
+
+                return $route ? Html::a($tag, $route) : $tag;
+            }
+        ];
+    }
+
+    public function thumbnailColumn(): array
+    {
+        return [
+            'class' => AssetThumbnailColumn::class,
+            'route' => fn (Asset $asset) => $this->getRoute($asset),
+        ];
+    }
+
+    protected function getParentAssetQuery(): ActiveQuery
+    {
+        return $this->parent->getAssets()
+            ->andWhere(['section_id' => $this->parent instanceof Section ? $this->parent->id : null])
+            ->with('file')
+            ->limit($this->maxAssetCount);
+    }
+
+    public function renderItems(): string
+    {
+        return Html::tag('div', parent::renderItems(), ['id' => 'files']);
     }
 
     protected function getFooterButtons(): array
     {
-        $isEntry = $this->parent instanceof Entry;
         $user = Yii::$app->getUser();
         $buttons = [];
 
-        if (($isEntry && $user->can('entryAssetCreate', ['entry' => $this->parent])) ||
-            $user->can('sectionAssetCreate', ['section' => $this->parent])) {
+        $hasPermission = $this->parent instanceof Entry
+            ? $user->can('entryAssetCreate', ['entry' => $this->parent])
+            : $user->can('sectionAssetCreate', ['section' => $this->parent]);
+
+        if ($hasPermission) {
             if ($user->can('fileCreate')) {
                 $buttons[] = $this->getUploadFileButton();
                 $buttons[] = $this->getImportFileButton();
@@ -117,106 +145,13 @@ class AssetGridView extends GridView
 
     protected function getAssetsButton(): string
     {
-        return Html::a(Html::iconText('images', Yii::t('cms', 'Link assets')), $this->getIndexRoute(), [
+        $text = Html::iconText('images', Yii::t('cms', 'Link assets'));
+
+        return Html::a($text, $this->getParentRoute('cms/asset/index'), [
             'class' => 'btn btn-primary',
         ]);
     }
 
-    public function renderItems(): string
-    {
-        return Html::tag('div', parent::renderItems(), ['id' => 'files']);
-    }
-
-    public function thumbnailColumn(): array
-    {
-        return [
-            'class' => AssetThumbnailColumn::class,
-            'route' => fn (Asset $asset) => $this->getRoute($asset),
-        ];
-    }
-
-    public function nameColumn(): array
-    {
-        return [
-            'attribute' => $this->getModel()->getI18nAttributeName('name'),
-            'content' => function ($asset) {
-                /** @var Asset $asset */
-                if ($name = $asset->getI18nAttribute('name')) {
-                    return Html::tag('strong', Html::a(Html::encode($name), $this->getRoute($asset)));
-                }
-
-                return Html::a(Html::encode($asset->file->name), $this->getRoute($asset), ['class' => 'text-muted']);
-            }
-        ];
-    }
-
-    public function dimensionsColumn(): array
-    {
-        return [
-            'attribute' => $this->getModel()->getI18nAttributeName('dimensions'),
-            'content' => fn (AssetInterface $asset) => $asset->file->hasDimensions() ? $asset->file->getDimensions() : '-'
-        ];
-    }
-
-    protected function getParentAssetQuery(): ActiveQuery
-    {
-        return $this->parent->getAssets()
-            ->andWhere(['section_id' => $this->parent instanceof Section ? $this->parent->id : null])
-            ->with(['file', 'file.folder'])
-            ->limit($this->maxAssetCount);
-    }
-
-    public function buttonsColumn(): array
-    {
-        return [
-            'contentOptions' => ['class' => 'text-right text-nowrap'],
-            'content' => fn ($asset): string => Html::buttons($this->getRowButtons($asset))
-        ];
-    }
-
-    /**
-     * @param Asset $asset
-     */
-    protected function getRowButtons(AssetInterface $asset): array
-    {
-        $user = Yii::$app->getUser();
-        $buttons = [];
-
-        if ($this->isSortedByPosition() && $this->dataProvider->getCount() > 1) {
-            if (($asset->isEntryAsset() && $user->can('entryAssetOrder', ['entry' => $asset->entry])) ||
-                $user->can('sectionAssetOrder', ['section' => $asset->section])) {
-                $buttons[] = $this->getSortableButton();
-            }
-        }
-
-        if ($user->can('fileUpdate', ['file' => $asset->file])) {
-            $buttons[] = $this->getFileUpdateButton($asset);
-        }
-
-        if ($user->can($asset->isEntryAsset() ? 'entryAssetUpdate' : 'sectionAssetUpdate', ['asset' => $asset])) {
-            $buttons[] = $this->getUpdateButton($asset);
-        }
-
-        if ($user->can($asset->isEntryAsset() ? 'entryAssetDelete' : 'sectionAssetDelete', ['asset' => $asset])) {
-            $buttons[] = $this->getDeleteButton($asset);
-        }
-
-        return $buttons;
-    }
-
-    protected function getFileUpdateButton(AssetInterface $asset): string
-    {
-        return Html::a(Icon::tag('image'), ['file/update', 'id' => $asset->file_id], [
-            'class' => 'btn btn-secondary d-none d-md-inline-block',
-            'title' => Yii::t('media', 'Edit File'),
-            'data-toggle' => 'tooltip',
-            'target' => '_blank',
-        ]);
-    }
-
-    /**
-     * @param AssetInterface $model
-     */
     protected function getDeleteButton(ActiveRecordInterface $model): string
     {
         $options = [
@@ -234,24 +169,36 @@ class AssetGridView extends GridView
         return Html::a(Icon::tag('trash'), $this->getDeleteRoute($model), $options);
     }
 
-    protected function getParentRoute(string $action, $params = []): array
+    protected function getRowButtons(Asset $asset): array
     {
-        return array_merge([$action, ($this->parent instanceof Entry ? 'entry' : 'section') => $this->parent->id], $params);
-    }
+        $user = Yii::$app->getUser();
+        $isEntry = $asset->isEntryAsset();
+        $buttons = [];
 
-    /**
-     * @param Asset $model
-     */
-    protected function getRoute(ActiveRecordInterface $model, array $params = []): array|false
-    {
-        if (!Yii::$app->getUser()->can($model->isEntryAsset() ? 'entryAssetUpdate' : 'sectionAssetUpdate', ['asset' => $model])) {
-            return false;
+        if ($this->isSortedByPosition() && $this->dataProvider->getCount() > 1) {
+            if ($isEntry
+                ? $user->can('entryAssetOrder', ['entry' => $asset->entry])
+                : $user->can('sectionAssetOrder', ['section' => $asset->section])) {
+                $buttons[] = $this->getSortableButton();
+            }
         }
 
-        return ['cms/asset/update', 'id' => $model->id, ...$params];
+        if ($user->can('fileUpdate', ['file' => $asset->file])) {
+            $buttons[] = $this->getFileUpdateButton($asset);
+        }
+
+        if ($user->can($isEntry ? 'entryAssetUpdate' : 'sectionAssetUpdate', ['asset' => $asset])) {
+            $buttons[] = $this->getUpdateButton($asset);
+        }
+
+        if ($user->can($isEntry ? 'entryAssetDelete' : 'sectionAssetDelete', ['asset' => $asset])) {
+            $buttons[] = $this->getDeleteButton($asset);
+        }
+
+        return $buttons;
     }
 
-    protected function getCreateRoute(): array
+    protected function getFileUploadRoute(): array
     {
         return $this->getParentRoute('/admin/cms/asset/create', [
             'folder' => Yii::$app->getRequest()->get('folder'),
@@ -260,12 +207,23 @@ class AssetGridView extends GridView
 
     protected function getDeleteRoute(ActiveRecordInterface $model, array $params = []): array
     {
-        return ['/admin/asset/delete', 'id' => $model->getPrimaryKey(), ...$params];
+        return ['/admin/asset/delete', 'id' => $model->id, ...$params];
     }
 
-    protected function getIndexRoute(): array
+    protected function getParentRoute(string $action, $params = []): array
     {
-        return $this->getParentRoute('cms/asset/index');
+        return array_merge([$action, ($this->parent instanceof Entry ? 'entry' : 'section') => $this->parent->id], $params);
+    }
+
+    protected function getRoute(ActiveRecordInterface $model, array $params = []): array|false
+    {
+        $permissionName = $model->isEntryAsset() ? 'entryAssetUpdate' : 'sectionAssetUpdate';
+
+        if (!Yii::$app->getUser()->can($permissionName, ['asset' => $model])) {
+            return false;
+        }
+
+        return ['cms/asset/update', 'id' => $model->id, ...$params];
     }
 
     public function getModel(): Asset

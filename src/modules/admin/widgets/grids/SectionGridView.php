@@ -15,6 +15,7 @@ use yii\data\ArrayDataProvider;
 use yii\helpers\StringHelper;
 
 /**
+ * @extends GridView<Section>
  * @property ActiveDataProvider|ArrayDataProvider|null $dataProvider
  */
 class SectionGridView extends GridView

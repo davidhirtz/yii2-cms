@@ -1,3 +1,8 @@
+## 2.1.7 (Jan 8, 2024)
+
+- Added PHPDoc blocks to grids views
+- Added `davidhirtz\yii2\media\modules\admin\widgets\grids\traits\AssetColumnsTrait` usage to asset grid
+
 ## 2.1.6 (Jan 8, 2024)
 
 - Enhanced `AssetThumbnailColumn` to display the asset

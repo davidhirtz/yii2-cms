@@ -13,6 +13,7 @@ use davidhirtz\yii2\timeago\Timeago;
 use Yii;
 
 /**
+ * @extends GridView<Category>
  * @property CategoryActiveDataProvider $dataProvider
  */
 class CategoryGridView extends GridView
@@ -55,17 +56,15 @@ class CategoryGridView extends GridView
 
     protected function initFooter(): void
     {
-        if ($this->footer === null) {
-            $this->footer = [
+        $this->footer ??= [
+            [
                 [
-                    [
-                        'content' => $this->getCreateCategoryButton(),
-                        'visible' => Yii::$app->getUser()->can('categoryCreate'),
-                        'options' => ['class' => 'col'],
-                    ],
+                    'content' => $this->getCreateCategoryButton(),
+                    'visible' => Yii::$app->getUser()->can('categoryCreate'),
+                    'options' => ['class' => 'col'],
                 ],
-            ];
-        }
+            ],
+        ];
     }
 
     public function updatedAtColumn(): array

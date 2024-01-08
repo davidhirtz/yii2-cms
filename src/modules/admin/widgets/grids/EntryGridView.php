@@ -22,7 +22,7 @@ use yii\db\ActiveRecordInterface;
 use yii\helpers\Url;
 
 /**
- * Displays a grid of {@see Entry} models.
+ * @extends GridView<Entry>
  * @property EntryActiveDataProvider $dataProvider
  */
 class EntryGridView extends GridView
@@ -152,12 +152,6 @@ class EntryGridView extends GridView
         ];
     }
 
-    public function renderHeader(): string
-    {
-        $this->initHeader();
-        return parent::renderHeader();
-    }
-
     protected function initFooter(): void
     {
         $this->footer ??= [
@@ -170,12 +164,6 @@ class EntryGridView extends GridView
         ];
     }
 
-    public function renderFooter(): string
-    {
-        $this->initFooter();
-        return parent::renderFooter();
-    }
-
     protected function getCreateEntryButton(): string
     {
         if (!Yii::$app->getUser()->can('entryCreate')) {
@@ -185,8 +173,7 @@ class EntryGridView extends GridView
         $route = array_merge(['/admin/entry/create'], Yii::$app->getRequest()->getQueryParams(), ['type' => $this->dataProvider->type]);
         return Html::a(Html::iconText('plus', Yii::t('cms', 'New Entry')), $route, ['class' => 'btn btn-primary']);
     }
-
-
+    
     protected function getSelectionButtonItems(): array
     {
         if (!Yii::$app->getUser()->can('entryUpdate')) {
@@ -368,9 +355,6 @@ class EntryGridView extends GridView
         return '';
     }
 
-    /**
-     * @param Entry $model
-     */
     protected function getRoute(ActiveRecordInterface $model, array $params = []): array|false
     {
         return array_merge(Yii::$app->getRequest()->get(), $model->getAdminRoute(), $params);
