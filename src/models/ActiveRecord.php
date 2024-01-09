@@ -71,6 +71,7 @@ abstract class ActiveRecord extends BaseActiveRecord implements DraftStatusAttri
     {
         return [
             ...parent::rules(),
+            ...$this->getTraitRules(),
             [
                 ['status', 'type'],
                 DynamicRangeValidator::class,
@@ -165,11 +166,13 @@ abstract class ActiveRecord extends BaseActiveRecord implements DraftStatusAttri
 
     public function attributeLabels(): array
     {
-        return array_merge(parent::attributeLabels(), [
+        return [
+            ...parent::attributeLabels(),
+            ...$this->getTraitAttributeLabels(),
             'entry_id' => Yii::t('cms', 'Entry'),
             'name' => Yii::t('cms', 'Title'),
             'content' => Yii::t('cms', 'Content'),
             'asset_count' => Yii::t('media', 'Files'),
-        ]);
+        ];
     }
 }

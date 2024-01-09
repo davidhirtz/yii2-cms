@@ -1,3 +1,7 @@
+## 2.1.8 (Jan 9, 2024)
+
+- Fixed Rector (Issue #8)
+
 ## 2.1.7 (Jan 8, 2024)
 
 - Added PHPDoc blocks to grids views
