@@ -76,7 +76,7 @@ class Canvas extends Widget
 
     protected function renderCaption(): string
     {
-        if (!$content = $this->asset->getVisibleAttribute('content')) {
+        if (!$content = $this->asset?->getVisibleAttribute('content')) {
             return '';
         }
 
@@ -88,7 +88,7 @@ class Canvas extends Widget
 
     protected function renderEmbed(): string
     {
-        if (!$this->asset->getVisibleAttribute('embed_url')) {
+        if (!$this->asset?->getVisibleAttribute('embed_url')) {
             return '';
         }
 
@@ -97,12 +97,16 @@ class Canvas extends Widget
 
     protected function renderLink(): string
     {
-        $link = $this->asset->getVisibleAttribute('link');
+        $link = $this->asset?->getVisibleAttribute('link');
         return $link ? Html::a('', $link, $this->linkOptions) : '';
     }
 
     protected function renderMedia(): string
     {
+        if (!$this->asset) {
+            return '';
+        }
+
         return Picture::widget([
             'asset' => $this->asset,
             ...$this->pictureOptions

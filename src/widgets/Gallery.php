@@ -6,10 +6,13 @@ use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\media\helpers\Html;
 use davidhirtz\yii2\skeleton\widgets\Widget;
 
+/**
+ * @template T of Asset
+ */
 class Gallery extends Widget
 {
     /**
-     * @var Asset[]
+     * @var T[]
      */
     public ?array $assets = null;
 
@@ -66,6 +69,9 @@ class Gallery extends Widget
         return $output;
     }
 
+    /**
+     * @param T[] $assets
+     */
     protected function renderAssetsInternal(array $assets): string
     {
         if ($assets) {
@@ -79,7 +85,7 @@ class Gallery extends Widget
     }
 
     /**
-     * @return Asset[][]
+     * @return T[][]
      */
     public function getAssetsByViewports(): array
     {
@@ -104,7 +110,7 @@ class Gallery extends Widget
     }
 
     /**
-     * @param Asset[] $assets
+     * @param T[] $assets
      * @noinspection PhpUnusedParameterInspection
      */
     protected function prepareOptions(array $options, array $assets = []): array
