@@ -15,8 +15,7 @@ class Canvas extends Widget
     public array $captionOptions = [];
     public array $linkOptions = [];
     public array $pictureOptions = [];
-
-    public ?array $wrapperOptions = null;
+    public array $wrapperOptions = ['class' => 'canvas'];
 
     public string $template = '{media}{embed}{caption}';
     public array $parts = [];
@@ -46,7 +45,6 @@ class Canvas extends Widget
             $this->enableLinkWrapper = !str_contains($this->template, '{link}');
         }
 
-        $this->wrapperOptions ??= ['class' => 'canvas'];
         $this->wrapperOptions = array_filter($this->wrapperOptions);
 
         parent::init();
@@ -127,6 +125,8 @@ class Canvas extends Widget
 
     protected function setWrapperHeight(): void
     {
-        $this->wrapperOptions['style']['padding-top'] ??= $this->asset->file->getHeightPercentage() . '%';
+        if ($percentage = $this->asset->file->getHeightPercentage()) {
+            $this->wrapperOptions['style']['padding-top'] ??= "$percentage%";
+        }
     }
 }
