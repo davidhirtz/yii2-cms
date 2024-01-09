@@ -497,7 +497,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
 
     public function isIndex(): bool
     {
-        return ($slug = static::getModule()->entryIndexSlug) && $this->slug == $slug;
+        return ($slug = static::getModule()->entryIndexSlug) && $this->getI18nAttribute('slug') == $slug;
     }
 
     public function attributeLabels(): array
