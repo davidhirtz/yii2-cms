@@ -29,22 +29,24 @@ class Canvas extends Widget
 
     public function init(): void
     {
-        $this->linkOptions['aria-label'] ??= $this->asset->getVisibleAttribute('name');
-        $this->wrapperOptions ??= ['class' => 'canvas'];
+        if ($this->asset) {
+            $this->linkOptions['aria-label'] ??= $this->asset->getVisibleAttribute('name');
 
-        if ($this->enableWrapperHeight && $this->asset->file->hasDimensions()) {
-            $this->setWrapperHeight();
+            if ($this->enableWrapperHeight && $this->asset->file->hasDimensions()) {
+                $this->setWrapperHeight();
+            }
+
+            if ($this->lazyLoadingParentPosition !== false
+                && $this->asset->parent->position > $this->lazyLoadingParentPosition) {
+                $this->pictureOptions['imgOptions']['loading'] ??= 'lazy';
+            }
         }
 
         if ($this->enableLinkWrapper) {
             $this->enableLinkWrapper = !str_contains($this->template, '{link}');
         }
 
-        if ($this->lazyLoadingParentPosition !== false
-            && $this->asset->parent->position > $this->lazyLoadingParentPosition) {
-            $this->pictureOptions['imgOptions']['loading'] ??= 'lazy';
-        }
-
+        $this->wrapperOptions ??= ['class' => 'canvas'];
         $this->wrapperOptions = array_filter($this->wrapperOptions);
 
         parent::init();

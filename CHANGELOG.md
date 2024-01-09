@@ -1,3 +1,8 @@
+## 2.1.9 (Jan 9, 2024)
+
+- Enhanced `Canvas` widget to allow nullable `asset` attribute
+- Fixed tests
+
 ## 2.1.8 (Jan 9, 2024)
 
 - Fixed Rector (Issue #8)
