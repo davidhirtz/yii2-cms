@@ -4,6 +4,7 @@ namespace davidhirtz\yii2\cms\models\builders;
 
 use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\cms\models\Entry;
+use davidhirtz\yii2\cms\models\queries\EntryQuery;
 use davidhirtz\yii2\cms\models\SectionEntry;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\media\models\collections\FolderCollection;
@@ -129,14 +130,19 @@ class EntrySiteRelationsBuilder extends BaseObject
         if ($entryIds) {
             Yii::debug('Loading related entries ...');
 
-            $this->entries += Entry::find()
-                ->selectSiteAttributes()
-                ->replaceI18nAttributes()
-                ->whereStatus()
+            $this->entries += $this->getEntryQuery()
                 ->andWhere(['id' => $entryIds])
-                ->indexBy('id')
                 ->all();
         }
+    }
+
+    protected function getEntryQuery(): EntryQuery
+    {
+        return Entry::find()
+            ->selectSiteAttributes()
+            ->replaceI18nAttributes()
+            ->whereStatus()
+            ->indexBy('id');
     }
 
     protected function populateSectionEntryRelations(): void
