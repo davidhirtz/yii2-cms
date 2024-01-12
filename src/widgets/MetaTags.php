@@ -34,7 +34,7 @@ class MetaTags extends Widget
     public bool $enableImages = true;
 
     /**
-     * @var bool whether social meta tags should be registered as meta images
+     * @var bool whether social meta-tags should be registered as meta images
      */
     public bool $enableSocialMetaTags = true;
 
@@ -52,11 +52,6 @@ class MetaTags extends Widget
      * @var string|false the og:type, if false, no og:type will be registered
      */
     public string|false $ogType = 'website';
-
-    /**
-     * @var string|false the twitter:card, if false, no twitter:card will be registered
-     */
-    public string|false $twitterCard = 'summary_large_image';
 
     public function init(): void
     {
@@ -148,14 +143,6 @@ class MetaTags extends Widget
     {
         if ($this->ogType) {
             $this->getView()->registerOpenGraphMetaTags($this->ogType);
-        }
-
-        if ($this->twitterCard) {
-            if ($this->twitterCard == 'summary_large_image' && (!$this->enableImages || !$this->model->asset_count)) {
-                $this->twitterCard = 'summary';
-            }
-
-            $this->getView()->registerTwitterCardMetaTags($this->twitterCard);
         }
     }
 

@@ -2,6 +2,7 @@
 
 - Added `EntrySiteRelationsBuilder::getQuery()` to allow custom queries
 - Fixed `Entry::isIndex()` to work with I18N slugs
+- Removed `MetaTags::twitterCard`
 
 ## 2.1.9 (Jan 9, 2024)
 
