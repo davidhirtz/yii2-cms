@@ -32,9 +32,10 @@ class SectionEntry extends \davidhirtz\yii2\skeleton\db\ActiveRecord
 
     public function behaviors(): array
     {
-        return array_merge(parent::behaviors(), [
+        return [
+            ...parent::behaviors(),
             'TrailBehavior' => TrailBehavior::class,
-        ]);
+        ];
     }
 
     public function rules(): array

@@ -32,7 +32,8 @@ class AssetController extends Controller
 
     public function behaviors(): array
     {
-        return array_merge(parent::behaviors(), [
+        return [
+            ...parent::behaviors(),
             'access' => [
                 'class' => AccessControl::class,
                 'rules' => [
@@ -66,7 +67,7 @@ class AssetController extends Controller
                     'order' => ['post'],
                 ],
             ],
-        ]);
+        ];
     }
 
     public function actionIndex(

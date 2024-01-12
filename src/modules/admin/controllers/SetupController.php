@@ -22,7 +22,8 @@ abstract class SetupController extends Controller
 {
     public function behaviors(): array
     {
-        return array_merge(parent::behaviors(), [
+        return [
+            ...parent::behaviors(),
             'access' => [
                 'class' => AccessControl::class,
                 'rules' => [
@@ -33,7 +34,7 @@ abstract class SetupController extends Controller
                     ],
                 ],
             ],
-        ]);
+        ];
     }
 
     abstract public function getCategoryAttributes(): array;

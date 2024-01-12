@@ -1,3 +1,8 @@
+## 2.1.10 (Jan 12, 2024)
+
+- Added `EntrySiteRelationsBuilder::getQuery()` to allow custom queries
+- Fixed `Entry::isIndex()` to work with I18N slugs
+
 ## 2.1.9 (Jan 9, 2024)
 
 - Enhanced `Canvas` widget to allow nullable `asset` attribute

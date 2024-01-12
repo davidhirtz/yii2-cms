@@ -35,7 +35,7 @@ class Module extends \yii\base\Module
      */
     public array $panels = [];
 
-    
+
     protected array $defaultControllerMap = [
         'asset' => [
             'class' => 'davidhirtz\yii2\cms\modules\admin\controllers\AssetController',
@@ -102,11 +102,19 @@ class Module extends \yii\base\Module
                 ];
             }
 
-            $this->module->navbarItems = array_merge($this->module->navbarItems, $this->navbarItems);
-            $this->module->panels = array_merge($this->module->panels, $this->panels);
+            $this->module->navbarItems = [
+                ...$this->module->navbarItems,
+                ...$this->navbarItems,
+            ];
+
+            $this->module->panels = [
+                ...$this->module->panels,
+                ...$this->panels,
+            ];
         }
 
-        $this->module->controllerMap = ArrayHelper::merge(array_merge($this->module->controllerMap, $this->defaultControllerMap), $this->controllerMap);
+        $controllerMap = [...$this->module->controllerMap, ...$this->defaultControllerMap];
+        $this->module->controllerMap = ArrayHelper::merge($controllerMap, $this->controllerMap);
 
         parent::init();
     }

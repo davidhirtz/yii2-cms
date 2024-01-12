@@ -58,13 +58,14 @@ abstract class ActiveRecord extends BaseActiveRecord implements DraftStatusAttri
 
     public function behaviors(): array
     {
-        return array_merge(parent::behaviors(), [
+        return [
+            ...parent::behaviors(),
             'DateTimeBehavior' => DateTimeBehavior::class,
             'TrailBehavior' => [
                 'class' => TrailBehavior::class,
                 'modelClass' => static::getModule()->getI18nClassName(static::class),
             ],
-        ]);
+        ];
     }
 
     public function rules(): array

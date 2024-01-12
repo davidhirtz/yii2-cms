@@ -34,7 +34,8 @@ class SectionController extends Controller
 
     public function behaviors(): array
     {
-        return array_merge(parent::behaviors(), [
+        return [
+            ...parent::behaviors(),
             'access' => [
                 'class' => AccessControl::class,
                 'rules' => [
@@ -69,7 +70,7 @@ class SectionController extends Controller
                     'move' => ['post'],
                 ],
             ],
-        ]);
+        ];
     }
 
     public function actionIndex(int $entry): Response|string

@@ -15,7 +15,7 @@ class MetaTags extends Widget
 
     public Category|Entry|null $model = null;
 
-    
+
     public ?array $languages = null;
 
     /**
@@ -111,8 +111,11 @@ class MetaTags extends Widget
 
     protected function setMetaDescription(): void
     {
-        $this->getView()->setMetaDescription($this->model->getI18nAttribute('description')
-            ?: $this->model->getI18nAttribute('content'));
+        $content = $this->model->getI18nAttribute('description') ?: $this->model->getI18nAttribute('content');
+
+        if ($content) {
+            $this->getView()->setMetaDescription($content);
+        }
     }
 
     public function registerHrefLangLinkTags(): void

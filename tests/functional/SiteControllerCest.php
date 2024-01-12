@@ -27,7 +27,6 @@ class SiteControllerCest
         ]);
     }
 
-
     public function checkHomepage(FunctionalTester $I): void
     {
         $entry = Entry::create();

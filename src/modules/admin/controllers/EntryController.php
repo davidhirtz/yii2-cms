@@ -24,7 +24,8 @@ class EntryController extends Controller
 
     public function behaviors(): array
     {
-        return array_merge(parent::behaviors(), [
+        return [
+            ...parent::behaviors(),
             'access' => [
                 'class' => AccessControl::class,
                 'rules' => [
@@ -59,7 +60,7 @@ class EntryController extends Controller
                     'update-all' => ['post'],
                 ],
             ],
-        ]);
+        ];
     }
 
     public function actionIndex(

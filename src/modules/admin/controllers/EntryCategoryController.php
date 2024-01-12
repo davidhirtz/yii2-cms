@@ -24,7 +24,8 @@ class EntryCategoryController extends Controller
 
     public function behaviors(): array
     {
-        return array_merge(parent::behaviors(), [
+        return [
+            ...parent::behaviors(),
             'access' => [
                 'class' => AccessControl::class,
                 'rules' => [
@@ -48,7 +49,7 @@ class EntryCategoryController extends Controller
                     'create' => ['post'],
                 ],
             ],
-        ]);
+        ];
     }
 
     public function actionIndex(int $entry, ?int $category = null, ?string $q = null): string
