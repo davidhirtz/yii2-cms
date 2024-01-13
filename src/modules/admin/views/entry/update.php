@@ -11,11 +11,11 @@ use davidhirtz\yii2\cms\modules\admin\controllers\EntryController;
 use davidhirtz\yii2\cms\modules\admin\widgets\forms\EntryActiveForm;
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\AssetGridView;
 use davidhirtz\yii2\cms\modules\admin\widgets\navs\Submenu;
+use davidhirtz\yii2\cms\modules\admin\widgets\panels\EntryDeletePanel;
 use davidhirtz\yii2\cms\modules\admin\widgets\panels\EntryHelpPanel;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\web\View;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
-use davidhirtz\yii2\skeleton\widgets\forms\DeleteActiveForm;
 
 $this->setTitle(Yii::t('cms', 'Edit Entry'));
 ?>
@@ -49,12 +49,7 @@ $this->setTitle(Yii::t('cms', 'Edit Entry'));
 ]); ?>
 
 <?php if (Yii::$app->getUser()->can('entryDelete', ['entry' => $entry])) {
-    echo Panel::widget([
-        'type' => 'danger',
-        'title' => Yii::t('cms', 'Delete Entry'),
-        'content' => DeleteActiveForm::widget([
-            'model' => $entry,
-            'message' => Yii::t('cms', 'Warning: Deleting this entry cannot be undone. All related sections will also be unrecoverably deleted. Please be certain!')
-        ]),
+    echo EntryDeletePanel::widget([
+        'entry' => $entry,
     ]);
 } ?>

@@ -1,3 +1,8 @@
+## 2.1.11 (Jan 13, 2024)
+
+- Added `EntryDeletePanel` (Issue #9)
+- Fixed `M231104201316EmbedUrl` migration to only create I18n `embed_url` columns when needed
+
 ## 2.1.10 (Jan 12, 2024)
 
 - Added `EntrySiteRelationsBuilder::getQuery()` to allow custom queries

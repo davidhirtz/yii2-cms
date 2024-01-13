@@ -25,7 +25,9 @@ class M231104201316EmbedUrl extends Migration
                 ->null()
                 ->after(array_pop($linkAttributes)));
 
-            $this->addI18nColumns(Asset::tableName(), ['embed_url']);
+            if (in_array('embed_url', Asset::instance()->i18nAttributes)) {
+                $this->addI18nColumns(Asset::tableName(), ['embed_url']);
+            }
         });
     }
 
