@@ -21,11 +21,11 @@ class M240124120902Nullable extends Migration
     {
         $this->i18nTablesCallback(function () {
             foreach (Category::instance()->getI18nAttributeNames('title') as $attribute) {
-                $this->alterColumn(Entry::instance()->tableName(), $attribute, $this->string(255)
+                $this->alterColumn(Category::instance()->tableName(), $attribute, $this->string(255)
                     ->null()
                     ->defaultValue(null));
 
-                $this->update(Entry::instance()->tableName(), [$attribute => null], [$attribute => '']);
+                $this->update(Category::instance()->tableName(), [$attribute => null], [$attribute => '']);
             }
 
             foreach (['parent_slug', 'title'] as $name) {

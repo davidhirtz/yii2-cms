@@ -11,11 +11,12 @@ use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\tests\support\FunctionalTester;
 use davidhirtz\yii2\cms\widgets\Sections;
+use davidhirtz\yii2\skeleton\codeception\functional\BaseCest;
 use Yii;
 
-class SiteControllerCest
+class SiteControllerCest extends BaseCest
 {
-    public function _before(FunctionalTester $I): void
+    public function _before(): void
     {
         Yii::$container->setDefinitions([
             SiteController::class => [
@@ -25,6 +26,8 @@ class SiteControllerCest
                 'viewFile' => '@tests/data/views/site/_sections',
             ],
         ]);
+
+        parent::_before();
     }
 
     public function checkHomepage(FunctionalTester $I): void
@@ -48,7 +51,7 @@ class SiteControllerCest
         $I->seeResponseCodeIs(404);
 
         $section = Section::create();
-        $section->name = 'Test';
+        $section->content = '<p>Test paragraph</p>';
         $section->populateEntryRelation($entry);
         $section->insert();
 
