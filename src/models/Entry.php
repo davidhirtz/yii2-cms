@@ -25,7 +25,7 @@ use yii\db\ActiveQuery;
  * @property int $position
  * @property string $name
  * @property string|null $slug
- * @property string $title
+ * @property string|null $title
  * @property string|null $description
  * @property string $content
  * @property DateTime|null $publish_date
@@ -57,6 +57,11 @@ class Entry extends ActiveRecord implements AssetParentInterface
             ...parent::behaviors(),
             'RedirectBehavior' => RedirectBehavior::class,
         ];
+    }
+
+    public function afterFind()
+    {Yii::debug($this->attributes, __METHOD__);
+        parent::afterFind();
     }
 
     public function rules(): array
@@ -105,7 +110,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
     }
 
     public function beforeValidate(): bool
-    {
+    {Yii::debug($this->attributes, __METHOD__);
         $this->ensureRequiredI18nAttributes();
         $this->ensureSlug();
 
@@ -121,6 +126,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
         }
 
         parent::afterValidate();
+        Yii::debug($this->attributes, __METHOD__);
     }
 
     public function beforeSave($insert): bool

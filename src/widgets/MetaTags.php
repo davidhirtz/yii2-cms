@@ -100,13 +100,13 @@ class MetaTags extends Widget
 
     protected function setDocumentTitle(): void
     {
-        $this->getView()->setTitle($this->model->getI18nAttribute('title')
-            ?: $this->model->getI18nAttribute('name'));
+        $title = $this->model->getI18nAttribute('title') ?? $this->model->getI18nAttribute('name');
+        $this->getView()->setTitle($title);
     }
 
     protected function setMetaDescription(): void
     {
-        $content = $this->model->getI18nAttribute('description') ?: $this->model->getI18nAttribute('content');
+        $content = $this->model->getI18nAttribute('description') ?? $this->model->getI18nAttribute('content');
 
         if ($content) {
             $this->getView()->setMetaDescription($content);

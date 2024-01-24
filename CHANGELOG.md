@@ -1,4 +1,9 @@
-## 2.1.12 (Jan 24 2024)
+## 2.1.13 (Jan 24, 2024)
+
+- Added `ReorderCategories`
+- Changed `Category::$title`, `Entry::$parent_slug` and `Entry::$title` to default to null 
+
+## 2.1.12 (Jan 24, 2024)
 
 - Enhanced `EmbedUrlTrait`
 

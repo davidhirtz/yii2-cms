@@ -3,6 +3,7 @@
 namespace davidhirtz\yii2\cms\modules\admin\widgets\grids;
 
 use davidhirtz\yii2\cms\models\Category;
+use davidhirtz\yii2\cms\modules\admin\controllers\CategoryController;
 use davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider;
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\traits\CategoryGridTrait;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
@@ -34,6 +35,7 @@ class CategoryGridView extends GridView
     public function init(): void
     {
         if ($this->dataProvider->category) {
+            /** @see CategoryController::actionOrder() */
             $this->orderRoute = ['order', 'id' => $this->dataProvider->category->id];
         }
 

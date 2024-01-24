@@ -2,6 +2,7 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\controllers;
 
+use davidhirtz\yii2\cms\models\actions\ReorderCategories;
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\modules\admin\controllers\traits\CategoryTrait;
 use davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider;
@@ -63,7 +64,7 @@ class CategoryController extends Controller
     public function actionIndex(?int $id = null, ?string $q = null): Response|string
     {
         $provider = Yii::$container->get(CategoryActiveDataProvider::class, [], [
-            'category' => $id ? Category::findOne((int)$id) : null,
+            'category' => $id ? Category::findOne($id) : null,
             'searchString' => $q,
         ]);
 
@@ -102,7 +103,7 @@ class CategoryController extends Controller
             }
 
             if (!$category->hasErrors()) {
-                return $this->redirect(['index', 'id' => $category->parent_id]);
+                return $this->redirect(['update', 'id' => $category->id]);
             }
         }
 
@@ -129,22 +130,10 @@ class CategoryController extends Controller
         throw new ServerErrorHttpException(reset($errors));
     }
 
-    /**
-     * @todo extract to class
-     */
     public function actionOrder(?int $id = null): void
     {
-        $category = Category::findOne((int)$id);
-        $categoryIds = array_map('intval', array_filter(Yii::$app->getRequest()->post('category', [])));
-        $transaction = Yii::$app->getDb()->beginTransaction();
-
-        try {
-            Category::rebuildNestedTree($category, array_flip($categoryIds));
-            Trail::createOrderTrail($category, Yii::t('cms', 'Category order changed'));
-            $transaction->commit();
-        } catch (Exception $exception) {
-            $transaction->rollBack();
-            throw $exception;
-        }
+        ReorderCategories::runWithBodyParam('category', [
+            'parent' => $id ? $this->findCategory($id, 'categoryOrder') : null,
+        ]);
     }
 }

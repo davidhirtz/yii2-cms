@@ -119,7 +119,7 @@ class EntryQuery extends I18nActiveQuery
 
             return $this->andWhere([
                 $this->getI18nAttributeName('slug') => array_pop($slug),
-                $this->getI18nAttributeName('parent_slug') => implode('/', $slug),
+                $this->getI18nAttributeName('parent_slug') => implode('/', $slug) ?: null,
             ]);
         }
 
