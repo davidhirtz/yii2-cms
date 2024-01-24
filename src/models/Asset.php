@@ -48,16 +48,13 @@ class Asset extends ActiveRecord implements AssetInterface, DraftStatusAttribute
     {
         return [
             ...parent::rules(),
+            ...$this->getEmbedUrlTraitRules(),
             ...$this->getI18nRules([
                 [
-                    ['name', 'alt_text', 'link', 'embed_url'],
+                    ['name', 'alt_text', 'link'],
                     'string',
                     'max' => 250,
                 ],
-                [
-                    ['embed_url'],
-                    $this->validateEmbedUrl(...),
-                ]
             ]),
             [
                 ['section_id'],
@@ -250,12 +247,12 @@ class Asset extends ActiveRecord implements AssetInterface, DraftStatusAttribute
     {
         return [
             ...parent::attributeLabels(),
+            ...$this->getEmbedUrlTraitAttributeLabels(),
             'section_id' => Yii::t('cms', 'Section'),
             'file_id' => Yii::t('media', 'File'),
             'content' => Yii::t('media', 'Caption'),
             'alt_text' => Yii::t('cms', 'Alt text'),
             'link' => Yii::t('cms', 'Link'),
-            'embed_url' => Yii::t('cms', 'Embed URL'),
         ];
     }
 

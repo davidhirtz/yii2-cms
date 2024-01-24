@@ -58,7 +58,6 @@ return [
     'Edit Category' => '',
     'Edit Entry' => '',
     'Edit Section' => '',
-    'Embed URL' => '',
     'Entries' => '',
     'Entry' => '',
     'Entry added to section.' => '',

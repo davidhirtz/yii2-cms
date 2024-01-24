@@ -58,7 +58,6 @@ return [
     'Edit Category' => 'Kategorie bearbeiten',
     'Edit Entry' => 'Eintrag bearbeiten',
     'Edit Section' => 'Sektion aktualisieren',
-    'Embed URL' => 'Eingebettete URL',
     'Entries' => 'Einträge',
     'Entry' => 'Eintrag',
     'Entry added to section.' => 'Eintrag zur Sektion hinzugefügt',

@@ -1,3 +1,7 @@
+## 2.1.12 (Jan 24 2024)
+
+- Enhanced `EmbedUrlTrait`
+
 ## 2.1.11 (Jan 13, 2024)
 
 - Added `EntryDeletePanel` (Issue #9)
