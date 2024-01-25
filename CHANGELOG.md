@@ -1,3 +1,7 @@
+## 2.1.14 (Jan 25, 2024)
+
+- Fixed use of `File::getTransformationOption()` in `MetaTags` widget
+
 ## 2.1.13 (Jan 24, 2024)
 
 - Added `ReorderCategories`

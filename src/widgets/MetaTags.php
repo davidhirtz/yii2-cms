@@ -153,8 +153,11 @@ class MetaTags extends Widget
                 $file = $asset->file;
                 if ($this->transformationName) {
                     if ($url = $file->getTransformationUrl($this->transformationName)) {
-                        $width = (int)$file->getTransformationOptions($this->transformationName, 'width');
-                        $height = (int)$file->getTransformationOptions($this->transformationName, 'height') ?: ceil($width * $file->getHeightPercentage() / 100);
+                        $width = (int)$file->getTransformationOption($this->transformationName, 'width');
+
+                        $height = (int)$file->getTransformationOption($this->transformationName, 'height')
+                            ?: ceil($width * $file->getHeightPercentage() / 100);
+
                         $this->getView()->registerImageMetaTags($url, $width, $height);
                     }
                 } else {
