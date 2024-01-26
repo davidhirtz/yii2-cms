@@ -74,7 +74,7 @@ trait SlugAttributeTrait
         return $this->_isSlugRequired;
     }
 
-    protected function isUniqueRule(string $ruleName): bool
+    protected function isUniqueRule(mixed $ruleName): bool
     {
         return $ruleName === $this->slugUniqueValidator;
     }

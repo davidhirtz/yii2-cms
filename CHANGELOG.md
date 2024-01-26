@@ -1,3 +1,7 @@
+## 2.1.16 (Jan 26, 2024)
+
+Changed the signature of `SlugAttributeTrait::isUniqueRule()` to accept any argument
+
 ## 2.1.15 (Jan 26, 2024)
 
 - Added `SlugAttributeTrait::isUniqueRule()` to correctly translate I18N attributes in `$targetAttribute` (Issue #10)
