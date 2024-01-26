@@ -1,6 +1,6 @@
 ## 2.1.15 (Jan 26, 2024)
 
-- Added `SlugAttributeTrait::isUniqueRule()` to correctly translate I18N attributes in `$targetAttribute`
+- Added `SlugAttributeTrait::isUniqueRule()` to correctly translate I18N attributes in `$targetAttribute` (Issue #10)
 - Fixed `ParentIdValidator` to set `parent_slug` to null on empty parent
 
 ## 2.1.14 (Jan 25, 2024)
