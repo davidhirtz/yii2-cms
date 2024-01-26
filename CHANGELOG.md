@@ -1,5 +1,6 @@
 ## 2.1.15 (Jan 26, 2024)
 
+- Added `SlugAttributeTrait::isUniqueRule()` to correctly translate I18N attributes in `$targetAttribute`
 - Fixed `ParentIdValidator` to set `parent_slug` to null on empty parent
 
 ## 2.1.14 (Jan 25, 2024)
@@ -18,7 +19,7 @@
 ## 2.1.11 (Jan 13, 2024)
 
 - Added `EntryDeletePanel` (Issue #9)
-- Fixed `M231104201316EmbedUrl` migration to only create I18n `embed_url` columns when needed
+- Fixed `M231104201316EmbedUrl` migration to only create I18N `embed_url` columns when needed
 
 ## 2.1.10 (Jan 12, 2024)
 
