@@ -1,3 +1,7 @@
+## 2.1.15 (Jan 26, 2024)
+
+- Fixed `ParentIdValidator` to set `parent_slug` to null on empty parent
+
 ## 2.1.14 (Jan 25, 2024)
 
 - Fixed use of `File::getTransformationOption()` in `MetaTags` widget
@@ -5,7 +9,7 @@
 ## 2.1.13 (Jan 24, 2024)
 
 - Added `ReorderCategories`
-- Changed `Category::$title`, `Entry::$parent_slug` and `Entry::$title` to default to null 
+- Changed `Category::$title`, `Entry::$parent_slug` and `Entry::$title` to default to null
 
 ## 2.1.12 (Jan 24, 2024)
 

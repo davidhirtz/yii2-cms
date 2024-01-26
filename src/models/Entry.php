@@ -59,11 +59,6 @@ class Entry extends ActiveRecord implements AssetParentInterface
         ];
     }
 
-    public function afterFind()
-    {Yii::debug($this->attributes, __METHOD__);
-        parent::afterFind();
-    }
-
     public function rules(): array
     {
         return [
@@ -76,7 +71,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
                 [
                     ['slug'],
                     'required',
-                    'when' => fn (): bool => $this->isSlugRequired()
+                    'when' => $this->isSlugRequired(...)
                 ],
                 [
                     ['name', 'slug', 'title', 'description', 'content'],
@@ -110,7 +105,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
     }
 
     public function beforeValidate(): bool
-    {Yii::debug($this->attributes, __METHOD__);
+    {
         $this->ensureRequiredI18nAttributes();
         $this->ensureSlug();
 
@@ -126,7 +121,6 @@ class Entry extends ActiveRecord implements AssetParentInterface
         }
 
         parent::afterValidate();
-        Yii::debug($this->attributes, __METHOD__);
     }
 
     public function beforeSave($insert): bool

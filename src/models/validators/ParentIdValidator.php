@@ -45,7 +45,7 @@ class ParentIdValidator extends Validator
 
         if (!$model->getAttribute($attribute)) {
             foreach ($model->getI18nAttributeNames('parent_slug') as $attributeName) {
-                $model->{$attributeName} = '';
+                $model->{$attributeName} = null;
             }
         }
     }
