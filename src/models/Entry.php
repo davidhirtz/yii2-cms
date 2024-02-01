@@ -22,7 +22,7 @@ use yii\db\ActiveQuery;
  * @property int|null $parent_id
  * @property string|null $path
  * @property string $parent_slug
- * @property int $position
+ * @property int|null|false $position
  * @property string $name
  * @property string|null $slug
  * @property string|null $title
@@ -125,47 +125,36 @@ class Entry extends ActiveRecord implements AssetParentInterface
 
     public function beforeSave($insert): bool
     {
-        if (!$this->slug) {
-            $this->slug = null;
-        }
-
-        if (!$this->publish_date) {
-            $this->publish_date = new DateTime();
-        }
-
-        if (!$this->description) {
-            $this->description = null;
-        }
-
         $this->shouldUpdateParentAfterSave ??= !$this->getIsBatch();
+        $this->publish_date ??= new DateTime();
+
+        if ($this->isAttributeChanged('parent_id')) {
+            $this->position = null;
+        }
 
         return parent::beforeSave($insert);
     }
 
     public function afterSave($insert, $changedAttributes): void
     {
-        if (!$insert && $this->entry_count) {
-            foreach ($this->getI18nAttributesNames(['path', 'slug', 'parent_slug']) as $key) {
-                if (array_key_exists($key, $changedAttributes)) {
-                    foreach ($this->getChildren(true) as $entry) {
-                        foreach ($entry->getI18nAttributeNames('parent_slug') as $language => $attributeName) {
-                            $entry->{$attributeName} = $this->getFormattedSlug($language);
-                        }
+        if ($this->isMaterializedTreeChanged($changedAttributes)) {
+            Yii::debug('Updating child entries ...', __METHOD__);
 
-                        $entry->path = ArrayHelper::createCacheString(ArrayHelper::cacheStringToArray($this->path, $this->id));
-                        $entry->update();
-                    }
-
-                    break;
+            foreach ($this->getChildren(true) as $entry) {
+                foreach ($entry->getI18nAttributeNames('parent_slug') as $language => $attributeName) {
+                    $entry->{$attributeName} = $this->getFormattedSlug($language);
                 }
+
+                $entry->path = ArrayHelper::createCacheString(ArrayHelper::cacheStringToArray($this->path, $this->id));
+                $entry->update();
             }
         }
 
         if ($this->shouldUpdateParentAfterSave && array_key_exists('parent_id', $changedAttributes)) {
-            $ancestorIds = ArrayHelper::cacheStringToArray($changedAttributes['path'] ?? '', $this->getAncestorIds());
+            $allRelatedAncestorIds = ArrayHelper::cacheStringToArray($changedAttributes['path'] ?? '', $this->getAncestorIds());
 
-            if ($ancestorIds) {
-                foreach (static::findAll($ancestorIds) as $ancestor) {
+            if ($allRelatedAncestorIds) {
+                foreach (static::findAll($allRelatedAncestorIds) as $ancestor) {
                     $ancestor->recalculateEntryCount()->update();
                 }
             }
@@ -462,6 +451,29 @@ class Entry extends ActiveRecord implements AssetParentInterface
     public function getViewFile(): ?string
     {
         return $this->getTypeOptions()['viewFile'] ?? null;
+    }
+
+    protected function isMaterializedTreeChanged(?array $changedAttributes = null): bool
+    {
+        if (!$this->entry_count) {
+            return false;
+        }
+
+        $changedAttributes ??= $this->getDirtyAttributes();
+
+        foreach ($this->getI18nAttributesNames(['path', 'slug', 'parent_slug']) as $key) {
+            if (array_key_exists($key, $changedAttributes)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function isTransactional($operation): bool
+    {
+        return parent::isTransactional($operation)
+            || ($this->isMaterializedTreeChanged() && !static::getDb()->getTransaction());
     }
 
     public function hasAssetsEnabled(): bool

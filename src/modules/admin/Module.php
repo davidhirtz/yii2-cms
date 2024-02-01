@@ -8,7 +8,7 @@ use yii\helpers\ArrayHelper;
 /**
  * @property \davidhirtz\yii2\skeleton\modules\admin\Module $module
  */
-class Module extends \yii\base\Module
+class Module extends \davidhirtz\yii2\skeleton\base\Module
 {
     /**
      * @var string|null the module display name, defaults to "Entries"
