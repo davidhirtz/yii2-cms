@@ -21,7 +21,7 @@ class M231104201316EmbedUrl extends Migration
         $this->i18nTablesCallback(function () {
             $linkAttributes = Asset::instance()->getI18nAttributeNames('link');
 
-            $this->addColumn(Asset::tableName(), 'embed_url', $this->string()
+            $this->addColumn(Asset::tableName(), 'embed_url', $this->text()
                 ->null()
                 ->after(array_pop($linkAttributes)));
 
