@@ -92,17 +92,23 @@ class NavItems
         return count($where) > 1 ? ['or', ...$where] : $where[0];
     }
 
+    /**
+     * @param T $entry
+     * @see \davidhirtz\yii2\cms\models\traits\MenuAttributeTrait::isMenuItem()
+     */
     public static function getIsMenuItem(Entry $entry): bool
     {
-        /**  @uses \davidhirtz\yii2\cms\models\traits\MenuAttributeTrait::isMenuItem() */
         return (!method_exists($entry, 'hasShowInMenuEnabled') || $entry->hasShowInMenuEnabled())
             && method_exists($entry, 'isMenuItem')
             && $entry->isMenuItem();
     }
 
+    /**
+     * @param T $entry
+     * @see \davidhirtz\yii2\cms\models\traits\FooterAttributeTrait::isFooterItem()
+     */
     public static function getIsFooterItem(Entry $entry): bool
     {
-        /**  @uses \davidhirtz\yii2\cms\models\traits\FooterAttributeTrait::isFooterItem() */
         return (!method_exists($entry, 'hasShowInFooterEnabled') || $entry->hasShowInFooterEnabled())
             && method_exists($entry, 'isFooterItem')
             && $entry->isFooterItem();
