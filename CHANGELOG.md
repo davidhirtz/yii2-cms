@@ -1,6 +1,10 @@
+## 2.1.17 (under development)
+
+- Added `Entry::validateSlug` to check against real URL paths
+
 ## 2.1.16 (Jan 26, 2024)
 
-Changed the signature of `SlugAttributeTrait::isUniqueRule()` to accept any argument
+- Changed the signature of `SlugAttributeTrait::isUniqueRule()` to accept any argument
 
 ## 2.1.15 (Jan 26, 2024)
 

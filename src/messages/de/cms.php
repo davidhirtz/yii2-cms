@@ -95,6 +95,7 @@ return [
     'Show in menu' => 'Im Menü anzeigen',
     'Subcategories' => 'Unterkategorien',
     'Subentries' => 'Untereinträge',
+    'The URL "{path}" is protected.' => 'Die URL "{path}" ist geschützt.',
     'The asset was added.' => 'Die Dateiverknüpfung wurde hinzugefügt.',
     'The asset was deleted.' => 'Die Dateiverknüpfung wurde gelöscht.',
     'The asset was duplicated.' => 'Die Dateiverknüpfung wurde dupliziert.',
