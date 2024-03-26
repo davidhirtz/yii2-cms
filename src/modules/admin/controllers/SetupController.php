@@ -6,6 +6,7 @@ use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\EntryCategory;
 use davidhirtz\yii2\cms\models\Section;
+use davidhirtz\yii2\media\models\collections\FolderCollection;
 use davidhirtz\yii2\skeleton\models\User;
 use davidhirtz\yii2\skeleton\web\Controller;
 use Throwable;
@@ -50,6 +51,8 @@ abstract class SetupController extends Controller
         if ($this->shouldInsertEntries()) {
             $this->insertEntries();
         }
+
+        $this->ensureDefaultFolder();
 
         return $this->redirect(['/admin/entry/index']);
     }
@@ -120,6 +123,11 @@ abstract class SetupController extends Controller
                 $section->insert();
             }
         }
+    }
+
+    protected function ensureDefaultFolder(): void
+    {
+        FolderCollection::getDefault();
     }
 
     protected function shouldInsertCategories(): bool

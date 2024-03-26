@@ -122,7 +122,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
             return;
         }
 
-        $path = Yii::getAlias("@webroot/$this->slug");
+        $path = Yii::getAlias("@webroot/{$this->getFormattedSlug()}");
 
         if (is_dir($path) || is_file($path)) {
             $this->addError('slug', Yii::t('cms', 'The URL "{path}" is protected.', [
