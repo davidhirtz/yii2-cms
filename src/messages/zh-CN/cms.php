@@ -95,6 +95,7 @@ return [
     'Show in menu' => '',
     'Subcategories' => '',
     'Subentries' => '',
+    'The URL "{path}" is protected.' => '',
     'The asset was added.' => '',
     'The asset was deleted.' => '',
     'The asset was duplicated.' => '',

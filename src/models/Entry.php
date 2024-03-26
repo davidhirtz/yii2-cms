@@ -97,6 +97,10 @@ class Entry extends ActiveRecord implements AssetParentInterface
                     'targetAttribute' => $this->slugTargetAttribute,
                 ],
                 [
+                    ['slug'],
+                    $this->validateSlug(...),
+                ],
+                [
                     ['publish_date'],
                     ...(array)$this->dateTimeValidator
                 ],
@@ -110,6 +114,21 @@ class Entry extends ActiveRecord implements AssetParentInterface
         $this->ensureSlug();
 
         return parent::beforeValidate();
+    }
+
+    public function validateSlug(): void
+    {
+        if ($this->hasErrors('slug')) {
+            return;
+        }
+
+        $path = Yii::getAlias("@webroot/$this->slug");
+
+        if (is_dir($path) || is_file($path)) {
+            $this->addError('slug', Yii::t('cms', 'The URL "{path}" is protected.', [
+                'path' => $this->slug,
+            ]));
+        }
     }
 
     public function afterValidate(): void
