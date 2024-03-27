@@ -7,8 +7,7 @@ use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\skeleton\widgets\Widget;
 
 /**
- * SectionsView renders {@see Section} models. Sections will be rendered in their template set by `viewFile` or their
- * {@see Section::getViewFile()} method grouped by adjacent sections with the same template.
+ * @template T of Section
  */
 class Sections extends Widget
 {
@@ -128,6 +127,9 @@ class Sections extends Widget
         return $sections ? $this->renderSectionsInternal($sections, $viewFile) : '';
     }
 
+    /**
+     * @param T[] $sections
+     */
     protected function renderSectionsInternal(array $sections, ?string $viewFile = null): string
     {
         $viewFile ??= $this->getSectionViewFile(current($sections));
@@ -141,11 +143,18 @@ class Sections extends Widget
             : '';
     }
 
+    /**
+     * @param T $section
+     */
     protected function getSectionViewFile(Section $section): string
     {
         return $section->getViewFile() ?: $this->viewFile;
     }
 
+    /**
+     * @param T $section
+     * @param T $prevSection
+     */
     protected function hasSameViewFile(Section $section, ?Section $prevSection): bool
     {
         return $prevSection && $this->getSectionViewFile($prevSection) == $this->getSectionViewFile($section);
