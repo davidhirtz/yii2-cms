@@ -34,6 +34,8 @@ class EntrySiteRelationsBuilder extends BaseObject
      */
     public array $files = [];
 
+    public bool $autoloadEntryAncestors = true;
+
     protected array $fileIds = [];
     protected array $relatedEntryIds = [];
     protected array $sectionIdsWithAssets = [];
@@ -45,6 +47,13 @@ class EntrySiteRelationsBuilder extends BaseObject
         ArrayHelper::index($this->files, 'id');
 
         $this->entries[$this->entry->id] = $this->entry;
+
+        if ($this->autoloadEntryAncestors) {
+            $this->relatedEntryIds = [
+                ...$this->relatedEntryIds,
+                ...array_map('intval', $this->entry->getAncestorIds()),
+            ];
+        }
 
         $this->loadRelations();
     }
@@ -133,6 +142,10 @@ class EntrySiteRelationsBuilder extends BaseObject
             $this->entries += $this->getEntryQuery()
                 ->andWhere(['id' => $entryIds])
                 ->all();
+        }
+
+        if ($this->autoloadEntryAncestors) {
+            $this->entry->setAncestors($this->entries);
         }
     }
 

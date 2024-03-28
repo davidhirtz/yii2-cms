@@ -1,7 +1,8 @@
-## 2.1.17 (under development)
+## 2.1.17 (Mar 28, 2024)
 
 - Added `Entry::validateSlug()` to check against real URL paths
 - Added `SetupController::ensureFolder()` to create missing folder on setup
+- Added `EntrySiteRelationsBuilder::$autoloadEntryAncestors` to load entry ancestors
 
 ## 2.1.16 (Jan 26, 2024)
 
