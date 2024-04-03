@@ -3,6 +3,7 @@
 - Added `Entry::validateSlug()` to check against real URL paths
 - Added `SetupController::ensureFolder()` to create missing folder on setup
 - Added `EntrySiteRelationsBuilder::$autoloadEntryAncestors` to load entry ancestors
+- Removed select clause in `EntryParentIdFieldTrait::getEntries()`
 
 ## 2.1.16 (Jan 26, 2024)
 
