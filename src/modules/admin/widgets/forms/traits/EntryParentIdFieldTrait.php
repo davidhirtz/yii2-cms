@@ -33,7 +33,7 @@ trait EntryParentIdFieldTrait
     {
         if ($this->_entries === null) {
             $entries = Entry::find()
-                ->select($this->model->getI18nAttributesNames(['id', 'status', 'parent_id', 'name', 'path', 'slug', 'parent_slug', 'entry_count', 'section_count']))
+                ->replaceI18nAttributes()
                 ->whereHasDescendantsEnabled()
                 ->orderBy($this->getParentIdItemsOrderBy())
                 ->indexBy('id')

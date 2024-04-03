@@ -1,7 +1,8 @@
-## 2.1.17 (under development)
+## 2.1.17 (Apr 3, 2024)
 
 - Added `Entry::validateSlug()` to check against real URL paths
 - Added `SetupController::ensureFolder()` to create missing folder on setup
+- Removed select clause in `EntryParentIdFieldTrait::getEntries()`
 
 ## 2.1.16 (Jan 26, 2024)
 
