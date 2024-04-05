@@ -1,3 +1,7 @@
+## 2.1.18 (Apr 5, 2024)
+
+- Updated admin according to `davidhirtz\yii2\skeleton\modules\admin\ModuleInterface`
+
 ## 2.1.17 (Mar 28, 2024)
 
 - Added `Entry::validateSlug()` to check against real URL paths

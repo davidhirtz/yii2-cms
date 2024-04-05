@@ -2,13 +2,20 @@
 
 namespace davidhirtz\yii2\cms\modules\admin;
 
+use davidhirtz\yii2\cms\modules\admin\controllers\AssetController;
+use davidhirtz\yii2\cms\modules\admin\controllers\CategoryController;
+use davidhirtz\yii2\cms\modules\admin\controllers\EntryCategoryController;
+use davidhirtz\yii2\cms\modules\admin\controllers\EntryController;
+use davidhirtz\yii2\cms\modules\admin\controllers\SectionController;
+use davidhirtz\yii2\cms\modules\admin\controllers\SectionEntryController;
+use davidhirtz\yii2\skeleton\helpers\ArrayHelper;
+use davidhirtz\yii2\skeleton\modules\admin\ModuleInterface;
 use Yii;
-use yii\helpers\ArrayHelper;
 
 /**
  * @property \davidhirtz\yii2\skeleton\modules\admin\Module $module
  */
-class Module extends \davidhirtz\yii2\skeleton\base\Module
+class Module extends \davidhirtz\yii2\skeleton\base\Module implements ModuleInterface
 {
     /**
      * @var string|null the module display name, defaults to "Entries"
@@ -20,102 +27,77 @@ class Module extends \davidhirtz\yii2\skeleton\base\Module
      */
     public array|string $url = ['/admin/entry/index'];
 
-    /**
-     * @var string
-     */
-    public $defaultRoute = 'entry';
-
-    /**
-     * @var array containing the admin menu items
-     */
-    public array $navbarItems = [];
-
-    /**
-     * @var array containing the panel items
-     */
-    public array $panels = [];
-
-
-    protected array $defaultControllerMap = [
-        'asset' => [
-            'class' => 'davidhirtz\yii2\cms\modules\admin\controllers\AssetController',
-            'viewPath' => '@cms/modules/admin/views/asset',
-        ],
-        'category' => [
-            'class' => 'davidhirtz\yii2\cms\modules\admin\controllers\CategoryController',
-            'viewPath' => '@cms/modules/admin/views/category',
-        ],
-        'entry' => [
-            'class' => 'davidhirtz\yii2\cms\modules\admin\controllers\EntryController',
-            'viewPath' => '@cms/modules/admin/views/entry',
-        ],
-        'entry-category' => [
-            'class' => 'davidhirtz\yii2\cms\modules\admin\controllers\EntryCategoryController',
-            'viewPath' => '@cms/modules/admin/views/entry-category',
-        ],
-        'section' => [
-            'class' => 'davidhirtz\yii2\cms\modules\admin\controllers\SectionController',
-            'viewPath' => '@cms/modules/admin/views/section',
-        ],
-        'section-entry' => [
-            'class' => 'davidhirtz\yii2\cms\modules\admin\controllers\SectionEntryController',
-            'viewPath' => '@cms/modules/admin/views/section-entry',
-        ],
-    ];
-
     public function init(): void
     {
         $this->name ??= Yii::t('cms', 'Entries');
-
-        if (!Yii::$app->getRequest()->getIsConsoleRequest()) {
-            if (!$this->navbarItems) {
-                $this->navbarItems = [
-                    'cms' => [
-                        'label' => $this->name,
-                        'icon' => 'book',
-                        'url' => $this->url,
-                        'active' => ['admin/category', 'admin/entry', 'admin/entry-category', 'admin/section', 'cms/'],
-                        'roles' => ['categoryUpdate', 'entryUpdate'],
-                    ]
-                ];
-            }
-
-            if (!$this->panels) {
-                $this->panels = [
-                    'cms' => [
-                        'name' => $this->name ?: Yii::t('cms', 'Entries'),
-                        'items' => [
-                            [
-                                'label' => Yii::t('cms', 'Create New Entry'),
-                                'url' => ['/admin/entry/create'],
-                                'icon' => 'pen',
-                                'roles' => ['entryCreate'],
-                            ],
-                            [
-                                'label' => Yii::t('cms', 'View All Entries'),
-                                'url' => ['/admin/entry/index'],
-                                'icon' => 'book',
-                                'roles' => ['entryUpdate'],
-                            ],
-                        ],
-                    ],
-                ];
-            }
-
-            $this->module->navbarItems = [
-                ...$this->module->navbarItems,
-                ...$this->navbarItems,
-            ];
-
-            $this->module->panels = [
-                ...$this->module->panels,
-                ...$this->panels,
-            ];
-        }
-
-        $controllerMap = [...$this->module->controllerMap, ...$this->defaultControllerMap];
-        $this->module->controllerMap = ArrayHelper::merge($controllerMap, $this->controllerMap);
+        $this->controllerMap = ArrayHelper::merge($this->getCoreControllerMap(), $this->controllerMap);
 
         parent::init();
+    }
+
+    protected function getCoreControllerMap(): array
+    {
+        return [
+            'asset' => [
+                'class' => AssetController::class,
+                'viewPath' => '@cms/modules/admin/views/asset',
+            ],
+            'category' => [
+                'class' => CategoryController::class,
+                'viewPath' => '@cms/modules/admin/views/category',
+            ],
+            'entry' => [
+                'class' => EntryController::class,
+                'viewPath' => '@cms/modules/admin/views/entry',
+            ],
+            'entry-category' => [
+                'class' => EntryCategoryController::class,
+                'viewPath' => '@cms/modules/admin/views/entry-category',
+            ],
+            'section' => [
+                'class' => SectionController::class,
+                'viewPath' => '@cms/modules/admin/views/section',
+            ],
+            'section-entry' => [
+                'class' => SectionEntryController::class,
+                'viewPath' => '@cms/modules/admin/views/section-entry',
+            ],
+        ];
+    }
+
+    public function getDashboardPanels(): array
+    {
+        return [
+            'cms' => [
+                'name' => $this->name ?: Yii::t('cms', 'Entries'),
+                'items' => [
+                    'entry' => [
+                        'label' => Yii::t('cms', 'Create New Entry'),
+                        'url' => ['/admin/entry/create'],
+                        'icon' => 'pen',
+                        'roles' => ['entryCreate'],
+                    ],
+                    'entries' => [
+                        'label' => Yii::t('cms', 'View All Entries'),
+                        'url' => ['/admin/entry/index'],
+                        'icon' => 'book',
+                        'roles' => ['entryUpdate'],
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    public function getNavBarItems(): array
+    {
+        return [
+            'cms' => [
+                'label' => $this->name,
+                'icon' => 'book',
+                'url' => $this->url,
+                'active' => ['admin/category', 'admin/entry', 'admin/entry-category', 'admin/section', 'cms/'],
+                'roles' => ['categoryUpdate', 'entryUpdate'],
+            ]
+        ];
     }
 }
