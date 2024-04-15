@@ -1,3 +1,7 @@
+## 2.1.19 (under construction)
+
+- Enhanced `Entry::validateSlug()` to check against URL rules
+
 ## 2.1.18 (Apr 5, 2024)
 
 - Updated admin according to `davidhirtz\yii2\skeleton\modules\admin\ModuleInterface`
