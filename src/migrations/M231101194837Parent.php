@@ -70,15 +70,18 @@ class M231101194837Parent extends Migration
                 }
 
                 if ($slugTargetAttribute = $entry->slugTargetAttribute) {
-                    $this->dropSlugIndex();
+                    try {
+                        $this->dropSlugIndex();
 
-                    foreach ($entry->getI18nAttributeNames('slug') as $language => $indexName) {
-                        $this->createIndex(
-                            $indexName,
-                            Entry::tableName(),
-                            $entry->getI18nAttributesNames($slugTargetAttribute, [$language]),
-                            true
-                        );
+                        foreach ($entry->getI18nAttributeNames('slug') as $language => $indexName) {
+                            $this->createIndex(
+                                $indexName,
+                                Entry::tableName(),
+                                $entry->getI18nAttributesNames($slugTargetAttribute, [$language]),
+                                true
+                            );
+                        }
+                    } catch (Exception) {
                     }
                 }
             }
@@ -91,14 +94,17 @@ class M231101194837Parent extends Migration
             $schema = $this->getDb()->getSchema();
             $entry = Entry::instance();
 
-            $this->dropSlugIndex();
+            try {
+                $this->dropSlugIndex();
 
-            foreach ($entry->getI18nAttributeNames('slug') as $attributeName) {
-                $this->createIndex(
-                    $attributeName,
-                    Entry::tableName(),
-                    $attributeName
-                );
+                foreach ($entry->getI18nAttributeNames('slug') as $attributeName) {
+                    $this->createIndex(
+                        $attributeName,
+                        Entry::tableName(),
+                        $attributeName
+                    );
+                }
+            } catch (Exception) {
             }
 
             foreach ($entry->getI18nAttributeNames('parent_slug') as $attributeName) {
@@ -121,10 +127,7 @@ class M231101194837Parent extends Migration
         $entry = Entry::instance();
 
         foreach ($entry->getI18nAttributeNames('slug') as $attributeName) {
-            try {
-                $this->dropIndex($attributeName, Entry::tableName());
-            } catch (Exception) {
-            }
+            $this->dropIndex($attributeName, Entry::tableName());
         }
     }
 }
