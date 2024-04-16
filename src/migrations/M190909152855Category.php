@@ -33,10 +33,10 @@ class M190909152855Category extends Migration
                 'lft' => $this->integer()->unsigned()->notNull()->defaultValue(0),
                 'rgt' => $this->integer()->unsigned()->notNull()->defaultValue(0),
                 'position' => $this->integer()->unsigned()->notNull()->defaultValue(0),
-                'name' => $this->string(250)->notNull(),
+                'name' => $this->string()->notNull(),
                 'slug' => $this->string(100)->notNull(),
-                'title' => $this->string(250)->notNull(),
-                'description' => $this->string(250)->null(),
+                'title' => $this->string()->null(),
+                'description' => $this->string()->null(),
                 'content' => $this->text()->null(),
                 'entry_count' => $this->integer()->unsigned()->notNull()->defaultValue(0),
                 'updated_by_user_id' => $this->integer()->unsigned()->null(),
@@ -54,8 +54,24 @@ class M190909152855Category extends Migration
             $this->createIndex('parent_id', Category::tableName(), ['parent_id', 'status']);
 
             $tableName = $schema->getRawTableName(Category::tableName());
-            $this->addForeignKey($tableName . '_parent_id_ibfk', Category::tableName(), 'parent_id', Category::tableName(), 'id', 'SET NULL');
-            $this->addForeignKey($tableName . '_updated_by_ibfk', Category::tableName(), 'updated_by_user_id', User::tableName(), 'id', 'SET NULL');
+
+            $this->addForeignKey(
+                "{$tableName}_parent_id_ibfk",
+                Category::tableName(),
+                'parent_id',
+                Category::tableName(),
+                'id',
+                'SET NULL'
+            );
+
+            $this->addForeignKey(
+                "{$tableName}_updated_by_ibfk",
+                Category::tableName(),
+                'updated_by_user_id',
+                User::tableName(),
+                'id',
+                'SET NULL'
+            );
 
             // EntryCategory
             $this->createTable(EntryCategory::tableName(), [
@@ -69,9 +85,33 @@ class M190909152855Category extends Migration
             $this->addPrimaryKey('entry_id', EntryCategory::tableName(), ['entry_id', 'category_id']);
 
             $tableName = $schema->getRawTableName(EntryCategory::tableName());
-            $this->addForeignKey($tableName . '_entry_id_ibfk', EntryCategory::tableName(), 'entry_id', Entry::tableName(), 'id', 'CASCADE');
-            $this->addForeignKey($tableName . '_category_id_ibfk', EntryCategory::tableName(), 'category_id', Category::tableName(), 'id', 'CASCADE');
-            $this->addForeignKey($tableName . '_updated_by_ibfk', EntryCategory::tableName(), 'updated_by_user_id', User::tableName(), 'id', 'SET NULL');
+
+            $this->addForeignKey(
+                "{$tableName}_entry_id_ibfk",
+                EntryCategory::tableName(),
+                'entry_id',
+                Entry::tableName(),
+                'id',
+                'CASCADE'
+            );
+
+            $this->addForeignKey(
+                "{$tableName}_category_id_ibfk",
+                EntryCategory::tableName(),
+                'category_id',
+                Category::tableName(),
+                'id',
+                'CASCADE'
+            );
+
+            $this->addForeignKey(
+                "{$tableName}_updated_by_ibfk",
+                EntryCategory::tableName(),
+                'updated_by_user_id',
+                User::tableName(),
+                'id',
+                'SET NULL'
+            );
 
             $this->addColumn(Entry::tableName(), 'category_ids', $this->text()->null()->after('publish_date'));
         });

@@ -80,7 +80,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
                 [
                     ['name', 'title', 'description'],
                     'string',
-                    'max' => 250,
+                    'max' => 255,
                 ],
                 [
                     ['parent_id'],

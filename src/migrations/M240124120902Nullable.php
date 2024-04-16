@@ -39,8 +39,4 @@ class M240124120902Nullable extends Migration
             }
         });
     }
-
-    public function safeDown(): void
-    {
-    }
 }

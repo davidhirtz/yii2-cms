@@ -58,7 +58,7 @@ class Section extends ActiveRecord implements AssetParentInterface
             [
                 ['name'],
                 'string',
-                'max' => 250,
+                'max' => 255,
             ],
             [
                 ['slug'],

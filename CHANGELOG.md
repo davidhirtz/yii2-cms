@@ -1,6 +1,7 @@
 ## 2.1.19 (under construction)
 
 - Enhanced `Entry::validateSlug()` to check against URL rules
+- Normalized `varchar` columns
 
 ## 2.1.18 (Apr 5, 2024)
 

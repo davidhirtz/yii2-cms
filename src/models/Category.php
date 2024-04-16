@@ -78,7 +78,7 @@ class Category extends ActiveRecord
                 [
                     ['name', 'title', 'description'],
                     'string',
-                    'max' => 250,
+                    'max' => 255,
                 ],
                 [
                     ['slug'],

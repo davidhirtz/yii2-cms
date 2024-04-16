@@ -35,10 +35,10 @@ class M190321092544Asset extends Migration
                 'section_id' => $this->integer()->unsigned()->null(),
                 'file_id' => $this->integer()->unsigned()->notNull(),
                 'position' => $this->integer()->unsigned()->notNull()->defaultValue(0),
-                'name' => $this->string(250)->null(),
+                'name' => $this->string()->null(),
                 'content' => $this->text()->null(),
-                'alt_text' => $this->string(250)->null(),
-                'link' => $this->string(250)->null(),
+                'alt_text' => $this->string()->null(),
+                'link' => $this->string()->null(),
                 'updated_by_user_id' => $this->integer()->unsigned()->null(),
                 'updated_at' => $this->dateTime(),
                 'created_at' => $this->dateTime()->notNull(),
@@ -50,13 +50,51 @@ class M190321092544Asset extends Migration
             $this->createIndex('section_id', Asset::tableName(), ['section_id', 'position']);
 
             $tableName = $schema->getRawTableName(Asset::tableName());
-            $this->addForeignKey($tableName . '_entry_id_ibfk', Asset::tableName(), 'entry_id', Entry::tableName(), 'id', 'CASCADE');
-            $this->addForeignKey($tableName . '_section_id_ibfk', Asset::tableName(), 'section_id', Section::tableName(), 'id', 'CASCADE');
-            $this->addForeignKey($tableName . '_file_id_ibfk', Asset::tableName(), 'file_id', File::tableName(), 'id', 'CASCADE');
-            $this->addForeignKey($tableName . '_updated_by_ibfk', Asset::tableName(), 'updated_by_user_id', User::tableName(), 'id', 'SET NULL');
 
-            $columnName = static::getModule()->enableI18nTables ? Yii::$app->getI18n()->getAttributeName('cms_asset_count') : 'cms_asset_count';
-            $this->addColumn(File::tableName(), $columnName, $this->smallInteger()->notNull()->defaultValue(0)->after('transformation_count'));
+            $this->addForeignKey(
+                "{$tableName}_entry_id_ibfk",
+                Asset::tableName(),
+                'entry_id',
+                Entry::tableName(),
+                'id',
+                'CASCADE'
+            );
+
+            $this->addForeignKey(
+                "{$tableName}_section_id_ibfk",
+                Asset::tableName(),
+                'section_id',
+                Section::tableName(),
+                'id',
+                'CASCADE'
+            );
+
+            $this->addForeignKey(
+                "{$tableName}_file_id_ibfk",
+                Asset::tableName(),
+                'file_id',
+                File::tableName(),
+                'id',
+                'CASCADE'
+            );
+
+            $this->addForeignKey(
+                "{$tableName}_updated_by_ibfk",
+                Asset::tableName(),
+                'updated_by_user_id',
+                User::tableName(),
+                'id',
+                'SET NULL'
+            );
+
+            $columnName = static::getModule()->enableI18nTables
+                ? Yii::$app->getI18n()->getAttributeName('cms_asset_count')
+                : 'cms_asset_count';
+
+            $this->addColumn(File::tableName(), $columnName, $this->smallInteger()
+                ->notNull()
+                ->defaultValue(0)
+                ->after('transformation_count'));
         });
     }
 

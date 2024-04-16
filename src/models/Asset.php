@@ -53,7 +53,7 @@ class Asset extends ActiveRecord implements AssetInterface, DraftStatusAttribute
                 [
                     ['name', 'alt_text', 'link'],
                     'string',
-                    'max' => 250,
+                    'max' => 255,
                 ],
             ]),
             [
