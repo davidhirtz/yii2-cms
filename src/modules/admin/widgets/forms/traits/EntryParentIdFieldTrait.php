@@ -8,6 +8,9 @@ use davidhirtz\yii2\skeleton\helpers\Html;
 use Yii;
 use yii\widgets\ActiveField;
 
+/**
+ * @template T of Entry
+ */
 trait EntryParentIdFieldTrait
 {
     use ModuleTrait;
@@ -27,22 +30,25 @@ trait EntryParentIdFieldTrait
     }
 
     /**
-     * @return Entry[]
+     * @return T[]
      */
     protected function getEntries(): array
     {
-        if ($this->_entries === null) {
-            $entries = Entry::find()
-                ->replaceI18nAttributes()
-                ->whereHasDescendantsEnabled()
-                ->orderBy($this->getParentIdItemsOrderBy())
-                ->indexBy('id')
-                ->all();
-
-            $this->_entries = array_filter($entries, fn (Entry $entry): bool => $entry->hasDescendantsEnabled());
-        }
-
+        $this->_entries ??= array_filter($this->findEntries(), fn (Entry $entry) => $entry->hasDescendantsEnabled());
         return $this->_entries;
+    }
+
+    /**
+     * @return T[]
+     */
+    protected function findEntries(): array
+    {
+        return Entry::find()
+            ->replaceI18nAttributes()
+            ->whereHasDescendantsEnabled()
+            ->orderBy($this->getParentIdItemsOrderBy())
+            ->indexBy('id')
+            ->all();
     }
 
     protected function getParentIdItems(?array $entries = null, ?int $parentId = null): array

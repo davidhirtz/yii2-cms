@@ -1,5 +1,6 @@
 ## 2.1.20 (under development)
 
+- Added `EntryParentIdFieldTrait::findEntries()` to allow custom queries
 - Enhanced `SetupController` to log model errors
 
 ## 2.1.19 (Apr 16, 2024)
