@@ -1,3 +1,7 @@
+## 2.1.20 (under development)
+
+- Enhanced `SetupController` to log model errors
+
 ## 2.1.19 (Apr 16, 2024)
 
 - Enhanced `Entry::validateSlug()` to check against URL rules

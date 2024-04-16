@@ -8,6 +8,7 @@ use davidhirtz\yii2\cms\models\EntryCategory;
 use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\media\models\collections\FolderCollection;
+use davidhirtz\yii2\skeleton\log\ActiveRecordErrorLogger;
 use davidhirtz\yii2\skeleton\models\User;
 use davidhirtz\yii2\skeleton\web\Controller;
 use Throwable;
@@ -71,7 +72,10 @@ abstract class SetupController extends Controller
             foreach ($this->getCategoryAttributes() as $attributes) {
                 $category = Category::create();
                 $category->setAttributes($attributes);
-                $category->insert();
+
+                if (!$category->insert()) {
+                    ActiveRecordErrorLogger::log($category);
+                }
             }
         });
     }
@@ -121,15 +125,23 @@ abstract class SetupController extends Controller
                 $entryCategory = EntryCategory::create();
                 $entryCategory->setAttributes($attributes);
                 $entryCategory->populateEntryRelation($entry);
-                $entryCategory->insert();
+
+                if (!$entryCategory->insert()) {
+                    ActiveRecordErrorLogger::log($entryCategory);
+                }
             }
 
             foreach ($sections as $attributes) {
                 $section = Section::create();
                 $section->setAttributes($attributes);
                 $section->populateEntryRelation($entry);
-                $section->insert();
+
+                if (!$section->insert()) {
+                    ActiveRecordErrorLogger::log($section);
+                }
             }
+        } else {
+            ActiveRecordErrorLogger::log($entry);
         }
     }
 
@@ -147,6 +159,7 @@ abstract class SetupController extends Controller
     {
         return !Entry::find()->count();
     }
+
     protected function getLanguages(): array
     {
         return static::getModule()->enableI18nTables ? Yii::$app->getI18n()->getLanguages() : [Yii::$app->language];
