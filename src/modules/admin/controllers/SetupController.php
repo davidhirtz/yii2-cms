@@ -6,6 +6,7 @@ use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\EntryCategory;
 use davidhirtz\yii2\cms\models\Section;
+use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\media\models\collections\FolderCollection;
 use davidhirtz\yii2\skeleton\models\User;
 use davidhirtz\yii2\skeleton\web\Controller;
@@ -21,6 +22,8 @@ use yii\web\Response;
 
 abstract class SetupController extends Controller
 {
+    use ModuleTrait;
+
     public function behaviors(): array
     {
         return [
@@ -44,13 +47,18 @@ abstract class SetupController extends Controller
 
     public function actionIndex(): Response
     {
-        if ($this->shouldInsertCategories()) {
-            $this->insertCategories();
+        foreach ($this->getLanguages() as $language) {
+            Yii::$app->getI18n()->callback($language, function () {
+                if ($this->shouldInsertCategories()) {
+                    $this->insertCategories();
+                }
+
+                if ($this->shouldInsertEntries()) {
+                    $this->insertEntries();
+                }
+            });
         }
 
-        if ($this->shouldInsertEntries()) {
-            $this->insertEntries();
-        }
 
         $this->ensureDefaultFolder();
 
@@ -138,5 +146,9 @@ abstract class SetupController extends Controller
     protected function shouldInsertEntries(): bool
     {
         return !Entry::find()->count();
+    }
+    protected function getLanguages(): array
+    {
+        return static::getModule()->enableI18nTables ? Yii::$app->getI18n()->getLanguages() : [Yii::$app->language];
     }
 }
