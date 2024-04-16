@@ -1,4 +1,4 @@
-## 2.1.19 (under construction)
+## 2.1.19 (Apr 16, 2024)
 
 - Enhanced `Entry::validateSlug()` to check against URL rules
 - Enhanced `SetupController` to work with `Module::$enableI18nTables`
