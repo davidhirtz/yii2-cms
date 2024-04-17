@@ -1,6 +1,8 @@
-## 2.1.20 (under development)
+## 2.1.20 (Apr 17, 2024)
 
 - Added `EntryParentIdFieldTrait::findEntries()` to allow custom queries
+- Added `$i18nTablesRoute` to all admin controllers to allow custom routes for the language dropdown
+  when `Module::$i18nTables` is enabled
 - Enhanced `SetupController` to log model errors
 - Renamed `davidhirtz\yii2\cms\modules\admin\Module::$url` to `$route` for clarity
 

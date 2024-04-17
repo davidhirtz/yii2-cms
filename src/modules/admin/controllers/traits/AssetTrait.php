@@ -16,7 +16,7 @@ trait AssetTrait
         }
 
         if (in_array($permissionName, ['assetDelete', 'assetUpdate'])) {
-            $permissionName = ($asset->isEntryAsset() ? 'entry' : 'section') . ucfirst($permissionName);
+            $permissionName = ($asset->isEntryAsset() ? 'entry' : 'section') . ucfirst((string) $permissionName);
         }
 
         if ($permissionName && !Yii::$app->getUser()->can($permissionName, ['asset' => $asset])) {

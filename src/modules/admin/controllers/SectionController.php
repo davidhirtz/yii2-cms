@@ -12,8 +12,6 @@ use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\modules\admin\controllers\traits\EntryTrait;
 use davidhirtz\yii2\cms\modules\admin\controllers\traits\SectionTrait;
 use davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider;
-use davidhirtz\yii2\cms\modules\ModuleTrait;
-use davidhirtz\yii2\skeleton\web\Controller;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
@@ -21,11 +19,10 @@ use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
-class SectionController extends Controller
+class SectionController extends AbstractController
 {
     use EntryTrait;
     use SectionTrait;
-    use ModuleTrait;
 
     /**
      * @var bool whether sections should be automatically inserted in {@see static::actionCreate()}.

@@ -9,12 +9,10 @@ use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\modules\admin\controllers\traits\AssetTrait;
 use davidhirtz\yii2\cms\modules\admin\controllers\traits\EntryTrait;
 use davidhirtz\yii2\cms\modules\admin\controllers\traits\SectionTrait;
-use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\media\models\File;
 use davidhirtz\yii2\media\models\Folder;
 use davidhirtz\yii2\media\modules\admin\controllers\traits\FileTrait;
 use davidhirtz\yii2\media\modules\admin\data\FileActiveDataProvider;
-use davidhirtz\yii2\skeleton\web\Controller;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
@@ -22,12 +20,11 @@ use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
-class AssetController extends Controller
+class AssetController extends AbstractController
 {
     use AssetTrait;
     use EntryTrait;
     use SectionTrait;
-    use ModuleTrait;
     use FileTrait;
 
     public function behaviors(): array

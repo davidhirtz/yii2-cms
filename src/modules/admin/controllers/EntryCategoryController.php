@@ -8,19 +8,16 @@ use davidhirtz\yii2\cms\models\EntryCategory;
 use davidhirtz\yii2\cms\modules\admin\controllers\traits\CategoryTrait;
 use davidhirtz\yii2\cms\modules\admin\controllers\traits\EntryTrait;
 use davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider;
-use davidhirtz\yii2\cms\modules\ModuleTrait;
-use davidhirtz\yii2\skeleton\web\Controller;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
-class EntryCategoryController extends Controller
+class EntryCategoryController extends AbstractController
 {
     use CategoryTrait;
     use EntryTrait;
-    use ModuleTrait;
 
     public function behaviors(): array
     {

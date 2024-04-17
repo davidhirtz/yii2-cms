@@ -6,8 +6,6 @@ use davidhirtz\yii2\cms\models\actions\ReorderCategories;
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\modules\admin\controllers\traits\CategoryTrait;
 use davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider;
-use davidhirtz\yii2\cms\modules\ModuleTrait;
-use davidhirtz\yii2\skeleton\web\Controller;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
@@ -15,10 +13,11 @@ use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 use yii\web\ServerErrorHttpException;
 
-class CategoryController extends Controller
+class CategoryController extends AbstractController
 {
     use CategoryTrait;
-    use ModuleTrait;
+
+    protected array|false|null $i18nTablesRoute = ['/admin/category/index'];
 
     public function behaviors(): array
     {

@@ -8,8 +8,6 @@ use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\modules\admin\controllers\traits\EntryTrait;
 use davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider;
-use davidhirtz\yii2\cms\modules\ModuleTrait;
-use davidhirtz\yii2\skeleton\web\Controller;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
@@ -17,10 +15,11 @@ use yii\helpers\Url;
 use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
-class EntryController extends Controller
+class EntryController extends AbstractController
 {
     use EntryTrait;
-    use ModuleTrait;
+
+    protected array|false|null $i18nTablesRoute = ['/admin/entry/index'];
 
     public function behaviors(): array
     {

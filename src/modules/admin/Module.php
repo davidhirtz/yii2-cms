@@ -23,9 +23,9 @@ class Module extends \davidhirtz\yii2\skeleton\base\Module implements ModuleInte
     public ?string $name = null;
 
     /**
-     * @var array|string the navbar item url
+     * @var array the navbar item url
      */
-    public array|string $route = ['/admin/entry/index'];
+    public array $route = ['/admin/entry/index'];
 
     public function init(): void
     {

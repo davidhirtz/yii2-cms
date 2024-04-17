@@ -8,8 +8,6 @@ use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\SectionEntry;
 use davidhirtz\yii2\cms\modules\admin\controllers\traits\SectionTrait;
 use davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider;
-use davidhirtz\yii2\cms\modules\ModuleTrait;
-use davidhirtz\yii2\skeleton\web\Controller;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
@@ -17,10 +15,9 @@ use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
-class SectionEntryController extends Controller
+class SectionEntryController extends AbstractController
 {
     use SectionTrait;
-    use ModuleTrait;
 
     public function behaviors(): array
     {
