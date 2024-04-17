@@ -1,3 +1,7 @@
+## 2.1.21 (under development)
+
+- Fixed `EntryParentIdFieldTrait` to hide select field if results are empty
+
 ## 2.1.20 (Apr 17, 2024)
 
 - Added `EntryParentIdFieldTrait::findEntries()` to allow custom queries

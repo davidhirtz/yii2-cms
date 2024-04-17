@@ -20,13 +20,15 @@ trait EntryParentIdFieldTrait
 
     public function parentIdField(): ActiveField|string
     {
-        if (!static::getModule()->enableNestedEntries
-            || !$this->model->hasParentEnabled()
-            || !$this->getEntries()) {
+        if (!static::getModule()->enableNestedEntries || !$this->model->hasParentEnabled()) {
             return '';
         }
 
-        return $this->field($this->model, 'parent_id')->dropDownList($this->getParentIdItems(), $this->getParentIdOptions());
+        $items = $this->getParentIdItems();
+
+        return $items
+            ? $this->field($this->model, 'parent_id')->dropDownList($items, $this->getParentIdOptions())
+            : '';
     }
 
     /**
