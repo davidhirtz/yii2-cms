@@ -25,7 +25,7 @@ class Module extends \davidhirtz\yii2\skeleton\base\Module implements ModuleInte
     /**
      * @var array|string the navbar item url
      */
-    public array|string $url = ['/admin/entry/index'];
+    public array|string $route = ['/admin/entry/index'];
 
     public function init(): void
     {
@@ -94,7 +94,7 @@ class Module extends \davidhirtz\yii2\skeleton\base\Module implements ModuleInte
             'cms' => [
                 'label' => $this->name,
                 'icon' => 'book',
-                'url' => $this->url,
+                'url' => $this->route,
                 'active' => ['admin/category', 'admin/entry', 'admin/entry-category', 'admin/section', 'cms/'],
                 'roles' => ['categoryUpdate', 'entryUpdate'],
             ]

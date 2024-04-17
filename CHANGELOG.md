@@ -2,6 +2,7 @@
 
 - Added `EntryParentIdFieldTrait::findEntries()` to allow custom queries
 - Enhanced `SetupController` to log model errors
+- Renamed `davidhirtz\yii2\cms\modules\admin\Module::$url` to `$route` for clarity
 
 ## 2.1.19 (Apr 16, 2024)
 
