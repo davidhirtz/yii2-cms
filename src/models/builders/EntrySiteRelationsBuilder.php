@@ -160,12 +160,16 @@ class EntrySiteRelationsBuilder extends BaseObject
 
     protected function populateSectionEntryRelations(): void
     {
-        if (!$this->entries || !static::getModule()->enableSectionEntries) {
+        if (!$this->sectionIdsWithEntries) {
             return;
         }
 
         foreach ($this->entry->sections as $section) {
-            $entries = array_map(fn (SectionEntry $sectionEntry) => $this->entries[$sectionEntry->entry_id] ?? null, $section->sectionEntries);
+            $entries = array_map(
+                fn (SectionEntry $sectionEntry) => $this->entries[$sectionEntry->entry_id] ?? null,
+                $section->sectionEntries
+            );
+
             $section->populateRelation('entries', array_filter($entries));
         }
     }

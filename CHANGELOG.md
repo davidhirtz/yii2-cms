@@ -1,6 +1,7 @@
-## 2.1.21 (under development)
+## 2.1.21 (May 21, 2024)
 
 - Fixed `EntryParentIdFieldTrait` to hide select field if results are empty
+- Fixed an n+1 query issue in `EntrySiteRelationsBuilder` on invalid configuration
 
 ## 2.1.20 (Apr 17, 2024)
 
