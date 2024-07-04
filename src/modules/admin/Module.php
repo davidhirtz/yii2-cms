@@ -29,7 +29,6 @@ class Module extends \davidhirtz\yii2\skeleton\base\Module implements ModuleInte
 
     public function init(): void
     {
-        $this->name ??= Yii::t('cms', 'Entries');
         $this->controllerMap = ArrayHelper::merge($this->getCoreControllerMap(), $this->controllerMap);
 
         parent::init();
@@ -69,7 +68,7 @@ class Module extends \davidhirtz\yii2\skeleton\base\Module implements ModuleInte
     {
         return [
             'cms' => [
-                'name' => $this->name ?: Yii::t('cms', 'Entries'),
+                'name' => $this->getName(),
                 'items' => [
                     'entry' => [
                         'label' => Yii::t('cms', 'Create New Entry'),
@@ -88,11 +87,16 @@ class Module extends \davidhirtz\yii2\skeleton\base\Module implements ModuleInte
         ];
     }
 
+    public function getName(): string
+    {
+        return Yii::t('cms', 'Entries');
+    }
+
     public function getNavBarItems(): array
     {
         return [
             'cms' => [
-                'label' => $this->name,
+                'label' => $this->getName(),
                 'icon' => 'book',
                 'url' => $this->route,
                 'active' => ['admin/category', 'admin/entry', 'admin/entry-category', 'admin/section', 'cms/'],

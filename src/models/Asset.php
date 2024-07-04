@@ -205,7 +205,7 @@ class Asset extends ActiveRecord implements AssetInterface, DraftStatusAttribute
     {
         /** @var Module $module */
         $module = Yii::$app->getModule('admin')->getModule('cms');
-        return $module->name;
+        return $module->getName();
     }
 
     public function getFileCountAttribute(): string

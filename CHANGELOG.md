@@ -1,3 +1,7 @@
+## 2.1.22 (under development)
+
+- Changed `davidhirtz\yii2\cms\modules\admin\Module::$name` to `Module::getName()` to prevent translation issues
+
 ## 2.1.21 (May 21, 2024)
 
 - Fixed `EntryParentIdFieldTrait` to hide select field if results are empty

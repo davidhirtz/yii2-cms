@@ -44,6 +44,11 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
     public bool $showEntrySections = true;
 
     /**
+     * @var bool whether to show the admin module in the breadcrumbs
+     */
+    public bool $showModuleBreadcrumbs = true;
+
+    /**
      * @var array<string, array> additional active routes, indexed by the item name
      */
     public array $additionalActiveRoutes = [];
@@ -72,7 +77,7 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
 
         if (!$this->title) {
             $this->title = $isEntry ? Html::a($model->getI18nAttribute('name'), ['/admin/entry/update', 'id' => $model->id]) :
-                Html::a($this->getParentModule()->name, $this->getParentModule()->route);
+                Html::a($this->getParentModule()->getName(), $this->getParentModule()->route);
         }
 
         if ($this->title && $this->showUrl) {
@@ -154,7 +159,6 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
         ];
     }
 
-    
     protected function getEntryItems(): array
     {
         return array_filter([
@@ -230,7 +234,7 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
         ];
     }
 
-    
+
     protected function getEntrySectionItems(): array
     {
         $entry = $this->isSection() ? $this->model->entry : $this->model;
@@ -266,7 +270,9 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
 
     protected function setBreadcrumbs(): void
     {
-        $this->setModuleBreadcrumbs();
+        if ($this->showModuleBreadcrumbs) {
+            $this->setModuleBreadcrumbs();
+        }
 
         if ($this->model instanceof Category) {
             $this->setCategoryBreadcrumbs();
@@ -281,7 +287,7 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
 
     protected function setModuleBreadcrumbs(): void
     {
-        $this->getView()->setBreadcrumb($this->getParentModule()->name, [
+        $this->getView()->setBreadcrumb($this->getParentModule()->getName(), [
             ...$this->params,
             '/admin/entry/index',
             'type' => static::getModule()->defaultEntryType,
