@@ -59,8 +59,7 @@ class M231101194837Parent extends Migration
 
             if (!$tableSchema->getColumn('parent_slug')) {
                 $this->addColumn(Entry::tableName(), 'parent_slug', $this->string()
-                    ->notNull()
-                    ->defaultValue('')
+                    ->null()
                     ->after('slug'));
 
                 $entry = Entry::create();
