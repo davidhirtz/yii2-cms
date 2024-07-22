@@ -36,7 +36,8 @@ class AdminLink extends Widget
         }
 
         if ($this->model instanceof Asset) {
-            return Yii::$app->getUser()->can(Asset::AUTH_ASSET_UPDATE, ['asset' => $this->model]);
+            $permissionName = $this->model->isEntryAsset() ? Entry::AUTH_ENTRY_ASSET_UPDATE : Section::AUTH_SECTION_ASSET_UPDATE;
+            return Yii::$app->getUser()->can($permissionName, ['asset' => $this->model]);
         }
 
         return false;
