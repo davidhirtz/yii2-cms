@@ -20,20 +20,20 @@ trait FooterColumnTrait
                 ->notNull()
                 ->defaultValue(false)
                 ->after('publish_date'));
+
+            $schema = $this->getDb()->getSchema();
+
+            if ($schema->getTableSchema(Entry::tableName())->getColumn('show_in_menu')) {
+                $this->dropIndex('show_in_menu', Entry::tableName());
+
+                $this->createIndex('show_in_menu', Entry::tableName(), [
+                    'show_in_menu',
+                    'show_in_footer',
+                    'status',
+                    'position',
+                ]);
+            }
         });
-
-        $schema = $this->getDb()->getSchema();
-
-        if ($schema->getTableSchema(Entry::tableName())->getColumn('show_in_menu')) {
-            $this->dropIndex('show_in_menu', Entry::tableName());
-
-            $this->createIndex('show_in_menu', Entry::tableName(), [
-                'show_in_menu',
-                'show_in_footer',
-                'status',
-                'position',
-            ]);
-        }
     }
 
     protected function dropShowInFooterColumn(): void

@@ -20,9 +20,9 @@ trait MenuColumnTrait
                 ->notNull()
                 ->defaultValue(false)
                 ->after('publish_date'));
-        });
 
-        $this->createIndex('show_in_menu', Entry::tableName(), ['show_in_menu', 'status', 'position']);
+            $this->createIndex('show_in_menu', Entry::tableName(), ['show_in_menu', 'status', 'position']);
+        });
     }
 
     protected function dropShowInMenuColumn(): void
