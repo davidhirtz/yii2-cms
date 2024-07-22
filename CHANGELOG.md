@@ -1,6 +1,7 @@
 ## 2.1.22 (under development)
 
 - Changed `davidhirtz\yii2\cms\modules\admin\Module::$name` to `Module::getName()` to prevent translation issues
+- Enhanced `EntrySiteRelationsBuilder` to populate entry parents if loaded
 
 ## 2.1.21 (May 21, 2024)
 

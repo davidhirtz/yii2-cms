@@ -34,6 +34,9 @@ class EntrySiteRelationsBuilder extends BaseObject
      */
     public array $files = [];
 
+    /**
+     * @var bool whether to autoload the current entry's ancestors, this can be useful for breadcrumbs.
+     */
     public bool $autoloadEntryAncestors = true;
 
     protected array $fileIds = [];
@@ -65,6 +68,7 @@ class EntrySiteRelationsBuilder extends BaseObject
         $this->loadSectionEntries();
         $this->loadEntries();
 
+        $this->populateParentRelations();
         $this->populateSectionEntryRelations();
 
         $this->loadAssets();
@@ -156,6 +160,19 @@ class EntrySiteRelationsBuilder extends BaseObject
             ->replaceI18nAttributes()
             ->whereStatus()
             ->indexBy('id');
+    }
+
+    protected function populateParentRelations(): void
+    {
+        if (!static::getModule()->enableNestedEntries) {
+            return;
+        }
+
+        foreach ($this->entries as $entry) {
+            if (!$entry->isRelationPopulated('parent')) {
+                $entry->populateParentRelation($this->entries[$entry->parent_id] ?? null);
+            }
+        }
     }
 
     protected function populateSectionEntryRelations(): void
