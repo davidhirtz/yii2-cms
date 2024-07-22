@@ -35,7 +35,7 @@ class SectionEntryGridView extends EntryGridView
      */
     protected function getRowButtons(Entry $entry): array
     {
-        if (Yii::$app->getUser()->can('sectionUpdate', ['section' => $this->dataProvider->section])) {
+        if (Yii::$app->getUser()->can(Section::AUTH_SECTION_UPDATE, ['section' => $this->dataProvider->section])) {
             $route = [
                 'section' => $this->dataProvider->section->id,
                 'entry' => $entry->id,

@@ -31,22 +31,22 @@ class EntryController extends AbstractController
                     [
                         'allow' => true,
                         'actions' => ['index', 'update', 'update-all'],
-                        'roles' => ['entryUpdate'],
+                        'roles' => [Entry::AUTH_ENTRY_UPDATE],
                     ],
                     [
                         'allow' => true,
                         'actions' => ['duplicate', 'create'],
-                        'roles' => ['entryCreate'],
+                        'roles' => [Entry::AUTH_ENTRY_CREATE],
                     ],
                     [
                         'allow' => true,
                         'actions' => ['delete'],
-                        'roles' => ['entryDelete'],
+                        'roles' => [Entry::AUTH_ENTRY_DELETE],
                     ],
                     [
                         'allow' => true,
                         'actions' => ['order'],
-                        'roles' => ['entryOrder'],
+                        'roles' => [Entry::AUTH_ENTRY_UPDATE],
                     ],
                 ],
             ],
@@ -93,7 +93,7 @@ class EntryController extends AbstractController
 
         $request = Yii::$app->getRequest();
 
-        if (!Yii::$app->getUser()->can('entryCreate', ['entry' => $entry])) {
+        if (!Yii::$app->getUser()->can(Entry::AUTH_ENTRY_CREATE, ['entry' => $entry])) {
             throw new ForbiddenHttpException();
         }
 
@@ -109,7 +109,7 @@ class EntryController extends AbstractController
 
     public function actionUpdate(int $id): Response|string
     {
-        $entry = $this->findEntry($id, 'entryUpdate');
+        $entry = $this->findEntry($id, Entry::AUTH_ENTRY_UPDATE);
         $request = Yii::$app->getRequest();
 
         if ($entry->load($request->post())) {
@@ -136,7 +136,7 @@ class EntryController extends AbstractController
             $isUpdated = false;
 
             foreach ($entries as $entry) {
-                if (Yii::$app->getUser()->can('entryUpdate', ['entry' => $entry])) {
+                if (Yii::$app->getUser()->can(Entry::AUTH_ENTRY_UPDATE, ['entry' => $entry])) {
                     if ($entry->load($request->post())) {
                         if ($entry->update()) {
                             $isUpdated = true;
@@ -159,7 +159,7 @@ class EntryController extends AbstractController
 
     public function actionDuplicate(int $id): Response|string
     {
-        $entry = $this->findEntry($id, 'entryUpdate');
+        $entry = $this->findEntry($id, Entry::AUTH_ENTRY_UPDATE);
 
         $duplicate = DuplicateEntry::create([
             'entry' => $entry,
@@ -176,7 +176,7 @@ class EntryController extends AbstractController
 
     public function actionDelete(int $id): Response|string
     {
-        $entry = $this->findEntry($id, 'entryDelete');
+        $entry = $this->findEntry($id, Entry::AUTH_ENTRY_DELETE);
 
         if ($entry->delete()) {
             $this->success(Yii::t('cms', 'The entry was deleted.'));
@@ -190,7 +190,7 @@ class EntryController extends AbstractController
     public function actionOrder(?int $parent = null): void
     {
         ReorderEntries::runWithBodyParam('entry', [
-            'parent' => $parent ? $this->findEntry($parent, 'entryOrder') : null,
+            'parent' => $parent ? $this->findEntry($parent, Entry::AUTH_ENTRY_UPDATE) : null,
         ]);
     }
 }

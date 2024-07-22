@@ -6,6 +6,7 @@ use davidhirtz\yii2\cms\models\actions\DuplicateAsset;
 use davidhirtz\yii2\cms\models\actions\ReorderAssets;
 use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\cms\models\Entry;
+use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\modules\admin\controllers\traits\AssetTrait;
 use davidhirtz\yii2\cms\modules\admin\controllers\traits\EntryTrait;
 use davidhirtz\yii2\cms\modules\admin\controllers\traits\SectionTrait;
@@ -37,22 +38,22 @@ class AssetController extends AbstractController
                     [
                         'allow' => true,
                         'actions' => ['index', 'update'],
-                        'roles' => ['entryAssetUpdate', 'sectionAssetUpdate'],
+                        'roles' => [Entry::AUTH_ENTRY_ASSET_UPDATE, Section::AUTH_SECTION_ASSET_UPDATE],
                     ],
                     [
                         'allow' => true,
                         'actions' => ['create', 'duplicate'],
-                        'roles' => ['entryAssetCreate', 'sectionAssetCreate'],
+                        'roles' => [Entry::AUTH_ENTRY_ASSET_CREATE, Section::AUTH_SECTION_ASSET_CREATE],
                     ],
                     [
                         'allow' => true,
                         'actions' => ['delete'],
-                        'roles' => ['entryAssetDelete', 'sectionAssetDelete'],
+                        'roles' => [Entry::AUTH_ENTRY_ASSET_DELETE, Section::AUTH_SECTION_ASSET_DELETE],
                     ],
                     [
                         'allow' => true,
                         'actions' => ['order'],
-                        'roles' => ['entryAssetOrder', 'sectionAssetOrder'],
+                        'roles' => ['entryAssetOrder', Section::AUTH_SECTION_ASSET_ORDER],
                     ],
                 ],
             ],
@@ -74,8 +75,8 @@ class AssetController extends AbstractController
         ?int $type = null,
         ?string $q = null
     ): Response|string {
-        $parent = $section ? $this->findSection($section, 'sectionAssetUpdate') :
-            $this->findEntry($entry, 'entryAssetUpdate');
+        $parent = $section ? $this->findSection($section, Section::AUTH_SECTION_ASSET_UPDATE) :
+            $this->findEntry($entry, Entry::AUTH_ENTRY_ASSET_UPDATE);
 
         if ($parent instanceof Entry) {
             $parent->populateRelation('assets', $parent->getAssets()
@@ -114,7 +115,7 @@ class AssetController extends AbstractController
         $asset->section_id = $section;
         $asset->populateFileRelation($file);
 
-        if (!$user->can($asset->isEntryAsset() ? 'entryAssetCreate' : 'sectionAssetCreate', ['asset' => $asset])) {
+        if (!$user->can($asset->isEntryAsset() ? Entry::AUTH_ENTRY_ASSET_CREATE : Section::AUTH_SECTION_ASSET_CREATE, ['asset' => $asset])) {
             throw new ForbiddenHttpException();
         }
 
@@ -133,7 +134,7 @@ class AssetController extends AbstractController
 
     public function actionUpdate(int $id): Response|string
     {
-        $asset = $this->findAsset($id, 'assetUpdate');
+        $asset = $this->findAsset($id, Asset::AUTH_ASSET_UPDATE);
 
         if ($asset->load(Yii::$app->getRequest()->post())) {
             if ($asset->update()) {
@@ -152,7 +153,7 @@ class AssetController extends AbstractController
 
     public function actionDelete(int $id): Response|string
     {
-        $asset = $this->findAsset($id, 'assetDelete');
+        $asset = $this->findAsset($id, Asset::AUTH_ASSET_DELETE);
 
         if ($asset->delete()) {
             if (Yii::$app->getRequest()->getIsAjax()) {
@@ -169,7 +170,7 @@ class AssetController extends AbstractController
 
     public function actionDuplicate(int $id): Response|string
     {
-        $asset = $this->findAsset($id, 'assetUpdate');
+        $asset = $this->findAsset($id, Asset::AUTH_ASSET_UPDATE);
 
         $duplicate = DuplicateAsset::create([
             'asset' => $asset,
@@ -187,7 +188,7 @@ class AssetController extends AbstractController
     public function actionOrder(?int $entry = null, ?int $section = null): void
     {
         $parent = $section
-            ? $this->findSection($section, 'sectionAssetOrder')
+            ? $this->findSection($section, Section::AUTH_SECTION_ASSET_ORDER)
             : $this->findEntry($entry, 'entryAssetOrder');
 
         ReorderAssets::runWithBodyParam('asset', [

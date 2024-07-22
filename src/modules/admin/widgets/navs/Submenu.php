@@ -114,7 +114,7 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
 
     protected function getEntryGridViewItems(): array
     {
-        $canEntryUpdate = Yii::$app->getUser()->can('entryUpdate');
+        $canEntryUpdate = Yii::$app->getUser()->can(Entry::AUTH_ENTRY_UPDATE);
         $items = [];
 
         if ($this->showEntryTypes) {
@@ -149,7 +149,7 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
             [
                 'label' => Yii::t('cms', 'Categories'),
                 'url' => ['/admin/category/index'],
-                'visible' => Yii::$app->getUser()->can('categoryUpdate'),
+                'visible' => Yii::$app->getUser()->can(Category::AUTH_CATEGORY_UPDATE),
                 'active' => [
                     'admin/category/',
                     ...$this->additionalActiveRoutes['categories'] ?? [],
@@ -177,7 +177,7 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
             [
                 'label' => $this->showEntryTypes ? $entry->getTypeName() : Yii::t('cms', 'Entry'),
                 'url' => ['/admin/entry/update', 'id' => $entry->id],
-                'visible' => Yii::$app->getUser()->can('entryUpdate', ['entry' => $entry]),
+                'visible' => Yii::$app->getUser()->can(Entry::AUTH_ENTRY_UPDATE, ['entry' => $entry]),
                 'active' => array_filter([
                     'admin/entry/update',
                     'admin/cms/asset/' => ['entry'],
@@ -216,7 +216,7 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
             [
                 'label' => Yii::t('cms', 'Categories'),
                 'url' => ['/admin/entry-category/index', 'entry' => $entry->id],
-                'visible' => Yii::$app->getUser()->can('entryCategoryUpdate', ['entry' => $entry]),
+                'visible' => Yii::$app->getUser()->can(Entry::AUTH_ENTRY_CATEGORY_UPDATE, ['entry' => $entry]),
                 'active' => [
                     'admin/entry-category/',
                     ...$this->additionalActiveRoutes['categories'] ?? [],
@@ -243,7 +243,7 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
             [
                 'label' => Yii::t('cms', 'Sections'),
                 'url' => ['/admin/section/index', 'entry' => $entry->id],
-                'visible' => Yii::$app->getUser()->can('sectionUpdate', ['entry' => $entry]),
+                'visible' => Yii::$app->getUser()->can(Section::AUTH_SECTION_UPDATE, ['entry' => $entry]),
                 'active' => array_filter([
                     'admin/section/',
                     'admin/cms/asset/' => ['section'],

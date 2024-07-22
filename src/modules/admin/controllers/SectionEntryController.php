@@ -5,6 +5,7 @@ namespace davidhirtz\yii2\cms\modules\admin\controllers;
 use davidhirtz\yii2\cms\models\actions\ReorderSectionEntries;
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\Entry;
+use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\models\SectionEntry;
 use davidhirtz\yii2\cms\modules\admin\controllers\traits\SectionTrait;
 use davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider;
@@ -29,7 +30,7 @@ class SectionEntryController extends AbstractController
                     [
                         'allow' => true,
                         'actions' => ['index', 'create', 'delete', 'order'],
-                        'roles' => ['sectionUpdate'],
+                        'roles' => [Section::AUTH_SECTION_UPDATE],
                     ],
                 ],
             ],
@@ -51,7 +52,7 @@ class SectionEntryController extends AbstractController
         ?string $q = null,
         ?int $type = null
     ): Response|string {
-        $section = $this->findSection($section, 'sectionUpdate');
+        $section = $this->findSection($section, Section::AUTH_SECTION_UPDATE);
 
         $provider = Yii::$container->get(EntryActiveDataProvider::class, [], [
             'section' => $section,
@@ -73,7 +74,7 @@ class SectionEntryController extends AbstractController
         $sectionEntry->section_id = $section;
         $sectionEntry->entry_id = $entry;
 
-        if (!Yii::$app->getUser()->can('sectionUpdate', ['sectionEntry' => $sectionEntry])) {
+        if (!Yii::$app->getUser()->can(Section::AUTH_SECTION_UPDATE, ['sectionEntry' => $sectionEntry])) {
             throw new ForbiddenHttpException();
         }
 
@@ -96,7 +97,7 @@ class SectionEntryController extends AbstractController
             'entry_id' => $entry,
         ]);
 
-        if (!Yii::$app->getUser()->can('sectionUpdate', ['sectionEntry' => $sectionEntry])) {
+        if (!Yii::$app->getUser()->can(Section::AUTH_SECTION_UPDATE, ['sectionEntry' => $sectionEntry])) {
             throw new ForbiddenHttpException();
         }
 
@@ -115,7 +116,7 @@ class SectionEntryController extends AbstractController
     public function actionOrder(int $section): void
     {
         ReorderSectionEntries::runWithBodyParam('entry', [
-            'section' => $this->findSection($section, 'sectionUpdate'),
+            'section' => $this->findSection($section, Section::AUTH_SECTION_UPDATE),
         ]);
     }
 }

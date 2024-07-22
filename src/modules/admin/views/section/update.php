@@ -60,7 +60,7 @@ $this->setTitle(Yii::t('cms', 'Edit Section'));
     'model' => $section,
 ]); ?>
 
-<?php if (Yii::$app->getUser()->can('sectionDelete', ['section' => $section])) {
+<?php if (Yii::$app->getUser()->can(Section::AUTH_SECTION_DELETE, ['section' => $section])) {
     echo Panel::widget([
         'id' => 'delete',
         'type' => 'danger',

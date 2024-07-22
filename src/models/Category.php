@@ -36,6 +36,11 @@ class Category extends ActiveRecord
     use NestedTreeTrait;
     use SlugAttributeTrait;
 
+    final public const AUTH_CATEGORY_CREATE = 'categoryCreate';
+    final public const AUTH_CATEGORY_DELETE = 'categoryDelete';
+    final public const AUTH_CATEGORY_UPDATE = 'categoryUpdate';
+    final public const AUTH_CATEGORY_ORDER = 'categoryOrder';
+
     public string|false $contentType = false;
     public array|string|null $slugTargetAttribute = 'slug';
 

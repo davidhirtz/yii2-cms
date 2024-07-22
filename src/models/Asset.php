@@ -38,6 +38,9 @@ class Asset extends ActiveRecord implements AssetInterface, DraftStatusAttribute
     use EntryRelationTrait;
     use SectionRelationTrait;
 
+    final public const AUTH_ASSET_DELETE = 'assetDelete';
+    final public const AUTH_ASSET_UPDATE = 'assetUpdate';
+
     public bool|null $shouldUpdateParentAfterInsert = null;
 
     /**

@@ -51,7 +51,7 @@ $this->setTitle(Yii::t('cms', 'Edit Category'));
     'model' => $category,
 ]); ?>
 
-<?php if (Yii::$app->getUser()->can('categoryDelete', ['category' => $category])) {
+<?php if (Yii::$app->getUser()->can(Category::AUTH_CATEGORY_DELETE, ['category' => $category])) {
     echo Panel::widget([
         'type' => 'danger',
         'title' => Yii::t('cms', 'Delete Category'),

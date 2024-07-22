@@ -3,6 +3,8 @@
 namespace davidhirtz\yii2\cms\modules\admin\widgets\grids;
 
 use davidhirtz\yii2\cms\models\Asset;
+use davidhirtz\yii2\cms\models\Entry;
+use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\media\models\File;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grids\GridView;
@@ -111,7 +113,7 @@ class AssetParentGridView extends GridView
                 $user = Yii::$app->getUser();
                 $buttons = [];
 
-                if ($user->can($asset->isEntryAsset() ? 'entryAssetUpdate' : 'sectionAssetUpdate', ['asset' => $asset])) {
+                if ($user->can($asset->isEntryAsset() ? Entry::AUTH_ENTRY_ASSET_UPDATE : Section::AUTH_SECTION_ASSET_UPDATE, ['asset' => $asset])) {
                     $buttons[] = Html::a(Icon::tag('wrench'), ['cms/asset/update', 'id' => $asset->id], [
                         'class' => 'btn btn-primary',
                         'data-toggle' => 'tooltip',
@@ -119,7 +121,7 @@ class AssetParentGridView extends GridView
                     ]);
                 }
 
-                if ($user->can($asset->isEntryAsset() ? 'entryAssetDelete' : 'sectionAssetDelete', ['asset' => $asset])) {
+                if ($user->can($asset->isEntryAsset() ? Entry::AUTH_ENTRY_ASSET_DELETE : Section::AUTH_SECTION_ASSET_DELETE, ['asset' => $asset])) {
                     $buttons[] = Html::a(Icon::tag('trash'), ['cms/asset/delete', 'id' => $asset->id], [
                         'class' => 'btn btn-danger btn-delete-asset d-none d-md-inline-block',
                         'data-confirm' => Yii::t('cms', 'Are you sure you want to remove this asset?'),
@@ -139,13 +141,13 @@ class AssetParentGridView extends GridView
         $parent = $model->getParent();
 
         if ($model->isEntryAsset()) {
-            if ($user->can('entryUpdate', ['entry' => $parent])) {
+            if ($user->can(Entry::AUTH_ENTRY_UPDATE, ['entry' => $parent])) {
                 return ['/admin/entry/update', 'id' => $parent->id, '#' => 'asset-' . $model->id, ...$params];
             }
         }
 
         if ($model->isSectionAsset()) {
-            if ($user->can('sectionUpdate', ['section' => $parent])) {
+            if ($user->can(Section::AUTH_SECTION_UPDATE, ['section' => $parent])) {
                 return ['/admin/section/update', 'id' => $parent->id, '#' => 'asset-' . $model->id, ...$params];
             }
         }

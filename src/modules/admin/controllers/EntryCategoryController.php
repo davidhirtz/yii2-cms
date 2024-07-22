@@ -4,6 +4,7 @@ namespace davidhirtz\yii2\cms\modules\admin\controllers;
 
 use davidhirtz\yii2\cms\models\actions\ReorderEntryCategories;
 use davidhirtz\yii2\cms\models\Category;
+use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\EntryCategory;
 use davidhirtz\yii2\cms\modules\admin\controllers\traits\CategoryTrait;
 use davidhirtz\yii2\cms\modules\admin\controllers\traits\EntryTrait;
@@ -29,12 +30,12 @@ class EntryCategoryController extends AbstractController
                     [
                         'allow' => true,
                         'actions' => ['index', 'create', 'delete'],
-                        'roles' => ['entryCategoryUpdate'],
+                        'roles' => [Entry::AUTH_ENTRY_CATEGORY_UPDATE],
                     ],
                     [
                         'allow' => true,
                         'actions' => ['order'],
-                        'roles' => ['entryOrder'],
+                        'roles' => [Entry::AUTH_ENTRY_ORDER],
                     ],
                 ],
             ],
@@ -51,7 +52,7 @@ class EntryCategoryController extends AbstractController
 
     public function actionIndex(int $entry, ?int $category = null, ?string $q = null): string
     {
-        $entry = $this->findEntry($entry, 'entryUpdate');
+        $entry = $this->findEntry($entry, Entry::AUTH_ENTRY_UPDATE);
 
         $provider = Yii::$container->get(CategoryActiveDataProvider::class, [], [
             'entry' => $entry,
@@ -70,7 +71,7 @@ class EntryCategoryController extends AbstractController
         $entryCategory->entry_id = $entry;
         $entryCategory->category_id = $category;
 
-        if (!Yii::$app->getUser()->can('entryCategoryUpdate', ['entryCategory' => $entryCategory])) {
+        if (!Yii::$app->getUser()->can(Entry::AUTH_ENTRY_CATEGORY_UPDATE, ['entryCategory' => $entryCategory])) {
             throw new ForbiddenHttpException();
         }
 
@@ -85,7 +86,7 @@ class EntryCategoryController extends AbstractController
             'category_id' => $category,
         ]);
 
-        if (!Yii::$app->getUser()->can('entryCategoryUpdate', ['entryCategory' => $entryCategory])) {
+        if (!Yii::$app->getUser()->can(Entry::AUTH_ENTRY_CATEGORY_UPDATE, ['entryCategory' => $entryCategory])) {
             throw new ForbiddenHttpException();
         }
 
@@ -96,7 +97,7 @@ class EntryCategoryController extends AbstractController
     public function actionOrder(int $category): void
     {
         ReorderEntryCategories::runWithBodyParam('entry', [
-            'category' => $this->findCategory($category, 'entryOrder'),
+            'category' => $this->findCategory($category, Entry::AUTH_ENTRY_ORDER),
         ]);
     }
 }

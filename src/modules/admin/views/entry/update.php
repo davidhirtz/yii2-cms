@@ -48,7 +48,7 @@ $this->setTitle(Yii::t('cms', 'Edit Entry'));
     'model' => $entry,
 ]); ?>
 
-<?php if (Yii::$app->getUser()->can('entryDelete', ['entry' => $entry])) {
+<?php if (Yii::$app->getUser()->can(Entry::AUTH_ENTRY_DELETE, ['entry' => $entry])) {
     echo EntryDeletePanel::widget([
         'entry' => $entry,
     ]);

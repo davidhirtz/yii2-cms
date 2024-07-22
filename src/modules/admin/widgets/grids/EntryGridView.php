@@ -166,7 +166,7 @@ class EntryGridView extends GridView
 
     protected function getCreateEntryButton(): string
     {
-        if (!Yii::$app->getUser()->can('entryCreate')) {
+        if (!Yii::$app->getUser()->can(Entry::AUTH_ENTRY_CREATE)) {
             return '';
         }
 
@@ -176,7 +176,7 @@ class EntryGridView extends GridView
     
     protected function getSelectionButtonItems(): array
     {
-        if (!Yii::$app->getUser()->can('entryUpdate')) {
+        if (!Yii::$app->getUser()->can(Entry::AUTH_ENTRY_UPDATE)) {
             return [];
         }
 
@@ -272,15 +272,17 @@ class EntryGridView extends GridView
         $user = Yii::$app->getUser();
         $buttons = [];
 
-        if ($this->isSortedByPosition() && $this->dataProvider->getCount() > 1 && $user->can('entryOrder')) {
+        if ($this->isSortedByPosition()
+            && $this->dataProvider->getCount() > 1
+            && $user->can(Entry::AUTH_ENTRY_ORDER)) {
             $buttons[] = $this->getSortableButton();
         }
 
-        if ($user->can('entryUpdate', ['entry' => $entry])) {
+        if ($user->can(Entry::AUTH_ENTRY_UPDATE, ['entry' => $entry])) {
             $buttons[] = $this->getUpdateButton($entry);
         }
 
-        if ($this->showDeleteButton && $user->can('entryDelete', ['entry' => $entry])) {
+        if ($this->showDeleteButton && $user->can(Entry::AUTH_ENTRY_DELETE, ['entry' => $entry])) {
             $buttons[] = $this->getDeleteButton($entry);
         }
 

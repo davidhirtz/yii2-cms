@@ -28,15 +28,15 @@ class AdminLink extends Widget
     protected function canUpdateModel(): bool
     {
         if ($this->model instanceof Entry) {
-            return Yii::$app->getUser()->can('entryUpdate', ['entry' => $this->model]);
+            return Yii::$app->getUser()->can(Entry::AUTH_ENTRY_UPDATE, ['entry' => $this->model]);
         }
 
         if ($this->model instanceof Section) {
-            return Yii::$app->getUser()->can('sectionUpdate', ['section' => $this->model]);
+            return Yii::$app->getUser()->can(Section::AUTH_SECTION_UPDATE, ['section' => $this->model]);
         }
 
         if ($this->model instanceof Asset) {
-            return Yii::$app->getUser()->can('assetUpdate', ['asset' => $this->model]);
+            return Yii::$app->getUser()->can(Asset::AUTH_ASSET_UPDATE, ['asset' => $this->model]);
         }
 
         return false;

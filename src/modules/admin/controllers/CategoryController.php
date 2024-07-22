@@ -29,22 +29,22 @@ class CategoryController extends AbstractController
                     [
                         'allow' => true,
                         'actions' => ['index', 'update'],
-                        'roles' => ['categoryUpdate'],
+                        'roles' => [Category::AUTH_CATEGORY_UPDATE],
                     ],
                     [
                         'allow' => true,
                         'actions' => ['create'],
-                        'roles' => ['categoryCreate'],
+                        'roles' => [Category::AUTH_CATEGORY_CREATE],
                     ],
                     [
                         'allow' => true,
                         'actions' => ['delete'],
-                        'roles' => ['categoryDelete'],
+                        'roles' => [Category::AUTH_CATEGORY_DELETE],
                     ],
                     [
                         'allow' => true,
                         'actions' => ['order'],
-                        'roles' => ['categoryOrder'],
+                        'roles' => [Category::AUTH_CATEGORY_ORDER],
                     ],
                 ],
             ],
@@ -76,7 +76,7 @@ class CategoryController extends AbstractController
         $category->loadDefaultValues();
         $category->parent_id = $id;
 
-        if (!Yii::$app->getUser()->can('categoryCreate', ['category' => $category])) {
+        if (!Yii::$app->getUser()->can(Category::AUTH_CATEGORY_CREATE, ['category' => $category])) {
             throw new ForbiddenHttpException();
         }
 
@@ -92,7 +92,7 @@ class CategoryController extends AbstractController
 
     public function actionUpdate(int $id): Response|string
     {
-        $category = $this->findCategory($id, 'categoryUpdate');
+        $category = $this->findCategory($id, Category::AUTH_CATEGORY_UPDATE);
 
         if ($category->load(Yii::$app->getRequest()->post())) {
             if ($category->update()) {
@@ -116,7 +116,7 @@ class CategoryController extends AbstractController
 
     public function actionDelete(int $id): Response|string
     {
-        $category = $this->findCategory($id, 'categoryDelete');
+        $category = $this->findCategory($id, Category::AUTH_CATEGORY_DELETE);
 
         if ($category->delete()) {
             $this->success(Yii::t('cms', 'The category was deleted.'));
@@ -130,7 +130,7 @@ class CategoryController extends AbstractController
     public function actionOrder(?int $id = null): void
     {
         ReorderCategories::runWithBodyParam('category', [
-            'parent' => $id ? $this->findCategory($id, 'categoryOrder') : null,
+            'parent' => $id ? $this->findCategory($id, Category::AUTH_CATEGORY_ORDER) : null,
         ]);
     }
 }

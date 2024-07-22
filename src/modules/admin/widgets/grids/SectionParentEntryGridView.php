@@ -28,7 +28,7 @@ class SectionParentEntryGridView extends EntryGridView
         $user = Yii::$app->getUser();
         $buttons = [];
 
-        if ($user->can('sectionUpdate', ['entry' => $entry])) {
+        if ($user->can(Section::AUTH_SECTION_UPDATE, ['entry' => $entry])) {
             $route = [
                 'id' => $this->section->id,
                 'entry' => $entry->id,
@@ -39,7 +39,7 @@ class SectionParentEntryGridView extends EntryGridView
                 'data-method' => 'post',
             ];
 
-            if ($user->can('sectionUpdate', ['section' => $this->section])) {
+            if ($user->can(Section::AUTH_SECTION_UPDATE, ['section' => $this->section])) {
                 $buttons[] = Html::a(Icon::tag('copy'), ['move'] + $route, [
                     ...$options,
                     'title' => Yii::t('cms', 'Move Section'),

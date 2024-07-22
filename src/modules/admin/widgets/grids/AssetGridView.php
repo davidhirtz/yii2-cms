@@ -126,8 +126,8 @@ class AssetGridView extends GridView
         $buttons = [];
 
         $hasPermission = $this->parent instanceof Entry
-            ? $user->can('entryAssetCreate', ['entry' => $this->parent])
-            : $user->can('sectionAssetCreate', ['section' => $this->parent]);
+            ? $user->can(Entry::AUTH_ENTRY_ASSET_CREATE, ['entry' => $this->parent])
+            : $user->can(Section::AUTH_SECTION_ASSET_CREATE, ['section' => $this->parent]);
 
         if ($hasPermission) {
             if ($user->can('fileCreate')) {
@@ -159,7 +159,7 @@ class AssetGridView extends GridView
         if ($this->isSortedByPosition() && $this->dataProvider->getCount() > 1) {
             if ($isEntry
                 ? $user->can('entryAssetOrder', ['entry' => $asset->entry])
-                : $user->can('sectionAssetOrder', ['section' => $asset->section])) {
+                : $user->can(Section::AUTH_SECTION_ASSET_ORDER, ['section' => $asset->section])) {
                 $buttons[] = $this->getSortableButton();
             }
         }
@@ -168,11 +168,11 @@ class AssetGridView extends GridView
             $buttons[] = $this->getFileUpdateButton($asset);
         }
 
-        if ($user->can($isEntry ? 'entryAssetUpdate' : 'sectionAssetUpdate', ['asset' => $asset])) {
+        if ($user->can($isEntry ? Entry::AUTH_ENTRY_ASSET_UPDATE : Section::AUTH_SECTION_ASSET_UPDATE, ['asset' => $asset])) {
             $buttons[] = $this->getUpdateButton($asset);
         }
 
-        if ($user->can($isEntry ? 'entryAssetDelete' : 'sectionAssetDelete', ['asset' => $asset])) {
+        if ($user->can($isEntry ? Entry::AUTH_ENTRY_ASSET_DELETE : Section::AUTH_SECTION_ASSET_DELETE, ['asset' => $asset])) {
             $buttons[] = $this->getDeleteButton($asset);
         }
 
@@ -198,7 +198,7 @@ class AssetGridView extends GridView
 
     protected function getRoute(ActiveRecordInterface $model, array $params = []): array|false
     {
-        $permissionName = $model->isEntryAsset() ? 'entryAssetUpdate' : 'sectionAssetUpdate';
+        $permissionName = $model->isEntryAsset() ? Entry::AUTH_ENTRY_ASSET_UPDATE : Section::AUTH_SECTION_ASSET_UPDATE;
 
         if (!Yii::$app->getUser()->can($permissionName, ['asset' => $model])) {
             return false;

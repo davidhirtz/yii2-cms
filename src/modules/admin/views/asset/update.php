@@ -7,6 +7,8 @@
  */
 
 use davidhirtz\yii2\cms\models\Asset;
+use davidhirtz\yii2\cms\models\Entry;
+use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\modules\admin\controllers\AssetController;
 use davidhirtz\yii2\cms\modules\admin\widgets\forms\AssetActiveForm;
 use davidhirtz\yii2\cms\modules\admin\widgets\navs\Submenu;
@@ -37,7 +39,7 @@ $this->setTitle(Yii::t('cms', 'Edit Asset'));
     'model' => $asset,
 ]); ?>
 
-<?php if (Yii::$app->getUser()->can($asset->isEntryAsset() ? 'entryAssetDelete' : 'sectionAssetDelete', ['asset' => $asset])) {
+<?php if (Yii::$app->getUser()->can($asset->isEntryAsset() ? Entry::AUTH_ENTRY_ASSET_DELETE : Section::AUTH_SECTION_ASSET_DELETE, ['asset' => $asset])) {
     echo Panel::widget([
         'type' => 'danger',
         'title' => Yii::t('cms', 'Remove Asset'),

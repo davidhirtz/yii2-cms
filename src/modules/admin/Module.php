@@ -2,6 +2,8 @@
 
 namespace davidhirtz\yii2\cms\modules\admin;
 
+use davidhirtz\yii2\cms\models\Category;
+use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\modules\admin\controllers\AssetController;
 use davidhirtz\yii2\cms\modules\admin\controllers\CategoryController;
 use davidhirtz\yii2\cms\modules\admin\controllers\EntryCategoryController;
@@ -74,13 +76,13 @@ class Module extends \davidhirtz\yii2\skeleton\base\Module implements ModuleInte
                         'label' => Yii::t('cms', 'Create New Entry'),
                         'url' => ['/admin/entry/create'],
                         'icon' => 'pen',
-                        'roles' => ['entryCreate'],
+                        'roles' => [Entry::AUTH_ENTRY_CREATE],
                     ],
                     'entries' => [
                         'label' => Yii::t('cms', 'View All Entries'),
                         'url' => ['/admin/entry/index'],
                         'icon' => 'book',
-                        'roles' => ['entryUpdate'],
+                        'roles' => [Entry::AUTH_ENTRY_UPDATE],
                     ],
                 ],
             ],
@@ -100,7 +102,7 @@ class Module extends \davidhirtz\yii2\skeleton\base\Module implements ModuleInte
                 'icon' => 'book',
                 'url' => $this->route,
                 'active' => ['admin/category', 'admin/entry', 'admin/entry-category', 'admin/section', 'cms/'],
-                'roles' => ['categoryUpdate', 'entryUpdate'],
+                'roles' => [Category::AUTH_CATEGORY_UPDATE, Entry::AUTH_ENTRY_UPDATE],
             ]
         ];
     }

@@ -78,7 +78,7 @@ class SectionGridView extends GridView
 
     protected function getCreateSectionButton(): string
     {
-        if (!Yii::$app->getUser()->can('sectionCreate', ['entry' => $this->entry])) {
+        if (!Yii::$app->getUser()->can(Section::AUTH_SECTION_CREATE, ['entry' => $this->entry])) {
             return '';
         }
 
@@ -87,7 +87,7 @@ class SectionGridView extends GridView
 
     protected function getSelectionButtonItems(): array
     {
-        if (!Yii::$app->getUser()->can('sectionUpdate', ['entry' => $this->entry])) {
+        if (!Yii::$app->getUser()->can(Section::AUTH_SECTION_UPDATE, ['entry' => $this->entry])) {
             return [];
         }
 
@@ -172,15 +172,17 @@ class SectionGridView extends GridView
         $user = Yii::$app->getUser();
         $buttons = [];
 
-        if ($this->isSortedByPosition() && $this->dataProvider->getCount() > 1 && $user->can('sectionOrder')) {
+        if ($this->isSortedByPosition()
+            && $this->dataProvider->getCount() > 1
+            && $user->can(Section::AUTH_SECTION_ORDER)) {
             $buttons[] = $this->getSortableButton();
         }
 
-        if ($user->can('sectionUpdate', ['section' => $section])) {
+        if ($user->can(Section::AUTH_SECTION_UPDATE, ['section' => $section])) {
             $buttons[] = $this->getUpdateButton($section);
         }
 
-        if ($this->showDeleteButton && $user->can('sectionDelete', ['section' => $section])) {
+        if ($this->showDeleteButton && $user->can(Section::AUTH_SECTION_DELETE, ['section' => $section])) {
             $buttons[] = $this->getDeleteButton($section);
         }
 

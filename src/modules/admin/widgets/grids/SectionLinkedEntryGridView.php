@@ -66,7 +66,7 @@ class SectionLinkedEntryGridView extends EntryGridView
     {
         $buttons = [];
 
-        if (Yii::$app->getUser()->can('sectionUpdate', ['entry' => $entry])) {
+        if (Yii::$app->getUser()->can(Section::AUTH_SECTION_UPDATE, ['entry' => $entry])) {
             if ($this->dataProvider->getCount() > 1) {
                 $buttons[] = $this->getSortableButton();
             }
