@@ -291,7 +291,7 @@ class Category extends ActiveRecord
         return array_filter(['/cms/site/index', 'category' => $this->getI18nAttribute('slug')]);
     }
 
-    public function getEntryOrderBy(): bool|array
+    public function getEntriesOrderBy(): bool|array
     {
         return [EntryCategory::tableName() . '.[[position]]' => SORT_ASC];
     }

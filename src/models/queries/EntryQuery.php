@@ -71,7 +71,7 @@ class EntryQuery extends I18nActiveQuery
     public function whereCategory(array|Category|int $category, bool $eagerLoading = false): static
     {
         if ($category instanceof Category) {
-            if ($orderBy = $category->getEntryOrderBy()) {
+            if ($orderBy = $category->getEntriesOrderBy()) {
                 $this->orderBy($orderBy);
             }
         }
@@ -93,7 +93,7 @@ class EntryQuery extends I18nActiveQuery
 
     /**
      * Prepends alias to inner join to allow multiple categories. Keeps original table name for single joins to use of
-     * {@see Category::getEntryOrderBy()} order.
+     * {@see Category::getEntriesOrderBy()} order.
      */
     protected function innerJoinWithEntryCategory(int $categoryId, bool $eagerLoading = false, bool $useAlias = false): static
     {
@@ -110,7 +110,9 @@ class EntryQuery extends I18nActiveQuery
         $onCondition = fn (ActiveQuery $query) => $query->onCondition(["$tableName.[[section_id]]" => $section->id]);
 
         if ($eagerLoading && $joinType === 'INNER JOIN') {
-            $this->orderBy(["$tableName.[[position]]" => SORT_ASC]);
+            if ($orderBy = $section->getEntriesOrderBy()) {
+                $this->orderBy($orderBy);
+            }
         }
 
         return $this->joinWith(['sectionEntry' => $onCondition], $eagerLoading, $joinType);

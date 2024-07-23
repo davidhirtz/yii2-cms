@@ -16,14 +16,12 @@ use yii\db\ActiveRecordInterface;
  */
 class SectionLinkedEntryGridView extends EntryGridView
 {
-    public ?Section $section = null;
+    public Section $section;
 
     public function init(): void
     {
         if (!$this->rowOptions) {
-            $this->rowOptions = fn (Entry $entry) => [
-                'id' => $this->getRowId($entry->sectionEntry),
-            ];
+            $this->rowOptions = $this->getRowOptions(...);
         }
 
         $this->dataProvider ??= Yii::$container->get(EntryActiveDataProvider::class, [], [
@@ -53,6 +51,18 @@ class SectionLinkedEntryGridView extends EntryGridView
         ];
     }
 
+    protected function getRowOptions(Entry $entry): array
+    {
+        $options = ['id' => $this->getRowId($entry->sectionEntry)];
+        $allowedTypes = $this->dataProvider->section->getEntriesTypes();
+
+        if ($allowedTypes && !in_array($entry->type, $allowedTypes)) {
+            Html::addCssClass($options, 'invalid');
+        }
+
+        return $options;
+    }
+
     protected function getSelectEntriesButton(): string
     {
         $route = ['section-entry/index', 'section' => $this->dataProvider->section->id];
@@ -67,7 +77,7 @@ class SectionLinkedEntryGridView extends EntryGridView
         $buttons = [];
 
         if (Yii::$app->getUser()->can(Section::AUTH_SECTION_UPDATE, ['entry' => $entry])) {
-            if ($this->dataProvider->getCount() > 1) {
+            if ($this->dataProvider->getCount() > 1 && $this->isSortedByPosition()) {
                 $buttons[] = $this->getSortableButton();
             }
 

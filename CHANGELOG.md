@@ -1,3 +1,11 @@
+## 2.1.23 (under development)
+
+- Added `Section::getEntriesOrderBy()` and `Section::getEntriesTypes()` to filter manually picked section entries
+- Added `EntrySiteRelationsBuilder::sortSectionEntriesByEntryAttributes()` to sort section entries by entry attributes
+  after they have been loaded
+- Renamed `Category::getEntryOrderBy()` to `Category::getEntriesOrderBy()`
+- Renamed `Entry::getDescendantsOrder()` to `Entry::getDescendantsOrderBy()`
+
 ## 2.1.22 (Jul 23, 2024)
 
 - Added `ReplaceIndexEntry` action and `EntryHelpPanel::getReplaceIndexButton()` (Issue #12)

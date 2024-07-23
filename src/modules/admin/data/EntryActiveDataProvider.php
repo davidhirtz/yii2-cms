@@ -37,7 +37,7 @@ class EntryActiveDataProvider extends ActiveDataProvider
      */
     public ?Entry $parent = null;
 
-    
+
     public ?string $searchString = null;
 
     /**
@@ -63,7 +63,9 @@ class EntryActiveDataProvider extends ActiveDataProvider
             $this->query->orderBy(static::getModule()->defaultEntryOrderBy);
         }
 
-        if ($type = (Entry::instance()::getTypes()[$this->type] ?? false)) {
+        $type = Entry::instance()::getTypes()[$this->type] ?? false;
+
+        if ($type) {
             if (isset($type['orderBy'])) {
                 $this->query->orderBy($type['orderBy']);
             }
@@ -109,12 +111,12 @@ class EntryActiveDataProvider extends ActiveDataProvider
             return;
         }
 
-        if ($this->section && $this->innerJoinSection == 'INNER JOIN') {
+        if ($this->section && $this->innerJoinSection) {
             return;
         }
 
-        if (!$this->category?->getEntryOrderBy()) {
-            if ($orderBy = $this->parent?->getDescendantsOrder()) {
+        if (!$this->category?->getEntriesOrderBy()) {
+            if ($orderBy = $this->parent?->getDescendantsOrderBy()) {
                 $this->query->orderBy($orderBy);
             }
         }

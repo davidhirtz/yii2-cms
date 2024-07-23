@@ -56,7 +56,24 @@ class SectionEntry extends \davidhirtz\yii2\skeleton\db\ActiveRecord
                 'unique',
                 'targetAttribute' => ['section_id', 'entry_id'],
             ],
+            [
+                ['entry_id'],
+                $this->validateEntry(...),
+            ],
         ]);
+    }
+
+    protected function validateEntry(): void
+    {
+        if ($this->hasErrors('entry_id')) {
+            return;
+        }
+
+        $allowedTypes = $this->section->getEntriesTypes();
+
+        if ($allowedTypes && !in_array($this->entry->type, $allowedTypes)) {
+            $this->addInvalidAttributeError('entry_id');
+        }
     }
 
     public function beforeSave($insert): bool
@@ -107,6 +124,9 @@ class SectionEntry extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         return (int)static::find()->where(['section_id' => $this->section_id])->max('[[position]]');
     }
 
+    /**
+     * @noinspection PhpUnused
+     */
     public function getTrailAttributes(): array
     {
         return array_diff($this->attributes(), [
@@ -118,6 +138,9 @@ class SectionEntry extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         ]);
     }
 
+    /**
+     * @noinspection PhpUnused
+     */
     public function getTrailParents(): ?array
     {
         return [$this->entry, $this->section];

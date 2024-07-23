@@ -397,7 +397,7 @@ class Entry extends ActiveRecord implements AssetParentInterface
         return count($this->getCategoryIds());
     }
 
-    public function getDescendantsOrder(): array
+    public function getDescendantsOrderBy(): array
     {
         return ['position' => SORT_ASC];
     }

@@ -41,22 +41,29 @@ class SectionEntryGridView extends EntryGridView
                 'entry' => $entry->id,
             ];
 
-            return [
+            $buttons = [
                 Html::a(Icon::tag('ban'), ['section-entry/delete'] + $route, [
                     'class' => 'btn btn-primary is-selected-block',
                     'title' => Yii::t('cms', 'Remove from section'),
                     'data-toggle' => 'tooltip',
                     'data-ajax' => 'select',
                     'data-target' => '#' . $this->getRowId($entry),
-                ]),
-                Html::a(Icon::tag('star'), ['section-entry/create'] + $route, [
+                ])
+            ];
+
+            $allowedTypes = $this->dataProvider->section->getEntriesTypes();
+
+            if (!$allowedTypes || in_array($entry->type, $allowedTypes)) {
+                $buttons[] = Html::a(Icon::tag('star'), ['section-entry/create'] + $route, [
                     'class' => 'btn btn-primary is-selected-hidden',
                     'title' => Yii::t('cms', 'Add to section'),
                     'data-toggle' => 'tooltip',
                     'data-ajax' => 'select',
                     'data-target' => '#' . $this->getRowId($entry),
-                ]),
-            ];
+                ]);
+            }
+
+            return $buttons;
         }
 
         return [];

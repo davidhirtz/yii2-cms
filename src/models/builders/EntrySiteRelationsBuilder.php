@@ -13,6 +13,9 @@ use davidhirtz\yii2\skeleton\helpers\ArrayHelper;
 use Yii;
 use yii\base\BaseObject;
 
+/**
+ * @template T of Entry
+ */
 class EntrySiteRelationsBuilder extends BaseObject
 {
     use ModuleTrait;
@@ -25,7 +28,7 @@ class EntrySiteRelationsBuilder extends BaseObject
     public array $assets = [];
 
     /**
-     * @var Entry[]
+     * @var T[]
      */
     public array $entries = [];
 
@@ -93,11 +96,11 @@ class EntrySiteRelationsBuilder extends BaseObject
             ->all();
 
         foreach ($sections as $section) {
-            if (static::getModule()->enableSectionAssets && $section->asset_count) {
+            if ($section->hasAssetsEnabled() && $section->asset_count) {
                 $this->sectionIdsWithAssets[] = $section->id;
             }
 
-            if (static::getModule()->enableSectionEntries && $section->entry_count) {
+            if ($section->hasEntriesEnabled() && $section->entry_count) {
                 $this->sectionIdsWithEntries[] = $section->id;
             }
         }
@@ -182,12 +185,52 @@ class EntrySiteRelationsBuilder extends BaseObject
         }
 
         foreach ($this->entry->sections as $section) {
-            $entries = array_map(
-                fn (SectionEntry $sectionEntry) => $this->entries[$sectionEntry->entry_id] ?? null,
-                $section->sectionEntries
-            );
+            $entries = [];
 
-            $section->populateRelation('entries', array_filter($entries));
+            if ($section->entry_count) {
+                $allowedTypes = $section->getEntriesTypes();
+                $orderBy = $section->getEntriesOrderBy();
+
+                foreach ($section->sectionEntries as $sectionEntry) {
+                    $entry = $this->entries[$sectionEntry->entry_id] ?? null;
+
+                    if ($entry && (!$allowedTypes || in_array($entry->type, $allowedTypes))) {
+                        $entries[$entry->id] = $entry;
+                    }
+                }
+
+                if ($orderBy) {
+                    $this->sortSectionEntriesByEntryAttributes($entries, $orderBy);
+                }
+            }
+
+            $section->populateRelation('entries', $entries);
+        }
+    }
+
+    /**
+     * This method tries to sort the section entries by the given order by attributes. Only attributes from the entry
+     * model are considered.
+     * @param T[] $entries
+     */
+    protected function sortSectionEntriesByEntryAttributes(array &$entries, array $orderBy): void
+    {
+        $directions = [];
+        $keys = [];
+
+        foreach ($this->entry->attributes() as $attribute) {
+            $direction = $orderBy[Entry::tableName() . ".[[$attribute]]"]
+                ?? $orderBy[$attribute]
+                ?? null;
+
+            if ($direction) {
+                $directions[] = $direction;
+                $keys[] = $attribute;
+            }
+        }
+
+        if ($directions) {
+            ArrayHelper::multisort($entries, $keys, $directions);
         }
     }
 
