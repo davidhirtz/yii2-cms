@@ -99,6 +99,10 @@ class CategoryCollection
             && in_array($category->id, $categoryIds));
     }
 
+    /**
+     * @return T|null
+     * @noinspection PhpDocSignatureInspection
+     */
     public static function getBySlug(string $slug, int $parentId = null): ?Category
     {
         if ($slug) {
