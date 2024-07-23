@@ -11,7 +11,7 @@ trait EntryTrait
 {
     protected function findEntry(int $id, ?string $permissionName = null): Entry
     {
-        if (!$entry = Entry::findOne((int)$id)) {
+        if (!$entry = Entry::findOne($id)) {
             throw new NotFoundHttpException();
         }
 

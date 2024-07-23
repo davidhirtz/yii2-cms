@@ -1,5 +1,6 @@
-## 2.1.22 (under development)
+## 2.1.22 (Jul 23, 2024)
 
+- Added `ReplaceIndexEntry` action and `EntryHelpPanel::getReplaceIndexButton()` (Issue #12)
 - Changed `davidhirtz\yii2\cms\modules\admin\Module::$name` to `Module::getName()` to prevent translation issues
 - Enhanced `EntrySiteRelationsBuilder` to populate entry parents if loaded
 - Fixed index creation in `FooterColumnTrait` and `MenuColumnTrait` (Issue #11)

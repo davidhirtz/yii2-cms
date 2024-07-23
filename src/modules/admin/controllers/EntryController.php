@@ -4,6 +4,7 @@ namespace davidhirtz\yii2\cms\modules\admin\controllers;
 
 use davidhirtz\yii2\cms\models\actions\DuplicateEntry;
 use davidhirtz\yii2\cms\models\actions\ReorderEntries;
+use davidhirtz\yii2\cms\models\actions\ReplaceIndexEntry;
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\modules\admin\controllers\traits\EntryTrait;
@@ -30,7 +31,7 @@ class EntryController extends AbstractController
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['index', 'update', 'update-all'],
+                        'actions' => ['index', 'replace-index', 'update', 'update-all'],
                         'roles' => [Entry::AUTH_ENTRY_UPDATE],
                     ],
                     [
@@ -55,6 +56,7 @@ class EntryController extends AbstractController
                 'actions' => [
                     'delete' => ['post'],
                     'duplicate' => ['post'],
+                    'replace-index' => ['post'],
                     'order' => ['post'],
                     'update-all' => ['post'],
                 ],
@@ -99,7 +101,7 @@ class EntryController extends AbstractController
 
         if ($entry->load($request->post()) && $entry->insert()) {
             $this->success(Yii::t('cms', 'The entry was created.'));
-            return $this->redirect(array_merge($request->get(), ['update', 'id' => $entry->id]));
+            return $this->redirectToEntry($entry);
         }
 
         return $this->render('create', [
@@ -118,7 +120,7 @@ class EntryController extends AbstractController
             }
 
             if (!$entry->hasErrors()) {
-                return $this->redirect(array_merge($request->get(), ['update', 'id' => $entry->id]));
+                return $this->redirectToEntry($entry);
             }
         }
 
@@ -174,6 +176,30 @@ class EntryController extends AbstractController
         return $this->redirect(['update', 'id' => $duplicate->id ?? $entry->id]);
     }
 
+    public function actionReplaceIndex(int $id): Response|string
+    {
+        $permissionName = Entry::AUTH_ENTRY_UPDATE;
+
+        $entry = $this->findEntry($id, $permissionName);
+        $index = Entry::find()->whereIndex()->one();
+
+        if ($index && !Yii::$app->getUser()->can($permissionName, ['entry' => $index])) {
+            throw new ForbiddenHttpException();
+        }
+
+        ReplaceIndexEntry::run([
+            'entry' => $entry,
+            'previous' => $index,
+        ]);
+
+        if ($entry->isIndex()) {
+            $this->success(Yii::t('cms', 'The entry was updated.'));
+        }
+
+        $this->error($entry);
+        return $this->redirectToEntry($entry);
+    }
+
     public function actionDelete(int $id): Response|string
     {
         $entry = $this->findEntry($id, Entry::AUTH_ENTRY_DELETE);
@@ -192,5 +218,10 @@ class EntryController extends AbstractController
         ReorderEntries::runWithBodyParam('entry', [
             'parent' => $parent ? $this->findEntry($parent, Entry::AUTH_ENTRY_UPDATE) : null,
         ]);
+    }
+
+    protected function redirectToEntry(Entry $entry): Response
+    {
+        return $this->redirect(array_merge(Yii::$app->getRequest()->get(), ['update', 'id' => $entry->id]));
     }
 }

@@ -7,6 +7,7 @@ use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\EntryCategory;
 use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\models\SectionEntry;
+use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\skeleton\db\ActiveQuery;
 use davidhirtz\yii2\skeleton\db\I18nActiveQuery;
 
@@ -16,6 +17,8 @@ use davidhirtz\yii2\skeleton\db\I18nActiveQuery;
  */
 class EntryQuery extends I18nActiveQuery
 {
+    use ModuleTrait;
+
     public function addSelectI18nSlugTargetAttributes(): static
     {
         if ($slugTargetAttribute = Entry::instance()->slugTargetAttribute) {
@@ -111,6 +114,11 @@ class EntryQuery extends I18nActiveQuery
         }
 
         return $this->joinWith(['sectionEntry' => $onCondition], $eagerLoading, $joinType);
+    }
+
+    public function whereIndex(): static
+    {
+        return $this->whereSlug(static::getModule()->entryIndexSlug);
     }
 
     public function whereSlug(string $slug): static
