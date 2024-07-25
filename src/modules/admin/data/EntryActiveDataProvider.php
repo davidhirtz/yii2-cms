@@ -12,6 +12,7 @@ use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\skeleton\data\ActiveDataProvider;
 use yii\data\Pagination;
 use yii\data\Sort;
+use yii\helpers\ArrayHelper;
 
 /**
  * @property EntryQuery|null $query
@@ -25,6 +26,10 @@ class EntryActiveDataProvider extends ActiveDataProvider
      * @var Section|null the section to filter by
      */
     public ?Section $section = null;
+
+    /**
+     * @var bool whether to inner join the section
+     */
     public bool $innerJoinSection = true;
 
     /**
@@ -37,7 +42,9 @@ class EntryActiveDataProvider extends ActiveDataProvider
      */
     public ?Entry $parent = null;
 
-
+    /**
+     * @var string|null the search string
+     */
     public ?string $searchString = null;
 
     /**
@@ -63,19 +70,7 @@ class EntryActiveDataProvider extends ActiveDataProvider
             $this->query->orderBy(static::getModule()->defaultEntryOrderBy);
         }
 
-        $type = Entry::instance()::getTypes()[$this->type] ?? false;
-
-        if ($type) {
-            if (isset($type['orderBy'])) {
-                $this->query->orderBy($type['orderBy']);
-            }
-
-            if (isset($type['sort'])) {
-                $this->setSort($type['sort']);
-            }
-
-            $this->query->andWhere([Entry::tableName() . '.[[type]]' => $this->type]);
-        }
+        $this->whereType();
 
         if (static::getModule()->enableCategories) {
             $this->whereCategory();
@@ -91,6 +86,23 @@ class EntryActiveDataProvider extends ActiveDataProvider
 
         if ($this->searchString) {
             $this->query->matching($this->searchString);
+        }
+    }
+
+    protected function whereType(): void
+    {
+        $typeOptions = Entry::instance()::getTypes()[$this->type] ?? false;
+
+        if ($typeOptions) {
+            if (isset($typeOptions['orderBy'])) {
+                $this->query->orderBy($typeOptions['orderBy']);
+            }
+
+            if (isset($typeOptions['sort'])) {
+                $this->setSort($typeOptions['sort']);
+            }
+
+            $this->query->andWhere([Entry::tableName() . '.[[type]]' => $this->type]);
         }
     }
 
@@ -131,6 +143,17 @@ class EntryActiveDataProvider extends ActiveDataProvider
                 ? 'INNER JOIN'
                 : 'LEFT JOIN');
         }
+    }
+
+    protected function prepareModels(): array
+    {
+        $models = parent::prepareModels();
+
+        if ($order = $this->section?->getEntriesOrderBy()) {
+            ArrayHelper::multisort($models, array_keys($order), array_values($order));
+        }
+
+        return $models;
     }
 
     public function getPagination(): Pagination|false

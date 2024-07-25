@@ -290,9 +290,9 @@ class Section extends ActiveRecord implements AssetParentInterface
         return $this->id ? ['/admin/section/update', 'id' => $this->id] : false;
     }
 
-    public function getEntriesOrderBy(): array|false
+    public function getEntriesOrderBy(): ?array
     {
-        return $this->getTypeOptions()['entriesOrderBy'] ?? [SectionEntry::tableName() . '.[[position]]' => SORT_ASC];
+        return $this->getTypeOptions()['entriesOrderBy'] ?? null;
     }
 
     public function getEntriesTypes(): ?array

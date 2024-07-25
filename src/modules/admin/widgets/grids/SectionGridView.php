@@ -7,6 +7,7 @@ use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\modules\admin\controllers\SectionController;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\skeleton\helpers\Html;
+use davidhirtz\yii2\skeleton\modules\admin\widgets\grids\columns\CounterColumn;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grids\GridView;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grids\traits\StatusGridViewTrait;
 use Yii;
@@ -23,7 +24,7 @@ class SectionGridView extends GridView
     use ModuleTrait;
     use StatusGridViewTrait;
 
-    
+
     public ?Entry $entry = null;
 
     /**
@@ -51,6 +52,7 @@ class SectionGridView extends GridView
                 $this->statusColumn(),
                 $this->typeColumn(),
                 $this->nameColumn(),
+                $this->entriesCountColumn(),
                 $this->assetCountColumn(),
                 $this->buttonsColumn(),
             ];
@@ -145,17 +147,17 @@ class SectionGridView extends GridView
     {
         return [
             'attribute' => 'asset_count',
-            'headerOptions' => ['class' => 'd-none d-md-table-cell text-center'],
-            'contentOptions' => ['class' => 'd-none d-md-table-cell text-center'],
+            'class' => CounterColumn::class,
             'visible' => static::getModule()->enableSectionAssets,
-            'content' => function (Section $section) {
-                if (!$section->hasAssetsEnabled()) {
-                    return '';
-                }
+        ];
+    }
 
-                $assetCount = Yii::$app->getFormatter()->asInteger($section->asset_count);
-                return Html::a($assetCount, $this->getRoute($section, ['#' => 'assets']), ['class' => 'badge']);
-            }
+    public function entriesCountColumn(): array
+    {
+        return [
+            'attribute' => 'entry_count',
+            'class' => CounterColumn::class,
+            'visible' => $this->hasSectionEntries(),
         ];
     }
 
@@ -192,5 +194,20 @@ class SectionGridView extends GridView
     public function getModel(): Section
     {
         return Section::instance();
+    }
+
+    protected function hasSectionEntries(): bool
+    {
+        if (!static::getModule()->enableSectionEntries) {
+            return false;
+        }
+
+        foreach ($this->entry->sections as $section) {
+            if ($section->entry_count) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

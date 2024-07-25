@@ -189,7 +189,6 @@ class EntrySiteRelationsBuilder extends BaseObject
 
             if ($section->entry_count) {
                 $allowedTypes = $section->getEntriesTypes();
-                $orderBy = $section->getEntriesOrderBy();
 
                 foreach ($section->sectionEntries as $sectionEntry) {
                     $entry = $this->entries[$sectionEntry->entry_id] ?? null;
@@ -199,8 +198,8 @@ class EntrySiteRelationsBuilder extends BaseObject
                     }
                 }
 
-                if ($orderBy) {
-                    $this->sortSectionEntriesByEntryAttributes($entries, $orderBy);
+                if ($order = $section->getEntriesOrderBy()) {
+                    $this->sortSectionEntriesByEntryAttributes($entries, $order);
                 }
             }
 
@@ -208,30 +207,9 @@ class EntrySiteRelationsBuilder extends BaseObject
         }
     }
 
-    /**
-     * This method tries to sort the section entries by the given order by attributes. Only attributes from the entry
-     * model are considered.
-     * @param T[] $entries
-     */
-    protected function sortSectionEntriesByEntryAttributes(array &$entries, array $orderBy): void
+    protected function sortSectionEntriesByEntryAttributes(array &$entries, array $order): void
     {
-        $directions = [];
-        $keys = [];
-
-        foreach ($this->entry->attributes() as $attribute) {
-            $direction = $orderBy[Entry::tableName() . ".[[$attribute]]"]
-                ?? $orderBy[$attribute]
-                ?? null;
-
-            if ($direction) {
-                $directions[] = $direction;
-                $keys[] = $attribute;
-            }
-        }
-
-        if ($directions) {
-            ArrayHelper::multisort($entries, $keys, $directions);
-        }
+        ArrayHelper::multisort($entries, array_keys($order), array_values($order));
     }
 
     protected function loadAssets(): void

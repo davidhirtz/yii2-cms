@@ -235,8 +235,9 @@ class EntryGridView extends GridView
 
     public function dateColumn(): array
     {
-        // The Query object reflects the initial order even if Sort changed the query.
-        return $this->dataProvider->query->orderBy && key($this->dataProvider->query->orderBy) === 'publish_date' ? $this->publishDateColumn() : $this->updatedAtColumn();
+        return $this->dataProvider->query->orderBy && key($this->dataProvider->query->orderBy) === 'publish_date'
+            ? $this->publishDateColumn()
+            : $this->updatedAtColumn();
     }
 
     public function publishDateColumn(): array

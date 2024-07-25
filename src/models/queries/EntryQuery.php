@@ -110,9 +110,8 @@ class EntryQuery extends I18nActiveQuery
         $onCondition = fn (ActiveQuery $query) => $query->onCondition(["$tableName.[[section_id]]" => $section->id]);
 
         if ($eagerLoading && $joinType === 'INNER JOIN') {
-            if ($orderBy = $section->getEntriesOrderBy()) {
-                $this->orderBy($orderBy);
-            }
+            $orderBy = $section->getEntriesOrderBy() ?? [SectionEntry::tableName() . '.[[position]]' => SORT_ASC];
+            $this->orderBy($orderBy);
         }
 
         return $this->joinWith(['sectionEntry' => $onCondition], $eagerLoading, $joinType);
