@@ -1,3 +1,8 @@
+## 2.1.25 (Aug 19, 2024)
+
+- Changed `Bootstrap` to use `ApplicationTrait::addUrlManagerRules()` to prevent the initialization of the URL manager
+  before the bootstrap is completed
+
 ## 2.1.24 (Aug 19, 2024)
 
 - Added `SitemapInterface` to `Category` and `Entry` models
