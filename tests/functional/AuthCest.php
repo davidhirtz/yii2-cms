@@ -50,11 +50,12 @@ class AuthCest extends BaseCest
         $auth = Yii::$app->getAuthManager()->getRole(Module::AUTH_ROLE_AUTHOR);
         Yii::$app->getAuthManager()->assign($auth, $user->id);
 
+        $I->amOnPage('/admin/entry/index');
+
         $widget = Yii::$container->get(EntryGridView::class, [], [
             'dataProvider' => Yii::createObject(EntryActiveDataProvider::class),
         ]);
 
-        $I->amOnPage('/admin/entry/index');
         $I->seeElement("#$widget->id");
     }
 

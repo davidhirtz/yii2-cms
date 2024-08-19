@@ -14,6 +14,7 @@ use davidhirtz\yii2\media\models\interfaces\AssetParentInterface;
 use davidhirtz\yii2\media\models\traits\AssetParentTrait;
 use davidhirtz\yii2\skeleton\behaviors\RedirectBehavior;
 use davidhirtz\yii2\skeleton\helpers\ArrayHelper;
+use davidhirtz\yii2\skeleton\models\interfaces\SitemapInterface;
 use davidhirtz\yii2\skeleton\models\traits\MaterializedTreeTrait;
 use Yii;
 use yii\db\ActiveQuery;
@@ -40,7 +41,7 @@ use yii\db\ActiveQuery;
  * @property-read SectionEntry|null $sectionEntry {@see static::getSectionEntry()}
  * @property-read Section[] $sections {@see static::getSections()}
  */
-class Entry extends ActiveRecord implements AssetParentInterface
+class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterface
 {
     use AssetParentTrait;
     use MaterializedTreeTrait;

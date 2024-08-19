@@ -7,6 +7,7 @@ use davidhirtz\yii2\cms\models\queries\CategoryQuery;
 use davidhirtz\yii2\cms\models\queries\EntryQuery;
 use davidhirtz\yii2\cms\models\traits\SlugAttributeTrait;
 use davidhirtz\yii2\skeleton\behaviors\RedirectBehavior;
+use davidhirtz\yii2\skeleton\models\interfaces\SitemapInterface;
 use davidhirtz\yii2\skeleton\models\Trail;
 use davidhirtz\yii2\skeleton\models\traits\NestedTreeTrait;
 use Yii;
@@ -31,7 +32,7 @@ use yii\db\ActiveQuery;
  * @property-read static[] $ancestors {@see static::getAncestors()}
  * @property-read static[] $descendants {@see static::getDescendants()}
  */
-class Category extends ActiveRecord
+class Category extends ActiveRecord implements SitemapInterface
 {
     use NestedTreeTrait;
     use SlugAttributeTrait;

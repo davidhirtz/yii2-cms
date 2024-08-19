@@ -1,3 +1,9 @@
+## 2.1.24 (Aug 19, 2024)
+
+- Added `SitemapInterface` to `Category` and `Entry` models
+- Changed `EntryActiveDataProvider::prepareQuery()` visibility to `protected`
+- Improved `Section::getEntriesOrderBy()` functionality
+
 ## 2.1.23 (Jul 23, 2024)
 
 - Added `Section::getEntriesOrderBy()` and `Section::getEntriesTypes()` to filter manually picked section entries

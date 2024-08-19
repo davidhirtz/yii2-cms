@@ -15,8 +15,8 @@ use yii\data\Sort;
 use yii\helpers\ArrayHelper;
 
 /**
- * @property EntryQuery|null $query
- * @method Entry[] getModels()
+ * @property EntryQuery $query
+ * @extends ActiveDataProvider<Entry>
  */
 class EntryActiveDataProvider extends ActiveDataProvider
 {
@@ -52,13 +52,13 @@ class EntryActiveDataProvider extends ActiveDataProvider
      */
     public ?int $type = null;
 
-    public function init(): void
+    public function __construct($config = [])
     {
-        $this->query = $this->query ?: Entry::find();
-        parent::init();
+        $this->query = Entry::find();
+        parent::__construct($config);
     }
 
-    public function prepareQuery(): void
+    protected function prepareQuery(): void
     {
         $this->initQuery();
         parent::prepareQuery();
