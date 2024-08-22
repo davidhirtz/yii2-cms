@@ -1,3 +1,10 @@
+## 2.1.25 (in development)
+
+- Added `Canvas::$setWrapperHeightWithAspectRatio` to set the wrapper height with the `aspect-ratio`
+  CSS property, defaults to `true`
+- Added `Canvas::$enableMaxWidth` to enable the `max-width` CSS property, defaults to `false`.
+  Set `Canvas::$defaultMaxWidth` to prevent the setting of a `max-width` greater than the default value
+
 ## 2.1.24 (Aug 19, 2024)
 
 - Added `SitemapInterface` to `Category` and `Entry` models

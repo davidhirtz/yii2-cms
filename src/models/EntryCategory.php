@@ -21,7 +21,6 @@ use Yii;
  * @property int $position
  * @property int|null $updated_by_user_id
  * @property DateTime $updated_at
- * @property DateTime $created_at
  *
  * @mixin TrailBehavior
  */
@@ -191,6 +190,9 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         return (int)static::find()->where(['category_id' => $this->category_id])->max('[[position]]');
     }
 
+    /**
+     * @noinspection PhpUnused
+     */
     public function getTrailParents(): array
     {
         return [$this->entry, $this->category];
