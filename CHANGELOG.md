@@ -1,4 +1,4 @@
-## 2.1.25 (Aug 26, 2024)
+## 2.1.26 (Aug 26, 2024)
 
 - Added `Canvas::renderAdmin()` to render the `AdminLink` widget, use `{asset}` in `Canvas::$template` to render the
   link
