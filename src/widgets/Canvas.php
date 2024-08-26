@@ -72,6 +72,7 @@ class Canvas extends Widget
     }
 
     /**
+     * @uses static::renderAdmin()
      * @uses static::renderCaption()
      * @uses static::renderEmbed()
      * @uses static::renderLink()
@@ -87,6 +88,11 @@ class Canvas extends Widget
             },
             $this->template
         );
+    }
+
+    protected function renderAdmin(): string
+    {
+        return AdminLink::tag($this->asset);
     }
 
     protected function renderCaption(): string

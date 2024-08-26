@@ -1,5 +1,7 @@
-## 2.1.25 (in development)
+## 2.1.25 (Aug 26, 2024)
 
+- Added `Canvas::renderAdmin()` to render the `AdminLink` widget, use `{asset}` in `Canvas::$template` to render the
+  link
 - Added `Canvas::$setWrapperHeightWithAspectRatio` to set the wrapper height with the `aspect-ratio`
   CSS property, defaults to `true`
 - Added `Canvas::$enableMaxWidth` to enable the `max-width` CSS property, defaults to `false`.
