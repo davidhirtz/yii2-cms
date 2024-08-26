@@ -1,3 +1,12 @@
+## 2.1.25 (Aug 26, 2024)
+
+- Added `Canvas::renderAdmin()` to render the `AdminLink` widget, use `{asset}` in `Canvas::$template` to render the
+  link
+- Added `Canvas::$setWrapperHeightWithAspectRatio` to set the wrapper height with the `aspect-ratio`
+  CSS property, defaults to `true`
+- Added `Canvas::$enableMaxWidth` to enable the `max-width` CSS property, defaults to `false`.
+  Set `Canvas::$defaultMaxWidth` to prevent the setting of a `max-width` greater than the default value
+
 ## 2.1.25 (Aug 19, 2024)
 
 - Changed `Bootstrap` to use `ApplicationTrait::addUrlManagerRules()` to prevent the initialization of the URL manager

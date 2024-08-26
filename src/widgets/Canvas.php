@@ -21,7 +21,12 @@ class Canvas extends Widget
     public array $parts = [];
 
     public bool $enableLinkWrapper = true;
+
+    public bool $enableMaxWidth = false;
+    public ?int $defaultMaxWidth = null;
+
     public bool $enableWrapperHeight = true;
+    public bool $setWrapperHeightWithAspectRatio = true;
 
     public int|false $lazyLoadingParentPosition = 2;
     public string $embedViewFile = '/widgets/_embed';
@@ -31,8 +36,18 @@ class Canvas extends Widget
         if ($this->asset) {
             $this->linkOptions['aria-label'] ??= $this->asset->getVisibleAttribute('name');
 
-            if ($this->enableWrapperHeight && $this->asset->file->hasDimensions()) {
-                $this->setWrapperHeight();
+            if ($this->asset->file->hasDimensions()) {
+                if ($this->enableWrapperHeight) {
+                    $this->setWrapperHeight();
+                }
+
+                if ($this->enableMaxWidth) {
+                    $width = $this->asset->file->width;
+
+                    if ($this->defaultMaxWidth === null || $width < $this->defaultMaxWidth) {
+                        $this->wrapperOptions['style']['max-width'] = "{$width}px";
+                    }
+                }
             }
 
             if ($this->lazyLoadingParentPosition !== false
@@ -57,6 +72,7 @@ class Canvas extends Widget
     }
 
     /**
+     * @uses static::renderAdmin()
      * @uses static::renderCaption()
      * @uses static::renderEmbed()
      * @uses static::renderLink()
@@ -72,6 +88,11 @@ class Canvas extends Widget
             },
             $this->template
         );
+    }
+
+    protected function renderAdmin(): string
+    {
+        return AdminLink::tag($this->asset);
     }
 
     protected function renderCaption(): string
@@ -125,8 +146,30 @@ class Canvas extends Widget
 
     protected function setWrapperHeight(): void
     {
-        if ($percentage = $this->asset->file->getHeightPercentage()) {
+        if ($this->setWrapperHeightWithAspectRatio) {
+            $this->wrapperOptions['style']['aspect-ratio'] ??= $this->getAspectRatio();
+        } elseif ($percentage = $this->asset->file->getHeightPercentage()) {
             $this->wrapperOptions['style']['padding-top'] ??= "$percentage%";
         }
+    }
+
+    protected function getAspectRatio(): string
+    {
+        $width = $this->asset->file->width;
+        $height = $this->asset->file->height;
+
+        $gcd = $this->getGreatestCommonDivisor($width, $height);
+
+        $smallestWidth = $width / $gcd;
+        $smallestHeight = $height / $gcd;
+
+        return "$smallestWidth/$smallestHeight";
+    }
+
+    protected function getGreatestCommonDivisor(int $width, int $height)
+    {
+        return $height !== 0
+            ? $this->getGreatestCommonDivisor($height, $width % $height)
+            : $width;
     }
 }
