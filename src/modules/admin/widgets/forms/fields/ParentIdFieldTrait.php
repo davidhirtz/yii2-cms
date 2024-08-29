@@ -1,6 +1,6 @@
 <?php
 
-namespace davidhirtz\yii2\cms\modules\admin\widgets\forms\traits;
+namespace davidhirtz\yii2\cms\modules\admin\widgets\forms\fields;
 
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\Entry;
@@ -9,7 +9,15 @@ use Yii;
 
 trait ParentIdFieldTrait
 {
+    public string $indent = '–';
     public int|false $parentSlugMaxLength = 80;
+
+    protected ?array $items = [];
+
+    public function run(): string
+    {
+        return Html::activeDropDownList($this->model, $this->attribute, $this->items, $this->options);
+    }
 
     protected function getParentIdOptionDataValue(Category|Entry $model, ?string $language = null): string
     {

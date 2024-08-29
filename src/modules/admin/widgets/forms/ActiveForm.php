@@ -41,14 +41,16 @@ class ActiveForm extends \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm
         $options = array_merge(['enableClientValidation' => false], $options);
 
         return $this->field($this->model, $attribute, $options)->slug([
-            'baseUrl' => Html::tag('span', $this->getSlugBaseUrl($language), ['id' => $this->getSlugId($language)]),
+            'baseUrl' => Html::tag('span', $this->getSlugBaseUrl($language), [
+                'id' => $this->getSlugId($language),
+            ]),
         ]);
     }
 
     public function getSlugBaseUrl(?string $language = null): string
     {
         $manager = Yii::$app->getUrlManager();
-        return rtrim((string) $manager->createAbsoluteUrl(['/', 'language' => $manager->i18nUrl || $manager->i18nSubdomain ? $language : null]), '/') . '/';
+        return rtrim((string)$manager->createAbsoluteUrl(['/', 'language' => $manager->i18nUrl || $manager->i18nSubdomain ? $language : null]), '/') . '/';
     }
 
     public function getSlugId(?string $language = null): string

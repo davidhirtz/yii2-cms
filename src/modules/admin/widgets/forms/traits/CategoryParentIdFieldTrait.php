@@ -2,77 +2,41 @@
 
 namespace davidhirtz\yii2\cms\modules\admin\widgets\forms\traits;
 
-use davidhirtz\yii2\cms\models\Category;
+use davidhirtz\yii2\cms\modules\admin\widgets\forms\fields\CategoryParentIdDropDown;
 use davidhirtz\yii2\skeleton\widgets\fontawesome\ActiveField;
 use Yii;
-use yii\helpers\ArrayHelper;
 
 trait CategoryParentIdFieldTrait
 {
-    use ParentIdFieldTrait;
-
-    private ?array $_categories = null;
-
-    public function parentIdField(array $options = []): ActiveField|string
+    public function parentIdField(): ActiveField|string
     {
-        if (!static::getModule()->enableNestedCategories
-            || !$this->model->hasParentEnabled()
-            || !$this->getCategories()) {
+        if (!static::getModule()->enableNestedCategories || !$this->model->hasParentEnabled()) {
             return '';
         }
 
-        return $this->field($this->model, 'parent_id', $options)
-            ->dropDownList($this->getParentIdItems(), $this->getParentIdOptions());
+        return $this->field($this->model, 'parent_id')->widget(CategoryParentIdDropDown::class, [
+            'options' => $this->getParentIdOptions(),
+        ]);
     }
 
-    protected function getParentIdItems(): array
+    protected function getParentIdOptions(): array
     {
-        return Category::indentNestedTree($this->getCategories(), $this->model->getI18nAttributeName('name'));
-    }
-
-    protected function getParentIdOptions(array $options = []): array
-    {
-        $defaultOptions = [
-            ...$this->getOptionsForDisabledDescendants(),
-            ...$this->getOptionsForParentSlugDataValue(),
+        $options = [
+            'prompt' => [
+                'text' => '',
+                'options' => [],
+            ],
         ];
 
-        $defaultOptions['prompt']['text'] ??= '';
-        $defaultOptions['prompt']['options'] ??= [];
-
-        return ArrayHelper::merge($defaultOptions, $options);
-    }
-
-    protected function getOptionsForDisabledDescendants(array $options = []): array
-    {
-        foreach ($this->getCategories() as $category) {
-            if ($category->lft >= $this->model->lft && $category->rgt <= $this->model->rgt) {
-                $options['options'][$category->id]['disabled'] = true;
-            }
-        }
-
-        return $options;
-    }
-
-    protected function getOptionsForParentSlugDataValue(array $options = []): array
-    {
-        if (!$this->model->slugTargetAttribute
-            || !in_array('parent_id', (array)$this->model->slugTargetAttribute)) {
+        if (!$this->model->slugTargetAttribute || !in_array('parent_id', (array)$this->model->slugTargetAttribute)) {
             return $options;
         }
 
-        $attributeNames = $this->model->getI18nAttributeNames('slug');
-
-        foreach ($attributeNames as $language => $attributeName) {
+        foreach ($this->model->getI18nAttributeNames('slug') as $language => $attributeName) {
             $options['data-form-target'][] = $this->getSlugId($language);
             $options['prompt']['options']['data-value'][] = $this->getSlugBaseUrl($language);
         }
 
-        foreach ($this->getCategories() as $category) {
-            foreach ($attributeNames as $language => $attributeName) {
-                $options['options'][$category->id]['data-value'][] = $this->getParentIdOptionDataValue($category, $language);
-            }
-        }
 
         return $options;
     }
@@ -94,31 +58,5 @@ trait CategoryParentIdFieldTrait
 
             return $url;
         });
-    }
-
-    /**
-     * @return Category[]
-     */
-    protected function getCategories(): array
-    {
-        if ($this->_categories === null) {
-            $entries = Category::find()
-                ->whereHasDescendantsEnabled()
-                ->select($this->model->getI18nAttributesNames([
-                    'id',
-                    'status',
-                    'parent_id',
-                    'name',
-                    'lft',
-                    'rgt',
-                    'entry_count',
-                ]))
-                ->indexBy('id')
-                ->all();
-
-            $this->_categories = array_filter($entries, fn (Category $category): bool => $category->hasDescendantsEnabled());
-        }
-
-        return $this->_categories;
     }
 }

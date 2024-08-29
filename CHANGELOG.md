@@ -1,3 +1,7 @@
+## 2.1.27 (in development)
+
+- Added `CategoryParentIdDropDown` and `EntryParentIdDropDown` widgets
+
 ## 2.1.26 (Aug 26, 2024)
 
 - Added `Canvas::renderAdmin()` to render the `AdminLink` widget, use `{asset}` in `Canvas::$template` to render the
