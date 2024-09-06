@@ -1,4 +1,4 @@
-## 2.1.27 (in development)
+## 2.1.27 (Sep 6, 2024)
 
 - Added `CategoryParentIdDropDown` and `EntryParentIdDropDown` widgets
 
