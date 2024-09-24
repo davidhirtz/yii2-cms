@@ -1,3 +1,7 @@
+## 2.1.27 (in development)
+
+- Fixed `EntryController::actionOrder()` authorization
+
 ## 2.1.27 (Sep 6, 2024)
 
 - Added `CategoryParentIdDropDown` and `EntryParentIdDropDown` widgets

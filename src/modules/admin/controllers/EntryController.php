@@ -47,7 +47,7 @@ class EntryController extends AbstractController
                     [
                         'allow' => true,
                         'actions' => ['order'],
-                        'roles' => [Entry::AUTH_ENTRY_UPDATE],
+                        'roles' => [Entry::AUTH_ENTRY_ORDER],
                     ],
                 ],
             ],
