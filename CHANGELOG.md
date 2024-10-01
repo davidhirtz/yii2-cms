@@ -1,5 +1,6 @@
-## 2.1.27 (in development)
+## 2.2.0 (in development)
 
+- Added `Entry::$parent_status`
 - Enhanced `Section::$position` in `Sections` to be reset after visibility filter was applied
 - Fixed `EntryController::actionOrder()` authorization
 
@@ -146,7 +147,7 @@
 
 ## 2.1.1 (Jan 3, 2024)
 
-- Added GrumPHP configuration & pre-commit hook
+- Added GrumPHP configuration and pre-commit hook
 - Added `I18nTablesTrait` to streamline the I18N table migrations
 - Added `FooterColumnTrait` and `MenuColumnTrait`
 

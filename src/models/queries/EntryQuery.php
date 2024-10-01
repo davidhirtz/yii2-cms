@@ -28,6 +28,17 @@ class EntryQuery extends I18nActiveQuery
         return $this;
     }
 
+    public function andWhereParentStatus(): static
+    {
+        return $this->andWhere(['>=', Entry::tableName() . '.[[parent_status]]', self::$_status]);
+    }
+
+    public function enabled(): static
+    {
+        return $this->whereStatus(Entry::STATUS_DEFAULT)
+            ->andWhereParentStatus();
+    }
+
     /**
      * Override this method to select only the attributes needed for frontend display.
      */

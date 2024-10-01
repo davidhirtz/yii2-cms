@@ -212,26 +212,28 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
     {
         $entry = $this->isSection() ? $this->model->entry : $this->model;
 
-        return !$this->showEntryCategories ? [] : [
-            [
-                'label' => Yii::t('cms', 'Categories'),
-                'url' => ['/admin/entry-category/index', 'entry' => $entry->id],
-                'visible' => Yii::$app->getUser()->can(Entry::AUTH_ENTRY_CATEGORY_UPDATE, ['entry' => $entry]),
-                'active' => [
-                    'admin/entry-category/',
-                    ...$this->additionalActiveRoutes['categories'] ?? [],
+        return $this->showEntryCategories
+            ? [
+                [
+                    'label' => Yii::t('cms', 'Categories'),
+                    'url' => ['/admin/entry-category/index', 'entry' => $entry->id],
+                    'visible' => Yii::$app->getUser()->can(Entry::AUTH_ENTRY_CATEGORY_UPDATE, ['entry' => $entry]),
+                    'active' => [
+                        'admin/entry-category/',
+                        ...$this->additionalActiveRoutes['categories'] ?? [],
+                    ],
+                    'badge' => $entry->getCategoryCount() ?: false,
+                    'badgeOptions' => [
+                        'id' => 'entry-category-count',
+                        'class' => 'badge d-none d-md-inline-block',
+                    ],
+                    'icon' => 'folder-open',
+                    'options' => [
+                        'class' => 'entry-sections',
+                    ],
                 ],
-                'badge' => $entry->getCategoryCount() ?: false,
-                'badgeOptions' => [
-                    'id' => 'entry-category-count',
-                    'class' => 'badge d-none d-md-inline-block',
-                ],
-                'icon' => 'folder-open',
-                'options' => [
-                    'class' => 'entry-sections',
-                ],
-            ],
-        ];
+            ]
+            : [];
     }
 
 
@@ -382,10 +384,9 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
         if ($route = $this->model?->getRoute()) {
             $manager = Yii::$app->getUrlManager();
             $url = $this->isDraft() ? $manager->createDraftUrl($route) : $manager->createAbsoluteUrl($route);
-            $isDisabled = $this->model->isDisabled() || ($this->isSection() && $this->model->entry->isDisabled());
 
             $content = Html::a(Html::encode($url), $url, [
-                'style' => $isDisabled ? 'text-decoration:line-through;' : null,
+                'style' => $this->isDisabled() ? 'text-decoration:line-through;' : null,
                 'target' => '_blank',
             ]);
 
@@ -395,9 +396,24 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
         return '';
     }
 
+    protected function isDisabled(): bool
+    {
+        if ($this->model->isDisabled()) {
+            return true;
+        }
+
+        $entry = $this->isSection() ? $this->model->entry : $this->model;
+        return $entry->isDisabled() || $entry->parent_status == Entry::STATUS_DISABLED;
+    }
+
     protected function isDraft(): bool
     {
-        return $this->isSection() ? ($this->model->isDraft() || $this->model->entry->isDraft()) : $this->model->isDraft();
+        if ($this->model->isDraft()) {
+            return true;
+        }
+
+        $entry = $this->isSection() ? $this->model->entry : $this->model;
+        return $entry->isDraft() || $entry->parent_status == Entry::STATUS_DRAFT;
     }
 
     protected function isSection(): bool

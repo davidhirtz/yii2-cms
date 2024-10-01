@@ -21,6 +21,7 @@ use yii\db\ActiveQuery;
 
 /**
  * @property int|null $parent_id
+ * @property int|null $parent_status
  * @property string|null $path
  * @property string $parent_slug
  * @property int|null|false $position
@@ -148,23 +149,20 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
         }
     }
 
-    public function afterValidate(): void
-    {
-        if ($this->isAttributeChanged('parent_id')) {
-            $this->setAttribute('path', $this->parent
-                ? ArrayHelper::createCacheString(ArrayHelper::cacheStringToArray($this->parent->path, $this->parent_id))
-                : null);
-        }
-
-        parent::afterValidate();
-    }
-
     public function beforeSave($insert): bool
     {
         $this->shouldUpdateParentAfterSave ??= !$this->getIsBatch();
         $this->publish_date ??= new DateTime();
 
         if ($this->isAttributeChanged('parent_id')) {
+            $this->parent_status = $this->parent
+                ? min($this->parent->status, $this->parent->parent_status)
+                : static::STATUS_ENABLED;
+
+            $this->path = $this->parent
+                ? ArrayHelper::createCacheString(ArrayHelper::cacheStringToArray($this->parent->path, $this->parent_id))
+                : null;
+
             $this->position = null;
         }
 
@@ -177,11 +175,14 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
             Yii::debug('Updating child entries ...', __METHOD__);
 
             foreach ($this->getChildren(true) as $entry) {
+                $entry->populateParentRelation($this);
+                $entry->parent_status = min($this->status, $this->parent_status);
+                $entry->path = ArrayHelper::createCacheString(ArrayHelper::cacheStringToArray($this->path, $this->id));
+
                 foreach ($entry->getI18nAttributeNames('parent_slug') as $language => $attributeName) {
                     $entry->{$attributeName} = $this->getFormattedSlug($language);
                 }
 
-                $entry->path = ArrayHelper::createCacheString(ArrayHelper::cacheStringToArray($this->path, $this->id));
                 $entry->update();
             }
         }
@@ -300,6 +301,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
     {
         $query = static::find()
             ->selectSitemapAttributes()
+            ->enabled()
             ->orderBy(['id' => SORT_ASC]);
 
         if (static::getModule()->enableImageSitemaps) {
@@ -312,11 +314,13 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
     protected function ensureRequiredI18nAttributes(): void
     {
         foreach ($this->i18nAttributes as $attribute) {
-            if ($this->isAttributeRequired($attribute)) {
-                foreach ($this->getI18nAttributeNames($attribute) as $i18nAttributeName) {
-                    if (!$this->$i18nAttributeName) {
-                        $this->$i18nAttributeName = $this->$attribute;
-                    }
+            if (!$this->isAttributeRequired($attribute)) {
+                continue;
+            }
+
+            foreach ($this->getI18nAttributeNames($attribute) as $i18nAttributeName) {
+                if (!$this->$i18nAttributeName) {
+                    $this->$i18nAttributeName = $this->$attribute;
                 }
             }
         }
@@ -453,9 +457,23 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
 
     public function getStatusIcon(): string
     {
-        return !$this->isIndex() || !$this->isEnabled()
-            ? parent::getStatusIcon()
-            : 'home';
+        if ($this->isIndex() && $this->isEnabled()) {
+            return 'home';
+        }
+
+        return parent::getStatusIcon();
+    }
+
+    public function getStatusName(): string
+    {
+        $status = parent::getStatusName();
+
+        if ($this->hasInvalidParentStatus()) {
+            $parentStatus = static::getStatuses()[$this->parent_status]['name'] ?? '';
+            $status .= " ($parentStatus)";
+        }
+
+        return $status;
     }
 
     public function getTrailAttributes(): array
@@ -463,6 +481,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
         return array_diff(parent::getTrailAttributes(), [
             'path',
             'parent_slug',
+            'parent_status',
             'category_ids',
             'entry_count',
             'section_count',
@@ -501,7 +520,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
 
         $changedAttributes ??= $this->getDirtyAttributes();
 
-        foreach ($this->getI18nAttributesNames(['path', 'slug', 'parent_slug']) as $key) {
+        foreach ($this->getI18nAttributesNames(['status', 'parent_status', 'path', 'slug', 'parent_slug']) as $key) {
             if (array_key_exists($key, $changedAttributes)) {
                 return true;
             }
@@ -524,6 +543,11 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
     public function hasCategoriesEnabled(): bool
     {
         return static::getModule()->enableCategories;
+    }
+
+    public function hasInvalidParentStatus(): bool
+    {
+        return $this->parent_status != static::STATUS_ENABLED;
     }
 
     public function hasDescendantsEnabled(): bool
@@ -549,7 +573,9 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
 
     public function isIndex(): bool
     {
-        return ($slug = static::getModule()->entryIndexSlug) && $this->getI18nAttribute('slug') == $slug;
+        return ($slug = static::getModule()->entryIndexSlug)
+            && $this->getI18nAttribute('slug') == $slug
+            && $this->parent_id === null;
     }
 
     public function attributeLabels(): array

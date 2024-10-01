@@ -22,7 +22,8 @@ use yii\db\ActiveRecordInterface;
 use yii\helpers\Url;
 
 /**
- * @extends GridView<Entry>
+ * @template T of Entry
+ * @extends GridView<T>
  * @property EntryActiveDataProvider $dataProvider
  */
 class EntryGridView extends GridView
@@ -173,7 +174,7 @@ class EntryGridView extends GridView
         $route = array_merge(['/admin/entry/create'], Yii::$app->getRequest()->getQueryParams(), ['type' => $this->dataProvider->type]);
         return Html::a(Html::iconText('plus', Yii::t('cms', 'New Entry')), $route, ['class' => 'btn btn-primary']);
     }
-    
+
     protected function getSelectionButtonItems(): array
     {
         if (!Yii::$app->getUser()->can(Entry::AUTH_ENTRY_UPDATE)) {
@@ -246,7 +247,9 @@ class EntryGridView extends GridView
             'attribute' => 'publish_date',
             'headerOptions' => ['class' => 'd-none d-lg-table-cell text-nowrap'],
             'contentOptions' => ['class' => 'd-none d-lg-table-cell text-nowrap'],
-            'content' => fn (Entry $entry) => $this->dateFormat ? $entry->publish_date->format($this->dateFormat) : Yii::$app->getFormatter()->asDate($entry->publish_date)
+            'content' => fn (Entry $entry) => $this->dateFormat
+                ? $entry->publish_date->format($this->dateFormat)
+                : Yii::$app->getFormatter()->asDate($entry->publish_date)
         ];
     }
 
@@ -256,7 +259,9 @@ class EntryGridView extends GridView
             'attribute' => 'updated_at',
             'headerOptions' => ['class' => 'd-none d-lg-table-cell text-nowrap'],
             'contentOptions' => ['class' => 'd-none d-lg-table-cell text-nowrap'],
-            'content' => fn (Entry $entry) => $this->dateFormat ? $entry->updated_at->format($this->dateFormat) : Timeago::tag($entry->updated_at)
+            'content' => fn (Entry $entry) => $this->dateFormat
+                ? $entry->updated_at->format($this->dateFormat)
+                : Timeago::tag($entry->updated_at)
         ];
     }
 
@@ -334,35 +339,47 @@ class EntryGridView extends GridView
 
     public function getCategories(): array
     {
-        $this->_categories ??= Category::find()->indexBy('id')->all();
-        return $this->_categories;
+        return $this->_categories ??= Category::find()
+            ->indexBy('id')
+            ->all();
     }
 
     public function getNestedCategoryNames(): array
     {
-        $this->_categoryNames ??= Category::indentNestedTree($this->getCategories(), Category::instance()->getI18nAttributeName('name'));
-        return $this->_categoryNames;
+        return $this->_categoryNames ??= Category::indentNestedTree($this->getCategories(), Category::instance()->getI18nAttributeName('name'));
     }
 
     public function getUrl(Entry $entry): string
     {
         if ($route = $entry->getRoute()) {
             $urlManager = Yii::$app->getUrlManager();
-            $url = $entry->isEnabled() ? $urlManager->createAbsoluteUrl($route) : $urlManager->createDraftUrl($route);
+            $url = $entry->isEnabled() && !$entry->hasInvalidParentStatus()
+                ? $urlManager->createAbsoluteUrl($route)
+                : $urlManager->createDraftUrl($route);
 
             if ($url) {
-                return Html::tag('div', Html::a($url, $url, ['target' => '_blank']), ['class' => 'd-none d-md-block small']);
+                return Html::tag('div', Html::a($url, $url, ['target' => '_blank']), [
+                    'class' => 'd-none d-md-block small'
+                ]);
             }
         }
 
         return '';
     }
 
+    /**
+     * @param T $model
+     * @noinspection PhpDocSignatureInspection
+     */
     protected function getRoute(ActiveRecordInterface $model, array $params = []): array|false
     {
         return array_merge(Yii::$app->getRequest()->get(), $model->getAdminRoute(), $params);
     }
 
+    /**
+     * @return T
+     * @noinspection PhpDocSignatureInspection
+     */
     public function getModel(): Entry
     {
         return Entry::instance();

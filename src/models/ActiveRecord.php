@@ -165,7 +165,6 @@ abstract class ActiveRecord extends BaseActiveRecord implements DraftStatusAttri
         return $this->isEnabled();
     }
 
-
     public function attributeLabels(): array
     {
         return [
