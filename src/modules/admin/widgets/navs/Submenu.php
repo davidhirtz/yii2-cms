@@ -6,6 +6,7 @@ use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\Section;
+use davidhirtz\yii2\cms\modules\admin\helpers\FrontendLink;
 use davidhirtz\yii2\cms\modules\admin\Module;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\skeleton\helpers\Html;
@@ -381,39 +382,8 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
 
     protected function getUrl(): string
     {
-        if ($route = $this->model?->getRoute()) {
-            $manager = Yii::$app->getUrlManager();
-            $url = $this->isDraft() ? $manager->createDraftUrl($route) : $manager->createAbsoluteUrl($route);
-
-            $content = Html::a(Html::encode($url), $url, [
-                'style' => $this->isDisabled() ? 'text-decoration:line-through;' : null,
-                'target' => '_blank',
-            ]);
-
-            return Html::tag('div', $content, ['class' => 'small']);
-        }
-
-        return '';
-    }
-
-    protected function isDisabled(): bool
-    {
-        if ($this->model->isDisabled()) {
-            return true;
-        }
-
-        $entry = $this->isSection() ? $this->model->entry : $this->model;
-        return $entry->isDisabled() || $entry->parent_status == Entry::STATUS_DISABLED;
-    }
-
-    protected function isDraft(): bool
-    {
-        if ($this->model->isDraft()) {
-            return true;
-        }
-
-        $entry = $this->isSection() ? $this->model->entry : $this->model;
-        return $entry->isDraft() || $entry->parent_status == Entry::STATUS_DRAFT;
+        $link = $this->model ? FrontendLink::tag($this->model) : null;
+        return $link ? Html::tag('div', $link, ['class' => 'small']) : '';
     }
 
     protected function isSection(): bool

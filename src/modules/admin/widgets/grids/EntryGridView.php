@@ -7,6 +7,7 @@ use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\modules\admin\controllers\EntryCategoryController;
 use davidhirtz\yii2\cms\modules\admin\controllers\EntryController;
 use davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider;
+use davidhirtz\yii2\cms\modules\admin\helpers\FrontendLink;
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\columns\AssetCountColumn;
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\columns\EntryCountColumn;
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\columns\SectionCountColumn;
@@ -351,20 +352,8 @@ class EntryGridView extends GridView
 
     public function getUrl(Entry $entry): string
     {
-        if ($route = $entry->getRoute()) {
-            $urlManager = Yii::$app->getUrlManager();
-            $url = $entry->isEnabled() && !$entry->hasInvalidParentStatus()
-                ? $urlManager->createAbsoluteUrl($route)
-                : $urlManager->createDraftUrl($route);
-
-            if ($url) {
-                return Html::tag('div', Html::a($url, $url, ['target' => '_blank']), [
-                    'class' => 'd-none d-md-block small'
-                ]);
-            }
-        }
-
-        return '';
+        $link = FrontendLink::tag($entry);
+        return $link ? Html::tag('div', $link, ['class' => 'd-none d-md-block small']) : '';
     }
 
     /**

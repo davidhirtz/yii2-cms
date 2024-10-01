@@ -1,6 +1,7 @@
 ## 2.2.0 (in development)
 
 - Added `Entry::$parent_status`
+- Added `FrontendLink` helper widget
 - Enhanced `Section::$position` in `Sections` to be reset after visibility filter was applied
 - Fixed `EntryController::actionOrder()` authorization
 - Removed `ParentIdValidator` and replaced it with `Entry::validateParentId()`
