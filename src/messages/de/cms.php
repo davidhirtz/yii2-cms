@@ -83,6 +83,7 @@ return [
     'Parent category' => 'Übergeordnete Kategorie',
     'Parent entry' => 'Übergeordneter Eintrag',
     'Parent entry "{entry}" is not a menu item' => 'Der übergeordnete Eintrag "{entry}" ist kein Menüpunkt',
+    'Parent status' => 'Übergeordneter Status',
     'Please confirm that you want to make this entry the new homepage. This will deactivate the current homepage entry.' => 'Bitte bestätigen Sie, dass Sie diesen Eintrag zur neuen Startseite machen wollen. Der aktuelle Startseiten-Eintrag wird deaktiviert.',
     'Published' => 'Veröffentlichung',
     'Remove' => 'Entfernen',

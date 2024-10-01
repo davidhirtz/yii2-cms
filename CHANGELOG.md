@@ -1,4 +1,4 @@
-## 2.2.0 (in development)
+## 2.2.0 (Oct 2, 2024)
 
 - Added `Entry::$parent_status`
 - Added `FrontendLink` helper widget

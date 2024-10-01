@@ -490,7 +490,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
 
         if ($this->hasInvalidParentStatus()) {
             $parentStatus = static::getStatuses()[$this->parent_status]['name'] ?? '';
-            $status .= " ($parentStatus)";
+            $status .= " (" . $this->getAttributeLabel('parent_status') . ": $parentStatus)";
         }
 
         return $status;
@@ -603,6 +603,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
         return [
             ...parent::attributeLabels(),
             'parent_id' => Yii::t('cms', 'Parent entry'),
+            'parent_status' => Yii::t('cms', 'Parent status'),
             'slug' => Yii::t('cms', 'Url'),
             'title' => Yii::t('cms', 'Meta title'),
             'description' => Yii::t('cms', 'Meta description'),

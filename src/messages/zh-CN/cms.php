@@ -83,6 +83,7 @@ return [
     'Parent category' => '',
     'Parent entry' => '',
     'Parent entry "{entry}" is not a menu item' => '',
+    'Parent status' => '',
     'Please confirm that you want to make this entry the new homepage. This will deactivate the current homepage entry.' => '',
     'Published' => '',
     'Remove' => '',

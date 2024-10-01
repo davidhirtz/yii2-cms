@@ -4,6 +4,7 @@ namespace davidhirtz\yii2\cms\migrations;
 
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\skeleton\db\traits\MigrationTrait;
+use yii\db\Expression;
 use yii\db\Migration;
 
 /**
@@ -23,7 +24,8 @@ class M241001170341EntryParentStatus extends Migration
 
         $query = Entry::find()
             ->where(['>', 'entry_count', 0])
-            ->andWhere(['<', 'status', Entry::STATUS_ENABLED]);
+            ->andWhere(['<', 'status', Entry::STATUS_ENABLED])
+            ->orderBy(new Expression('[[path]] IS NULL, [[path]]'));
 
         /** @var Entry $parent */
         foreach ($query->each() as $parent) {
