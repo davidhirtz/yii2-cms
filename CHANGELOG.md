@@ -1,5 +1,6 @@
 ## 2.1.27 (in development)
 
+- Enhanced `Section::$position` in `Sections` to be reset after visibility filter was applied
 - Fixed `EntryController::actionOrder()` authorization
 
 ## 2.1.27 (Sep 6, 2024)

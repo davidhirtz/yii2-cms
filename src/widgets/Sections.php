@@ -47,8 +47,23 @@ class Sections extends Widget
 
     public function run(): string
     {
+        $this->prepareSections();
         $this->createSectionGroups();
+
         return implode('', $this->groups);
+    }
+
+    protected function prepareSections(): void
+    {
+        if (is_callable($this->isVisible)) {
+            $this->sections = array_filter($this->sections, $this->isVisible);
+        }
+
+        $position = 1;
+
+        foreach ($this->sections as $section) {
+            $section->position = $position++;
+        }
     }
 
     protected function createSectionGroups(): void
@@ -133,10 +148,6 @@ class Sections extends Widget
     protected function renderSectionsInternal(array $sections, ?string $viewFile = null): string
     {
         $viewFile ??= $this->getSectionViewFile(current($sections));
-
-        if (is_callable($this->isVisible)) {
-            $sections = array_filter($sections, $this->isVisible);
-        }
 
         return $viewFile && $sections
             ? $this->getView()->render($viewFile, [...$this->viewParams, 'sections' => $sections], $this)
