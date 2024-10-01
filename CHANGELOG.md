@@ -3,6 +3,7 @@
 - Added `Entry::$parent_status`
 - Enhanced `Section::$position` in `Sections` to be reset after visibility filter was applied
 - Fixed `EntryController::actionOrder()` authorization
+- Removed `ParentIdValidator` and replaced it with `Entry::validateParentId()`
 
 ## 2.1.27 (Sep 6, 2024)
 

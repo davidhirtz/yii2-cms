@@ -6,7 +6,6 @@ use davidhirtz\yii2\cms\models\queries\AssetQuery;
 use davidhirtz\yii2\cms\models\queries\EntryQuery;
 use davidhirtz\yii2\cms\models\queries\SectionQuery;
 use davidhirtz\yii2\cms\models\traits\SlugAttributeTrait;
-use davidhirtz\yii2\cms\models\validators\ParentIdValidator;
 use davidhirtz\yii2\cms\Module;
 use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\datetime\DateTimeValidator;
@@ -96,7 +95,8 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
                 ],
                 [
                     ['parent_id'],
-                    ParentIdValidator::class,
+                    $this->validateParentId(...),
+                    'skipOnEmpty' => false,
                 ],
                 [
                     ['slug'],
@@ -128,7 +128,23 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
         return parent::beforeValidate();
     }
 
-    public function validateSlug(): void
+    protected function validateParentId(): void
+    {
+        $this->parent_id = $this->parent_id && $this->hasParentEnabled() ? (int)$this->parent_id : null;
+
+        if ($this->isAttributeChanged('parent_id')) {
+            $parent = self::findOne($this->parent_id);
+
+            if ($this->parent_id && !$parent) {
+                $this->addInvalidAttributeError('parent_id');
+                return;
+            }
+
+            $this->populateParentRelation($parent);
+        }
+    }
+
+    protected function validateSlug(): void
     {
         if ($this->hasErrors('slug')) {
             return;
@@ -162,6 +178,10 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
             $this->path = $this->parent
                 ? ArrayHelper::createCacheString(ArrayHelper::cacheStringToArray($this->parent->path, $this->parent_id))
                 : null;
+
+            foreach ($this->getI18nAttributeNames('parent_slug') as $language => $attributeName) {
+                $this->{$attributeName} = $this->parent?->getFormattedSlug($language);
+            }
 
             $this->position = null;
         }
