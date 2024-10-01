@@ -418,6 +418,10 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
         return $this->hasRoute() ? array_filter(['/cms/site/view', 'slug' => $this->getFormattedSlug()]) : false;
     }
 
+    /**
+     * @return Asset[]
+     * @noinspection PhpUnused
+     */
     public function getVisibleAssets(): array
     {
         if (!$this->hasAssetsEnabled() || !$this->isAttributeVisible('#assets')) {

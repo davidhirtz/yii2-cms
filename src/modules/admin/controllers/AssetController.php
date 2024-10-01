@@ -75,8 +75,9 @@ class AssetController extends AbstractController
         ?int $type = null,
         ?string $q = null
     ): Response|string {
-        $parent = $section ? $this->findSection($section, Section::AUTH_SECTION_ASSET_UPDATE) :
-            $this->findEntry($entry, Entry::AUTH_ENTRY_ASSET_UPDATE);
+        $parent = $section
+            ? $this->findSection($section, Section::AUTH_SECTION_ASSET_UPDATE)
+            : $this->findEntry($entry, Entry::AUTH_ENTRY_ASSET_UPDATE);
 
         if ($parent instanceof Entry) {
             $parent->populateRelation('assets', $parent->getAssets()
