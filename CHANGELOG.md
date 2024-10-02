@@ -1,6 +1,7 @@
-## 2.2.1 (in development)
+## 2.2.1 (Oct 2, 2024)
 
 - Added URL schema to `MetaTags::registerHrefLangLinkTags()`
+- Fixed `FrontendLink` for usage with `Category` models
 
 ## 2.2.0 (Oct 2, 2024)
 

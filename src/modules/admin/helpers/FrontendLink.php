@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace davidhirtz\yii2\cms\modules\admin\helpers;
 
+use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\skeleton\helpers\Html;
@@ -9,13 +12,19 @@ use Yii;
 
 class FrontendLink
 {
-    protected readonly Entry $entry;
+    protected readonly ?Entry $entry;
 
     public function __construct(
-        protected readonly Entry|Section $model,
+        protected readonly Category|Entry|Section $model,
         protected array $options = [],
     ) {
-        $this->entry = $this->model instanceof Section ? $this->model->entry : $this->model;
+        if ($this->model instanceof Section) {
+            $this->entry = $this->model->entry;
+        } elseif ($this->model instanceof Entry) {
+            $this->entry = $this->model;
+        } else {
+            $this->entry = null;
+        }
     }
 
     public function __toString(): string
@@ -41,29 +50,29 @@ class FrontendLink
 
     protected function isDisabled(): bool
     {
-        if ($this->model->isDisabled()) {
-            return true;
+        if ($this->entry) {
+            return in_array(Entry::STATUS_DISABLED, [
+                $this->entry->status,
+                $this->entry->parent_status,
+            ]);
         }
 
-        return in_array(Entry::STATUS_DISABLED, [
-            $this->entry->status,
-            $this->entry->parent_status,
-        ]);
+        return $this->model->isDisabled();
     }
 
     protected function isDraft(): bool
     {
-        if ($this->model->isDraft()) {
-            return true;
+        if ($this->entry) {
+            return in_array(Entry::STATUS_DRAFT, [
+                $this->entry->status,
+                $this->entry->parent_status,
+            ]);
         }
 
-        return in_array(Entry::STATUS_DRAFT, [
-            $this->entry->status,
-            $this->entry->parent_status,
-        ]);
+        return $this->model->isDraft();
     }
 
-    public static function tag(Entry|Section $model, array $options = []): string
+    public static function tag(Category|Entry|Section $model, array $options = []): string
     {
         $link = Yii::$container->get(FrontendLink::class, [
             'model' => $model,
