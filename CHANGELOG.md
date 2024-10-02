@@ -1,3 +1,7 @@
+## 2.2.1 (in development)
+
+- Added URL schema to `MetaTags::registerHrefLangLinkTags()`
+
 ## 2.2.0 (Oct 2, 2024)
 
 - Added `Entry::$parent_status`

@@ -118,7 +118,7 @@ class MetaTags extends Widget
         foreach ($this->languages as $language) {
             Yii::$app->getI18n()->callback($language, function () use ($language) {
                 if ($route = $this->model->getRoute()) {
-                    $url = Yii::$app->getUrlManager()->createAbsoluteUrl($route, '');
+                    $url = Yii::$app->getUrlManager()->createAbsoluteUrl($route);
                     $this->getView()->registerHrefLangLinkTag($language, $url);
                 }
             });
