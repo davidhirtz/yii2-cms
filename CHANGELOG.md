@@ -1,3 +1,7 @@
+# 2.2.2 (Oct 21, 2024)
+
+- Fixed `M241001170341EntryParentStatus` for I18N tables
+
 ## 2.2.1 (Oct 2, 2024)
 
 - Added URL schema to `MetaTags::registerHrefLangLinkTags()`
