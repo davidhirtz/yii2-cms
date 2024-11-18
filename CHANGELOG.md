@@ -1,4 +1,8 @@
-# 2.2.2 (Oct 21, 2024)
+## 2.2.3 (Nov 18, 2024) 
+
+- Fixed default value for `Canvas::$embedViewFile`
+
+## 2.2.2 (Oct 21, 2024)
 
 - Fixed `M241001170341EntryParentStatus` for I18N tables
 

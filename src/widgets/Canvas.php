@@ -29,7 +29,7 @@ class Canvas extends Widget
     public bool $setWrapperHeightWithAspectRatio = true;
 
     public int|false $lazyLoadingParentPosition = 2;
-    public string $embedViewFile = '/widgets/_embed';
+    public string $embedViewFile = 'widgets/_embed';
 
     public function init(): void
     {
