@@ -8,9 +8,10 @@ use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\skeleton\helpers\Html;
+use Stringable;
 use Yii;
 
-class FrontendLink
+class FrontendLink implements Stringable
 {
     protected readonly ?Entry $entry;
 
