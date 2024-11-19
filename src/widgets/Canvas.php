@@ -3,6 +3,7 @@
 namespace davidhirtz\yii2\cms\widgets;
 
 use davidhirtz\yii2\cms\models\Asset;
+use davidhirtz\yii2\media\helpers\AspectRatio;
 use davidhirtz\yii2\media\helpers\Html;
 use davidhirtz\yii2\media\widgets\Picture;
 use davidhirtz\yii2\skeleton\widgets\Widget;
@@ -155,21 +156,6 @@ class Canvas extends Widget
 
     protected function getAspectRatio(): string
     {
-        $width = $this->asset->file->width;
-        $height = $this->asset->file->height;
-
-        $gcd = $this->getGreatestCommonDivisor($width, $height);
-
-        $smallestWidth = $width / $gcd;
-        $smallestHeight = $height / $gcd;
-
-        return "$smallestWidth/$smallestHeight";
-    }
-
-    protected function getGreatestCommonDivisor(int $width, int $height)
-    {
-        return $height !== 0
-            ? $this->getGreatestCommonDivisor($height, $width % $height)
-            : $width;
+        return (string)(new AspectRatio($this->asset->file));
     }
 }

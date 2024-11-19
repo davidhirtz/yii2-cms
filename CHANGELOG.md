@@ -1,5 +1,7 @@
-## 2.2.3 (Nov 18, 2024) 
 
+## 2.2.3 (Nov 19, 2024) 
+
+- Added `AspectRatio` helper
 - Fixed default value for `Canvas::$embedViewFile`
 
 ## 2.2.2 (Oct 21, 2024)
