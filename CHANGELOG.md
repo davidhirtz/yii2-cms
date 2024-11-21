@@ -1,3 +1,6 @@
+## 2.2.4 (in development)
+
+- Enhanced `CategoryGridTrait::getUrl()`
 
 ## 2.2.3 (Nov 19, 2024) 
 

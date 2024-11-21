@@ -4,6 +4,7 @@ namespace davidhirtz\yii2\cms\modules\admin\widgets\grids\traits;
 
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider;
+use davidhirtz\yii2\cms\modules\admin\helpers\FrontendLink;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grids\columns\CounterColumn;
@@ -100,16 +101,8 @@ trait CategoryGridTrait
 
     public function getUrl(Category $category): string
     {
-        if ($route = $category->getRoute()) {
-            $urlManager = Yii::$app->getUrlManager();
-            $url = $category->isEnabled() ? $urlManager->createAbsoluteUrl($route) : $urlManager->createDraftUrl($route);
-
-            if ($url) {
-                return Html::tag('div', Html::a($url, $url, ['target' => '_blank']), ['class' => 'd-none d-md-block small']);
-            }
-        }
-
-        return '';
+        $link = FrontendLink::tag($category);
+        return $link ? Html::tag('div', $link, ['class' => 'd-none d-md-block small']) : '';
     }
 
     protected function getCategoryAncestors(Category $category): string
