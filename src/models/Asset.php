@@ -5,8 +5,7 @@ namespace davidhirtz\yii2\cms\models;
 use davidhirtz\yii2\cms\models\queries\AssetQuery;
 use davidhirtz\yii2\cms\models\traits\EntryRelationTrait;
 use davidhirtz\yii2\cms\models\traits\SectionRelationTrait;
-use davidhirtz\yii2\cms\modules\admin\Module;
-use davidhirtz\yii2\cms\modules\admin\widgets\grids\AssetParentGridView;
+use davidhirtz\yii2\cms\modules\admin\widgets\panels\AssetFilePanel;
 use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\media\models\interfaces\AssetInterface;
 use davidhirtz\yii2\media\models\traits\AssetTrait;
@@ -102,7 +101,7 @@ class Asset extends ActiveRecord implements AssetInterface, DraftStatusAttribute
                 $this->updateParentAfterInsert();
             }
 
-            $this->updateOrDeleteFileByAssetCount();
+            $this->updateFileRelatedCount();
         } elseif ($changedAttributes) {
             $this->parent->updated_at = $this->updated_at;
             $this->parent->update();
@@ -119,7 +118,9 @@ class Asset extends ActiveRecord implements AssetInterface, DraftStatusAttribute
             $this->updateParentAfterDelete();
         }
 
-        $this->updateOrDeleteFileByAssetCount();
+        if (!$this->file->isDeleted()) {
+            $this->updateFileRelatedCount();
+        }
 
         parent::afterDelete();
     }
@@ -161,10 +162,28 @@ class Asset extends ActiveRecord implements AssetInterface, DraftStatusAttribute
         return $this->updateParentAssetCount();
     }
 
+    public function updateFileRelatedCount(): bool|int
+    {
+        $attributeName = static::getModule()->enableI18nTables
+            ? Yii::$app->getI18n()->getAttributeName('cms_asset_count')
+            : 'cms_asset_count';
+
+        $this->file->$attributeName = self::find()->where(['file_id' => $this->file_id])->count();
+        return $this->file->update();
+    }
+
     protected function updateParentAssetCount(): bool|int
     {
         $this->parent->asset_count = $this->findSiblings()->count();
         return $this->parent->update();
+    }
+
+    public function getTrailAttributes(): array
+    {
+        return array_diff($this->attributes(), [
+            // Used by `yii2-cms-hotspot` extension
+            'hotspot_count',
+        ]);
     }
 
     public function getSitemapUrl(?string $language = null): array|false
@@ -196,24 +215,17 @@ class Asset extends ActiveRecord implements AssetInterface, DraftStatusAttribute
         return $this->section_id ? $this->section : $this->entry;
     }
 
-    /**
-     * @return class-string
-     */
-    public function getParentGridView(): string
+    public function getFilePanelClass(): string
     {
-        return AssetParentGridView::class;
+        return AssetFilePanel::class;
     }
 
-    public function getParentName(): string
+    public function getFileCountAttributeNames(): array
     {
-        /** @var Module $module */
-        $module = Yii::$app->getModule('admin')->getModule('cms');
-        return $module->getName();
-    }
+        $languages = static::getModule()->getLanguages();
+        $attributes = array_map(fn ($lang) => Yii::$app->getI18n()->getAttributeName('cms_asset_count', $lang), $languages);
 
-    public function getFileCountAttribute(): string
-    {
-        return static::getModule()->enableI18nTables ? Yii::$app->getI18n()->getAttributeName('cms_asset_count') : 'cms_asset_count';
+        return array_combine($languages, $attributes);
     }
 
     public function getAdminRoute(): false|array

@@ -7,6 +7,7 @@ use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\media\models\File;
 use davidhirtz\yii2\skeleton\helpers\Html;
+use davidhirtz\yii2\skeleton\modules\admin\widgets\grids\columns\CounterColumn;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grids\GridView;
 use davidhirtz\yii2\skeleton\widgets\fontawesome\Icon;
 use davidhirtz\yii2\timeago\TimeagoColumn;
@@ -19,22 +20,29 @@ use yii\db\ActiveRecordInterface;
  */
 class AssetParentGridView extends GridView
 {
-    /**
-     * @var File|null the file to display assets from
-     */
-    public ?File $file = null;
+    public File $file;
+    public string $language;
 
     public $showHeader = false;
     public $layout = '{items}{pager}';
 
     public function init(): void
     {
-        $this->dataProvider ??= new ActiveDataProvider([
-            'query' => Asset::find()
-                ->where(['file_id' => $this->file->id])
-                ->with(['entry', 'section'])
-                ->orderBy(['updated_at' => SORT_DESC]),
-        ]);
+        Yii::$app->getI18n()->callback($this->language, function () {
+            $this->dataProvider ??= new ActiveDataProvider([
+                'query' => Asset::find()
+                    ->where(['file_id' => $this->file->id])
+                    ->with(['entry', 'section'])
+                    ->orderBy(['updated_at' => SORT_DESC]),
+            ]);
+
+            $this->dataProvider->pagination->pageParam = "cms-asset-page-$this->language";
+
+            /** @var Asset $asset */
+            foreach ($this->dataProvider->getModels() as $asset) {
+                $asset->populateRelation('file', $this->file);
+            }
+        });
 
         if (!$this->columns) {
             $this->columns = [
@@ -47,10 +55,6 @@ class AssetParentGridView extends GridView
             ];
         }
 
-        /** @var Asset $asset */
-        foreach ($this->dataProvider->getModels() as $asset) {
-            $asset->populateRelation('file', $this->file);
-        }
 
         parent::init();
     }
@@ -91,9 +95,9 @@ class AssetParentGridView extends GridView
     public function assetCountColumn(): array
     {
         return [
-            'headerOptions' => ['class' => 'd-none d-md-table-cell text-center'],
-            'contentOptions' => ['class' => 'd-none d-md-table-cell text-center'],
-            'content' => fn (Asset $asset) => Html::a(Yii::$app->getFormatter()->asInteger($asset->getParent()->asset_count), $this->getRoute($asset), ['class' => 'badge'])
+            'attribute' => 'parent.asset_count',
+            'class' => CounterColumn::class,
+            'route' => fn (Asset $asset) => $this->getRoute($asset),
         ];
     }
 
@@ -114,7 +118,7 @@ class AssetParentGridView extends GridView
                 $buttons = [];
 
                 if ($user->can($asset->isEntryAsset() ? Entry::AUTH_ENTRY_ASSET_UPDATE : Section::AUTH_SECTION_ASSET_UPDATE, ['asset' => $asset])) {
-                    $buttons[] = Html::a(Icon::tag('wrench'), ['cms/asset/update', 'id' => $asset->id], [
+                    $buttons[] = Html::a(Icon::tag('wrench'), $this->getI18nRoute(['cms/asset/update', 'id' => $asset->id]), [
                         'class' => 'btn btn-primary',
                         'data-toggle' => 'tooltip',
                         'title' => Yii::t('cms', 'Edit Asset'),
@@ -122,7 +126,7 @@ class AssetParentGridView extends GridView
                 }
 
                 if ($user->can($asset->isEntryAsset() ? Entry::AUTH_ENTRY_ASSET_DELETE : Section::AUTH_SECTION_ASSET_DELETE, ['asset' => $asset])) {
-                    $buttons[] = Html::a(Icon::tag('trash'), ['cms/asset/delete', 'id' => $asset->id], [
+                    $buttons[] = Html::a(Icon::tag('trash'), $this->getI18nRoute(['cms/asset/delete', 'id' => $asset->id]), [
                         'class' => 'btn btn-danger btn-delete-asset d-none d-md-inline-block',
                         'data-confirm' => Yii::t('cms', 'Are you sure you want to remove this asset?'),
                         'data-ajax' => 'remove',
@@ -142,17 +146,35 @@ class AssetParentGridView extends GridView
 
         if ($model->isEntryAsset()) {
             if ($user->can(Entry::AUTH_ENTRY_UPDATE, ['entry' => $parent])) {
-                return ['/admin/entry/update', 'id' => $parent->id, '#' => 'asset-' . $model->id, ...$params];
+                return $this->getI18nRoute([
+                    '/admin/entry/update',
+                    'id' => $parent->id,
+                    '#' => 'asset-' . $model->id,
+                    ...$params
+                ]);
             }
         }
 
         if ($model->isSectionAsset()) {
             if ($user->can(Section::AUTH_SECTION_UPDATE, ['section' => $parent])) {
-                return ['/admin/section/update', 'id' => $parent->id, '#' => 'asset-' . $model->id, ...$params];
+                return $this->getI18nRoute([
+                    '/admin/section/update',
+                    'id' => $parent->id,
+                    '#' => 'asset-' . $model->id,
+                    ...$params
+                ]);
             }
         }
 
         return false;
+    }
+
+    protected function getI18nRoute(array $route): array
+    {
+        return [
+            ...$route,
+            'language' => $this->language !== Yii::$app->language ? $this->language : null,
+        ];
     }
 
     public function getModel(): Asset

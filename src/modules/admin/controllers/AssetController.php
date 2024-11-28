@@ -72,7 +72,6 @@ class AssetController extends AbstractController
         ?int $entry = null,
         ?int $section = null,
         ?int $folder = null,
-        ?int $type = null,
         ?string $q = null
     ): Response|string {
         $parent = $section
@@ -87,7 +86,6 @@ class AssetController extends AbstractController
 
         $provider = Yii::$container->get(FileActiveDataProvider::class, [], [
             'folder' => Folder::findOne($folder),
-            'type' => $type,
             'search' => $q,
         ]);
 

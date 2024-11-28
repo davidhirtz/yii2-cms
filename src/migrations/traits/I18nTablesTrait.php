@@ -18,6 +18,6 @@ trait I18nTablesTrait
 
     protected function getLanguages(): array
     {
-        return static::getModule()->enableI18nTables ? Yii::$app->getI18n()->getLanguages() : [Yii::$app->language];
+        return static::getModule()->getLanguages();
     }
 }

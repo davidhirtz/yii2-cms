@@ -9,7 +9,6 @@ use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\media\models\File;
 use davidhirtz\yii2\skeleton\db\traits\MigrationTrait;
 use davidhirtz\yii2\skeleton\models\User;
-use Yii;
 
 use yii\db\Migration;
 
@@ -86,23 +85,26 @@ class M190321092544Asset extends Migration
                 'id',
                 'SET NULL'
             );
+        });
 
-            $columnName = static::getModule()->enableI18nTables
-                ? Yii::$app->getI18n()->getAttributeName('cms_asset_count')
-                : 'cms_asset_count';
+        $after = 'transformation_count';
 
-            $this->addColumn(File::tableName(), $columnName, $this->smallInteger()
+        foreach (Asset::instance()->getFileCountAttributeNames() as $attributeName) {
+            $this->addColumn(File::tableName(), $attributeName, $this->smallInteger()
                 ->notNull()
                 ->defaultValue(0)
-                ->after('transformation_count'));
-        });
+                ->after($after));
+
+            $after = $attributeName;
+        }
     }
 
     public function safeDown(): void
     {
-        $this->i18nTablesCallback(function () {
-            $this->dropI18nColumns(File::tableName(), ['cms_asset_count']);
-            $this->dropTable(Asset::tableName());
-        });
+        foreach (Asset::instance()->getFileCountAttributeNames() as $attributeName) {
+            $this->dropColumn(File::tableName(), $attributeName);
+        }
+
+        $this->i18nTablesCallback(fn () => $this->dropTable(Asset::tableName()));
     }
 }

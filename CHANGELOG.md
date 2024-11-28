@@ -1,8 +1,14 @@
-## 2.2.4 (in development)
+## 2.3.0 (in development)
 
+- Added `AssetFilePanel` for `yii2-media` version 2.2 to display I18N assets in file view
+- Added `FileBeforeDeleteEventHandler`
 - Enhanced `CategoryGridTrait::getUrl()`
+- Removed `Asset::getParentName()`
+- Renamed `Asset::getParentGridView()` to `Asset::getFilePanelClass()`
+- Replaced `Asset::updateOrDeleteFileByAssetCount()` with `Asset::updateFileRelatedCount()`
+- Replaced `Asset::getFileCountAttribute()` with `Asset::getFileCountAttributeNames()`
 
-## 2.2.3 (Nov 19, 2024) 
+## 2.2.3 (Nov 19, 2024)
 
 - Added `AspectRatio` helper
 - Fixed default value for `Canvas::$embedViewFile`
