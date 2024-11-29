@@ -7,7 +7,7 @@ namespace davidhirtz\yii2\cms\models;
 use davidhirtz\yii2\cms\models\queries\AssetQuery;
 use davidhirtz\yii2\cms\models\traits\EntryRelationTrait;
 use davidhirtz\yii2\cms\models\traits\SectionRelationTrait;
-use davidhirtz\yii2\cms\modules\admin\widgets\panels\AssetFilePanel;
+use davidhirtz\yii2\cms\modules\admin\widgets\panels\FileAssetParentPanel;
 use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\media\models\interfaces\AssetInterface;
 use davidhirtz\yii2\media\models\traits\AssetTrait;
@@ -219,7 +219,7 @@ class Asset extends ActiveRecord implements AssetInterface, DraftStatusAttribute
 
     public function getFilePanelClass(): string
     {
-        return AssetFilePanel::class;
+        return FileAssetParentPanel::class;
     }
 
     public function getFileCountAttributeNames(): array

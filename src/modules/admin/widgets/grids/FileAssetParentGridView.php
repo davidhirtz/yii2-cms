@@ -20,7 +20,7 @@ use yii\db\ActiveRecordInterface;
 /**
  * @extends GridView<Asset>
  */
-class AssetParentGridView extends GridView
+class FileAssetParentGridView extends GridView
 {
     public File $file;
     public string $language;

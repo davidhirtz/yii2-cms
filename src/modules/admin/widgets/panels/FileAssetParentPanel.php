@@ -6,13 +6,13 @@ namespace davidhirtz\yii2\cms\modules\admin\widgets\panels;
 
 use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\cms\modules\admin\Module;
-use davidhirtz\yii2\cms\modules\admin\widgets\grids\AssetParentGridView;
+use davidhirtz\yii2\cms\modules\admin\widgets\grids\FileAssetParentGridView;
 use davidhirtz\yii2\media\models\File;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
 use Yii;
 use yii\base\Widget;
 
-class AssetFilePanel extends Widget
+class FileAssetParentPanel extends Widget
 {
     public File $file;
 
@@ -22,7 +22,7 @@ class AssetFilePanel extends Widget
             if ($this->file->$attributeName) {
                 echo Panel::widget([
                     'title' => $this->getTitle($language),
-                    'content' => AssetParentGridView::widget([
+                    'content' => FileAssetParentGridView::widget([
                         'file' => $this->file,
                         'language' => $language,
                     ]),

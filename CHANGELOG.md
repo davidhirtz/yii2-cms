@@ -1,3 +1,8 @@
+## 2.3.1 (in development)
+
+- Renamed `AssetParentGridView` to `FileAssetParentGridView`
+- Renamed `AssetFilePanel` to `FileAssetParentPanel`
+
 ## 2.3.0 (Nov 29, 2024)
 
 - Added `AssetFilePanel` for `yii2-media` version 2.2 to display I18N assets in file view
