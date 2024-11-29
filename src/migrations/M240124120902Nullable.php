@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace davidhirtz\yii2\cms\migrations;
 
 use davidhirtz\yii2\cms\migrations\traits\I18nTablesTrait;
@@ -21,7 +23,7 @@ class M240124120902Nullable extends Migration
     {
         $this->i18nTablesCallback(function () {
             foreach (Category::instance()->getI18nAttributeNames('title') as $attribute) {
-                $this->alterColumn(Category::instance()->tableName(), $attribute, $this->string(255)
+                $this->alterColumn(Category::instance()->tableName(), $attribute, (string)$this->string(255)
                     ->null()
                     ->defaultValue(null));
 
@@ -30,7 +32,7 @@ class M240124120902Nullable extends Migration
 
             foreach (['parent_slug', 'title'] as $name) {
                 foreach (Entry::instance()->getI18nAttributeNames($name) as $attribute) {
-                    $this->alterColumn(Entry::instance()->tableName(), $attribute, $this->string(255)
+                    $this->alterColumn(Entry::instance()->tableName(), $attribute, (string)$this->string(255)
                         ->null()
                         ->defaultValue(null));
 

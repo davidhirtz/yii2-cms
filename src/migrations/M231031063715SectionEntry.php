@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace davidhirtz\yii2\cms\migrations;
 
 use davidhirtz\yii2\cms\migrations\traits\I18nTablesTrait;
@@ -70,7 +72,7 @@ class M231031063715SectionEntry extends Migration
                 'SET NULL'
             );
 
-            $this->addColumn(Section::tableName(), 'entry_count', $this->smallInteger()
+            $this->addColumn(Section::tableName(), 'entry_count', (string)$this->smallInteger()
                 ->unsigned()
                 ->notNull()
                 ->defaultValue(0)

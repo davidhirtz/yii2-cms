@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace davidhirtz\yii2\cms\migrations;
 
 use davidhirtz\yii2\cms\migrations\traits\I18nTablesTrait;
@@ -28,7 +30,7 @@ class M231101194837Parent extends Migration
             $tableSchema = $schema->getTableSchema(Entry::tableName());
 
             if (!$tableSchema->getColumn('parent_id')) {
-                $this->addColumn(Entry::tableName(), 'parent_id', $this->integer()
+                $this->addColumn(Entry::tableName(), 'parent_id', (string)$this->integer()
                     ->unsigned()
                     ->null()
                     ->after('type'));
@@ -44,13 +46,13 @@ class M231101194837Parent extends Migration
             }
 
             if (!$tableSchema->getColumn('path')) {
-                $this->addColumn(Entry::tableName(), 'path', $this->string()
+                $this->addColumn(Entry::tableName(), 'path', (string)$this->string()
                     ->null()
                     ->after('position'));
             }
 
             if (!$tableSchema->getColumn('entry_count')) {
-                $this->addColumn(Entry::tableName(), 'entry_count', $this->integer()
+                $this->addColumn(Entry::tableName(), 'entry_count', (string)$this->integer()
                     ->unsigned()
                     ->notNull()
                     ->defaultValue(0)
@@ -58,7 +60,7 @@ class M231101194837Parent extends Migration
             }
 
             if (!$tableSchema->getColumn('parent_slug')) {
-                $this->addColumn(Entry::tableName(), 'parent_slug', $this->string()
+                $this->addColumn(Entry::tableName(), 'parent_slug', (string)$this->string()
                     ->null()
                     ->after('slug'));
 

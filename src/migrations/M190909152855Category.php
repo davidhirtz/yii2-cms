@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace davidhirtz\yii2\cms\migrations;
 
 use davidhirtz\yii2\cms\migrations\traits\I18nTablesTrait;
@@ -113,7 +115,9 @@ class M190909152855Category extends Migration
                 'SET NULL'
             );
 
-            $this->addColumn(Entry::tableName(), 'category_ids', $this->text()->null()->after('publish_date'));
+            $this->addColumn(Entry::tableName(), 'category_ids', (string)$this->text()
+                ->null()
+                ->after('publish_date'));
         });
     }
 

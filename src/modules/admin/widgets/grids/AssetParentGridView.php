@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace davidhirtz\yii2\cms\modules\admin\widgets\grids;
 
 use davidhirtz\yii2\cms\models\Asset;
@@ -118,7 +120,7 @@ class AssetParentGridView extends GridView
                 $buttons = [];
 
                 if ($user->can($asset->isEntryAsset() ? Entry::AUTH_ENTRY_ASSET_UPDATE : Section::AUTH_SECTION_ASSET_UPDATE, ['asset' => $asset])) {
-                    $buttons[] = Html::a(Icon::tag('wrench'), $this->getI18nRoute(['cms/asset/update', 'id' => $asset->id]), [
+                    $buttons[] = Html::a((string)Icon::tag('wrench'), $this->getI18nRoute(['cms/asset/update', 'id' => $asset->id]), [
                         'class' => 'btn btn-primary',
                         'data-toggle' => 'tooltip',
                         'title' => Yii::t('cms', 'Edit Asset'),
@@ -126,7 +128,7 @@ class AssetParentGridView extends GridView
                 }
 
                 if ($user->can($asset->isEntryAsset() ? Entry::AUTH_ENTRY_ASSET_DELETE : Section::AUTH_SECTION_ASSET_DELETE, ['asset' => $asset])) {
-                    $buttons[] = Html::a(Icon::tag('trash'), $this->getI18nRoute(['cms/asset/delete', 'id' => $asset->id]), [
+                    $buttons[] = Html::a((string)Icon::tag('trash'), $this->getI18nRoute(['cms/asset/delete', 'id' => $asset->id]), [
                         'class' => 'btn btn-danger btn-delete-asset d-none d-md-inline-block',
                         'data-confirm' => Yii::t('cms', 'Are you sure you want to remove this asset?'),
                         'data-ajax' => 'remove',

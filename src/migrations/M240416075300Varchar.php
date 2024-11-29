@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace davidhirtz\yii2\cms\migrations;
 
 use davidhirtz\yii2\cms\migrations\traits\I18nTablesTrait;
@@ -19,27 +21,27 @@ class M240416075300Varchar extends Migration
     {
         $this->i18nTablesCallback(function () {
             foreach (Category::instance()->getI18nAttributeNames('name') as $attribute) {
-                $this->alterColumn(Category::tableName(), $attribute, $this->string()->notNull());
+                $this->alterColumn(Category::tableName(), $attribute, (string)$this->string()->notNull());
             }
 
             foreach (Category::instance()->getI18nAttributeNames('description') as $attribute) {
-                $this->alterColumn(Category::tableName(), $attribute, $this->string()->null());
+                $this->alterColumn(Category::tableName(), $attribute, (string)$this->string()->null());
             }
 
             foreach (Entry::instance()->getI18nAttributeNames('name') as $attribute) {
-                $this->alterColumn(Entry::tableName(), $attribute, $this->string()->notNull());
+                $this->alterColumn(Entry::tableName(), $attribute, (string)$this->string()->notNull());
             }
 
             foreach (Entry::instance()->getI18nAttributeNames('description') as $attribute) {
-                $this->alterColumn(Entry::tableName(), $attribute, $this->string()->null());
+                $this->alterColumn(Entry::tableName(), $attribute, (string)$this->string()->null());
             }
 
             foreach (Section::instance()->getI18nAttributeNames('name') as $attribute) {
-                $this->alterColumn(Section::tableName(), $attribute, $this->string()->null());
+                $this->alterColumn(Section::tableName(), $attribute, (string)$this->string()->null());
             }
 
             foreach (Asset::instance()->getI18nAttributesNames(['name', 'alt_text', 'link']) as $attribute) {
-                $this->alterColumn(Asset::tableName(), $attribute, $this->string()->null());
+                $this->alterColumn(Asset::tableName(), $attribute, (string)$this->string()->null());
             }
         });
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace davidhirtz\yii2\cms\modules\admin\widgets\grids\columns;
 
 use davidhirtz\yii2\cms\models\Entry;
@@ -39,7 +41,7 @@ class MenuColumn extends Column
     protected function renderDataCellContent($model, $key, $index): string
     {
         if ($this->getIsMenuItem($model)) {
-            return Icon::solid('stream', [
+            return (string)Icon::solid('stream', [
                 'title' => $model->getAttributeLabel('show_in_menu'),
                 'data-toggle' => 'tooltip',
             ]);

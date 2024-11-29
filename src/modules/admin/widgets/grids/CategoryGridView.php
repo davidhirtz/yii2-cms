@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace davidhirtz\yii2\cms\modules\admin\widgets\grids;
 
 use davidhirtz\yii2\cms\models\Category;
@@ -87,10 +89,10 @@ class CategoryGridView extends GridView
                 $buttons = [];
 
                 if ($this->isSortedByPosition()) {
-                    $buttons[] = Html::tag('span', Icon::tag('arrows-alt'), ['class' => 'btn btn-secondary sortable-handle']);
+                    $buttons[] = Html::tag('span', (string)Icon::tag('arrows-alt'), ['class' => 'btn btn-secondary sortable-handle']);
                 }
 
-                $buttons[] = Html::a(Icon::tag('wrench'), ['update', 'id' => $category->id], ['class' => 'btn btn-primary d-none d-md-inline-block']);
+                $buttons[] = Html::a((string)Icon::tag('wrench'), ['update', 'id' => $category->id], ['class' => 'btn btn-primary d-none d-md-inline-block']);
                 return Html::buttons($buttons);
             }
         ];

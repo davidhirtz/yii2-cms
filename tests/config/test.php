@@ -22,6 +22,9 @@ return [
             'class' => Session::class,
         ],
     ],
+    'modules' => [
+        'enableI18nTables' => true,
+    ],
     'params' => [
         'cookieValidationKey' => 'test',
     ],

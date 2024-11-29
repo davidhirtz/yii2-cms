@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace davidhirtz\yii2\cms\modules\admin\widgets\grids;
 
 use davidhirtz\yii2\cms\models\Entry;
@@ -94,7 +96,7 @@ class SectionLinkedEntryGridView extends EntryGridView
     {
         $route = ['section-entry/delete', 'section' => $this->dataProvider->section->id, 'entry' => $model->id];
 
-        return Html::a(Icon::tag('ban'), $route, [
+        return Html::a((string)Icon::tag('ban'), $route, [
             'class' => 'btn btn-primary',
             'title' => Yii::t('cms', 'Remove from section'),
             'data-toggle' => 'tooltip',

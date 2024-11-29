@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace davidhirtz\yii2\cms\modules\admin\widgets\grids;
 
 use davidhirtz\yii2\cms\models\Category;
@@ -86,7 +88,7 @@ class EntryCategoryGridView extends GridView
                     'category' => $category->id,
                 ];
 
-                return Html::buttons(Html::a(Icon::tag($category->entryCategory ? 'ban' : 'star'), $route, [
+                return Html::buttons(Html::a((string)Icon::tag($category->entryCategory ? 'ban' : 'star'), $route, [
                     'class' => 'btn btn-primary',
                     'data-method' => 'post',
                 ]));

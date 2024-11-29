@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace davidhirtz\yii2\cms\migrations;
 
 use davidhirtz\yii2\cms\migrations\traits\I18nTablesTrait;
@@ -90,7 +92,7 @@ class M190321092544Asset extends Migration
         $after = 'transformation_count';
 
         foreach (Asset::instance()->getFileCountAttributeNames() as $attributeName) {
-            $this->addColumn(File::tableName(), $attributeName, $this->smallInteger()
+            $this->addColumn(File::tableName(), $attributeName, (string)$this->smallInteger()
                 ->notNull()
                 ->defaultValue(0)
                 ->after($after));

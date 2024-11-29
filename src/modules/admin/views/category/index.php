@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * Categories.
  * @see \davidhirtz\yii2\cms\modules\admin\controllers\CategoryController::actionIndex()

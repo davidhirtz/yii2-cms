@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace davidhirtz\yii2\cms\models\traits;
 
 use davidhirtz\yii2\cms\models\Entry;
 use Yii;
 
 /**
- * @property bool $show_in_menu
+ * @property bool|string $show_in_menu
  * @mixin Entry
  */
 trait MenuAttributeTrait
@@ -35,6 +37,6 @@ trait MenuAttributeTrait
 
     public function isMenuItem(): bool
     {
-        return $this->show_in_menu;
+        return (bool)$this->show_in_menu;
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace davidhirtz\yii2\cms\migrations;
 
 use davidhirtz\yii2\cms\migrations\traits\I18nTablesTrait;
@@ -18,7 +20,7 @@ class M241001170341EntryParentStatus extends Migration
     public function safeUp(): void
     {
         $this->i18nTablesCallback(function () {
-            $this->addColumn(Entry::tableName(), 'parent_status', $this->tinyInteger()
+            $this->addColumn(Entry::tableName(), 'parent_status', (string)$this->tinyInteger()
                 ->notNull()
                 ->defaultValue(Entry::STATUS_DEFAULT)
                 ->after('status'));

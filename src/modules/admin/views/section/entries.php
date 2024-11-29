@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * Section entries.
  * @see \davidhirtz\yii2\cms\modules\admin\controllers\SectionController::actionEntries()

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace davidhirtz\yii2\cms\modules\admin\widgets\grids;
 
 use davidhirtz\yii2\cms\models\Entry;
@@ -42,7 +44,7 @@ class SectionEntryGridView extends EntryGridView
             ];
 
             $buttons = [
-                Html::a(Icon::tag('ban'), ['section-entry/delete'] + $route, [
+                Html::a((string)Icon::tag('ban'), ['section-entry/delete'] + $route, [
                     'class' => 'btn btn-primary is-selected-block',
                     'title' => Yii::t('cms', 'Remove from section'),
                     'data-toggle' => 'tooltip',
@@ -54,7 +56,7 @@ class SectionEntryGridView extends EntryGridView
             $allowedTypes = $this->dataProvider->section->getEntriesTypes();
 
             if (!$allowedTypes || in_array($entry->type, $allowedTypes)) {
-                $buttons[] = Html::a(Icon::tag('star'), ['section-entry/create'] + $route, [
+                $buttons[] = Html::a((string)Icon::tag('star'), ['section-entry/create'] + $route, [
                     'class' => 'btn btn-primary is-selected-hidden',
                     'title' => Yii::t('cms', 'Add to section'),
                     'data-toggle' => 'tooltip',

@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace davidhirtz\yii2\cms\modules\admin\widgets\forms\traits;
 
 use davidhirtz\yii2\cms\modules\admin\widgets\forms\fields\CategoryParentIdDropDown;
-use davidhirtz\yii2\skeleton\widgets\fontawesome\ActiveField;
 use Yii;
+use yii\widgets\ActiveField;
 
 trait CategoryParentIdFieldTrait
 {

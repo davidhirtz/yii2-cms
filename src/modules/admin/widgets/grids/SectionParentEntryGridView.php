@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace davidhirtz\yii2\cms\modules\admin\widgets\grids;
 
 use davidhirtz\yii2\cms\models\Entry;
@@ -40,13 +42,13 @@ class SectionParentEntryGridView extends EntryGridView
             ];
 
             if ($user->can(Section::AUTH_SECTION_UPDATE, ['section' => $this->section])) {
-                $buttons[] = Html::a(Icon::tag('copy'), ['move'] + $route, [
+                $buttons[] = Html::a((string)Icon::tag('copy'), ['move'] + $route, [
                     ...$options,
                     'title' => Yii::t('cms', 'Move Section'),
                 ]);
             }
 
-            $buttons[] = Html::a(Icon::tag('paste'), ['duplicate'] + $route, [
+            $buttons[] = Html::a((string)Icon::tag('paste'), ['duplicate'] + $route, [
                 ...$options,
                 'title' => Yii::t('cms', 'Copy Section'),
             ]);

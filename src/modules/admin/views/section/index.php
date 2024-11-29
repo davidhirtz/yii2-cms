@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * Sections.
  * @see \davidhirtz\yii2\cms\modules\admin\controllers\SectionController::actionIndex()

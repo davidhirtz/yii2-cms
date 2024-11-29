@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace davidhirtz\yii2\cms\migrations;
 
 use davidhirtz\yii2\cms\migrations\traits\I18nTablesTrait;
@@ -21,7 +23,7 @@ class M231104201316EmbedUrl extends Migration
         $this->i18nTablesCallback(function () {
             $linkAttributes = Asset::instance()->getI18nAttributeNames('link');
 
-            $this->addColumn(Asset::tableName(), 'embed_url', $this->text()
+            $this->addColumn(Asset::tableName(), 'embed_url', (string)$this->text()
                 ->null()
                 ->after(array_pop($linkAttributes)));
 
