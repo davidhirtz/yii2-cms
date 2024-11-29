@@ -446,7 +446,6 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
 
     /**
      * @return Asset[]
-     * @noinspection PhpUnused
      */
     public function getVisibleAssets(): array
     {
@@ -454,7 +453,8 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
             return [];
         }
 
-        return array_filter($this->assets, fn (Asset $asset): bool => $asset->type != $asset::TYPE_META_IMAGE);
+        return array_filter($this->assets, fn (Asset $asset): bool =>
+            $asset->section_id === null && $asset->type != $asset::TYPE_META_IMAGE);
     }
 
     /**

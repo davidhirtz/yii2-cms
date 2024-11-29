@@ -23,7 +23,7 @@ class AuthCest extends BaseCest
         return [
             'user' => [
                 'class' => UserFixture::class,
-                'dataFile' => codecept_data_dir() . 'user.php',
+                'dataFile' => codecept_data_dir() . 'users.php',
             ],
         ];
     }

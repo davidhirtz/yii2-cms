@@ -18,12 +18,17 @@ return [
             'password' => getenv('MYSQL_PASSWORD') ?: '',
             'charset' => 'utf8',
         ],
+        'i18n' => [
+            'languages' => ['en-US', 'de'],
+        ],
         'session' => [
             'class' => Session::class,
         ],
     ],
     'modules' => [
-        'enableI18nTables' => true,
+        'cms' => [
+            'enableI18nTables' => true,
+        ],
     ],
     'params' => [
         'cookieValidationKey' => 'test',
