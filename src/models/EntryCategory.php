@@ -9,6 +9,7 @@ use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\skeleton\behaviors\BlameableBehavior;
 use davidhirtz\yii2\skeleton\behaviors\TimestampBehavior;
 use davidhirtz\yii2\skeleton\behaviors\TrailBehavior;
+use davidhirtz\yii2\skeleton\log\ActiveRecordErrorLogger;
 use davidhirtz\yii2\skeleton\models\traits\UpdatedByUserTrait;
 use davidhirtz\yii2\skeleton\validators\RelationValidator;
 use Yii;
@@ -137,12 +138,26 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
 
     public function updateEntryCategoryIds(): bool|int
     {
-        return $this->entry->recalculateCategoryIds()->update();
+        $this->entry->recalculateCategoryIds();
+
+        if (!$this->entry->update()) {
+            ActiveRecordErrorLogger::log($this->entry);
+            return false;
+        }
+
+        return true;
     }
 
     public function updateCategoryEntryCount(): bool|int
     {
-        return $this->category->recalculateEntryCount()->update();
+        $this->category->recalculateEntryCount();
+
+        if (!$this->category->update()) {
+            ActiveRecordErrorLogger::log($this->category);
+            return false;
+        }
+
+        return true;
     }
 
     public function insertCategoryAncestors(): void
@@ -152,7 +167,10 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
                 if ($category->inheritNestedCategories()) {
                     $junction = static::create();
                     $junction->populateInheritedRelation($this, $category);
-                    $junction->insert();
+
+                    if (!$junction->insert()) {
+                        ActiveRecordErrorLogger::log($junction);
+                    }
                 }
             }
         }

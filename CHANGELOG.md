@@ -1,8 +1,9 @@
-## 2.3.0 (in development)
+## 2.3.0 (Nov 29, 2024)
 
 - Added `AssetFilePanel` for `yii2-media` version 2.2 to display I18N assets in file view
 - Added `FileBeforeDeleteEventHandler`
 - Enhanced `CategoryGridTrait::getUrl()`
+- Enhanced `EntryCategory` error logging (Issue #14)
 - Removed `Asset::getParentName()`
 - Renamed `Asset::getParentGridView()` to `Asset::getFilePanelClass()`
 - Replaced `Asset::updateOrDeleteFileByAssetCount()` with `Asset::updateFileRelatedCount()`
