@@ -25,7 +25,7 @@ $this->setTitle(Yii::t('media', 'Assets'));
     'model' => $parent,
 ]); ?>
 
-<?php $this->setBreadcrumb(Yii::t('cms', 'Assets'), [$parent instanceof Section ? '/admin/section/update' : '/admin/entry/update', 'id' => $parent->id, '#' => 'assets']); ?>
+<?php $this->setBreadcrumb(Yii::t('media', 'Assets'), [$parent instanceof Section ? '/admin/section/update' : '/admin/entry/update', 'id' => $parent->id, '#' => 'assets']); ?>
 
 <?= Panel::widget([
     'content' => FileGridView::widget([

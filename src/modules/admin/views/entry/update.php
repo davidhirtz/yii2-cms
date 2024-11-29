@@ -38,7 +38,7 @@ $this->setTitle(Yii::t('cms', 'Edit Entry'));
 <?php if ($entry->hasAssetsEnabled()) {
     echo Panel::widget([
         'id' => 'assets',
-        'title' => Yii::t('cms', 'Assets'),
+        'title' => $entry->getAttributeLabel('asset_count'),
         'content' => AssetGridView::widget([
             'parent' => $entry,
         ]),

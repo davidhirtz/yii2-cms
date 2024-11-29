@@ -175,7 +175,7 @@ abstract class ActiveRecord extends BaseActiveRecord implements DraftStatusAttri
             'entry_id' => Yii::t('cms', 'Entry'),
             'name' => Yii::t('cms', 'Title'),
             'content' => Yii::t('cms', 'Content'),
-            'asset_count' => Yii::t('media', 'Files'),
+            'asset_count' => Yii::t('media', 'Assets'),
         ];
     }
 }
