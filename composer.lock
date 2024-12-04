@@ -156,16 +156,16 @@
         },
         {
             "name": "davidhirtz/yii2-media",
-            "version": "2.2.0",
+            "version": "2.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/davidhirtz/yii2-media.git",
-                "reference": "5fb55c8e9ef5601088915b06dc47073ca2dda685"
+                "reference": "5018056ce4624e77b65d8926aba4a87bcb5149f5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/davidhirtz/yii2-media/zipball/5fb55c8e9ef5601088915b06dc47073ca2dda685",
-                "reference": "5fb55c8e9ef5601088915b06dc47073ca2dda685",
+                "url": "https://api.github.com/repos/davidhirtz/yii2-media/zipball/5018056ce4624e77b65d8926aba4a87bcb5149f5",
+                "reference": "5018056ce4624e77b65d8926aba4a87bcb5149f5",
                 "shasum": ""
             },
             "require": {
@@ -209,9 +209,9 @@
             "homepage": "https://www.github.com/davidhirtz/yii2-media",
             "support": {
                 "issues": "https://github.com/davidhirtz/yii2-media/issues",
-                "source": "https://github.com/davidhirtz/yii2-media/tree/2.2.0"
+                "source": "https://github.com/davidhirtz/yii2-media/tree/2.2.1"
             },
-            "time": "2024-11-28T23:23:32+00:00"
+            "time": "2024-12-04T11:24:37+00:00"
         },
         {
             "name": "davidhirtz/yii2-skeleton",
