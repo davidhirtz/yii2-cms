@@ -8,7 +8,7 @@ use davidhirtz\yii2\cms\models\Entry;
 use Yii;
 
 /**
- * @property bool $show_in_footer
+ * @property bool|int $show_in_footer
  * @mixin Entry
  */
 trait FooterAttributeTrait
@@ -37,6 +37,6 @@ trait FooterAttributeTrait
 
     public function isFooterItem(): bool
     {
-        return $this->show_in_footer;
+        return (bool)$this->show_in_footer;
     }
 }

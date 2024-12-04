@@ -1,5 +1,6 @@
-## 2.3.1 (in development)
+## 2.3.1 (Dec 4, 2024)
 
+- Fixed `FooterAttributeTrait::isFooterItem()` return type
 - Renamed `AssetParentGridView` to `FileAssetParentGridView`
 - Renamed `AssetFilePanel` to `FileAssetParentPanel`
 
