@@ -99,7 +99,7 @@ class SectionController extends AbstractController
         ]);
     }
 
-    public function actionCreate($entry): Response|string
+    public function actionCreate(int $entry): Response|string
     {
         $entry = $this->findEntry($entry, Section::AUTH_SECTION_CREATE);
         $section = Section::create();

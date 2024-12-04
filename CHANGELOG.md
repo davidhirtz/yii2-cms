@@ -1,3 +1,7 @@
+## 2.3.3 (Dec 4, 2024)
+
+- Fixed `SectionController::actionCreate()` parameter type
+
 ## 2.3.2 (Dec 4, 2024)
 
 - Fixed `SectionLinkedEntryGridView::getDeleteButton()` signature
