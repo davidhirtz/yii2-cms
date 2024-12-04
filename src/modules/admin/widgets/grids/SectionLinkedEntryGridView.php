@@ -9,7 +9,6 @@ use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\modules\admin\controllers\SectionEntryController;
 use davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider;
 use davidhirtz\yii2\skeleton\helpers\Html;
-use davidhirtz\yii2\skeleton\widgets\fontawesome\Icon;
 use Yii;
 use yii\db\ActiveRecordInterface;
 
@@ -92,16 +91,23 @@ class SectionLinkedEntryGridView extends EntryGridView
     /**
      * @param Entry $model
      */
-    protected function getDeleteButton(ActiveRecordInterface $model): string
+    protected function getDeleteButton(ActiveRecordInterface $model, array $options = []): string
     {
-        $route = ['section-entry/delete', 'section' => $this->dataProvider->section->id, 'entry' => $model->id];
-
-        return Html::a((string)Icon::tag('ban'), $route, [
+        return parent::getDeleteButton($model, [
+            'icon' => 'ban',
             'class' => 'btn btn-primary',
             'title' => Yii::t('cms', 'Remove from section'),
             'data-toggle' => 'tooltip',
-            'data-ajax' => 'remove',
             'data-target' => '#' . $this->getRowId($model->sectionEntry),
+            ...$options,
         ]);
+    }
+
+    /**
+     * @param Entry $model
+     */
+    protected function getDeleteRoute(ActiveRecordInterface $model, array $params = []): array
+    {
+        return ['section-entry/delete', 'section' => $this->dataProvider->section->id, 'entry' => $model->id];
     }
 }

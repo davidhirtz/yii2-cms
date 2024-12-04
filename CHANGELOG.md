@@ -1,3 +1,7 @@
+## 2.3.2 (Dec 4, 2024)
+
+- Fixed `SectionLinkedEntryGridView::getDeleteButton()` signature
+
 ## 2.3.1 (Dec 4, 2024)
 
 - Fixed `FooterAttributeTrait::isFooterItem()` return type
