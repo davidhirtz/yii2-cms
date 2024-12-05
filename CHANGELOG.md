@@ -1,3 +1,7 @@
+## 2.3.4 (in development)
+
+- Fixed `MetaTags::registerImageMetaTags()` calculated header type
+
 ## 2.3.3 (Dec 4, 2024)
 
 - Fixed `SectionController::actionCreate()` parameter type
