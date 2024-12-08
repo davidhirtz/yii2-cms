@@ -6,11 +6,14 @@ use Codeception\Test\Unit;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\tests\data\models\TestEntry;
 use davidhirtz\yii2\cms\tests\support\fixtures\traits\CmsFixturesTrait;
+use davidhirtz\yii2\cms\tests\support\UnitTester;
 use Yii;
 
 class EntryTest extends Unit
 {
     use CmsFixturesTrait;
+
+    protected UnitTester $tester;
 
     public function testCreateIndexEntry(): void
     {
@@ -28,7 +31,7 @@ class EntryTest extends Unit
         $entry->setAttribute('type', 'invalid');
 
         /** @var Entry $existing */
-        $existing = $this->tester->grabFixture('entries', 'page-1');
+        $existing = $this->tester->grabFixture('entries', 'page-enabled');
         $entry->slug = $existing->slug;
 
         $entry->save();
@@ -55,10 +58,10 @@ class EntryTest extends Unit
     public function testEntryAssets(): void
     {
         /** @var Entry $entry */
-        $entry = $this->tester->grabFixture('entries', 'page-1');
+        $entry = $this->tester->grabFixture('entries', 'page-enabled');
 
         $this->assertEquals(2, $entry->asset_count);
-        $this->assertEquals(4, count($entry->assets));
+        $this->assertEquals(5, count($entry->assets));
         $this->assertEquals(1, count($entry->getVisibleAssets()));
 
         $entry->populateAssetRelations();

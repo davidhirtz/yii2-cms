@@ -6,12 +6,9 @@ use davidhirtz\yii2\cms\tests\support\fixtures\AssetFixture;
 use davidhirtz\yii2\cms\tests\support\fixtures\EntryFixture;
 use davidhirtz\yii2\cms\tests\support\fixtures\FileFixture;
 use davidhirtz\yii2\cms\tests\support\fixtures\SectionFixture;
-use davidhirtz\yii2\cms\tests\support\UnitTester;
 
 trait CmsFixturesTrait
 {
-    protected UnitTester $tester;
-
     public function _fixtures(): array
     {
         $dir = codecept_data_dir();

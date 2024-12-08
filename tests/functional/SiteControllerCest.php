@@ -7,18 +7,25 @@
 namespace davidhirtz\yii2\cms\tests\functional;
 
 use davidhirtz\yii2\cms\controllers\SiteController;
+use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\cms\models\Entry;
-use davidhirtz\yii2\cms\models\Section;
+use davidhirtz\yii2\cms\tests\support\fixtures\traits\CmsFixturesTrait;
 use davidhirtz\yii2\cms\tests\support\FunctionalTester;
+use davidhirtz\yii2\cms\widgets\Gallery;
 use davidhirtz\yii2\cms\widgets\Sections;
 use davidhirtz\yii2\skeleton\codeception\functional\BaseCest;
 use Yii;
 
 class SiteControllerCest extends BaseCest
 {
+    use CmsFixturesTrait;
+
     public function _before(): void
     {
         Yii::$container->setDefinitions([
+            Gallery::class => [
+                'viewFile' => '@tests/data/views/site/widgets/_assets',
+            ],
             SiteController::class => [
                 'layout' => '@tests/data/views/layouts/main',
             ],
@@ -41,29 +48,36 @@ class SiteControllerCest extends BaseCest
         $I->canSeeInTitle($entry->name);
     }
 
-    public function checkEntries(FunctionalTester $I): void
+    public function checkEnabledEntry(FunctionalTester $tester): void
     {
-        $entry = Entry::create();
-        $entry->name = 'Test';
-        $entry->insert();
+        /** @var Entry $entry */
+        $entry = $tester->grabFixture('entries', 'page-enabled');
+        $urlManager = Yii::$app->getUrlManager();
 
-        $I->amOnPage('/test');
-        $I->seeResponseCodeIs(404);
+        $tester->amOnPage($urlManager->createUrl($entry->getRoute()));
 
-        $section = Section::create();
-        $section->content = '<p>Test paragraph</p>';
-        $section->populateEntryRelation($entry);
-        $section->insert();
+        $tester->canSeeResponseCodeIs(200);
+        $tester->canSeeInTitle($entry->name);
 
-        $I->amOnPage('/test');
-        $I->canSeeInTitle($entry->name);
+        foreach ($entry->sections as $section) {
+            if ($section->isEnabled()) {
+                foreach ($section->getVisibleAssets() as $asset) {
+                    if ($asset->isEnabled()) {
+                        $tester->canSeeInSource($asset->file->getUrl());
+                    } else {
+                        $tester->cantSeeInSource($asset->file->getUrl());
+                    }
+                }
+                $tester->canSeeInSource($section->content);
+            } else {
+                $tester->cantSeeInSource($section->content);
+            }
+        }
 
-        $I->amOnPage('/test/');
-        $I->canSeeInTitle($entry->name);
+        /** @var Asset $asset */
+        $asset = current(array_filter($entry->assets, fn (Asset $asset) => $asset->type == Asset::TYPE_META_IMAGE));
+        $url = $urlManager->createAbsoluteUrl($asset->file->getUrl());
 
-        $subentry = Entry::create();
-        $subentry->name = 'Subtest';
-        $subentry->populateParentRelation($entry);
-        $subentry->insert();
+        $tester->canSeeInSource('<link href="' . $url . '" rel="image_src">');
     }
 }
