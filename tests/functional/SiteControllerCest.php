@@ -80,4 +80,14 @@ class SiteControllerCest extends BaseCest
 
         $tester->canSeeInSource('<link href="' . $url . '" rel="image_src">');
     }
+
+    public function checkDraftEntry(FunctionalTester $tester): void
+    {
+        /** @var Entry $entry */
+        $entry = $tester->grabFixture('entries', 'page-draft');
+        $urlManager = Yii::$app->getUrlManager();
+
+        $tester->amOnPage($urlManager->createUrl($entry->getRoute()));
+        $tester->canSeeResponseCodeIs(404);
+    }
 }

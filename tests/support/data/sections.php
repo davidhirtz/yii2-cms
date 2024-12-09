@@ -58,4 +58,12 @@ return [
         'position' => 1,
         'created_at' => $now,
     ],
+    'section-entry-draft' => [
+        'id' => $index++,
+        'status' => TestSection::STATUS_ENABLED,
+        'type' => TestSection::TYPE_DEFAULT,
+        'entry_id' => 2,
+        'position' => 1,
+        'created_at' => $now,
+    ],
 ];

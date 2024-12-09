@@ -77,6 +77,7 @@ class SiteController extends Controller
     protected function getQuery(): EntryQuery
     {
         $status = Yii::$app->getRequest()->getIsDraft() ? Entry::STATUS_DRAFT : Entry::STATUS_ENABLED;
+        codecept_debug($status);
 
         return Entry::find()
             ->selectSiteAttributes()
