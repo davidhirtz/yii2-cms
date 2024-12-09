@@ -57,6 +57,7 @@ class SiteControllerCest extends BaseCest
         $I->amOnPage($urlManager->createUrl($entry->getRoute()));
 
         $I->seeResponseCodeIs(200);
+        $I->haveHttpHeader('x-robots-tag', '');
         $I->seeInTitle($entry->name);
 
         foreach ($entry->sections as $section) {
@@ -94,6 +95,7 @@ class SiteControllerCest extends BaseCest
 
         $I->amOnPage($urlManager->createUrl($entry->getRoute()));
         $I->seeResponseCodeIs(200);
+        $I->haveHttpHeader('x-robots-tag', 'none');
     }
 
     public function checkDisabledEntry(FunctionalTester $I): void
