@@ -22,8 +22,4 @@ namespace davidhirtz\yii2\cms\tests\support;
 class FunctionalTester extends \Codeception\Actor
 {
     use _generated\FunctionalTesterActions;
-
-    /**
-     * Define custom actions here
-     */
 }

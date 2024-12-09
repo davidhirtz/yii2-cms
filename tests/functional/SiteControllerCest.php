@@ -48,29 +48,29 @@ class SiteControllerCest extends BaseCest
         $I->canSeeInTitle($entry->name);
     }
 
-    public function checkEnabledEntry(FunctionalTester $tester): void
+    public function checkEnabledEntry(FunctionalTester $I): void
     {
         /** @var Entry $entry */
-        $entry = $tester->grabFixture('entries', 'page-enabled');
+        $entry = $I->grabFixture('entries', 'page-enabled');
         $urlManager = Yii::$app->getUrlManager();
 
-        $tester->amOnPage($urlManager->createUrl($entry->getRoute()));
+        $I->amOnPage($urlManager->createUrl($entry->getRoute()));
 
-        $tester->canSeeResponseCodeIs(200);
-        $tester->canSeeInTitle($entry->name);
+        $I->seeResponseCodeIs(200);
+        $I->seeInTitle($entry->name);
 
         foreach ($entry->sections as $section) {
             if ($section->isEnabled()) {
                 foreach ($section->getVisibleAssets() as $asset) {
                     if ($asset->isEnabled()) {
-                        $tester->canSeeInSource($asset->file->getUrl());
+                        $I->seeInSource($asset->file->getUrl());
                     } else {
-                        $tester->cantSeeInSource($asset->file->getUrl());
+                        $I->dontSeeInSource($asset->file->getUrl());
                     }
                 }
-                $tester->canSeeInSource($section->content);
+                $I->seeInSource($section->content);
             } else {
-                $tester->cantSeeInSource($section->content);
+                $I->dontSeeInSource($section->content);
             }
         }
 
@@ -78,16 +78,31 @@ class SiteControllerCest extends BaseCest
         $asset = current(array_filter($entry->assets, fn (Asset $asset) => $asset->type == Asset::TYPE_META_IMAGE));
         $url = $urlManager->createAbsoluteUrl($asset->file->getUrl());
 
-        $tester->canSeeInSource('<link href="' . $url . '" rel="image_src">');
+        $I->seeInSource('<link href="' . $url . '" rel="image_src">');
     }
 
-    public function checkDraftEntry(FunctionalTester $tester): void
+    public function checkDraftEntry(FunctionalTester $I): void
     {
         /** @var Entry $entry */
-        $entry = $tester->grabFixture('entries', 'page-draft');
+        $entry = $I->grabFixture('entries', 'page-draft');
         $urlManager = Yii::$app->getUrlManager();
 
-        $tester->amOnPage($urlManager->createUrl($entry->getRoute()));
-        $tester->canSeeResponseCodeIs(404);
+        $I->amOnPage($urlManager->createUrl($entry->getRoute()));
+        $I->seeResponseCodeIs(404);
+
+        $I->setDraftHttpHost();
+
+        $I->amOnPage($urlManager->createUrl($entry->getRoute()));
+        $I->seeResponseCodeIs(200);
+    }
+
+    public function checkDisabledEntry(FunctionalTester $I): void
+    {
+        /** @var Entry $entry */
+        $entry = $I->grabFixture('entries', 'page-disabled');
+        $urlManager = Yii::$app->getUrlManager();
+
+        $I->amOnPage($urlManager->createUrl($entry->getRoute()));
+        $I->seeResponseCodeIs(404);
     }
 }
