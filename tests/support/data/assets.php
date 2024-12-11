@@ -40,13 +40,22 @@ return [
         'position' => 2,
         'created_at' => $now,
     ],
+    'section-image-draft' => [
+        'status' => TestAsset::STATUS_DRAFT,
+        'type' => TestAsset::TYPE_DEFAULT,
+        'entry_id' => 1,
+        'section_id' => 1,
+        'file_id' => 5,
+        'position' => 3,
+        'created_at' => $now,
+    ],
     'section-image-disabled' => [
         'status' => TestAsset::STATUS_DISABLED,
         'type' => TestAsset::TYPE_VIEWPORT_MOBILE,
         'entry_id' => 1,
         'section_id' => 1,
         'file_id' => 5,
-        'position' => 3,
+        'position' => 4,
         'created_at' => $now,
     ],
 ];

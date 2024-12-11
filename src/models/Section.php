@@ -219,7 +219,7 @@ class Section extends ActiveRecord implements AssetParentInterface
         if ($assets) {
             foreach ($assets as $asset) {
                 if ($asset->section_id == $this->id) {
-                    $asset->populateRelation('section', $this);
+                    $asset->populateParentRelation($this);
                     $relations[$asset->id] = $asset;
                 }
             }

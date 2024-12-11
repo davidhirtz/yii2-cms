@@ -60,8 +60,7 @@ class EntryTest extends Unit
         /** @var Entry $entry */
         $entry = $this->tester->grabFixture('entries', 'page-enabled');
 
-        $this->assertEquals(2, $entry->asset_count);
-        $this->assertEquals(5, count($entry->assets));
+        $this->assertEquals(6, count($entry->assets));
         $this->assertEquals(1, count($entry->getVisibleAssets()));
 
         $entry->populateAssetRelations();

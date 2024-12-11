@@ -14,7 +14,7 @@ return [
         'entry_id' => 1,
         'name' => 'Test Headline',
         'content' => '<p>Test Headline Content</p>',
-        'asset_count' => 2,
+        'asset_count' => 4,
         'position' => 1,
         'created_at' => $now,
     ],
@@ -25,7 +25,7 @@ return [
         'entry_id' => 1,
         'name' => 'Test Column',
         'content' => '<p>Test Column Content</p>',
-        'position' => 1,
+        'position' => 2,
         'created_at' => $now,
     ],
     'section-draft' => [
@@ -35,7 +35,7 @@ return [
         'entry_id' => 1,
         'name' => 'Test Draft Column',
         'content' => '<p>Test Draft Column Content</p>',
-        'position' => 1,
+        'position' => 3,
         'created_at' => $now,
     ],
     'section-disabled' => [
@@ -45,7 +45,7 @@ return [
         'entry_id' => 1,
         'name' => 'Test Disabled Column',
         'content' => '<p>Test Disabled Column Content</p>',
-        'position' => 1,
+        'position' => 4,
         'created_at' => $now,
     ],
     'section-gallery' => [
@@ -55,7 +55,7 @@ return [
         'entry_id' => 1,
         'name' => 'Test Gallery',
         'content' => '<p>Test Gallery Content</p>',
-        'position' => 1,
+        'position' => 5,
         'created_at' => $now,
     ],
     'section-entry-draft' => [
