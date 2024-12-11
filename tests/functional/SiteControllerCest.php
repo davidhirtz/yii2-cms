@@ -107,4 +107,24 @@ class SiteControllerCest extends BaseCest
         $I->amOnPage($urlManager->createUrl($entry->getRoute()));
         $I->seeResponseCodeIs(404);
     }
+
+    public function checkEntryWithDisabledRoute(FunctionalTester $I): void
+    {
+        /** @var Entry $entry */
+        $entry = $I->grabFixture('entries', 'post-2');
+        $urlManager = Yii::$app->getUrlManager();
+
+        $I->amOnPage($urlManager->createUrl($entry->getRoute()));
+        $I->seeResponseCodeIs(404);
+    }
+
+    public function checkEntrySlugWithTrailingSlash(FunctionalTester $I): void
+    {
+        /** @var Entry $entry */
+        $entry = $I->grabFixture('entries', 'page-enabled');
+        $urlManager = Yii::$app->getUrlManager();
+
+        $I->amOnPage($urlManager->createUrl($entry->getRoute()) . '/');
+        $I->canSeeCurrentUrlEquals($urlManager->createUrl($entry->getRoute()));
+    }
 }
