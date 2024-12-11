@@ -84,4 +84,31 @@ class EntrySiteRelationsBuilderTest extends Unit
         self::assertTrue($post->isRelationPopulated('assets'));
         self::assertFalse($post->isRelationPopulated('sections'));
     }
+
+    public function testDescendantEntry(): void
+    {
+        /** @var TestEntry $entry */
+        $entry = $this->tester->grabFixture('entries', 'post-1');
+        ActiveQuery::setStatus(TestEntry::STATUS_ENABLED);
+
+        $builder = new EntrySiteRelationsBuilder(['entry' => $entry]);
+
+        self::assertTrue($entry->isRelationPopulated('parent'));
+        self::assertEquals(2, count($builder->entries));
+    }
+
+    public function testDescendantEntryWithoutLoadingAncestors()
+    {
+        /** @var TestEntry $entry */
+        $entry = $this->tester->grabFixture('entries', 'post-1');
+        ActiveQuery::setStatus(TestEntry::STATUS_ENABLED);
+
+        $builder = new EntrySiteRelationsBuilder([
+            'autoloadEntryAncestors' => false,
+            'entry' => $entry,
+        ]);
+
+        self::assertNull($entry->parent);
+        self::assertEquals(1, count($builder->entries));
+    }
 }

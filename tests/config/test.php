@@ -28,6 +28,7 @@ return [
     'modules' => [
         'cms' => [
             'enableI18nTables' => true,
+            'enableNestedEntries' => true,
             'enableSectionEntries' => true,
         ],
     ],
