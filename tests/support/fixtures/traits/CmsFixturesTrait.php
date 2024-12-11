@@ -5,6 +5,7 @@ namespace davidhirtz\yii2\cms\tests\support\fixtures\traits;
 use davidhirtz\yii2\cms\tests\support\fixtures\AssetFixture;
 use davidhirtz\yii2\cms\tests\support\fixtures\EntryFixture;
 use davidhirtz\yii2\cms\tests\support\fixtures\FileFixture;
+use davidhirtz\yii2\cms\tests\support\fixtures\SectionEntryFixture;
 use davidhirtz\yii2\cms\tests\support\fixtures\SectionFixture;
 
 trait CmsFixturesTrait
@@ -21,6 +22,10 @@ trait CmsFixturesTrait
             'sections' => [
                 'class' => SectionFixture::class,
                 'dataFile' => $dir . 'sections.php',
+            ],
+            'sections_entries' => [
+                'class' => SectionEntryFixture::class,
+                'dataFile' => $dir . 'sections_entries.php',
             ],
             'files' => [
                 'class' => FileFixture::class,

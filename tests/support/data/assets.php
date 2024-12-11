@@ -22,6 +22,14 @@ return [
         'position' => 2,
         'created_at' => $now,
     ],
+    'post-asset' => [
+        'status' => TestAsset::STATUS_ENABLED,
+        'type' => TestAsset::TYPE_DEFAULT,
+        'entry_id' => 6,
+        'file_id' => 1,
+        'position' => 1,
+        'created_at' => $now,
+    ],
     'section-image-1' => [
         'status' => TestAsset::STATUS_ENABLED,
         'type' => TestAsset::TYPE_DEFAULT,
@@ -45,7 +53,7 @@ return [
         'type' => TestAsset::TYPE_DEFAULT,
         'entry_id' => 1,
         'section_id' => 1,
-        'file_id' => 5,
+        'file_id' => 4,
         'position' => 3,
         'created_at' => $now,
     ],

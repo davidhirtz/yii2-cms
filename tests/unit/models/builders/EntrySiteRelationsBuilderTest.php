@@ -5,6 +5,7 @@ namespace davidhirtz\yii2\cms\tests\unit\models\builders;
 use Codeception\Test\Unit;
 use davidhirtz\yii2\cms\models\builders\EntrySiteRelationsBuilder;
 use davidhirtz\yii2\cms\tests\data\models\TestEntry;
+use davidhirtz\yii2\cms\tests\data\models\TestSection;
 use davidhirtz\yii2\cms\tests\support\fixtures\traits\CmsFixturesTrait;
 use davidhirtz\yii2\cms\tests\support\UnitTester;
 use davidhirtz\yii2\skeleton\db\ActiveQuery;
@@ -56,7 +57,7 @@ class EntrySiteRelationsBuilderTest extends Unit
         $entry = $this->tester->grabFixture('entries', 'page-enabled');
         ActiveQuery::setStatus(TestEntry::STATUS_DRAFT);
 
-        new EntrySiteRelationsBuilder(['entry' => $entry]);
+        $builder = new EntrySiteRelationsBuilder(['entry' => $entry]);
 
         self::assertEquals(4, count($entry->sections));
         self::assertEquals(2, count($entry->assets));
@@ -64,5 +65,23 @@ class EntrySiteRelationsBuilderTest extends Unit
         $section = current($entry->sections);
 
         self::assertEquals(3, count($section->assets));
+
+        self::assertEquals(6, count($builder->assets));
+        self::assertEquals(4, count($builder->files));
+        self::assertEquals(2, count($builder->entries));
+
+        /** @var TestSection $section */
+        $section = $this->tester->grabFixture('sections', 'section-blog-draft');
+        $blog = $entry->sections[$section->id];
+
+        self::assertTrue($blog->isRelationPopulated('entries'));
+        self::assertEquals(2, count($blog->entries));
+
+        /** @var TestEntry $post */
+        $post = $this->tester->grabFixture('entries', 'post-3');
+        $post = $blog->entries[$post->id];
+
+        self::assertTrue($post->isRelationPopulated('assets'));
+        self::assertFalse($post->isRelationPopulated('sections'));
     }
 }

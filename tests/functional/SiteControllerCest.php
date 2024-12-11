@@ -69,9 +69,12 @@ class SiteControllerCest extends BaseCest
                         $I->dontSeeInSource($asset->file->getUrl());
                     }
                 }
-                $I->seeInSource($section->content);
-            } else {
-                $I->dontSeeInSource($section->content);
+
+                if ($content = $section->getVisibleAttribute('content')) {
+                    $I->seeInSource($content);
+                }
+            } elseif ($content = $section->getVisibleAttribute('content')) {
+                $I->dontSeeInSource($content);
             }
         }
 

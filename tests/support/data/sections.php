@@ -4,11 +4,10 @@ use davidhirtz\yii2\cms\tests\data\models\TestSection;
 use yii\db\Expression;
 
 $now = new Expression('UTC_TIMESTAMP()');
-$index = 1;
 
 return [
     'section-headline' => [
-        'id' => $index++,
+        'id' => 1,
         'status' => TestSection::STATUS_ENABLED,
         'type' => TestSection::TYPE_HEADLINE,
         'entry_id' => 1,
@@ -19,7 +18,7 @@ return [
         'created_at' => $now,
     ],
     'section-column' => [
-        'id' => $index++,
+        'id' => 2,
         'status' => TestSection::STATUS_ENABLED,
         'type' => TestSection::TYPE_COLUMN,
         'entry_id' => 1,
@@ -28,18 +27,18 @@ return [
         'position' => 2,
         'created_at' => $now,
     ],
-    'section-draft' => [
-        'id' => $index++,
+    'section-blog-draft' => [
+        'id' => 3,
         'status' => TestSection::STATUS_DRAFT,
-        'type' => TestSection::TYPE_COLUMN,
+        'type' => TestSection::TYPE_BLOG,
         'entry_id' => 1,
-        'name' => 'Test Draft Column',
-        'content' => '<p>Test Draft Column Content</p>',
+        'name' => 'Draft Blog',
         'position' => 3,
+        'entry_count' => 2,
         'created_at' => $now,
     ],
     'section-disabled' => [
-        'id' => $index++,
+        'id' => 4,
         'status' => TestSection::STATUS_DISABLED,
         'type' => TestSection::TYPE_COLUMN,
         'entry_id' => 1,
@@ -49,7 +48,7 @@ return [
         'created_at' => $now,
     ],
     'section-gallery' => [
-        'id' => $index++,
+        'id' => 5,
         'status' => TestSection::STATUS_ENABLED,
         'type' => TestSection::TYPE_GALLERY,
         'entry_id' => 1,
@@ -59,7 +58,7 @@ return [
         'created_at' => $now,
     ],
     'section-entry-draft' => [
-        'id' => $index++,
+        'id' => 6,
         'status' => TestSection::STATUS_ENABLED,
         'type' => TestSection::TYPE_DEFAULT,
         'entry_id' => 2,

@@ -28,6 +28,7 @@ return [
     'modules' => [
         'cms' => [
             'enableI18nTables' => true,
+            'enableSectionEntries' => true,
         ],
     ],
     'params' => [

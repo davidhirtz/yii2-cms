@@ -10,7 +10,7 @@ $index = 0;
 
 return [
     'file-1' => [
-        'id' => ++$index,
+        'id' => 1,
         'status' => File::STATUS_ENABLED,
         'folder_id' => 1,
         'name' => 'Test 1',
@@ -22,7 +22,7 @@ return [
         'created_at' => new Expression('UTC_TIMESTAMP()'),
     ],
     'file-2' => [
-        'id' => ++$index,
+        'id' => 2,
         'status' => File::STATUS_ENABLED,
         'folder_id' => 1,
         'name' => 'Test 2',
@@ -34,7 +34,7 @@ return [
         'created_at' => new Expression('UTC_TIMESTAMP()'),
     ],
     'file-3' => [
-        'id' => ++$index,
+        'id' => 3,
         'status' => File::STATUS_ENABLED,
         'folder_id' => 1,
         'name' => 'Test 3',
@@ -46,7 +46,7 @@ return [
         'created_at' => new Expression('UTC_TIMESTAMP()'),
     ],
     'file-4' => [
-        'id' => ++$index,
+        'id' => 4,
         'status' => File::STATUS_ENABLED,
         'folder_id' => 1,
         'name' => 'Test 4',
@@ -58,7 +58,7 @@ return [
         'created_at' => new Expression('UTC_TIMESTAMP()'),
     ],
     'file-5' => [
-        'id' => ++$index,
+        'id' => 5,
         'status' => File::STATUS_ENABLED,
         'folder_id' => 1,
         'name' => 'Test 5',
