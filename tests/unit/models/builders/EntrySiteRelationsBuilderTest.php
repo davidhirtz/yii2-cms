@@ -67,7 +67,7 @@ class EntrySiteRelationsBuilderTest extends Unit
         self::assertEquals(3, count($section->assets));
 
         self::assertEquals(6, count($builder->assets));
-        self::assertEquals(4, count($builder->files));
+        self::assertEquals(6, count($builder->files));
         self::assertEquals(2, count($builder->entries));
 
         /** @var TestSection $section */

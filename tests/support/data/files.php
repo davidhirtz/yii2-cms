@@ -69,4 +69,16 @@ return [
         'cms_asset_count' => 1,
         'created_at' => new Expression('UTC_TIMESTAMP()'),
     ],
+    'file-6' => [
+        'id' => 6,
+        'status' => File::STATUS_DRAFT,
+        'folder_id' => 1,
+        'name' => 'Test 6',
+        'basename' => 'test-6',
+        'extension' => 'jpg',
+        'width' => 20,
+        'height' => 20,
+        'cms_asset_count' => 1,
+        'created_at' => new Expression('UTC_TIMESTAMP()'),
+    ],
 ];
