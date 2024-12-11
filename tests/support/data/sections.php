@@ -20,7 +20,7 @@ return [
     'section-column' => [
         'id' => 2,
         'status' => TestSection::STATUS_ENABLED,
-        'type' => TestSection::TYPE_COLUMN,
+        'type' => TestSection::TYPE_TEXT_COLUMN,
         'entry_id' => 1,
         'name' => 'Test Column',
         'content' => '<p>Test Column Content</p>',
@@ -40,7 +40,7 @@ return [
     'section-disabled' => [
         'id' => 4,
         'status' => TestSection::STATUS_DISABLED,
-        'type' => TestSection::TYPE_COLUMN,
+        'type' => TestSection::TYPE_TEXT_COLUMN,
         'entry_id' => 1,
         'name' => 'Test Disabled Column',
         'content' => '<p>Test Disabled Column Content</p>',

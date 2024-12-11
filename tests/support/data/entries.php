@@ -4,7 +4,6 @@ use davidhirtz\yii2\cms\tests\data\models\TestEntry;
 use yii\db\Expression;
 
 $now = new Expression('UTC_TIMESTAMP()');
-$index = 0;
 
 return [
     'page-enabled' => [
@@ -13,7 +12,7 @@ return [
         'type' => TestEntry::TYPE_PAGE,
         'name' => 'Test Page – Enabled',
         'slug' => 'test-1',
-        'position' => $index,
+        'position' => 1,
         'asset_count' => 2,
         'entry_count' => 2,
         'section_count' => 5,
@@ -26,7 +25,7 @@ return [
         'type' => TestEntry::TYPE_PAGE,
         'name' => 'Test Page – Draft',
         'slug' => 'test-2',
-        'position' => $index,
+        'position' => 2,
         'asset_count' => 0,
         'section_count' => 1,
         'publish_date' => $now,
@@ -38,7 +37,7 @@ return [
         'type' => TestEntry::TYPE_PAGE,
         'name' => 'Test Page – Disabled',
         'slug' => 'test-3',
-        'position' => $index,
+        'position' => 3,
         'asset_count' => 0,
         'section_count' => 0,
         'publish_date' => $now,

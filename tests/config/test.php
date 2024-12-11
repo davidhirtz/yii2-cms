@@ -1,6 +1,12 @@
 <?php
 
 use davidhirtz\yii2\cms\Bootstrap;
+use davidhirtz\yii2\cms\models\Asset;
+use davidhirtz\yii2\cms\models\Entry;
+use davidhirtz\yii2\cms\models\Section;
+use davidhirtz\yii2\cms\tests\data\models\TestAsset;
+use davidhirtz\yii2\cms\tests\data\models\TestEntry;
+use davidhirtz\yii2\cms\tests\data\models\TestSection;
 use yii\web\Session;
 
 return [
@@ -23,6 +29,13 @@ return [
         ],
         'session' => [
             'class' => Session::class,
+        ],
+    ],
+    'container' => [
+        'definitions' => [
+            Asset::class => TestAsset::class,
+            Entry::class => TestEntry::class,
+            Section::class => TestSection::class,
         ],
     ],
     'modules' => [

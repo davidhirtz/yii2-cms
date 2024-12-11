@@ -319,17 +319,17 @@ class Section extends ActiveRecord implements AssetParentInterface
 
     public function getVisibleAssets(): array
     {
-        return $this->hasAssetsEnabled() && $this->isAttributeVisible('#assets') ? $this->assets : [];
+        return $this->hasAssetsEnabled() ? $this->assets : [];
     }
 
     public function hasAssetsEnabled(): bool
     {
-        return static::getModule()->enableSectionAssets;
+        return static::getModule()->enableSectionAssets && $this->isAttributeVisible('#assets');
     }
 
     public function hasEntriesEnabled(): bool
     {
-        return static::getModule()->enableSectionEntries;
+        return static::getModule()->enableSectionEntries && $this->isAttributeVisible('#entries');
     }
 
     public function attributeLabels(): array

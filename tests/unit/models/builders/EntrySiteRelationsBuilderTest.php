@@ -77,10 +77,11 @@ class EntrySiteRelationsBuilderTest extends Unit
         self::assertTrue($blog->isRelationPopulated('entries'));
         self::assertEquals(2, count($blog->entries));
 
-        /** @var TestEntry $post */
-        $post = $this->tester->grabFixture('entries', 'post-3');
-        $post = $blog->entries[$post->id];
+        /** @var TestEntry $fixture */
+        $fixture = $this->tester->grabFixture('entries', 'post-3');
+        $post = current($blog->entries);
 
+        self::assertEquals($fixture->id, $post->id);
         self::assertTrue($post->isRelationPopulated('assets'));
         self::assertFalse($post->isRelationPopulated('sections'));
     }
