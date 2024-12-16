@@ -71,8 +71,6 @@ class ReorderEntriesTest extends Unit
 
     private function getPageEntry(): Entry
     {
-        /** @var Entry $entry */
-        $entry = $this->tester->grabFixture('entries', 'page-enabled');
-        return $entry;
+        return $this->tester->grabEntryFixture('page-enabled');
     }
 }

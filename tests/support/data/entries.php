@@ -27,6 +27,7 @@ return [
         'slug' => 'test-2',
         'position' => 2,
         'asset_count' => 0,
+        'entry_count' => 1,
         'section_count' => 1,
         'publish_date' => $now,
         'created_at' => $now,

@@ -9,10 +9,12 @@ use davidhirtz\yii2\cms\models\traits\EntryRelationTrait;
 use davidhirtz\yii2\cms\models\traits\SectionRelationTrait;
 use davidhirtz\yii2\cms\modules\admin\widgets\panels\FileAssetParentPanel;
 use davidhirtz\yii2\datetime\DateTime;
+use davidhirtz\yii2\media\models\File;
 use davidhirtz\yii2\media\models\interfaces\AssetInterface;
 use davidhirtz\yii2\media\models\traits\AssetTrait;
 use davidhirtz\yii2\media\models\traits\EmbedUrlTrait;
 use davidhirtz\yii2\skeleton\models\interfaces\DraftStatusAttributeInterface;
+use davidhirtz\yii2\skeleton\validators\RelationValidator;
 use Yii;
 
 /**
@@ -61,38 +63,40 @@ class Asset extends ActiveRecord implements AssetInterface, DraftStatusAttribute
                 ],
             ]),
             [
-                ['section_id'],
-                $this->validateSectionId(...),
-            ],
-            [
-                ['entry_id'],
-                $this->validateEntryId(...),
-            ],
-            [
-                ['file_id', 'entry_id'],
-                'required',
+                ['entry_id', 'file_id'],
+                RelationValidator::class,
+                'required' => true,
             ],
         ];
     }
 
-    public function validateSectionId(): void
+    public function beforeValidate(): bool
     {
         if ($this->section) {
             $this->populateEntryRelation($this->section->entry);
         }
+
+        return parent::beforeValidate();
     }
 
-    public function validateEntryId(): void
+    public function afterValidate(): void
     {
-        if (!$this->entry || (!$this->getIsNewRecord() && $this->isAttributeChanged('entry_id'))) {
-            $this->addInvalidAttributeError('entry_id');
+        if (!$this->getIsNewRecord()) {
+            if ($this->isAttributeChanged('entry_id')) {
+                $this->addInvalidAttributeError('entry_id');
+            }
+
+            if ($this->isAttributeChanged('section_id')) {
+                $this->addInvalidAttributeError('section_id');
+            }
         }
+
+        parent::afterValidate();
     }
 
     public function beforeSave($insert): bool
     {
         $this->shouldUpdateParentAfterInsert ??= !$this->getIsBatch();
-
         return parent::beforeSave($insert);
     }
 
@@ -102,11 +106,20 @@ class Asset extends ActiveRecord implements AssetInterface, DraftStatusAttribute
             if ($this->shouldUpdateParentAfterInsert) {
                 $this->updateParentAfterInsert();
             }
-
-            $this->updateFileRelatedCount();
         } elseif ($changedAttributes) {
             $this->parent->updated_at = $this->updated_at;
             $this->parent->update();
+        }
+
+        if (array_key_exists('file_id', $changedAttributes)) {
+            $file = File::findOne($changedAttributes['file_id']);
+
+            if ($file) {
+                $file->{$this->getFileCountAttributeName()} = static::find()->where(['file_id' => $file->id])->count();
+                $file->update();
+            }
+
+            $this->updateFileRelatedCount();
         }
 
         parent::afterSave($insert, $changedAttributes);
@@ -166,11 +179,7 @@ class Asset extends ActiveRecord implements AssetInterface, DraftStatusAttribute
 
     public function updateFileRelatedCount(): bool|int
     {
-        $attributeName = static::getModule()->enableI18nTables
-            ? Yii::$app->getI18n()->getAttributeName('cms_asset_count')
-            : 'cms_asset_count';
-
-        $this->file->$attributeName = self::find()->where(['file_id' => $this->file_id])->count();
+        $this->file->{$this->getFileCountAttributeName()} = static::find()->where(['file_id' => $this->file_id])->count();
         return $this->file->update();
     }
 
@@ -178,6 +187,13 @@ class Asset extends ActiveRecord implements AssetInterface, DraftStatusAttribute
     {
         $this->parent->asset_count = $this->findSiblings()->count();
         return $this->parent->update();
+    }
+
+    public function getFileCountAttributeName(): string
+    {
+        return static::getModule()->enableI18nTables
+            ? Yii::$app->getI18n()->getAttributeName('cms_asset_count')
+            : 'cms_asset_count';
     }
 
     public function getTrailAttributes(): array

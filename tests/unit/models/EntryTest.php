@@ -3,7 +3,6 @@
 namespace davidhirtz\yii2\cms\tests\unit\models;
 
 use Codeception\Test\Unit;
-use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\tests\data\models\TestEntry;
 use davidhirtz\yii2\cms\tests\support\fixtures\traits\CmsFixturesTrait;
 use davidhirtz\yii2\cms\tests\support\UnitTester;
@@ -21,8 +20,8 @@ class EntryTest extends Unit
         $entry->name = 'Home';
         $entry->slug = $entry::getModule()->entryIndexSlug;
 
-        $this->assertTrue($entry->save());
-        $this->assertTrue($entry->isIndex());
+        self::assertTrue($entry->save());
+        self::assertTrue($entry->isIndex());
     }
 
     public function testCreateEntryValidationErrors()
@@ -30,40 +29,76 @@ class EntryTest extends Unit
         $entry = TestEntry::create();
         $entry->setAttribute('type', 'invalid');
 
-        /** @var Entry $existing */
-        $existing = $this->tester->grabFixture('entries', 'page-enabled');
+        $existing = $this->tester->grabEntryFixture('page-enabled');
         $entry->slug = $existing->slug;
 
         $entry->save();
 
-        $this->assertNotEmpty($entry->getErrors('name'));
-        $this->assertNotEmpty($entry->getErrors('type'));
-        $this->assertNotEmpty($entry->getErrors('slug'));
+        self::assertNotEmpty($entry->getErrors('name'));
+        self::assertNotEmpty($entry->getErrors('type'));
+        self::assertNotEmpty($entry->getErrors('slug'));
     }
 
     public function testCreateI18nEntry(): void
     {
         Yii::$app->language = 'de';
 
-        $this->assertEquals(0, Entry::find()->count());
+        self::assertEquals(0, TestEntry::find()->count());
 
-        $entry = Entry::create();
+        $entry = TestEntry::create();
         $entry->name = 'Startseite';
         $entry->slug = $entry::getModule()->entryIndexSlug;
 
-        $this->assertTrue($entry->save());
-        $this->assertTrue($entry->isIndex());
+        self::assertTrue($entry->save());
+        self::assertTrue($entry->isIndex());
+    }
+
+    public function testUpdateEntry(): void
+    {
+        $entry = $this->tester->grabEntryFixture('post-1');
+        $entry->parent_id = 2;
+
+        self::assertTrue(!!$entry->update());
+
+        self::assertEquals('test-2', $entry->parent_slug);
+        self::assertEquals('2', $entry->path);
+        self::assertEquals(2, $entry->parent->id);
+        self::assertEquals(2, $entry->parent->entry_count);
+
+        $previous = $this->tester->grabEntryFixture('page-enabled');
+        self::assertEquals(1, $previous->entry_count);
+
+        $parent = $entry->parent;
+
+        $parent->status = TestEntry::STATUS_ENABLED;
+        $parent->slug = 'new-slug';
+
+        self::assertTrue(!!$parent->update());
+
+        $entry->refresh();
+
+        self::assertEquals('new-slug', $entry->parent_slug);
+        self::assertEquals(TestEntry::STATUS_ENABLED, $entry->parent_status);
+    }
+
+    public function testDeleteEntry(): void
+    {
+        $entry = $this->tester->grabEntryFixture('page-enabled');
+        $post = $this->tester->grabEntryFixture('post-1');
+
+        self::assertTrue(!!$entry->delete());
+        self::assertNull(TestEntry::findOne($entry->id));
+        self::assertNull(TestEntry::findOne($post->id));
     }
 
     public function testEntryAssets(): void
     {
-        /** @var Entry $entry */
-        $entry = $this->tester->grabFixture('entries', 'page-enabled');
+        $entry = $this->tester->grabEntryFixture('page-enabled');
 
-        $this->assertEquals(6, count($entry->assets));
-        $this->assertEquals(1, count($entry->getVisibleAssets()));
+        self::assertEquals(6, count($entry->assets));
+        self::assertEquals(1, count($entry->getVisibleAssets()));
 
         $entry->populateAssetRelations();
-        $this->assertEquals(2, count($entry->assets));
+        self::assertEquals(2, count($entry->assets));
     }
 }

@@ -18,7 +18,7 @@ return [
         'extension' => 'jpg',
         'width' => 20,
         'height' => 20,
-        'cms_asset_count' => 2,
+        'cms_asset_count' => 1,
         'created_at' => new Expression('UTC_TIMESTAMP()'),
     ],
     'file-2' => [
@@ -66,7 +66,7 @@ return [
         'extension' => 'jpg',
         'width' => 20,
         'height' => 20,
-        'cms_asset_count' => 1,
+        'cms_asset_count' => 2,
         'created_at' => new Expression('UTC_TIMESTAMP()'),
     ],
     'file-6' => [

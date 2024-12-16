@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 namespace davidhirtz\yii2\cms\tests\support;
 
+use davidhirtz\yii2\cms\tests\data\models\TestAsset;
+use davidhirtz\yii2\cms\tests\data\models\TestEntry;
+use davidhirtz\yii2\cms\tests\data\models\TestSection;
+use davidhirtz\yii2\media\models\File;
+
 /**
  * Inherited Methods
  * @method void wantTo($text)
@@ -23,7 +28,23 @@ class UnitTester extends \Codeception\Actor
 {
     use _generated\UnitTesterActions;
 
-    /**
-     * Define custom actions here
-     */
+    public function grabAssetFixture(string $key): TestAsset
+    {
+        return $this->grabFixture('assets', $key);
+    }
+
+    public function grabEntryFixture(string $key): TestEntry
+    {
+        return $this->grabFixture('entries', $key);
+    }
+
+    public function grabFileFixture(string $key): File
+    {
+        return $this->grabFixture('files', $key);
+    }
+
+    public function grabSectionFixture(string $key): TestSection
+    {
+        return $this->grabFixture('sections', $key);
+    }
 }

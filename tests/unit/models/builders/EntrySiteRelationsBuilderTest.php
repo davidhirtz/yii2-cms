@@ -5,7 +5,6 @@ namespace davidhirtz\yii2\cms\tests\unit\models\builders;
 use Codeception\Test\Unit;
 use davidhirtz\yii2\cms\models\builders\EntrySiteRelationsBuilder;
 use davidhirtz\yii2\cms\tests\data\models\TestEntry;
-use davidhirtz\yii2\cms\tests\data\models\TestSection;
 use davidhirtz\yii2\cms\tests\support\fixtures\traits\CmsFixturesTrait;
 use davidhirtz\yii2\cms\tests\support\UnitTester;
 use davidhirtz\yii2\skeleton\db\ActiveQuery;
@@ -18,8 +17,7 @@ class EntrySiteRelationsBuilderTest extends Unit
 
     public function testEnabledEntry(): void
     {
-        /** @var TestEntry $entry */
-        $entry = $this->tester->grabFixture('entries', 'page-enabled');
+        $entry = $this->tester->grabEntryFixture('page-enabled');
         ActiveQuery::setStatus(TestEntry::STATUS_ENABLED);
 
         $builder = new EntrySiteRelationsBuilder(['entry' => $entry]);
@@ -53,8 +51,7 @@ class EntrySiteRelationsBuilderTest extends Unit
 
     public function testDraftEntry(): void
     {
-        /** @var TestEntry $entry */
-        $entry = $this->tester->grabFixture('entries', 'page-enabled');
+        $entry = $this->tester->grabEntryFixture('page-enabled');
         ActiveQuery::setStatus(TestEntry::STATUS_DRAFT);
 
         $builder = new EntrySiteRelationsBuilder(['entry' => $entry]);
@@ -70,15 +67,13 @@ class EntrySiteRelationsBuilderTest extends Unit
         self::assertEquals(6, count($builder->files));
         self::assertEquals(2, count($builder->entries));
 
-        /** @var TestSection $section */
-        $section = $this->tester->grabFixture('sections', 'section-blog-draft');
+        $section = $this->tester->grabSectionFixture('section-blog-draft');
         $blog = $entry->sections[$section->id];
 
         self::assertTrue($blog->isRelationPopulated('entries'));
         self::assertEquals(2, count($blog->entries));
 
-        /** @var TestEntry $fixture */
-        $fixture = $this->tester->grabFixture('entries', 'post-3');
+        $fixture = $this->tester->grabEntryFixture('post-3');
         $post = current($blog->entries);
 
         self::assertEquals($fixture->id, $post->id);
@@ -88,8 +83,7 @@ class EntrySiteRelationsBuilderTest extends Unit
 
     public function testDescendantEntry(): void
     {
-        /** @var TestEntry $entry */
-        $entry = $this->tester->grabFixture('entries', 'post-1');
+        $entry = $this->tester->grabEntryFixture('post-1');
         ActiveQuery::setStatus(TestEntry::STATUS_ENABLED);
 
         $builder = new EntrySiteRelationsBuilder(['entry' => $entry]);
@@ -100,8 +94,7 @@ class EntrySiteRelationsBuilderTest extends Unit
 
     public function testDescendantEntryWithoutLoadingAncestors()
     {
-        /** @var TestEntry $entry */
-        $entry = $this->tester->grabFixture('entries', 'post-1');
+        $entry = $this->tester->grabEntryFixture('post-1');
         ActiveQuery::setStatus(TestEntry::STATUS_ENABLED);
 
         $builder = new EntrySiteRelationsBuilder([

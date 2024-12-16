@@ -142,6 +142,13 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
                 return;
             }
 
+            if (!$this->getIsNewRecord()) {
+                if (in_array($this->id, $parent?->getAncestorIds() ?? [])) {
+                    $this->addInvalidAttributeError('parent_id');
+                    return;
+                }
+            }
+
             $this->populateParentRelation($parent);
         }
     }
@@ -211,6 +218,12 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
 
         if ($this->shouldUpdateParentAfterSave && array_key_exists('parent_id', $changedAttributes)) {
             $allRelatedAncestorIds = ArrayHelper::cacheStringToArray($changedAttributes['path'] ?? '', $this->getAncestorIds());
+            $allRelatedAncestorIds = array_map('intval', $allRelatedAncestorIds);
+
+            if ($this->parent) {
+                $allRelatedAncestorIds = array_diff($allRelatedAncestorIds, [$this->parent_id]);
+                $this->parent->recalculateEntryCount()->update();
+            }
 
             if ($allRelatedAncestorIds) {
                 foreach (static::findAll($allRelatedAncestorIds) as $ancestor) {
@@ -453,8 +466,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
             return [];
         }
 
-        return array_filter($this->assets, fn (Asset $asset): bool =>
-            $asset->section_id === null && $asset->type != $asset::TYPE_META_IMAGE);
+        return array_filter($this->assets, fn (Asset $asset): bool => $asset->section_id === null && $asset->type != $asset::TYPE_META_IMAGE);
     }
 
     /**

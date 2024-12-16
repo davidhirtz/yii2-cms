@@ -84,6 +84,11 @@ abstract class ActiveRecord extends BaseActiveRecord implements DraftStatusAttri
                 $this->getI18nAttributesNames(['content']),
                 ...(array)($this->contentType == 'html' && $this->htmlValidator ? $this->htmlValidator : 'safe'),
             ],
+            [
+                $this->getI18nAttributesNames(['content']),
+                'string',
+                'max' => 65535,
+            ],
         ];
     }
 
@@ -118,7 +123,7 @@ abstract class ActiveRecord extends BaseActiveRecord implements DraftStatusAttri
         static::getModule()->invalidatePageCache();
         parent::afterDelete();
     }
-    
+
     abstract public function findSiblings(): ActiveQuery;
 
     protected function setDefaultPosition(): void
