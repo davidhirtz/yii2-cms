@@ -1,3 +1,7 @@
+## 2.3.5 (Dec 17, 2024)
+
+- Removed `codecept_debug` call
+
 ## 2.3.4 (Dec 17, 2024)
 
 - Fixed `MetaTags::registerImageMetaTags()` calculated header type
