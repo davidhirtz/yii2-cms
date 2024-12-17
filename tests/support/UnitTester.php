@@ -33,6 +33,11 @@ class UnitTester extends \Codeception\Actor
         return $this->grabFixture('assets', $key);
     }
 
+    public function grabCategoryFixture(string $key): TestAsset
+    {
+        return $this->grabFixture('categories', $key);
+    }
+
     public function grabEntryFixture(string $key): TestEntry
     {
         return $this->grabFixture('entries', $key);
