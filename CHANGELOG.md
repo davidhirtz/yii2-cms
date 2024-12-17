@@ -1,3 +1,7 @@
+## 2.3.6 (in development)
+
+- Added `andWhereParentStatus()` to `NavItems::getEntryQuery()`
+
 ## 2.3.5 (Dec 17, 2024)
 
 - Removed `codecept_debug` call

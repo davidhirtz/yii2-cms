@@ -76,6 +76,7 @@ class NavItems
             ->addSelect(Entry::instance()->getI18nAttributesNames(['slug', 'parent_slug']))
             ->where(static::getEntryQueryWhere())
             ->whereStatus()
+            ->andWhereParentStatus()
             ->orderBy(['position' => SORT_ASC])
             ->indexBy('id');
     }
