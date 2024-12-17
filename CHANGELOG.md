@@ -1,4 +1,4 @@
-## 2.3.4 (in development)
+## 2.3.4 (Dec 17, 2024)
 
 - Fixed `MetaTags::registerImageMetaTags()` calculated header type
 
