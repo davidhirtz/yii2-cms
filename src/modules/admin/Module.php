@@ -22,11 +22,6 @@ use Yii;
 class Module extends \davidhirtz\yii2\skeleton\base\Module implements ModuleInterface
 {
     /**
-     * @var string|null the module display name, defaults to "Entries"
-     */
-    public ?string $name = null;
-
-    /**
      * @var array the navbar item url
      */
     public array $route = ['/admin/entry/index'];
@@ -34,7 +29,6 @@ class Module extends \davidhirtz\yii2\skeleton\base\Module implements ModuleInte
     public function init(): void
     {
         $this->controllerMap = ArrayHelper::merge($this->getCoreControllerMap(), $this->controllerMap);
-
         parent::init();
     }
 
