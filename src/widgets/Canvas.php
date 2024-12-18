@@ -156,8 +156,10 @@ class Canvas extends Widget
         }
     }
 
-    protected function getAspectRatio(): string
+    protected function getAspectRatio(): ?string
     {
-        return (string)(new AspectRatio($this->asset->file));
+        return $this->asset->file->hasDimensions()
+            ? (string)(new AspectRatio($this->asset->file))
+            : null;
     }
 }
