@@ -1,6 +1,6 @@
 <?php
 
-namespace davidhirtz\yii2\cms\tests\fixtures;
+namespace davidhirtz\yii2\cms\tests\support\fixtures;
 
 use davidhirtz\yii2\skeleton\models\User;
 use yii\test\ActiveFixture;

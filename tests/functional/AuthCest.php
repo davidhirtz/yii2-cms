@@ -9,7 +9,7 @@ namespace davidhirtz\yii2\cms\tests\functional;
 use davidhirtz\yii2\cms\Module;
 use davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider;
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\EntryGridView;
-use davidhirtz\yii2\cms\tests\fixtures\UserFixture;
+use davidhirtz\yii2\cms\tests\support\fixtures\UserFixture;
 use davidhirtz\yii2\cms\tests\support\FunctionalTester;
 use davidhirtz\yii2\skeleton\codeception\functional\BaseCest;
 use davidhirtz\yii2\skeleton\models\User;
