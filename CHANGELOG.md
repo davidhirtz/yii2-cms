@@ -1,6 +1,7 @@
 ## 2.3.6 (in development)
 
 - Added `andWhereParentStatus()` to `NavItems::getEntryQuery()`
+- Changed `Bootstrap` I18N configuration
 - Enhanced `Canvas` to only use `AspectRatio` if the file has dimensions
 
 ## 2.3.5 (Dec 17, 2024)
