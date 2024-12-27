@@ -22,6 +22,11 @@ class Bootstrap implements BootstrapInterface
     {
         Yii::setAlias('@cms', __DIR__);
 
+        $app->getI18n()->translations['cms'] ??= [
+            'class' => PhpMessageSource::class,
+            'basePath' => '@cms/messages',
+        ];
+
         $app->extendModules([
             'admin' => [
                 'modules' => [
@@ -38,11 +43,6 @@ class Bootstrap implements BootstrapInterface
                 'fileRelations' => [Asset::class],
             ],
         ]);
-
-        $app->getI18n()->translations['cms'] ??= [
-            'class' => PhpMessageSource::class,
-            'basePath' => '@cms/messages',
-        ];
 
         $this->addDefaultUrlRules();
 
