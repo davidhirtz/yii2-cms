@@ -114,7 +114,7 @@ class FileAssetParentGridView extends GridView
     public function buttonsColumn(): array
     {
         return [
-            'contentOptions' => ['class' => 'text-right text-nowrap'],
+            'contentOptions' => ['class' => 'text-end text-nowrap'],
             'content' => function (Asset $asset): string {
                 $user = Yii::$app->getUser();
                 $buttons = [];

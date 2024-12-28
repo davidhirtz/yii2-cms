@@ -75,7 +75,7 @@ class EntryCategoryGridView extends GridView
     public function buttonsColumn(): array
     {
         return [
-            'contentOptions' => ['class' => 'text-right text-nowrap'],
+            'contentOptions' => ['class' => 'text-end text-nowrap'],
             'content' => function (Category $category): string {
                 // Make sure categories can always be removed even if they were not supposed to have entries enabled.
                 if (!$category->hasEntriesEnabled() && !$category->entryCategory) {

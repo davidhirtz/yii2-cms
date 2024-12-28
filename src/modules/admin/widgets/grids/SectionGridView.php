@@ -166,7 +166,7 @@ class SectionGridView extends GridView
     public function buttonsColumn(): array
     {
         return [
-            'contentOptions' => ['class' => 'text-right text-nowrap'],
+            'contentOptions' => ['class' => 'text-end text-nowrap'],
             'content' => fn (Section $section): string => Html::buttons($this->getRowButtons($section))
         ];
     }

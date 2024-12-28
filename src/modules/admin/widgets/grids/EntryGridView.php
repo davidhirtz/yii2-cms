@@ -137,20 +137,15 @@ class EntryGridView extends GridView
             [
                 [
                     'content' => $this->typeDropdown(),
-                    'options' => ['class' => 'col-12 col-md-3'],
                     'visible' => $this->showTypeDropdown,
                 ],
                 [
                     'content' => $this->categoryDropdown(),
-                    'options' => ['class' => 'col-12 col-md-3'],
                     'visible' => $this->showCategoryDropdown,
                 ],
                 [
-                    'content' => $this->getSearchInput(),
+                    'content' => $this->search->getColumn(),
                     'options' => ['class' => 'col-12 col-md-6'],
-                ],
-                'options' => [
-                    'class' => $this->showCategoryDropdown || $this->showTypeDropdown ? 'justify-content-between' : 'justify-content-end',
                 ],
             ],
         ];
@@ -193,7 +188,7 @@ class EntryGridView extends GridView
             'attribute' => $this->getModel()->getI18nAttributeName('name'),
             'content' => function (Entry $entry) {
                 $html = ($name = $entry->getI18nAttribute('name'))
-                    ? Html::markKeywords(Html::encode($name), $this->search)
+                    ? Html::markKeywords(Html::encode($name), $this->search->getKeywords())
                     : Yii::t('cms', '[ No title ]');
 
                 $html = Html::a($html, $this->getRoute($entry), [
@@ -271,7 +266,7 @@ class EntryGridView extends GridView
     public function buttonsColumn(): array
     {
         return [
-            'contentOptions' => ['class' => 'text-right text-nowrap'],
+            'contentOptions' => ['class' => 'text-end text-nowrap'],
             'content' => fn (Entry $entry): string => Html::buttons($this->getRowButtons($entry))
         ];
     }
@@ -337,7 +332,7 @@ class EntryGridView extends GridView
             }
         }
 
-        return $categories ? Html::tag('div', implode('', $categories), $options ?: ['class' => 'btn-list']) : '';
+        return $categories ? Html::tag('div', implode('', $categories), $options ?: ['class' => 'btn-toolbar']) : '';
     }
 
     public function getCategories(): array

@@ -84,7 +84,7 @@ class CategoryGridView extends GridView
     public function buttonsColumn(): array
     {
         return [
-            'contentOptions' => ['class' => 'text-right text-nowrap'],
+            'contentOptions' => ['class' => 'text-end text-nowrap'],
             'content' => function (Category $category): string {
                 $buttons = [];
 

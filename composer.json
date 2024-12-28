@@ -10,14 +10,15 @@
       "homepage": "https://www.davidhirtz.com/"
     }
   ],
+  "minimum-stability": "dev",
   "require": {
-    "davidhirtz/yii2-media": "^2.2"
+    "davidhirtz/yii2-media": "v3.x-dev"
   },
   "require-dev": {
     "codeception/codeception": "^5.0",
     "codeception/module-asserts": "*",
     "codeception/module-filesystem": "^3.0",
-    "codeception/module-phpbrowser": "*",
+    "codeception/module-phpbrowser": "",
     "codeception/module-yii2": "*",
     "codeception/specify": "^2.0",
     "codeception/verify": "^3.0",
