@@ -35,7 +35,7 @@ class SectionGridView extends GridView
     public bool $showDeleteButton = false;
 
     /**
-     * @var array|string[] {@see SectionController::actionUpdateAll()}
+     * @var array {@see SectionController::actionUpdateAll()}
      */
     public array $selectionRoute = ['/admin/section/update-all'];
 
