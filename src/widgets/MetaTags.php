@@ -17,7 +17,6 @@ class MetaTags extends Widget
 
     public Category|Entry|null $model = null;
 
-
     public ?array $languages = null;
 
     /**
@@ -169,5 +168,10 @@ class MetaTags extends Widget
                 }
             }
         }
+    }
+
+    public function render(): string
+    {
+        return '';
     }
 }

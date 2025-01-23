@@ -158,7 +158,7 @@ class EntryController extends AbstractController
             }
         }
 
-        return $this->redirect($request->get('redirect', array_merge($request->get(), ['index'])));
+        return $this->redirect($request->getReferrer() ?? ['index']);
     }
 
     public function actionDuplicate(int $id): Response|string

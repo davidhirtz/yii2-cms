@@ -70,7 +70,7 @@ class AssetGridView extends GridView
             [
                 [
                     'content' => Html::buttons($this->getFooterButtons()),
-                    'options' => ['class' => 'offset-md-3 col-md-9'],
+                    'options' => ['class' => 'col-form-content'],
                 ],
             ],
         ];
@@ -158,7 +158,7 @@ class AssetGridView extends GridView
         $isEntry = $asset->isEntryAsset();
         $buttons = [];
 
-        if ($this->isSortedByPosition() && $this->dataProvider->getCount() > 1) {
+        if ($this->isSortable() && $this->dataProvider->getCount() > 1) {
             if ($isEntry
                 ? $user->can('entryAssetOrder', ['entry' => $asset->entry])
                 : $user->can(Section::AUTH_SECTION_ASSET_ORDER, ['section' => $asset->section])) {

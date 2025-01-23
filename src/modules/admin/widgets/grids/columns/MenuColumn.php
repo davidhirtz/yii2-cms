@@ -7,7 +7,7 @@ namespace davidhirtz\yii2\cms\modules\admin\widgets\grids\columns;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\EntryGridView;
 use davidhirtz\yii2\cms\widgets\NavItems;
-use davidhirtz\yii2\skeleton\widgets\fontawesome\Icon;
+use davidhirtz\yii2\skeleton\html\Icon;
 use yii\grid\Column;
 
 /**
@@ -41,7 +41,7 @@ class MenuColumn extends Column
     protected function renderDataCellContent($model, $key, $index): string
     {
         if ($this->getIsMenuItem($model)) {
-            return (string)Icon::solid('stream', [
+            return (string)Icon::tag('stream', [
                 'title' => $model->getAttributeLabel('show_in_menu'),
                 'data-toggle' => 'tooltip',
             ]);

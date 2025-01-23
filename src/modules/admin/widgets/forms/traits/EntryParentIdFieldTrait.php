@@ -27,6 +27,7 @@ trait EntryParentIdFieldTrait
     protected function getParentIdOptions(): array
     {
         $options = [
+            'class' => 'form-select',
             'encode' => false,
             'prompt' => [
                 'text' => '',
@@ -39,7 +40,7 @@ trait EntryParentIdFieldTrait
         }
 
         foreach ($this->model->getI18nAttributeNames('slug') as $language => $attribute) {
-            $options['data-form-target'][] = $this->getSlugId($language);
+            $options['data-form-target'][] = '#' . $this->getSlugId($language);
             $options['prompt']['options']['data-value'][] = $this->getSlugBaseUrl($language);
         }
 

@@ -31,10 +31,14 @@ trait MenuFieldTrait
         if ($this->model->parent_id) {
             foreach ($this->model->ancestors as $ancestor) {
                 if (!$ancestor->isMenuItem()) {
-                    $options['options']['class'] = 'form-group row disabled';
-                    $options['options']['title'] = Yii::t('cms', "Parent entry \"{entry}\" is not a menu item", [
-                        'entry' => $ancestor->getI18nAttribute('name'),
-                    ]);
+                    $options['checkOptions']['class'] ??= 'form-check-input';
+                    $options['checkOptions']['labelOptions'] ??= [
+                        'class' => 'form-check-label text-invalid',
+                        'data-tooltip' => '',
+                        'title' => Yii::t('cms', "Parent entry \"{entry}\" is not a menu item", [
+                            'entry' => $ancestor->getI18nAttribute('name'),
+                        ]),
+                    ];
                     break;
                 }
             }

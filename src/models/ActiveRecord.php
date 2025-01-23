@@ -15,9 +15,11 @@ use davidhirtz\yii2\skeleton\behaviors\TrailBehavior;
 use davidhirtz\yii2\skeleton\db\ActiveQuery;
 use davidhirtz\yii2\skeleton\db\ActiveRecord as BaseActiveRecord;
 use davidhirtz\yii2\skeleton\models\interfaces\DraftStatusAttributeInterface;
+use davidhirtz\yii2\skeleton\models\interfaces\TrailModelInterface;
 use davidhirtz\yii2\skeleton\models\interfaces\TypeAttributeInterface;
 use davidhirtz\yii2\skeleton\models\traits\DraftStatusAttributeTrait;
 use davidhirtz\yii2\skeleton\models\traits\I18nAttributesTrait;
+use davidhirtz\yii2\skeleton\models\traits\TrailModelTrait;
 use davidhirtz\yii2\skeleton\models\traits\TypeAttributeTrait;
 use davidhirtz\yii2\skeleton\models\traits\UpdatedByUserTrait;
 use davidhirtz\yii2\skeleton\validators\DynamicRangeValidator;
@@ -36,18 +38,19 @@ use Yii;
  *
  * @mixin TrailBehavior
  */
-abstract class ActiveRecord extends BaseActiveRecord implements DraftStatusAttributeInterface, TypeAttributeInterface
+abstract class ActiveRecord extends BaseActiveRecord implements DraftStatusAttributeInterface, TrailModelInterface, TypeAttributeInterface
 {
     use DraftStatusAttributeTrait;
     use I18nAttributesTrait;
     use ModuleTrait;
     use SitemapTrait;
+    use TrailModelTrait;
     use TypeAttributeTrait;
     use UpdatedByUserTrait;
     use VisibleAttributeTrait;
 
     /**
-     * @var string|false the content type, "html" enables html validators and WYSIWYG editor
+     * @var string|false the content type, "html" enables HTML validators and WYSIWYG editor
      */
     public string|false $contentType = 'html';
 

@@ -46,7 +46,7 @@ class SectionLinkedEntryGridView extends EntryGridView
             [
                 [
                     'content' => $this->getSelectEntriesButton(),
-                    'options' => ['class' => 'offset-md-3 col-md-9'],
+                    'options' => ['class' => 'col-form-content'],
                 ],
             ],
         ];
@@ -78,7 +78,7 @@ class SectionLinkedEntryGridView extends EntryGridView
         $buttons = [];
 
         if (Yii::$app->getUser()->can(Section::AUTH_SECTION_UPDATE, ['entry' => $entry])) {
-            if ($this->dataProvider->getCount() > 1 && $this->isSortedByPosition()) {
+            if ($this->dataProvider->getCount() > 1 && $this->isSortable()) {
                 $buttons[] = $this->getSortableButton();
             }
 

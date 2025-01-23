@@ -15,10 +15,10 @@ use davidhirtz\yii2\cms\modules\admin\widgets\grids\columns\EntryCountColumn;
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\columns\SectionCountColumn;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\skeleton\helpers\Html;
+use davidhirtz\yii2\skeleton\modules\admin\widgets\grids\FilterDropdown;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grids\GridView;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grids\traits\StatusGridViewTrait;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grids\traits\TypeGridViewTrait;
-use davidhirtz\yii2\skeleton\widgets\bootstrap\ButtonDropdown;
 use davidhirtz\yii2\timeago\Timeago;
 use Yii;
 use yii\db\ActiveRecordInterface;
@@ -53,7 +53,7 @@ class EntryGridView extends GridView
     /**
      * @var int|false defines when dropdown filter text field is shown for category dropdown
      */
-    public int|false $showCategoryDropdownFilterMinCount = 50;
+    public int|false $showCategoryDropdownFilterMinCount = 1;
 
     /**
      * @var bool whether entry types should be selectable via dropdown
@@ -105,8 +105,6 @@ class EntryGridView extends GridView
             $this->showTypeDropdown = count($types) > 1;
         }
 
-        $this->type = $this->dataProvider->type;
-
         if (!$this->columns) {
             $this->columns = [
                 $this->statusColumn(),
@@ -135,10 +133,7 @@ class EntryGridView extends GridView
     {
         $this->header ??= [
             [
-                [
-                    'content' => $this->typeDropdown(),
-                    'visible' => $this->showTypeDropdown,
-                ],
+                $this->showTypeDropdown ? $this->typeDropdown() : null,
                 [
                     'content' => $this->categoryDropdown(),
                     'visible' => $this->showCategoryDropdown,
@@ -155,10 +150,8 @@ class EntryGridView extends GridView
     {
         $this->footer ??= [
             [
-                [
-                    'content' => $this->getCreateEntryButton() . ($this->showSelection ? $this->getSelectionButton() : ''),
-                    'options' => ['class' => 'col'],
-                ],
+                $this->getCreateEntryButton(),
+                $this->showSelection ? $this->getSelectionButton() : '',
             ],
         ];
     }
@@ -276,9 +269,11 @@ class EntryGridView extends GridView
         $user = Yii::$app->getUser();
         $buttons = [];
 
-        if ($this->isSortedByPosition()
+        if (
+            $this->isSortable()
             && $this->dataProvider->getCount() > 1
-            && $user->can(Entry::AUTH_ENTRY_ORDER)) {
+            && $user->can(Entry::AUTH_ENTRY_ORDER)
+        ) {
             $buttons[] = $this->getSortableButton();
         }
 
@@ -293,32 +288,26 @@ class EntryGridView extends GridView
         return $buttons;
     }
 
-    public function categoryDropdown(): string
+    public function categoryDropdown(): ?FilterDropdown
     {
-        if ($items = $this->categoryDropdownItems()) {
-            return ButtonDropdown::widget([
-                'label' => $this->dataProvider->category ? (Yii::t('cms', 'Category') . ': ' . Html::tag('strong', Html::encode($this->dataProvider->category->getI18nAttribute('name')))) : Yii::t('cms', 'Categories'),
-                'showFilter' => $this->showCategoryDropdownFilterMinCount && $this->showCategoryDropdownFilterMinCount < count($items),
-                'items' => $items,
-                'paramName' => 'category',
-            ]);
+        $items = $this->categoryDropdownItems();
+
+        if (!$items) {
+            return null;
         }
 
-        return '';
+        $dropdown = FilterDropdown::make();
+        $dropdown->label = Yii::t('cms', 'Category');
+        $dropdown->items = $items;
+        $dropdown->paramName = 'category';
+        $dropdown->filter = $this->showCategoryDropdownFilterMinCount && $this->showCategoryDropdownFilterMinCount < count($items);
+
+        return $dropdown;
     }
 
     protected function categoryDropdownItems(): array
     {
-        $items = [];
-
-        foreach ($this->getCategories() as $category) {
-            $items[] = [
-                'label' => $this->getNestedCategoryNames()[$category->id],
-                'url' => $category->hasEntriesEnabled() ? Url::current(['category' => $category->id, 'page' => null]) : null,
-            ];
-        }
-
-        return $items;
+        return array_map(fn ($category) => $this->getNestedCategoryNames()[$category->id], $this->getCategories());
     }
 
     public function renderCategoryButtons(Entry $entry, array $options = []): string

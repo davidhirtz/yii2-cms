@@ -10,8 +10,8 @@ use davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider;
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\traits\CategoryGridTrait;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\skeleton\helpers\Html;
+use davidhirtz\yii2\skeleton\html\Icon;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grids\GridView;
-use davidhirtz\yii2\skeleton\widgets\fontawesome\Icon;
 use davidhirtz\yii2\timeago\Timeago;
 use Yii;
 
@@ -88,7 +88,7 @@ class CategoryGridView extends GridView
             'content' => function (Category $category): string {
                 $buttons = [];
 
-                if ($this->isSortedByPosition()) {
+                if ($this->isSortable()) {
                     $buttons[] = Html::tag('span', (string)Icon::tag('arrows-alt'), ['class' => 'btn btn-secondary sortable-handle']);
                 }
 
@@ -107,9 +107,9 @@ class CategoryGridView extends GridView
         ]);
     }
 
-    public function isSortedByPosition(): bool
+    public function isSortable(): bool
     {
-        return parent::isSortedByPosition()
+        return parent::isSortable()
             && !$this->dataProvider->searchString
             && count($this->dataProvider->getModels()) > 1;
     }

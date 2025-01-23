@@ -7,7 +7,7 @@ namespace davidhirtz\yii2\cms\modules\admin\widgets\grids;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\skeleton\helpers\Html;
-use davidhirtz\yii2\skeleton\widgets\fontawesome\Icon;
+use davidhirtz\yii2\skeleton\html\Icon;
 use Yii;
 
 /**

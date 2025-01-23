@@ -33,6 +33,7 @@ class ActiveForm extends \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm
 
     public function descriptionField(array $options = []): ActiveField|string
     {
+        $options['inputOptions']['style']['min-height'] ??= '4.5rem';
         return $this->field($this->model, 'description', $options)->textarea();
     }
 
@@ -40,11 +41,11 @@ class ActiveForm extends \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm
     {
         $language = ArrayHelper::remove($options, 'language', Yii::$app->sourceLanguage);
         $attribute = $this->model->getI18nAttributeName('slug', $language);
-        $options = array_merge(['enableClientValidation' => false], $options);
 
         return $this->field($this->model, $attribute, $options)->slug([
             'baseUrl' => Html::tag('span', $this->getSlugBaseUrl($language), [
                 'id' => $this->getSlugId($language),
+                'class' => 'text-truncate',
             ]),
         ]);
     }

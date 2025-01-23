@@ -176,7 +176,7 @@ class SectionGridView extends GridView
         $user = Yii::$app->getUser();
         $buttons = [];
 
-        if ($this->isSortedByPosition()
+        if ($this->isSortable()
             && $this->dataProvider->getCount() > 1
             && $user->can(Section::AUTH_SECTION_ORDER)) {
             $buttons[] = $this->getSortableButton();
