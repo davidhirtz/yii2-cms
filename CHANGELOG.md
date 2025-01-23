@@ -1,4 +1,4 @@
-## 2.3.6 (in development)
+## 2.3.6 (Jan 23, 2025)
 
 - Added `andWhereParentStatus()` to `NavItems::getEntryQuery()`
 - Changed `Bootstrap` I18N configuration

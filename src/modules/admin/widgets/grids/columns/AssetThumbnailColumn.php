@@ -14,7 +14,7 @@ class AssetThumbnailColumn extends LinkDataColumn
 
     public function init(): void
     {
-        if (!is_callable($this->content)) {
+        if ($this->content === null) {
             $this->content = $this->renderThumbnail(...);
         }
 

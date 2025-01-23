@@ -20,7 +20,7 @@ use Yii;
 /**
  * @property int $id
  * @property int $entry_id
- * @property int $section_id
+ * @property int|null $section_id
  * @property int $file_id
  * @property int $position
  * @property string|null $name
