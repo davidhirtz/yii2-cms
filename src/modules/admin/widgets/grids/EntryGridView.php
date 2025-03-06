@@ -139,8 +139,7 @@ class EntryGridView extends GridView
                     'visible' => $this->showCategoryDropdown,
                 ],
                 [
-                    'content' => $this->search->getColumn(),
-                    'options' => ['class' => 'col-12 col-md-6'],
+                    $this->search->getColumn(),
                 ],
             ],
         ];
