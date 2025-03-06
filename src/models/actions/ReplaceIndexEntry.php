@@ -28,7 +28,7 @@ class ReplaceIndexEntry
 
         $this->setEntryAttributes();
 
-        return $this->entry->update();
+        return $this->entry->update() === 1;
     }
 
     protected function replacePreviousIndexEntry(): void

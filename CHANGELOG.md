@@ -1,3 +1,7 @@
+## 2.3.7 (Mar 6, 2025)
+
+- Fixed `ReplaceIndexEntry::replaceIndexEntry()` return type
+
 ## 2.3.6 (Jan 23, 2025)
 
 - Added `andWhereParentStatus()` to `NavItems::getEntryQuery()`
