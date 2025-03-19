@@ -35,7 +35,7 @@ trait EntryParentIdFieldTrait
             ],
         ];
 
-        if (!in_array('parent_slug', $this->model->slugTargetAttribute)) {
+        if (!in_array('parent_slug', (array)$this->model->slugTargetAttribute)) {
             return $options;
         }
 

@@ -1,3 +1,7 @@
+## 2.3.8 (Mar 19, 2025)
+
+- Fixed issues with `Entry::$slugTargetAttribute` as type `string` or `null`
+
 ## 2.3.7 (Mar 6, 2025)
 
 - Fixed `ReplaceIndexEntry::replaceIndexEntry()` return type
