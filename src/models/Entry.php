@@ -602,7 +602,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
     public function hasRoute(): bool
     {
         return $this->section_count > 0
-            || (in_array('parent_slug', $this->slugTargetAttribute) && $this->entry_count > 0);
+            || (in_array('parent_slug', (array)$this->slugTargetAttribute) && $this->entry_count > 0);
     }
 
     public function isIndex(): bool

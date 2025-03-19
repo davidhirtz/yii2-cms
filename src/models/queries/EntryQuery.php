@@ -137,7 +137,7 @@ class EntryQuery extends I18nActiveQuery
 
     public function whereSlug(string $slug): static
     {
-        if (in_array('parent_slug', Entry::instance()->slugTargetAttribute ?? [])) {
+        if (in_array('parent_slug', (array)Entry::instance()->slugTargetAttribute)) {
             $slug = explode('/', $slug);
 
             return $this->andWhere([
