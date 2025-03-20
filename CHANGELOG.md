@@ -1,3 +1,7 @@
+## 2.3.9 (Mar 20, 2025)
+
+- Fixed an issue where the entry slug database index was not created during migration
+
 ## 2.3.8 (Mar 19, 2025)
 
 - Fixed issues with `Entry::$slugTargetAttribute` as type `string` or `null`
