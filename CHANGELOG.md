@@ -1,3 +1,7 @@
+## 2.3.10 (in development)
+
+- Enhanced `SectionEntryController::actionIndex()` to redirect to the default type if no type is set
+
 ## 2.3.9 (Mar 20, 2025)
 
 - Fixed an issue where the entry slug database index was not created during migration
@@ -308,7 +312,7 @@
 
 ## v2.0.6 (Nov 7, 2023)
 
-- Added default view path to `Sections` widget
+- Added the default view path to `Sections` widget
 - Enhanced `Entry::getRoute()`, it now also returns the route when it has descendants
 - Enhanced `EntryParentIdFieldTrait` to truncate long parent slugs
 
