@@ -159,6 +159,7 @@ class SectionGridView extends GridView
         return [
             'attribute' => 'entry_count',
             'class' => CounterColumn::class,
+            'route' => fn (Section $section) => $section->getAdminRoute() + ['#' => 'entries'],
             'visible' => $this->hasSectionEntries(),
         ];
     }

@@ -1,5 +1,6 @@
 ## 2.3.10 (in development)
 
+- Added route to `SectionGridView::entriesCountColumn()`
 - Enhanced `SectionEntryController::actionIndex()` to redirect to the default type if no type is set
 - Enhanced `SectionLinkedEntryGridView` to link to the correct entry type if set
 - Enhanced `SectionEntryGridView` to filter out unsupported entry types
