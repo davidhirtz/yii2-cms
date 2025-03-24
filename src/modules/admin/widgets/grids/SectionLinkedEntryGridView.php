@@ -66,7 +66,13 @@ class SectionLinkedEntryGridView extends EntryGridView
 
     protected function getSelectEntriesButton(): string
     {
-        $route = ['section-entry/index', 'section' => $this->dataProvider->section->id];
+        $entryTypes = $this->dataProvider->section->getEntriesTypes();
+
+        $route = [
+            'section-entry/index',
+            'section' => $this->dataProvider->section->id,
+            'type' => $entryTypes ? current($entryTypes) : null,
+        ];
 
         return Html::a(Html::iconText('link', Yii::t('cms', 'Link entries')), $route, [
             'class' => 'btn btn-primary',

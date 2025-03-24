@@ -17,7 +17,6 @@ class EntryCountColumn extends CounterColumn
 {
     use ModuleTrait;
 
-
     public function init(): void
     {
         if ($this->visible) {

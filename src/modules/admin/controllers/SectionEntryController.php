@@ -14,6 +14,7 @@ use davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
+use yii\helpers\Url;
 use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\Response;
@@ -54,6 +55,10 @@ class SectionEntryController extends AbstractController
         ?string $q = null,
         ?int $type = null
     ): Response|string {
+        if (!$type && static::getModule()->defaultEntryType) {
+            $this->redirect(Url::current(['type' => static::getModule()->defaultEntryType]));
+        }
+
         $section = $this->findSection($section, Section::AUTH_SECTION_UPDATE);
 
         $provider = Yii::$container->get(EntryActiveDataProvider::class, [], [

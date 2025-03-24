@@ -31,6 +31,18 @@ class SectionEntryGridView extends EntryGridView
     {
     }
 
+    protected function typeDropdownItems(): array
+    {
+        $items = parent::typeDropdownItems();
+        $entryTypes = $this->dataProvider->section->getEntriesTypes();
+
+        if ($entryTypes) {
+            $items = array_intersect_key($items, array_flip($entryTypes));
+        }
+
+        return $items;
+    }
+
     /**
      * @see SectionEntryController::actionCreate()
      * @see SectionEntryController::actionDelete()
