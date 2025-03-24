@@ -1,4 +1,4 @@
-## 2.3.10 (in development)
+## 2.3.10 (Mar 24, 2025)
 
 - Added route to `SectionGridView::entriesCountColumn()`
 - Enhanced `SectionEntryController::actionIndex()` to redirect to the default type if no type is set
