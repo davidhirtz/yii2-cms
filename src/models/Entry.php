@@ -612,7 +612,9 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
 
     public function hasParentEnabled(): bool
     {
-        return static::getModule()->enableNestedEntries && !$this->isIndex();
+        return static::getModule()->enableNestedEntries
+            && $this->isAttributeVisible('parent_id')
+            && !$this->isIndex();
     }
 
     public function hasSectionsEnabled(): bool
