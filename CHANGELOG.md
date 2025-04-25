@@ -1,3 +1,7 @@
+# 2.3.11 (in development)
+
+- Fixed a bug in `EntryActiveDataProvider` sorting where default orders would override the sorter
+
 ## 2.3.10 (Mar 24, 2025)
 
 - Added route to `SectionGridView::entriesCountColumn()`
