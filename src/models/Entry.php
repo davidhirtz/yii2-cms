@@ -265,6 +265,27 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
                     $entry->delete();
                 }
             }
+
+            if (static::getModule()->enableSectionEntries) {
+                Yii::debug('Loading affected sections ...', __METHOD__);
+
+                $sectionIds = SectionEntry::find()
+                    ->select('section_id')
+                    ->where(['entry_id' => $this->id])
+                    ->column();
+
+                if ($sectionIds) {
+                    $this->on(static::EVENT_AFTER_DELETE, function ($event) use ($sectionIds) {
+                        $sections = Section::find()
+                            ->where(['id' => $sectionIds])
+                            ->all();
+
+                        foreach ($sections as $section) {
+                            $section->recalculateEntryCount()->update();
+                        }
+                    });
+                }
+            }
         }
 
         return $isValid;
