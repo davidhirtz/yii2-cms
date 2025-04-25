@@ -1,4 +1,4 @@
-# 2.3.11 (in development)
+# 2.3.11 (Apr 25, 2025)
 
 - Added `Section::$entry_count` recalculation on entry delete (Issue #16)
 - Added `Section` type attribute `visible` filter to `Sections` (Issue #15) 
