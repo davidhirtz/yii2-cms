@@ -1,6 +1,7 @@
 # 2.3.11 (in development)
 
 - Added `Section::$entry_count` recalculation on entry delete (Issue #16)
+- Added `Section` type attribute `visible` filter to `Sections` (Issue #15) 
 - Fixed a bug in `EntryActiveDataProvider` sorting where default orders would override the sorter
 
 ## 2.3.10 (Mar 24, 2025)
