@@ -125,6 +125,15 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
     public function beforeValidate(): bool
     {
         $this->ensureRequiredI18nAttributes();
+
+        if ($this->isAttributeChanged('parent_id')) {
+            foreach ($this->getI18nAttributeNames('parent_slug') as $language => $attributeName) {
+                $this->{$attributeName} = $this->parent?->getFormattedSlug($language);
+            }
+
+            $this->position = null;
+        }
+
         $this->ensureSlug();
 
         return parent::beforeValidate();
@@ -187,10 +196,6 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
             $this->path = $this->parent
                 ? ArrayHelper::createCacheString(ArrayHelper::cacheStringToArray($this->parent->path, $this->parent_id))
                 : null;
-
-            foreach ($this->getI18nAttributeNames('parent_slug') as $language => $attributeName) {
-                $this->{$attributeName} = $this->parent?->getFormattedSlug($language);
-            }
 
             $this->position = null;
         }

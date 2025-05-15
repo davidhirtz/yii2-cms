@@ -1,7 +1,11 @@
+# 2.3.12 (May 15, 2025)
+
+- Fixed setting `Entry::$parent_slug` before validation to be present during validation in duplicate action
+
 # 2.3.11 (Apr 25, 2025)
 
 - Added `Section::$entry_count` recalculation on entry delete (Issue #16)
-- Added `Section` type attribute `visible` filter to `Sections` (Issue #15) 
+- Added `Section` type attribute `visible` filter to `Sections` (Issue #15)
 - Fixed a bug in `EntryActiveDataProvider` sorting where default orders would override the sorter
 - Enhanced `Entry::hasParentEnabled()` check
 
