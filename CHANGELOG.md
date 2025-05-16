@@ -1,3 +1,7 @@
+# 2.3.13 (May 16, 2025)
+
+- Added `SlugAttributeTrait::$slugLowercase` and `SlugAttributeTrait::$slugReplacement`
+
 # 2.3.12 (May 15, 2025)
 
 - Fixed setting `Entry::$parent_slug` before validation to be present during validation in duplicate action
