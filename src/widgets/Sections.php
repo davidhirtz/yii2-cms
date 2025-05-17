@@ -57,15 +57,19 @@ class Sections extends Widget
 
     protected function prepareSections(): void
     {
-        if (is_callable($this->isVisible)) {
-            $this->sections = array_filter($this->sections, $this->isVisible);
-        }
-
+        $sections = [];
         $position = 1;
 
         foreach ($this->sections as $section) {
-            $section->position = $position++;
+            $visible = $section->getTypeOptions()['visible'] ?? $this->isVisible;
+
+            if (!is_callable($visible) || $visible($section)) {
+                $section->position = $position++;
+                $sections[] = $section;
+            }
         }
+
+        $this->sections = $sections;
     }
 
     protected function createSectionGroups(): void

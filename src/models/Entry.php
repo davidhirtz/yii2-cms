@@ -125,6 +125,15 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
     public function beforeValidate(): bool
     {
         $this->ensureRequiredI18nAttributes();
+
+        if ($this->isAttributeChanged('parent_id')) {
+            foreach ($this->getI18nAttributeNames('parent_slug') as $language => $attributeName) {
+                $this->{$attributeName} = $this->parent?->getFormattedSlug($language);
+            }
+
+            $this->position = null;
+        }
+
         $this->ensureSlug();
 
         return parent::beforeValidate();
@@ -187,10 +196,6 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
             $this->path = $this->parent
                 ? ArrayHelper::createCacheString(ArrayHelper::cacheStringToArray($this->parent->path, $this->parent_id))
                 : null;
-
-            foreach ($this->getI18nAttributeNames('parent_slug') as $language => $attributeName) {
-                $this->{$attributeName} = $this->parent?->getFormattedSlug($language);
-            }
 
             $this->position = null;
         }
@@ -263,6 +268,27 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
                 foreach ($this->children as $entry) {
                     $entry->setIsBatch($this->getIsBatch());
                     $entry->delete();
+                }
+            }
+
+            if (static::getModule()->enableSectionEntries) {
+                Yii::debug('Loading affected sections ...', __METHOD__);
+
+                $sectionIds = SectionEntry::find()
+                    ->select('section_id')
+                    ->where(['entry_id' => $this->id])
+                    ->column();
+
+                if ($sectionIds) {
+                    $this->on(static::EVENT_AFTER_DELETE, function ($event) use ($sectionIds) {
+                        $sections = Section::find()
+                            ->where(['id' => $sectionIds])
+                            ->all();
+
+                        foreach ($sections as $section) {
+                            $section->recalculateEntryCount()->update();
+                        }
+                    });
                 }
             }
         }
@@ -591,7 +617,9 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
 
     public function hasParentEnabled(): bool
     {
-        return static::getModule()->enableNestedEntries && !$this->isIndex();
+        return static::getModule()->enableNestedEntries
+            && $this->isAttributeVisible('parent_id')
+            && !$this->isIndex();
     }
 
     public function hasSectionsEnabled(): bool

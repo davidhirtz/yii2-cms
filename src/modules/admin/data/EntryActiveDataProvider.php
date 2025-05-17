@@ -149,6 +149,10 @@ class EntryActiveDataProvider extends ActiveDataProvider
 
     protected function prepareModels(): array
     {
+        if ($this->getSort() !== false) {
+            $this->query->orderBy(null);
+        }
+
         $models = parent::prepareModels();
 
         if ($order = $this->section?->getEntriesOrderBy()) {
@@ -170,8 +174,7 @@ class EntryActiveDataProvider extends ActiveDataProvider
 
     public function setSort($value): void
     {
-        // Try to set the default order from the query if it's a single order.
-        if (is_array($value) && is_array($this->query->orderBy) && count($this->query->orderBy) === 1) {
+        if (is_array($value)) {
             $value['defaultOrder'] ??= $this->query->orderBy;
         }
 
