@@ -47,7 +47,7 @@ class Sections extends Widget
         parent::init();
     }
 
-    public function run(): string
+    public function render(): string
     {
         $this->prepareSections();
         $this->createSectionGroups();
