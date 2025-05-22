@@ -1,6 +1,7 @@
 # 2.3.14 (May 22, 2025)
 
 - Enhanced `SiteController::getQuery()` to always apply `EntryQuery::addSelectI18nSlugTargetAttributes()`
+- Fixed `FrontendLink` section draft status (Issue #18)
 
 # 2.3.13 (May 16, 2025)
 

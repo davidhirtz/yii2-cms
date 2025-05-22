@@ -63,6 +63,10 @@ class FrontendLink implements Stringable
 
     protected function isDraft(): bool
     {
+        if ($this->model->isDraft()) {
+            return true;
+        }
+
         if ($this->entry) {
             return in_array(Entry::STATUS_DRAFT, [
                 $this->entry->status,
@@ -70,7 +74,7 @@ class FrontendLink implements Stringable
             ]);
         }
 
-        return $this->model->isDraft();
+        return false;
     }
 
     public static function tag(Category|Entry|Section $model, array $options = []): string
