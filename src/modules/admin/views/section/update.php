@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -34,7 +35,6 @@ $this->setTitle(Yii::t('cms', 'Edit Section'));
     'content' => SectionActiveForm::widget([
         'model' => $section,
     ]),
-
 ]); ?>
 
 <?php if ($section->hasAssetsEnabled()) {
