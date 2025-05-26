@@ -24,7 +24,6 @@ trait ParentIdFieldTrait
     protected function getParentIdOptionDataValue(Category|Entry $model, ?string $language = null): string
     {
         return Yii::$app->getI18n()->callback($language, function () use ($model): string {
-            $draftHostInfo = Yii::$app->getRequest()->getDraftHostInfo();
             $urlManager = Yii::$app->getUrlManager();
             $route = $model->getRoute();
 
@@ -32,11 +31,7 @@ trait ParentIdFieldTrait
                 return '';
             }
 
-            $url = $model->isEnabled() || !$draftHostInfo
-                ? $urlManager->createAbsoluteUrl($route)
-                : $urlManager->createDraftUrl($route);
-
-
+            $url = $model->isEnabled() ? $urlManager->createAbsoluteUrl($route) : $urlManager->createDraftUrl($route);
             $url = rtrim($url, '/') . '/';
 
             return Html::truncateText($url, $this->parentSlugMaxLength, '…/');

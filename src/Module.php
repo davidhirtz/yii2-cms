@@ -15,7 +15,7 @@ class Module extends \davidhirtz\yii2\skeleton\base\Module
 {
     use ModuleTrait;
 
-    final public const AUTH_ROLE_AUTHOR = 'author';
+    final public const string AUTH_ROLE_AUTHOR = 'author';
 
     /**
      * @var bool whether categories should be enabled

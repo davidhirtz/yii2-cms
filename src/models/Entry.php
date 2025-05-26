@@ -49,15 +49,15 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
     use MaterializedTreeTrait;
     use SlugAttributeTrait;
 
-    final public const AUTH_ENTRY_CREATE = 'entryCreate';
-    final public const AUTH_ENTRY_DELETE = 'entryDelete';
-    final public const AUTH_ENTRY_UPDATE = 'entryUpdate';
-    final public const AUTH_ENTRY_ORDER = 'entryOrder';
-    final public const AUTH_ENTRY_ASSET_CREATE = 'entryAssetCreate';
-    final public const AUTH_ENTRY_ASSET_DELETE = 'entryAssetDelete';
-    final public const AUTH_ENTRY_ASSET_UPDATE = 'entryAssetUpdate';
-    final public const AUTH_ENTRY_ASSET_ORDER = 'entryAssetOrder';
-    final public const AUTH_ENTRY_CATEGORY_UPDATE = 'entryCategoryUpdate';
+    final public const string AUTH_ENTRY_CREATE = 'entryCreate';
+    final public const string AUTH_ENTRY_DELETE = 'entryDelete';
+    final public const string AUTH_ENTRY_UPDATE = 'entryUpdate';
+    final public const string AUTH_ENTRY_ORDER = 'entryOrder';
+    final public const string AUTH_ENTRY_ASSET_CREATE = 'entryAssetCreate';
+    final public const string AUTH_ENTRY_ASSET_DELETE = 'entryAssetDelete';
+    final public const string AUTH_ENTRY_ASSET_UPDATE = 'entryAssetUpdate';
+    final public const string AUTH_ENTRY_ASSET_ORDER = 'entryAssetOrder';
+    final public const string AUTH_ENTRY_CATEGORY_UPDATE = 'entryCategoryUpdate';
 
     public string|false $contentType = false;
     public array|string $dateTimeValidator = DateTimeValidator::class;

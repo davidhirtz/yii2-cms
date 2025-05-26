@@ -81,6 +81,7 @@ class SiteController extends Controller
         return Entry::find()
             ->selectSiteAttributes()
             ->replaceI18nAttributes()
+            ->addSelectI18nSlugTargetAttributes()
             ->whereStatus($status)
             ->andWhereParentStatus();
     }

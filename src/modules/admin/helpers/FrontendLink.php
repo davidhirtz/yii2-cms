@@ -51,6 +51,10 @@ class FrontendLink implements Stringable
 
     protected function isDisabled(): bool
     {
+        if ($this->model->isDisabled()) {
+            return true;
+        }
+
         if ($this->entry) {
             return in_array(Entry::STATUS_DISABLED, [
                 $this->entry->status,
@@ -58,11 +62,15 @@ class FrontendLink implements Stringable
             ]);
         }
 
-        return $this->model->isDisabled();
+        return false;
     }
 
     protected function isDraft(): bool
     {
+        if ($this->model->isDraft()) {
+            return true;
+        }
+
         if ($this->entry) {
             return in_array(Entry::STATUS_DRAFT, [
                 $this->entry->status,
@@ -70,7 +78,7 @@ class FrontendLink implements Stringable
             ]);
         }
 
-        return $this->model->isDraft();
+        return false;
     }
 
     public static function tag(Category|Entry|Section $model, array $options = []): string

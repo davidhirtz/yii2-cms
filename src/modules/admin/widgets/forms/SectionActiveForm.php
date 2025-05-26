@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace davidhirtz\yii2\cms\modules\admin\widgets\forms;
 
+use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\Section;
 use Yii;
 use yii\helpers\Html;
@@ -42,14 +43,18 @@ class SectionActiveForm extends ActiveForm
 
     public function getSlugBaseUrl(?string $language = null): string
     {
-        $draftHostInfo = Yii::$app->getRequest()->getDraftHostInfo();
-        $urlManager = Yii::$app->getUrlManager();
+        $manager = Yii::$app->getUrlManager();
 
         $route = array_merge($this->model->entry->getRoute(), [
-            'language' => $urlManager->i18nUrl || $urlManager->i18nSubdomain ? $language : null, '#' => '',
+            'language' => $manager->hasI18nUrls() ? $language : null, '#' => '',
         ]);
 
-        $url = $this->model->entry->isEnabled() || !$draftHostInfo ? $urlManager->createAbsoluteUrl($route) : $urlManager->createDraftUrl($route);
+        $isDraft = in_array(Entry::STATUS_DRAFT, [
+            $this->model->entry->status,
+            $this->model->entry->parent_status,
+        ]);
+
+        $url = $isDraft ? $manager->createDraftUrl($route) : $manager->createAbsoluteUrl($route);
 
         if ($this->maxBaseUrlLength && strlen((string) $url) > $this->maxBaseUrlLength) {
             $url = Html::tag('span', substr((string) $url, 0, $this->maxBaseUrlLength) . '…#', ['title' => $url]);
