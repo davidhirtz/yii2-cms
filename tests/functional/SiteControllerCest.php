@@ -4,6 +4,8 @@
  * @noinspection PhpUnused
  */
 
+declare(strict_types=1);
+
 namespace davidhirtz\yii2\cms\tests\functional;
 
 use davidhirtz\yii2\cms\controllers\SiteController;
@@ -50,8 +52,7 @@ class SiteControllerCest extends BaseCest
 
     public function checkEnabledEntry(FunctionalTester $I): void
     {
-        /** @var Entry $entry */
-        $entry = $I->grabFixture('entries', 'page-enabled');
+        $entry = $I->grabEntryFixture('page-enabled');
         $urlManager = Yii::$app->getUrlManager();
 
         $I->amOnPage($urlManager->createUrl($entry->getRoute()));
@@ -87,24 +88,25 @@ class SiteControllerCest extends BaseCest
 
     public function checkDraftEntry(FunctionalTester $I): void
     {
-        /** @var Entry $entry */
-        $entry = $I->grabFixture('entries', 'page-draft');
+        $entry = $I->grabEntryFixture('page-draft');
         $urlManager = Yii::$app->getUrlManager();
 
-        $I->amOnPage($urlManager->createUrl($entry->getRoute()));
+        $I->amOnPage($urlManager->createAbsoluteUrl($entry->getRoute()));
         $I->seeResponseCodeIs(404);
 
-        $I->setDraftHttpHost();
-
-        $I->amOnPage($urlManager->createUrl($entry->getRoute()));
+        $I->amOnDraftSubdomain();
+        $I->amOnPage($urlManager->createAbsoluteUrl($entry->getRoute()));
         $I->seeResponseCodeIs(200);
         $I->haveHttpHeader('x-robots-tag', 'none');
     }
 
+    public function checkDraftEntryWithoutDraftUrl(FunctionalTester $I): void
+    {
+    }
+
     public function checkDisabledEntry(FunctionalTester $I): void
     {
-        /** @var Entry $entry */
-        $entry = $I->grabFixture('entries', 'page-disabled');
+        $entry = $I->grabEntryFixture('page-disabled');
         $urlManager = Yii::$app->getUrlManager();
 
         $I->amOnPage($urlManager->createUrl($entry->getRoute()));
@@ -113,8 +115,7 @@ class SiteControllerCest extends BaseCest
 
     public function checkEntryWithDisabledRoute(FunctionalTester $I): void
     {
-        /** @var Entry $entry */
-        $entry = $I->grabFixture('entries', 'post-2');
+        $entry = $I->grabEntryFixture('post-2');
         $urlManager = Yii::$app->getUrlManager();
 
         $I->amOnPage($urlManager->createUrl($entry->getRoute()));
@@ -123,8 +124,7 @@ class SiteControllerCest extends BaseCest
 
     public function checkEntrySlugWithTrailingSlash(FunctionalTester $I): void
     {
-        /** @var Entry $entry */
-        $entry = $I->grabFixture('entries', 'page-enabled');
+        $entry = $I->grabEntryFixture('page-enabled');
         $urlManager = Yii::$app->getUrlManager();
 
         $I->amOnPage($urlManager->createUrl($entry->getRoute()) . '/');

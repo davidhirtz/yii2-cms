@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use davidhirtz\yii2\media\models\collections\FolderCollection;
 use davidhirtz\yii2\media\models\File;
 use yii\db\Expression;

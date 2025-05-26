@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use davidhirtz\yii2\cms\Bootstrap;
 use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\cms\models\Entry;

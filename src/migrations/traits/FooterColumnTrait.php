@@ -18,7 +18,7 @@ trait FooterColumnTrait
     protected function addShowInFooterColumn(): void
     {
         $this->i18nTablesCallback(function () {
-            $this->addColumn(Entry::tableName(), 'show_in_footer', $this->boolean()
+            $this->addColumn(Entry::tableName(), 'show_in_footer', (string)$this->boolean()
                 ->notNull()
                 ->defaultValue(false)
                 ->after('publish_date'));

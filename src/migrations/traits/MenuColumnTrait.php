@@ -18,7 +18,7 @@ trait MenuColumnTrait
     protected function addShowInMenuColumn(): void
     {
         $this->i18nTablesCallback(function () {
-            $this->addColumn(Entry::tableName(), 'show_in_menu', $this->boolean()
+            $this->addColumn(Entry::tableName(), 'show_in_menu', (string)$this->boolean()
                 ->notNull()
                 ->defaultValue(false)
                 ->after('publish_date'));

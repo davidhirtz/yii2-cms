@@ -46,7 +46,7 @@ class SectionActiveForm extends ActiveForm
         $manager = Yii::$app->getUrlManager();
 
         $route = array_merge($this->model->entry->getRoute(), [
-            'language' => $manager->i18nUrl || $manager->i18nSubdomain ? $language : null, '#' => '',
+            'language' => $manager->hasI18nUrls() ? $language : null, '#' => '',
         ]);
 
         $isDraft = in_array(Entry::STATUS_DRAFT, [
@@ -56,8 +56,8 @@ class SectionActiveForm extends ActiveForm
 
         $url = $isDraft ? $manager->createDraftUrl($route) : $manager->createAbsoluteUrl($route);
 
-        if ($this->maxBaseUrlLength && strlen($url) > $this->maxBaseUrlLength) {
-            $url = Html::tag('span', substr($url, 0, $this->maxBaseUrlLength) . '…#', ['title' => $url]);
+        if ($this->maxBaseUrlLength && strlen((string) $url) > $this->maxBaseUrlLength) {
+            $url = Html::tag('span', substr((string) $url, 0, $this->maxBaseUrlLength) . '…#', ['title' => $url]);
         }
 
         return $url;

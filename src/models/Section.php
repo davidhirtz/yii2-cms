@@ -36,14 +36,14 @@ class Section extends ActiveRecord implements AssetParentInterface
     use EntryRelationTrait;
     use SlugAttributeTrait;
 
-    final public const AUTH_SECTION_CREATE = 'sectionCreate';
-    final public const AUTH_SECTION_DELETE = 'sectionDelete';
-    final public const AUTH_SECTION_UPDATE = 'sectionUpdate';
-    final public const AUTH_SECTION_ORDER = 'sectionOrder';
-    final public const AUTH_SECTION_ASSET_CREATE = 'sectionAssetCreate';
-    final public const AUTH_SECTION_ASSET_DELETE = 'sectionAssetDelete';
-    final public const AUTH_SECTION_ASSET_UPDATE = 'sectionAssetUpdate';
-    final public const AUTH_SECTION_ASSET_ORDER = 'sectionAssetOrder';
+    final public const string AUTH_SECTION_CREATE = 'sectionCreate';
+    final public const string AUTH_SECTION_DELETE = 'sectionDelete';
+    final public const string AUTH_SECTION_UPDATE = 'sectionUpdate';
+    final public const string AUTH_SECTION_ORDER = 'sectionOrder';
+    final public const string AUTH_SECTION_ASSET_CREATE = 'sectionAssetCreate';
+    final public const string AUTH_SECTION_ASSET_DELETE = 'sectionAssetDelete';
+    final public const string AUTH_SECTION_ASSET_UPDATE = 'sectionAssetUpdate';
+    final public const string AUTH_SECTION_ASSET_ORDER = 'sectionAssetOrder';
 
     public array|string|null $slugTargetAttribute = ['entry_id', 'slug'];
     public bool|null $shouldUpdateEntryAfterSave = null;
