@@ -2,7 +2,6 @@
 
 - Requires PHP 8.3+
 
-
 # 2.3.14 (May 22, 2025)
 
 - Enhanced `SiteController::getQuery()` to always apply `EntryQuery::addSelectI18nSlugTargetAttributes()`
