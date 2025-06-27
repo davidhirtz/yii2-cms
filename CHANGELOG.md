@@ -1,3 +1,7 @@
+## 2.4.1 (Jun 27, 2025)
+
+- Fixed `Asset::getTrailAttributes()`
+
 ## 2.4.0 (May 26, 2025)
 
 - Requires PHP 8.3+

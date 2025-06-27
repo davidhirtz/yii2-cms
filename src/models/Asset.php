@@ -198,10 +198,11 @@ class Asset extends ActiveRecord implements AssetInterface, DraftStatusAttribute
 
     public function getTrailAttributes(): array
     {
-        return array_diff($this->attributes(), [
+        return [
+            ...parent::getTrailAttributes(),
             // Used by `yii2-cms-hotspot` extension
             'hotspot_count',
-        ]);
+        ];
     }
 
     public function getSitemapUrl(?string $language = null): array|false
