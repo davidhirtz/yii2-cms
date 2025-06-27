@@ -42,6 +42,10 @@ use yii\db\ActiveQuery;
  * @property-read EntryCategory[] $entryCategories {@see static::getEntryCategories()}
  * @property-read SectionEntry|null $sectionEntry {@see static::getSectionEntry()}
  * @property-read Section[] $sections {@see static::getSections()}
+ *
+ * @method EntryQuery findAncestors()
+ * @method EntryQuery findChildren()
+ * @method EntryQuery findDescendants()
  */
 class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterface
 {
@@ -280,7 +284,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
                     ->column();
 
                 if ($sectionIds) {
-                    $this->on(static::EVENT_AFTER_DELETE, function ($event) use ($sectionIds) {
+                    $this->on(static::EVENT_AFTER_DELETE, function () use ($sectionIds) {
                         $sections = Section::find()
                             ->where(['id' => $sectionIds])
                             ->all();

@@ -10,7 +10,8 @@ use davidhirtz\yii2\skeleton\models\Trail;
 use Yii;
 
 /**
- * @extends ReorderActiveRecords<Entry>
+ * @template T of Entry
+ * @extends ReorderActiveRecords<T>
  */
 class ReorderEntries extends ReorderActiveRecords
 {

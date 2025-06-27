@@ -1,5 +1,6 @@
 ## 2.4.1 (Jun 27, 2025)
 
+- Changed annotations for static analysis (Yii 2.0.53)
 - Fixed `Asset::getTrailAttributes()`
 
 ## 2.4.0 (May 26, 2025)

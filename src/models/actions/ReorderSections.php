@@ -11,7 +11,8 @@ use davidhirtz\yii2\skeleton\models\Trail;
 use Yii;
 
 /**
- * @extends ReorderActiveRecords<Section>
+ * @template T of Section
+ * @template-extends ReorderActiveRecords<T>
  */
 class ReorderSections extends ReorderActiveRecords
 {
