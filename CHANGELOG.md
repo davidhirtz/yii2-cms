@@ -1,10 +1,7 @@
-## 2.4.2 (Jul 1, 2025)
-
-- Fixed `EntryCategory::insertCategoryAncestors()` for categories that don't have entries enabled
-
-## 2.4.1 (Jun 27, 2025)
+## 2.4.1 (Jul 1, 2025)
 
 - Changed annotations for static analysis (Yii 2.0.53)
+- Fixed `EntryCategory::insertCategoryAncestors()` for categories that don't have entries enabled
 - Fixed `Asset::getTrailAttributes()`
 
 ## 2.4.0 (May 26, 2025)
