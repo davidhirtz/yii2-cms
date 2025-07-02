@@ -1,3 +1,7 @@
+## 2.4.2 (Jul 2, 2025)
+
+- Fixed `AssetGridView` upload HTML ID
+
 ## 2.4.1 (Jul 1, 2025)
 
 - Changed annotations for static analysis (Yii 2.0.53)

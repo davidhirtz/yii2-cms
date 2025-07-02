@@ -119,7 +119,7 @@ class AssetGridView extends GridView
 
     public function renderItems(): string
     {
-        return Html::tag('div', parent::renderItems(), ['id' => 'files']);
+        return Html::tag('div', parent::renderItems(), ['id' => 'dropzone']);
     }
 
     protected function getFooterButtons(): array
