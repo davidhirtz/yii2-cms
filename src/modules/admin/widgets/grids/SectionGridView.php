@@ -26,7 +26,6 @@ class SectionGridView extends GridView
     use ModuleTrait;
     use StatusGridViewTrait;
 
-
     public ?Entry $entry = null;
 
     /**
@@ -150,6 +149,7 @@ class SectionGridView extends GridView
         return [
             'attribute' => 'asset_count',
             'class' => CounterColumn::class,
+            'route' => fn (Section $section) => $section->getAdminRoute() + ['#' => 'assets'],
             'visible' => static::getModule()->enableSectionAssets,
         ];
     }
