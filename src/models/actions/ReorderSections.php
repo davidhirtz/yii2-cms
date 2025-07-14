@@ -29,6 +29,7 @@ class ReorderSections extends ReorderActiveRecords
         parent::__construct($sections, $order);
     }
 
+    #[\Override]
     protected function afterReorder(): void
     {
         Trail::createOrderTrail($this->entry, Yii::t('cms', 'Section order changed'));

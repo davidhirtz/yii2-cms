@@ -44,6 +44,7 @@ class TestFooterFieldActiveForm extends EntryActiveForm
 {
     use FooterFieldTrait;
 
+    #[\Override]
     public function init(): void
     {
         $this->action = '/';

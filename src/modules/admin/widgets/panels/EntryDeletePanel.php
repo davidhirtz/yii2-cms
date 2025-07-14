@@ -25,6 +25,7 @@ class EntryDeletePanel extends Panel
 
     public string $type = self::TYPE_DANGER;
 
+    #[\Override]
     public function init(): void
     {
         if ($this->entry->isIndex()) {

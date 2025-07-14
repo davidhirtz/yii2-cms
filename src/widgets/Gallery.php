@@ -45,6 +45,7 @@ class Gallery extends Widget
         parent::init();
     }
 
+    #[\Override]
     public function run(): string
     {
         $viewports = $this->getAssetsByViewports();

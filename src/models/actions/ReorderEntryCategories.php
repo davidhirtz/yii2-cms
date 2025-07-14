@@ -27,6 +27,7 @@ class ReorderEntryCategories extends ReorderActiveRecords
         parent::__construct($entryCategories, $order);
     }
 
+    #[\Override]
     protected function afterReorder(): void
     {
         Trail::createOrderTrail($this->category, Yii::t('cms', 'Entry order changed'));

@@ -30,6 +30,7 @@ class AssetController extends AbstractController
     use SectionTrait;
     use FileTrait;
 
+    #[\Override]
     public function behaviors(): array
     {
         return [

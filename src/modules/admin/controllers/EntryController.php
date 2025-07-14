@@ -24,6 +24,7 @@ class EntryController extends AbstractController
 
     protected array|false|null $i18nTablesRoute = ['/admin/entry/index'];
 
+    #[\Override]
     public function behaviors(): array
     {
         return [

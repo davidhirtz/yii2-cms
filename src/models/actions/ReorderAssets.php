@@ -29,6 +29,7 @@ class ReorderAssets extends ReorderActiveRecords
         parent::__construct($assets, $order);
     }
 
+    #[\Override]
     protected function afterReorder(): void
     {
         $trail = Trail::createOrderTrail($this->parent, Yii::t('cms', 'Asset order changed'));

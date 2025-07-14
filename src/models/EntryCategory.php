@@ -36,6 +36,7 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
 
     public bool|null $shouldUpdateEntryAfterInsert = null;
 
+    #[\Override]
     public function behaviors(): array
     {
         return [
@@ -44,6 +45,7 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         ];
     }
 
+    #[\Override]
     public function rules(): array
     {
         return array_merge(parent::rules(), [
@@ -87,6 +89,7 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         }
     }
 
+    #[\Override]
     public function beforeSave($insert): bool
     {
         $this->attachBehaviors([
@@ -103,6 +106,7 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         return parent::beforeSave($insert);
     }
 
+    #[\Override]
     public function afterSave($insert, $changedAttributes): void
     {
         if ($insert) {
@@ -119,6 +123,7 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         parent::afterSave($insert, $changedAttributes);
     }
 
+    #[\Override]
     public function afterDelete(): void
     {
         if (!$this->getIsBatch()) {
@@ -228,6 +233,7 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         return Yii::t('skeleton', 'Relation');
     }
 
+    #[\Override]
     public function attributeLabels(): array
     {
         return array_merge(parent::attributeLabels(), [
@@ -237,11 +243,13 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         ]);
     }
 
+    #[\Override]
     public function formName(): string
     {
         return 'EntryCategory';
     }
 
+    #[\Override]
     public static function tableName(): string
     {
         return static::getModule()->getTableName('entry_category');

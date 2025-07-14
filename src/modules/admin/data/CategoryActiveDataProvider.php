@@ -28,6 +28,7 @@ class CategoryActiveDataProvider extends ActiveDataProvider
     public ?string $searchString = null;
     public bool $showNestedCategories = true;
 
+    #[\Override]
     public function init(): void
     {
         $this->query = Category::find();
@@ -66,11 +67,13 @@ class CategoryActiveDataProvider extends ActiveDataProvider
         }
     }
 
+    #[\Override]
     public function getPagination(): Pagination|false
     {
         return false;
     }
 
+    #[\Override]
     public function getSort(): Sort|false
     {
         return false;

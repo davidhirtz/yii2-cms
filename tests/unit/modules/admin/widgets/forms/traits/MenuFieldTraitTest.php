@@ -44,6 +44,7 @@ class TestMenuFieldActiveForm extends EntryActiveForm
 {
     use MenuFieldTrait;
 
+    #[\Override]
     public function init(): void
     {
         $this->action = '/';

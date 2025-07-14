@@ -19,6 +19,7 @@ class SectionLinkedEntryGridView extends EntryGridView
 {
     public Section $section;
 
+    #[\Override]
     public function init(): void
     {
         if (!$this->rowOptions) {
@@ -40,6 +41,7 @@ class SectionLinkedEntryGridView extends EntryGridView
         parent::init();
     }
 
+    #[\Override]
     protected function initFooter(): void
     {
         $this->footer ??= [
@@ -79,6 +81,7 @@ class SectionLinkedEntryGridView extends EntryGridView
         ]);
     }
 
+    #[\Override]
     protected function getRowButtons(Entry $entry): array
     {
         $buttons = [];
@@ -97,6 +100,7 @@ class SectionLinkedEntryGridView extends EntryGridView
     /**
      * @param Entry $model
      */
+    #[\Override]
     protected function getDeleteButton(ActiveRecordInterface $model, array $options = []): string
     {
         return parent::getDeleteButton($model, [
@@ -112,6 +116,7 @@ class SectionLinkedEntryGridView extends EntryGridView
     /**
      * @param Entry $model
      */
+    #[\Override]
     protected function getDeleteRoute(ActiveRecordInterface $model, array $params = []): array
     {
         return ['section-entry/delete', 'section' => $this->dataProvider->section->id, 'entry' => $model->id];

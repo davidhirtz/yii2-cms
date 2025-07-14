@@ -15,6 +15,7 @@ use Yii;
  */
 class SectionEntryGridView extends EntryGridView
 {
+    #[\Override]
     public function init(): void
     {
         if (!$this->rowOptions) {
@@ -27,6 +28,7 @@ class SectionEntryGridView extends EntryGridView
         parent::init();
     }
 
+    #[\Override]
     protected function initFooter(): void
     {
     }
@@ -47,6 +49,7 @@ class SectionEntryGridView extends EntryGridView
      * @see SectionEntryController::actionCreate()
      * @see SectionEntryController::actionDelete()
      */
+    #[\Override]
     protected function getRowButtons(Entry $entry): array
     {
         if (Yii::$app->getUser()->can(Section::AUTH_SECTION_UPDATE, ['section' => $this->dataProvider->section])) {

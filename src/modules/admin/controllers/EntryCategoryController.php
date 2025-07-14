@@ -22,6 +22,7 @@ class EntryCategoryController extends AbstractController
     use CategoryTrait;
     use EntryTrait;
 
+    #[\Override]
     public function behaviors(): array
     {
         return [

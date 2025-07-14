@@ -68,6 +68,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
     public array|string|null $slugTargetAttribute = ['slug', 'parent_slug'];
     public bool|null $shouldUpdateParentAfterSave = null;
 
+    #[\Override]
     public function behaviors(): array
     {
         return [
@@ -76,6 +77,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
         ];
     }
 
+    #[\Override]
     public function rules(): array
     {
         return [
@@ -126,6 +128,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
         ];
     }
 
+    #[\Override]
     public function beforeValidate(): bool
     {
         $this->ensureRequiredI18nAttributes();
@@ -187,6 +190,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
         }
     }
 
+    #[\Override]
     public function beforeSave($insert): bool
     {
         $this->shouldUpdateParentAfterSave ??= !$this->getIsBatch();
@@ -207,6 +211,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
         return parent::beforeSave($insert);
     }
 
+    #[\Override]
     public function afterSave($insert, $changedAttributes): void
     {
         if ($this->isMaterializedTreeChanged($changedAttributes)) {
@@ -244,6 +249,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
         parent::afterSave($insert, $changedAttributes);
     }
 
+    #[\Override]
     public function beforeDelete(): bool
     {
         if ($isValid = parent::beforeDelete()) {
@@ -300,6 +306,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
         return $isValid;
     }
 
+    #[\Override]
     public function afterDelete(): void
     {
         if (!$this->getIsBatch()) {
@@ -352,6 +359,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
         return $relation;
     }
 
+    #[\Override]
     public static function find(): EntryQuery
     {
         return Yii::createObject(EntryQuery::class, [static::class]);
@@ -540,6 +548,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
         return $status;
     }
 
+    #[\Override]
     public function getTrailAttributes(): array
     {
         return array_diff(parent::getTrailAttributes(), [
@@ -593,6 +602,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
         return false;
     }
 
+    #[\Override]
     public function isTransactional($operation): bool
     {
         return parent::isTransactional($operation)
@@ -644,6 +654,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
             && $this->parent_id === null;
     }
 
+    #[\Override]
     public function attributeLabels(): array
     {
         return [
@@ -659,11 +670,13 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
         ];
     }
 
+    #[\Override]
     public function formName(): string
     {
         return 'Entry';
     }
 
+    #[\Override]
     public static function tableName(): string
     {
         return static::getModule()->getTableName('entry');

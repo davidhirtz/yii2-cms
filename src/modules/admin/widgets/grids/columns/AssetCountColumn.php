@@ -18,6 +18,7 @@ class AssetCountColumn extends CounterColumn
 {
     use ModuleTrait;
 
+    #[\Override]
     public function init(): void
     {
         if ($this->visible) {
@@ -41,6 +42,7 @@ class AssetCountColumn extends CounterColumn
     /**
      * @param Entry|Section $model
      */
+    #[\Override]
     protected function renderDataCellContent($model, $key, $index): string
     {
         if (!$model->hasAssetsEnabled()) {

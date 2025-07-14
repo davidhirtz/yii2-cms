@@ -47,6 +47,7 @@ class Category extends ActiveRecord implements SitemapInterface
     public string|false $contentType = false;
     public array|string|null $slugTargetAttribute = 'slug';
 
+    #[\Override]
     public function behaviors(): array
     {
         return [
@@ -55,6 +56,7 @@ class Category extends ActiveRecord implements SitemapInterface
         ];
     }
 
+    #[\Override]
     public function rules(): array
     {
         return [
@@ -102,6 +104,7 @@ class Category extends ActiveRecord implements SitemapInterface
         ];
     }
 
+    #[\Override]
     public function beforeValidate(): bool
     {
         $this->ensureSlug();
@@ -113,6 +116,7 @@ class Category extends ActiveRecord implements SitemapInterface
         return parent::beforeValidate();
     }
 
+    #[\Override]
     public function beforeSave($insert): bool
     {
         if (!$this->slug) {
@@ -132,6 +136,7 @@ class Category extends ActiveRecord implements SitemapInterface
      * need to be added to the new parent categories, if {@see \davidhirtz\yii2\cms\Module::$inheritNestedCategories}
      * is true. Previous parent {@see EntryCategory} relations will not be deleted.
      */
+    #[\Override]
     public function afterSave($insert, $changedAttributes): void
     {
         if (!$insert) {
@@ -145,6 +150,7 @@ class Category extends ActiveRecord implements SitemapInterface
         parent::afterSave($insert, $changedAttributes);
     }
 
+    #[\Override]
     public function beforeDelete(): bool
     {
         if ($isValid = parent::beforeDelete()) {
@@ -158,6 +164,7 @@ class Category extends ActiveRecord implements SitemapInterface
         return $isValid;
     }
 
+    #[\Override]
     public function afterDelete(): void
     {
         $this->updateNestedTreeAfterDelete();
@@ -241,6 +248,7 @@ class Category extends ActiveRecord implements SitemapInterface
         }
     }
 
+    #[\Override]
     public static function find(): CategoryQuery
     {
         return Yii::createObject(CategoryQuery::class, [static::class]);
@@ -258,6 +266,7 @@ class Category extends ActiveRecord implements SitemapInterface
             ->orderBy(['id' => SORT_ASC]);
     }
 
+    #[\Override]
     public function getTrailAttributes(): array
     {
         return array_diff(parent::getTrailAttributes(), [
@@ -319,6 +328,7 @@ class Category extends ActiveRecord implements SitemapInterface
         return static::getModule()->inheritNestedCategories;
     }
 
+    #[\Override]
     public function attributeLabels(): array
     {
         return [
@@ -333,11 +343,13 @@ class Category extends ActiveRecord implements SitemapInterface
         ];
     }
 
+    #[\Override]
     public function formName(): string
     {
         return 'Category';
     }
 
+    #[\Override]
     public static function tableName(): string
     {
         return static::getModule()->getTableName('category');

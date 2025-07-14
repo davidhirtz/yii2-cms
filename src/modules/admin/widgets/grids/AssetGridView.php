@@ -35,6 +35,7 @@ class AssetGridView extends GridView
 
     public $layout = '{header}{items}{footer}';
 
+    #[\Override]
     public function init(): void
     {
         $this->dataProvider ??= $this->getAssetActiveDataProvider();
@@ -117,6 +118,7 @@ class AssetGridView extends GridView
             ->limit($this->maxAssetCount);
     }
 
+    #[\Override]
     public function renderItems(): string
     {
         return Html::tag('div', parent::renderItems(), ['id' => 'dropzone']);
@@ -188,6 +190,7 @@ class AssetGridView extends GridView
         ]);
     }
 
+    #[\Override]
     protected function getDeleteRoute(ActiveRecordInterface $model, array $params = []): array
     {
         return ['/admin/asset/delete', 'id' => $model->id, ...$params];
@@ -198,6 +201,7 @@ class AssetGridView extends GridView
         return array_merge([$action, ($this->parent instanceof Entry ? 'entry' : 'section') => $this->parent->id], $params);
     }
 
+    #[\Override]
     protected function getRoute(ActiveRecordInterface $model, array $params = []): array|false
     {
         $permissionName = $model->isEntryAsset() ? Entry::AUTH_ENTRY_ASSET_UPDATE : Section::AUTH_SECTION_ASSET_UPDATE;
@@ -209,6 +213,7 @@ class AssetGridView extends GridView
         return ['cms/asset/update', 'id' => $model->id, ...$params];
     }
 
+    #[\Override]
     public function getModel(): Asset
     {
         return Asset::instance();

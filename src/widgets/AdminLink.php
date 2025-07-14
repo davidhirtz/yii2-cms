@@ -20,6 +20,7 @@ class AdminLink extends Widget
         'target' => '_blank',
     ];
 
+    #[\Override]
     public function run(): string
     {
         return $this->canUpdateModel() && ($route = $this->model->getAdminRoute())

@@ -38,6 +38,7 @@ class SectionGridView extends GridView
      */
     public array $selectionRoute = ['/admin/section/update-all'];
 
+    #[\Override]
     public function init(): void
     {
         if (!$this->dataProvider) {
@@ -88,6 +89,7 @@ class SectionGridView extends GridView
         return Html::a(Html::iconText('plus', Yii::t('cms', 'New Section')), ['/admin/section/create', 'entry' => $this->entry->id], ['class' => 'btn btn-primary']);
     }
 
+    #[\Override]
     protected function getSelectionButtonItems(): array
     {
         if (!Yii::$app->getUser()->can(Section::AUTH_SECTION_UPDATE, ['entry' => $this->entry])) {
@@ -194,6 +196,7 @@ class SectionGridView extends GridView
         return $buttons;
     }
 
+    #[\Override]
     public function getModel(): Section
     {
         return Section::instance();

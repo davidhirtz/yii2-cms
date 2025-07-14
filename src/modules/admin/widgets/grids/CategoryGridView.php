@@ -34,6 +34,7 @@ class CategoryGridView extends GridView
      */
     public bool $showUrl = true;
 
+    #[\Override]
     public function init(): void
     {
         if ($this->dataProvider->category) {
@@ -107,6 +108,7 @@ class CategoryGridView extends GridView
         ]);
     }
 
+    #[\Override]
     public function isSortedByPosition(): bool
     {
         return parent::isSortedByPosition()

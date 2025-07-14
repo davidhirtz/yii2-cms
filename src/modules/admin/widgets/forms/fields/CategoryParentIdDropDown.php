@@ -23,6 +23,7 @@ class CategoryParentIdDropDown extends InputWidget
      */
     private array $_categories;
 
+    #[\Override]
     public function init(): void
     {
         $this->items = Category::indentNestedTree($this->getCategories(), $this->model->getI18nAttributeName('name'), $this->indent);

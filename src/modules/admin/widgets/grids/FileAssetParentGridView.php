@@ -28,6 +28,7 @@ class FileAssetParentGridView extends GridView
     public $showHeader = false;
     public $layout = '{items}{pager}';
 
+    #[\Override]
     public function init(): void
     {
         Yii::$app->getI18n()->callback($this->language, function () {
@@ -141,6 +142,7 @@ class FileAssetParentGridView extends GridView
         ];
     }
 
+    #[\Override]
     protected function getRoute(ActiveRecordInterface $model, array $params = []): array|false
     {
         $user = Yii::$app->getUser();
@@ -179,6 +181,7 @@ class FileAssetParentGridView extends GridView
         ];
     }
 
+    #[\Override]
     public function getModel(): Asset
     {
         return Asset::instance();

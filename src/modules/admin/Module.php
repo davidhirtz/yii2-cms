@@ -26,6 +26,7 @@ class Module extends \davidhirtz\yii2\skeleton\base\Module implements ModuleInte
      */
     public array $route = ['/admin/entry/index'];
 
+    #[\Override]
     public function init(): void
     {
         $this->controllerMap = ArrayHelper::merge($this->getCoreControllerMap(), $this->controllerMap);

@@ -47,6 +47,7 @@ class Sections extends Widget
         parent::init();
     }
 
+    #[\Override]
     public function run(): string
     {
         $this->prepareSections();

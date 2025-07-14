@@ -31,6 +31,7 @@ class SectionController extends AbstractController
      */
     public bool $autoCreateSection = true;
 
+    #[\Override]
     public function behaviors(): array
     {
         return [

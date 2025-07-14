@@ -26,6 +26,7 @@ class DuplicateSection extends DuplicateActiveRecord
         parent::__construct($section, $attributes);
     }
 
+    #[\Override]
     protected function beforeDuplicate(): bool
     {
         $this->duplicate->populateEntryRelation(!$this->entry || $this->entry->getIsNewRecord()
@@ -45,6 +46,7 @@ class DuplicateSection extends DuplicateActiveRecord
         return true;
     }
 
+    #[\Override]
     protected function afterDuplicate(): void
     {
         parent::afterDuplicate();

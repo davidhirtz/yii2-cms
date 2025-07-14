@@ -22,6 +22,7 @@ class UrlRule extends \yii\web\UrlRule
      * @param UrlManager $manager
      * @param Request $request
      */
+    #[\Override]
     public function parseRequest($manager, $request): array|bool
     {
         if (!static::$mismatch) {

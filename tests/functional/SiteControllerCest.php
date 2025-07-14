@@ -22,6 +22,7 @@ class SiteControllerCest extends BaseCest
 {
     use CmsFixturesTrait;
 
+    #[\Override]
     public function _before(): void
     {
         Yii::$container->setDefinitions([

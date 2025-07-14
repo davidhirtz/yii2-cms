@@ -38,6 +38,7 @@ class MenuColumn extends Column
     /**
      * @param Entry $model
      */
+    #[\Override]
     protected function renderDataCellContent($model, $key, $index): string
     {
         if ($this->getIsMenuItem($model)) {

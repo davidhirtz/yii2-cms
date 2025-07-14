@@ -16,6 +16,7 @@ class SectionCountColumn extends CounterColumn
 {
     use ModuleTrait;
 
+    #[\Override]
     public function init(): void
     {
         if ($this->visible) {
@@ -39,6 +40,7 @@ class SectionCountColumn extends CounterColumn
     /**
      * @param Entry $model
      */
+    #[\Override]
     protected function renderDataCellContent($model, $key, $index): string
     {
         if (!$model->hasSectionsEnabled()) {

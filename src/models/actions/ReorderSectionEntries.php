@@ -27,6 +27,7 @@ class ReorderSectionEntries extends ReorderActiveRecords
         parent::__construct($sectionEntries, $order);
     }
 
+    #[\Override]
     protected function afterReorder(): void
     {
         Trail::createOrderTrail($this->section, Yii::t('cms', 'Linked entry order changed'));
