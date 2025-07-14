@@ -1,3 +1,7 @@
+## 2.4.3 (in development)
+
+- Changed `SiteController` URL route to be added to the end of the rules
+
 ## 2.4.2 (Jul 2, 2025)
 
 - Fixed `AssetGridView` upload HTML ID
