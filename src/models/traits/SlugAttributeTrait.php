@@ -40,8 +40,12 @@ trait SlugAttributeTrait
     {
         if ($this->isSlugRequired()) {
             foreach ($this->getI18nAttributeNames('slug') as $language => $attributeName) {
-                if (!$this->$attributeName && ($name = $this->getI18nAttribute($attribute, $language))) {
-                    $this->$attributeName = mb_substr((string)$name, 0, $this->slugMaxLength);
+                if (!$this->$attributeName) {
+                    $name = $this->getI18nAttribute($attribute, $language);
+
+                    if ($name) {
+                        $this->$attributeName = mb_substr((string)$name, 0, $this->slugMaxLength);
+                    }
                 }
             }
         }

@@ -1,6 +1,7 @@
 ## 2.4.3 (in development)
 
 - Changed `SiteController` URL route to be added to the end of the rules
+- Changed `Entry` validation to always remove trailing slashes from the slug
 - Fixed `Entry::validateSlug()` to also work with I18N slugs
 - Fixed `SlugIndexTrait` trying to create a slug index on fields that have not been added yet
 - Renamed `SiteController::$removeTrailingSlashes` to `SiteController::$redirectTrailingSlash`
