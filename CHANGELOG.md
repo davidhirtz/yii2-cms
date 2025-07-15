@@ -1,4 +1,4 @@
-## 2.4.3 (in development)
+## 2.4.3 (Jul 15, 2025)
 
 - Changed `SiteController` URL route to be added to the end of the rules
 - Changed `Entry` validation to always remove trailing slashes from the slug

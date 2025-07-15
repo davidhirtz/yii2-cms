@@ -63,25 +63,25 @@ class Bootstrap implements BootstrapInterface
      */
     protected function addDefaultUrlRules(): void
     {
-        Yii::$app->on(Application::EVENT_BEFORE_REQUEST, function () {
-            /** @var Module $module */
-            $module = Yii::$app->getModule('cms');
-
-            if ($module->enableUrlRules) {
-                Yii::$app->getUrlManager()->addRules($this->getDefaultUrlRules());
-            }
-        });
+        if (Yii::$app->getModules()['cms']['enableUrlRules'] ?? true) {
+            Yii::$app->addUrlManagerRules($this->getDefaultUrlRules());
+        }
     }
 
     protected function getDefaultUrlRules(): array
     {
         return [
             [
-                'route' => 'cms/site/view',
                 'pattern' => '<slug:.+>',
+                'route' => 'cms/site/view',
                 'encodeParams' => false,
+                'position' => 1000,
             ],
-            '' => 'cms/site/index',
+            [
+                'pattern' => '',
+                'route' => 'cms/site/index',
+                'position' => 1100,
+            ]
         ];
     }
 }
