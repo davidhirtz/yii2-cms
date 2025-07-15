@@ -1,6 +1,7 @@
 ## 2.4.3 (in development)
 
 - Changed `SiteController` URL route to be added to the end of the rules
+- Fixed `SlugIndexTrait` trying to create a slug index on fields that have not been added yet
 - Renamed `SiteController::$removeTrailingSlashes` to `SiteController::$redirectTrailingSlash`
 
 ## 2.4.2 (Jul 2, 2025)
