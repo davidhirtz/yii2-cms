@@ -17,6 +17,7 @@ use davidhirtz\yii2\skeleton\behaviors\RedirectBehavior;
 use davidhirtz\yii2\skeleton\helpers\ArrayHelper;
 use davidhirtz\yii2\skeleton\models\interfaces\SitemapInterface;
 use davidhirtz\yii2\skeleton\models\traits\MaterializedTreeTrait;
+use Override;
 use Yii;
 use yii\db\ActiveQuery;
 
@@ -68,7 +69,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
     public array|string|null $slugTargetAttribute = ['slug', 'parent_slug'];
     public bool|null $shouldUpdateParentAfterSave = null;
 
-    #[\Override]
+    #[Override]
     public function behaviors(): array
     {
         return [
@@ -77,7 +78,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
         ];
     }
 
-    #[\Override]
+    #[Override]
     public function rules(): array
     {
         return [
@@ -128,7 +129,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
         ];
     }
 
-    #[\Override]
+    #[Override]
     public function beforeValidate(): bool
     {
         $this->ensureRequiredI18nAttributes();
@@ -171,26 +172,28 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
 
     protected function validateSlug(): void
     {
-        if ($this->hasErrors('slug')) {
-            return;
-        }
+        foreach ($this->getI18nAttributeNames('slug') as $language => $attributeName) {
+            if ($this->hasErrors($attributeName)) {
+                continue;
+            }
 
-        $slug = $this->getFormattedSlug();
-        $param = explode('/', $slug)[0];
-        $path = Yii::getAlias("@webroot/$slug");
+            $slug = $this->getFormattedSlug($language);
+            $param = explode('/', $slug)[0];
+            $path = Yii::getAlias("@webroot/$slug");
 
-        if (
-            in_array($param, Yii::$app->getUrlManager()->getImmutableRuleParams())
-            || is_dir($path)
-            || is_file($path)
-        ) {
-            $this->addError('slug', Yii::t('cms', 'The URL "{path}" is protected.', [
-                'path' => $slug,
-            ]));
+            if (
+                in_array($param, Yii::$app->getUrlManager()->getImmutableRuleParams())
+                || is_dir($path)
+                || is_file($path)
+            ) {
+                $this->addError('slug', Yii::t('cms', 'The URL "{path}" is protected.', [
+                    'path' => $slug,
+                ]));
+            }
         }
     }
 
-    #[\Override]
+    #[Override]
     public function beforeSave($insert): bool
     {
         $this->shouldUpdateParentAfterSave ??= !$this->getIsBatch();
@@ -211,7 +214,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
         return parent::beforeSave($insert);
     }
 
-    #[\Override]
+    #[Override]
     public function afterSave($insert, $changedAttributes): void
     {
         if ($this->isMaterializedTreeChanged($changedAttributes)) {
@@ -249,7 +252,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
         parent::afterSave($insert, $changedAttributes);
     }
 
-    #[\Override]
+    #[Override]
     public function beforeDelete(): bool
     {
         if ($isValid = parent::beforeDelete()) {
@@ -306,7 +309,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
         return $isValid;
     }
 
-    #[\Override]
+    #[Override]
     public function afterDelete(): void
     {
         if (!$this->getIsBatch()) {
@@ -359,7 +362,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
         return $relation;
     }
 
-    #[\Override]
+    #[Override]
     public static function find(): EntryQuery
     {
         return Yii::createObject(EntryQuery::class, [static::class]);
@@ -548,7 +551,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
         return $status;
     }
 
-    #[\Override]
+    #[Override]
     public function getTrailAttributes(): array
     {
         return array_diff(parent::getTrailAttributes(), [
@@ -602,7 +605,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
         return false;
     }
 
-    #[\Override]
+    #[Override]
     public function isTransactional($operation): bool
     {
         return parent::isTransactional($operation)
@@ -654,7 +657,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
             && $this->parent_id === null;
     }
 
-    #[\Override]
+    #[Override]
     public function attributeLabels(): array
     {
         return [
@@ -670,13 +673,13 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
         ];
     }
 
-    #[\Override]
+    #[Override]
     public function formName(): string
     {
         return 'Entry';
     }
 
-    #[\Override]
+    #[Override]
     public static function tableName(): string
     {
         return static::getModule()->getTableName('entry');
