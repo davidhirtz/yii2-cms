@@ -138,8 +138,6 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
             foreach ($this->getI18nAttributeNames('parent_slug') as $language => $attributeName) {
                 $this->{$attributeName} = $this->parent?->getFormattedSlug($language);
             }
-
-            $this->position = null;
         }
 
         $this->ensureSlug();

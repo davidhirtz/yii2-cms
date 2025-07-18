@@ -1,3 +1,7 @@
+## 2.4.4 (Jul 18, 2025)
+
+- Fixed `Entry` to reset position without `parent_id` change
+
 ## 2.4.3 (Jul 15, 2025)
 
 - Changed `SiteController` URL route to be added to the end of the rules
