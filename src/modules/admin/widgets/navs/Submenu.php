@@ -64,6 +64,7 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
     private ?Module $_parentModule = null;
     private bool $_isAsset = false;
 
+    #[\Override]
     public function init(): void
     {
         if ($this->model instanceof Asset) {
@@ -104,6 +105,7 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
         parent::init();
     }
 
+    #[\Override]
     public function run(): string
     {
         $this->setBreadcrumbs();

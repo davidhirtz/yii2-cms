@@ -50,6 +50,7 @@ class Section extends ActiveRecord implements AssetParentInterface
 
     private ?array $_trailParents = null;
 
+    #[\Override]
     public function rules(): array
     {
         return array_merge(parent::rules(), $this->getI18nRules([
@@ -86,6 +87,7 @@ class Section extends ActiveRecord implements AssetParentInterface
         ]));
     }
 
+    #[\Override]
     public function safeAttributes(): array
     {
         return array_diff(parent::safeAttributes(), ['entry_id']);
@@ -98,6 +100,7 @@ class Section extends ActiveRecord implements AssetParentInterface
         }
     }
 
+    #[\Override]
     public function beforeValidate(): bool
     {
         if ($this->slug && !$this->customSlugBehavior) {
@@ -107,6 +110,7 @@ class Section extends ActiveRecord implements AssetParentInterface
         return parent::beforeValidate();
     }
 
+    #[\Override]
     public function beforeSave($insert): bool
     {
         $this->slug = $this->slug ?: null;
@@ -120,6 +124,7 @@ class Section extends ActiveRecord implements AssetParentInterface
         return parent::beforeSave($insert);
     }
 
+    #[\Override]
     public function afterSave($insert, $changedAttributes): void
     {
         if ($this->shouldUpdateEntryAfterSave) {
@@ -140,6 +145,7 @@ class Section extends ActiveRecord implements AssetParentInterface
         parent::afterSave($insert, $changedAttributes);
     }
 
+    #[\Override]
     public function beforeDelete(): bool
     {
         if (!parent::beforeDelete()) {
@@ -158,6 +164,7 @@ class Section extends ActiveRecord implements AssetParentInterface
         return true;
     }
 
+    #[\Override]
     public function afterDelete(): void
     {
         if (!$this->entry->isDeleted()) {
@@ -187,12 +194,18 @@ class Section extends ActiveRecord implements AssetParentInterface
         return $relation;
     }
 
+    /**
+     * @return ActiveQuery<SectionEntry>
+     */
     public function getSectionEntry(): ActiveQuery
     {
         return $this->hasOne(SectionEntry::class, ['section_id' => 'id'])
             ->inverseOf('section');
     }
 
+    /**
+     * @return ActiveQuery<SectionEntry>
+     */
     public function getSectionEntries(): ActiveQuery
     {
         return $this->hasMany(SectionEntry::class, ['section_id' => 'id'])
@@ -204,6 +217,7 @@ class Section extends ActiveRecord implements AssetParentInterface
         return static::find()->where(['entry_id' => $this->entry_id]);
     }
 
+    #[\Override]
     public static function find(): SectionQuery
     {
         return Yii::createObject(SectionQuery::class, [static::class]);
@@ -332,6 +346,7 @@ class Section extends ActiveRecord implements AssetParentInterface
         return static::getModule()->enableSectionEntries && $this->isAttributeVisible('#entries');
     }
 
+    #[\Override]
     public function attributeLabels(): array
     {
         return [
@@ -343,11 +358,13 @@ class Section extends ActiveRecord implements AssetParentInterface
         ];
     }
 
+    #[\Override]
     public function formName(): string
     {
         return 'Section';
     }
 
+    #[\Override]
     public static function tableName(): string
     {
         return static::getModule()->getTableName('section');

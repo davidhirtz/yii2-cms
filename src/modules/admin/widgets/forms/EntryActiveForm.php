@@ -25,6 +25,7 @@ class EntryActiveForm extends ActiveForm
      * @uses static::descriptionField()
      * @uses static::slugField()
      */
+    #[\Override]
     public function init(): void
     {
         $this->fields ??= [
@@ -48,6 +49,7 @@ class EntryActiveForm extends ActiveForm
         return $this->field($this->model, 'publish_date')->widget(DateTimeInput::class);
     }
 
+    #[\Override]
     public function slugField(array $options = []): ActiveField|string
     {
         if ($this->model->isIndex() && $this->model->isEnabled()) {

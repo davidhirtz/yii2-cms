@@ -25,6 +25,7 @@ class EntryParentIdDropDown extends InputWidget
      */
     private array $_entries;
 
+    #[\Override]
     public function init(): void
     {
         $this->setItemsFromEntries($this->getEntries());

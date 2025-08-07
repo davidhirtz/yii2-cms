@@ -50,6 +50,7 @@ class Asset extends ActiveRecord implements AssetInterface, DraftStatusAttribute
      * The section validation needs to be called before the entry validation. As it sets the necessary entry relation
      * for the entry validation to work.
      */
+    #[\Override]
     public function rules(): array
     {
         return [
@@ -70,6 +71,7 @@ class Asset extends ActiveRecord implements AssetInterface, DraftStatusAttribute
         ];
     }
 
+    #[\Override]
     public function beforeValidate(): bool
     {
         if ($this->section) {
@@ -79,6 +81,7 @@ class Asset extends ActiveRecord implements AssetInterface, DraftStatusAttribute
         return parent::beforeValidate();
     }
 
+    #[\Override]
     public function afterValidate(): void
     {
         if (!$this->getIsNewRecord()) {
@@ -94,12 +97,14 @@ class Asset extends ActiveRecord implements AssetInterface, DraftStatusAttribute
         parent::afterValidate();
     }
 
+    #[\Override]
     public function beforeSave($insert): bool
     {
         $this->shouldUpdateParentAfterInsert ??= !$this->getIsBatch();
         return parent::beforeSave($insert);
     }
 
+    #[\Override]
     public function afterSave($insert, $changedAttributes): void
     {
         if ($insert) {
@@ -125,6 +130,7 @@ class Asset extends ActiveRecord implements AssetInterface, DraftStatusAttribute
         parent::afterSave($insert, $changedAttributes);
     }
 
+    #[\Override]
     public function afterDelete(): void
     {
         // Entry needs to be checked separately here because `Entry::beforeDelete()` deletes all related assets before
@@ -145,6 +151,7 @@ class Asset extends ActiveRecord implements AssetInterface, DraftStatusAttribute
         return static::find()->where(['entry_id' => $this->entry_id, 'section_id' => $this->section_id]);
     }
 
+    #[\Override]
     public static function find(): AssetQuery
     {
         return Yii::createObject(AssetQuery::class, [static::class]);
@@ -196,12 +203,14 @@ class Asset extends ActiveRecord implements AssetInterface, DraftStatusAttribute
             : 'cms_asset_count';
     }
 
+    #[\Override]
     public function getTrailAttributes(): array
     {
-        return array_diff($this->attributes(), [
+        return [
+            ...parent::getTrailAttributes(),
             // Used by `yii2-cms-hotspot` extension
             'hotspot_count',
-        ]);
+        ];
     }
 
     public function getSitemapUrl(?string $language = null): array|false
@@ -223,6 +232,7 @@ class Asset extends ActiveRecord implements AssetInterface, DraftStatusAttribute
         return false;
     }
 
+    #[\Override]
     public function includeInSitemap($language = null): bool
     {
         return $this->isEnabled() && $this->file->hasPreview();
@@ -276,6 +286,7 @@ class Asset extends ActiveRecord implements AssetInterface, DraftStatusAttribute
         return (bool)$this->section_id;
     }
 
+    #[\Override]
     public function attributeLabels(): array
     {
         return [
@@ -289,11 +300,13 @@ class Asset extends ActiveRecord implements AssetInterface, DraftStatusAttribute
         ];
     }
 
+    #[\Override]
     public function formName(): string
     {
         return 'Asset';
     }
 
+    #[\Override]
     public static function tableName(): string
     {
         return static::getModule()->getTableName('cms_asset');

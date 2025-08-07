@@ -12,13 +12,17 @@ trait SlugIndexTrait
     protected function createSlugIndex(): void
     {
         $entry = Entry::instance();
+        $schema = $this->getDb()->getSchema()->getTableSchema($entry::tableName());
         $slugTargetAttribute = $entry->slugTargetAttribute ?? ['slug'];
 
         foreach ($entry->getI18nAttributeNames('slug') as $language => $indexName) {
+            $attributes = $entry->getI18nAttributesNames($slugTargetAttribute, [$language]);
+            $attributes = array_filter($attributes, fn ($attribute) => $schema->getColumn($attribute) !== null);
+
             $this->createIndex(
                 $indexName,
-                Entry::tableName(),
-                $entry->getI18nAttributesNames($slugTargetAttribute, [$language]),
+                $entry::tableName(),
+                $attributes,
                 true
             );
         }
@@ -27,8 +31,10 @@ trait SlugIndexTrait
     protected function dropSlugIndex(): void
     {
         try {
-            foreach (Entry::instance()->getI18nAttributeNames('slug') as $attributeName) {
-                $this->dropIndex($attributeName, Entry::tableName());
+            $entry = Entry::instance();
+
+            foreach ($entry->getI18nAttributeNames('slug') as $attributeName) {
+                $this->dropIndex($attributeName, $entry::tableName());
             }
         } catch (Exception) {
         }

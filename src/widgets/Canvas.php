@@ -68,6 +68,7 @@ class Canvas extends Widget
         parent::init();
     }
 
+    #[\Override]
     public function run(): string
     {
         $content = $this->getContent();

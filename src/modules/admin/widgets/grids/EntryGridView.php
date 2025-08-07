@@ -83,6 +83,7 @@ class EntryGridView extends GridView
     private ?array $_categories = null;
     private ?array $_categoryNames = null;
 
+    #[\Override]
     public function init(): void
     {
         $this->id = $this->getId(false) ?? 'entries';
@@ -165,6 +166,7 @@ class EntryGridView extends GridView
         return Html::a(Html::iconText('plus', Yii::t('cms', 'New Entry')), $route, ['class' => 'btn btn-primary']);
     }
 
+    #[\Override]
     protected function getSelectionButtonItems(): array
     {
         if (!Yii::$app->getUser()->can(Entry::AUTH_ENTRY_UPDATE)) {
@@ -345,6 +347,7 @@ class EntryGridView extends GridView
      * @param T $model
      * @noinspection PhpDocSignatureInspection
      */
+    #[\Override]
     protected function getRoute(ActiveRecordInterface $model, array $params = []): array|false
     {
         return array_merge(Yii::$app->getRequest()->get(), $model->getAdminRoute(), $params);
@@ -354,6 +357,7 @@ class EntryGridView extends GridView
      * @return T
      * @noinspection PhpDocSignatureInspection
      */
+    #[\Override]
     public function getModel(): Entry
     {
         return Entry::instance();

@@ -23,6 +23,7 @@ class SectionEntryController extends AbstractController
 {
     use SectionTrait;
 
+    #[\Override]
     public function behaviors(): array
     {
         return [

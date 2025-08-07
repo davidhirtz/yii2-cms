@@ -21,6 +21,7 @@ class CategoryController extends AbstractController
 
     protected array|false|null $i18nTablesRoute = ['/admin/category/index'];
 
+    #[\Override]
     public function behaviors(): array
     {
         return [

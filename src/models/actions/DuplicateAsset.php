@@ -22,6 +22,7 @@ class DuplicateAsset extends DuplicateActiveRecord
         parent::__construct($asset, $attributes);
     }
 
+    #[\Override]
     protected function beforeDuplicate(): bool
     {
         $this->duplicate->populateParentRelation(!$this->parent || $this->parent->getIsNewRecord()

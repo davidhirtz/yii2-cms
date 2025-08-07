@@ -23,6 +23,7 @@ class SectionActiveForm extends ActiveForm
      * @uses static::contentField()
      * @uses static::slugField()
      */
+    #[\Override]
     public function init(): void
     {
         $this->fields ??= [
@@ -36,11 +37,13 @@ class SectionActiveForm extends ActiveForm
         parent::init();
     }
 
+    #[\Override]
     public function slugField(array $options = []): ActiveField|string
     {
         return $this->showSlugField() ? parent::slugField($options) : '';
     }
 
+    #[\Override]
     public function getSlugBaseUrl(?string $language = null): string
     {
         $manager = Yii::$app->getUrlManager();

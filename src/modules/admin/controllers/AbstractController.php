@@ -17,6 +17,7 @@ abstract class AbstractController extends Controller
 
     protected array|false|null $i18nTablesRoute = null;
 
+    #[\Override]
     public function init(): void
     {
         if (static::getModule()->enableI18nTables) {

@@ -15,6 +15,7 @@ abstract class HelpPanel extends \davidhirtz\yii2\skeleton\modules\admin\widgets
 
     public ?ActiveRecord $model = null;
 
+    #[\Override]
     public function init(): void
     {
         $this->content ??= $this->renderButtonToolbar($this->getButtons());

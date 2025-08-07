@@ -27,6 +27,7 @@ class DuplicateEntry extends DuplicateActiveRecord
         parent::__construct($entry, $attributes);
     }
 
+    #[\Override]
     protected function beforeDuplicate(): bool
     {
         $this->duplicate->populateParentRelation(!$this->parent || $this->parent->getIsNewRecord()
@@ -49,6 +50,7 @@ class DuplicateEntry extends DuplicateActiveRecord
         return true;
     }
 
+    #[\Override]
     protected function afterDuplicate(): void
     {
         parent::afterDuplicate();

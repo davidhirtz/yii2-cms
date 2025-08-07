@@ -28,7 +28,7 @@ class FunctionalTester extends \Codeception\Actor
 
     public function amOnDraftSubdomain(): void
     {
-        $httpHost = parse_url(Yii::$app->getUrlManager()->getDraftHostInfo(), PHP_URL_HOST);
+        $httpHost = parse_url((string) Yii::$app->getUrlManager()->getDraftHostInfo(), PHP_URL_HOST);
         $this->haveServerParameter('HTTP_HOST', $httpHost);
     }
 

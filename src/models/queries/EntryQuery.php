@@ -15,7 +15,7 @@ use davidhirtz\yii2\skeleton\db\I18nActiveQuery;
 
 /**
  * @template T of Entry
- * @extends I18nActiveQuery<T>
+ * @template-extends I18nActiveQuery<T>
  */
 class EntryQuery extends I18nActiveQuery
 {
@@ -35,6 +35,7 @@ class EntryQuery extends I18nActiveQuery
         return $this->andWhere(['>=', Entry::tableName() . '.[[parent_status]]', self::$_status]);
     }
 
+    #[\Override]
     public function enabled(): static
     {
         return $this->whereStatus(Entry::STATUS_DEFAULT)

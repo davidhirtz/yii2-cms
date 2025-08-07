@@ -27,6 +27,7 @@ abstract class SetupController extends Controller
 {
     use ModuleTrait;
 
+    #[\Override]
     public function behaviors(): array
     {
         return [

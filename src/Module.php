@@ -90,6 +90,7 @@ class Module extends \davidhirtz\yii2\skeleton\base\Module
      */
     public string|false $entryIndexSlug = 'home';
 
+    #[\Override]
     public function init(): void
     {
         if (!$this->enableSections) {

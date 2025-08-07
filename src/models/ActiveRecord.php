@@ -61,6 +61,7 @@ abstract class ActiveRecord extends BaseActiveRecord implements DraftStatusAttri
      */
     public array|string|null $htmlValidator = HtmlValidator::class;
 
+    #[\Override]
     public function behaviors(): array
     {
         return [
@@ -73,6 +74,7 @@ abstract class ActiveRecord extends BaseActiveRecord implements DraftStatusAttri
         ];
     }
 
+    #[\Override]
     public function rules(): array
     {
         return [
@@ -95,6 +97,7 @@ abstract class ActiveRecord extends BaseActiveRecord implements DraftStatusAttri
         ];
     }
 
+    #[\Override]
     public function beforeValidate(): bool
     {
         $this->status ??= static::STATUS_DEFAULT;
@@ -103,6 +106,7 @@ abstract class ActiveRecord extends BaseActiveRecord implements DraftStatusAttri
         return parent::beforeValidate();
     }
 
+    #[\Override]
     public function beforeSave($insert): bool
     {
         $this->attachBehaviors([
@@ -115,12 +119,14 @@ abstract class ActiveRecord extends BaseActiveRecord implements DraftStatusAttri
         return parent::beforeSave($insert);
     }
 
+    #[\Override]
     public function afterSave($insert, $changedAttributes): void
     {
         static::getModule()->invalidatePageCache();
         parent::afterSave($insert, $changedAttributes);
     }
 
+    #[\Override]
     public function afterDelete(): void
     {
         static::getModule()->invalidatePageCache();
@@ -175,6 +181,7 @@ abstract class ActiveRecord extends BaseActiveRecord implements DraftStatusAttri
         return $this->isEnabled();
     }
 
+    #[\Override]
     public function attributeLabels(): array
     {
         return [

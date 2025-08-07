@@ -1,3 +1,25 @@
+## 2.4.4 (Jul 18, 2025)
+
+- Fixed `Entry` to reset position without `parent_id` change
+
+## 2.4.3 (Jul 15, 2025)
+
+- Changed `SiteController` URL route to be added to the end of the rules
+- Changed `Entry` validation to always remove trailing slashes from the slug
+- Fixed `Entry::validateSlug()` to also work with I18N slugs
+- Fixed `SlugIndexTrait` trying to create a slug index on fields that have not been added yet
+- Renamed `SiteController::$removeTrailingSlashes` to `SiteController::$redirectTrailingSlash`
+
+## 2.4.2 (Jul 2, 2025)
+
+- Fixed `AssetGridView` upload HTML ID
+
+## 2.4.1 (Jul 1, 2025)
+
+- Changed annotations for static analysis (Yii 2.0.53)
+- Fixed `EntryCategory::insertCategoryAncestors()` for categories that don't have entries enabled
+- Fixed `Asset::getTrailAttributes()`
+
 ## 2.4.0 (May 26, 2025)
 
 - Requires PHP 8.3+

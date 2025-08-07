@@ -22,6 +22,7 @@ class CategoryActiveForm extends ActiveForm
      * @uses static::descriptionField()
      * @uses static::slugField()
      */
+    #[\Override]
     public function init(): void
     {
         $this->fields ??= [

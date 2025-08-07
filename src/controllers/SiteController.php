@@ -19,9 +19,9 @@ use yii\web\Response;
 class SiteController extends Controller
 {
     /**
-     * @var bool Whether to remove trailing slashes from URLs
+     * @var bool Whether to redirect trailing slashes from URLs
      */
-    public bool $removeTrailingSlashes = true;
+    public bool $redirectTrailingSlash = true;
 
     public function actionIndex(): Response|string
     {
@@ -32,8 +32,12 @@ class SiteController extends Controller
 
     public function actionView(string $slug): Response|string
     {
-        if ($this->removeTrailingSlashes && str_ends_with($slug, '/')) {
-            return $this->redirect(['view', 'slug' => substr($slug, 0, -1)], 301);
+        if (str_ends_with($slug, '/')) {
+            $slug = rtrim($slug, '/');
+
+            if ($this->redirectTrailingSlash) {
+                return $this->redirect(['view', 'slug' => $slug], 301);
+            }
         }
 
         $entry = $this->findEntry($slug);

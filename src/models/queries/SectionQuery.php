@@ -8,7 +8,8 @@ use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\skeleton\db\I18nActiveQuery;
 
 /**
- * @extends I18nActiveQuery<Section>
+ * @template T of Section
+ * @template-extends I18nActiveQuery<Section>
  */
 class SectionQuery extends I18nActiveQuery
 {

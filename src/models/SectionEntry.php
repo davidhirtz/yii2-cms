@@ -32,6 +32,7 @@ class SectionEntry extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     use SectionRelationTrait;
     use UpdatedByUserTrait;
 
+    #[\Override]
     public function behaviors(): array
     {
         return [
@@ -40,6 +41,7 @@ class SectionEntry extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         ];
     }
 
+    #[\Override]
     public function rules(): array
     {
         return array_merge(parent::rules(), [
@@ -78,6 +80,7 @@ class SectionEntry extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         }
     }
 
+    #[\Override]
     public function beforeSave($insert): bool
     {
         $this->attachBehaviors([
@@ -93,6 +96,7 @@ class SectionEntry extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         return parent::beforeSave($insert);
     }
 
+    #[\Override]
     public function afterSave($insert, $changedAttributes): void
     {
         if ($insert && !$this->getIsBatch()) {
@@ -103,6 +107,7 @@ class SectionEntry extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         parent::afterSave($insert, $changedAttributes);
     }
 
+    #[\Override]
     public function afterDelete(): void
     {
         if (!$this->getIsBatch()) {
@@ -158,6 +163,7 @@ class SectionEntry extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         return Yii::t('skeleton', 'Relation');
     }
 
+    #[\Override]
     public function attributeLabels(): array
     {
         return array_merge(parent::attributeLabels(), [
@@ -167,11 +173,13 @@ class SectionEntry extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         ]);
     }
 
+    #[\Override]
     public function formName(): string
     {
         return 'SectionEntry';
     }
 
+    #[\Override]
     public static function tableName(): string
     {
         return static::getModule()->getTableName('section_entry');

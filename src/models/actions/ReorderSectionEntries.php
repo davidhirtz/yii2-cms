@@ -10,7 +10,8 @@ use davidhirtz\yii2\skeleton\models\Trail;
 use Yii;
 
 /**
- * @extends ReorderActiveRecords<SectionEntry>
+ * @template T of SectionEntry
+ * @extends ReorderActiveRecords<T>
  */
 class ReorderSectionEntries extends ReorderActiveRecords
 {
@@ -26,6 +27,7 @@ class ReorderSectionEntries extends ReorderActiveRecords
         parent::__construct($sectionEntries, $order);
     }
 
+    #[\Override]
     protected function afterReorder(): void
     {
         Trail::createOrderTrail($this->section, Yii::t('cms', 'Linked entry order changed'));

@@ -17,6 +17,7 @@ class EntryCountColumn extends CounterColumn
 {
     use ModuleTrait;
 
+    #[\Override]
     public function init(): void
     {
         if ($this->visible) {
@@ -40,6 +41,7 @@ class EntryCountColumn extends CounterColumn
     /**
      * @param Entry $model
      */
+    #[\Override]
     protected function renderDataCellContent($model, $key, $index): string
     {
         if (!$model->hasDescendantsEnabled()) {

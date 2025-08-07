@@ -16,11 +16,13 @@ class ReorderCategories extends ReorderActiveRecords
         parent::__construct([], array_flip($categoryIds));
     }
 
+    #[\Override]
     protected function reorderActiveRecordsInternal(): void
     {
         Category::rebuildNestedTree($this->parent, $this->order);
     }
 
+    #[\Override]
     protected function afterReorder(): void
     {
         Trail::createOrderTrail($this->parent, Yii::t('cms', 'Category order changed'));

@@ -22,6 +22,7 @@ class AssetActiveForm extends ActiveForm
      * @uses static::contentField()
      * @uses static::altTextField()
      */
+    #[\Override]
     public function init(): void
     {
         $this->fields ??= [
