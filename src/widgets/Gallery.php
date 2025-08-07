@@ -7,6 +7,7 @@ namespace davidhirtz\yii2\cms\widgets;
 use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\media\helpers\Html;
 use davidhirtz\yii2\skeleton\widgets\Widget;
+use Override;
 
 /**
  * @template T of Asset
@@ -45,8 +46,8 @@ class Gallery extends Widget
         parent::init();
     }
 
-    #[\Override]
-    public function run(): string
+    #[Override]
+    public function render(): string
     {
         $viewports = $this->getAssetsByViewports();
         $output = '';

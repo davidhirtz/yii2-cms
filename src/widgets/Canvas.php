@@ -9,6 +9,7 @@ use davidhirtz\yii2\media\helpers\AspectRatio;
 use davidhirtz\yii2\media\helpers\Html;
 use davidhirtz\yii2\media\widgets\Picture;
 use davidhirtz\yii2\skeleton\widgets\Widget;
+use Override;
 use yii\helpers\ArrayHelper;
 
 class Canvas extends Widget
@@ -68,8 +69,8 @@ class Canvas extends Widget
         parent::init();
     }
 
-    #[\Override]
-    public function run(): string
+    #[Override]
+    public function render(): string
     {
         $content = $this->getContent();
         return $this->wrapContent($content);

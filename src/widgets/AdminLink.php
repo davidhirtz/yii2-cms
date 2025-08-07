@@ -8,6 +8,7 @@ use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\skeleton\widgets\Widget;
+use Override;
 use Yii;
 use yii\helpers\Html;
 
@@ -20,8 +21,8 @@ class AdminLink extends Widget
         'target' => '_blank',
     ];
 
-    #[\Override]
-    public function run(): string
+    #[Override]
+    public function render(): string
     {
         return $this->canUpdateModel() && ($route = $this->model->getAdminRoute())
             ? Html::a('', $route, $this->linkOptions)
