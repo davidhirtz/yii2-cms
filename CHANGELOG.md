@@ -1,3 +1,7 @@
+## 2.4.5 (in development)
+
+- Enhanced `EntryQuery` to exclude index entry from allowed parents
+
 ## 2.4.4 (Jul 18, 2025)
 
 - Fixed `Entry` to reset position without `parent_id` change
