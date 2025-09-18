@@ -1,6 +1,7 @@
-## 2.4.5 (in development)
+## 2.4.5 (Sep 18, 2025)
 
 - Enhanced `EntryQuery` to exclude index entry from allowed parents
+- Enhanced `Entry::getCategoryIds` to return int[] instead of string[]
 
 ## 2.4.4 (Jul 18, 2025)
 
