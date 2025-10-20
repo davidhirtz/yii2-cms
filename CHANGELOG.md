@@ -1,3 +1,7 @@
+## 2.4.6 (Oct 20, 2025)
+
+- Added Russian language support
+
 ## 2.4.5 (Sep 18, 2025)
 
 - Enhanced `EntryQuery` to exclude index entry from allowed parents
