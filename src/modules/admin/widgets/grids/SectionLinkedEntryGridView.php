@@ -9,17 +9,18 @@ use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\modules\admin\controllers\SectionEntryController;
 use davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider;
 use davidhirtz\yii2\skeleton\helpers\Html;
+use Override;
 use Yii;
 use yii\db\ActiveRecordInterface;
 
 /**
- * Displays a grid of {@see Entry} models linked to the given {@see Section} record.
+ * @property EntryActiveDataProvider|null $dataProvider
  */
 class SectionLinkedEntryGridView extends EntryGridView
 {
     public Section $section;
 
-    #[\Override]
+    #[Override]
     public function init(): void
     {
         if (!$this->rowOptions) {
@@ -41,7 +42,7 @@ class SectionLinkedEntryGridView extends EntryGridView
         parent::init();
     }
 
-    #[\Override]
+    #[Override]
     protected function initFooter(): void
     {
         $this->footer ??= [
@@ -81,7 +82,7 @@ class SectionLinkedEntryGridView extends EntryGridView
         ]);
     }
 
-    #[\Override]
+    #[Override]
     protected function getRowButtons(Entry $entry): array
     {
         $buttons = [];
@@ -100,7 +101,7 @@ class SectionLinkedEntryGridView extends EntryGridView
     /**
      * @param Entry $model
      */
-    #[\Override]
+    #[Override]
     protected function getDeleteButton(ActiveRecordInterface $model, array $options = []): string
     {
         return parent::getDeleteButton($model, [
@@ -116,7 +117,7 @@ class SectionLinkedEntryGridView extends EntryGridView
     /**
      * @param Entry $model
      */
-    #[\Override]
+    #[Override]
     protected function getDeleteRoute(ActiveRecordInterface $model, array $params = []): array
     {
         return ['section-entry/delete', 'section' => $this->dataProvider->section->id, 'entry' => $model->id];

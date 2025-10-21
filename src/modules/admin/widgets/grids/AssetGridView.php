@@ -16,6 +16,7 @@ use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grids\GridView;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grids\traits\StatusGridViewTrait;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grids\traits\TypeGridViewTrait;
+use Override;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\db\ActiveQuery;
@@ -23,7 +24,7 @@ use yii\db\ActiveRecordInterface;
 
 /**
  * @extends GridView<Asset>
- * @property ActiveDataProvider $dataProvider
+ * @property ActiveDataProvider|null $dataProvider
  */
 class AssetGridView extends GridView
 {
@@ -35,7 +36,7 @@ class AssetGridView extends GridView
 
     public $layout = '{header}{items}{footer}';
 
-    #[\Override]
+    #[Override]
     public function init(): void
     {
         $this->dataProvider ??= $this->getAssetActiveDataProvider();
@@ -118,7 +119,7 @@ class AssetGridView extends GridView
             ->limit($this->maxAssetCount);
     }
 
-    #[\Override]
+    #[Override]
     public function renderItems(): string
     {
         return Html::tag('div', parent::renderItems(), ['id' => 'dropzone']);
@@ -190,7 +191,7 @@ class AssetGridView extends GridView
         ]);
     }
 
-    #[\Override]
+    #[Override]
     protected function getDeleteRoute(ActiveRecordInterface $model, array $params = []): array
     {
         return ['/admin/asset/delete', 'id' => $model->id, ...$params];
@@ -201,7 +202,7 @@ class AssetGridView extends GridView
         return array_merge([$action, ($this->parent instanceof Entry ? 'entry' : 'section') => $this->parent->id], $params);
     }
 
-    #[\Override]
+    #[Override]
     protected function getRoute(ActiveRecordInterface $model, array $params = []): array|false
     {
         $permissionName = $model->isEntryAsset() ? Entry::AUTH_ENTRY_ASSET_UPDATE : Section::AUTH_SECTION_ASSET_UPDATE;
@@ -213,7 +214,7 @@ class AssetGridView extends GridView
         return ['cms/asset/update', 'id' => $model->id, ...$params];
     }
 
-    #[\Override]
+    #[Override]
     public function getModel(): Asset
     {
         return Asset::instance();
