@@ -1,4 +1,4 @@
-## 2.4.6 (Oct 20, 2025)
+## 2.4.6 (Oct 21, 2025)
 
 - Added Russian language support
 
