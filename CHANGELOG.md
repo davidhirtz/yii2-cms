@@ -1,3 +1,7 @@
+## 2.4.7 (in development)
+
+- Changed `Section::hasAssetsEnabled()` and `Section::hasEntriesEnabled()` to not check hidden fields for backend views
+
 ## 2.4.6 (Oct 21, 2025)
 
 - Added Russian language support

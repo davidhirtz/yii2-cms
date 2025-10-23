@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "beea9cb107eceac91d1cfe13d0d37267",
+    "content-hash": "10e6e30fe159ad278800236f0838b882",
     "packages": [
         {
             "name": "bower-asset/jquery",
@@ -3919,29 +3919,29 @@
         },
         {
             "name": "codeception/module-yii2",
-            "version": "v2.0.4",
+            "version": "1.1.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Codeception/module-yii2.git",
-                "reference": "1188aa19b1eaee3514b6d4cbbd9c58261d1aaaa2"
+                "reference": "1ebe6bc2a7f307a6c246026a905612a40ef64859"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Codeception/module-yii2/zipball/1188aa19b1eaee3514b6d4cbbd9c58261d1aaaa2",
-                "reference": "1188aa19b1eaee3514b6d4cbbd9c58261d1aaaa2",
+                "url": "https://api.github.com/repos/Codeception/module-yii2/zipball/1ebe6bc2a7f307a6c246026a905612a40ef64859",
+                "reference": "1ebe6bc2a7f307a6c246026a905612a40ef64859",
                 "shasum": ""
             },
             "require": {
                 "codeception/codeception": "^5.0.8",
                 "codeception/lib-innerbrowser": "^3.0 | ^4.0",
-                "php": "^8.3"
+                "php": "^8.0"
             },
             "require-dev": {
                 "codeception/module-asserts": ">= 3.0",
                 "codeception/module-filesystem": "> 3.0",
                 "codeception/verify": "^3.0",
-                "phpstan/phpstan": "^2",
-                "symplify/easy-coding-standard": "^12.5",
+                "codemix/yii2-localeurls": "^1.7",
+                "phpstan/phpstan": "^1.10",
                 "yiisoft/yii2": "dev-master",
                 "yiisoft/yii2-app-advanced": "dev-master"
             },
@@ -3974,9 +3974,9 @@
             ],
             "support": {
                 "issues": "https://github.com/Codeception/module-yii2/issues",
-                "source": "https://github.com/Codeception/module-yii2/tree/v2.0.4"
+                "source": "https://github.com/Codeception/module-yii2/tree/1.1.12"
             },
-            "time": "2025-05-31T06:52:24+00:00"
+            "time": "2024-12-09T14:34:26+00:00"
         },
         {
             "name": "codeception/specify",
