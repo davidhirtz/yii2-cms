@@ -13,6 +13,7 @@ use davidhirtz\yii2\media\models\interfaces\AssetParentInterface;
 use davidhirtz\yii2\media\models\traits\AssetParentTrait;
 use davidhirtz\yii2\skeleton\db\ActiveQuery;
 use davidhirtz\yii2\skeleton\validators\RelationValidator;
+use Override;
 use Yii;
 use yii\helpers\Inflector;
 
@@ -50,7 +51,7 @@ class Section extends ActiveRecord implements AssetParentInterface
 
     private ?array $_trailParents = null;
 
-    #[\Override]
+    #[Override]
     public function rules(): array
     {
         return array_merge(parent::rules(), $this->getI18nRules([
@@ -87,7 +88,7 @@ class Section extends ActiveRecord implements AssetParentInterface
         ]));
     }
 
-    #[\Override]
+    #[Override]
     public function safeAttributes(): array
     {
         return array_diff(parent::safeAttributes(), ['entry_id']);
@@ -100,7 +101,7 @@ class Section extends ActiveRecord implements AssetParentInterface
         }
     }
 
-    #[\Override]
+    #[Override]
     public function beforeValidate(): bool
     {
         if ($this->slug && !$this->customSlugBehavior) {
@@ -110,7 +111,7 @@ class Section extends ActiveRecord implements AssetParentInterface
         return parent::beforeValidate();
     }
 
-    #[\Override]
+    #[Override]
     public function beforeSave($insert): bool
     {
         $this->slug = $this->slug ?: null;
@@ -124,7 +125,7 @@ class Section extends ActiveRecord implements AssetParentInterface
         return parent::beforeSave($insert);
     }
 
-    #[\Override]
+    #[Override]
     public function afterSave($insert, $changedAttributes): void
     {
         if ($this->shouldUpdateEntryAfterSave) {
@@ -145,7 +146,7 @@ class Section extends ActiveRecord implements AssetParentInterface
         parent::afterSave($insert, $changedAttributes);
     }
 
-    #[\Override]
+    #[Override]
     public function beforeDelete(): bool
     {
         if (!parent::beforeDelete()) {
@@ -164,7 +165,7 @@ class Section extends ActiveRecord implements AssetParentInterface
         return true;
     }
 
-    #[\Override]
+    #[Override]
     public function afterDelete(): void
     {
         if (!$this->entry->isDeleted()) {
@@ -217,7 +218,7 @@ class Section extends ActiveRecord implements AssetParentInterface
         return static::find()->where(['entry_id' => $this->entry_id]);
     }
 
-    #[\Override]
+    #[Override]
     public static function find(): SectionQuery
     {
         return Yii::createObject(SectionQuery::class, [static::class]);
@@ -346,7 +347,7 @@ class Section extends ActiveRecord implements AssetParentInterface
         return static::getModule()->enableSectionEntries;
     }
 
-    #[\Override]
+    #[Override]
     public function attributeLabels(): array
     {
         return [
@@ -358,13 +359,13 @@ class Section extends ActiveRecord implements AssetParentInterface
         ];
     }
 
-    #[\Override]
+    #[Override]
     public function formName(): string
     {
         return 'Section';
     }
 
-    #[\Override]
+    #[Override]
     public static function tableName(): string
     {
         return static::getModule()->getTableName('section');
