@@ -10,9 +10,9 @@ use davidhirtz\yii2\cms\modules\admin\helpers\FrontendLink;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grids\columns\CounterColumn;
+use davidhirtz\yii2\skeleton\modules\admin\widgets\grids\FilterDropdown;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grids\traits\StatusGridViewTrait;
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grids\traits\TypeGridViewTrait;
-use davidhirtz\yii2\skeleton\widgets\bootstrap\ButtonDropdown;
 use Yii;
 use yii\helpers\Url;
 
@@ -35,17 +35,8 @@ trait CategoryGridTrait
         if ($this->header === null) {
             $this->header = [
                 [
-                    [
-                        'content' => $this->categoryDropdown(),
-                        'options' => ['class' => 'col-12 col-md-3'],
-                    ],
-                    [
-                        'content' => $this->getSearchInput(),
-                        'options' => ['class' => 'col-12 col-md-6'],
-                    ],
-                    'options' => [
-                        'class' => $this->dataProvider->category ? 'justify-content-between' : 'justify-content-end',
-                    ],
+                    $this->categoryDropdown(),
+                    $this->search->getColumn(),
                 ],
             ];
         }
@@ -57,7 +48,7 @@ trait CategoryGridTrait
             'attribute' => $this->getModel()->getI18nAttributeName('name'),
             'content' => function (Category $category) {
                 $html = ($name = $category->getI18nAttribute('name'))
-                    ? Html::markKeywords(Html::encode($name), $this->search)
+                    ? Html::markKeywords(Html::encode($name), $this->search->getKeywords())
                     : Yii::t('cms', '[ No title ]');
 
                 $html = Html::a($html, $this->getRoute($category), [
@@ -127,25 +118,26 @@ trait CategoryGridTrait
         return $this->dataProvider->searchString || $category->entryCategory;
     }
 
-    protected function categoryDropdown(array $config = []): ?string
+    protected function categoryDropdown(): ?FilterDropdown
     {
-        if ($category = $this->dataProvider->category) {
-            $config['label'] = Html::tag('strong', Html::encode($category->getI18nAttribute('name')));
-            $config['paramName'] = 'id';
+        $category = $this->dataProvider->category;
 
-            $categories = Category::indentNestedTree($category->getAncestors() + [$category], Category::instance()->getI18nAttributeName('name'));
-
-            foreach ($categories as $id => $name) {
-                $config['items'][] = [
-                    'label' => $name,
-                    'url' => Url::current([$this->categoryParamName => $id, 'page' => null]),
-                ];
-            }
-
-            return ButtonDropdown::widget($config);
+        if (!$category) {
+            return null;
         }
 
-        return null;
+        $dropdown = FilterDropdown::make();
+        $dropdown->label = $category->getI18nAttribute('name');
+        $dropdown->items = $this->getCategoryDropdownItems($category);
+        $dropdown->paramName = 'id';
+
+        return $dropdown;
+    }
+
+    protected function getCategoryDropdownItems(Category $category): array
+    {
+        $attribute = $this->getModel()->getI18nAttributeName('name');
+        return Category::indentNestedTree($category->getAncestors() + [$category], $attribute);
     }
 
     /**

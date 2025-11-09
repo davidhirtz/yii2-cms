@@ -17,17 +17,16 @@
     "davidhirtz/yii2-media": "v3.x-dev"
   },
   "require-dev": {
-    "codeception/codeception": "^5.0",
-    "codeception/module-asserts": "^3.0",
+    "codeception/codeception": "^5.2",
+    "codeception/module-asserts": "^3.1",
     "codeception/module-filesystem": "^3.0",
     "codeception/module-phpbrowser": "^3.0",
-    "codeception/module-yii2": "^1.1",
+    "codeception/module-yii2": "^2.0",
     "codeception/specify": "^2.0",
     "codeception/verify": "^3.0",
     "phpro/grumphp-shim": "^2.4",
-    "phpunit/phpunit": "^9",
-    "rector/rector": "^1.2",
-    "symplify/easy-coding-standard": "^12.0",
+    "rector/rector": "^2.2",
+    "symplify/easy-coding-standard": "^12.5",
     "yiisoft/yii2-debug": "^2.1"
   },
   "autoload": {
