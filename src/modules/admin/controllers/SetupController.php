@@ -13,6 +13,7 @@ use davidhirtz\yii2\media\models\collections\FolderCollection;
 use davidhirtz\yii2\skeleton\log\ActiveRecordErrorLogger;
 use davidhirtz\yii2\skeleton\models\User;
 use davidhirtz\yii2\skeleton\web\Controller;
+use Override;
 use Throwable;
 use Yii;
 use yii\filters\AccessControl;
@@ -27,7 +28,7 @@ abstract class SetupController extends Controller
 {
     use ModuleTrait;
 
-    #[\Override]
+    #[Override]
     public function behaviors(): array
     {
         return [
@@ -105,7 +106,7 @@ abstract class SetupController extends Controller
         }
     }
 
-    protected function insertEntry(array $attributes, Entry $parent = null): void
+    protected function insertEntry(array $attributes, ?Entry $parent = null): void
     {
         $subentries = ArrayHelper::remove($attributes, 'entries', []);
         $categories = ArrayHelper::remove($attributes, 'categories', []);

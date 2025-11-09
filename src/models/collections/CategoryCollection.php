@@ -17,7 +17,7 @@ class CategoryCollection
 {
     use ModuleTrait;
 
-    public const CACHE_KEY = 'category-collection';
+    public const string CACHE_KEY = 'category-collection';
 
     protected static ?array $_categories = null;
 
@@ -105,7 +105,7 @@ class CategoryCollection
      * @return T|null
      * @noinspection PhpDocSignatureInspection
      */
-    public static function getBySlug(string $slug, int $parentId = null): ?Category
+    public static function getBySlug(string $slug, ?int $parentId = null): ?Category
     {
         if ($slug) {
             if (strpos($slug, '/')) {

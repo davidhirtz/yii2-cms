@@ -1,3 +1,12 @@
+## 2.4.6 (Oct 21, 2025)
+
+- Added Russian language support
+
+## 2.4.5 (Sep 18, 2025)
+
+- Enhanced `EntryQuery` to exclude index entry from allowed parents
+- Enhanced `Entry::getCategoryIds` to return int[] instead of string[]
+
 ## 2.4.4 (Jul 18, 2025)
 
 - Fixed `Entry` to reset position without `parent_id` change

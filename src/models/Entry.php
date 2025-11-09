@@ -470,9 +470,12 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
         return $this->id ? ['/admin/entry/update', 'id' => $this->id] : false;
     }
 
+    /**
+     * @return int[]
+     */
     public function getCategoryIds(): array
     {
-        return ArrayHelper::cacheStringToArray($this->category_ids);
+        return array_map('intval', ArrayHelper::cacheStringToArray($this->category_ids));
     }
 
     public function getCategoryCount(): int

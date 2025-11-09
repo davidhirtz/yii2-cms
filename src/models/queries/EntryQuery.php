@@ -12,6 +12,7 @@ use davidhirtz\yii2\cms\models\SectionEntry;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\skeleton\db\ActiveQuery;
 use davidhirtz\yii2\skeleton\db\I18nActiveQuery;
+use Override;
 
 /**
  * @template T of Entry
@@ -35,7 +36,7 @@ class EntryQuery extends I18nActiveQuery
         return $this->andWhere(['>=', Entry::tableName() . '.[[parent_status]]', self::$_status]);
     }
 
-    #[\Override]
+    #[Override]
     public function enabled(): static
     {
         return $this->whereStatus(Entry::STATUS_DEFAULT)
@@ -79,7 +80,11 @@ class EntryQuery extends I18nActiveQuery
 
     public function whereHasDescendantsEnabled(): static
     {
-        return $this;
+        return $this->andWhere([
+            '!=',
+            $this->getI18nAttributeName('slug'),
+            static::getModule()->entryIndexSlug,
+        ]);
     }
 
     public function whereCategory(array|Category|int $category, bool $eagerLoading = false): static
