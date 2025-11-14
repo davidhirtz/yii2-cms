@@ -33,7 +33,7 @@ class UrlRule extends \yii\web\UrlRule
                 $matches = preg_split('~(?<!\\\)/~', str_replace(['#^', '$#u'], '', $this->pattern));
 
                 $pattern = '(?P<' . $placeholder . '>[^\\/]+)';
-                $start = array_search($pattern, $matches);
+                $start = array_search($pattern, $matches, true);
 
                 $parts = explode('/', $request->getPathInfo());
                 $parentId = null;
@@ -53,7 +53,7 @@ class UrlRule extends \yii\web\UrlRule
                     $slug = implode('/', array_splice($parts, $start, $branch));
 
                     $this->pattern = str_replace($pattern, $slug, $this->pattern);
-                    $request->setQueryParams(array_merge($request->getQueryParams(), [$this->paramName => $slug]));
+                    $request->setQueryParams([...$request->getQueryParams(), $this->paramName => $slug]);
 
                     return parent::parseRequest($manager, $request);
                 }

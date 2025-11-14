@@ -12,15 +12,13 @@ use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\modules\admin\controllers\traits\AssetTrait;
 use davidhirtz\yii2\cms\modules\admin\controllers\traits\EntryTrait;
 use davidhirtz\yii2\cms\modules\admin\controllers\traits\SectionTrait;
-use davidhirtz\yii2\media\models\File;
 use davidhirtz\yii2\media\models\Folder;
-use davidhirtz\yii2\media\modules\admin\controllers\traits\FileTrait;
+use davidhirtz\yii2\media\modules\admin\controllers\traits\FileControllerTrait;
 use davidhirtz\yii2\media\modules\admin\data\FileActiveDataProvider;
+use Override;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
-use yii\web\BadRequestHttpException;
-use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
 class AssetController extends AbstractController
@@ -28,9 +26,14 @@ class AssetController extends AbstractController
     use AssetTrait;
     use EntryTrait;
     use SectionTrait;
-    use FileTrait;
+    use FileControllerTrait;
 
-    #[\Override]
+    public function __construct($id, $module, $config = [])
+    {
+        parent::__construct($id, $module, $config);
+    }
+
+    #[Override]
     public function behaviors(): array
     {
         return [
@@ -101,36 +104,33 @@ class AssetController extends AbstractController
     public function actionCreate(
         ?int $entry = null,
         ?int $section = null,
-        ?int $file = null,
         ?int $folder = null
     ): Response|string {
-        $request = Yii::$app->getRequest();
-        $user = Yii::$app->getUser();
+        if ($entry) {
+            $entry = $this->findEntry($entry, Entry::AUTH_ENTRY_ASSET_CREATE);
+            $section = null;
+        } else {
+            $section = $this->findSection($section, Section::AUTH_SECTION_ASSET_CREATE);
+            $entry = null;
+        }
 
-        if (!($file = File::findOne($file) ?: $this->insertFileFromRequest($folder))) {
-            return '';
+        $file = $this->insertFileFromRequest($folder);
+
+        if ($this->request->preferNoContent()) {
+            $this->response->setStatusCode(204);
+        }
+
+        if (!$this->response->getIsOk() || $file->hasErrors()) {
+            return $this->response;
         }
 
         $asset = Asset::create();
         $asset->loadDefaultValues();
-        $asset->entry_id = $entry;
-        $asset->section_id = $section;
+        $asset->populateEntryRelation($entry);
+        $asset->populateSectionRelation($section);
         $asset->populateFileRelation($file);
+        $asset->insert();
 
-        if (!$user->can($asset->isEntryAsset() ? Entry::AUTH_ENTRY_ASSET_CREATE : Section::AUTH_SECTION_ASSET_CREATE, ['asset' => $asset])) {
-            throw new ForbiddenHttpException();
-        }
-
-        if (!$asset->insert()) {
-            $errors = $asset->getFirstErrors();
-            throw new BadRequestHttpException(reset($errors));
-        }
-
-        if ($request->getIsAjax()) {
-            return '';
-        }
-
-        $this->success(Yii::t('cms', 'The asset was added.'));
         return $this->redirectToParent($asset);
     }
 
@@ -138,14 +138,9 @@ class AssetController extends AbstractController
     {
         $asset = $this->findAsset($id, Asset::AUTH_ASSET_UPDATE);
 
-        if ($asset->load(Yii::$app->getRequest()->post())) {
-            if ($asset->update()) {
-                $this->success(Yii::t('cms', 'The asset was updated.'));
-            }
-
-            if (!$asset->hasErrors()) {
-                return $this->redirectToParent($asset);
-            }
+        if ($asset->load(Yii::$app->getRequest()->post()) && $asset->update()) {
+            $this->success(Yii::t('cms', 'The asset was updated.'));
+            return $this->redirectToParent($asset);
         }
 
         return $this->render('update', [
@@ -157,17 +152,10 @@ class AssetController extends AbstractController
     {
         $asset = $this->findAsset($id, Asset::AUTH_ASSET_DELETE);
 
-        if ($asset->delete()) {
-            if (Yii::$app->getRequest()->getIsAjax()) {
-                return '';
-            }
+        $asset->delete();
+        $this->errorOrSuccess($asset, Yii::t('cms', 'The asset was deleted.'));
 
-            $this->success(Yii::t('cms', 'The asset was deleted.'));
-            return $this->redirectToParent($asset, true);
-        }
-
-        $errors = $asset->getFirstErrors();
-        throw new BadRequestHttpException(reset($errors));
+        return $this->redirectToParent($asset, true);
     }
 
     public function actionDuplicate(int $id): Response|string
@@ -200,7 +188,10 @@ class AssetController extends AbstractController
 
     private function redirectToParent(Asset $asset, bool $isDeleted = false): Response
     {
-        $route = $asset->section_id ? ['/admin/section/update', 'id' => $asset->section_id] : ['/admin/entry/update', 'id' => $asset->entry_id];
+        $route = $asset->section_id
+            ? ['/admin/section/update', 'id' => $asset->section_id]
+            : ['/admin/entry/update', 'id' => $asset->entry_id];
+
         return $this->redirect($route + ['#' => $isDeleted ? 'assets' : ('asset-' . $asset->id)]);
     }
 }

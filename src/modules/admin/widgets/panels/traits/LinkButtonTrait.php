@@ -4,29 +4,33 @@ declare(strict_types=1);
 
 namespace davidhirtz\yii2\cms\modules\admin\widgets\panels\traits;
 
-use davidhirtz\yii2\skeleton\helpers\Html;
+use davidhirtz\yii2\skeleton\html\Button;
+use Stringable;
 use Yii;
 
 trait LinkButtonTrait
 {
-    protected function getLinkButton(array $options = []): string
+    protected function getLinkButton(): ?Stringable
     {
-        if (!$this->model->isDisabled()) {
-            if ($route = $this->model->getRoute()) {
-                $manager = Yii::$app->getUrlManager();
-                $url = $this->isDraft() ? $manager->createDraftUrl($route) : $manager->createAbsoluteUrl($route);
-
-                if ($url) {
-                    return Html::a(Html::iconText('external-link-alt', Yii::t('cms', 'Open website')), $url, [
-                        'class' => 'btn btn-secondary',
-                        'target' => 'blank',
-                        ...$options,
-                    ]);
-                }
-            }
+        if ($this->model->isDisabled()) {
+            return null;
         }
 
-        return '';
+        $route = $this->model->getRoute();
+
+        if (!$route) {
+            return null;
+        }
+
+        $manager = Yii::$app->getUrlManager();
+        $url = $this->isDraft() ? $manager->createDraftUrl($route) : $manager->createAbsoluteUrl($route);
+
+        return Button::make()
+            ->secondary()
+            ->text(Yii::t('cms', 'Open website'))
+            ->icon('external-link-alt')
+            ->href($url)
+            ->target('_blank');
     }
 
     protected function isDraft(): bool

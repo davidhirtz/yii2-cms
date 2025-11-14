@@ -30,7 +30,6 @@ class Canvas extends Widget
     public ?int $defaultMaxWidth = null;
 
     public bool $enableWrapperHeight = true;
-    public bool $setWrapperHeightWithAspectRatio = true;
 
     public int|false $lazyLoadingParentPosition = 2;
     public string $embedViewFile = 'widgets/_embed';
@@ -151,11 +150,7 @@ class Canvas extends Widget
 
     protected function setWrapperHeight(): void
     {
-        if ($this->setWrapperHeightWithAspectRatio) {
-            $this->wrapperOptions['style']['aspect-ratio'] ??= $this->getAspectRatio();
-        } elseif ($percentage = $this->asset->file->getHeightPercentage()) {
-            $this->wrapperOptions['style']['padding-top'] ??= "$percentage%";
-        }
+        $this->wrapperOptions['style']['aspect-ratio'] ??= $this->getAspectRatio();
     }
 
     protected function getAspectRatio(): ?string

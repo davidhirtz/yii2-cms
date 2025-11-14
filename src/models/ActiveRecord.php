@@ -87,7 +87,7 @@ abstract class ActiveRecord extends BaseActiveRecord implements DraftStatusAttri
             ],
             [
                 $this->getI18nAttributesNames(['content']),
-                ...(array)($this->contentType == 'html' && $this->htmlValidator ? $this->htmlValidator : 'safe'),
+                ...(array)($this->contentType === 'html' && $this->htmlValidator ? $this->htmlValidator : 'safe'),
             ],
             [
                 $this->getI18nAttributesNames(['content']),

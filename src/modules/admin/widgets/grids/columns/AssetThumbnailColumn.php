@@ -6,7 +6,7 @@ namespace davidhirtz\yii2\cms\modules\admin\widgets\grids\columns;
 
 use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\media\modules\admin\widgets\grids\columns\Thumbnail;
-use davidhirtz\yii2\skeleton\modules\admin\widgets\grids\columns\LinkDataColumn;
+use davidhirtz\yii2\skeleton\widgets\grids\columns\LinkDataColumn;
 
 class AssetThumbnailColumn extends LinkDataColumn
 {

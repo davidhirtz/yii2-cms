@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace davidhirtz\yii2\cms\modules\admin\widgets\panels;
 
 use davidhirtz\yii2\cms\models\Category;
-use davidhirtz\yii2\skeleton\helpers\Html;
+use davidhirtz\yii2\skeleton\html\Button;
+use Stringable;
 use Yii;
 
 /**
@@ -22,21 +23,23 @@ class CategoryHelpPanel extends HelpPanel
         ]);
     }
 
-    protected function getEntryGridViewButton(): string
+    protected function getEntryGridViewButton(): ?Stringable
     {
-        if (!$this->model->hasEntriesEnabled()) {
-            return '';
-        }
-
-        return Html::a(Html::iconText('book', Yii::t('cms', 'View All Entries')), ['entry/index', 'category' => $this->model->id], [
-            'class' => 'btn btn-primary',
-        ]);
+        return $this->model->hasEntriesEnabled()
+            ? Button::make()
+                ->primary()
+                ->text(Yii::t('cms', 'View All Entries'))
+                ->icon('book')
+                ->href(['entry/index', 'category' => $this->model->id])
+            : null;
     }
 
-    protected function getCreateCategoryButton(): string
+    protected function getCreateCategoryButton(): Stringable
     {
-        return Html::a(Html::iconText('plus', Yii::t('cms', 'New Category')), ['category/create', 'id' => $this->model->id], [
-            'class' => 'btn btn-primary',
-        ]);
+        return Button::make()
+            ->primary()
+            ->text(Yii::t('cms', 'New Category'))
+            ->icon('plus')
+            ->href(['category/create', 'id' => $this->model->id]);
     }
 }

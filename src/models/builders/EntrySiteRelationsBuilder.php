@@ -59,7 +59,7 @@ class EntrySiteRelationsBuilder extends BaseObject
         if ($this->autoloadEntryAncestors) {
             $this->relatedEntryIds = [
                 ...$this->relatedEntryIds,
-                ...array_map('intval', $this->entry->getAncestorIds()),
+                ...array_map(intval(...), $this->entry->getAncestorIds()),
             ];
         }
 
@@ -195,7 +195,7 @@ class EntrySiteRelationsBuilder extends BaseObject
                 foreach ($section->sectionEntries as $sectionEntry) {
                     $entry = $this->entries[$sectionEntry->entry_id] ?? null;
 
-                    if ($entry && (!$allowedTypes || in_array($entry->type, $allowedTypes))) {
+                    if ($entry && (!$allowedTypes || in_array($entry->type, $allowedTypes, true))) {
                         $entries[$entry->id] = $entry;
                     }
                 }

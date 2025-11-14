@@ -81,7 +81,7 @@ class SiteControllerCest extends BaseCest
         }
 
         /** @var Asset $asset */
-        $asset = current(array_filter($entry->assets, fn (Asset $asset) => $asset->type == Asset::TYPE_META_IMAGE));
+        $asset = current(array_filter($entry->assets, fn (Asset $asset) => $asset->type === Asset::TYPE_META_IMAGE));
         $url = $urlManager->createAbsoluteUrl($asset->file->getUrl());
 
         $I->seeInSource('<link href="' . $url . '" rel="image_src">');

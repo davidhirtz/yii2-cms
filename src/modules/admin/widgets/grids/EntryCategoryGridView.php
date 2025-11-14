@@ -9,10 +9,11 @@ use davidhirtz\yii2\cms\models\EntryCategory;
 use davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider;
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\traits\CategoryGridTrait;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
-use davidhirtz\yii2\skeleton\helpers\Html;
-use davidhirtz\yii2\skeleton\html\Icon;
-use davidhirtz\yii2\skeleton\modules\admin\widgets\grids\GridView;
+use davidhirtz\yii2\skeleton\html\Button;
+use davidhirtz\yii2\skeleton\widgets\grids\columns\ButtonsColumn;
+use davidhirtz\yii2\skeleton\widgets\grids\GridView;
 use davidhirtz\yii2\timeago\Timeago;
+use Override;
 use yii\db\ActiveRecordInterface;
 
 /**
@@ -24,36 +25,28 @@ class EntryCategoryGridView extends GridView
     use CategoryGridTrait;
     use ModuleTrait;
 
-    /**
-     * @var string the category param name used in urls on {@see CategoryGridTrait}
-     */
     public string $categoryParamName = 'category';
-
-    /**
-     * @var bool whether frontend url should be displayed, defaults to false
-     */
     public bool $showUrl = false;
 
-    #[\Override]
+    #[Override]
     public function init(): void
     {
-        if (!$this->rowOptions) {
-            $this->rowOptions = fn (Category $category) => [
-                'class' => $category->entryCategory ? 'is-selected' : null,
-            ];
-        }
+        $this->rowAttributes ??= fn (Category $category) => [
+            'class' => $category->entryCategory ? 'is-selected' : null,
+        ];
 
-        if (!$this->columns) {
-            $this->columns = [
-                $this->statusColumn(),
-                $this->typeColumn(),
-                $this->nameColumn(),
-                $this->branchCountColumn(),
-                $this->entryCountColumn(),
-                $this->updatedAtColumn(),
-                $this->buttonsColumn(),
-            ];
-        }
+        $this->columns ??= [
+            $this->statusColumn(),
+            $this->typeColumn(),
+            $this->nameColumn(),
+            $this->branchCountColumn(),
+            $this->entryCountColumn(),
+            $this->updatedAtColumn(),
+            $this->buttonsColumn(),
+        ];
+
+        // Category counter in submenu needs to be updated when categories are added/removed.
+        $this->attributes['hx-select'] ??= 'main';
 
         $this->initAncestors();
         parent::init();
@@ -76,30 +69,35 @@ class EntryCategoryGridView extends GridView
     public function buttonsColumn(): array
     {
         return [
-            'contentOptions' => ['class' => 'text-end text-nowrap'],
-            'content' => function (Category $category): string {
-                // Make sure categories can always be removed even if they were not supposed to have entries enabled.
+            'class' => ButtonsColumn::class,
+            'content' => function (Category $category): array {
+                // Categories can always be removed even, if they were not supposed to have entries enabled
                 if (!$category->hasEntriesEnabled() && !$category->entryCategory) {
-                    return '';
+                    return [];
                 }
 
-                $route = [
-                    $category->entryCategory ? 'delete' : 'create',
-                    'entry' => $this->dataProvider->entry->id,
-                    'category' => $category->id,
+                return [
+                    Button::make()
+                        ->primary()
+                        ->icon($category->entryCategory ? 'ban' : 'star')
+                        ->post([
+                            $category->entryCategory ? 'delete' : 'create',
+                            'entry' => $this->dataProvider->entry->id,
+                            'category' => $category->id,
+                        ]),
                 ];
-
-                return Html::buttons(Html::a((string)Icon::tag($category->entryCategory ? 'ban' : 'star'), $route, [
-                    'class' => 'btn btn-primary',
-                    'data-method' => 'post',
-                ]));
             }
         ];
     }
 
-    #[\Override]
+    #[Override]
     protected function getRoute(ActiveRecordInterface $model, array $params = []): array|false
     {
         return ['category/update', 'id' => $model->id];
+    }
+
+    public function getModel(): Category
+    {
+        return Category::instance();
     }
 }

@@ -136,7 +136,7 @@ class EntryController extends AbstractController
     {
         $request = Yii::$app->getRequest();
 
-        if ($entryIds = array_map('intval', $request->post('selection', []))) {
+        if ($entryIds = array_map(intval(...), $request->post('selection', []))) {
             $entries = Entry::findAll(['id' => $entryIds]);
             $isUpdated = false;
 
@@ -213,7 +213,7 @@ class EntryController extends AbstractController
             $this->error($errors);
         }
 
-        return $this->redirect(array_merge(Yii::$app->getRequest()->get(), ['index']));
+        return $this->redirect([...Yii::$app->getRequest()->get(), 'index']);
     }
 
     public function actionOrder(?int $parent = null): void
@@ -225,6 +225,6 @@ class EntryController extends AbstractController
 
     protected function redirectToEntry(Entry $entry): Response
     {
-        return $this->redirect(array_merge(Yii::$app->getRequest()->get(), ['update', 'id' => $entry->id]));
+        return $this->redirect([...Yii::$app->getRequest()->get(), 'update', 'id' => $entry->id]);
     }
 }

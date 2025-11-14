@@ -9,7 +9,7 @@ use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\EntryGridView;
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\SectionGridView;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
-use davidhirtz\yii2\skeleton\modules\admin\widgets\grids\columns\CounterColumn;
+use davidhirtz\yii2\skeleton\widgets\grids\columns\CounterColumn;
 
 /**
  * @property EntryGridView|SectionGridView $grid

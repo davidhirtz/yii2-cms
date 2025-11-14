@@ -73,7 +73,7 @@ class CategoryCollection
             return [];
         }
 
-        return array_filter(static::getAll(), fn (Category $category) => $category->parent_id == $parent->id);
+        return array_filter(static::getAll(), fn (Category $category) => $category->parent_id === $parent->id);
     }
 
     /**
@@ -98,7 +98,7 @@ class CategoryCollection
         $categoryIds = $entry->getCategoryIds();
 
         return array_filter(static::getAll(), fn (Category $category) => $category->hasEntriesEnabled()
-            && in_array($category->id, $categoryIds));
+            && in_array($category->id, $categoryIds, true));
     }
 
     /**
@@ -122,7 +122,7 @@ class CategoryCollection
             }
 
             foreach (static::getAll() as $category) {
-                if ($category->getI18nAttribute('slug') == $slug && ($category->parent_id == $parentId)) {
+                if ($category->getI18nAttribute('slug') === $slug && ($category->parent_id === $parentId)) {
                     return $category;
                 }
             }

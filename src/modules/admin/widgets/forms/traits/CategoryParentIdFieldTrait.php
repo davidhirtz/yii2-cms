@@ -30,7 +30,7 @@ trait CategoryParentIdFieldTrait
             ],
         ];
 
-        if (!$this->model->slugTargetAttribute || !in_array('parent_id', (array)$this->model->slugTargetAttribute)) {
+        if (!$this->model->slugTargetAttribute || !in_array('parent_id', (array)$this->model->slugTargetAttribute, true)) {
             return $options;
         }
 

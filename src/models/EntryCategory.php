@@ -12,8 +12,11 @@ use davidhirtz\yii2\skeleton\behaviors\BlameableBehavior;
 use davidhirtz\yii2\skeleton\behaviors\TimestampBehavior;
 use davidhirtz\yii2\skeleton\behaviors\TrailBehavior;
 use davidhirtz\yii2\skeleton\log\ActiveRecordErrorLogger;
+use davidhirtz\yii2\skeleton\models\interfaces\TrailModelInterface;
+use davidhirtz\yii2\skeleton\models\traits\TrailModelTrait;
 use davidhirtz\yii2\skeleton\models\traits\UpdatedByUserTrait;
 use davidhirtz\yii2\skeleton\validators\RelationValidator;
+use Override;
 use Yii;
 
 /**
@@ -27,16 +30,17 @@ use Yii;
  *
  * @mixin TrailBehavior
  */
-class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
+class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord implements TrailModelInterface
 {
     use CategoryRelationTrait;
     use EntryRelationTrait;
     use ModuleTrait;
+    use TrailModelTrait;
     use UpdatedByUserTrait;
 
     public bool|null $shouldUpdateEntryAfterInsert = null;
 
-    #[\Override]
+    #[Override]
     public function behaviors(): array
     {
         return [
@@ -45,34 +49,31 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         ];
     }
 
-    #[\Override]
+    #[Override]
     public function rules(): array
     {
-        return array_merge(parent::rules(), [
+        return [
+            ...parent::rules(),
             [
                 ['category_id'],
                 RelationValidator::class,
                 'required' => true,
-            ],
-            [
+            ], [
                 ['entry_id'],
                 RelationValidator::class,
                 'required' => true,
-            ],
-            [
+            ], [
                 ['category_id'],
                 $this->validateCategoryId(...),
-            ],
-            [
+            ], [
                 ['entry_id'],
                 $this->validateEntryId(...),
-            ],
-            [
+            ], [
                 ['entry_id'],
                 'unique',
                 'targetAttribute' => ['entry_id', 'category_id'],
             ],
-        ]);
+        ];
     }
 
     public function validateCategoryId(): void
@@ -89,7 +90,7 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         }
     }
 
-    #[\Override]
+    #[Override]
     public function beforeSave($insert): bool
     {
         $this->attachBehaviors([
@@ -106,7 +107,7 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         return parent::beforeSave($insert);
     }
 
-    #[\Override]
+    #[Override]
     public function afterSave($insert, $changedAttributes): void
     {
         if ($insert) {
@@ -123,7 +124,7 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         parent::afterSave($insert, $changedAttributes);
     }
 
-    #[\Override]
+    #[Override]
     public function afterDelete(): void
     {
         if (!$this->getIsBatch()) {
@@ -215,41 +216,37 @@ class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord
         return (int)static::find()->where(['category_id' => $this->category_id])->max('[[position]]');
     }
 
-    /**
-     * @noinspection PhpUnused
-     */
+    #[Override]
     public function getTrailParents(): array
     {
         return [$this->entry, $this->category];
     }
 
+    #[Override]
     public function getTrailModelName(): string
     {
         return Yii::t('cms', 'Entry–Category');
     }
 
+    #[Override]
     public function getTrailModelType(): string
     {
         return Yii::t('skeleton', 'Relation');
     }
 
-    #[\Override]
+    #[Override]
     public function attributeLabels(): array
     {
-        return array_merge(parent::attributeLabels(), [
-            'entry_id' => Yii::t('cms', 'Entry'),
-            'category_id' => Yii::t('cms', 'Category'),
-            'updated_at' => Yii::t('cms', 'Added'),
-        ]);
+        return [...parent::attributeLabels(), 'entry_id' => Yii::t('cms', 'Entry'), 'category_id' => Yii::t('cms', 'Category'), 'updated_at' => Yii::t('cms', 'Added')];
     }
 
-    #[\Override]
+    #[Override]
     public function formName(): string
     {
         return 'EntryCategory';
     }
 
-    #[\Override]
+    #[Override]
     public static function tableName(): string
     {
         return static::getModule()->getTableName('entry_category');

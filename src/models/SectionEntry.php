@@ -44,27 +44,22 @@ class SectionEntry extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     #[\Override]
     public function rules(): array
     {
-        return array_merge(parent::rules(), [
-            [
-                ['section_id'],
-                RelationValidator::class,
-                'required' => true,
-            ],
-            [
-                ['entry_id'],
-                RelationValidator::class,
-                'required' => true,
-            ],
-            [
-                ['entry_id'],
-                'unique',
-                'targetAttribute' => ['section_id', 'entry_id'],
-            ],
-            [
-                ['entry_id'],
-                $this->validateEntry(...),
-            ],
-        ]);
+        return [...parent::rules(), [
+            ['section_id'],
+            RelationValidator::class,
+            'required' => true,
+        ], [
+            ['entry_id'],
+            RelationValidator::class,
+            'required' => true,
+        ], [
+            ['entry_id'],
+            'unique',
+            'targetAttribute' => ['section_id', 'entry_id'],
+        ], [
+            ['entry_id'],
+            $this->validateEntry(...),
+        ]];
     }
 
     protected function validateEntry(): void
@@ -75,7 +70,7 @@ class SectionEntry extends \davidhirtz\yii2\skeleton\db\ActiveRecord
 
         $allowedTypes = $this->section->getEntriesTypes();
 
-        if ($allowedTypes && !in_array($this->entry->type, $allowedTypes)) {
+        if ($allowedTypes && !in_array($this->entry->type, $allowedTypes, true)) {
             $this->addInvalidAttributeError('entry_id');
         }
     }
@@ -166,11 +161,7 @@ class SectionEntry extends \davidhirtz\yii2\skeleton\db\ActiveRecord
     #[\Override]
     public function attributeLabels(): array
     {
-        return array_merge(parent::attributeLabels(), [
-            'section_id' => Yii::t('cms', 'Section'),
-            'entry_id' => Yii::t('cms', 'Entry'),
-            'updated_at' => Yii::t('cms', 'Added'),
-        ]);
+        return [...parent::attributeLabels(), 'section_id' => Yii::t('cms', 'Section'), 'entry_id' => Yii::t('cms', 'Entry'), 'updated_at' => Yii::t('cms', 'Added')];
     }
 
     #[\Override]

@@ -15,9 +15,9 @@ use davidhirtz\yii2\cms\modules\admin\widgets\grids\AssetGridView;
 use davidhirtz\yii2\cms\modules\admin\widgets\navs\Submenu;
 use davidhirtz\yii2\cms\modules\admin\widgets\panels\EntryDeletePanel;
 use davidhirtz\yii2\cms\modules\admin\widgets\panels\EntryHelpPanel;
-use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\web\View;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
+use davidhirtz\yii2\skeleton\widgets\forms\ErrorSummary;
 
 $this->setTitle(Yii::t('cms', 'Edit Entry'));
 ?>
@@ -26,7 +26,7 @@ $this->setTitle(Yii::t('cms', 'Edit Entry'));
     'model' => $entry,
 ]); ?>
 
-<?= Html::errorSummary($entry); ?>
+<?= ErrorSummary::forModel($entry); ?>
 
 <?= Panel::widget([
     'title' => $this->title,

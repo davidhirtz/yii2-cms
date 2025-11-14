@@ -42,7 +42,7 @@ class EntryParentIdDropDown extends InputWidget
             }
 
             if (!$this->model->getIsNewRecord()
-                && in_array($this->model->id, [...$entry->getAncestorIds(), $entry->id])) {
+                && in_array($this->model->id, [...$entry->getAncestorIds(), $entry->id], true)) {
                 $this->options['options'][$entry->id]['disabled'] = true;
             }
         }
@@ -54,7 +54,7 @@ class EntryParentIdDropDown extends InputWidget
     protected function setItemsFromEntries(array $entries, ?int $parentId = null): void
     {
         foreach ($entries as $entry) {
-            if ($entry->parent_id == $parentId) {
+            if ($entry->parent_id === $parentId) {
                 $name = Html::encode($entry->getI18nAttribute('name') ?: Yii::t('cms', '[ No title ]'));
                 $count = count($entry->getAncestorIds());
                 $indent = ($count ? (str_repeat($this->indent, $count) . ' ') : '');

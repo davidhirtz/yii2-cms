@@ -218,7 +218,7 @@ class Asset extends ActiveRecord implements AssetInterface, DraftStatusAttribute
         if ($this->includeInSitemap($language)) {
             $content = $this->getI18nAttribute('content');
 
-            if ($this->contentType == 'html') {
+            if ($this->contentType === 'html') {
                 $content = strip_tags((string)$content);
             }
 
@@ -243,6 +243,9 @@ class Asset extends ActiveRecord implements AssetInterface, DraftStatusAttribute
         return $this->section_id ? $this->section : $this->entry;
     }
 
+    /**
+     * @return class-string<FileAssetParentPanel>
+     */
     public function getFilePanelClass(): string
     {
         return FileAssetParentPanel::class;

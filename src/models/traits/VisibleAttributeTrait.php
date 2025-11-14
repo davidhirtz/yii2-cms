@@ -13,6 +13,6 @@ trait VisibleAttributeTrait
 
     public function isAttributeVisible(string $attribute): bool
     {
-        return !in_array($attribute, $this->getTypeOptions()['hiddenFields'] ?? []);
+        return !in_array($attribute, $this->getTypeOptions()['hiddenFields'] ?? [], true);
     }
 }

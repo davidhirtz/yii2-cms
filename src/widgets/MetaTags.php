@@ -150,23 +150,29 @@ class MetaTags extends Widget
     public function registerImageMetaTags(): void
     {
         foreach ($this->model->assets as $asset) {
-            if (!$asset->section_id && (!$this->assetType || $this->assetType == $asset->type)) {
-                $file = $asset->file;
-                if ($this->transformationName) {
-                    if ($url = $file->getTransformationUrl($this->transformationName)) {
-                        $width = $file->getTransformationOption($this->transformationName, 'width');
-                        $height = $file->getTransformationOption($this->transformationName, 'height');
+            if ($asset->isSectionAsset() || ($this->assetType && $this->assetType !== $asset->type)) {
+                continue;
+            }
 
-                        if (!$height) {
-                            $height = ceil($width * $file->getHeightPercentage() / 100);
-                        }
+            $file = $asset->file;
 
-                        $this->getView()->registerImageMetaTags($url, (int)$width, (int)$height);
+            if ($this->transformationName) {
+                $url = $file->getTransformationUrl($this->transformationName);
+
+                if ($url) {
+                    $transformation = $file->getTransformations()[$this->transformationName] ?? [];
+
+                    if (array_key_exists('width', $transformation)) {
+                        $height = $file->getTransformations()[$this->transformationName]['height']
+                            ?? round($file->height * ($transformation['width'] / $file->width));
+
+                        $this->getView()->registerImageMetaTags($url, (int)$transformation['width'], (int)$height);
+                        continue;
                     }
-                } else {
-                    $this->getView()->registerImageMetaTags($file->getUrl(), $file->width, $file->height);
                 }
             }
+
+            $this->getView()->registerImageMetaTags($file->getUrl(), $file->width, $file->height);
         }
     }
 

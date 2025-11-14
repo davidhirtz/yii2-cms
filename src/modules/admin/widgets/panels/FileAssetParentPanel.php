@@ -37,7 +37,7 @@ class FileAssetParentPanel extends Widget
         $module = Yii::$app->getModule('admin')->getModule('cms');
         $title = $module->getName();
 
-        if ($language != Yii::$app->language) {
+        if ($language !== Yii::$app->language) {
             $title .= ' (' . strtoupper($language) . ')';
         }
 

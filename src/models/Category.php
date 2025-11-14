@@ -79,7 +79,7 @@ class Category extends ActiveRecord implements SitemapInterface
                 [
                     ['slug'],
                     'required',
-                    'when' => fn (): bool => $this->isSlugRequired()
+                    'when' => $this->isSlugRequired(...)
                 ],
                 [
                     ['name', 'slug', 'title', 'description', 'content'],

@@ -11,6 +11,7 @@ use davidhirtz\yii2\cms\models\EntryCategory;
 use davidhirtz\yii2\cms\modules\admin\controllers\traits\CategoryTrait;
 use davidhirtz\yii2\cms\modules\admin\controllers\traits\EntryTrait;
 use davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider;
+use Override;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
@@ -22,7 +23,7 @@ class EntryCategoryController extends AbstractController
     use CategoryTrait;
     use EntryTrait;
 
-    #[\Override]
+    #[Override]
     public function behaviors(): array
     {
         return [
@@ -57,7 +58,7 @@ class EntryCategoryController extends AbstractController
     {
         $entry = $this->findEntry($entry, Entry::AUTH_ENTRY_UPDATE);
 
-        $provider = Yii::$container->get(CategoryActiveDataProvider::class, [], [
+        $provider = Yii::$container->get(CategoryActiveDataProvider::class, config: [
             'entry' => $entry,
             'category' => Category::findOne($category),
             'searchString' => $q,
@@ -79,7 +80,9 @@ class EntryCategoryController extends AbstractController
         }
 
         $entryCategory->insert();
-        return $this->redirect(['index', 'entry' => $entryCategory->entry_id]);
+        $this->errorOrSuccess($entryCategory, Yii::t('cms', 'Category linked to entry.'));
+
+        return $this->redirectToIndex($entryCategory);
     }
 
     public function actionDelete(int $entry, int $category): Response
@@ -94,7 +97,19 @@ class EntryCategoryController extends AbstractController
         }
 
         $entryCategory->delete();
-        return $this->redirect(['index', 'entry' => $entryCategory->entry_id]);
+        $this->errorOrSuccess($entryCategory, Yii::t('cms', 'Category removed from entry.'));
+
+        return $this->redirectToIndex($entryCategory);
+    }
+
+    protected function redirectToIndex(EntryCategory $entryCategory): Response
+    {
+        return $this->redirect([
+            'index',
+            ...Yii::$app->getRequest()->getQueryParams(),
+            'entry' => $entryCategory->entry_id,
+            'category' => null,
+        ]);
     }
 
     public function actionOrder(int $category): void

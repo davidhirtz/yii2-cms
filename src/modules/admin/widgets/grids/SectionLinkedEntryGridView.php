@@ -8,10 +8,12 @@ use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\modules\admin\controllers\SectionEntryController;
 use davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider;
-use davidhirtz\yii2\skeleton\helpers\Html;
+use davidhirtz\yii2\cms\modules\admin\widgets\grids\buttons\SectionEntryDeleteButton;
+use davidhirtz\yii2\skeleton\widgets\grids\buttons\CreateButton;
 use Override;
+use Stringable;
 use Yii;
-use yii\db\ActiveRecordInterface;
+use yii\helpers\Inflector;
 
 /**
  * @property EntryActiveDataProvider|null $dataProvider
@@ -23,9 +25,21 @@ class SectionLinkedEntryGridView extends EntryGridView
     #[Override]
     public function init(): void
     {
-        if (!$this->rowOptions) {
-            $this->rowOptions = $this->getRowOptions(...);
-        }
+        $this->setId($this->getId(false) ?? 'section-entry-grid');
+
+        $this->rowAttributes ??= function (Entry $entry): array {
+            $allowedTypes = $this->dataProvider->section->getEntriesTypes();
+
+            return [
+                'id' => implode('-', [
+                    Inflector::camel2id($entry->sectionEntry->formName()),
+                    ...$entry->sectionEntry->getPrimaryKey(true),
+                ]),
+                'class' => $allowedTypes && !in_array($entry->type, $allowedTypes, true)
+                    ? ['invalid']
+                    : null,
+            ];
+        };
 
         $this->dataProvider ??= Yii::$container->get(EntryActiveDataProvider::class, [], [
             'section' => $this->section,
@@ -34,9 +48,7 @@ class SectionLinkedEntryGridView extends EntryGridView
 
         $this->layout = $this->section->entry_count ? '{items}{footer}' : '{footer}';
 
-        /**
-         * @see SectionEntryController::actionOrder()
-         */
+        /** @see SectionEntryController::actionOrder() */
         $this->orderRoute = ['section-entry/order', 'section' => $this->dataProvider->section->id];
 
         parent::init();
@@ -47,79 +59,41 @@ class SectionLinkedEntryGridView extends EntryGridView
     {
         $this->footer ??= [
             [
-                [
-                    'content' => $this->getSelectEntriesButton(),
-                    'options' => ['class' => 'col-form-content'],
-                ],
+                $this->getSelectEntriesButton(),
             ],
         ];
     }
 
-    protected function getRowOptions(Entry $entry): array
-    {
-        $options = ['id' => $this->getRowId($entry->sectionEntry)];
-        $allowedTypes = $this->dataProvider->section->getEntriesTypes();
-
-        if ($allowedTypes && !in_array($entry->type, $allowedTypes)) {
-            Html::addCssClass($options, 'invalid');
-        }
-
-        return $options;
-    }
-
-    protected function getSelectEntriesButton(): string
+    protected function getSelectEntriesButton(): ?Stringable
     {
         $entryTypes = $this->dataProvider->section->getEntriesTypes();
 
-        $route = [
-            'section-entry/index',
-            'section' => $this->dataProvider->section->id,
-            'type' => $entryTypes ? current($entryTypes) : null,
-        ];
-
-        return Html::a(Html::iconText('link', Yii::t('cms', 'Link entries')), $route, [
-            'class' => 'btn btn-primary',
+        return Yii::createObject(CreateButton::class, [
+            Yii::t('cms', 'Link entries'),
+            [
+                'section-entry/index',
+                'section' => $this->dataProvider->section->id,
+                'type' => $entryTypes ? current($entryTypes) : null,
+            ],
+            'link'
         ]);
     }
 
     #[Override]
     protected function getRowButtons(Entry $entry): array
     {
-        $buttons = [];
-
-        if (Yii::$app->getUser()->can(Section::AUTH_SECTION_UPDATE, ['entry' => $entry])) {
-            if ($this->dataProvider->getCount() > 1 && $this->isSortable()) {
-                $buttons[] = $this->getSortableButton();
-            }
-
-            $buttons[] = $this->getDeleteButton($entry);
+        if (!Yii::$app->getUser()->can(Section::AUTH_SECTION_UPDATE, ['entry' => $entry])) {
+            return [];
         }
 
+        $buttons = [];
+
+        if ($this->isSortable() && $this->dataProvider->getCount() > 1) {
+            $buttons[] = $this->getSortableButton();
+        }
+
+        $buttons[] = Yii::createObject(SectionEntryDeleteButton::class, [$entry, $this->dataProvider->section]);
+
         return $buttons;
-    }
-
-    /**
-     * @param Entry $model
-     */
-    #[Override]
-    protected function getDeleteButton(ActiveRecordInterface $model, array $options = []): string
-    {
-        return parent::getDeleteButton($model, [
-            'icon' => 'ban',
-            'class' => 'btn btn-primary',
-            'title' => Yii::t('cms', 'Remove from section'),
-            'data-toggle' => 'tooltip',
-            'data-target' => '#' . $this->getRowId($model->sectionEntry),
-            ...$options,
-        ]);
-    }
-
-    /**
-     * @param Entry $model
-     */
-    #[Override]
-    protected function getDeleteRoute(ActiveRecordInterface $model, array $params = []): array
-    {
-        return ['section-entry/delete', 'section' => $this->dataProvider->section->id, 'entry' => $model->id];
     }
 }

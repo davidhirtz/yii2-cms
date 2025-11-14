@@ -53,7 +53,7 @@ class Section extends ActiveRecord implements AssetParentInterface
     #[\Override]
     public function rules(): array
     {
-        return array_merge(parent::rules(), $this->getI18nRules([
+        return [...parent::rules(), ...$this->getI18nRules([
             [
                 ['entry_id'],
                 RelationValidator::class,
@@ -84,7 +84,7 @@ class Section extends ActiveRecord implements AssetParentInterface
                 'comboNotUnique' => Yii::t('yii', '{attribute} "{value}" has already been taken.'),
                 'when' => fn () => $this->isAttributeChanged('slug')
             ],
-        ]));
+        ])];
     }
 
     #[\Override]
@@ -232,7 +232,7 @@ class Section extends ActiveRecord implements AssetParentInterface
 
         if ($assets) {
             foreach ($assets as $asset) {
-                if ($asset->section_id == $this->id) {
+                if ($asset->section_id === $this->id) {
                     $asset->populateParentRelation($this);
                     $relations[$asset->id] = $asset;
                 }
@@ -323,7 +323,7 @@ class Section extends ActiveRecord implements AssetParentInterface
 
     public function getRoute(): false|array
     {
-        return ($route = $this->entry->getRoute()) ? array_merge($route, ['#' => $this->getHtmlId()]) : false;
+        return ($route = $this->entry->getRoute()) ? [...$route, '#' => $this->getHtmlId()] : false;
     }
 
     public function getViewFile(): ?string

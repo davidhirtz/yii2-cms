@@ -99,11 +99,11 @@ class Gallery extends Widget
         if ($this->viewports) {
             foreach ($this->assets as $asset) {
                 foreach ($this->viewports as $cssClass => $types) {
-                    if (in_array($asset->type, $types)) {
+                    if (in_array($asset->type, $types, true)) {
                         $viewports[$cssClass][] = $asset;
                     }
 
-                    if ($sameViewport && !in_array($asset->type, $this->sharedViewports)) {
+                    if ($sameViewport && !in_array($asset->type, $this->sharedViewports, true)) {
                         $sameViewport = false;
                     }
                 }

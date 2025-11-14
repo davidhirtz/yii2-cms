@@ -59,7 +59,7 @@ class FrontendLink implements Stringable
             return in_array(Entry::STATUS_DISABLED, [
                 $this->entry->status,
                 $this->entry->parent_status,
-            ]);
+            ], true);
         }
 
         return false;
@@ -75,7 +75,7 @@ class FrontendLink implements Stringable
             return in_array(Entry::STATUS_DRAFT, [
                 $this->entry->status,
                 $this->entry->parent_status,
-            ]);
+            ], true);
         }
 
         return false;

@@ -105,8 +105,8 @@ class Sections extends Widget
         $sections = [];
 
         foreach ($this->sections as $key => $current) {
-            if ($section->id == $current->id || $sections) {
-                if ($current->type != $section->type) {
+            if ($section->id === $current->id || $sections) {
+                if ($current->type !== $section->type) {
                     break;
                 }
 
@@ -124,7 +124,7 @@ class Sections extends Widget
      */
     public function renderSectionsByType(array|int $types, ?string $viewFile = null): string
     {
-        return $this->renderSectionsByCallback(fn (Section $section): bool => in_array($section->type, (array)$types), $viewFile);
+        return $this->renderSectionsByCallback(fn (Section $section): bool => in_array($section->type, (array)$types, true), $viewFile);
     }
 
     /**
@@ -175,6 +175,6 @@ class Sections extends Widget
      */
     protected function hasSameViewFile(Section $section, ?Section $prevSection): bool
     {
-        return $prevSection && $this->getSectionViewFile($prevSection) == $this->getSectionViewFile($section);
+        return $prevSection && $this->getSectionViewFile($prevSection) === $this->getSectionViewFile($section);
     }
 }

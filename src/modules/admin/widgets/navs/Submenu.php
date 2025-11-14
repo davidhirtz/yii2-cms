@@ -100,7 +100,7 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
                 : static::getModule()->enableSections;
         }
 
-        $this->items = array_merge($this->items, $isEntry ? $this->getEntryItems() : $this->getDefaultItems());
+        $this->items = [...$this->items, ...$isEntry ? $this->getEntryItems() : $this->getDefaultItems()];
 
         parent::init();
     }
@@ -310,16 +310,12 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
 
         if ($this->showEntryTypes) {
             if ($typeOptions = (Entry::instance()::getTypes()[$model->type] ?? null)) {
-                $view->setBreadcrumb($typeOptions['plural'] ?? $typeOptions['name'], array_merge($this->params, [
-                    '/admin/entry/index',
-                    'type' => $model->type,
-                    'id' => null,
-                ]));
+                $view->setBreadcrumb($typeOptions['plural'] ?? $typeOptions['name'], [...$this->params, '/admin/entry/index', 'type' => $model->type, 'id' => null]);
             }
         }
 
         if ($model->parent_id) {
-            $isIndex = Yii::$app->requestedRoute == 'admin/entry/index';
+            $isIndex = Yii::$app->requestedRoute === 'admin/entry/index';
 
             foreach ($model->ancestors as $ancestor) {
                 $view->setBreadcrumb($ancestor->getI18nAttribute('name'), $isIndex

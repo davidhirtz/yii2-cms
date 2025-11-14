@@ -7,7 +7,7 @@ namespace davidhirtz\yii2\cms\modules\admin\widgets\grids\columns;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\EntryGridView;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
-use davidhirtz\yii2\skeleton\modules\admin\widgets\grids\columns\CounterColumn;
+use davidhirtz\yii2\skeleton\widgets\grids\columns\CounterColumn;
 use yii\helpers\Url;
 
 /**

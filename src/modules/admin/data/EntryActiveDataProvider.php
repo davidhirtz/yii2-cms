@@ -192,6 +192,6 @@ class EntryActiveDataProvider extends ActiveDataProvider
                 EntryCategory::tableName() . '.[[position]]',
                 SectionEntry::tableName() . '.[[position]]',
                 'position',
-            ]);
+            ], true);
     }
 }

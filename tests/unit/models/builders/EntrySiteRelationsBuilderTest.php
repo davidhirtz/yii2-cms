@@ -94,7 +94,7 @@ class EntrySiteRelationsBuilderTest extends Unit
         self::assertEquals(2, count($builder->entries));
     }
 
-    public function testDescendantEntryWithoutLoadingAncestors()
+    public function testDescendantEntryWithoutLoadingAncestors(): void
     {
         $entry = $this->tester->grabEntryFixture('post-1');
         ActiveQuery::setStatus(TestEntry::STATUS_ENABLED);

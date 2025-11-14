@@ -20,7 +20,7 @@ class NavItems
      */
     public static function getMenuItems(): array
     {
-        return array_filter(static::getEntries(), fn ($entry) => static::getIsMenuItem($entry));
+        return array_filter(static::getEntries(), static::getIsMenuItem(...));
     }
 
     /**
@@ -38,7 +38,7 @@ class NavItems
     {
         return !$parent->entry_count ? [] : array_filter(
             static::getMenuItems(),
-            fn (Entry $entry) => $entry->parent_id == $parent->id
+            fn (Entry $entry) => $entry->parent_id === $parent->id
         );
     }
 
@@ -47,7 +47,7 @@ class NavItems
      */
     public static function getFooterItems(): array
     {
-        return array_filter(static::getEntries(), fn ($entry) => static::getIsFooterItem($entry));
+        return array_filter(static::getEntries(), static::getIsFooterItem(...));
     }
 
     /**
@@ -87,7 +87,7 @@ class NavItems
         $attributes = Entry::instance()->attributes();
 
         foreach (['show_in_menu', 'show_in_footer'] as $attribute) {
-            if (in_array($attribute, $attributes)) {
+            if (in_array($attribute, $attributes, true)) {
                 $where[] = [$attribute => 1];
             }
         }

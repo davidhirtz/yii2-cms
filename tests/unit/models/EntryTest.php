@@ -26,7 +26,7 @@ class EntryTest extends Unit
         self::assertTrue($entry->isIndex());
     }
 
-    public function testCreateEntryValidationErrors()
+    public function testCreateEntryValidationErrors(): void
     {
         $entry = TestEntry::create();
         $entry->setAttribute('type', 'invalid');

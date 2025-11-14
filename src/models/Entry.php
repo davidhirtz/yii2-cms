@@ -143,7 +143,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
         $this->ensureSlug();
 
         foreach ($this->getI18nAttributeNames('slug') as $attributeName) {
-            $this->$attributeName = rtrim($this->$attributeName, '/');
+            $this->$attributeName = rtrim((string) $this->$attributeName, '/');
         }
 
         return parent::beforeValidate();
@@ -162,7 +162,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
             }
 
             if (!$this->getIsNewRecord()) {
-                if (in_array($this->id, $parent?->getAncestorIds() ?? [])) {
+                if (in_array($this->id, $parent?->getAncestorIds() ?? [], true)) {
                     $this->addInvalidAttributeError('parent_id');
                     return;
                 }
@@ -184,7 +184,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
             $path = Yii::getAlias("@webroot/$slug");
 
             if (
-                in_array($param, Yii::$app->getUrlManager()->getImmutableRuleParams())
+                in_array($param, Yii::$app->getUrlManager()->getImmutableRuleParams(), true)
                 || is_dir($path)
                 || is_file($path)
             ) {
@@ -237,7 +237,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
 
         if ($this->shouldUpdateParentAfterSave && array_key_exists('parent_id', $changedAttributes)) {
             $allRelatedAncestorIds = ArrayHelper::cacheStringToArray($changedAttributes['path'] ?? '', $this->getAncestorIds());
-            $allRelatedAncestorIds = array_map('intval', $allRelatedAncestorIds);
+            $allRelatedAncestorIds = array_map(intval(...), $allRelatedAncestorIds);
 
             if ($this->parent) {
                 $allRelatedAncestorIds = array_diff($allRelatedAncestorIds, [$this->parent_id]);
@@ -414,7 +414,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
 
         if ($assets) {
             foreach ($assets as $asset) {
-                if ($asset->entry_id == $this->id && !$asset->section_id) {
+                if ($asset->entry_id === $this->id && !$asset->section_id) {
                     $asset->populateRelation('entry', $this);
                     $relations[$asset->id] = $asset;
                 }
@@ -475,7 +475,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
      */
     public function getCategoryIds(): array
     {
-        return array_map('intval', ArrayHelper::cacheStringToArray($this->category_ids));
+        return array_map(intval(...), ArrayHelper::cacheStringToArray($this->category_ids));
     }
 
     public function getCategoryCount(): int
@@ -512,7 +512,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
             return [];
         }
 
-        return array_filter($this->assets, fn (Asset $asset): bool => $asset->section_id === null && $asset->type != $asset::TYPE_META_IMAGE);
+        return array_filter($this->assets, fn (Asset $asset): bool => $asset->section_id === null && $asset->type !== $asset::TYPE_META_IMAGE);
     }
 
     /**
@@ -629,7 +629,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
 
     public function hasInvalidParentStatus(): bool
     {
-        return $this->parent_status != static::STATUS_ENABLED;
+        return $this->parent_status !== static::STATUS_ENABLED;
     }
 
     public function hasDescendantsEnabled(): bool
@@ -652,13 +652,13 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
     public function hasRoute(): bool
     {
         return $this->section_count > 0
-            || (in_array('parent_slug', (array)$this->slugTargetAttribute) && $this->entry_count > 0);
+            || (in_array('parent_slug', (array)$this->slugTargetAttribute, true) && $this->entry_count > 0);
     }
 
     public function isIndex(): bool
     {
         return ($slug = static::getModule()->entryIndexSlug)
-            && $this->getI18nAttribute('slug') == $slug
+            && $this->getI18nAttribute('slug') === $slug
             && $this->parent_id === null;
     }
 

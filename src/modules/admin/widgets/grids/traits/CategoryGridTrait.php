@@ -9,10 +9,10 @@ use davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider;
 use davidhirtz\yii2\cms\modules\admin\helpers\FrontendLink;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\skeleton\helpers\Html;
-use davidhirtz\yii2\skeleton\modules\admin\widgets\grids\columns\CounterColumn;
-use davidhirtz\yii2\skeleton\modules\admin\widgets\grids\FilterDropdown;
-use davidhirtz\yii2\skeleton\modules\admin\widgets\grids\traits\StatusGridViewTrait;
-use davidhirtz\yii2\skeleton\modules\admin\widgets\grids\traits\TypeGridViewTrait;
+use davidhirtz\yii2\skeleton\widgets\grids\columns\CounterColumn;
+use davidhirtz\yii2\skeleton\widgets\grids\FilterDropdown;
+use davidhirtz\yii2\skeleton\widgets\grids\traits\StatusGridViewTrait;
+use davidhirtz\yii2\skeleton\widgets\grids\traits\TypeGridViewTrait;
 use Yii;
 use yii\helpers\Url;
 
@@ -32,14 +32,12 @@ trait CategoryGridTrait
 
     protected function initHeader(): void
     {
-        if ($this->header === null) {
-            $this->header = [
-                [
-                    $this->categoryDropdown(),
-                    $this->search->getColumn(),
-                ],
-            ];
-        }
+        $this->header ??= [
+            [
+                $this->categoryDropdown(),
+                $this->search->getToolbarItem(),
+            ],
+        ];
     }
 
     public function nameColumn(): array
@@ -120,18 +118,12 @@ trait CategoryGridTrait
 
     protected function categoryDropdown(): ?FilterDropdown
     {
-        $category = $this->dataProvider->category;
-
-        if (!$category) {
-            return null;
-        }
-
-        $dropdown = FilterDropdown::make();
-        $dropdown->label = $category->getI18nAttribute('name');
-        $dropdown->items = $this->getCategoryDropdownItems($category);
-        $dropdown->paramName = 'id';
-
-        return $dropdown;
+        return $this->dataProvider->category
+            ? new FilterDropdown(
+                $this->getCategoryDropdownItems($this->dataProvider->category),
+                $this->dataProvider->category->getI18nAttribute('name'),
+                'id',
+            ) : null;
     }
 
     protected function getCategoryDropdownItems(Category $category): array

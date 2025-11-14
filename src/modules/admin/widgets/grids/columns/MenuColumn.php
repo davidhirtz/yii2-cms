@@ -41,14 +41,12 @@ class MenuColumn extends Column
     #[\Override]
     protected function renderDataCellContent($model, $key, $index): string
     {
-        if ($this->getIsMenuItem($model)) {
-            return (string)Icon::tag('stream', [
-                'title' => $model->getAttributeLabel('show_in_menu'),
-                'data-toggle' => 'tooltip',
-            ]);
-        }
-
-        return '';
+        return $this->getIsMenuItem($model)
+            ? Icon::make()
+                ->name('stream')
+                ->tooltip($model->getAttributeLabel('show_in_menu'))
+                ->render()
+            : '';
     }
 
     protected function getIsMenuItem(Entry $entry): bool

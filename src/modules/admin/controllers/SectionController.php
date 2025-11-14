@@ -141,7 +141,7 @@ class SectionController extends AbstractController
     {
         $request = Yii::$app->getRequest();
 
-        if ($sectionIds = array_map('intval', $request->post('selection', []))) {
+        if ($sectionIds = array_map(intval(...), $request->post('selection', []))) {
             $sections = Section::findAll(['id' => $sectionIds]);
             $isUpdated = false;
 
@@ -164,7 +164,7 @@ class SectionController extends AbstractController
             }
         }
 
-        return $this->redirect(array_merge($request->get(), ['index']));
+        return $this->redirect([...$request->get(), 'index']);
     }
 
 

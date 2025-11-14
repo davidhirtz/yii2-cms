@@ -10,10 +10,10 @@ use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\skeleton\helpers\Html;
-use davidhirtz\yii2\skeleton\modules\admin\widgets\forms\traits\ContentFieldTrait;
-use davidhirtz\yii2\skeleton\modules\admin\widgets\forms\traits\ModelTimestampTrait;
-use davidhirtz\yii2\skeleton\modules\admin\widgets\forms\traits\StatusFieldTrait;
-use davidhirtz\yii2\skeleton\modules\admin\widgets\forms\traits\TypeFieldTrait;
+use davidhirtz\yii2\skeleton\widgets\forms\traits\ContentFieldTrait;
+use davidhirtz\yii2\skeleton\widgets\forms\traits\ModelTimestampTrait;
+use davidhirtz\yii2\skeleton\widgets\forms\traits\StatusFieldTrait;
+use davidhirtz\yii2\skeleton\widgets\forms\traits\TypeFieldTrait;
 use Yii;
 use yii\helpers\ArrayHelper;
 use yii\widgets\ActiveField;
@@ -21,7 +21,7 @@ use yii\widgets\ActiveField;
 /**
  * @property Asset|Category|Entry|Section $model
  */
-class ActiveForm extends \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm
+abstract class ActiveForm extends \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm
 {
     use ModelTimestampTrait;
     use ModuleTrait;

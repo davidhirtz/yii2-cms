@@ -6,8 +6,9 @@ namespace davidhirtz\yii2\cms\modules\admin\controllers;
 
 use davidhirtz\yii2\cms\modules\admin\Module;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
-use davidhirtz\yii2\skeleton\modules\admin\widgets\navs\NavBar;
 use davidhirtz\yii2\skeleton\web\Controller;
+use davidhirtz\yii2\skeleton\widgets\navs\NavBar;
+use Override;
 use Yii;
 use yii\base\View;
 
@@ -17,7 +18,7 @@ abstract class AbstractController extends Controller
 
     protected array|false|null $i18nTablesRoute = null;
 
-    #[\Override]
+    #[Override]
     public function init(): void
     {
         if (static::getModule()->enableI18nTables) {

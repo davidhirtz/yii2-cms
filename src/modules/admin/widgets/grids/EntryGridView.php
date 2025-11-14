@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace davidhirtz\yii2\cms\modules\admin\widgets\grids;
 
 use davidhirtz\yii2\cms\models\Category;
+use davidhirtz\yii2\cms\models\collections\CategoryCollection;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\modules\admin\controllers\EntryCategoryController;
 use davidhirtz\yii2\cms\modules\admin\controllers\EntryController;
@@ -15,15 +16,23 @@ use davidhirtz\yii2\cms\modules\admin\widgets\grids\columns\EntryCountColumn;
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\columns\SectionCountColumn;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\skeleton\helpers\Html;
-use davidhirtz\yii2\skeleton\modules\admin\widgets\grids\FilterDropdown;
-use davidhirtz\yii2\skeleton\modules\admin\widgets\grids\GridView;
-use davidhirtz\yii2\skeleton\modules\admin\widgets\grids\traits\StatusGridViewTrait;
-use davidhirtz\yii2\skeleton\modules\admin\widgets\grids\traits\TypeGridViewTrait;
+use davidhirtz\yii2\skeleton\html\A;
+use davidhirtz\yii2\skeleton\html\Button;
+use davidhirtz\yii2\skeleton\html\ButtonToolbar;
+use davidhirtz\yii2\skeleton\widgets\grids\buttons\CreateButton;
+use davidhirtz\yii2\skeleton\widgets\grids\buttons\DeleteButton;
+use davidhirtz\yii2\skeleton\widgets\grids\buttons\DraggableSortButton;
+use davidhirtz\yii2\skeleton\widgets\grids\buttons\ViewButton;
+use davidhirtz\yii2\skeleton\widgets\grids\columns\ButtonsColumn;
+use davidhirtz\yii2\skeleton\widgets\grids\FilterDropdown;
+use davidhirtz\yii2\skeleton\widgets\grids\GridView;
+use davidhirtz\yii2\skeleton\widgets\grids\traits\StatusGridViewTrait;
+use davidhirtz\yii2\skeleton\widgets\grids\traits\TypeGridViewTrait;
 use davidhirtz\yii2\timeago\Timeago;
 use Override;
+use Stringable;
 use Yii;
 use yii\db\ActiveRecordInterface;
-use yii\helpers\Url;
 
 /**
  * @template T of Entry
@@ -67,11 +76,6 @@ class EntryGridView extends GridView
     public bool $showDeleteButton = false;
 
     /**
-     * @see EntryController::actionUpdateAll()
-     */
-    public array $selectionRoute = ['/admin/entry/update-all'];
-
-    /**
      * @var array|null set to null for inheritors to override
      */
     public ?array $orderRoute = null;
@@ -81,13 +85,12 @@ class EntryGridView extends GridView
      */
     public ?string $dateFormat = null;
 
-    private ?array $_categories = null;
-    private ?array $_categoryNames = null;
+    private ?array $categoryNames = null;
 
     #[Override]
     public function init(): void
     {
-        $this->id = $this->getId(false) ?? 'entries';
+        $this->setId($this->getId(false) ?? 'entry-grid');
 
         $enableCategories = static::getModule()->enableCategories;
         $this->showCategories ??= $enableCategories && count($this->getCategories()) > 0;
@@ -107,18 +110,16 @@ class EntryGridView extends GridView
             $this->showTypeDropdown = count($types) > 1;
         }
 
-        if (!$this->columns) {
-            $this->columns = [
-                $this->statusColumn(),
-                $this->typeColumn(),
-                $this->nameColumn(),
-                $this->entryCountColumn(),
-                $this->sectionCountColumn(),
-                $this->assetCountColumn(),
-                $this->dateColumn(),
-                $this->buttonsColumn(),
-            ];
-        }
+        $this->columns ??= [
+            $this->statusColumn(),
+            $this->typeColumn(),
+            $this->nameColumn(),
+            $this->entryCountColumn(),
+            $this->sectionCountColumn(),
+            $this->assetCountColumn(),
+            $this->dateColumn(),
+            $this->buttonsColumn(),
+        ];
 
         /**
          * @see EntryController::actionOrder()
@@ -135,16 +136,29 @@ class EntryGridView extends GridView
     {
         $this->header ??= [
             [
-                $this->showTypeDropdown ? $this->typeDropdown() : null,
-                [
-                    'content' => $this->categoryDropdown(),
-                    'visible' => $this->showCategoryDropdown,
-                ],
-                [
-                    $this->search->getColumn(),
-                ],
+                $this->showTypeDropdown ? $this->getTypeDropdown() : null,
+                $this->showCategoryDropdown ? $this->getCategoryDropdown() : null,
+                $this->search->getToolbarItem(),
             ],
         ];
+    }
+
+    protected function getCategoryDropdown(): ?FilterDropdown
+    {
+        $items = $this->getCategoryDropdownItems();
+
+        return $items
+            ? new FilterDropdown(
+                $items,
+                Yii::t('cms', 'Category'),
+                'category',
+                filter: $this->showCategoryDropdownFilterMinCount && $this->showCategoryDropdownFilterMinCount < count($items),
+            ) : null;
+    }
+
+    protected function getCategoryDropdownItems(): array
+    {
+        return array_map(fn ($category) => $this->getNestedCategoryNames()[$category->id], $this->getCategories());
     }
 
     protected function initFooter(): void
@@ -152,50 +166,48 @@ class EntryGridView extends GridView
         $this->footer ??= [
             [
                 $this->getCreateEntryButton(),
-                $this->showSelection ? $this->getSelectionButton() : '',
             ],
         ];
     }
 
-    protected function getCreateEntryButton(): string
+    protected function getCreateEntryButton(): ?Stringable
     {
         if (!Yii::$app->getUser()->can(Entry::AUTH_ENTRY_CREATE)) {
-            return '';
+            return null;
         }
 
-        $route = array_merge(['/admin/entry/create'], Yii::$app->getRequest()->getQueryParams(), ['type' => $this->dataProvider->type]);
-        return Html::a(Html::iconText('plus', Yii::t('cms', 'New Entry')), $route, ['class' => 'btn btn-primary']);
+        return Yii::createObject(CreateButton::class, [
+            Yii::t('cms', 'New Entry'),
+            [
+                '/admin/entry/create',
+                ...Yii::$app->getRequest()->getQueryParams(),
+                'type' => $this->dataProvider->type,
+            ]
+        ]);
     }
 
-    #[Override]
-    protected function getSelectionButtonItems(): array
-    {
-        if (!Yii::$app->getUser()->can(Entry::AUTH_ENTRY_UPDATE)) {
-            return [];
-        }
-
-        return $this->statusSelectionButtonItems();
-    }
-
-    public function nameColumn(): array
+    protected function nameColumn(): array
     {
         return [
             'attribute' => $this->getModel()->getI18nAttributeName('name'),
             'content' => function (Entry $entry) {
-                $html = ($name = $entry->getI18nAttribute('name'))
+                $name = $entry->getI18nAttribute('name');
+
+                $html = $name
                     ? Html::markKeywords(Html::encode($name), $this->search->getKeywords())
                     : Yii::t('cms', '[ No title ]');
 
-                $html = Html::a($html, $this->getRoute($entry), [
-                    'class' => $name ? 'strong' : 'strong text-muted',
-                ]);
+                $html = A::make()
+                    ->html($html)
+                    ->href($this->getRoute($entry))
+                    ->class($name ? 'strong' : 'strong text-muted');
 
                 if ($this->showUrl) {
                     $html .= $this->getUrl($entry);
                 }
 
                 if ($this->showCategories) {
-                    $html .= $this->renderCategoryButtons($entry);
+                    $html .= $this->getCategoryButtons($entry);
                 }
 
                 return $html;
@@ -203,38 +215,38 @@ class EntryGridView extends GridView
         ];
     }
 
-    public function entryCountColumn(): array
+    protected function entryCountColumn(): array
     {
         return [
-            'attribute' => 'entry_count',
             'class' => EntryCountColumn::class,
+            'attribute' => 'entry_count',
         ];
     }
 
-    public function sectionCountColumn(): array
+    protected function sectionCountColumn(): array
     {
         return [
-            'attribute' => 'section_count',
             'class' => SectionCountColumn::class,
+            'attribute' => 'section_count',
         ];
     }
 
-    public function assetCountColumn(): array
+    protected function assetCountColumn(): array
     {
         return [
-            'attribute' => 'asset_count',
             'class' => AssetCountColumn::class,
+            'attribute' => 'asset_count',
         ];
     }
 
-    public function dateColumn(): array
+    protected function dateColumn(): array
     {
         return $this->dataProvider->query->orderBy && key($this->dataProvider->query->orderBy) === 'publish_date'
             ? $this->publishDateColumn()
             : $this->updatedAtColumn();
     }
 
-    public function publishDateColumn(): array
+    protected function publishDateColumn(): array
     {
         return [
             'attribute' => 'publish_date',
@@ -246,7 +258,7 @@ class EntryGridView extends GridView
         ];
     }
 
-    public function updatedAtColumn(): array
+    protected function updatedAtColumn(): array
     {
         return [
             'attribute' => 'updated_at',
@@ -258,11 +270,11 @@ class EntryGridView extends GridView
         ];
     }
 
-    public function buttonsColumn(): array
+    protected function buttonsColumn(): array
     {
         return [
-            'contentOptions' => ['class' => 'text-end text-nowrap'],
-            'content' => fn (Entry $entry): string => Html::buttons($this->getRowButtons($entry))
+            'class' => ButtonsColumn::class,
+            'content' => fn (Entry $entry): array => $this->getRowButtons($entry)
         ];
     }
 
@@ -271,11 +283,7 @@ class EntryGridView extends GridView
         $user = Yii::$app->getUser();
         $buttons = [];
 
-        if (
-            $this->isSortable()
-            && $this->dataProvider->getCount() > 1
-            && $user->can(Entry::AUTH_ENTRY_ORDER)
-        ) {
+        if ($this->isSortable() && $user->can(Entry::AUTH_ENTRY_ORDER)) {
             $buttons[] = $this->getSortableButton();
         }
 
@@ -290,58 +298,56 @@ class EntryGridView extends GridView
         return $buttons;
     }
 
-    public function categoryDropdown(): ?FilterDropdown
+    protected function getSortableButton(): ?Stringable
     {
-        $items = $this->categoryDropdownItems();
-
-        if (!$items) {
-            return null;
-        }
-
-        $dropdown = FilterDropdown::make();
-        $dropdown->label = Yii::t('cms', 'Category');
-        $dropdown->items = $items;
-        $dropdown->paramName = 'category';
-        $dropdown->filter = $this->showCategoryDropdownFilterMinCount && $this->showCategoryDropdownFilterMinCount < count($items);
-
-        return $dropdown;
+        return Yii::createObject(DraggableSortButton::class);
     }
 
-    protected function categoryDropdownItems(): array
+    protected function getUpdateButton(Entry $entry): Stringable
     {
-        return array_map(fn ($category) => $this->getNestedCategoryNames()[$category->id], $this->getCategories());
+        return Yii::createObject(ViewButton::class, [$entry]);
     }
 
-    public function renderCategoryButtons(Entry $entry, array $options = []): string
+    protected function getDeleteButton(Entry $entry): Stringable
+    {
+        return Yii::createObject(DeleteButton::class, [$entry]);
+    }
+
+    protected function getCategoryButtons(Entry $entry): ?Stringable
     {
         $categoryIds = $entry->getCategoryIds();
         $categories = [];
 
         foreach ($this->getCategories() as $category) {
-            if ($category->hasEntriesEnabled() && in_array($category->id, $categoryIds)) {
-                $categories[] = Html::a(Html::encode($category->getI18nAttribute('name')), Url::current(['category' => $category->id]), ['class' => 'btn btn-secondary btn-sm']);
+            if ($category->hasEntriesEnabled() && in_array($category->id, $categoryIds, true)) {
+                $categories[] = Button::make()
+                    ->secondary()
+                    ->text($category->getI18nAttribute('name'))
+                    ->current(['category' => $category->id, 'page' => null])
+                    ->addClass('btn-sm');
             }
         }
 
-        return $categories ? Html::tag('div', implode('', $categories), $options ?: ['class' => 'btn-toolbar']) : '';
+        return $categories ? ButtonToolbar::make()->html(...$categories) : null;
     }
 
-    public function getCategories(): array
+    protected function getCategories(): array
     {
-        return $this->_categories ??= Category::find()
-            ->indexBy('id')
-            ->all();
+        return CategoryCollection::getAll();
     }
 
-    public function getNestedCategoryNames(): array
+    protected function getNestedCategoryNames(): array
     {
-        return $this->_categoryNames ??= Category::indentNestedTree($this->getCategories(), Category::instance()->getI18nAttributeName('name'));
+        return $this->categoryNames ??= Category::indentNestedTree(
+            CategoryCollection::getAll(),
+            Category::instance()->getI18nAttributeName('name'),
+        );
     }
 
-    public function getUrl(Entry $entry): string
+    protected function getUrl(Entry $entry): ?Stringable
     {
         $link = FrontendLink::tag($entry);
-        return $link ? Html::tag('div', $link, ['class' => 'd-none d-md-block small']) : '';
+        return $link ? Html::div($link, ['class' => 'd-none d-md-block small']) : null;
     }
 
     /**
@@ -351,12 +357,15 @@ class EntryGridView extends GridView
     #[Override]
     protected function getRoute(ActiveRecordInterface $model, array $params = []): array|false
     {
-        return array_merge(Yii::$app->getRequest()->get(), $model->getAdminRoute(), $params);
+        return [
+            ...Yii::$app->getRequest()->get(),
+            ...$model->getAdminRoute(),
+            ...$params,
+        ];
     }
 
     /**
      * @return T
-     * @noinspection PhpDocSignatureInspection
      */
     #[Override]
     public function getModel(): Entry

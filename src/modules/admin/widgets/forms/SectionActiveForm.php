@@ -6,6 +6,7 @@ namespace davidhirtz\yii2\cms\modules\admin\widgets\forms;
 
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\Section;
+use Override;
 use Yii;
 use yii\helpers\Html;
 use yii\widgets\ActiveField;
@@ -23,7 +24,7 @@ class SectionActiveForm extends ActiveForm
      * @uses static::contentField()
      * @uses static::slugField()
      */
-    #[\Override]
+    #[Override]
     public function init(): void
     {
         $this->fields ??= [
@@ -37,30 +38,32 @@ class SectionActiveForm extends ActiveForm
         parent::init();
     }
 
-    #[\Override]
+    #[Override]
     public function slugField(array $options = []): ActiveField|string
     {
         return $this->showSlugField() ? parent::slugField($options) : '';
     }
 
-    #[\Override]
+    #[Override]
     public function getSlugBaseUrl(?string $language = null): string
     {
         $manager = Yii::$app->getUrlManager();
 
-        $route = array_merge($this->model->entry->getRoute(), [
-            'language' => $manager->hasI18nUrls() ? $language : null, '#' => '',
-        ]);
+        $route = [
+            ...$this->model->entry->getRoute(),
+            'language' => $manager->hasI18nUrls() ? $language : null,
+            '#' => '',
+        ];
 
         $isDraft = in_array(Entry::STATUS_DRAFT, [
             $this->model->entry->status,
             $this->model->entry->parent_status,
-        ]);
+        ], true);
 
         $url = $isDraft ? $manager->createDraftUrl($route) : $manager->createAbsoluteUrl($route);
 
-        if ($this->maxBaseUrlLength && strlen((string) $url) > $this->maxBaseUrlLength) {
-            $url = Html::tag('span', substr((string) $url, 0, $this->maxBaseUrlLength) . '…#', ['title' => $url]);
+        if ($this->maxBaseUrlLength && strlen((string)$url) > $this->maxBaseUrlLength) {
+            $url = Html::tag('span', substr((string)$url, 0, $this->maxBaseUrlLength) . '…#', ['title' => $url]);
         }
 
         return $url;
