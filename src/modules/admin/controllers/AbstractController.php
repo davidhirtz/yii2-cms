@@ -48,6 +48,6 @@ abstract class AbstractController extends Controller
     {
         /** @var Module $module */
         $module = Yii::$app->getModule('admin')->getModule('cms');
-        return $module->route;
+        return $module->url;
     }
 }

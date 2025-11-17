@@ -25,7 +25,7 @@ use Yii;
  */
 class Module extends \davidhirtz\yii2\skeleton\base\Module implements ModuleInterface
 {
-    public array $route = ['/admin/entry/index'];
+    public array|string $url = ['/admin/entry/index'];
 
     #[Override]
     public function init(): void
@@ -81,7 +81,7 @@ class Module extends \davidhirtz\yii2\skeleton\base\Module implements ModuleInte
         return [
             'cms' => new MainMenuItemConfig(
                 label: $this->getName(),
-                url: $this->route,
+                url: $this->url,
                 icon: 'book',
                 roles: [Category::AUTH_CATEGORY_UPDATE, Entry::AUTH_ENTRY_UPDATE],
                 routes: ['admin/category', 'admin/entry', 'admin/entry-category', 'admin/section', 'cms/'],

@@ -81,7 +81,7 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
 
         if (!$this->title) {
             $this->title = $isEntry ? Html::a($model->getI18nAttribute('name'), ['/admin/entry/update', 'id' => $model->id]) :
-                Html::a($this->getParentModule()->getName(), $this->getParentModule()->route);
+                Html::a($this->getParentModule()->getName(), $this->getParentModule()->url);
         }
 
         if ($this->title && $this->showUrl) {
