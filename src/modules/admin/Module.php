@@ -76,7 +76,7 @@ class Module extends \davidhirtz\yii2\skeleton\base\Module implements ModuleInte
         return Yii::t('cms', 'Entries');
     }
 
-    public function getNavBarItems(): array
+    public function getMainMenuItems(): array
     {
         return [
             'cms' => new MainMenuItemConfig(
