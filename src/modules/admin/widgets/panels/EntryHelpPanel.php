@@ -36,7 +36,7 @@ class EntryHelpPanel extends HelpPanel
 
         $modal = Modal::make()
             ->title(Yii::t('cms', 'Make homepage'))
-            ->html(Yii::t('cms', 'Please confirm that you want to make this entry the new homepage. This will deactivate the current homepage entry.'))
+            ->content(Yii::t('cms', 'Please confirm that you want to make this entry the new homepage. This will deactivate the current homepage entry.'))
             ->footer(Button::make()
                 ->danger()
                 ->post(['replace-index', 'id' => $this->model->id], true)

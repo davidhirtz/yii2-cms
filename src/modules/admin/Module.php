@@ -13,7 +13,11 @@ use davidhirtz\yii2\cms\modules\admin\controllers\EntryController;
 use davidhirtz\yii2\cms\modules\admin\controllers\SectionController;
 use davidhirtz\yii2\cms\modules\admin\controllers\SectionEntryController;
 use davidhirtz\yii2\skeleton\helpers\ArrayHelper;
+use davidhirtz\yii2\skeleton\modules\admin\config\DashboardItemConfig;
+use davidhirtz\yii2\skeleton\modules\admin\config\DashboardPanelConfig;
+use davidhirtz\yii2\skeleton\modules\admin\config\MainMenuItemConfig;
 use davidhirtz\yii2\skeleton\modules\admin\ModuleInterface;
+use Override;
 use Yii;
 
 /**
@@ -21,12 +25,9 @@ use Yii;
  */
 class Module extends \davidhirtz\yii2\skeleton\base\Module implements ModuleInterface
 {
-    /**
-     * @var array the navbar item url
-     */
     public array $route = ['/admin/entry/index'];
 
-    #[\Override]
+    #[Override]
     public function init(): void
     {
         $this->controllerMap = ArrayHelper::merge($this->getCoreControllerMap(), $this->controllerMap);
@@ -35,54 +36,38 @@ class Module extends \davidhirtz\yii2\skeleton\base\Module implements ModuleInte
 
     protected function getCoreControllerMap(): array
     {
-        return [
-            'asset' => [
-                'class' => AssetController::class,
-                'viewPath' => '@cms/modules/admin/views/asset',
-            ],
-            'category' => [
-                'class' => CategoryController::class,
-                'viewPath' => '@cms/modules/admin/views/category',
-            ],
-            'entry' => [
-                'class' => EntryController::class,
-                'viewPath' => '@cms/modules/admin/views/entry',
-            ],
-            'entry-category' => [
-                'class' => EntryCategoryController::class,
-                'viewPath' => '@cms/modules/admin/views/entry-category',
-            ],
-            'section' => [
-                'class' => SectionController::class,
-                'viewPath' => '@cms/modules/admin/views/section',
-            ],
-            'section-entry' => [
-                'class' => SectionEntryController::class,
-                'viewPath' => '@cms/modules/admin/views/section-entry',
-            ],
+        $classMap = [
+            'asset' => AssetController::class,
+            'category' => CategoryController::class,
+            'entry' => EntryController::class,
+            'entry-category' => EntryCategoryController::class,
+            'section' => SectionController::class,
+            'section-entry' => SectionEntryController::class,
         ];
+
+        return array_map(fn ($class) => ['class' => $class], $classMap);
     }
 
     public function getDashboardPanels(): array
     {
         return [
-            'cms' => [
-                'name' => $this->getName(),
-                'items' => [
-                    'entry' => [
-                        'label' => Yii::t('cms', 'Create New Entry'),
-                        'url' => ['/admin/entry/create'],
-                        'icon' => 'pen',
-                        'roles' => [Entry::AUTH_ENTRY_CREATE],
-                    ],
-                    'entries' => [
-                        'label' => Yii::t('cms', 'View All Entries'),
-                        'url' => ['/admin/entry/index'],
-                        'icon' => 'book',
-                        'roles' => [Entry::AUTH_ENTRY_UPDATE],
-                    ],
-                ],
-            ],
+            'cms' => new DashboardPanelConfig(
+                name: $this->getName(),
+                items: [
+                    new DashboardItemConfig(
+                        label: Yii::t('cms', 'Create New Entry'),
+                        url: ['/admin/entry/create'],
+                        icon: 'pen',
+                        roles: [Entry::AUTH_ENTRY_CREATE],
+                    ),
+                    new DashboardItemConfig(
+                        label: Yii::t('cms', 'View All Entries'),
+                        url: ['/admin/entry/index'],
+                        icon: 'book',
+                        roles: [Entry::AUTH_ENTRY_UPDATE],
+                    ),
+                ]
+            ),
         ];
     }
 
@@ -94,13 +79,19 @@ class Module extends \davidhirtz\yii2\skeleton\base\Module implements ModuleInte
     public function getNavBarItems(): array
     {
         return [
-            'cms' => [
-                'label' => $this->getName(),
-                'icon' => 'book',
-                'url' => $this->route,
-                'active' => ['admin/category', 'admin/entry', 'admin/entry-category', 'admin/section', 'cms/'],
-                'roles' => [Category::AUTH_CATEGORY_UPDATE, Entry::AUTH_ENTRY_UPDATE],
-            ]
+            'cms' => new MainMenuItemConfig(
+                label: $this->getName(),
+                url: $this->route,
+                icon: 'book',
+                roles: [Category::AUTH_CATEGORY_UPDATE, Entry::AUTH_ENTRY_UPDATE],
+                routes: ['admin/category', 'admin/entry', 'admin/entry-category', 'admin/section', 'cms/'],
+            ),
         ];
+    }
+
+    public function beforeAction($action): bool
+    {
+        $this->setViewPath('@cms/modules/admin/views');
+        return parent::beforeAction($action);
     }
 }

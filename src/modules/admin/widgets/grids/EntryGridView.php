@@ -198,7 +198,7 @@ class EntryGridView extends GridView
                     : Yii::t('cms', '[ No title ]');
 
                 $html = A::make()
-                    ->html($html)
+                    ->content($html)
                     ->href($this->getRoute($entry))
                     ->class($name ? 'strong' : 'strong text-muted');
 
@@ -274,7 +274,7 @@ class EntryGridView extends GridView
     {
         return [
             'class' => ButtonsColumn::class,
-            'content' => fn (Entry $entry): array => $this->getRowButtons($entry)
+            'content' => $this->getRowButtons(...)
         ];
     }
 
@@ -328,7 +328,7 @@ class EntryGridView extends GridView
             }
         }
 
-        return $categories ? ButtonToolbar::make()->html(...$categories) : null;
+        return $categories ? ButtonToolbar::make()->content(...$categories) : null;
     }
 
     protected function getCategories(): array

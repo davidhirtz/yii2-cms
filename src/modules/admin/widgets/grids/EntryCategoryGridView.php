@@ -96,6 +96,7 @@ class EntryCategoryGridView extends GridView
         return ['category/update', 'id' => $model->id];
     }
 
+    #[\Override]
     public function getModel(): Category
     {
         return Category::instance();

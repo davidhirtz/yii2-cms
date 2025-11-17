@@ -119,7 +119,7 @@ class SectionGridView extends GridView
                 }
 
                 return A::make()
-                    ->html($html)
+                    ->content($html)
                     ->href($this->getRoute($section))
                     ->class($cssClass);
             }
@@ -165,7 +165,7 @@ class SectionGridView extends GridView
     {
         return [
             'class' => ButtonsColumn::class,
-            'content' => fn (Section $section): array => $this->getRowButtons($section)
+            'content' => $this->getRowButtons(...)
         ];
     }
 
