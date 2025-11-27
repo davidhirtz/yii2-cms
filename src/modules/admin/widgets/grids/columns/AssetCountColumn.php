@@ -9,46 +9,44 @@ use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\EntryGridView;
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\SectionGridView;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
-use davidhirtz\yii2\skeleton\widgets\grids\columns\CounterColumn;
+use davidhirtz\yii2\media\models\interfaces\AssetParentInterface;
+use davidhirtz\yii2\skeleton\widgets\grids\columns\BadgeColumn;
+use Override;
+use Stringable;
+use yii\base\Model;
 
 /**
  * @property EntryGridView|SectionGridView $grid
  */
-class AssetCountColumn extends CounterColumn
+class AssetCountColumn extends BadgeColumn
 {
     use ModuleTrait;
 
-    #[\Override]
-    public function init(): void
+    public function __construct()
     {
-        if ($this->visible) {
-            $this->visible = false;
+        $this->url ??= fn (Entry|Section $model) => $model->getAdminRoute() + ['#' => 'assets'];
+    }
 
-            if ($this->grid instanceof SectionGridView || static::getModule()->enableEntryAssets) {
-                foreach ($this->grid->dataProvider->getModels() as $model) {
-                    if ($model->hasAssetsEnabled()) {
-                        $this->visible = true;
-                        break;
-                    }
-                }
+    public function isVisible(): bool
+    {
+        if (!parent::isVisible()) {
+            return false;
+        }
+
+        foreach ($this->grid->provider->getModels() as $model) {
+            if ($model->hasAssetsEnabled()) {
+                return true;
             }
         }
 
-        $this->route ??= fn (Entry|Section $model) => $model->getAdminRoute() + ['#' => 'assets'];
-
-        parent::init();
+        return false;
     }
 
-    /**
-     * @param Entry|Section $model
-     */
-    #[\Override]
-    protected function renderDataCellContent($model, $key, $index): string
+    #[Override]
+    protected function getBodyContent(array|Model $model, string|int $key, int $index): string|Stringable
     {
-        if (!$model->hasAssetsEnabled()) {
-            return '';
-        }
-
-        return parent::renderDataCellContent($model, $key, $index);
+        return $model instanceof AssetParentInterface && $model->hasAssetsEnabled()
+            ? parent::getBodyContent($model, $key, $index)
+            : '';
     }
 }

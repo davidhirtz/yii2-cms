@@ -10,6 +10,7 @@ use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\modules\admin\controllers\EntryCategoryController;
 use davidhirtz\yii2\cms\modules\admin\controllers\EntryController;
 use davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider;
+use davidhirtz\yii2\cms\modules\admin\data\EntryActiveprovider;
 use davidhirtz\yii2\cms\modules\admin\helpers\FrontendLink;
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\columns\AssetCountColumn;
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\columns\EntryCountColumn;
@@ -18,14 +19,17 @@ use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\html\A;
 use davidhirtz\yii2\skeleton\html\Button;
-use davidhirtz\yii2\skeleton\html\ButtonToolbar;
-use davidhirtz\yii2\skeleton\widgets\grids\buttons\CreateButton;
-use davidhirtz\yii2\skeleton\widgets\grids\buttons\DeleteButton;
-use davidhirtz\yii2\skeleton\widgets\grids\buttons\DraggableSortButton;
-use davidhirtz\yii2\skeleton\widgets\grids\buttons\ViewButton;
-use davidhirtz\yii2\skeleton\widgets\grids\columns\ButtonsColumn;
-use davidhirtz\yii2\skeleton\widgets\grids\FilterDropdown;
+use davidhirtz\yii2\skeleton\html\Div;
+use davidhirtz\yii2\skeleton\widgets\grids\columns\ButtonColumn;
+use davidhirtz\yii2\skeleton\widgets\grids\columns\buttons\DeleteGridButton;
+use davidhirtz\yii2\skeleton\widgets\grids\columns\buttons\DraggableSortGridButton;
+use davidhirtz\yii2\skeleton\widgets\grids\columns\buttons\ViewGridButton;
+use davidhirtz\yii2\skeleton\widgets\grids\columns\Column;
+use davidhirtz\yii2\skeleton\widgets\grids\columns\DataColumn;
+use davidhirtz\yii2\skeleton\widgets\grids\columns\TimeagoColumn;
 use davidhirtz\yii2\skeleton\widgets\grids\GridView;
+use davidhirtz\yii2\skeleton\widgets\grids\toolbars\CreateButton;
+use davidhirtz\yii2\skeleton\widgets\grids\toolbars\FilterDropdown;
 use davidhirtz\yii2\skeleton\widgets\grids\traits\StatusGridViewTrait;
 use davidhirtz\yii2\skeleton\widgets\grids\traits\TypeGridViewTrait;
 use davidhirtz\yii2\timeago\Timeago;
@@ -37,7 +41,7 @@ use yii\db\ActiveRecordInterface;
 /**
  * @template T of Entry
  * @extends GridView<T>
- * @property EntryActiveDataProvider $dataProvider
+ * @property EntryActiveDataProvider $provider
  */
 class EntryGridView extends GridView
 {
@@ -51,7 +55,7 @@ class EntryGridView extends GridView
     public bool $showUrl = true;
 
     /**
-     * @var bool|null whether category column should be visible when {@see EntryActiveDataProvider::$type} is null
+     * @var bool|null whether category column should be visible when {@see EntryActiveprovider::$type} is null
      */
     public ?bool $showCategories = null;
 
@@ -80,17 +84,12 @@ class EntryGridView extends GridView
      */
     public ?array $orderRoute = null;
 
-    /**
-     * @var string|null the date format used in the date column, defaults to null which means the date format is
-     */
-    public ?string $dateFormat = null;
-
     private ?array $categoryNames = null;
 
     #[Override]
-    public function init(): void
+    public function configure(): void
     {
-        $this->setId($this->getId(false) ?? 'entry-grid');
+        $this->attributes['id'] ??= 'entries';
 
         $enableCategories = static::getModule()->enableCategories;
         $this->showCategories ??= $enableCategories && count($this->getCategories()) > 0;
@@ -99,48 +98,48 @@ class EntryGridView extends GridView
             $this->showCategoryDropdown = $enableCategories;
         }
 
-        $types = $this->getModel()::getTypes();
+        $this->model ??= Entry::instance();
+        $types = $this->model::getTypes();
 
-        if ($enableCategories && $this->dataProvider->type) {
-            $this->showCategories = $types[$this->dataProvider->type]['showCategories'] ?? $this->showCategories;
-            $this->showCategoryDropdown = $types[$this->dataProvider->type]['showCategoryDropdown'] ?? $this->showCategoryDropdown;
+        if ($enableCategories && $this->provider->type) {
+            $this->showCategories = $types[$this->provider->type]['showCategories'] ?? $this->showCategories;
+            $this->showCategoryDropdown = $types[$this->provider->type]['showCategoryDropdown'] ?? $this->showCategoryDropdown;
         }
 
         if ($this->showTypeDropdown) {
             $this->showTypeDropdown = count($types) > 1;
         }
 
-        $this->columns ??= [
-            $this->statusColumn(),
-            $this->typeColumn(),
-            $this->nameColumn(),
-            $this->entryCountColumn(),
-            $this->sectionCountColumn(),
-            $this->assetCountColumn(),
-            $this->dateColumn(),
-            $this->buttonsColumn(),
-        ];
-
         /**
          * @see EntryController::actionOrder()
          * @see EntryCategoryController::actionOrder()
          */
-        $this->orderRoute ??= $this->dataProvider->category
-            ? ['entry-category/order', 'category' => $this->dataProvider->category->id]
-            : ['order', 'parent' => $this->dataProvider->parent?->id];
+        $this->orderRoute ??= $this->provider->category
+            ? ['entry-category/order', 'category' => $this->provider->category->id]
+            : ['order', 'parent' => $this->provider->parent?->id];
 
-        parent::init();
-    }
-
-    protected function initHeader(): void
-    {
         $this->header ??= [
-            [
-                $this->showTypeDropdown ? $this->getTypeDropdown() : null,
-                $this->showCategoryDropdown ? $this->getCategoryDropdown() : null,
-                $this->search->getToolbarItem(),
-            ],
+            $this->showTypeDropdown ? $this->getTypeDropdown() : null,
+            $this->showCategoryDropdown ? $this->getCategoryDropdown() : null,
+            $this->search->getToolbarItem(),
         ];
+
+        $this->columns ??= [
+            $this->getStatusColumn(),
+            $this->getTypeColumn(),
+            $this->getNameColumn(),
+            $this->getEntryCountColumn(),
+            $this->getSectionCountColumn(),
+            $this->getAssetCountColumn(),
+            $this->getDateColumn(),
+            $this->getButtonColumn(),
+        ];
+
+        $this->footer ??= [
+            $this->getCreateEntryButton(),
+        ];
+
+        parent::configure();
     }
 
     protected function getCategoryDropdown(): ?FilterDropdown
@@ -148,26 +147,17 @@ class EntryGridView extends GridView
         $items = $this->getCategoryDropdownItems();
 
         return $items
-            ? new FilterDropdown(
-                $items,
-                Yii::t('cms', 'Category'),
-                'category',
-                filter: $this->showCategoryDropdownFilterMinCount && $this->showCategoryDropdownFilterMinCount < count($items),
-            ) : null;
+            ? FilterDropdown::make()
+                ->items($items)
+                ->label(Yii::t('cms', 'All Categories'))
+                ->param('category')
+                ->filterable($this->showCategoryDropdownFilterMinCount && $this->showCategoryDropdownFilterMinCount < count($items))
+            : null;
     }
 
     protected function getCategoryDropdownItems(): array
     {
         return array_map(fn ($category) => $this->getNestedCategoryNames()[$category->id], $this->getCategories());
-    }
-
-    protected function initFooter(): void
-    {
-        $this->footer ??= [
-            [
-                $this->getCreateEntryButton(),
-            ],
-        ];
     }
 
     protected function getCreateEntryButton(): ?Stringable
@@ -176,109 +166,88 @@ class EntryGridView extends GridView
             return null;
         }
 
-        return Yii::createObject(CreateButton::class, [
-            Yii::t('cms', 'New Entry'),
-            [
+        return CreateButton::make()
+            ->text(Yii::t('cms', 'New Entry'))
+            ->href([
                 '/admin/entry/create',
                 ...Yii::$app->getRequest()->getQueryParams(),
-                'type' => $this->dataProvider->type,
-            ]
-        ]);
+                'type' => $this->provider->type,
+            ]);
     }
 
-    protected function nameColumn(): array
+    protected function getNameColumn(): ?Column
     {
-        return [
-            'attribute' => $this->getModel()->getI18nAttributeName('name'),
-            'content' => function (Entry $entry) {
-                $name = $entry->getI18nAttribute('name');
-
-                $html = $name
-                    ? Html::markKeywords(Html::encode($name), $this->search->getKeywords())
-                    : Yii::t('cms', '[ No title ]');
-
-                $html = A::make()
-                    ->content($html)
-                    ->href($this->getRoute($entry))
-                    ->class($name ? 'strong' : 'strong text-muted');
-
-                if ($this->showUrl) {
-                    $html .= $this->getUrl($entry);
-                }
-
-                if ($this->showCategories) {
-                    $html .= $this->getCategoryButtons($entry);
-                }
-
-                return $html;
-            }
-        ];
+        return DataColumn::make()
+            ->property('name')
+            ->content($this->getNameColumnContent(...));
     }
 
-    protected function entryCountColumn(): array
+    protected function getNameColumnContent(Entry $entry): string
     {
-        return [
-            'class' => EntryCountColumn::class,
-            'attribute' => 'entry_count',
-        ];
+        $name = $entry->getI18nAttribute('name');
+
+        $html = $name
+            ? Html::markKeywords(Html::encode($name), $this->search->getKeywords())
+            : Yii::t('cms', '[ No title ]');
+
+        $html = A::make()
+            ->content($html)
+            ->href($this->getRoute($entry))
+            ->class($name ? 'strong' : 'strong text-muted');
+
+        if ($this->showUrl) {
+            $html .= $this->getUrl($entry);
+        }
+
+        if ($this->showCategories) {
+            $html .= $this->getCategoryButtons($entry);
+        }
+
+        return $html;
     }
 
-    protected function sectionCountColumn(): array
+    protected function getEntryCountColumn(): ?Column
     {
-        return [
-            'class' => SectionCountColumn::class,
-            'attribute' => 'section_count',
-        ];
+        return EntryCountColumn::make();
     }
 
-    protected function assetCountColumn(): array
+    protected function getSectionCountColumn(): ?Column
     {
-        return [
-            'class' => AssetCountColumn::class,
-            'attribute' => 'asset_count',
-        ];
+        return SectionCountColumn::make();
     }
 
-    protected function dateColumn(): array
+    protected function getAssetCountColumn(): ?Column
     {
-        return $this->dataProvider->query->orderBy && key($this->dataProvider->query->orderBy) === 'publish_date'
+        return AssetCountColumn::make();
+    }
+
+    protected function getDateColumn(): ?Column
+    {
+        return $this->provider->query->orderBy && key($this->provider->query->orderBy) === 'publish_date'
             ? $this->publishDateColumn()
             : $this->updatedAtColumn();
     }
 
-    protected function publishDateColumn(): array
+    protected function publishDateColumn(): ?Column
     {
-        return [
-            'attribute' => 'publish_date',
-            'headerOptions' => ['class' => 'd-none d-lg-table-cell text-nowrap'],
-            'contentOptions' => ['class' => 'd-none d-lg-table-cell text-nowrap'],
-            'content' => fn (Entry $entry) => $this->dateFormat
-                ? $entry->publish_date->format($this->dateFormat)
-                : Yii::$app->getFormatter()->asDate($entry->publish_date)
-        ];
+        return DataColumn::make()
+            ->property('publish_date')
+            ->format('date');
     }
 
-    protected function updatedAtColumn(): array
+    protected function updatedAtColumn(): ?Column
     {
-        return [
-            'attribute' => 'updated_at',
-            'headerOptions' => ['class' => 'd-none d-lg-table-cell text-nowrap'],
-            'contentOptions' => ['class' => 'd-none d-lg-table-cell text-nowrap'],
-            'content' => fn (Entry $entry) => $this->dateFormat
-                ? $entry->updated_at->format($this->dateFormat)
-                : Timeago::tag($entry->updated_at)
-        ];
+        return TimeagoColumn::make()
+            ->property('updated_at');
     }
 
-    protected function buttonsColumn(): array
+    protected function getButtonColumn(): ?Column
     {
-        return [
-            'class' => ButtonsColumn::class,
-            'content' => $this->getRowButtons(...)
-        ];
+        return ButtonColumn::make()
+            ->content($this->getButtonColumnContent(...));
     }
 
-    protected function getRowButtons(Entry $entry): array
+    protected function getButtonColumnContent(Entry $entry): array
     {
         $user = Yii::$app->getUser();
         $buttons = [];
@@ -300,17 +269,19 @@ class EntryGridView extends GridView
 
     protected function getSortableButton(): ?Stringable
     {
-        return Yii::createObject(DraggableSortButton::class);
+        return DraggableSortGridButton::make();
     }
 
     protected function getUpdateButton(Entry $entry): Stringable
     {
-        return Yii::createObject(ViewButton::class, [$entry]);
+        return ViewGridButton::make()
+            ->model($entry);
     }
 
     protected function getDeleteButton(Entry $entry): Stringable
     {
-        return Yii::createObject(DeleteButton::class, [$entry]);
+        return DeleteGridButton::make()
+            ->model($entry);
     }
 
     protected function getCategoryButtons(Entry $entry): ?Stringable
@@ -328,7 +299,11 @@ class EntryGridView extends GridView
             }
         }
 
-        return $categories ? ButtonToolbar::make()->content(...$categories) : null;
+        return $categories
+            ? Div::make()
+                ->class('btn-group')
+                ->content(...$categories)
+            : null;
     }
 
     protected function getCategories(): array
@@ -347,13 +322,14 @@ class EntryGridView extends GridView
     protected function getUrl(Entry $entry): ?Stringable
     {
         $link = FrontendLink::tag($entry);
-        return $link ? Html::div($link, ['class' => 'd-none d-md-block small']) : null;
+
+        return $link
+            ? Div::make()
+                ->class('d-none d-md-block small')
+                ->content($link)
+            : null;
     }
 
-    /**
-     * @param T $model
-     * @noinspection PhpDocSignatureInspection
-     */
     #[Override]
     protected function getRoute(ActiveRecordInterface $model, array $params = []): array|false
     {
@@ -362,14 +338,5 @@ class EntryGridView extends GridView
             ...$model->getAdminRoute(),
             ...$params,
         ];
-    }
-
-    /**
-     * @return T
-     */
-    #[Override]
-    public function getModel(): Entry
-    {
-        return Entry::instance();
     }
 }

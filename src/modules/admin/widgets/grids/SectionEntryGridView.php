@@ -45,7 +45,7 @@ class SectionEntryGridView extends EntryGridView
      * @see SectionEntryController::actionDelete()
      */
     #[Override]
-    protected function getRowButtons(Entry $entry): array
+    protected function getButtonColumnContent(Entry $entry): array
     {
         $canUpdate = Yii::$app->getUser()->can(Section::AUTH_SECTION_UPDATE, [
             'section' => $this->dataProvider->section,

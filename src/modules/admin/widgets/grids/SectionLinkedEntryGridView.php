@@ -80,7 +80,7 @@ class SectionLinkedEntryGridView extends EntryGridView
     }
 
     #[Override]
-    protected function getRowButtons(Entry $entry): array
+    protected function getButtonColumnContent(Entry $entry): array
     {
         if (!Yii::$app->getUser()->can(Section::AUTH_SECTION_UPDATE, ['entry' => $entry])) {
             return [];

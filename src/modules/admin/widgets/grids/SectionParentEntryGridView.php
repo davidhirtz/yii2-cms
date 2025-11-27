@@ -20,7 +20,7 @@ class SectionParentEntryGridView extends EntryGridView
      * @see SectionController::actionMove()
      */
     #[Override]
-    protected function getRowButtons(Entry $entry): array
+    protected function getButtonColumnContent(Entry $entry): array
     {
         $user = Yii::$app->getUser();
 

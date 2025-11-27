@@ -7,47 +7,45 @@ namespace davidhirtz\yii2\cms\modules\admin\widgets\grids\columns;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\EntryGridView;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
-use davidhirtz\yii2\skeleton\widgets\grids\columns\CounterColumn;
+use davidhirtz\yii2\skeleton\widgets\grids\columns\BadgeColumn;
+use Override;
+use Stringable;
+use yii\base\Model;
 use yii\helpers\Url;
 
 /**
  * @property EntryGridView $grid
  */
-class EntryCountColumn extends CounterColumn
+class EntryCountColumn extends BadgeColumn
 {
     use ModuleTrait;
 
-    #[\Override]
-    public function init(): void
+    public function __construct()
     {
-        if ($this->visible) {
-            $this->visible = false;
+        $this->property ??= 'entry_count';
+        $this->url ??= fn (Entry $model) => Url::current(['parent' => $model->id, 'type' => null, 'q' => null]);
+    }
 
-            if (static::getModule()->enableNestedEntries) {
-                foreach ($this->grid->dataProvider->getModels() as $model) {
-                    if ($model->hasDescendantsEnabled()) {
-                        $this->visible = true;
-                        break;
-                    }
-                }
+    public function isVisible(): bool
+    {
+        if (!parent::isVisible() || !static::getModule()->enableNestedEntries) {
+            return false;
+        }
+
+        foreach ($this->grid->provider->getModels() as $model) {
+            if ($model->hasDescendantsEnabled()) {
+                return true;
             }
         }
 
-        $this->route ??= fn (Entry $model) => Url::current(['parent' => $model->id, 'type' => null, 'q' => null]);
-
-        parent::init();
+        return false;
     }
 
-    /**
-     * @param Entry $model
-     */
-    #[\Override]
-    protected function renderDataCellContent($model, $key, $index): string
+    #[Override]
+    protected function getBodyContent(array|Model $model, string|int $key, int $index): string|Stringable
     {
-        if (!$model->hasDescendantsEnabled()) {
-            return '';
-        }
-
-        return parent::renderDataCellContent($model, $key, $index);
+        return $model instanceof Entry && $model->hasDescendantsEnabled()
+            ? parent::getBodyContent($model, $key, $index)
+            : '';
     }
 }

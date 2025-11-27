@@ -7,46 +7,43 @@ namespace davidhirtz\yii2\cms\modules\admin\widgets\grids\columns;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\EntryGridView;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
-use davidhirtz\yii2\skeleton\widgets\grids\columns\CounterColumn;
+use davidhirtz\yii2\skeleton\widgets\grids\columns\BadgeColumn;
+use Override;
+use Stringable;
+use yii\base\Model;
 
 /**
  * @property EntryGridView $grid
  */
-class SectionCountColumn extends CounterColumn
+class SectionCountColumn extends BadgeColumn
 {
     use ModuleTrait;
 
-    #[\Override]
-    public function init(): void
+    public function __construct()
     {
-        if ($this->visible) {
-            $this->visible = false;
+        $this->url ??= fn (Entry $model) => ['section/index', 'entry' => $model->id];
+    }
 
-            if (static::getModule()->enableSections) {
-                foreach ($this->grid->dataProvider->getModels() as $model) {
-                    if ($model->hasSectionsEnabled()) {
-                        $this->visible = true;
-                        break;
-                    }
-                }
+    public function isVisible(): bool
+    {
+        if (!parent::isVisible() || !static::getModule()->enableSections) {
+            return false;
+        }
+
+        foreach ($this->grid->provider->getModels() as $model) {
+            if ($model->hasSectionsEnabled()) {
+                return true;
             }
         }
 
-        $this->route ??= fn (Entry $model) => ['section/index', 'entry' => $model->id];
-
-        parent::init();
+        return false;
     }
 
-    /**
-     * @param Entry $model
-     */
-    #[\Override]
-    protected function renderDataCellContent($model, $key, $index): string
+    #[Override]
+    protected function getBodyContent(array|Model $model, string|int $key, int $index): string|Stringable
     {
-        if (!$model->hasSectionsEnabled()) {
-            return '';
-        }
-
-        return parent::renderDataCellContent($model, $key, $index);
+        return $model instanceof Entry && $model->hasSectionsEnabled()
+            ? parent::getBodyContent($model, $key, $index)
+            : '';
     }
 }
