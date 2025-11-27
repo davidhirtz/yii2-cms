@@ -11,16 +11,14 @@ declare(strict_types=1);
 
 use davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider;
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\EntryGridView;
-use davidhirtz\yii2\cms\modules\admin\widgets\navs\Submenu;
+use davidhirtz\yii2\cms\modules\admin\widgets\navs\CmsSubmenu;
 use davidhirtz\yii2\skeleton\web\View;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
 
-$this->setTitle(Yii::t('cms', 'Entries'));
-?>
+$this->title(Yii::t('cms', 'Entries'));
 
-<?= Submenu::widget([
-    'model' => $provider->parent,
-]); ?>
+echo  CmsSubmenu::make()
+->model($provider->parent);
 
 <?= Panel::widget([
     'content' => EntryGridView::widget([

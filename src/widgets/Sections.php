@@ -7,6 +7,7 @@ namespace davidhirtz\yii2\cms\widgets;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\skeleton\widgets\Widget;
+use Stringable;
 
 /**
  * @template T of Section
@@ -41,15 +42,10 @@ class Sections extends Widget
      */
     public mixed $isVisible = null;
 
-    public function init(): void
+    protected function renderContent(): string|Stringable
     {
-        $this->sections ??= $this->entry?->sections;
-        parent::init();
-    }
+        $this->sections ??= $this->entry->sections ?? [];
 
-    #[\Override]
-    public function render(): string
-    {
         $this->prepareSections();
         $this->createSectionGroups();
 
@@ -157,7 +153,7 @@ class Sections extends Widget
         $viewFile ??= $this->getSectionViewFile(current($sections));
 
         return $viewFile && $sections
-            ? $this->getView()->render($viewFile, [...$this->viewParams, 'sections' => $sections], $this)
+            ? $this->view->render($viewFile, [...$this->viewParams, 'sections' => $sections], $this)
             : '';
     }
 
@@ -171,7 +167,7 @@ class Sections extends Widget
 
     /**
      * @param T $section
-     * @param T $prevSection
+     * @param T|null $prevSection
      */
     protected function hasSameViewFile(Section $section, ?Section $prevSection): bool
     {

@@ -11,6 +11,7 @@ use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\modules\admin\controllers\traits\EntryTrait;
 use davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider;
+use Override;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
@@ -24,7 +25,7 @@ class EntryController extends AbstractController
 
     protected array|false|null $i18nTablesRoute = ['/admin/entry/index'];
 
-    #[\Override]
+    #[Override]
     public function behaviors(): array
     {
         return [

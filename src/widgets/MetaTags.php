@@ -8,11 +8,15 @@ use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
+use davidhirtz\yii2\skeleton\base\traits\ContainerConfigurationTrait;
+use davidhirtz\yii2\skeleton\web\View;
 use davidhirtz\yii2\skeleton\widgets\Widget;
 use Yii;
+use yii\base\BaseObject;
 
-class MetaTags extends Widget
+class MetaTags extends BaseObject
 {
+    use ContainerConfigurationTrait;
     use ModuleTrait;
 
     public Category|Entry|null $model = null;
@@ -53,9 +57,13 @@ class MetaTags extends Widget
      * @var string|false the og:type, if false, no og:type will be registered
      */
     public string|false $ogType = 'website';
+    
+    protected View $view;
 
     public function init(): void
     {
+        $this->view ??= Yii::$app->getView();
+        
         if ($this->enableImages) {
             $this->enableImages = $this->model instanceof Entry && static::getModule()->enableEntryAssets;
         }
@@ -102,7 +110,7 @@ class MetaTags extends Widget
     protected function setDocumentTitle(): void
     {
         $title = $this->model->getI18nAttribute('title') ?? $this->model->getI18nAttribute('name');
-        $this->getView()->setTitle($title);
+        $this->view->title($title);
     }
 
     protected function setMetaDescription(): void
@@ -110,7 +118,7 @@ class MetaTags extends Widget
         $content = $this->model->getI18nAttribute('description') ?? $this->model->getI18nAttribute('content');
 
         if ($content) {
-            $this->getView()->setMetaDescription($content);
+            $this->view->description($content);
         }
     }
 
@@ -120,7 +128,7 @@ class MetaTags extends Widget
             Yii::$app->getI18n()->callback($language, function () use ($language) {
                 if ($route = $this->model->getRoute()) {
                     $url = Yii::$app->getUrlManager()->createAbsoluteUrl($route);
-                    $this->getView()->registerHrefLangLinkTag($language, $url);
+                    $this->view->registerHrefLangLinkTag($language, $url);
                 }
             });
         }
@@ -130,20 +138,20 @@ class MetaTags extends Widget
 
     public function registerDefaultHrefLangLinkTag(): void
     {
-        $this->getView()->registerDefaultHrefLangLinkTag(Yii::$app->getUrlManager()->defaultLanguage);
+        $this->view->registerDefaultHrefLangLinkTag(Yii::$app->getUrlManager()->defaultLanguage);
     }
 
     public function registerCanonicalUrlTags(): void
     {
         if ($route = $this->model->getRoute()) {
-            $this->getView()->registerCanonicalTag(Yii::$app->getUrlManager()->createAbsoluteUrl($route));
+            $this->view->registerCanonicalTag(Yii::$app->getUrlManager()->createAbsoluteUrl($route));
         }
     }
 
     public function registerSocialMetaTags(): void
     {
         if ($this->ogType) {
-            $this->getView()->registerOpenGraphMetaTags($this->ogType);
+            $this->view->registerOpenGraphMetaTags($this->ogType);
         }
     }
 
@@ -166,18 +174,13 @@ class MetaTags extends Widget
                         $height = $file->getTransformations()[$this->transformationName]['height']
                             ?? round($file->height * ($transformation['width'] / $file->width));
 
-                        $this->getView()->registerImageMetaTags($url, (int)$transformation['width'], (int)$height);
+                        $this->view->registerImageMetaTags($url, (int)$transformation['width'], (int)$height);
                         continue;
                     }
                 }
             }
 
-            $this->getView()->registerImageMetaTags($file->getUrl(), $file->width, $file->height);
+            $this->view->registerImageMetaTags($file->getUrl(), $file->width, $file->height);
         }
-    }
-
-    public function render(): string
-    {
-        return '';
     }
 }

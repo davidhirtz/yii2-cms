@@ -9,15 +9,15 @@ declare(strict_types=1);
  * @var \davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider $provider
  */
 
-$this->setTitle(Yii::t('cms', 'Categories'));
+$this->title(Yii::t('cms', 'Categories'));
 
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\EntryCategoryGridView;
-use davidhirtz\yii2\cms\modules\admin\widgets\navs\Submenu;
+use davidhirtz\yii2\cms\modules\admin\widgets\navs\CmsSubmenu;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
 
 ?>
 
-<?= Submenu::widget([
+<?= CmsSubmenu::widget([
     'model' => $provider->entry,
 ]); ?>
 

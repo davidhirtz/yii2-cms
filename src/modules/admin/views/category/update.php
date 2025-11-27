@@ -14,17 +14,17 @@ use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider;
 use davidhirtz\yii2\cms\modules\admin\widgets\forms\CategoryActiveForm;
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\CategoryGridView;
-use davidhirtz\yii2\cms\modules\admin\widgets\navs\Submenu;
+use davidhirtz\yii2\cms\modules\admin\widgets\navs\CmsSubmenu;
 use davidhirtz\yii2\cms\modules\admin\widgets\panels\CategoryHelpPanel;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\web\View;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
 use davidhirtz\yii2\skeleton\widgets\forms\DeleteActiveForm;
 
-$this->setTitle(Yii::t('cms', 'Edit Category'));
+$this->title(Yii::t('cms', 'Edit Category'));
 ?>
 
-<?= Submenu::widget([
+<?= CmsSubmenu::widget([
     'model' => $category,
 ]); ?>
 

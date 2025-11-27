@@ -10,14 +10,14 @@ declare(strict_types=1);
  */
 
 use davidhirtz\yii2\cms\modules\admin\widgets\forms\EntryActiveForm;
-use davidhirtz\yii2\cms\modules\admin\widgets\navs\Submenu;
+use davidhirtz\yii2\cms\modules\admin\widgets\navs\CmsSubmenu;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
 
-$this->setTitle(Yii::t('cms', 'Create New Entry'));
+$this->title(Yii::t('cms', 'Create New Entry'));
 ?>
 
-<?= Submenu::widget([
+<?= CmsSubmenu::widget([
     'title' => Html::a(Yii::t('cms', 'Entries'), ['index']),
 ]); ?>
 

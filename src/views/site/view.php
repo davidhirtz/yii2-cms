@@ -15,5 +15,5 @@ use davidhirtz\yii2\cms\widgets\MetaTags;
 use davidhirtz\yii2\cms\widgets\Sections;
 use davidhirtz\yii2\skeleton\web\View;
 
-MetaTags::widget(['model' => $entry]);
-echo Sections::widget(['entry' => $entry]);
+MetaTags::make(['model' => $entry]);
+echo Sections::make(['entry' => $entry]);

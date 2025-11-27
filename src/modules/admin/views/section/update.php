@@ -14,17 +14,17 @@ use davidhirtz\yii2\cms\modules\admin\controllers\SectionController;
 use davidhirtz\yii2\cms\modules\admin\widgets\forms\SectionActiveForm;
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\AssetGridView;
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\SectionLinkedEntryGridView;
-use davidhirtz\yii2\cms\modules\admin\widgets\navs\Submenu;
+use davidhirtz\yii2\cms\modules\admin\widgets\navs\CmsSubmenu;
 use davidhirtz\yii2\cms\modules\admin\widgets\panels\SectionHelpPanel;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\web\View;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
 use davidhirtz\yii2\skeleton\widgets\forms\DeleteActiveForm;
 
-$this->setTitle(Yii::t('cms', 'Edit Section'));
+$this->title(Yii::t('cms', 'Edit Section'));
 ?>
 
-<?= Submenu::widget([
+<?= CmsSubmenu::widget([
     'model' => $section,
 ]); ?>
 

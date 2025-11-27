@@ -9,15 +9,15 @@ declare(strict_types=1);
  * @var \davidhirtz\yii2\cms\models\Entry $entry
  */
 
-$this->setTitle(Yii::t('cms', 'Sections'));
+$this->title(Yii::t('cms', 'Sections'));
 
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\SectionGridView;
-use davidhirtz\yii2\cms\modules\admin\widgets\navs\Submenu;
+use davidhirtz\yii2\cms\modules\admin\widgets\navs\CmsSubmenu;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
 
 ?>
 
-<?= Submenu::widget([
+<?= CmsSubmenu::widget([
     'model' => $entry,
 ]); ?>
 

@@ -10,13 +10,13 @@ declare(strict_types=1);
  */
 
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\CategoryGridView;
-use davidhirtz\yii2\cms\modules\admin\widgets\navs\Submenu;
+use davidhirtz\yii2\cms\modules\admin\widgets\navs\CmsSubmenu;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
 
-$this->setTitle(Yii::t('cms', 'Categories'));
+$this->title(Yii::t('cms', 'Categories'));
 ?>
 
-<?= Submenu::widget([
+<?= CmsSubmenu::widget([
     'model' => $provider->category,
 ]); ?>
 

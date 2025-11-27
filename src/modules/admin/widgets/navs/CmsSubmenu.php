@@ -12,13 +12,19 @@ use davidhirtz\yii2\cms\modules\admin\helpers\FrontendLink;
 use davidhirtz\yii2\cms\modules\admin\Module;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\skeleton\helpers\Html;
+use davidhirtz\yii2\skeleton\widgets\navs\NavItem;
+use davidhirtz\yii2\skeleton\widgets\navs\Submenu;
+use davidhirtz\yii2\skeleton\widgets\traits\ModelWidgetTrait;
+use Override;
 use Yii;
 
-class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
+/**
+ * @property Asset|Category|Entry|Section|null $model
+ */
+class CmsSubmenu extends Submenu
 {
     use ModuleTrait;
-
-    public Asset|Category|Entry|Section|null $model = null;
+    use ModelWidgetTrait;
 
     /**
      * @var bool whether default categories should be shown as nav items
@@ -61,15 +67,24 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
      */
     public bool $showUrl = true;
 
-    private ?Module $_parentModule = null;
-    private bool $_isAsset = false;
+    protected Module $module;
+    protected bool $isAsset = false;
 
-    #[\Override]
-    public function init(): void
+    public function __construct()
+    {
+        /** @var Module $module */
+        $module = Yii::$app->getModule('admin')->getModule('cms');
+        $this->module = $module;
+
+        parent::__construct();
+    }
+
+    #[Override]
+    protected function configure(): void
     {
         if ($this->model instanceof Asset) {
-            $this->model = $this->model->getParent();
-            $this->_isAsset = true;
+            $this->model($this->model->getParent());
+            $this->isAsset = true;
         }
 
         $model = $this->isSection() ? $this->model->entry : $this->model;
@@ -79,13 +94,11 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
             $this->showDefaultCategories = static::getModule()->enableCategories;
         }
 
-        if (!$this->title) {
-            $this->title = $isEntry ? Html::a($model->getI18nAttribute('name'), ['/admin/entry/update', 'id' => $model->id]) :
-                Html::a($this->getParentModule()->getName(), $this->getParentModule()->url);
-        }
+        $this->title ??= $isEntry ? $model->getI18nAttribute('name') : $this->module->getName();
+        $this->url ??= $isEntry ? ['/admin/entry/update', 'id' => $model->id] : $this->module->url;
 
         if ($this->title && $this->showUrl) {
-            $this->title .= $this->getUrl();
+            $this->content($this->getUrl());
         }
 
         if ($this->showEntryCategories) {
@@ -102,14 +115,8 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
 
         $this->items = [...$this->items, ...$isEntry ? $this->getEntryItems() : $this->getDefaultItems()];
 
-        parent::init();
-    }
-
-    #[\Override]
-    public function run(): string
-    {
         $this->setBreadcrumbs();
-        return parent::run();
+        parent::configure();
     }
 
     protected function getDefaultItems(): array
@@ -119,48 +126,51 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
 
     protected function getEntryGridViewItems(): array
     {
-        $canEntryUpdate = Yii::$app->getUser()->can(Entry::AUTH_ENTRY_UPDATE);
-        $items = [];
-
-        if ($this->showEntryTypes) {
-            foreach (Entry::instance()::getTypes() as $type => $attributes) {
-                $items[] = [
-                    'label' => $attributes['plural'] ?? $attributes['name'],
-                    'url' => ['/admin/entry/index', 'type' => $type],
-                    'visible' => $canEntryUpdate,
-                    'active' => ['admin/entry' => ['type' => $type]],
-                    'icon' => $attributes['icon'] ?? 'book',
-                ];
-            }
-        } elseif ($this->showDefaultCategories) {
-            $items[] = [
-                'label' => Yii::t('cms', 'Entries'),
-                'url' => ['/admin/entry/index'],
-                'visible' => $canEntryUpdate,
-                'active' => [
-                    'admin/entry/',
-                    ...$this->additionalActiveRoutes['entries'] ?? [],
-                ],
-                'icon' => 'book',
-            ];
+        if (!Yii::$app->getUser()->can(Entry::AUTH_ENTRY_UPDATE)) {
+            return [];
         }
 
-        return $items;
+        if ($this->showEntryTypes) {
+            $items = [];
+
+            foreach (Entry::instance()::getTypes() as $type => $attributes) {
+                $items[] = NavItem::make()
+                    ->label($attributes['plural'] ?? $attributes['name'])
+                    ->url(['/admin/entry/index', 'type' => $type])
+                    ->icon($attributes['icon'] ?? 'book')
+                    ->routes(['admin/entry' => ['type' => $type]]);
+            }
+
+            return $items;
+        }
+
+        return [
+            NavItem::make()
+                ->label(Yii::t('cms', 'Entries'))
+                ->url(['/admin/entry/index'])
+                ->icon('book')
+                ->routes([
+                    'admin/entry/',
+                    ...$this->additionalActiveRoutes['entries'] ?? [],
+                ]),
+        ];
     }
 
     protected function getCategoryGridViewItems(): array
     {
-        return !$this->showDefaultCategories ? [] : [
-            [
-                'label' => Yii::t('cms', 'Categories'),
-                'url' => ['/admin/category/index'],
-                'visible' => Yii::$app->getUser()->can(Category::AUTH_CATEGORY_UPDATE),
-                'active' => [
+        if (!$this->showDefaultCategories || !Yii::$app->getUser()->can(Category::AUTH_CATEGORY_UPDATE)) {
+            return [];
+        }
+
+        return [
+            NavItem::make()
+                ->label(Yii::t('cms', 'Categories'))
+                ->url(['/admin/category/index'])
+                ->icon('folder-open')
+                ->routes([
                     'admin/category/',
                     ...$this->additionalActiveRoutes['categories'] ?? [],
-                ],
-                'icon' => 'folder-open',
-            ],
+                ]),
         ];
     }
 
@@ -179,18 +189,16 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
         $entry = $this->isSection() ? $this->model->entry : $this->model;
 
         return [
-            [
-                'label' => $this->showEntryTypes ? $entry->getTypeName() : Yii::t('cms', 'Entry'),
-                'url' => ['/admin/entry/update', 'id' => $entry->id],
-                'visible' => Yii::$app->getUser()->can(Entry::AUTH_ENTRY_UPDATE, ['entry' => $entry]),
-                'active' => array_filter([
+            NavItem::make()
+                ->label($this->showEntryTypes ? $entry->getTypeName() : Yii::t('cms', 'Entry'))
+                ->url(['/admin/entry/update', 'id' => $entry->id])
+                ->icon($entry->getStatusIcon())
+                ->routes([
                     'admin/entry/update',
                     'admin/cms/asset/' => ['entry'],
                     !$this->isSection() ? 'admin/cms/asset/update' : null,
                     ...$this->additionalActiveRoutes['entry'] ?? [],
                 ]),
-                'icon' => $entry->getStatusIcon(),
-            ],
         ];
     }
 
@@ -198,18 +206,20 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
     {
         $entry = $this->isSection() ? $this->model->entry : $this->model;
 
+        if (!static::getModule()->enableEntryAssets || !$entry->hasDescendantsEnabled()) {
+            return [];
+        }
+
         return [
-            [
-                'label' => Yii::t('cms', 'Subentries'),
-                'url' => ['/admin/entry/index', 'parent' => $entry->id],
-                'active' => [
+            NavItem::make()
+                ->label(Yii::t('cms', 'Subentries'))
+                ->url(['/admin/entry/index', 'parent' => $entry->id])
+                ->icon('book')
+                ->badge($entry->entry_count)
+                ->routes([
                     'admin/entry/index',
                     ...$this->additionalActiveRoutes['subentries'] ?? [],
-                ],
-                'icon' => 'book',
-                'badge' => $entry->entry_count ?: false,
-                'visible' => static::getModule()->enableEntryAssets && $entry->hasDescendantsEnabled(),
-            ],
+                ]),
         ];
     }
 
@@ -217,28 +227,21 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
     {
         $entry = $this->isSection() ? $this->model->entry : $this->model;
 
-        return $this->showEntryCategories
-            ? [
-                [
-                    'label' => Yii::t('cms', 'Categories'),
-                    'url' => ['/admin/entry-category/index', 'entry' => $entry->id],
-                    'visible' => Yii::$app->getUser()->can(Entry::AUTH_ENTRY_CATEGORY_UPDATE, ['entry' => $entry]),
-                    'active' => [
-                        'admin/entry-category/',
-                        ...$this->additionalActiveRoutes['categories'] ?? [],
-                    ],
-                    'badge' => $entry->getCategoryCount() ?: false,
-                    'badgeOptions' => [
-                        'id' => 'entry-category-count',
-                        'class' => 'badge d-none d-md-inline-block',
-                    ],
-                    'icon' => 'folder-open',
-                    'options' => [
-                        'class' => 'entry-sections',
-                    ],
-                ],
-            ]
-            : [];
+        if (
+            !$this->showEntryCategories
+            || !Yii::$app->getUser()->can(Entry::AUTH_ENTRY_CATEGORY_UPDATE, ['entry' => $entry])
+        ) {
+            return [];
+        }
+
+        return [
+            NavItem::make()
+                ->label(Yii::t('cms', 'Categories'))
+                ->url(['/admin/entry-category/index', 'entry' => $entry->id])
+                ->icon('folder-open')
+                ->badge($entry->getCategoryCount())
+                ->routes(['admin/entry-category/']),
+        ];
     }
 
 
@@ -246,12 +249,20 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
     {
         $entry = $this->isSection() ? $this->model->entry : $this->model;
 
-        return !$this->showEntrySections ? [] : [
-            [
-                'label' => Yii::t('cms', 'Sections'),
-                'url' => ['/admin/section/index', 'entry' => $entry->id],
-                'visible' => Yii::$app->getUser()->can(Section::AUTH_SECTION_UPDATE, ['entry' => $entry]),
-                'active' => array_filter([
+        if (
+            !$this->showEntrySections
+            || !Yii::$app->getUser()->can(Section::AUTH_SECTION_UPDATE, ['entry' => $entry])
+        ) {
+            return [];
+        }
+
+        return [
+            NavItem::make()
+                ->label(Yii::t('cms', 'Sections'))
+                ->url(['/admin/section/index', 'entry' => $entry->id])
+                ->icon('th-list')
+                ->badge($entry->section_count)
+                ->routes([
                     'admin/section/',
                     'admin/cms/asset/' => ['section'],
                     ...$this->isSection()
@@ -262,16 +273,6 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
                         : [],
                     ...$this->additionalActiveRoutes['sections'] ?? [],
                 ]),
-                'badge' => $entry->section_count ?: false,
-                'badgeOptions' => [
-                    'id' => 'entry-section-count',
-                    'class' => 'badge d-none d-md-inline-block',
-                ],
-                'icon' => 'th-list',
-                'options' => [
-                    'class' => 'entry-sections',
-                ],
-            ],
         ];
     }
 
@@ -294,23 +295,22 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
 
     protected function setModuleBreadcrumbs(): void
     {
-        $this->getView()->setBreadcrumb($this->getParentModule()->getName(), [
-            ...$this->params,
+        $this->view->addBreadcrumb($this->module->getName(), [
             '/admin/entry/index',
             'type' => static::getModule()->defaultEntryType,
-            'id' => null,
-            'parent' => null,
         ]);
     }
 
     protected function setEntryBreadcrumbs(): void
     {
         $model = $this->isSection() ? $this->model->entry : $this->model;
-        $view = $this->getView();
 
         if ($this->showEntryTypes) {
             if ($typeOptions = (Entry::instance()::getTypes()[$model->type] ?? null)) {
-                $view->setBreadcrumb($typeOptions['plural'] ?? $typeOptions['name'], [...$this->params, '/admin/entry/index', 'type' => $model->type, 'id' => null]);
+                $this->view->addBreadcrumb($typeOptions['plural'] ?? $typeOptions['name'], [
+                    '/admin/entry/index',
+                    'type' => $model->type,
+                ]);
             }
         }
 
@@ -318,7 +318,7 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
             $isIndex = Yii::$app->requestedRoute === 'admin/entry/index';
 
             foreach ($model->ancestors as $ancestor) {
-                $view->setBreadcrumb($ancestor->getI18nAttribute('name'), $isIndex
+                $this->view->addBreadcrumb($ancestor->getI18nAttribute('name'), $isIndex
                     ? ['index', 'parent' => $ancestor->id]
                     : $ancestor->getAdminRoute());
             }
@@ -327,7 +327,7 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
         $this->setEntryBreadcrumb();
 
         if ($this->isSection()) {
-            $view->setBreadcrumb(Yii::t('cms', 'Section'), $this->model->getAdminRoute());
+            $this->view->addBreadcrumb(Yii::t('cms', 'Section'), $this->model->getAdminRoute());
         }
     }
 
@@ -335,31 +335,30 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
     {
         $model = $this->isSection() ? $this->model->entry : $this->model;
 
-        $this->getView()->setBreadcrumb($this->showEntryTypes
+        $this->view->addBreadcrumb($this->showEntryTypes
             ? $model->getTypeName()
             : Yii::t('cms', 'Entry'), $model->getAdminRoute());
     }
 
     protected function setCategoryBreadcrumbs(): void
     {
-        $view = $this->getView();
-        $view->setBreadcrumb(Yii::t('cms', 'Categories'), ['/admin/category/index']);
+        $this->view->addBreadcrumb(Yii::t('cms', 'Categories'), ['/admin/category/index']);
 
         if ($this->parentCategoryBreadcrumbCount > 0) {
             $categories = $this->model->ancestors;
             $count = count($categories);
 
             if ($count > $this->parentCategoryBreadcrumbCount) {
-                $view->setBreadcrumb('…');
+                $this->view->addBreadcrumb('…');
             }
 
             foreach ($categories as $category) {
                 if (--$count < $this->parentCategoryBreadcrumbCount) {
-                    $view->setBreadcrumb($category->getI18nAttribute('name'), $category->getAdminRoute());
+                    $this->view->addBreadcrumb($category->getI18nAttribute('name'), $category->getAdminRoute());
                 }
             }
             if (!$this->model->getIsNewRecord()) {
-                $view->setBreadcrumb($this->model->getI18nAttribute('name'), $this->model->getAdminRoute());
+                $this->view->addBreadcrumb($this->model->getI18nAttribute('name'), $this->model->getAdminRoute());
             }
         }
     }
@@ -367,18 +366,9 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
     protected function setAssetBreadcrumbs(): void
     {
         $route = $this->model->getAdminRoute() + ['#' => 'assets'];
-        $this->getView()->setBreadcrumb(Yii::t('cms', 'Assets'), $route);
+        $this->view->addBreadcrumb(Yii::t('cms', 'Assets'), $route);
     }
 
-    protected function getParentModule(): Module
-    {
-        if ($this->_parentModule === null) {
-            /** @var Module $module */
-            $module = Yii::$app->getModule('admin')->getModule('cms');
-            $this->_parentModule = $module;
-        }
-        return $this->_parentModule;
-    }
 
     protected function getUrl(): string
     {
@@ -393,6 +383,6 @@ class Submenu extends \davidhirtz\yii2\skeleton\widgets\fontawesome\Submenu
 
     protected function isAsset(): bool
     {
-        return $this->_isAsset;
+        return $this->isAsset;
     }
 }

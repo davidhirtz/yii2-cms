@@ -10,14 +10,14 @@ declare(strict_types=1);
 
 use davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider;
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\SectionEntryGridView;
-use davidhirtz\yii2\cms\modules\admin\widgets\navs\Submenu;
+use davidhirtz\yii2\cms\modules\admin\widgets\navs\CmsSubmenu;
 use davidhirtz\yii2\skeleton\web\View;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
 
-$this->setTitle(Yii::t('cms', 'Link entries'));
+$this->title(Yii::t('cms', 'Link entries'));
 ?>
 
-<?= Submenu::widget([
+<?= CmsSubmenu::widget([
     'model' => $provider->section,
 ]); ?>
 

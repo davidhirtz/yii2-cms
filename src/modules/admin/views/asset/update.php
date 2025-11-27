@@ -13,17 +13,17 @@ use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\modules\admin\controllers\AssetController;
 use davidhirtz\yii2\cms\modules\admin\widgets\forms\AssetActiveForm;
-use davidhirtz\yii2\cms\modules\admin\widgets\navs\Submenu;
+use davidhirtz\yii2\cms\modules\admin\widgets\navs\CmsSubmenu;
 use davidhirtz\yii2\cms\modules\admin\widgets\panels\AssetHelpPanel;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\web\View;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
 use davidhirtz\yii2\skeleton\widgets\forms\DeleteActiveForm;
 
-$this->setTitle(Yii::t('cms', 'Edit Asset'));
+$this->title(Yii::t('cms', 'Edit Asset'));
 ?>
 
-<?= Submenu::widget([
+<?= CmsSubmenu::widget([
     'model' => $asset,
 ]); ?>
 

@@ -11,15 +11,15 @@ declare(strict_types=1);
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\modules\admin\controllers\CategoryController;
 use davidhirtz\yii2\cms\modules\admin\widgets\forms\CategoryActiveForm;
-use davidhirtz\yii2\cms\modules\admin\widgets\navs\Submenu;
+use davidhirtz\yii2\cms\modules\admin\widgets\navs\CmsSubmenu;
 use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\web\View;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
 
-$this->setTitle(Yii::t('cms', 'Create New Category'));
+$this->title(Yii::t('cms', 'Create New Category'));
 ?>
 
-<?= Submenu::widget([
+<?= CmsSubmenu::widget([
     'model' => $category,
 ]); ?>
 

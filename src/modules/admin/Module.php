@@ -36,16 +36,32 @@ class Module extends \davidhirtz\yii2\skeleton\base\Module implements ModuleInte
 
     protected function getCoreControllerMap(): array
     {
-        $classMap = [
-            'asset' => AssetController::class,
-            'category' => CategoryController::class,
-            'entry' => EntryController::class,
-            'entry-category' => EntryCategoryController::class,
-            'section' => SectionController::class,
-            'section-entry' => SectionEntryController::class,
+        return [
+            'asset' => [
+                'class' => AssetController::class,
+                'viewPath' => '@cms/modules/admin/views/asset',
+            ],
+            'category' => [
+                'class' => CategoryController::class,
+                'viewPath' => '@cms/modules/admin/views/category',
+            ],
+            'entry' => [
+                'class' => EntryController::class,
+                'viewPath' => '@cms/modules/admin/views/entry',
+            ],
+            'entry-category' => [
+                'class' => EntryCategoryController::class,
+                'viewPath' => '@cms/modules/admin/views/entry-category',
+            ],
+            'section' => [
+                'class' => SectionController::class,
+                'viewPath' => '@cms/modules/admin/views/section',
+            ],
+            'section-entry' => [
+                'class' => SectionEntryController::class,
+                'viewPath' => '@cms/modules/admin/views/section-entry',
+            ],
         ];
-
-        return array_map(fn ($class) => ['class' => $class], $classMap);
     }
 
     public function getDashboardPanels(): array
@@ -87,11 +103,5 @@ class Module extends \davidhirtz\yii2\skeleton\base\Module implements ModuleInte
                 routes: ['admin/category', 'admin/entry', 'admin/entry-category', 'admin/section', 'cms/'],
             ),
         ];
-    }
-
-    public function beforeAction($action): bool
-    {
-        $this->setViewPath('@cms/modules/admin/views');
-        return parent::beforeAction($action);
     }
 }
