@@ -4,24 +4,26 @@ declare(strict_types=1);
 
 namespace davidhirtz\yii2\cms\modules\admin\widgets\forms\traits;
 
-use davidhirtz\yii2\cms\modules\admin\widgets\forms\fields\CategoryParentIdDropDown;
+use davidhirtz\yii2\cms\modules\admin\widgets\forms\fields\CategoryParentIdSelectField;
+use davidhirtz\yii2\cms\modules\ModuleTrait;
+use Stringable;
 use Yii;
-use yii\widgets\ActiveField;
 
 trait CategoryParentIdFieldTrait
 {
-    public function parentIdField(): ActiveField|string
+    use ModuleTrait;
+
+    protected function getParentIdField(): ?Stringable
     {
         if (!static::getModule()->enableNestedCategories || !$this->model->hasParentEnabled()) {
-            return '';
+            return null;
         }
 
-        return $this->field($this->model, 'parent_id')->widget(CategoryParentIdDropDown::class, [
-            'options' => $this->getParentIdOptions(),
-        ]);
+        return CategoryParentIdSelectField::make()
+            ->attributes($this->getParentIdAttributes());
     }
 
-    protected function getParentIdOptions(): array
+    protected function getParentIdAttributes(): array
     {
         $options = [
             'prompt' => [
@@ -30,7 +32,10 @@ trait CategoryParentIdFieldTrait
             ],
         ];
 
-        if (!$this->model->slugTargetAttribute || !in_array('parent_id', (array)$this->model->slugTargetAttribute, true)) {
+        if (
+            !$this->model->slugTargetAttribute
+            || !in_array('parent_id', (array)$this->model->slugTargetAttribute, true)
+        ) {
             return $options;
         }
 
@@ -43,7 +48,7 @@ trait CategoryParentIdFieldTrait
         return $options;
     }
 
-    public function getSlugBaseUrl(?string $language = null): string
+    protected function getSlugBaseUrl(?string $language = null): string
     {
         if (!$this->model->getRoute()) {
             return '';

@@ -7,53 +7,51 @@ namespace davidhirtz\yii2\cms\modules\admin\widgets\forms\fields;
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\queries\CategoryQuery;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
-use yii\widgets\InputWidget;
+use davidhirtz\yii2\skeleton\widgets\forms\fields\SelectField;
 
 /**
  * @template T of Category
  * @property Category $model
  */
-class CategoryParentIdDropDown extends InputWidget
+class CategoryParentIdSelectField extends SelectField
 {
     use ModuleTrait;
     use ParentIdFieldTrait;
 
-    /**
-     * @var array|Category[]
-     */
-    private array $_categories;
-
-    #[\Override]
-    public function init(): void
+    protected function configure(): void
     {
-        $this->items = Category::indentNestedTree($this->getCategories(), $this->model->getI18nAttributeName('name'), $this->indent);
-        $this->prepareOptions();
+        $this->property ??= 'parent_id';
+        $this->prompt = '';
 
-        parent::init();
-    }
+        $categories = $this->getCategories();
 
-    protected function prepareOptions(): void
-    {
+        $labels = Category::indentNestedTree(
+            $categories,
+            $this->model->getI18nAttributeName('name'),
+            $this->indent);
+
         $attributeNames = $this->model->getI18nAttributeNames('slug');
 
-        foreach ($this->getCategories() as $category) {
+        foreach ($categories as $category) {
+            $attributes = ['label' => $labels[$category->id]];
+
             foreach ($attributeNames as $language => $attributeName) {
-                $this->options['options'][$category->id]['data-value'][] = $this->getParentIdOptionDataValue($category, $language);
+                $attributes['data-value'][] = $this->getParentIdOptionDataValue($category, $language);
             }
 
             if ($category->lft >= $this->model->lft && $category->rgt <= $this->model->rgt) {
-                $this->options['options'][$category->id]['disabled'] = true;
+                $attributes['disabled'] = true;
             }
+
+            $this->addItem($category->id, $attributes);
         }
+
+        parent::configure();
     }
 
-    /**
-     * @return T[]
-     */
     protected function getCategories(): array
     {
-        $this->_categories ??= array_filter($this->findCategories(), fn (Category $category): bool => $category->hasDescendantsEnabled());
-        return $this->_categories;
+        return array_filter($this->findCategories(), fn (Category $category): bool => $category->hasDescendantsEnabled());
     }
 
     /**

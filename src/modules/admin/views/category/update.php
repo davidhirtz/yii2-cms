@@ -15,51 +15,38 @@ use davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider;
 use davidhirtz\yii2\cms\modules\admin\widgets\forms\CategoryActiveForm;
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\CategoryGridView;
 use davidhirtz\yii2\cms\modules\admin\widgets\navs\CmsSubmenu;
-use davidhirtz\yii2\cms\modules\admin\widgets\panels\CategoryHelpPanel;
-use davidhirtz\yii2\skeleton\helpers\Html;
+use davidhirtz\yii2\cms\modules\admin\widgets\panels\CategoryPanel;
 use davidhirtz\yii2\skeleton\web\View;
-use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
 use davidhirtz\yii2\skeleton\widgets\forms\DeleteActiveForm;
+use davidhirtz\yii2\skeleton\widgets\forms\FormContainer;
+use davidhirtz\yii2\skeleton\widgets\grids\GridContainer;
 
 $this->title(Yii::t('cms', 'Edit Category'));
-?>
 
-<?= CmsSubmenu::widget([
-    'model' => $category,
-]); ?>
 
-<?= Html::errorSummary($category); ?>
+echo CmsSubmenu::make()
+    ->model($category);
 
-<?= Panel::widget([
-    'title' => $this->title,
-    'content' => CategoryActiveForm::widget([
-        'model' => $category,
-    ]),
-]); ?>
+echo FormContainer::make()
+    ->title($this->title)
+    ->form(CategoryActiveForm::make()
+        ->model($category));
 
-<?php if ($category->getBranchCount()) {
-    echo Panel::widget([
-        'title' => Yii::t('cms', 'Subcategories'),
-        'content' => CategoryGridView::widget([
-            'dataProvider' => $provider,
-            'layout' => '{items}',
-        ]),
-    ]);
+if ($category->getBranchCount()) {
+    echo GridContainer::make()
+        ->title(Yii::t('cms', 'Subcategories'))
+        ->content(CategoryGridView::make()
+            ->provider($provider));
 }
-?>
 
-<?= CategoryHelpPanel::widget([
-    'id' => 'operations',
-    'model' => $category,
-]); ?>
+echo CategoryPanel::make()
+    ->model($category);
 
-<?php if (Yii::$app->getUser()->can(Category::AUTH_CATEGORY_DELETE, ['category' => $category])) {
-    echo Panel::widget([
-        'type' => 'danger',
-        'title' => Yii::t('cms', 'Delete Category'),
-        'content' => DeleteActiveForm::widget([
-            'model' => $category,
-            'message' => Yii::t('cms', 'Warning: Deleting this category cannot be undone. All related sections will also be unrecoverably deleted. All subcategories will also be unrecoverably deleted. Please be certain!')
-        ]),
-    ]);
-} ?>
+if (Yii::$app->getUser()->can(Category::AUTH_CATEGORY_DELETE, ['category' => $category])) {
+    echo FormContainer::make()
+        ->danger()
+        ->title(Yii::t('cms', 'Delete Category'))
+        ->form(DeleteActiveForm::make()
+            ->model($category)
+            ->message(Yii::t('cms', 'Warning: Deleting this category cannot be undone. All related sections will also be unrecoverably deleted. All subcategories will also be unrecoverably deleted. Please be certain!')));
+}

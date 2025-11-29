@@ -14,13 +14,6 @@ trait ParentIdFieldTrait
     public string $indent = '–';
     public int|false $parentSlugMaxLength = 80;
 
-    protected ?array $items = [];
-
-    public function run(): string
-    {
-        return Html::activeDropDownList($this->model, $this->attribute, $this->items, $this->options);
-    }
-
     protected function getParentIdOptionDataValue(Category|Entry $model, ?string $language = null): string
     {
         return Yii::$app->getI18n()->callback($language, function () use ($model): string {

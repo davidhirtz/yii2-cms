@@ -8,56 +8,51 @@ use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\Section;
-use davidhirtz\yii2\cms\modules\ModuleTrait;
-use davidhirtz\yii2\skeleton\helpers\Html;
-use davidhirtz\yii2\skeleton\widgets\forms\traits\ContentFieldTrait;
-use davidhirtz\yii2\skeleton\widgets\forms\traits\ModelTimestampTrait;
-use davidhirtz\yii2\skeleton\widgets\forms\traits\StatusFieldTrait;
-use davidhirtz\yii2\skeleton\widgets\forms\traits\TypeFieldTrait;
-use Yii;
-use yii\helpers\ArrayHelper;
-use yii\widgets\ActiveField;
+use davidhirtz\yii2\skeleton\widgets\forms\fields\InputField;
+use davidhirtz\yii2\skeleton\widgets\forms\fields\SelectField;
+use davidhirtz\yii2\skeleton\widgets\forms\fields\TextareaField;
+use davidhirtz\yii2\skeleton\widgets\forms\fields\TinyMceField;
+use Stringable;
+use davidhirtz\yii2\skeleton\helpers\ArrayHelper;
 
 /**
  * @property Asset|Category|Entry|Section $model
  */
-abstract class ActiveForm extends \davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm
+abstract class ActiveForm extends \davidhirtz\yii2\skeleton\widgets\forms\ActiveForm
 {
-    use ModelTimestampTrait;
-    use ModuleTrait;
-    use ContentFieldTrait;
-    use StatusFieldTrait;
-    use TypeFieldTrait;
-
-    public bool $hasStickyButtons = true;
-
-    public function descriptionField(array $options = []): ActiveField|string
+    protected function getStatusField(): ?Stringable
     {
-        $options['inputOptions']['style']['min-height'] ??= '4.5rem';
-        return $this->field($this->model, 'description', $options)->textarea();
+        return SelectField::make()
+            ->model($this->model)
+            ->property('status')
+            ->items(ArrayHelper::getColumn($this->model::getStatuses(), 'name'));
     }
 
-    public function slugField(array $options = []): ActiveField|string
+    protected function getTypeField(): ?Stringable
     {
-        $language = ArrayHelper::remove($options, 'language', Yii::$app->sourceLanguage);
-        $attribute = $this->model->getI18nAttributeName('slug', $language);
-
-        return $this->field($this->model, $attribute, $options)->slug([
-            'baseUrl' => Html::tag('span', $this->getSlugBaseUrl($language), [
-                'id' => $this->getSlugId($language),
-                'class' => 'text-truncate',
-            ]),
-        ]);
+        return SelectField::make()
+            ->model($this->model)
+            ->property('type')
+            ->items(ArrayHelper::getColumn($this->model::getTypes(), 'name'));
     }
 
-    public function getSlugBaseUrl(?string $language = null): string
+    protected function getNameField(): ?Stringable
     {
-        $manager = Yii::$app->getUrlManager();
-        return rtrim((string)$manager->createAbsoluteUrl(['/', 'language' => $manager->i18nUrl || $manager->i18nSubdomain ? $language : null]), '/') . '/';
+        return InputField::make()
+            ->property('name');
     }
 
-    public function getSlugId(?string $language = null): string
+    protected function getContentField(): ?Stringable
     {
-        return $this->getId() . '-' . $this->model->getI18nAttributeName('slug', $language);
+        if (!$this->model->contentType) {
+            return null;
+        }
+
+        return $this->model->contentType === 'html'
+            ? TinyMceField::make()
+                ->property('content')
+                ->validator($this->model->htmlValidator)
+            : TextareaField::make()
+                ->property('content');
     }
 }
