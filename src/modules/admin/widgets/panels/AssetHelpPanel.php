@@ -11,7 +11,7 @@ use davidhirtz\yii2\cms\modules\admin\widgets\panels\traits\UpdateFileButtonTrai
 /**
  * @property Asset $model
  */
-class AssetHelpPanel extends HelpPanel
+class AssetHelpPanel extends AbstractPanel
 {
     use UpdateFileButtonTrait;
 
