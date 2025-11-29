@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace davidhirtz\yii2\cms\modules\admin\widgets\forms\fields;
 
 use davidhirtz\yii2\cms\models\Category;
+use davidhirtz\yii2\cms\models\collections\CategoryCollection;
 use davidhirtz\yii2\cms\models\queries\CategoryQuery;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\skeleton\widgets\forms\fields\SelectField;
@@ -51,23 +52,6 @@ class CategoryParentIdSelectField extends SelectField
 
     protected function getCategories(): array
     {
-        return array_filter($this->findCategories(), fn (Category $category): bool => $category->hasDescendantsEnabled());
-    }
-
-    /**
-     * @return T[]
-     */
-    protected function findCategories(): array
-    {
-        return $this->getCategoryQuery()
-            ->whereHasDescendantsEnabled()
-            ->indexBy('id')
-            ->all();
-    }
-
-    protected function getCategoryQuery(): CategoryQuery
-    {
-        return Category::find()
-            ->replaceI18nAttributes();
+        return array_filter(CategoryCollection::getAll(), fn (Category $category): bool => $category->hasDescendantsEnabled());
     }
 }

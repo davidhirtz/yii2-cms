@@ -29,7 +29,7 @@ class CategoryGridView extends GridView
     use CategoryGridTrait;
     use ModuleTrait;
 
-    public string $categoryParamName = 'id';
+    public string $categoryParamName = 'parent';
     public bool $showUrl = true;
 
     #[Override]
@@ -37,6 +37,10 @@ class CategoryGridView extends GridView
     {
         $this->attributes['id'] ??= 'categories';
         $this->model ??= Category::instance();
+
+        if ($this->provider->category) {
+            $this->layout = '{items}';
+        }
 
         /** @see CategoryController::actionOrder() */
         $this->orderRoute = ['order', 'id' => $this->provider->category->id ?? null];

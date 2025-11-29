@@ -1,8 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
 /**
- * Update category
  * @see \davidhirtz\yii2\cms\modules\admin\controllers\CategoryController::actionUpdate()
  *
  * @var View $this
@@ -13,7 +13,7 @@ declare(strict_types=1);
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider;
 use davidhirtz\yii2\cms\modules\admin\widgets\forms\CategoryActiveForm;
-use davidhirtz\yii2\cms\modules\admin\widgets\grids\CategoryGridView;
+use davidhirtz\yii2\cms\modules\admin\widgets\grids\traits\CategoryParentGridView;
 use davidhirtz\yii2\cms\modules\admin\widgets\navs\CmsSubmenu;
 use davidhirtz\yii2\cms\modules\admin\widgets\panels\CategoryPanel;
 use davidhirtz\yii2\skeleton\web\View;
@@ -35,7 +35,7 @@ echo FormContainer::make()
 if ($category->getBranchCount()) {
     echo GridContainer::make()
         ->title(Yii::t('cms', 'Subcategories'))
-        ->content(CategoryGridView::make()
+        ->grid(CategoryParentGridView::make()
             ->provider($provider));
 }
 

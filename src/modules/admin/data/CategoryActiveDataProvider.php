@@ -10,6 +10,7 @@ use davidhirtz\yii2\cms\models\EntryCategory;
 use davidhirtz\yii2\cms\models\queries\CategoryQuery;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\skeleton\db\ActiveQuery;
+use Override;
 use yii\data\ActiveDataProvider;
 use yii\data\Pagination;
 use yii\data\Sort;
@@ -27,8 +28,9 @@ class CategoryActiveDataProvider extends ActiveDataProvider
     public ?Entry $entry = null;
     public ?string $searchString = null;
     public bool $showNestedCategories = true;
+    public ?int $type = null;
 
-    #[\Override]
+    #[Override]
     public function init(): void
     {
         $this->query = Category::find();
@@ -65,15 +67,19 @@ class CategoryActiveDataProvider extends ActiveDataProvider
         } else {
             $this->query->andWhere(['parent_id' => $this->category?->id]);
         }
+
+        if ($this->type) {
+            $this->query->andWhere(['type' => $this->type]);
+        }
     }
 
-    #[\Override]
+    #[Override]
     public function getPagination(): Pagination|false
     {
         return false;
     }
 
-    #[\Override]
+    #[Override]
     public function getSort(): Sort|false
     {
         return false;

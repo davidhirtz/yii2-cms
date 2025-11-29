@@ -33,7 +33,7 @@ trait CategoryGridTrait
     protected function initHeader(): void
     {
         $this->header ??= [
-            $this->categoryDropdown(),
+            $this->getCategoryDropdown(),
             $this->search->getToolbarItem(),
         ];
     }
@@ -124,7 +124,7 @@ trait CategoryGridTrait
         return $this->provider->searchString || $category->entryCategory;
     }
 
-    protected function categoryDropdown(): ?FilterDropdown
+    protected function getCategoryDropdown(): ?FilterDropdown
     {
         return $this->provider->category
             ? FilterDropdown::make()
