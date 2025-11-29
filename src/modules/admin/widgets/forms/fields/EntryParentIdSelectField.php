@@ -6,46 +6,35 @@ namespace davidhirtz\yii2\cms\modules\admin\widgets\forms\fields;
 
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\queries\EntryQuery;
+use davidhirtz\yii2\cms\modules\admin\widgets\forms\traits\ParentIdSelectFieldTrait;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
+use davidhirtz\yii2\skeleton\helpers\ArrayHelper;
 use davidhirtz\yii2\skeleton\helpers\Html;
+use davidhirtz\yii2\skeleton\widgets\forms\fields\SelectField;
+use Override;
 use Yii;
-use yii\widgets\InputWidget;
 
 /**
  * @template T of Entry
  * @property T $model
  */
-class EntryParentIdDropDown extends InputWidget
+class EntryParentIdSelectField extends SelectField
 {
     use ModuleTrait;
-    use ParentIdFieldTrait;
+    use ParentIdSelectFieldTrait;
 
     /**
-     * @var array|Entry[]
+     * @var T[]
      */
-    private array $_entries;
+    private array $entries;
 
-    #[\Override]
-    public function init(): void
+    #[Override]
+    protected function configure(): void
     {
         $this->setItemsFromEntries($this->getEntries());
-        $this->prepareOptions();
+        $this->promptAttributes = ArrayHelper::remove($this->attributes, 'promptAttributes', []);
 
-        parent::init();
-    }
-
-    protected function prepareOptions(): void
-    {
-        foreach ($this->getEntries() as $entry) {
-            foreach ($this->model->getI18nAttributeNames('slug') as $language => $attribute) {
-                $this->options['options'][$entry->id]['data-value'][] = $this->getParentIdOptionDataValue($entry, $language);
-            }
-
-            if (!$this->model->getIsNewRecord()
-                && in_array($this->model->id, [...$entry->getAncestorIds(), $entry->id], true)) {
-                $this->options['options'][$entry->id]['disabled'] = true;
-            }
-        }
+        parent::configure();
     }
 
     /**
@@ -59,7 +48,17 @@ class EntryParentIdDropDown extends InputWidget
                 $count = count($entry->getAncestorIds());
                 $indent = ($count ? (str_repeat($this->indent, $count) . ' ') : '');
 
-                $this->items[$entry->id] = $indent . $name;
+                $item = [
+                    'label' => $indent . $name,
+                    'disabled' => !$this->model->getIsNewRecord()
+                        && in_array($this->model->id, [...$entry->getAncestorIds(), $entry->id], true),
+                ];
+
+                foreach ($this->model->getI18nAttributeNames('slug') as $language => $attribute) {
+                    $item['data-value'][] = $this->getParentIdOptionDataValue($entry, $language);
+                }
+
+                $this->addItem($entry->id, $item);
 
                 if ($entry->entry_count) {
                     $this->setItemsFromEntries($entries, $entry->id);
@@ -73,8 +72,8 @@ class EntryParentIdDropDown extends InputWidget
      */
     protected function getEntries(): array
     {
-        $this->_entries ??= array_filter($this->findEntries(), fn (Entry $entry) => $entry->hasDescendantsEnabled());
-        return $this->_entries;
+        $this->entries ??= array_filter($this->findEntries(), fn (Entry $entry) => $entry->hasDescendantsEnabled());
+        return $this->entries;
     }
 
     /**

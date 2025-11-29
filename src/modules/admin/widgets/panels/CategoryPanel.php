@@ -5,29 +5,15 @@ declare(strict_types=1);
 namespace davidhirtz\yii2\cms\modules\admin\widgets\panels;
 
 use davidhirtz\yii2\cms\models\Category;
-use davidhirtz\yii2\cms\modules\admin\widgets\panels\traits\LinkButtonTrait;
 use davidhirtz\yii2\skeleton\html\Button;
-use davidhirtz\yii2\skeleton\widgets\panels\Panel;
-use davidhirtz\yii2\skeleton\widgets\traits\ModelWidgetTrait;
-use davidhirtz\yii2\skeleton\widgets\Widget;
 use Stringable;
 use Yii;
 
 /**
  * @property Category $model
  */
-class CategoryPanel extends Widget
+class CategoryPanel extends AbstractPanel
 {
-    use ModelWidgetTrait;
-    use LinkButtonTrait;
-
-    protected function renderContent(): string|Stringable
-    {
-        return Panel::make()
-            ->attribute('id', 'operations')
-            ->buttons(...$this->getButtons());
-    }
-
     protected function getButtons(): array
     {
         return array_filter([

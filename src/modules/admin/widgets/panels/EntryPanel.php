@@ -7,14 +7,14 @@ namespace davidhirtz\yii2\cms\modules\admin\widgets\panels;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\modules\admin\controllers\EntryController;
 use davidhirtz\yii2\skeleton\html\Button;
-use davidhirtz\yii2\skeleton\html\Modal;
+use davidhirtz\yii2\skeleton\widgets\Modal;
 use Stringable;
 use Yii;
 
 /**
  * @property Entry $model
  */
-class EntryHelpPanel extends HelpPanel
+class EntryPanel extends AbstractPanel
 {
     protected function getButtons(): array
     {

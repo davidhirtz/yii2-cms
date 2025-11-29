@@ -44,6 +44,12 @@ class AssetGridView extends GridView
     public Entry|Section $parent;
     public string $layout = '{header}{items}{footer}';
 
+    public function parent(Entry|Section $parent): static
+    {
+        $this->parent = $parent;
+        return $this;
+    }
+
     #[Override]
     public function init(): void
     {

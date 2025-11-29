@@ -6,24 +6,21 @@ namespace davidhirtz\yii2\cms\modules\admin\widgets\forms\fields;
 
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\collections\CategoryCollection;
-use davidhirtz\yii2\cms\models\queries\CategoryQuery;
+use davidhirtz\yii2\cms\modules\admin\widgets\forms\traits\ParentIdSelectFieldTrait;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\skeleton\widgets\forms\fields\SelectField;
 
 /**
  * @template T of Category
- * @property Category $model
+ * @property T $model
  */
 class CategoryParentIdSelectField extends SelectField
 {
     use ModuleTrait;
-    use ParentIdFieldTrait;
+    use ParentIdSelectFieldTrait;
 
     protected function configure(): void
     {
-        $this->property ??= 'parent_id';
-        $this->prompt = '';
-
         $categories = $this->getCategories();
 
         $labels = Category::indentNestedTree(
@@ -34,17 +31,16 @@ class CategoryParentIdSelectField extends SelectField
         $attributeNames = $this->model->getI18nAttributeNames('slug');
 
         foreach ($categories as $category) {
-            $attributes = ['label' => $labels[$category->id]];
+            $item = [
+                'label' => $labels[$category->id],
+                'disabled' => $category->lft >= $this->model->lft && $category->rgt <= $this->model->rgt,
+            ];
 
             foreach ($attributeNames as $language => $attributeName) {
-                $attributes['data-value'][] = $this->getParentIdOptionDataValue($category, $language);
+                $item['data-value'][] = $this->getParentIdOptionDataValue($category, $language);
             }
 
-            if ($category->lft >= $this->model->lft && $category->rgt <= $this->model->rgt) {
-                $attributes['disabled'] = true;
-            }
-
-            $this->addItem($category->id, $attributes);
+            $this->addItem($category->id, $item);
         }
 
         parent::configure();

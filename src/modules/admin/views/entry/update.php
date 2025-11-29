@@ -14,44 +14,35 @@ use davidhirtz\yii2\cms\modules\admin\widgets\forms\EntryActiveForm;
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\AssetGridView;
 use davidhirtz\yii2\cms\modules\admin\widgets\navs\CmsSubmenu;
 use davidhirtz\yii2\cms\modules\admin\widgets\panels\EntryDeletePanel;
-use davidhirtz\yii2\cms\modules\admin\widgets\panels\EntryHelpPanel;
+use davidhirtz\yii2\cms\modules\admin\widgets\panels\EntryPanel;
 use davidhirtz\yii2\skeleton\web\View;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
 use davidhirtz\yii2\skeleton\widgets\forms\ErrorSummary;
+use davidhirtz\yii2\skeleton\widgets\forms\FormContainer;
+use davidhirtz\yii2\skeleton\widgets\grids\GridContainer;
 
 $this->title(Yii::t('cms', 'Edit Entry'));
-?>
 
-<?= CmsSubmenu::widget([
+echo CmsSubmenu::make()
+    ->model($entry);
+
+echo FormContainer::make()
+    ->title($this->title)
+    ->form(EntryActiveForm::make()
+        ->model($entry);
+
+if ($entry->hasAssetsEnabled()) {
+    echo GridContainer::make()
+        ->title($entry->getAttributeLabel('asset_count'))
+        ->grid(AssetGridView::make()
+            ->parent($entry));
+}
+
+echo EntryPanel::make()([
     'model' => $entry,
-]); ?>
+]);
 
-<?= ErrorSummary::forModel($entry); ?>
-
-<?= Panel::widget([
-    'title' => $this->title,
-    'content' => EntryActiveForm::widget([
-        'model' => $entry,
-    ]),
-]); ?>
-
-<?php if ($entry->hasAssetsEnabled()) {
-    echo Panel::widget([
-        'id' => 'assets',
-        'title' => $entry->getAttributeLabel('asset_count'),
-        'content' => AssetGridView::widget([
-            'parent' => $entry,
-        ]),
-    ]);
-} ?>
-
-<?= EntryHelpPanel::widget([
-    'id' => 'operations',
-    'model' => $entry,
-]); ?>
-
-<?php if (Yii::$app->getUser()->can(Entry::AUTH_ENTRY_DELETE, ['entry' => $entry])) {
-    echo EntryDeletePanel::widget([
-        'entry' => $entry,
-    ]);
-} ?>
+if (Yii::$app->getUser()->can(Entry::AUTH_ENTRY_DELETE, ['entry' => $entry])) {
+    echo EntryDeletePanel::make()
+        ->model($entry);
+}

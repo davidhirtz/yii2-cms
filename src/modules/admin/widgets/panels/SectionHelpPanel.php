@@ -12,7 +12,7 @@ use Yii;
 /**
  * @property Section $model
  */
-class SectionHelpPanel extends HelpPanel
+class SectionHelpPanel extends AbstractPanel
 {
     protected function getButtons(): array
     {

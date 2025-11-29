@@ -5,45 +5,44 @@ declare(strict_types=1);
 namespace davidhirtz\yii2\cms\modules\admin\widgets\forms\traits;
 
 use davidhirtz\yii2\cms\models\Entry;
-use davidhirtz\yii2\cms\modules\admin\widgets\forms\fields\EntryParentIdDropDown;
-use yii\widgets\ActiveField;
+use davidhirtz\yii2\cms\modules\admin\widgets\forms\fields\EntryParentIdSelectField;
+use davidhirtz\yii2\cms\modules\ModuleTrait;
+use Stringable;
 
 /**
  * @template T of Entry
  */
 trait EntryParentIdFieldTrait
 {
-    public function parentIdField(): ActiveField|string
+    use ModuleTrait;
+
+    protected function getParentIdField(): ?Stringable
     {
         if (!static::getModule()->enableNestedEntries || !$this->model->hasParentEnabled()) {
-            return '';
+            return null;
         }
 
-        return $this->field($this->model, 'parent_id')->widget(EntryParentIdDropDown::class, [
-            'options' => $this->getParentIdOptions(),
-        ]);
+
+        return EntryParentIdSelectField::make()
+            ->attributes($this->getParentIdAttributes())
+            ->property('parent_id')
+            ->prompt();
     }
 
-    protected function getParentIdOptions(): array
+    protected function getParentIdAttributes(): array
     {
-        $options = [
-            'class' => 'form-select',
-            'encode' => false,
-            'prompt' => [
-                'text' => '',
-                'options' => [],
-            ],
-        ];
+        $attributes = [];
 
         if (!in_array('parent_slug', (array)$this->model->slugTargetAttribute, true)) {
-            return $options;
+            return $attributes;
         }
 
         foreach ($this->model->getI18nAttributeNames('slug') as $language => $attribute) {
-            $options['data-form-target'][] = '#' . $this->getSlugId($language);
-            $options['prompt']['options']['data-value'][] = $this->getSlugBaseUrl($language);
+            $attributes['data-form-target'][] = '#' . $this->getSlugId($language);
+            $attributes['promptAttributes']['data-value'][] = $this->getSlugBaseUrl($language);
         }
 
-        return $options;
+        return $attributes;
     }
+
 }
