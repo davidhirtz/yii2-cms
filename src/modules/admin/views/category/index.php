@@ -1,27 +1,25 @@
 <?php
+
 declare(strict_types=1);
 
 /**
- * Categories.
  * @see \davidhirtz\yii2\cms\modules\admin\controllers\CategoryController::actionIndex()
  *
- * @var \davidhirtz\yii2\skeleton\web\View $this
- * @var \davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider $provider
+ * @var View $this
+ * @var CategoryActiveDataProvider $provider
  */
 
+use davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider;
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\CategoryGridView;
 use davidhirtz\yii2\cms\modules\admin\widgets\navs\CmsSubmenu;
-use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
+use davidhirtz\yii2\skeleton\web\View;
+use davidhirtz\yii2\skeleton\widgets\grids\GridContainer;
 
 $this->title(Yii::t('cms', 'Categories'));
-?>
 
-<?= CmsSubmenu::widget([
-    'model' => $provider->category,
-]); ?>
+echo CmsSubmenu::make()
+    ->model($provider->category);
 
-<?= Panel::widget([
-    'content' => CategoryGridView::widget([
-        'dataProvider' => $provider,
-    ]),
-]); ?>
+echo GridContainer::make()
+    ->grid(CategoryGridView::make()
+        ->provider($provider));

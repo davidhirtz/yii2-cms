@@ -9,19 +9,20 @@ use davidhirtz\yii2\cms\modules\admin\controllers\CategoryController;
 use davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider;
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\traits\CategoryGridTrait;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
-use davidhirtz\yii2\skeleton\widgets\grids\buttons\CreateButton;
-use davidhirtz\yii2\skeleton\widgets\grids\buttons\DraggableSortButton;
-use davidhirtz\yii2\skeleton\widgets\grids\buttons\ViewButton;
-use davidhirtz\yii2\skeleton\widgets\grids\columns\ButtonsColumn;
+use davidhirtz\yii2\skeleton\widgets\grids\columns\ButtonColumn;
+use davidhirtz\yii2\skeleton\widgets\grids\columns\buttons\DraggableSortGridButton;
+use davidhirtz\yii2\skeleton\widgets\grids\columns\buttons\ViewGridButton;
+use davidhirtz\yii2\skeleton\widgets\grids\columns\Column;
+use davidhirtz\yii2\skeleton\widgets\grids\columns\TimeagoColumn;
 use davidhirtz\yii2\skeleton\widgets\grids\GridView;
-use davidhirtz\yii2\timeago\Timeago;
+use davidhirtz\yii2\skeleton\widgets\grids\toolbars\CreateButton;
 use Override;
 use Stringable;
 use Yii;
 
 /**
  * @extends GridView<Category>
- * @property CategoryActiveDataProvider $dataProvider
+ * @property CategoryActiveDataProvider $provider
  */
 class CategoryGridView extends GridView
 {
@@ -32,37 +33,32 @@ class CategoryGridView extends GridView
     public bool $showUrl = true;
 
     #[Override]
-    public function init(): void
+    public function configure(): void
     {
-        $this->setId($this->getId(false) ?? 'category-grid');
+        $this->attributes['id'] ??= 'categories';
+        $this->model ??= Category::instance();
+
+        /** @see CategoryController::actionOrder() */
+        $this->orderRoute = ['order', 'id' => $this->provider->category->id ?? null];
 
         $this->columns ??= [
-            $this->statusColumn(),
-            $this->typeColumn(),
-            $this->nameColumn(),
-            $this->branchCountColumn(),
-            $this->entryCountColumn(),
-            $this->updatedAtColumn(),
-            $this->buttonsColumn(),
+            $this->getStatusColumn(),
+            $this->getTypeColumn(),
+            $this->getNameColumn(),
+            $this->getBranchCountColumn(),
+            $this->getEntryCountColumn(),
+            $this->getUpdatedAtColumn(),
+            $this->getButtonColumn(),
         ];
-
-        if ($this->dataProvider->category) {
-            /** @see CategoryController::actionOrder() */
-            $this->orderRoute = ['order', 'id' => $this->dataProvider->category->id];
-        }
 
         $this->initAncestors();
+        $this->initHeader();
 
-        parent::init();
-    }
-
-    protected function initFooter(): void
-    {
         $this->footer ??= [
-            [
-                $this->getCreateCategoryButton(),
-            ],
+            $this->getCreateCategoryButton(),
         ];
+
+        parent::configure();
     }
 
     protected function getCreateCategoryButton(): ?Stringable
@@ -71,36 +67,34 @@ class CategoryGridView extends GridView
             return null;
         }
 
-        return Yii::createObject(CreateButton::class, [
-            Yii::t('cms', 'New Category'),
-            ['/admin/category/create', 'id' => $this->dataProvider->category->id ?? null]
-        ]);
+        return CreateButton::make()
+            ->text(Yii::t('cms', 'Create Category'))
+            ->href(['/admin/category/create', 'id' => $this->provider->category->id ?? null]);
     }
 
-    public function updatedAtColumn(): array
+    protected function getUpdatedAtColumn(): ?Column
     {
-        return [
-            'attribute' => 'updated_at',
-            'headerOptions' => ['class' => 'd-none d-lg-table-cell text-nowrap'],
-            'contentOptions' => ['class' => 'd-none d-lg-table-cell text-nowrap'],
-            'content' => fn (Category $category) => $this->dateFormat ? $category->updated_at->format($this->dateFormat) : Timeago::tag($category->updated_at)
-        ];
+        return TimeagoColumn::make()
+            ->property('updated_at');
     }
 
-    public function buttonsColumn(): array
+    protected function getButtonColumn(): ?Column
     {
-        return [
-            'class' => ButtonsColumn::class,
-            'content' => function (Category $category): array {
-                $buttons = [];
+        return ButtonColumn::make()
+            ->content($this->getButtonColumnContent(...));
+    }
 
-                if ($this->isSortable()) {
-                    $buttons[] = Yii::createObject(DraggableSortButton::class);
-                }
+    protected function getButtonColumnContent(Category $category): array
+    {
+        $buttons = [];
 
-                $buttons[] = Yii::createObject(ViewButton::class, [$category]);
-                return $buttons;
-            }
-        ];
+        if ($this->isSortable()) {
+            $buttons[] = DraggableSortGridButton::make();
+        }
+
+        $buttons[] = ViewGridButton::make()
+            ->model($category);
+
+        return $buttons;
     }
 }

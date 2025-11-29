@@ -10,7 +10,6 @@ use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\modules\admin\controllers\EntryCategoryController;
 use davidhirtz\yii2\cms\modules\admin\controllers\EntryController;
 use davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider;
-use davidhirtz\yii2\cms\modules\admin\data\EntryActiveprovider;
 use davidhirtz\yii2\cms\modules\admin\helpers\FrontendLink;
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\columns\AssetCountColumn;
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\columns\EntryCountColumn;
@@ -32,7 +31,6 @@ use davidhirtz\yii2\skeleton\widgets\grids\toolbars\CreateButton;
 use davidhirtz\yii2\skeleton\widgets\grids\toolbars\FilterDropdown;
 use davidhirtz\yii2\skeleton\widgets\grids\traits\StatusGridViewTrait;
 use davidhirtz\yii2\skeleton\widgets\grids\traits\TypeGridViewTrait;
-use davidhirtz\yii2\timeago\Timeago;
 use Override;
 use Stringable;
 use Yii;
@@ -330,6 +328,9 @@ class EntryGridView extends GridView
             : null;
     }
 
+    /**
+     * @param T $model
+     */
     #[Override]
     protected function getRoute(ActiveRecordInterface $model, array $params = []): array|false
     {

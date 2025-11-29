@@ -38,9 +38,9 @@ class EntryCategoryGridView extends GridView
         $this->columns ??= [
             $this->statusColumn(),
             $this->typeColumn(),
-            $this->nameColumn(),
-            $this->branchCountColumn(),
-            $this->entryCountColumn(),
+            $this->getNameColumn(),
+            $this->getBranchCountColumn(),
+            $this->getEntryCountColumn(),
             $this->updatedAtColumn(),
             $this->buttonsColumn(),
         ];
@@ -94,11 +94,5 @@ class EntryCategoryGridView extends GridView
     protected function getRoute(ActiveRecordInterface $model, array $params = []): array|false
     {
         return ['category/update', 'id' => $model->id];
-    }
-
-    #[\Override]
-    public function getModel(): Category
-    {
-        return Category::instance();
     }
 }
