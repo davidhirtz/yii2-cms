@@ -12,6 +12,7 @@ use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\models\SectionEntry;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\skeleton\data\ActiveDataProvider;
+use Override;
 use yii\data\Pagination;
 use yii\data\Sort;
 use yii\helpers\ArrayHelper;
@@ -60,7 +61,7 @@ class EntryActiveDataProvider extends ActiveDataProvider
         parent::__construct($config);
     }
 
-    #[\Override]
+    #[Override]
     protected function prepareQuery(): void
     {
         $this->initQuery();
@@ -122,7 +123,7 @@ class EntryActiveDataProvider extends ActiveDataProvider
      */
     protected function whereEntry(): void
     {
-        if ($this->searchString) {
+        if ($this->searchString || $this->category) {
             return;
         }
 
@@ -130,10 +131,8 @@ class EntryActiveDataProvider extends ActiveDataProvider
             return;
         }
 
-        if (!$this->category?->getEntriesOrderBy()) {
-            if ($orderBy = $this->parent?->getDescendantsOrderBy()) {
-                $this->query->orderBy($orderBy);
-            }
+        if ($orderBy = $this->parent?->getDescendantsOrderBy()) {
+            $this->query->orderBy($orderBy);
         }
 
         $this->query->andWhere(['parent_id' => $this->parent?->id]);
@@ -148,7 +147,7 @@ class EntryActiveDataProvider extends ActiveDataProvider
         }
     }
 
-    #[\Override]
+    #[Override]
     protected function prepareModels(): array
     {
         if ($this->getSort() !== false) {
@@ -164,19 +163,19 @@ class EntryActiveDataProvider extends ActiveDataProvider
         return $models;
     }
 
-    #[\Override]
+    #[Override]
     public function getPagination(): Pagination|false
     {
         return !$this->isOrderedByPosition() ? parent::getPagination() : false;
     }
 
-    #[\Override]
+    #[Override]
     public function getSort(): Sort|false
     {
         return !$this->isOrderedByPosition() ? parent::getSort() : false;
     }
 
-    #[\Override]
+    #[Override]
     public function setSort($value): void
     {
         if (is_array($value)) {

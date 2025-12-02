@@ -20,6 +20,7 @@ use davidhirtz\yii2\skeleton\modules\admin\widgets\grids\traits\StatusGridViewTr
 use davidhirtz\yii2\skeleton\modules\admin\widgets\grids\traits\TypeGridViewTrait;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\ButtonDropdown;
 use davidhirtz\yii2\timeago\Timeago;
+use Override;
 use Yii;
 use yii\db\ActiveRecordInterface;
 use yii\helpers\Url;
@@ -83,7 +84,7 @@ class EntryGridView extends GridView
     private ?array $_categories = null;
     private ?array $_categoryNames = null;
 
-    #[\Override]
+    #[Override]
     public function init(): void
     {
         $this->id = $this->getId(false) ?? 'entries';
@@ -179,7 +180,7 @@ class EntryGridView extends GridView
         return Html::a(Html::iconText('plus', Yii::t('cms', 'New Entry')), $route, ['class' => 'btn btn-primary']);
     }
 
-    #[\Override]
+    #[Override]
     protected function getSelectionButtonItems(): array
     {
         if (!Yii::$app->getUser()->can(Entry::AUTH_ENTRY_UPDATE)) {
@@ -364,19 +365,27 @@ class EntryGridView extends GridView
      * @param T $model
      * @noinspection PhpDocSignatureInspection
      */
-    #[\Override]
+    #[Override]
     protected function getRoute(ActiveRecordInterface $model, array $params = []): array|false
     {
         return array_merge(Yii::$app->getRequest()->get(), $model->getAdminRoute(), $params);
     }
 
+
     /**
      * @return T
      * @noinspection PhpDocSignatureInspection
      */
-    #[\Override]
+    #[Override]
     public function getModel(): Entry
     {
         return Entry::instance();
+    }
+
+    public function isSortedByPosition(): bool
+    {
+        return $this->search === null
+            && $this->dataProvider->category === null
+            && parent::isSortedByPosition();
     }
 }

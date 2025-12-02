@@ -6,6 +6,7 @@ namespace davidhirtz\yii2\cms\modules\admin\widgets\forms;
 
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\modules\admin\widgets\forms\traits\CategoryParentIdFieldTrait;
+use Override;
 
 /**
  * @property Category $model
@@ -22,7 +23,7 @@ class CategoryActiveForm extends ActiveForm
      * @uses static::descriptionField()
      * @uses static::slugField()
      */
-    #[\Override]
+    #[Override]
     public function init(): void
     {
         $this->fields ??= [

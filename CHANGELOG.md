@@ -1,6 +1,7 @@
-## 2.4.7 (in development)
+## 2.4.7 (Dec 2, 2025)
 
 - Changed `Section::hasAssetsEnabled()` and `Section::hasEntriesEnabled()` to not check hidden fields for backend views
+- Changed `EntryGridView` to remove parent entry scope and "orderByPosition" when category or search is selected
 
 ## 2.4.6 (Oct 21, 2025)
 
