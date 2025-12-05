@@ -340,4 +340,9 @@ class EntryGridView extends GridView
             ...$params,
         ];
     }
+
+    protected function isSortable(): bool
+    {
+        return $this->provider->category === null && parent::isSortable();
+    }
 }

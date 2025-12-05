@@ -9,17 +9,21 @@ use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\cms\modules\admin\controllers\AssetController;
 use davidhirtz\yii2\cms\modules\admin\controllers\EntryController;
-use davidhirtz\yii2\cms\modules\admin\widgets\grids\columns\AssetThumbnailColumn;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
 use davidhirtz\yii2\media\models\File;
+use davidhirtz\yii2\media\modules\admin\widgets\grids\columns\FileThumbnailColumn;
 use davidhirtz\yii2\media\modules\admin\widgets\grids\traits\AssetGridViewTrait;
 use davidhirtz\yii2\media\modules\admin\widgets\grids\traits\FileGridViewTrait;
-use davidhirtz\yii2\skeleton\helpers\Html;
+use davidhirtz\yii2\skeleton\html\A;
 use davidhirtz\yii2\skeleton\html\Button;
-use davidhirtz\yii2\skeleton\widgets\grids\buttons\DraggableSortButton;
-use davidhirtz\yii2\skeleton\widgets\grids\buttons\ViewButton;
-use davidhirtz\yii2\skeleton\widgets\grids\columns\ButtonsColumn;
+use davidhirtz\yii2\skeleton\html\Div;
+use davidhirtz\yii2\skeleton\widgets\grids\columns\ButtonColumn;
+use davidhirtz\yii2\skeleton\widgets\grids\columns\buttons\DraggableSortGridButton;
+use davidhirtz\yii2\skeleton\widgets\grids\columns\buttons\ViewGridButton;
+use davidhirtz\yii2\skeleton\widgets\grids\columns\Column;
+use davidhirtz\yii2\skeleton\widgets\grids\columns\DataColumn;
 use davidhirtz\yii2\skeleton\widgets\grids\GridView;
+use davidhirtz\yii2\skeleton\widgets\grids\toolbars\GridToolbarItem;
 use davidhirtz\yii2\skeleton\widgets\grids\traits\StatusGridViewTrait;
 use davidhirtz\yii2\skeleton\widgets\grids\traits\TypeGridViewTrait;
 use Override;
@@ -31,7 +35,7 @@ use yii\db\ActiveRecordInterface;
 
 /**
  * @extends GridView<Asset>
- * @property ActiveDataProvider|null $dataProvider
+ * @property ActiveDataProvider|null $provider
  */
 class AssetGridView extends GridView
 {
@@ -42,6 +46,7 @@ class AssetGridView extends GridView
     use TypeGridViewTrait;
 
     public Entry|Section $parent;
+
     public string $layout = '{header}{items}{footer}';
 
     public function parent(Entry|Section $parent): static
@@ -51,22 +56,31 @@ class AssetGridView extends GridView
     }
 
     #[Override]
-    public function init(): void
+    protected function configure(): void
     {
-        $this->setId($this->getId(false) ?? 'asset-grid');
+        $this->attributes['id'] ??= 'asset-grid';
+        $this->model ??= Asset::instance();
 
-        $this->dataProvider ??= new ActiveDataProvider([
+        $this->provider ??= new ActiveDataProvider([
             'query' => $this->getParentAssetQuery(),
             'sort' => false,
         ]);
 
         $this->columns ??= [
-            $this->statusColumn(),
-            $this->thumbnailColumn(),
-            $this->typeColumn(),
-            $this->nameColumn(),
-            $this->dimensionsColumn(),
-            $this->buttonsColumn(),
+            $this->getStatusColumn(),
+            $this->getThumbnailColumn(),
+            $this->getTypeColumn(),
+            $this->getNameColumn(),
+            $this->getDimensionsColumn(),
+            $this->getButtonColumn(),
+        ];
+
+        $this->footer ??= [
+            GridToolbarItem::make()
+                ->class('form-row')
+                ->content(Div::make()
+                    ->class('form-content btn-group')
+                    ->content(...$this->getFooterButtons())),
         ];
 
         /**
@@ -75,7 +89,7 @@ class AssetGridView extends GridView
          */
         $this->orderRoute = ['cms/asset/order', $this->parent->getParamName() => $this->parent->id];
 
-        parent::init();
+        parent::configure();
     }
 
     protected function getParentAssetQuery(): ActiveQuery
@@ -83,15 +97,6 @@ class AssetGridView extends GridView
         return $this->parent->getAssets()
             ->andWhere(['section_id' => $this->parent instanceof Section ? $this->parent->id : null])
             ->with('file');
-    }
-
-    protected function initFooter(): void
-    {
-        $this->footer ??= [
-            [
-                ...$this->getFooterButtons(),
-            ],
-        ];
     }
 
     /**
@@ -127,71 +132,81 @@ class AssetGridView extends GridView
             ->href($this->getParentRoute('cms/asset/index'));
     }
 
-    protected function buttonsColumn(): array
+    protected function getButtonColumn(): ?Column
     {
-        return [
-            'class' => ButtonsColumn::class,
-            'content' => function (Asset $asset) {
-                $user = Yii::$app->getUser();
-                $buttons = [];
-
-                if ($this->isSortable() && $this->dataProvider->getCount() > 1) {
-                    if ($asset->isEntryAsset()
-                        ? $user->can(Entry::AUTH_ENTRY_ASSET_ORDER, ['entry' => $asset->entry])
-                        : $user->can(Section::AUTH_SECTION_ASSET_ORDER, ['section' => $asset->section])
-                    ) {
-                        $buttons[] = Yii::createObject(DraggableSortButton::class);
-                    }
-                }
-
-                if ($user->can(File::AUTH_FILE_UPDATE, ['file' => $asset->file])) {
-                    $buttons[] = $this->getFileUpdateButton($asset);
-                }
-
-                $permission = $asset->isEntryAsset()
-                    ? Entry::AUTH_ENTRY_ASSET_UPDATE
-                    : Section::AUTH_SECTION_ASSET_UPDATE;
-
-                if ($user->can($permission, ['asset' => $asset])) {
-                    $buttons[] = Yii::createObject(ViewButton::class, [$asset]);
-                }
-
-                $permission = $asset->isEntryAsset()
-                    ? Entry::AUTH_ENTRY_ASSET_DELETE
-                    : Section::AUTH_SECTION_ASSET_DELETE;
-
-                if ($user->can($permission, ['asset' => $asset])) {
-                    $buttons[] = $this->getDeleteButton($asset);
-                }
-
-                return $buttons;
-            }
-        ];
+        return ButtonColumn::make()
+            ->content($this->getButtonColumnContent(...));
     }
 
-    protected function nameColumn(): array
+    protected function getButtonColumnContent(Asset $asset): array
     {
-        return [
-            'attribute' => $this->getModel()->getI18nAttributeName('name'),
-            'content' => function (Asset $asset) {
-                $name = $asset->getI18nAttribute('name');
-                $route = $this->getRoute($asset);
+        $user = Yii::$app->getUser();
+        $buttons = [];
 
-                $tag = $name
-                    ? Html::tag('strong', Html::encode($asset->getI18nAttribute('name')))
-                    : Html::tag('span', Html::encode($asset->file->name), ['class' => 'text-muted']);
-
-                return $route ? Html::a($tag, $route) : $tag;
+        if ($this->isSortable() && $this->provider->getCount() > 1) {
+            if ($asset->isEntryAsset()
+                ? $user->can(Entry::AUTH_ENTRY_ASSET_ORDER, ['entry' => $asset->entry])
+                : $user->can(Section::AUTH_SECTION_ASSET_ORDER, ['section' => $asset->section])
+            ) {
+                $buttons[] = DraggableSortGridButton::make();
             }
-        ];
+        }
+
+        if ($user->can(File::AUTH_FILE_UPDATE, ['file' => $asset->file])) {
+            $buttons[] = $this->getFileUpdateButton($asset);
+        }
+
+        $permission = $asset->isEntryAsset()
+            ? Entry::AUTH_ENTRY_ASSET_UPDATE
+            : Section::AUTH_SECTION_ASSET_UPDATE;
+
+        if ($user->can($permission, ['asset' => $asset])) {
+            $buttons[] = ViewGridButton::make()
+                ->model($asset);
+        }
+
+        $permission = $asset->isEntryAsset()
+            ? Entry::AUTH_ENTRY_ASSET_DELETE
+            : Section::AUTH_SECTION_ASSET_DELETE;
+
+        if ($user->can($permission, ['asset' => $asset])) {
+            $buttons[] = $this->getDeleteButton($asset);
+        }
+
+        return $buttons;
     }
 
-    protected function thumbnailColumn(): array
+    protected function getNameColumn(): ?Column
     {
-        return [
-            'class' => AssetThumbnailColumn::class,
-            'route' => fn (Asset $asset) => $this->getRoute($asset),
-        ];
+        return DataColumn::make()
+            ->property($this->model->getI18nAttributeName('name'))
+            ->content($this->getNameColumnContent(...));
+    }
+
+    protected function getNameColumnContent(Asset $asset): ?Stringable
+    {
+        $name = $asset->getI18nAttribute('name');
+        $route = $this->getRoute($asset);
+
+        $content = $name
+            ? Div::make()
+                ->class('strong')
+                ->text($name)
+            : Div::make()
+                ->class('text-muted')
+                ->text($asset->file->name);
+
+        return $route
+            ? A::make()
+                ->content($content)
+                ->href($route)
+            : $content;
+    }
+
+    protected function getThumbnailColumn(): ?Column
+    {
+        return FileThumbnailColumn::make()
+            ->url(fn (Asset $asset) => $this->getRoute($asset));
     }
 
     protected function getFileUploadRoute(): array
@@ -206,23 +221,16 @@ class AssetGridView extends GridView
         return [$action, $this->parent->getParamName() => $this->parent->id, ...$params];
     }
 
+    /**
+     * @param Asset $model
+     */
     #[Override]
     protected function getRoute(ActiveRecordInterface $model, array $params = []): array|false
     {
-        $permissionName = $model->isEntryAsset()
-            ? Entry::AUTH_ENTRY_ASSET_UPDATE
-            : Section::AUTH_SECTION_ASSET_UPDATE;
+        $permissionName = $model->isEntryAsset() ? Entry::AUTH_ENTRY_ASSET_UPDATE : Section::AUTH_SECTION_ASSET_UPDATE;
 
-        if (!Yii::$app->getUser()->can($permissionName, ['asset' => $model])) {
-            return false;
-        }
-
-        return ['cms/asset/update', 'id' => $model->id, ...$params];
-    }
-
-    #[Override]
-    public function getModel(): Asset
-    {
-        return Asset::instance();
+        return Yii::$app->getUser()->can($permissionName, ['asset' => $model])
+            ? ['cms/asset/update', 'id' => $model->id, ...$params]
+            : false;
     }
 }

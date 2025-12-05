@@ -122,7 +122,7 @@ class EntryActiveDataProvider extends ActiveDataProvider
      */
     protected function whereEntry(): void
     {
-        if ($this->searchString) {
+        if ($this->searchString || $this->category) {
             return;
         }
 
@@ -130,10 +130,8 @@ class EntryActiveDataProvider extends ActiveDataProvider
             return;
         }
 
-        if (!$this->category?->getEntriesOrderBy()) {
-            if ($orderBy = $this->parent?->getDescendantsOrderBy()) {
-                $this->query->orderBy($orderBy);
-            }
+        if ($orderBy = $this->parent?->getDescendantsOrderBy()) {
+            $this->query->orderBy($orderBy);
         }
 
         $this->query->andWhere(['parent_id' => $this->parent?->id]);

@@ -13,11 +13,9 @@ use davidhirtz\yii2\cms\modules\admin\controllers\EntryController;
 use davidhirtz\yii2\cms\modules\admin\widgets\forms\EntryActiveForm;
 use davidhirtz\yii2\cms\modules\admin\widgets\grids\AssetGridView;
 use davidhirtz\yii2\cms\modules\admin\widgets\navs\CmsSubmenu;
-use davidhirtz\yii2\cms\modules\admin\widgets\panels\EntryDeletePanel;
+use davidhirtz\yii2\cms\modules\admin\widgets\panels\EntryDeleteFrom;
 use davidhirtz\yii2\cms\modules\admin\widgets\panels\EntryPanel;
 use davidhirtz\yii2\skeleton\web\View;
-use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
-use davidhirtz\yii2\skeleton\widgets\forms\ErrorSummary;
 use davidhirtz\yii2\skeleton\widgets\forms\FormContainer;
 use davidhirtz\yii2\skeleton\widgets\grids\GridContainer;
 
@@ -29,7 +27,7 @@ echo CmsSubmenu::make()
 echo FormContainer::make()
     ->title($this->title)
     ->form(EntryActiveForm::make()
-        ->model($entry);
+        ->model($entry));
 
 if ($entry->hasAssetsEnabled()) {
     echo GridContainer::make()
@@ -38,11 +36,10 @@ if ($entry->hasAssetsEnabled()) {
             ->parent($entry));
 }
 
-echo EntryPanel::make()([
-    'model' => $entry,
-]);
+echo EntryPanel::make()
+    ->model($entry);
 
 if (Yii::$app->getUser()->can(Entry::AUTH_ENTRY_DELETE, ['entry' => $entry])) {
-    echo EntryDeletePanel::make()
+    echo EntryDeleteFrom::make()
         ->model($entry);
 }
