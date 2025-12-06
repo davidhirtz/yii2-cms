@@ -11,7 +11,9 @@ use davidhirtz\yii2\cms\modules\admin\widgets\forms\traits\EntryParentIdFieldTra
 use davidhirtz\yii2\cms\modules\admin\widgets\forms\traits\MetaFieldsTrait;
 use davidhirtz\yii2\cms\modules\admin\widgets\forms\traits\SlugFieldTrait;
 use davidhirtz\yii2\datetime\DateTimeInput;
+use davidhirtz\yii2\skeleton\widgets\forms\fields\DateTimeField;
 use davidhirtz\yii2\skeleton\widgets\forms\fields\Field;
+use davidhirtz\yii2\skeleton\widgets\forms\fields\InputField;
 use Override;
 use Stringable;
 use Yii;
@@ -39,7 +41,7 @@ class EntryActiveForm extends ActiveForm
                 $this->getParentIdField(),
                 $this->getNameField(),
                 $this->getContentField(),
-//                $this->getPublishDateField(),
+                $this->getPublishDateField(),
             ],
             [
                 $this->getTitleField(),

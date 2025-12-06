@@ -31,6 +31,8 @@ class EntryParentIdSelectField extends SelectField
     #[Override]
     protected function configure(): void
     {
+        $this->property ??= 'parent_id';
+        
         $this->setItemsFromEntries($this->getEntries());
         $this->promptAttributes = ArrayHelper::remove($this->attributes, 'promptAttributes', []);
 

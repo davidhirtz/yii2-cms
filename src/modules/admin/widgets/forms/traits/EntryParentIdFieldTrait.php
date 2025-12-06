@@ -22,10 +22,8 @@ trait EntryParentIdFieldTrait
             return null;
         }
 
-
         return EntryParentIdSelectField::make()
             ->attributes($this->getParentIdAttributes())
-            ->property('parent_id')
             ->prompt();
     }
 

@@ -143,7 +143,11 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
         $this->ensureSlug();
 
         foreach ($this->getI18nAttributeNames('slug') as $attributeName) {
-            $this->$attributeName = rtrim((string) $this->$attributeName, '/');
+            $this->$attributeName = rtrim((string)$this->$attributeName, '/');
+        }
+
+        if (!$this->publish_date) {
+            $this->publish_date = new DateTime();
         }
 
         return parent::beforeValidate();
@@ -199,7 +203,6 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
     public function beforeSave($insert): bool
     {
         $this->shouldUpdateParentAfterSave ??= !$this->getIsBatch();
-        $this->publish_date ??= new DateTime();
 
         if ($this->isAttributeChanged('parent_id')) {
             $this->parent_status = $this->parent

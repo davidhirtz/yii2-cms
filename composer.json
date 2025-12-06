@@ -39,10 +39,13 @@
       "davidhirtz\\yii2\\cms\\tests\\": "tests"
     }
   },
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://asset-packagist.org"
+    }
+  ],
   "config": {
-    "platform": {
-      "php": "8.3"
-    },
     "allow-plugins": {
       "yiisoft/yii2-composer": true,
       "phpro/grumphp-shim": true
@@ -51,12 +54,6 @@
   "extra": {
     "bootstrap": "davidhirtz\\yii2\\cms\\Bootstrap"
   },
-  "repositories": [
-    {
-      "type": "composer",
-      "url": "https://asset-packagist.org"
-    }
-  ],
   "scripts": {
     "check-cs": "ecs check --ansi",
     "fix-cs": "ecs check --ansi --fix",

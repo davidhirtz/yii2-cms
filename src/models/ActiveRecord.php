@@ -15,6 +15,7 @@ use davidhirtz\yii2\skeleton\behaviors\TrailBehavior;
 use davidhirtz\yii2\skeleton\db\ActiveQuery;
 use davidhirtz\yii2\skeleton\db\ActiveRecord as BaseActiveRecord;
 use davidhirtz\yii2\skeleton\models\interfaces\DraftStatusAttributeInterface;
+use davidhirtz\yii2\skeleton\models\interfaces\I18nAttributeInterface;
 use davidhirtz\yii2\skeleton\models\interfaces\TrailModelInterface;
 use davidhirtz\yii2\skeleton\models\interfaces\TypeAttributeInterface;
 use davidhirtz\yii2\skeleton\models\traits\DraftStatusAttributeTrait;
@@ -38,7 +39,11 @@ use Yii;
  *
  * @mixin TrailBehavior
  */
-abstract class ActiveRecord extends BaseActiveRecord implements DraftStatusAttributeInterface, TrailModelInterface, TypeAttributeInterface
+abstract class ActiveRecord extends BaseActiveRecord implements
+    DraftStatusAttributeInterface,
+    I18nAttributeInterface,
+    TrailModelInterface,
+    TypeAttributeInterface
 {
     use DraftStatusAttributeTrait;
     use I18nAttributesTrait;
