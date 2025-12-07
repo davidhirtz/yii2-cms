@@ -17,8 +17,9 @@ trait SlugFieldTrait
                 ->property('slug')
                 ->prepare(function (InputField $field) {
                     $field->prepend(Div::make()
-                        ->class('text-truncate')
                         ->attribute('id', $this->getSlugId($field->language))
+                        ->class('text-truncate hidden sm:block')
+                        ->addStyle(['max-width' => 'min(24rem, 40vw)'])
                         ->text($this->getSlugBaseUrl($field->language)));
                 })
             : null;

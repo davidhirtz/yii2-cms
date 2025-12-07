@@ -18,10 +18,13 @@ use davidhirtz\yii2\cms\widgets\Sections;
 use davidhirtz\yii2\skeleton\codeception\functional\BaseCest;
 use Yii;
 
-class SiteControllerCest extends BaseCest
+final class SiteControllerCest extends BaseCest
 {
     use CmsFixturesTrait;
 
+    /**
+     * @return void
+     */
     #[\Override]
     public function _before(): void
     {

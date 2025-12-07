@@ -6,7 +6,6 @@ namespace davidhirtz\yii2\cms\modules\admin\widgets\forms\traits;
 
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\Entry;
-use davidhirtz\yii2\skeleton\helpers\Html;
 use Yii;
 
 trait ParentIdSelectFieldTrait
@@ -27,7 +26,11 @@ trait ParentIdSelectFieldTrait
             $url = $model->isEnabled() ? $urlManager->createAbsoluteUrl($route) : $urlManager->createDraftUrl($route);
             $url = rtrim($url, '/') . '/';
 
-            return Html::truncateText($url, $this->parentSlugMaxLength, '…/');
+            if (false !== $this->parentSlugMaxLength && mb_strlen($url) > $this->parentSlugMaxLength) {
+                $url = mb_substr($url, 0, $this->parentSlugMaxLength - 4) . '…/';
+            }
+
+            return $url;
         });
     }
 }
