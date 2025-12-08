@@ -3,17 +3,17 @@
 declare(strict_types=1);
 
 /**
- * @see \davidhirtz\yii2\cms\modules\admin\controllers\CategoryController::actionIndex()
+ * @see \Hirtz\Cms\modules\admin\controllers\CategoryController::actionIndex()
  *
  * @var View $this
  * @var CategoryActiveDataProvider $provider
  */
 
-use davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider;
-use davidhirtz\yii2\cms\modules\admin\widgets\grids\CategoryGridView;
-use davidhirtz\yii2\cms\modules\admin\widgets\navs\CmsSubmenu;
-use davidhirtz\yii2\skeleton\web\View;
-use davidhirtz\yii2\skeleton\widgets\grids\GridContainer;
+use Hirtz\Cms\modules\admin\data\CategoryActiveDataProvider;
+use Hirtz\Cms\modules\admin\widgets\grids\CategoryGridView;
+use Hirtz\Cms\modules\admin\widgets\navs\CmsSubmenu;
+use Hirtz\Skeleton\web\View;
+use Hirtz\Skeleton\widgets\grids\GridContainer;
 
 $this->title(Yii::t('cms', 'Categories'));
 

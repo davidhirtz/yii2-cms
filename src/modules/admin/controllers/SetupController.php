@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\modules\admin\controllers;
+namespace Hirtz\Cms\modules\admin\controllers;
 
-use davidhirtz\yii2\cms\models\Category;
-use davidhirtz\yii2\cms\models\Entry;
-use davidhirtz\yii2\cms\models\EntryCategory;
-use davidhirtz\yii2\cms\models\Section;
-use davidhirtz\yii2\cms\modules\ModuleTrait;
-use davidhirtz\yii2\media\models\collections\FolderCollection;
-use davidhirtz\yii2\skeleton\log\ActiveRecordErrorLogger;
-use davidhirtz\yii2\skeleton\models\User;
-use davidhirtz\yii2\skeleton\web\Controller;
+use Hirtz\Cms\models\Category;
+use Hirtz\Cms\models\Entry;
+use Hirtz\Cms\models\EntryCategory;
+use Hirtz\Cms\models\Section;
+use Hirtz\Cms\modules\ModuleTrait;
+use Hirtz\Media\models\collections\FolderCollection;
+use Hirtz\Skeleton\log\ActiveRecordErrorLogger;
+use Hirtz\Skeleton\models\User;
+use Hirtz\Skeleton\web\Controller;
 use Override;
 use Throwable;
 use Yii;

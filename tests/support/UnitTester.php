@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\tests\support;
+namespace Hirtz\Cms\tests\support;
 
-use davidhirtz\yii2\cms\tests\data\models\TestAsset;
-use davidhirtz\yii2\cms\tests\data\models\TestEntry;
-use davidhirtz\yii2\cms\tests\data\models\TestSection;
-use davidhirtz\yii2\media\models\File;
+use Hirtz\Cms\tests\data\models\TestAsset;
+use Hirtz\Cms\tests\data\models\TestEntry;
+use Hirtz\Cms\tests\data\models\TestSection;
+use Hirtz\Media\models\File;
 
 /**
  * Inherited Methods

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\tests\unit\modules\admin\widgets\forms\traits;
+namespace Hirtz\Cms\tests\unit\modules\admin\widgets\forms\traits;
 
 use Codeception\Test\Unit;
-use davidhirtz\yii2\cms\models\traits\MenuAttributeTrait;
-use davidhirtz\yii2\cms\modules\admin\widgets\forms\EntryActiveForm;
-use davidhirtz\yii2\cms\modules\admin\widgets\forms\traits\MenuFieldTrait;
-use davidhirtz\yii2\cms\tests\data\models\TestEntry;
-use davidhirtz\yii2\skeleton\codeception\traits\AssetDirectoryTrait;
+use Hirtz\Cms\models\traits\MenuAttributeTrait;
+use Hirtz\Cms\modules\admin\widgets\forms\EntryActiveForm;
+use Hirtz\Cms\modules\admin\widgets\forms\traits\MenuFieldTrait;
+use Hirtz\Cms\tests\data\models\TestEntry;
+use Hirtz\Skeleton\codeception\traits\AssetDirectoryTrait;
 
 class MenuFieldTraitTest extends Unit
 {

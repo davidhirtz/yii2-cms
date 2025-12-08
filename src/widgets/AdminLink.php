@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\widgets;
+namespace Hirtz\Cms\widgets;
 
-use davidhirtz\yii2\cms\models\Asset;
-use davidhirtz\yii2\cms\models\Entry;
-use davidhirtz\yii2\cms\models\Section;
-use davidhirtz\yii2\skeleton\widgets\Widget;
+use Hirtz\Cms\models\Asset;
+use Hirtz\Cms\models\Entry;
+use Hirtz\Cms\models\Section;
+use Hirtz\Skeleton\widgets\Widget;
 use Override;
 use Yii;
 use yii\helpers\Html;

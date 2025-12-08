@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\modules\admin\widgets\forms;
+namespace Hirtz\Cms\modules\admin\widgets\forms;
 
-use davidhirtz\yii2\cms\models\Entry;
-use davidhirtz\yii2\cms\models\Section;
+use Hirtz\Cms\models\Entry;
+use Hirtz\Cms\models\Section;
 use Override;
 use Yii;
 use yii\helpers\Html;

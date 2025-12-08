@@ -11,10 +11,10 @@ extensions:
 modules:
   config:
     Codeception\Module\Yii2:
-      applicationClass: davidhirtz\yii2\skeleton\web\Application
+      applicationClass: Hirtz\Skeleton\web\Application
       configFile: "tests/config/test.php"
       entryUrl: "https://example.localhost:443/index.php"
-namespace: davidhirtz\yii2\cms\tests
+namespace: Hirtz\Cms\tests
 paths:
   tests: tests
   output: tests/_output

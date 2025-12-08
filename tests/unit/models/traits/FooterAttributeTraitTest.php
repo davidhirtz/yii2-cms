@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\tests\unit\models\traits;
+namespace Hirtz\Cms\tests\unit\models\traits;
 
 use Codeception\Test\Unit;
-use davidhirtz\yii2\cms\models\traits\FooterAttributeTrait;
-use davidhirtz\yii2\cms\tests\data\models\TestEntry;
+use Hirtz\Cms\models\traits\FooterAttributeTrait;
+use Hirtz\Cms\tests\data\models\TestEntry;
 
 class FooterAttributeTraitTest extends Unit
 {

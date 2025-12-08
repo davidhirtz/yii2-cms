@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\widgets;
+namespace Hirtz\Cms\widgets;
 
-use davidhirtz\yii2\cms\models\Asset;
-use davidhirtz\yii2\cms\models\Category;
-use davidhirtz\yii2\cms\models\Entry;
-use davidhirtz\yii2\cms\modules\ModuleTrait;
-use davidhirtz\yii2\skeleton\base\traits\ContainerConfigurationTrait;
-use davidhirtz\yii2\skeleton\web\View;
-use davidhirtz\yii2\skeleton\widgets\Widget;
+use Hirtz\Cms\models\Asset;
+use Hirtz\Cms\models\Category;
+use Hirtz\Cms\models\Entry;
+use Hirtz\Cms\modules\ModuleTrait;
+use Hirtz\Skeleton\base\traits\ContainerConfigurationTrait;
+use Hirtz\Skeleton\web\View;
+use Hirtz\Skeleton\widgets\Widget;
 use Yii;
 use yii\base\BaseObject;
 

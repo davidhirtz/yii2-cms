@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\migrations;
+namespace Hirtz\Cms\migrations;
 
-use davidhirtz\yii2\cms\migrations\traits\I18nTablesTrait;
-use davidhirtz\yii2\cms\models\Asset;
-use davidhirtz\yii2\skeleton\db\traits\MigrationTrait;
+use Hirtz\Cms\migrations\traits\I18nTablesTrait;
+use Hirtz\Cms\models\Asset;
+use Hirtz\Skeleton\db\traits\MigrationTrait;
 use yii\db\Migration;
 
 /**

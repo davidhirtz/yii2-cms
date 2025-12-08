@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\tests\unit\models;
+namespace Hirtz\Cms\tests\unit\models;
 
 use Codeception\Test\Unit;
-use davidhirtz\yii2\cms\tests\data\models\TestAsset;
-use davidhirtz\yii2\cms\tests\support\fixtures\traits\CmsFixturesTrait;
-use davidhirtz\yii2\cms\tests\support\UnitTester;
+use Hirtz\Cms\tests\data\models\TestAsset;
+use Hirtz\Cms\tests\support\fixtures\traits\CmsFixturesTrait;
+use Hirtz\Cms\tests\support\UnitTester;
 
 use function PHPUnit\Framework\assertTrue;
 

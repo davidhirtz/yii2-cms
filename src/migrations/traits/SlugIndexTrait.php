@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\migrations\traits;
+namespace Hirtz\Cms\migrations\traits;
 
-use davidhirtz\yii2\cms\models\Entry;
+use Hirtz\Cms\models\Entry;
 use Exception;
 
 trait SlugIndexTrait

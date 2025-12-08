@@ -8,17 +8,17 @@ declare(strict_types=1);
  * @var Asset $asset
  */
 
-use davidhirtz\yii2\cms\models\Asset;
-use davidhirtz\yii2\cms\models\Entry;
-use davidhirtz\yii2\cms\models\Section;
-use davidhirtz\yii2\cms\modules\admin\controllers\AssetController;
-use davidhirtz\yii2\cms\modules\admin\widgets\forms\AssetActiveForm;
-use davidhirtz\yii2\cms\modules\admin\widgets\navs\CmsSubmenu;
-use davidhirtz\yii2\cms\modules\admin\widgets\panels\AssetHelpPanel;
-use davidhirtz\yii2\skeleton\helpers\Html;
-use davidhirtz\yii2\skeleton\web\View;
-use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
-use davidhirtz\yii2\skeleton\widgets\forms\DeleteActiveForm;
+use Hirtz\Cms\models\Asset;
+use Hirtz\Cms\models\Entry;
+use Hirtz\Cms\models\Section;
+use Hirtz\Cms\modules\admin\controllers\AssetController;
+use Hirtz\Cms\modules\admin\widgets\forms\AssetActiveForm;
+use Hirtz\Cms\modules\admin\widgets\navs\CmsSubmenu;
+use Hirtz\Cms\modules\admin\widgets\panels\AssetHelpPanel;
+use Hirtz\Skeleton\helpers\Html;
+use Hirtz\Skeleton\web\View;
+use Hirtz\Skeleton\widgets\bootstrap\Panel;
+use Hirtz\Skeleton\widgets\forms\DeleteActiveForm;
 
 $this->title(Yii::t('cms', 'Edit Asset'));
 ?>

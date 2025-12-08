@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\modules\admin\widgets\grids;
+namespace Hirtz\Cms\modules\admin\widgets\grids;
 
-use davidhirtz\yii2\cms\models\Entry;
-use davidhirtz\yii2\cms\models\Section;
-use davidhirtz\yii2\cms\modules\admin\controllers\SectionEntryController;
-use davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider;
-use davidhirtz\yii2\cms\modules\admin\widgets\grids\buttons\SectionEntryDeleteButton;
-use davidhirtz\yii2\skeleton\widgets\grids\buttons\CreateButton;
+use Hirtz\Cms\models\Entry;
+use Hirtz\Cms\models\Section;
+use Hirtz\Cms\modules\admin\controllers\SectionEntryController;
+use Hirtz\Cms\modules\admin\data\EntryActiveDataProvider;
+use Hirtz\Cms\modules\admin\widgets\grids\buttons\SectionEntryDeleteButton;
+use Hirtz\Skeleton\widgets\grids\buttons\CreateButton;
 use Override;
 use Stringable;
 use Yii;

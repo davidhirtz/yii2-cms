@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\models\actions;
+namespace Hirtz\Cms\models\actions;
 
-use davidhirtz\yii2\cms\modules\ModuleTrait;
-use davidhirtz\yii2\skeleton\db\ActiveRecord;
-use davidhirtz\yii2\skeleton\models\actions\ReorderActiveRecords as BaseReorderActiveRecords;
+use Hirtz\Cms\modules\ModuleTrait;
+use Hirtz\Skeleton\db\ActiveRecord;
+use Hirtz\Skeleton\models\actions\ReorderActiveRecords as BaseReorderActiveRecords;
 
 /**
  * @template TActiveRecord of ActiveRecord

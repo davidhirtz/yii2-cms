@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\modules\admin\widgets\grids\columns;
+namespace Hirtz\Cms\modules\admin\widgets\grids\columns;
 
-use davidhirtz\yii2\cms\models\Entry;
-use davidhirtz\yii2\cms\modules\admin\widgets\grids\EntryGridView;
-use davidhirtz\yii2\cms\modules\ModuleTrait;
-use davidhirtz\yii2\skeleton\widgets\grids\columns\BadgeColumn;
+use Hirtz\Cms\models\Entry;
+use Hirtz\Cms\modules\admin\widgets\grids\EntryGridView;
+use Hirtz\Cms\modules\ModuleTrait;
+use Hirtz\Skeleton\widgets\grids\columns\BadgeColumn;
 use Override;
 use Stringable;
 use yii\base\Model;

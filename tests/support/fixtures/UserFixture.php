@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\tests\support\fixtures;
+namespace Hirtz\Cms\tests\support\fixtures;
 
-use davidhirtz\yii2\skeleton\models\User;
+use Hirtz\Skeleton\models\User;
 use yii\test\ActiveFixture;
 
 class UserFixture extends ActiveFixture

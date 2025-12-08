@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\modules\admin\widgets\forms\fields;
+namespace Hirtz\Cms\modules\admin\widgets\forms\fields;
 
-use davidhirtz\yii2\cms\models\Entry;
-use davidhirtz\yii2\cms\models\queries\EntryQuery;
-use davidhirtz\yii2\cms\modules\admin\widgets\forms\traits\ParentIdSelectFieldTrait;
-use davidhirtz\yii2\cms\modules\ModuleTrait;
-use davidhirtz\yii2\skeleton\helpers\ArrayHelper;
-use davidhirtz\yii2\skeleton\helpers\Html;
-use davidhirtz\yii2\skeleton\widgets\forms\fields\SelectField;
+use Hirtz\Cms\models\Entry;
+use Hirtz\Cms\models\queries\EntryQuery;
+use Hirtz\Cms\modules\admin\widgets\forms\traits\ParentIdSelectFieldTrait;
+use Hirtz\Cms\modules\ModuleTrait;
+use Hirtz\Skeleton\helpers\ArrayHelper;
+use Hirtz\Skeleton\helpers\Html;
+use Hirtz\Skeleton\widgets\forms\fields\SelectField;
 use Override;
 use Yii;
 

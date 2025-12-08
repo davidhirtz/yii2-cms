@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\models\queries;
+namespace Hirtz\Cms\models\queries;
 
-use davidhirtz\yii2\cms\models\Category;
-use davidhirtz\yii2\skeleton\db\I18nActiveQuery;
+use Hirtz\Cms\models\Category;
+use Hirtz\Skeleton\db\I18nActiveQuery;
 
 /**
  * @extends I18nActiveQuery<Category>

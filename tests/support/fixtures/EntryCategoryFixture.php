@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\tests\support\fixtures;
+namespace Hirtz\Cms\tests\support\fixtures;
 
-use davidhirtz\yii2\cms\models\EntryCategory;
+use Hirtz\Cms\models\EntryCategory;
 use yii\test\ActiveFixture;
 
 class EntryCategoryFixture extends ActiveFixture

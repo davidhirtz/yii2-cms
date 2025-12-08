@@ -2,23 +2,23 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\modules\admin\widgets\forms;
+namespace Hirtz\Cms\modules\admin\widgets\forms;
 
-use davidhirtz\yii2\cms\models\Asset;
-use davidhirtz\yii2\cms\models\Category;
-use davidhirtz\yii2\cms\models\Entry;
-use davidhirtz\yii2\cms\models\Section;
-use davidhirtz\yii2\skeleton\widgets\forms\fields\InputField;
-use davidhirtz\yii2\skeleton\widgets\forms\fields\SelectField;
-use davidhirtz\yii2\skeleton\widgets\forms\fields\TextareaField;
-use davidhirtz\yii2\skeleton\widgets\forms\fields\TinyMceField;
+use Hirtz\Cms\models\Asset;
+use Hirtz\Cms\models\Category;
+use Hirtz\Cms\models\Entry;
+use Hirtz\Cms\models\Section;
+use Hirtz\Skeleton\widgets\forms\fields\InputField;
+use Hirtz\Skeleton\widgets\forms\fields\SelectField;
+use Hirtz\Skeleton\widgets\forms\fields\TextareaField;
+use Hirtz\Skeleton\widgets\forms\fields\TinyMceField;
 use Stringable;
-use davidhirtz\yii2\skeleton\helpers\ArrayHelper;
+use Hirtz\Skeleton\helpers\ArrayHelper;
 
 /**
  * @property Asset|Category|Entry|Section $model
  */
-abstract class ActiveForm extends \davidhirtz\yii2\skeleton\widgets\forms\ActiveForm
+abstract class ActiveForm extends \Hirtz\Skeleton\widgets\forms\ActiveForm
 {
     protected function getStatusField(): ?Stringable
     {

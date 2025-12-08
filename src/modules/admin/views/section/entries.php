@@ -3,19 +3,19 @@ declare(strict_types=1);
 
 /**
  * Section entries.
- * @see \davidhirtz\yii2\cms\modules\admin\controllers\SectionController::actionEntries()
+ * @see \Hirtz\Cms\modules\admin\controllers\SectionController::actionEntries()
  *
  * @var View $this
  * @var Section $section
  * @var EntryActiveDataProvider $provider
  */
 
-use davidhirtz\yii2\cms\models\Section;
-use davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider;
-use davidhirtz\yii2\cms\modules\admin\widgets\grids\SectionParentEntryGridView;
-use davidhirtz\yii2\cms\modules\admin\widgets\navs\CmsSubmenu;
-use davidhirtz\yii2\skeleton\web\View;
-use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
+use Hirtz\Cms\models\Section;
+use Hirtz\Cms\modules\admin\data\EntryActiveDataProvider;
+use Hirtz\Cms\modules\admin\widgets\grids\SectionParentEntryGridView;
+use Hirtz\Cms\modules\admin\widgets\navs\CmsSubmenu;
+use Hirtz\Skeleton\web\View;
+use Hirtz\Skeleton\widgets\bootstrap\Panel;
 
 $this->title(Yii::t('cms', 'Edit Section'));
 ?>

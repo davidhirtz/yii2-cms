@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\tests\data\models;
+namespace Hirtz\Cms\tests\data\models;
 
-use davidhirtz\yii2\cms\models\Entry;
+use Hirtz\Cms\models\Entry;
 
 class TestEntry extends Entry
 {

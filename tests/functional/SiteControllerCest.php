@@ -6,16 +6,16 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\tests\functional;
+namespace Hirtz\Cms\tests\functional;
 
-use davidhirtz\yii2\cms\controllers\SiteController;
-use davidhirtz\yii2\cms\models\Asset;
-use davidhirtz\yii2\cms\models\Entry;
-use davidhirtz\yii2\cms\tests\support\fixtures\traits\CmsFixturesTrait;
-use davidhirtz\yii2\cms\tests\support\FunctionalTester;
-use davidhirtz\yii2\cms\widgets\Gallery;
-use davidhirtz\yii2\cms\widgets\Sections;
-use davidhirtz\yii2\skeleton\codeception\functional\BaseCest;
+use Hirtz\Cms\controllers\SiteController;
+use Hirtz\Cms\models\Asset;
+use Hirtz\Cms\models\Entry;
+use Hirtz\Cms\tests\support\fixtures\traits\CmsFixturesTrait;
+use Hirtz\Cms\tests\support\FunctionalTester;
+use Hirtz\Cms\widgets\Gallery;
+use Hirtz\Cms\widgets\Sections;
+use Hirtz\Skeleton\codeception\functional\BaseCest;
 use Yii;
 
 final class SiteControllerCest extends BaseCest

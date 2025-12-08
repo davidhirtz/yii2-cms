@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\modules\admin\widgets\grids\columns;
+namespace Hirtz\Cms\modules\admin\widgets\grids\columns;
 
-use davidhirtz\yii2\cms\models\Entry;
-use davidhirtz\yii2\cms\modules\admin\widgets\grids\EntryGridView;
-use davidhirtz\yii2\cms\widgets\NavItems;
-use davidhirtz\yii2\skeleton\html\Icon;
+use Hirtz\Cms\models\Entry;
+use Hirtz\Cms\modules\admin\widgets\grids\EntryGridView;
+use Hirtz\Cms\widgets\NavItems;
+use Hirtz\Skeleton\html\Icon;
 use yii\grid\Column;
 
 /**

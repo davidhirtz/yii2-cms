@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\models\queries;
+namespace Hirtz\Cms\models\queries;
 
-use davidhirtz\yii2\cms\models\Section;
-use davidhirtz\yii2\skeleton\db\I18nActiveQuery;
+use Hirtz\Cms\models\Section;
+use Hirtz\Skeleton\db\I18nActiveQuery;
 
 /**
  * @template T of Section

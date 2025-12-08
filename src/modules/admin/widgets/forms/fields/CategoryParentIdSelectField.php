@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\modules\admin\widgets\forms\fields;
+namespace Hirtz\Cms\modules\admin\widgets\forms\fields;
 
-use davidhirtz\yii2\cms\models\Category;
-use davidhirtz\yii2\cms\models\collections\CategoryCollection;
-use davidhirtz\yii2\cms\modules\admin\widgets\forms\traits\ParentIdSelectFieldTrait;
-use davidhirtz\yii2\cms\modules\ModuleTrait;
-use davidhirtz\yii2\skeleton\widgets\forms\fields\SelectField;
+use Hirtz\Cms\models\Category;
+use Hirtz\Cms\models\collections\CategoryCollection;
+use Hirtz\Cms\modules\admin\widgets\forms\traits\ParentIdSelectFieldTrait;
+use Hirtz\Cms\modules\ModuleTrait;
+use Hirtz\Skeleton\widgets\forms\fields\SelectField;
 
 /**
  * @template T of Category

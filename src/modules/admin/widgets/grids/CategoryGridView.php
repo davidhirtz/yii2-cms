@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\modules\admin\widgets\grids;
+namespace Hirtz\Cms\modules\admin\widgets\grids;
 
-use davidhirtz\yii2\cms\models\Category;
-use davidhirtz\yii2\cms\modules\admin\controllers\CategoryController;
-use davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider;
-use davidhirtz\yii2\cms\modules\admin\widgets\grids\traits\CategoryGridTrait;
-use davidhirtz\yii2\cms\modules\ModuleTrait;
-use davidhirtz\yii2\skeleton\widgets\grids\columns\ButtonColumn;
-use davidhirtz\yii2\skeleton\widgets\grids\columns\buttons\DraggableSortGridButton;
-use davidhirtz\yii2\skeleton\widgets\grids\columns\buttons\ViewGridButton;
-use davidhirtz\yii2\skeleton\widgets\grids\columns\Column;
-use davidhirtz\yii2\skeleton\widgets\grids\columns\RelativeTimeColumn;
-use davidhirtz\yii2\skeleton\widgets\grids\GridView;
-use davidhirtz\yii2\skeleton\widgets\grids\toolbars\CreateButton;
+use Hirtz\Cms\models\Category;
+use Hirtz\Cms\modules\admin\controllers\CategoryController;
+use Hirtz\Cms\modules\admin\data\CategoryActiveDataProvider;
+use Hirtz\Cms\modules\admin\widgets\grids\traits\CategoryGridTrait;
+use Hirtz\Cms\modules\ModuleTrait;
+use Hirtz\Skeleton\widgets\grids\columns\ButtonColumn;
+use Hirtz\Skeleton\widgets\grids\columns\buttons\DraggableSortGridButton;
+use Hirtz\Skeleton\widgets\grids\columns\buttons\ViewGridButton;
+use Hirtz\Skeleton\widgets\grids\columns\Column;
+use Hirtz\Skeleton\widgets\grids\columns\RelativeTimeColumn;
+use Hirtz\Skeleton\widgets\grids\GridView;
+use Hirtz\Skeleton\widgets\grids\toolbars\CreateButton;
 use Override;
 use Stringable;
 use Yii;

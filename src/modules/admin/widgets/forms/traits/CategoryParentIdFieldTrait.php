@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\modules\admin\widgets\forms\traits;
+namespace Hirtz\Cms\modules\admin\widgets\forms\traits;
 
-use davidhirtz\yii2\cms\modules\admin\widgets\forms\fields\CategoryParentIdSelectField;
-use davidhirtz\yii2\cms\modules\ModuleTrait;
+use Hirtz\Cms\modules\admin\widgets\forms\fields\CategoryParentIdSelectField;
+use Hirtz\Cms\modules\ModuleTrait;
 use Stringable;
 
 trait CategoryParentIdFieldTrait

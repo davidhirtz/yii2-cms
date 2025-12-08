@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\modules\admin\widgets\panels;
+namespace Hirtz\Cms\modules\admin\widgets\panels;
 
-use davidhirtz\yii2\cms\models\ActiveRecord;
-use davidhirtz\yii2\cms\modules\admin\widgets\panels\traits\LinkButtonTrait;
-use davidhirtz\yii2\media\modules\admin\widgets\panels\traits\DuplicateButtonTrait;
-use davidhirtz\yii2\skeleton\widgets\panels\Panel;
-use davidhirtz\yii2\skeleton\widgets\traits\ModelWidgetTrait;
-use davidhirtz\yii2\skeleton\widgets\Widget;
+use Hirtz\Cms\models\ActiveRecord;
+use Hirtz\Cms\modules\admin\widgets\panels\traits\LinkButtonTrait;
+use Hirtz\Media\modules\admin\widgets\panels\traits\DuplicateButtonTrait;
+use Hirtz\Skeleton\widgets\panels\Panel;
+use Hirtz\Skeleton\widgets\traits\ModelWidgetTrait;
+use Hirtz\Skeleton\widgets\Widget;
 use Stringable;
 
 abstract class AbstractPanel extends Widget

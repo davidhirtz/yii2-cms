@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\modules\admin\controllers;
+namespace Hirtz\Cms\modules\admin\controllers;
 
-use davidhirtz\yii2\cms\models\actions\DuplicateAsset;
-use davidhirtz\yii2\cms\models\actions\ReorderAssets;
-use davidhirtz\yii2\cms\models\Asset;
-use davidhirtz\yii2\cms\models\Entry;
-use davidhirtz\yii2\cms\models\Section;
-use davidhirtz\yii2\cms\modules\admin\controllers\traits\AssetTrait;
-use davidhirtz\yii2\cms\modules\admin\controllers\traits\EntryTrait;
-use davidhirtz\yii2\cms\modules\admin\controllers\traits\SectionTrait;
-use davidhirtz\yii2\media\models\Folder;
-use davidhirtz\yii2\media\modules\admin\controllers\traits\FileControllerTrait;
-use davidhirtz\yii2\media\modules\admin\data\FileActiveDataProvider;
+use Hirtz\Cms\models\actions\DuplicateAsset;
+use Hirtz\Cms\models\actions\ReorderAssets;
+use Hirtz\Cms\models\Asset;
+use Hirtz\Cms\models\Entry;
+use Hirtz\Cms\models\Section;
+use Hirtz\Cms\modules\admin\controllers\traits\AssetTrait;
+use Hirtz\Cms\modules\admin\controllers\traits\EntryTrait;
+use Hirtz\Cms\modules\admin\controllers\traits\SectionTrait;
+use Hirtz\Media\models\Folder;
+use Hirtz\Media\modules\admin\controllers\traits\FileControllerTrait;
+use Hirtz\Media\modules\admin\data\FileActiveDataProvider;
 use Override;
 use Yii;
 use yii\filters\AccessControl;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\models\traits;
+namespace Hirtz\Cms\models\traits;
 
 trait VisibleAttributeTrait
 {

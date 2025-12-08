@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\models\queries;
+namespace Hirtz\Cms\models\queries;
 
-use davidhirtz\yii2\cms\models\Asset;
-use davidhirtz\yii2\media\models\queries\FileQuery;
-use davidhirtz\yii2\skeleton\db\I18nActiveQuery;
+use Hirtz\Cms\models\Asset;
+use Hirtz\Media\models\queries\FileQuery;
+use Hirtz\Skeleton\db\I18nActiveQuery;
 
 /**
  * @extends I18nActiveQuery<Asset>

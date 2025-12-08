@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\tests\data\models;
+namespace Hirtz\Cms\tests\data\models;
 
-use davidhirtz\yii2\cms\models\Section;
+use Hirtz\Cms\models\Section;
 
 class TestSection extends Section
 {

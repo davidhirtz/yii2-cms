@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\modules\admin\widgets\panels;
+namespace Hirtz\Cms\modules\admin\widgets\panels;
 
-use davidhirtz\yii2\cms\models\Asset;
-use davidhirtz\yii2\cms\modules\admin\Module;
-use davidhirtz\yii2\cms\modules\admin\widgets\grids\FileAssetParentGridView;
-use davidhirtz\yii2\media\models\File;
-use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
+use Hirtz\Cms\models\Asset;
+use Hirtz\Cms\modules\admin\Module;
+use Hirtz\Cms\modules\admin\widgets\grids\FileAssetParentGridView;
+use Hirtz\Media\models\File;
+use Hirtz\Skeleton\widgets\bootstrap\Panel;
 use Yii;
 use yii\base\Widget;
 

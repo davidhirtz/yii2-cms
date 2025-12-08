@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\web;
+namespace Hirtz\Cms\web;
 
-use davidhirtz\yii2\cms\models\collections\CategoryCollection;
-use davidhirtz\yii2\skeleton\web\Request;
-use davidhirtz\yii2\skeleton\web\UrlManager;
+use Hirtz\Cms\models\collections\CategoryCollection;
+use Hirtz\Skeleton\web\Request;
+use Hirtz\Skeleton\web\UrlManager;
 
 class UrlRule extends \yii\web\UrlRule
 {

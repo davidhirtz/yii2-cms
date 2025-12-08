@@ -8,13 +8,13 @@ declare(strict_types=1);
  * @var Section $section
  */
 
-use davidhirtz\yii2\cms\models\Section;
-use davidhirtz\yii2\cms\modules\admin\controllers\SectionController;
-use davidhirtz\yii2\cms\modules\admin\widgets\forms\SectionActiveForm;
-use davidhirtz\yii2\cms\modules\admin\widgets\navs\CmsSubmenu;
-use davidhirtz\yii2\skeleton\helpers\Html;
-use davidhirtz\yii2\skeleton\web\View;
-use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
+use Hirtz\Cms\models\Section;
+use Hirtz\Cms\modules\admin\controllers\SectionController;
+use Hirtz\Cms\modules\admin\widgets\forms\SectionActiveForm;
+use Hirtz\Cms\modules\admin\widgets\navs\CmsSubmenu;
+use Hirtz\Skeleton\helpers\Html;
+use Hirtz\Skeleton\web\View;
+use Hirtz\Skeleton\widgets\bootstrap\Panel;
 
 $this->title(Yii::t('cms', 'Create New Section'));
 ?>

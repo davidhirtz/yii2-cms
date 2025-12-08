@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\migrations;
+namespace Hirtz\Cms\migrations;
 
-use davidhirtz\yii2\cms\migrations\traits\I18nTablesTrait;
-use davidhirtz\yii2\cms\models\Entry;
+use Hirtz\Cms\migrations\traits\I18nTablesTrait;
+use Hirtz\Cms\models\Entry;
 use yii\db\Expression;
 use yii\db\Migration;
 

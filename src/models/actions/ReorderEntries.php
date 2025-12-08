@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\models\actions;
+namespace Hirtz\Cms\models\actions;
 
-use davidhirtz\yii2\cms\models\Entry;
+use Hirtz\Cms\models\Entry;
 use davidhirtz\yii2\datetime\DateTime;
-use davidhirtz\yii2\skeleton\models\Trail;
+use Hirtz\Skeleton\models\Trail;
 use Yii;
 
 /**

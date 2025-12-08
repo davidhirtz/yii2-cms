@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\models\actions;
+namespace Hirtz\Cms\models\actions;
 
-use davidhirtz\yii2\cms\models\actions\traits\DuplicateAssetsTrait;
-use davidhirtz\yii2\cms\models\Asset;
-use davidhirtz\yii2\cms\models\Category;
-use davidhirtz\yii2\cms\models\Entry;
-use davidhirtz\yii2\cms\models\EntryCategory;
+use Hirtz\Cms\models\actions\traits\DuplicateAssetsTrait;
+use Hirtz\Cms\models\Asset;
+use Hirtz\Cms\models\Category;
+use Hirtz\Cms\models\Entry;
+use Hirtz\Cms\models\EntryCategory;
 use Yii;
 
 /**

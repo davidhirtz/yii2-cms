@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\models\traits;
+namespace Hirtz\Cms\models\traits;
 
-use davidhirtz\yii2\skeleton\validators\UniqueValidator;
+use Hirtz\Skeleton\validators\UniqueValidator;
 use Yii;
 use yii\helpers\Inflector;
 

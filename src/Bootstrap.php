@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms;
+namespace Hirtz\Cms;
 
-use davidhirtz\yii2\cms\models\Asset;
-use davidhirtz\yii2\cms\models\events\FileBeforeDeleteEventHandler;
-use davidhirtz\yii2\media\models\File;
-use davidhirtz\yii2\skeleton\web\Application;
+use Hirtz\Cms\models\Asset;
+use Hirtz\Cms\models\events\FileBeforeDeleteEventHandler;
+use Hirtz\Media\models\File;
+use Hirtz\Skeleton\web\Application;
 use Yii;
 use yii\base\BootstrapInterface;
 use yii\base\ModelEvent;
@@ -39,7 +39,7 @@ class Bootstrap implements BootstrapInterface
                 'class' => Module::class,
             ],
             'media' => [
-                'class' => \davidhirtz\yii2\media\Module::class,
+                'class' => \Hirtz\Media\Module::class,
                 'fileRelations' => [Asset::class],
             ],
         ]);
@@ -55,7 +55,7 @@ class Bootstrap implements BootstrapInterface
             ])
         );
 
-        $app->setMigrationNamespace('davidhirtz\yii2\cms\migrations');
+        $app->setMigrationNamespace('Hirtz\Cms\migrations');
     }
 
     /**

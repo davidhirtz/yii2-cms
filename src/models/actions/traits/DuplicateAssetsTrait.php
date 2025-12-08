@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\models\actions\traits;
+namespace Hirtz\Cms\models\actions\traits;
 
-use davidhirtz\yii2\cms\models\actions\DuplicateAsset;
-use davidhirtz\yii2\cms\models\Asset;
+use Hirtz\Cms\models\actions\DuplicateAsset;
+use Hirtz\Cms\models\Asset;
 use Yii;
 
 trait DuplicateAssetsTrait

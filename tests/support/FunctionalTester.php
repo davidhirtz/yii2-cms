@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\tests\support;
+namespace Hirtz\Cms\tests\support;
 
-use davidhirtz\yii2\cms\models\Entry;
+use Hirtz\Cms\models\Entry;
 use Yii;
 
 /**

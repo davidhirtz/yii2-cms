@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use davidhirtz\yii2\media\models\collections\FolderCollection;
-use davidhirtz\yii2\media\models\File;
+use Hirtz\Media\models\collections\FolderCollection;
+use Hirtz\Media\models\File;
 use yii\db\Expression;
 
 $folder = FolderCollection::getDefault();

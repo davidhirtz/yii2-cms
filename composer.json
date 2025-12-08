@@ -31,12 +31,12 @@
   },
   "autoload": {
     "psr-4": {
-      "davidhirtz\\yii2\\cms\\": "src"
+      "Hirtz\\Cms\\": "src"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "davidhirtz\\yii2\\cms\\tests\\": "tests"
+      "Hirtz\\Cms\\tests\\": "tests"
     }
   },
   "repositories": [
@@ -52,7 +52,7 @@
     }
   },
   "extra": {
-    "bootstrap": "davidhirtz\\yii2\\cms\\Bootstrap"
+    "bootstrap": "Hirtz\\Cms\\Bootstrap"
   },
   "scripts": {
     "check-cs": "ecs check --ansi",

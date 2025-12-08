@@ -2,21 +2,21 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\modules\admin\widgets\grids;
+namespace Hirtz\Cms\modules\admin\widgets\grids;
 
-use davidhirtz\yii2\cms\models\Asset;
-use davidhirtz\yii2\cms\models\Entry;
-use davidhirtz\yii2\cms\models\Section;
-use davidhirtz\yii2\media\models\File;
-use davidhirtz\yii2\skeleton\html\A;
-use davidhirtz\yii2\skeleton\html\Button;
-use davidhirtz\yii2\skeleton\html\Icon;
-use davidhirtz\yii2\skeleton\html\Table;
-use davidhirtz\yii2\skeleton\widgets\grids\buttons\DeleteButton;
-use davidhirtz\yii2\skeleton\widgets\grids\columns\ButtonsColumn;
-use davidhirtz\yii2\skeleton\widgets\grids\columns\CounterColumn;
-use davidhirtz\yii2\skeleton\widgets\grids\GridView;
-use davidhirtz\yii2\timeago\RelativeTimeColumn;
+use Hirtz\Cms\models\Asset;
+use Hirtz\Cms\models\Entry;
+use Hirtz\Cms\models\Section;
+use Hirtz\Media\models\File;
+use Hirtz\Skeleton\html\A;
+use Hirtz\Skeleton\html\Button;
+use Hirtz\Skeleton\html\Icon;
+use Hirtz\Skeleton\html\Table;
+use Hirtz\Skeleton\widgets\grids\buttons\DeleteButton;
+use Hirtz\Skeleton\widgets\grids\columns\ButtonsColumn;
+use Hirtz\Skeleton\widgets\grids\columns\CounterColumn;
+use Hirtz\Skeleton\widgets\grids\GridView;
+use Hirtz\Timeago\RelativeTimeColumn;
 use Override;
 use Yii;
 use yii\data\ActiveDataProvider;

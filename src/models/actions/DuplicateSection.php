@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\models\actions;
+namespace Hirtz\Cms\models\actions;
 
-use davidhirtz\yii2\cms\models\actions\traits\DuplicateAssetsTrait;
-use davidhirtz\yii2\cms\models\Entry;
-use davidhirtz\yii2\cms\models\Section;
-use davidhirtz\yii2\cms\models\SectionEntry;
+use Hirtz\Cms\models\actions\traits\DuplicateAssetsTrait;
+use Hirtz\Cms\models\Entry;
+use Hirtz\Cms\models\Section;
+use Hirtz\Cms\models\SectionEntry;
 use Yii;
 
 /**

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\tests\unit\migrations\traits;
+namespace Hirtz\Cms\tests\unit\migrations\traits;
 
 use Codeception\Test\Unit;
-use davidhirtz\yii2\cms\migrations\traits\FooterColumnTrait;
-use davidhirtz\yii2\cms\models\Entry;
+use Hirtz\Cms\migrations\traits\FooterColumnTrait;
+use Hirtz\Cms\models\Entry;
 use Yii;
 use yii\db\Migration;
 

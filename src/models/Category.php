@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\models;
+namespace Hirtz\Cms\models;
 
-use davidhirtz\yii2\cms\models\collections\CategoryCollection;
-use davidhirtz\yii2\cms\models\queries\CategoryQuery;
-use davidhirtz\yii2\cms\models\queries\EntryQuery;
-use davidhirtz\yii2\cms\models\traits\SlugAttributeTrait;
-use davidhirtz\yii2\skeleton\behaviors\RedirectBehavior;
-use davidhirtz\yii2\skeleton\models\interfaces\SitemapInterface;
-use davidhirtz\yii2\skeleton\models\Trail;
-use davidhirtz\yii2\skeleton\models\traits\NestedTreeTrait;
+use Hirtz\Cms\models\collections\CategoryCollection;
+use Hirtz\Cms\models\queries\CategoryQuery;
+use Hirtz\Cms\models\queries\EntryQuery;
+use Hirtz\Cms\models\traits\SlugAttributeTrait;
+use Hirtz\Skeleton\behaviors\RedirectBehavior;
+use Hirtz\Skeleton\models\interfaces\SitemapInterface;
+use Hirtz\Skeleton\models\Trail;
+use Hirtz\Skeleton\models\traits\NestedTreeTrait;
 use Yii;
 use yii\db\ActiveQuery;
 
@@ -133,7 +133,7 @@ class Category extends ActiveRecord implements SitemapInterface
 
     /**
      * On parent id change all related entries (linked to this category as well as to the child categories)
-     * need to be added to the new parent categories, if {@see \davidhirtz\yii2\cms\Module::$inheritNestedCategories}
+     * need to be added to the new parent categories, if {@see \Hirtz\Cms\Module::$inheritNestedCategories}
      * is true. Previous parent {@see EntryCategory} relations will not be deleted.
      */
     #[\Override]

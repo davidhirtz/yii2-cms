@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\modules\admin\widgets\forms;
+namespace Hirtz\Cms\modules\admin\widgets\forms;
 
-use davidhirtz\yii2\cms\models\Entry;
-use davidhirtz\yii2\cms\modules\admin\helpers\FrontendLink;
-use davidhirtz\yii2\cms\modules\admin\widgets\forms\fields\CategoryParentIdSelectField;
-use davidhirtz\yii2\cms\modules\admin\widgets\forms\traits\EntryParentIdFieldTrait;
-use davidhirtz\yii2\cms\modules\admin\widgets\forms\traits\MetaFieldsTrait;
-use davidhirtz\yii2\cms\modules\admin\widgets\forms\traits\SlugFieldTrait;
+use Hirtz\Cms\models\Entry;
+use Hirtz\Cms\modules\admin\helpers\FrontendLink;
+use Hirtz\Cms\modules\admin\widgets\forms\fields\CategoryParentIdSelectField;
+use Hirtz\Cms\modules\admin\widgets\forms\traits\EntryParentIdFieldTrait;
+use Hirtz\Cms\modules\admin\widgets\forms\traits\MetaFieldsTrait;
+use Hirtz\Cms\modules\admin\widgets\forms\traits\SlugFieldTrait;
 use davidhirtz\yii2\datetime\DateTimeInput;
-use davidhirtz\yii2\skeleton\widgets\forms\fields\DateTimeField;
-use davidhirtz\yii2\skeleton\widgets\forms\fields\Field;
-use davidhirtz\yii2\skeleton\widgets\forms\fields\InputField;
+use Hirtz\Skeleton\widgets\forms\fields\DateTimeField;
+use Hirtz\Skeleton\widgets\forms\fields\Field;
+use Hirtz\Skeleton\widgets\forms\fields\InputField;
 use Override;
 use Stringable;
 use Yii;

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\models\events;
+namespace Hirtz\Cms\models\events;
 
-use davidhirtz\yii2\cms\models\Asset;
-use davidhirtz\yii2\media\models\File;
+use Hirtz\Cms\models\Asset;
+use Hirtz\Media\models\File;
 use Yii;
 use yii\base\ModelEvent;
 

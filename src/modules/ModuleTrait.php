@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\modules;
+namespace Hirtz\Cms\modules;
 
-use davidhirtz\yii2\cms\Module;
+use Hirtz\Cms\Module;
 use Yii;
 
 trait ModuleTrait

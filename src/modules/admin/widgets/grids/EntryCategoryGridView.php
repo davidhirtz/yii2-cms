@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\modules\admin\widgets\grids;
+namespace Hirtz\Cms\modules\admin\widgets\grids;
 
-use davidhirtz\yii2\cms\models\Category;
-use davidhirtz\yii2\cms\models\EntryCategory;
-use davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider;
-use davidhirtz\yii2\cms\modules\admin\widgets\grids\traits\CategoryGridTrait;
-use davidhirtz\yii2\cms\modules\ModuleTrait;
-use davidhirtz\yii2\skeleton\html\Button;
-use davidhirtz\yii2\skeleton\widgets\grids\columns\ButtonsColumn;
-use davidhirtz\yii2\skeleton\widgets\grids\GridView;
-use davidhirtz\yii2\timeago\Timeago;
+use Hirtz\Cms\models\Category;
+use Hirtz\Cms\models\EntryCategory;
+use Hirtz\Cms\modules\admin\data\CategoryActiveDataProvider;
+use Hirtz\Cms\modules\admin\widgets\grids\traits\CategoryGridTrait;
+use Hirtz\Cms\modules\ModuleTrait;
+use Hirtz\Skeleton\html\Button;
+use Hirtz\Skeleton\widgets\grids\columns\ButtonsColumn;
+use Hirtz\Skeleton\widgets\grids\GridView;
+use Hirtz\Timeago\Timeago;
 use Override;
 use yii\db\ActiveRecordInterface;
 

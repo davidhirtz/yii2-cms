@@ -2,29 +2,29 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\models;
+namespace Hirtz\Cms\models;
 
-use davidhirtz\yii2\cms\models\traits\SitemapTrait;
-use davidhirtz\yii2\cms\models\traits\VisibleAttributeTrait;
-use davidhirtz\yii2\cms\modules\ModuleTrait;
+use Hirtz\Cms\models\traits\SitemapTrait;
+use Hirtz\Cms\models\traits\VisibleAttributeTrait;
+use Hirtz\Cms\modules\ModuleTrait;
 use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\datetime\DateTimeBehavior;
-use davidhirtz\yii2\skeleton\behaviors\BlameableBehavior;
-use davidhirtz\yii2\skeleton\behaviors\TimestampBehavior;
-use davidhirtz\yii2\skeleton\behaviors\TrailBehavior;
-use davidhirtz\yii2\skeleton\db\ActiveQuery;
-use davidhirtz\yii2\skeleton\db\ActiveRecord as BaseActiveRecord;
-use davidhirtz\yii2\skeleton\models\interfaces\DraftStatusAttributeInterface;
-use davidhirtz\yii2\skeleton\models\interfaces\I18nAttributeInterface;
-use davidhirtz\yii2\skeleton\models\interfaces\TrailModelInterface;
-use davidhirtz\yii2\skeleton\models\interfaces\TypeAttributeInterface;
-use davidhirtz\yii2\skeleton\models\traits\DraftStatusAttributeTrait;
-use davidhirtz\yii2\skeleton\models\traits\I18nAttributesTrait;
-use davidhirtz\yii2\skeleton\models\traits\TrailModelTrait;
-use davidhirtz\yii2\skeleton\models\traits\TypeAttributeTrait;
-use davidhirtz\yii2\skeleton\models\traits\UpdatedByUserTrait;
-use davidhirtz\yii2\skeleton\validators\DynamicRangeValidator;
-use davidhirtz\yii2\skeleton\validators\HtmlValidator;
+use Hirtz\Skeleton\behaviors\BlameableBehavior;
+use Hirtz\Skeleton\behaviors\TimestampBehavior;
+use Hirtz\Skeleton\behaviors\TrailBehavior;
+use Hirtz\Skeleton\db\ActiveQuery;
+use Hirtz\Skeleton\db\ActiveRecord as BaseActiveRecord;
+use Hirtz\Skeleton\models\interfaces\DraftStatusAttributeInterface;
+use Hirtz\Skeleton\models\interfaces\I18nAttributeInterface;
+use Hirtz\Skeleton\models\interfaces\TrailModelInterface;
+use Hirtz\Skeleton\models\interfaces\TypeAttributeInterface;
+use Hirtz\Skeleton\models\traits\DraftStatusAttributeTrait;
+use Hirtz\Skeleton\models\traits\I18nAttributesTrait;
+use Hirtz\Skeleton\models\traits\TrailModelTrait;
+use Hirtz\Skeleton\models\traits\TypeAttributeTrait;
+use Hirtz\Skeleton\models\traits\UpdatedByUserTrait;
+use Hirtz\Skeleton\validators\DynamicRangeValidator;
+use Hirtz\Skeleton\validators\HtmlValidator;
 use Yii;
 
 /**

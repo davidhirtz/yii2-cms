@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\models\traits;
+namespace Hirtz\Cms\models\traits;
 
-use davidhirtz\yii2\cms\models\Category;
-use davidhirtz\yii2\cms\models\queries\CategoryQuery;
+use Hirtz\Cms\models\Category;
+use Hirtz\Cms\models\queries\CategoryQuery;
 
 /**
  * @property int|null $category_id

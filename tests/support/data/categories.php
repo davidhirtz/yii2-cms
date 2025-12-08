@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use davidhirtz\yii2\cms\models\Category;
-use davidhirtz\yii2\cms\tests\data\models\TestEntry;
+use Hirtz\Cms\models\Category;
+use Hirtz\Cms\tests\data\models\TestEntry;
 use yii\db\Expression;
 
 $now = new Expression('UTC_TIMESTAMP()');

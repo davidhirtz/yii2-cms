@@ -168,7 +168,7 @@
 ## 2.1.22 (Jul 23, 2024)
 
 - Added `ReplaceIndexEntry` action and `EntryHelpPanel::getReplaceIndexButton()` (Issue #12)
-- Changed `davidhirtz\yii2\cms\modules\admin\Module::$name` to `Module::getName()` to prevent translation issues
+- Changed `Hirtz\Cms\modules\admin\Module::$name` to `Module::getName()` to prevent translation issues
 - Enhanced `EntrySiteRelationsBuilder` to populate entry parents if loaded
 - Fixed index creation in `FooterColumnTrait` and `MenuColumnTrait` (Issue #11)
 - Replaced RBAC strings with constants
@@ -184,7 +184,7 @@
 - Added `$i18nTablesRoute` to all admin controllers to allow custom routes for the language dropdown
   when `Module::$i18nTables` is enabled
 - Enhanced `SetupController` to log model errors
-- Renamed `davidhirtz\yii2\cms\modules\admin\Module::$url` to `$route` for clarity
+- Renamed `Hirtz\Cms\modules\admin\Module::$url` to `$route` for clarity
 
 ## 2.1.19 (Apr 16, 2024)
 
@@ -194,7 +194,7 @@
 
 ## 2.1.18 (Apr 5, 2024)
 
-- Updated admin according to `davidhirtz\yii2\skeleton\modules\admin\ModuleInterface`
+- Updated admin according to `Hirtz\Skeleton\modules\admin\ModuleInterface`
 
 ## 2.1.17 (Mar 28, 2024)
 
@@ -248,12 +248,12 @@
 ## 2.1.7 (Jan 8, 2024)
 
 - Added PHPDoc blocks to grids views
-- Added `davidhirtz\yii2\media\modules\admin\widgets\grids\traits\AssetColumnsTrait` usage to asset grid
+- Added `Hirtz\Media\modules\admin\widgets\grids\traits\AssetColumnsTrait` usage to asset grid
 
 ## 2.1.6 (Jan 8, 2024)
 
 - Enhanced `AssetThumbnailColumn` to display the asset
-  via `\davidhirtz\yii2\media\modules\admin\widgets\grids\columns\Thumbnail`
+  via `\Hirtz\Media\modules\admin\widgets\grids\columns\Thumbnail`
 - Enhanced `SiteController` to remove trailing slashes from the slug (Issue #7)
 
 ## 2.1.5 (Jan 7, 2024)
@@ -263,7 +263,7 @@
 ## 2.1.4 (Jan 7, 2024)
 
 - Enhanced `SetupController` to also allow setting up categories
-- Moved `CategoryCollection` to `davidhirtz\yii2\cms\models\collections`
+- Moved `CategoryCollection` to `Hirtz\Cms\models\collections`
 - Removed `withFolder()` from `AssetQuery::withFiles()` query stack
 
 ## 2.1.3 (Jan 4, 2024)
@@ -307,7 +307,7 @@
 
 ## 2.0.19 (Nov 14, 2023)
 
-- Updated widgets to use `\davidhirtz\yii2\media\helpers\Html` helper class
+- Updated widgets to use `\Hirtz\Media\helpers\Html` helper class
 
 ## 2.0.18 (Nov 14, 2023)
 
@@ -362,7 +362,7 @@
 - Added `NavItems` widget
 - Changed the default `MetaTags::$assetType`  to `Asset::TYPE_META_IMAGE`
 - Enhanced `CategoryActiveForm::parentIdField()` by extracting all related methods
-  to `davidhirtz\yii2\cms\modules\admin\widgets\forms\traits\CategoryParentIdFieldTrait`
+  to `Hirtz\Cms\modules\admin\widgets\forms\traits\CategoryParentIdFieldTrait`
 
 ## v2.0.7 (Nov 8, 2023)
 
@@ -376,7 +376,7 @@
 
 ## 2.0.5 (Nov 7, 2023)
 
-- Changed `davidhirtz\yii2\cms\modules\admin\widgets\forms\AssetActiveForm` to use `TypeFieldTrait` by default
+- Changed `Hirtz\Cms\modules\admin\widgets\forms\AssetActiveForm` to use `TypeFieldTrait` by default
 
 ## 2.0.4 (Nov 7, 2023)
 
@@ -387,8 +387,8 @@
 
 - Added `AdminLink` widget to display links to the backend
 - Added `CategoryCollection::getByEntry()`
-- Added `davidhirtz\yii2\cms\modules\admin\controllers\SetupController` to set up the entries
-- Moved `davidhirtz\yii2\cms\models\traits\AssetParentTrait` to `davidhirtz\yii2\media\models\traits\AssetParentTrait`
+- Added `Hirtz\Cms\modules\admin\controllers\SetupController` to set up the entries
+- Moved `Hirtz\Cms\models\traits\AssetParentTrait` to `Hirtz\Media\models\traits\AssetParentTrait`
 
 ## 2.0.2 (Nov 6, 2023)
 
@@ -401,12 +401,12 @@
 - Removed `ActiveRecord::updatePosition()`, `Category::updateEntryOrder()`, `Category::clone()`,
   `Entry::updateAssetOrder()`,`Entry::clone()`, `Entry::updateSectionOrder()`, `Section::clone()`,
   `Section::updateAssetOrder()`, `Section::updateSectionOrder()` use model actions found in
-  `davidhirtz\yii2\cms\models\actions`
-- Replaced `ModelCloneEvent` with `davidhirtz\yii2\skeleton\models\events\DuplicateActiveRecordEvent`
+  `Hirtz\Cms\models\actions`
+- Replaced `ModelCloneEvent` with `Hirtz\Skeleton\models\events\DuplicateActiveRecordEvent`
 
 ## 2.0.1 (Nov 4, 2023)
 
-- Added `davidhirtz\yii2\cms\models\builders\EntrySiteRelationsBuilder` which loads all relations needed in the
+- Added `Hirtz\Cms\models\builders\EntrySiteRelationsBuilder` which loads all relations needed in the
   frontend `SiteController`
 - Added `entryIndexSlug` which automatically loads the entry index page in the frontend `SiteController::actionIndex()`
 - Added `enableUrlRules` to automatically register URL rules in the CMS Module config, defaults to `true`
@@ -414,17 +414,17 @@
 
 ## 2.0.0 (Nov 3, 2023)
 
-- Added `davidhirtz\yii2\cms\Module::$enableSectionEntries` option to disable section entries
-- Changed namespaces from `davidhirtz\yii2\cms\admin\widgets\grid` to `davidhirtz\yii2\cms\admin\widgets\grids`
-  and `davidhirtz\yii2\cms\admin\widgets\nav` to `davidhirtz\yii2\cms\admin\widgets\navs`
+- Added `Hirtz\Cms\Module::$enableSectionEntries` option to disable section entries
+- Changed namespaces from `Hirtz\Cms\admin\widgets\grid` to `Hirtz\Cms\admin\widgets\grids`
+  and `Hirtz\Cms\admin\widgets\nav` to `Hirtz\Cms\admin\widgets\navs`
 - Changed namespaces for `LinkButtonTrait` and `UpdateFileButtonTrait`
-  to `davidhirtz\yii2\cms\admin\widgets\panels\traits`
-- Merged `davidhirtz\yii2\cms\yii2-cms-parent` into this package
+  to `Hirtz\Cms\admin\widgets\panels\traits`
+- Merged `Hirtz\Cms\yii2-cms-parent` into this package
 - Moved source code to `src` folder
 - Moved all models, data providers and widgets out of `base` folder, to override them use Yii's dependency injection
   container
 - Removed `CategoryTrait` and `Category::getCategories()` in favor
-  of `davidhirtz\yii2\cms\models\collections\CategoryCollection`
+  of `Hirtz\Cms\models\collections\CategoryCollection`
 - Removed `ActiveForm::getActiveForm()`, to override the active forms, use Yii's dependency injection
   container
 

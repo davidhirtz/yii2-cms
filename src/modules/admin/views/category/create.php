@@ -9,12 +9,12 @@ declare(strict_types=1);
  * @var Category $category
  */
 
-use davidhirtz\yii2\cms\models\Category;
-use davidhirtz\yii2\cms\modules\admin\controllers\CategoryController;
-use davidhirtz\yii2\cms\modules\admin\widgets\forms\CategoryActiveForm;
-use davidhirtz\yii2\cms\modules\admin\widgets\navs\CmsSubmenu;
-use davidhirtz\yii2\skeleton\web\View;
-use davidhirtz\yii2\skeleton\widgets\forms\FormContainer;
+use Hirtz\Cms\models\Category;
+use Hirtz\Cms\modules\admin\controllers\CategoryController;
+use Hirtz\Cms\modules\admin\widgets\forms\CategoryActiveForm;
+use Hirtz\Cms\modules\admin\widgets\navs\CmsSubmenu;
+use Hirtz\Skeleton\web\View;
+use Hirtz\Skeleton\widgets\forms\FormContainer;
 
 $this->title(Yii::t('cms', 'Create New Category'));
 

@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\tests\unit\models\actions;
+namespace Hirtz\Cms\tests\unit\models\actions;
 
 use Codeception\Test\Unit;
-use davidhirtz\yii2\cms\models\actions\ReorderEntries;
-use davidhirtz\yii2\cms\models\Entry;
-use davidhirtz\yii2\cms\tests\data\models\TestEntry;
-use davidhirtz\yii2\cms\tests\support\fixtures\traits\CmsFixturesTrait;
-use davidhirtz\yii2\cms\tests\support\UnitTester;
-use davidhirtz\yii2\skeleton\models\Trail;
+use Hirtz\Cms\models\actions\ReorderEntries;
+use Hirtz\Cms\models\Entry;
+use Hirtz\Cms\tests\data\models\TestEntry;
+use Hirtz\Cms\tests\support\fixtures\traits\CmsFixturesTrait;
+use Hirtz\Cms\tests\support\UnitTester;
+use Hirtz\Skeleton\models\Trail;
 use Yii;
 
 class ReorderEntriesTest extends Unit

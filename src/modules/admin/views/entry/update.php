@@ -9,16 +9,16 @@ declare(strict_types=1);
  * @var Entry $entry
  */
 
-use davidhirtz\yii2\cms\models\Entry;
-use davidhirtz\yii2\cms\modules\admin\controllers\EntryController;
-use davidhirtz\yii2\cms\modules\admin\widgets\forms\EntryActiveForm;
-use davidhirtz\yii2\cms\modules\admin\widgets\grids\AssetGridView;
-use davidhirtz\yii2\cms\modules\admin\widgets\navs\CmsSubmenu;
-use davidhirtz\yii2\cms\modules\admin\widgets\panels\EntryDeleteFrom;
-use davidhirtz\yii2\cms\modules\admin\widgets\panels\EntryPanel;
-use davidhirtz\yii2\skeleton\web\View;
-use davidhirtz\yii2\skeleton\widgets\forms\FormContainer;
-use davidhirtz\yii2\skeleton\widgets\grids\GridContainer;
+use Hirtz\Cms\models\Entry;
+use Hirtz\Cms\modules\admin\controllers\EntryController;
+use Hirtz\Cms\modules\admin\widgets\forms\EntryActiveForm;
+use Hirtz\Cms\modules\admin\widgets\grids\AssetGridView;
+use Hirtz\Cms\modules\admin\widgets\navs\CmsSubmenu;
+use Hirtz\Cms\modules\admin\widgets\panels\EntryDeleteFrom;
+use Hirtz\Cms\modules\admin\widgets\panels\EntryPanel;
+use Hirtz\Skeleton\web\View;
+use Hirtz\Skeleton\widgets\forms\FormContainer;
+use Hirtz\Skeleton\widgets\grids\GridContainer;
 
 $this->title(Yii::t('cms', 'Edit Entry'));
 

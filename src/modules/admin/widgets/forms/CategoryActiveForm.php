@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\modules\admin\widgets\forms;
+namespace Hirtz\Cms\modules\admin\widgets\forms;
 
-use davidhirtz\yii2\cms\models\Category;
-use davidhirtz\yii2\cms\modules\admin\widgets\forms\traits\CategoryParentIdFieldTrait;
-use davidhirtz\yii2\cms\modules\admin\widgets\forms\traits\MetaFieldsTrait;
-use davidhirtz\yii2\cms\modules\admin\widgets\forms\traits\SlugFieldTrait;
+use Hirtz\Cms\models\Category;
+use Hirtz\Cms\modules\admin\widgets\forms\traits\CategoryParentIdFieldTrait;
+use Hirtz\Cms\modules\admin\widgets\forms\traits\MetaFieldsTrait;
+use Hirtz\Cms\modules\admin\widgets\forms\traits\SlugFieldTrait;
 use Override;
 use Yii;
 

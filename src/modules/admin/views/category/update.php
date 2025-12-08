@@ -3,23 +3,23 @@
 declare(strict_types=1);
 
 /**
- * @see \davidhirtz\yii2\cms\modules\admin\controllers\CategoryController::actionUpdate()
+ * @see \Hirtz\Cms\modules\admin\controllers\CategoryController::actionUpdate()
  *
  * @var View $this
  * @var CategoryActiveDataProvider $provider
  * @var Category $category
  */
 
-use davidhirtz\yii2\cms\models\Category;
-use davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider;
-use davidhirtz\yii2\cms\modules\admin\widgets\forms\CategoryActiveForm;
-use davidhirtz\yii2\cms\modules\admin\widgets\grids\traits\CategoryParentGridView;
-use davidhirtz\yii2\cms\modules\admin\widgets\navs\CmsSubmenu;
-use davidhirtz\yii2\cms\modules\admin\widgets\panels\CategoryPanel;
-use davidhirtz\yii2\skeleton\web\View;
-use davidhirtz\yii2\skeleton\widgets\forms\DeleteActiveForm;
-use davidhirtz\yii2\skeleton\widgets\forms\FormContainer;
-use davidhirtz\yii2\skeleton\widgets\grids\GridContainer;
+use Hirtz\Cms\models\Category;
+use Hirtz\Cms\modules\admin\data\CategoryActiveDataProvider;
+use Hirtz\Cms\modules\admin\widgets\forms\CategoryActiveForm;
+use Hirtz\Cms\modules\admin\widgets\grids\traits\CategoryParentGridView;
+use Hirtz\Cms\modules\admin\widgets\navs\CmsSubmenu;
+use Hirtz\Cms\modules\admin\widgets\panels\CategoryPanel;
+use Hirtz\Skeleton\web\View;
+use Hirtz\Skeleton\widgets\forms\DeleteActiveForm;
+use Hirtz\Skeleton\widgets\forms\FormContainer;
+use Hirtz\Skeleton\widgets\grids\GridContainer;
 
 $this->title(Yii::t('cms', 'Edit Category'));
 

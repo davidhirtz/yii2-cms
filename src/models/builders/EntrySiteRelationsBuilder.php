@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\models\builders;
+namespace Hirtz\Cms\models\builders;
 
-use davidhirtz\yii2\cms\models\Asset;
-use davidhirtz\yii2\cms\models\Entry;
-use davidhirtz\yii2\cms\models\queries\EntryQuery;
-use davidhirtz\yii2\cms\models\SectionEntry;
-use davidhirtz\yii2\cms\modules\ModuleTrait;
-use davidhirtz\yii2\media\models\collections\FolderCollection;
-use davidhirtz\yii2\media\models\File;
-use davidhirtz\yii2\skeleton\helpers\ArrayHelper;
+use Hirtz\Cms\models\Asset;
+use Hirtz\Cms\models\Entry;
+use Hirtz\Cms\models\queries\EntryQuery;
+use Hirtz\Cms\models\SectionEntry;
+use Hirtz\Cms\modules\ModuleTrait;
+use Hirtz\Media\models\collections\FolderCollection;
+use Hirtz\Media\models\File;
+use Hirtz\Skeleton\helpers\ArrayHelper;
 use Yii;
 use yii\base\BaseObject;
 

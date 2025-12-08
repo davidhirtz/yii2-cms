@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\widgets;
+namespace Hirtz\Cms\widgets;
 
-use davidhirtz\yii2\cms\models\Entry;
-use davidhirtz\yii2\cms\models\queries\EntryQuery;
+use Hirtz\Cms\models\Entry;
+use Hirtz\Cms\models\queries\EntryQuery;
 use Yii;
 
 /**
@@ -97,7 +97,7 @@ class NavItems
 
     /**
      * @param T $entry
-     * @see \davidhirtz\yii2\cms\models\traits\MenuAttributeTrait::isMenuItem()
+     * @see \Hirtz\Cms\models\traits\MenuAttributeTrait::isMenuItem()
      */
     public static function getIsMenuItem(Entry $entry): bool
     {
@@ -108,7 +108,7 @@ class NavItems
 
     /**
      * @param T $entry
-     * @see \davidhirtz\yii2\cms\models\traits\FooterAttributeTrait::isFooterItem()
+     * @see \Hirtz\Cms\models\traits\FooterAttributeTrait::isFooterItem()
      */
     public static function getIsFooterItem(Entry $entry): bool
     {

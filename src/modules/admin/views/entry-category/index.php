@@ -3,17 +3,17 @@ declare(strict_types=1);
 
 /**
  * EntryCategory.
- * @see \davidhirtz\yii2\cms\modules\admin\controllers\EntryCategoryController::actionIndex()
+ * @see \Hirtz\Cms\modules\admin\controllers\EntryCategoryController::actionIndex()
  *
- * @var \davidhirtz\yii2\skeleton\web\View $this
- * @var \davidhirtz\yii2\cms\modules\admin\data\CategoryActiveDataProvider $provider
+ * @var \Hirtz\Skeleton\web\View $this
+ * @var \Hirtz\Cms\modules\admin\data\CategoryActiveDataProvider $provider
  */
 
 $this->title(Yii::t('cms', 'Categories'));
 
-use davidhirtz\yii2\cms\modules\admin\widgets\grids\EntryCategoryGridView;
-use davidhirtz\yii2\cms\modules\admin\widgets\navs\CmsSubmenu;
-use davidhirtz\yii2\skeleton\widgets\bootstrap\Panel;
+use Hirtz\Cms\modules\admin\widgets\grids\EntryCategoryGridView;
+use Hirtz\Cms\modules\admin\widgets\navs\CmsSubmenu;
+use Hirtz\Skeleton\widgets\bootstrap\Panel;
 
 ?>
 

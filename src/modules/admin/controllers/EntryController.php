@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\modules\admin\controllers;
+namespace Hirtz\Cms\modules\admin\controllers;
 
-use davidhirtz\yii2\cms\models\actions\DuplicateEntry;
-use davidhirtz\yii2\cms\models\actions\ReorderEntries;
-use davidhirtz\yii2\cms\models\actions\ReplaceIndexEntry;
-use davidhirtz\yii2\cms\models\Category;
-use davidhirtz\yii2\cms\models\Entry;
-use davidhirtz\yii2\cms\modules\admin\controllers\traits\EntryTrait;
-use davidhirtz\yii2\cms\modules\admin\data\EntryActiveDataProvider;
+use Hirtz\Cms\models\actions\DuplicateEntry;
+use Hirtz\Cms\models\actions\ReorderEntries;
+use Hirtz\Cms\models\actions\ReplaceIndexEntry;
+use Hirtz\Cms\models\Category;
+use Hirtz\Cms\models\Entry;
+use Hirtz\Cms\modules\admin\controllers\traits\EntryTrait;
+use Hirtz\Cms\modules\admin\data\EntryActiveDataProvider;
 use Override;
 use Yii;
 use yii\filters\AccessControl;

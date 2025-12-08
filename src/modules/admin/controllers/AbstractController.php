@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\modules\admin\controllers;
+namespace Hirtz\Cms\modules\admin\controllers;
 
-use davidhirtz\yii2\cms\modules\admin\Module;
-use davidhirtz\yii2\cms\modules\ModuleTrait;
-use davidhirtz\yii2\skeleton\web\Controller;
-use davidhirtz\yii2\skeleton\widgets\navs\NavBar;
+use Hirtz\Cms\modules\admin\Module;
+use Hirtz\Cms\modules\ModuleTrait;
+use Hirtz\Skeleton\web\Controller;
+use Hirtz\Skeleton\widgets\navs\NavBar;
 use Override;
 use Yii;
 use yii\base\View;

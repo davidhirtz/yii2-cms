@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\models;
+namespace Hirtz\Cms\models;
 
-use davidhirtz\yii2\cms\models\queries\AssetQuery;
-use davidhirtz\yii2\cms\models\queries\EntryQuery;
-use davidhirtz\yii2\cms\models\queries\SectionQuery;
-use davidhirtz\yii2\cms\models\traits\EntryRelationTrait;
-use davidhirtz\yii2\cms\models\traits\SlugAttributeTrait;
-use davidhirtz\yii2\media\models\interfaces\AssetParentInterface;
-use davidhirtz\yii2\media\models\traits\AssetParentTrait;
-use davidhirtz\yii2\skeleton\db\ActiveQuery;
-use davidhirtz\yii2\skeleton\validators\RelationValidator;
+use Hirtz\Cms\models\queries\AssetQuery;
+use Hirtz\Cms\models\queries\EntryQuery;
+use Hirtz\Cms\models\queries\SectionQuery;
+use Hirtz\Cms\models\traits\EntryRelationTrait;
+use Hirtz\Cms\models\traits\SlugAttributeTrait;
+use Hirtz\Media\models\interfaces\AssetParentInterface;
+use Hirtz\Media\models\traits\AssetParentTrait;
+use Hirtz\Skeleton\db\ActiveQuery;
+use Hirtz\Skeleton\validators\RelationValidator;
 use Override;
 use Yii;
 use yii\helpers\Inflector;

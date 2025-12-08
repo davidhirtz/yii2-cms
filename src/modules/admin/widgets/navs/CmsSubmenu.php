@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\modules\admin\widgets\navs;
+namespace Hirtz\Cms\modules\admin\widgets\navs;
 
-use davidhirtz\yii2\cms\models\Asset;
-use davidhirtz\yii2\cms\models\Category;
-use davidhirtz\yii2\cms\models\Entry;
-use davidhirtz\yii2\cms\models\Section;
-use davidhirtz\yii2\cms\modules\admin\helpers\FrontendLink;
-use davidhirtz\yii2\cms\modules\admin\Module;
-use davidhirtz\yii2\cms\modules\ModuleTrait;
-use davidhirtz\yii2\skeleton\helpers\Html;
-use davidhirtz\yii2\skeleton\widgets\navs\NavItem;
-use davidhirtz\yii2\skeleton\widgets\navs\Submenu;
-use davidhirtz\yii2\skeleton\widgets\traits\ModelWidgetTrait;
+use Hirtz\Cms\models\Asset;
+use Hirtz\Cms\models\Category;
+use Hirtz\Cms\models\Entry;
+use Hirtz\Cms\models\Section;
+use Hirtz\Cms\modules\admin\helpers\FrontendLink;
+use Hirtz\Cms\modules\admin\Module;
+use Hirtz\Cms\modules\ModuleTrait;
+use Hirtz\Skeleton\helpers\Html;
+use Hirtz\Skeleton\widgets\navs\NavItem;
+use Hirtz\Skeleton\widgets\navs\Submenu;
+use Hirtz\Skeleton\widgets\traits\ModelWidgetTrait;
 use Override;
 use Yii;
 

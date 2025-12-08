@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\tests\support\fixtures\traits;
+namespace Hirtz\Cms\tests\support\fixtures\traits;
 
-use davidhirtz\yii2\cms\tests\support\fixtures\AssetFixture;
-use davidhirtz\yii2\cms\tests\support\fixtures\CategoryFixture;
-use davidhirtz\yii2\cms\tests\support\fixtures\EntryCategoryFixture;
-use davidhirtz\yii2\cms\tests\support\fixtures\EntryFixture;
-use davidhirtz\yii2\cms\tests\support\fixtures\FileFixture;
-use davidhirtz\yii2\cms\tests\support\fixtures\SectionEntryFixture;
-use davidhirtz\yii2\cms\tests\support\fixtures\SectionFixture;
+use Hirtz\Cms\tests\support\fixtures\AssetFixture;
+use Hirtz\Cms\tests\support\fixtures\CategoryFixture;
+use Hirtz\Cms\tests\support\fixtures\EntryCategoryFixture;
+use Hirtz\Cms\tests\support\fixtures\EntryFixture;
+use Hirtz\Cms\tests\support\fixtures\FileFixture;
+use Hirtz\Cms\tests\support\fixtures\SectionEntryFixture;
+use Hirtz\Cms\tests\support\fixtures\SectionFixture;
 
 trait CmsFixturesTrait
 {

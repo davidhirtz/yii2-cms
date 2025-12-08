@@ -2,28 +2,28 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\modules\admin;
+namespace Hirtz\Cms\modules\admin;
 
-use davidhirtz\yii2\cms\models\Category;
-use davidhirtz\yii2\cms\models\Entry;
-use davidhirtz\yii2\cms\modules\admin\controllers\AssetController;
-use davidhirtz\yii2\cms\modules\admin\controllers\CategoryController;
-use davidhirtz\yii2\cms\modules\admin\controllers\EntryCategoryController;
-use davidhirtz\yii2\cms\modules\admin\controllers\EntryController;
-use davidhirtz\yii2\cms\modules\admin\controllers\SectionController;
-use davidhirtz\yii2\cms\modules\admin\controllers\SectionEntryController;
-use davidhirtz\yii2\skeleton\helpers\ArrayHelper;
-use davidhirtz\yii2\skeleton\modules\admin\config\DashboardItemConfig;
-use davidhirtz\yii2\skeleton\modules\admin\config\DashboardPanelConfig;
-use davidhirtz\yii2\skeleton\modules\admin\config\MainMenuItemConfig;
-use davidhirtz\yii2\skeleton\modules\admin\ModuleInterface;
+use Hirtz\Cms\models\Category;
+use Hirtz\Cms\models\Entry;
+use Hirtz\Cms\modules\admin\controllers\AssetController;
+use Hirtz\Cms\modules\admin\controllers\CategoryController;
+use Hirtz\Cms\modules\admin\controllers\EntryCategoryController;
+use Hirtz\Cms\modules\admin\controllers\EntryController;
+use Hirtz\Cms\modules\admin\controllers\SectionController;
+use Hirtz\Cms\modules\admin\controllers\SectionEntryController;
+use Hirtz\Skeleton\helpers\ArrayHelper;
+use Hirtz\Skeleton\modules\admin\config\DashboardItemConfig;
+use Hirtz\Skeleton\modules\admin\config\DashboardPanelConfig;
+use Hirtz\Skeleton\modules\admin\config\MainMenuItemConfig;
+use Hirtz\Skeleton\modules\admin\ModuleInterface;
 use Override;
 use Yii;
 
 /**
- * @property \davidhirtz\yii2\skeleton\modules\admin\Module $module
+ * @property \Hirtz\Skeleton\modules\admin\Module $module
  */
-class Module extends \davidhirtz\yii2\skeleton\base\Module implements ModuleInterface
+class Module extends \Hirtz\Skeleton\base\Module implements ModuleInterface
 {
     public array|string $url = ['/admin/entry/index'];
 

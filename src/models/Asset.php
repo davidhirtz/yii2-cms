@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\models;
+namespace Hirtz\Cms\models;
 
-use davidhirtz\yii2\cms\models\queries\AssetQuery;
-use davidhirtz\yii2\cms\models\traits\EntryRelationTrait;
-use davidhirtz\yii2\cms\models\traits\SectionRelationTrait;
-use davidhirtz\yii2\cms\modules\admin\widgets\panels\FileAssetParentPanel;
+use Hirtz\Cms\models\queries\AssetQuery;
+use Hirtz\Cms\models\traits\EntryRelationTrait;
+use Hirtz\Cms\models\traits\SectionRelationTrait;
+use Hirtz\Cms\modules\admin\widgets\panels\FileAssetParentPanel;
 use davidhirtz\yii2\datetime\DateTime;
-use davidhirtz\yii2\media\models\File;
-use davidhirtz\yii2\media\models\interfaces\AssetInterface;
-use davidhirtz\yii2\media\models\traits\AssetTrait;
-use davidhirtz\yii2\media\models\traits\EmbedUrlTrait;
-use davidhirtz\yii2\skeleton\models\interfaces\DraftStatusAttributeInterface;
-use davidhirtz\yii2\skeleton\validators\RelationValidator;
+use Hirtz\Media\models\File;
+use Hirtz\Media\models\interfaces\AssetInterface;
+use Hirtz\Media\models\traits\AssetTrait;
+use Hirtz\Media\models\traits\EmbedUrlTrait;
+use Hirtz\Skeleton\models\interfaces\DraftStatusAttributeInterface;
+use Hirtz\Skeleton\validators\RelationValidator;
 use Yii;
 
 /**

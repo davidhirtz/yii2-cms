@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-use davidhirtz\yii2\cms\Bootstrap;
-use davidhirtz\yii2\cms\models\Asset;
-use davidhirtz\yii2\cms\models\Entry;
-use davidhirtz\yii2\cms\models\Section;
-use davidhirtz\yii2\cms\tests\data\models\TestAsset;
-use davidhirtz\yii2\cms\tests\data\models\TestEntry;
-use davidhirtz\yii2\cms\tests\data\models\TestSection;
+use Hirtz\Cms\Bootstrap;
+use Hirtz\Cms\models\Asset;
+use Hirtz\Cms\models\Entry;
+use Hirtz\Cms\models\Section;
+use Hirtz\Cms\tests\data\models\TestAsset;
+use Hirtz\Cms\tests\data\models\TestEntry;
+use Hirtz\Cms\tests\data\models\TestSection;
 use yii\web\Session;
 
 return [

@@ -9,11 +9,11 @@ declare(strict_types=1);
  * @var Entry $entry
  */
 
-use davidhirtz\yii2\cms\controllers\SiteController;
-use davidhirtz\yii2\cms\models\Entry;
-use davidhirtz\yii2\cms\widgets\MetaTags;
-use davidhirtz\yii2\cms\widgets\Sections;
-use davidhirtz\yii2\skeleton\web\View;
+use Hirtz\Cms\controllers\SiteController;
+use Hirtz\Cms\models\Entry;
+use Hirtz\Cms\widgets\MetaTags;
+use Hirtz\Cms\widgets\Sections;
+use Hirtz\Skeleton\web\View;
 
 MetaTags::make(['model' => $entry]);
 echo Sections::make(['entry' => $entry]);

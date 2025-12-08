@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\modules\admin\widgets\grids;
+namespace Hirtz\Cms\modules\admin\widgets\grids;
 
-use davidhirtz\yii2\cms\models\Entry;
-use davidhirtz\yii2\cms\models\Section;
-use davidhirtz\yii2\cms\modules\admin\controllers\SectionController;
-use davidhirtz\yii2\skeleton\html\Button;
+use Hirtz\Cms\models\Entry;
+use Hirtz\Cms\models\Section;
+use Hirtz\Cms\modules\admin\controllers\SectionController;
+use Hirtz\Skeleton\html\Button;
 use Override;
 use Yii;
 

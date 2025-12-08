@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\cms\models;
+namespace Hirtz\Cms\models;
 
-use davidhirtz\yii2\cms\models\traits\CategoryRelationTrait;
-use davidhirtz\yii2\cms\models\traits\EntryRelationTrait;
-use davidhirtz\yii2\cms\modules\ModuleTrait;
+use Hirtz\Cms\models\traits\CategoryRelationTrait;
+use Hirtz\Cms\models\traits\EntryRelationTrait;
+use Hirtz\Cms\modules\ModuleTrait;
 use davidhirtz\yii2\datetime\DateTime;
-use davidhirtz\yii2\skeleton\behaviors\BlameableBehavior;
-use davidhirtz\yii2\skeleton\behaviors\TimestampBehavior;
-use davidhirtz\yii2\skeleton\behaviors\TrailBehavior;
-use davidhirtz\yii2\skeleton\log\ActiveRecordErrorLogger;
-use davidhirtz\yii2\skeleton\models\interfaces\TrailModelInterface;
-use davidhirtz\yii2\skeleton\models\traits\TrailModelTrait;
-use davidhirtz\yii2\skeleton\models\traits\UpdatedByUserTrait;
-use davidhirtz\yii2\skeleton\validators\RelationValidator;
+use Hirtz\Skeleton\behaviors\BlameableBehavior;
+use Hirtz\Skeleton\behaviors\TimestampBehavior;
+use Hirtz\Skeleton\behaviors\TrailBehavior;
+use Hirtz\Skeleton\log\ActiveRecordErrorLogger;
+use Hirtz\Skeleton\models\interfaces\TrailModelInterface;
+use Hirtz\Skeleton\models\traits\TrailModelTrait;
+use Hirtz\Skeleton\models\traits\UpdatedByUserTrait;
+use Hirtz\Skeleton\validators\RelationValidator;
 use Override;
 use Yii;
 
@@ -30,7 +30,7 @@ use Yii;
  *
  * @mixin TrailBehavior
  */
-class EntryCategory extends \davidhirtz\yii2\skeleton\db\ActiveRecord implements TrailModelInterface
+class EntryCategory extends \Hirtz\Skeleton\db\ActiveRecord implements TrailModelInterface
 {
     use CategoryRelationTrait;
     use EntryRelationTrait;
