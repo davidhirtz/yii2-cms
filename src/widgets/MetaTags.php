@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\widgets;
 
-use Hirtz\Cms\models\Asset;
-use Hirtz\Cms\models\Category;
-use Hirtz\Cms\models\Entry;
+use Hirtz\Cms\Models\Asset;
+use Hirtz\Cms\Models\Category;
+use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\modules\ModuleTrait;
-use Hirtz\Skeleton\base\traits\ContainerConfigurationTrait;
-use Hirtz\Skeleton\web\View;
-use Hirtz\Skeleton\widgets\Widget;
+use Hirtz\Skeleton\Base\Traits\ContainerConfigurationTrait;
+use Hirtz\Skeleton\Web\View;
+use Hirtz\Skeleton\Widgets\Widget;
 use Yii;
 use yii\base\BaseObject;
 

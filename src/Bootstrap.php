@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms;
 
-use Hirtz\Cms\models\Asset;
-use Hirtz\Cms\models\events\FileBeforeDeleteEventHandler;
+use Hirtz\Cms\Models\Asset;
+use Hirtz\Cms\Models\events\FileBeforeDeleteEventHandler;
 use Hirtz\Media\models\File;
-use Hirtz\Skeleton\web\Application;
+use Hirtz\Skeleton\Web\Application;
 use Yii;
 use yii\base\BootstrapInterface;
 use yii\base\ModelEvent;
@@ -24,7 +24,7 @@ class Bootstrap implements BootstrapInterface
 
         $app->getI18n()->translations['cms'] ??= [
             'class' => PhpMessageSource::class,
-            'basePath' => '@cms/messages',
+            'basePath' => '@cms/../messages',
         ];
 
         $app->extendModules([
@@ -55,7 +55,7 @@ class Bootstrap implements BootstrapInterface
             ])
         );
 
-        $app->setMigrationNamespace('Hirtz\Cms\migrations');
+        $app->setMigrationNamespace('Hirtz\Cms\Migrations');
     }
 
     /**

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\migrations\traits;
+namespace Hirtz\Cms\Migrations\Traits;
 
 use Hirtz\Cms\modules\ModuleTrait;
 use Yii;

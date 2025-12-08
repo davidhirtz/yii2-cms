@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\modules\admin\data;
+namespace Hirtz\Cms\Modules\Admin\Data;
 
-use Hirtz\Cms\models\Category;
-use Hirtz\Cms\models\Entry;
-use Hirtz\Cms\models\EntryCategory;
-use Hirtz\Cms\models\queries\CategoryQuery;
+use Hirtz\Cms\Models\Category;
+use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Models\EntryCategory;
+use Hirtz\Cms\Models\queries\CategoryQuery;
 use Hirtz\Cms\modules\ModuleTrait;
-use Hirtz\Skeleton\db\ActiveQuery;
+use Hirtz\Skeleton\Db\ActiveQuery;
 use Override;
 use yii\data\ActiveDataProvider;
 use yii\data\Pagination;

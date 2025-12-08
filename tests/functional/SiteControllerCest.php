@@ -8,14 +8,14 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\tests\functional;
 
-use Hirtz\Cms\controllers\SiteController;
-use Hirtz\Cms\models\Asset;
-use Hirtz\Cms\models\Entry;
+use Hirtz\Cms\Controllers\SiteController;
+use Hirtz\Cms\Models\Asset;
+use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\tests\support\fixtures\traits\CmsFixturesTrait;
 use Hirtz\Cms\tests\support\FunctionalTester;
 use Hirtz\Cms\widgets\Gallery;
 use Hirtz\Cms\widgets\Sections;
-use Hirtz\Skeleton\codeception\functional\BaseCest;
+use Hirtz\Skeleton\Codeception\functional\BaseCest;
 use Yii;
 
 final class SiteControllerCest extends BaseCest

@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\migrations;
+namespace Hirtz\Cms\Migrations;
 
-use Hirtz\Cms\migrations\traits\I18nTablesTrait;
-use Hirtz\Cms\models\Asset;
-use Hirtz\Cms\models\Entry;
-use Hirtz\Cms\models\Section;
+use Hirtz\Cms\Migrations\Traits\I18nTablesTrait;
+use Hirtz\Cms\Models\Asset;
+use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Models\Section;
 use Hirtz\Media\models\File;
-use Hirtz\Skeleton\db\traits\MigrationTrait;
-use Hirtz\Skeleton\models\User;
+use Hirtz\Skeleton\Db\Traits\MigrationTrait;
+use Hirtz\Skeleton\Models\User;
 use yii\db\Migration;
 
 /**

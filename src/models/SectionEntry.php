@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\models;
+namespace Hirtz\Cms\Models;
 
-use Hirtz\Cms\models\traits\EntryRelationTrait;
-use Hirtz\Cms\models\traits\SectionRelationTrait;
-use Hirtz\Cms\modules\ModuleTrait;
+use Hirtz\Cms\Models\Traits\EntryRelationTrait;
+use Hirtz\Cms\Models\Traits\SectionRelationTrait;
+use Hirtz\Cms\Modules\ModuleTrait;
 use davidhirtz\yii2\datetime\DateTime;
-use Hirtz\Skeleton\behaviors\BlameableBehavior;
-use Hirtz\Skeleton\behaviors\TimestampBehavior;
-use Hirtz\Skeleton\behaviors\TrailBehavior;
-use Hirtz\Skeleton\models\traits\UpdatedByUserTrait;
-use Hirtz\Skeleton\validators\RelationValidator;
+use Hirtz\Skeleton\Behaviors\BlameableBehavior;
+use Hirtz\Skeleton\Behaviors\TimestampBehavior;
+use Hirtz\Skeleton\Behaviors\TrailBehavior;
+use Hirtz\Skeleton\Models\Traits\UpdatedByUserTrait;
+use Hirtz\Skeleton\Validators\RelationValidator;
 use Yii;
 
 /**
@@ -25,7 +25,7 @@ use Yii;
  * @property int|null $updated_by_user_id
  * @property DateTime $updated_at
  */
-class SectionEntry extends \Hirtz\Skeleton\db\ActiveRecord
+class SectionEntry extends \Hirtz\Skeleton\Db\ActiveRecord
 {
     use EntryRelationTrait;
     use ModuleTrait;

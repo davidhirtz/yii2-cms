@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\migrations;
+namespace Hirtz\Cms\Migrations;
 
-use Hirtz\Cms\models\Category;
-use Hirtz\Cms\models\Entry;
-use Hirtz\Cms\models\Section;
+use Hirtz\Cms\Models\Category;
+use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Module;
-use Hirtz\Skeleton\db\traits\MigrationTrait;
+use Hirtz\Skeleton\Db\Traits\MigrationTrait;
 use Yii;
 use yii\db\Migration;
 

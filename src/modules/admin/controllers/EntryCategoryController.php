@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\modules\admin\controllers;
+namespace Hirtz\Cms\Modules\Admin\Controllers;
 
-use Hirtz\Cms\models\actions\ReorderEntryCategories;
-use Hirtz\Cms\models\Category;
-use Hirtz\Cms\models\Entry;
-use Hirtz\Cms\models\EntryCategory;
-use Hirtz\Cms\modules\admin\controllers\traits\CategoryTrait;
-use Hirtz\Cms\modules\admin\controllers\traits\EntryTrait;
-use Hirtz\Cms\modules\admin\data\CategoryActiveDataProvider;
+use Hirtz\Cms\Models\actions\ReorderEntryCategories;
+use Hirtz\Cms\Models\Category;
+use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Models\EntryCategory;
+use Hirtz\Cms\Modules\Admin\Traits\CategoryTrait;
+use Hirtz\Cms\Modules\Admin\Traits\EntryTrait;
+use Hirtz\Cms\Modules\Admin\Data\CategoryActiveDataProvider;
 use Override;
 use Yii;
 use yii\filters\AccessControl;

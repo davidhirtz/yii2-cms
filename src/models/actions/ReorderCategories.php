@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\models\actions;
+namespace Hirtz\Cms\Models\Actions;
 
-use Hirtz\Cms\models\Category;
+use Hirtz\Cms\Models\Category;
 use davidhirtz\yii2\datetime\DateTime;
-use Hirtz\Skeleton\models\Trail;
+use Hirtz\Skeleton\Models\Trail;
 use Yii;
 
 class ReorderCategories extends ReorderActiveRecords

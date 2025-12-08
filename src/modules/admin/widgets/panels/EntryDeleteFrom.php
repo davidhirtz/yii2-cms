@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\modules\admin\widgets\panels;
+namespace Hirtz\Cms\Modules\Admin\Widgets\Panels;
 
-use Hirtz\Cms\models\Entry;
-use Hirtz\Skeleton\widgets\forms\DeleteActiveForm;
-use Hirtz\Skeleton\widgets\forms\FormContainer;
-use Hirtz\Skeleton\widgets\traits\ModelWidgetTrait;
-use Hirtz\Skeleton\widgets\Widget;
+use Hirtz\Cms\Models\Entry;
+use Hirtz\Skeleton\Widgets\Forms\DeleteActiveForm;
+use Hirtz\Skeleton\Widgets\Forms\FormContainer;
+use Hirtz\Skeleton\Widgets\Traits\ModelWidgetTrait;
+use Hirtz\Skeleton\Widgets\Widget;
 use Stringable;
 use Yii;
 

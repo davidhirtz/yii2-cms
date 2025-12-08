@@ -9,16 +9,16 @@ declare(strict_types=1);
  * @var Entry $entry
  */
 
-use Hirtz\Cms\models\Entry;
-use Hirtz\Cms\modules\admin\controllers\EntryController;
-use Hirtz\Cms\modules\admin\widgets\forms\EntryActiveForm;
-use Hirtz\Cms\modules\admin\widgets\grids\AssetGridView;
-use Hirtz\Cms\modules\admin\widgets\navs\CmsSubmenu;
-use Hirtz\Cms\modules\admin\widgets\panels\EntryDeleteFrom;
-use Hirtz\Cms\modules\admin\widgets\panels\EntryPanel;
-use Hirtz\Skeleton\web\View;
-use Hirtz\Skeleton\widgets\forms\FormContainer;
-use Hirtz\Skeleton\widgets\grids\GridContainer;
+use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Modules\Admin\EntryController;
+use Hirtz\Cms\Modules\Admin\Widgets\Forms\EntryActiveForm;
+use Hirtz\Cms\Modules\Admin\Widgets\Forms\AssetGridView;
+use Hirtz\Cms\Modules\Admin\Widgets\Forms\CmsSubmenu;
+use Hirtz\Cms\Modules\Admin\Widgets\Forms\EntryDeleteFrom;
+use Hirtz\Cms\Modules\Admin\Widgets\Panels\EntryPanel;
+use Hirtz\Skeleton\Web\View;
+use Hirtz\Skeleton\Widgets\Forms\FormContainer;
+use Hirtz\Skeleton\Widgets\Grids\GridContainer;
 
 $this->title(Yii::t('cms', 'Edit Entry'));
 

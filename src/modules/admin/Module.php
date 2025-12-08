@@ -4,26 +4,26 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\modules\admin;
 
-use Hirtz\Cms\models\Category;
-use Hirtz\Cms\models\Entry;
-use Hirtz\Cms\modules\admin\controllers\AssetController;
-use Hirtz\Cms\modules\admin\controllers\CategoryController;
-use Hirtz\Cms\modules\admin\controllers\EntryCategoryController;
-use Hirtz\Cms\modules\admin\controllers\EntryController;
-use Hirtz\Cms\modules\admin\controllers\SectionController;
-use Hirtz\Cms\modules\admin\controllers\SectionEntryController;
-use Hirtz\Skeleton\helpers\ArrayHelper;
-use Hirtz\Skeleton\modules\admin\config\DashboardItemConfig;
-use Hirtz\Skeleton\modules\admin\config\DashboardPanelConfig;
-use Hirtz\Skeleton\modules\admin\config\MainMenuItemConfig;
-use Hirtz\Skeleton\modules\admin\ModuleInterface;
+use Hirtz\Cms\Models\Category;
+use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Modules\Admin\AssetController;
+use Hirtz\Cms\Modules\Admin\CategoryController;
+use Hirtz\Cms\Modules\Admin\EntryCategoryController;
+use Hirtz\Cms\Modules\Admin\EntryController;
+use Hirtz\Cms\Modules\Admin\SectionController;
+use Hirtz\Cms\Modules\Admin\SectionEntryController;
+use Hirtz\Skeleton\Helpers\ArrayHelper;
+use Hirtz\Skeleton\Modules\Admin\Config\DashboardItemConfig;
+use Hirtz\Skeleton\Modules\Admin\Config\DashboardPanelConfig;
+use Hirtz\Skeleton\Modules\Admin\Config\MainMenuItemConfig;
+use Hirtz\Skeleton\Modules\Admin\ModuleInterface;
 use Override;
 use Yii;
 
 /**
- * @property \Hirtz\Skeleton\modules\admin\Module $module
+ * @property \Hirtz\Skeleton\Modules\Admin\Module $module
  */
-class Module extends \Hirtz\Skeleton\base\Module implements ModuleInterface
+class Module extends \Hirtz\Skeleton\Base\Module implements ModuleInterface
 {
     public array|string $url = ['/admin/entry/index'];
 

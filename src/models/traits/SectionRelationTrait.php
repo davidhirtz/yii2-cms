@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\models\traits;
+namespace Hirtz\Cms\Models\Traits;
 
-use Hirtz\Cms\models\queries\SectionQuery;
-use Hirtz\Cms\models\Section;
+use Hirtz\Cms\Models\Queries\SectionQuery;
+use Hirtz\Cms\Models\Section;
 
 /**
  * @property int|null $section_id

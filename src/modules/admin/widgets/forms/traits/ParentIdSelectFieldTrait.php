@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\modules\admin\widgets\forms\traits;
+namespace Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits;
 
-use Hirtz\Cms\models\Category;
-use Hirtz\Cms\models\Entry;
+use Hirtz\Cms\Models\Category;
+use Hirtz\Cms\Models\Entry;
 use Yii;
 
 trait ParentIdSelectFieldTrait

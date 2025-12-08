@@ -3,18 +3,18 @@
 declare(strict_types=1);
 
 /**
- * @see \Hirtz\Cms\modules\admin\controllers\EntryController::actionCreate()
+ * @see \Hirtz\Cms\Modules\Admin\EntryController::actionCreate()
  *
  * @var View $this
  * @var Entry $entry
  */
 
-use Hirtz\Cms\models\Entry;
-use Hirtz\Cms\modules\admin\widgets\forms\EntryActiveForm;
-use Hirtz\Cms\modules\admin\widgets\navs\CmsSubmenu;
-use Hirtz\Skeleton\helpers\Html;
-use Hirtz\Skeleton\web\View;
-use Hirtz\Skeleton\widgets\forms\FormContainer;
+use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Modules\Admin\Widgets\Forms\EntryActiveForm;
+use Hirtz\Cms\Modules\Admin\Widgets\Forms\CmsSubmenu;
+use Hirtz\Skeleton\Helpers\Html;
+use Hirtz\Skeleton\Web\View;
+use Hirtz\Skeleton\Widgets\Forms\FormContainer;
 
 $this->title(Yii::t('cms', 'Create New Entry'));
 

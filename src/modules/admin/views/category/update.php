@@ -3,23 +3,23 @@
 declare(strict_types=1);
 
 /**
- * @see \Hirtz\Cms\modules\admin\controllers\CategoryController::actionUpdate()
+ * @see \Hirtz\Cms\Modules\Admin\CategoryController::actionUpdate()
  *
  * @var View $this
  * @var CategoryActiveDataProvider $provider
  * @var Category $category
  */
 
-use Hirtz\Cms\models\Category;
-use Hirtz\Cms\modules\admin\data\CategoryActiveDataProvider;
-use Hirtz\Cms\modules\admin\widgets\forms\CategoryActiveForm;
-use Hirtz\Cms\modules\admin\widgets\grids\traits\CategoryParentGridView;
-use Hirtz\Cms\modules\admin\widgets\navs\CmsSubmenu;
-use Hirtz\Cms\modules\admin\widgets\panels\CategoryPanel;
-use Hirtz\Skeleton\web\View;
-use Hirtz\Skeleton\widgets\forms\DeleteActiveForm;
-use Hirtz\Skeleton\widgets\forms\FormContainer;
-use Hirtz\Skeleton\widgets\grids\GridContainer;
+use Hirtz\Cms\Models\Category;
+use Hirtz\Cms\Modules\Admin\Data\CategoryActiveDataProvider;
+use Hirtz\Cms\Modules\Admin\Widgets\Forms\CategoryActiveForm;
+use Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits\CategoryParentGridView;
+use Hirtz\Cms\Modules\Admin\Widgets\Forms\CmsSubmenu;
+use Hirtz\Cms\Modules\Admin\Widgets\Panels\CategoryPanel;
+use Hirtz\Skeleton\Web\View;
+use Hirtz\Skeleton\Widgets\Forms\DeleteActiveForm;
+use Hirtz\Skeleton\Widgets\Forms\FormContainer;
+use Hirtz\Skeleton\Widgets\Grids\GridContainer;
 
 $this->title(Yii::t('cms', 'Edit Category'));
 

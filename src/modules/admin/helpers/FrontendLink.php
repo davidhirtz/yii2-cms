@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\modules\admin\helpers;
+namespace Hirtz\Cms\Modules\Admin\Helpers;
 
-use Hirtz\Cms\models\Category;
-use Hirtz\Cms\models\Entry;
-use Hirtz\Cms\models\Section;
-use Hirtz\Skeleton\helpers\Html;
+use Hirtz\Cms\Models\Category;
+use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Models\Section;
+use Hirtz\Skeleton\Helpers\Html;
 use Stringable;
 use Yii;
 

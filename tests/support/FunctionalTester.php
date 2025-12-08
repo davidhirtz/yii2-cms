@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\tests\support;
 
-use Hirtz\Cms\models\Entry;
+use Hirtz\Cms\Models\Entry;
 use Yii;
 
 /**

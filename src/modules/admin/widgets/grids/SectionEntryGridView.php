@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\modules\admin\widgets\grids;
+namespace Hirtz\Cms\Modules\Admin\Widgets\Grids;
 
-use Hirtz\Cms\models\Entry;
-use Hirtz\Cms\models\Section;
-use Hirtz\Cms\modules\admin\widgets\grids\buttons\SectionEntryDeleteButton;
-use Hirtz\Skeleton\html\Button;
+use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Models\Section;
+use Hirtz\Cms\Modules\Admin\Widgets\Forms\Buttons\SectionEntryDeleteButton;
+use Hirtz\Skeleton\Html\Button;
 use Override;
 use Yii;
 

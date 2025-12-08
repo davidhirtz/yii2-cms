@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\models\queries;
+namespace Hirtz\Cms\Models\Queries;
 
-use Hirtz\Cms\models\Category;
-use Hirtz\Cms\models\Entry;
-use Hirtz\Cms\models\EntryCategory;
-use Hirtz\Cms\models\Section;
-use Hirtz\Cms\models\SectionEntry;
-use Hirtz\Cms\modules\ModuleTrait;
-use Hirtz\Skeleton\db\ActiveQuery;
-use Hirtz\Skeleton\db\I18nActiveQuery;
+use Hirtz\Cms\Models\Category;
+use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Models\EntryCategory;
+use Hirtz\Cms\Models\Section;
+use Hirtz\Cms\Models\SectionEntry;
+use Hirtz\Cms\Modules\ModuleTrait;
+use Hirtz\Skeleton\Db\ActiveQuery;
+use Hirtz\Skeleton\Db\I18nActiveQuery;
 use Override;
 
 /**

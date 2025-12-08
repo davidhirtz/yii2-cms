@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\modules\admin\data;
+namespace Hirtz\Cms\Modules\Admin\Data;
 
-use Hirtz\Cms\models\Category;
-use Hirtz\Cms\models\Entry;
-use Hirtz\Cms\models\EntryCategory;
-use Hirtz\Cms\models\queries\EntryQuery;
-use Hirtz\Cms\models\Section;
-use Hirtz\Cms\models\SectionEntry;
+use Hirtz\Cms\Models\Category;
+use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Models\EntryCategory;
+use Hirtz\Cms\Models\queries\EntryQuery;
+use Hirtz\Cms\Models\Section;
+use Hirtz\Cms\Models\SectionEntry;
 use Hirtz\Cms\modules\ModuleTrait;
-use Hirtz\Skeleton\data\ActiveDataProvider;
+use Hirtz\Skeleton\Data\ActiveDataProvider;
 use yii\data\Pagination;
 use yii\data\Sort;
 use yii\helpers\ArrayHelper;

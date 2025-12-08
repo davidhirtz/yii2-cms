@@ -9,11 +9,11 @@ declare(strict_types=1);
  * @var Entry $entry
  */
 
-use Hirtz\Cms\controllers\SiteController;
-use Hirtz\Cms\models\Entry;
+use Hirtz\Cms\Controllers\SiteController;
+use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\widgets\MetaTags;
 use Hirtz\Cms\widgets\Sections;
-use Hirtz\Skeleton\web\View;
+use Hirtz\Skeleton\Web\View;
 
 MetaTags::make(['model' => $entry]);
 echo Sections::make(['entry' => $entry]);

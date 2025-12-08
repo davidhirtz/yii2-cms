@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\models\actions;
+namespace Hirtz\Cms\Models\Actions;
 
-use Hirtz\Skeleton\db\ActiveRecord;
-use Hirtz\Skeleton\models\actions\DuplicateActiveRecord as BaseDuplicateActiveRecord;
-use Hirtz\Skeleton\models\interfaces\DraftStatusAttributeInterface;
+use Hirtz\Skeleton\Db\ActiveRecord;
+use Hirtz\Skeleton\Models\Actions\DuplicateActiveRecord as BaseDuplicateActiveRecord;
+use Hirtz\Skeleton\Models\Interfaces\DraftStatusAttributeInterface;
 
 /**
  * @template T of ActiveRecord

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\modules\admin\widgets\forms\traits;
+namespace Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits;
 
-use Hirtz\Cms\models\Entry;
-use Hirtz\Cms\modules\admin\widgets\forms\fields\EntryParentIdSelectField;
+use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Modules\Admin\Widgets\Forms\Fields\EntryParentIdSelectField;
 use Hirtz\Cms\modules\ModuleTrait;
 use Stringable;
 

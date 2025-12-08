@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\modules\admin\widgets\panels;
+namespace Hirtz\Cms\Modules\Admin\Widgets\Panels;
 
-use Hirtz\Cms\models\Asset;
-use Hirtz\Cms\modules\admin\controllers\AssetController;
-use Hirtz\Cms\modules\admin\widgets\panels\traits\UpdateFileButtonTrait;
+use Hirtz\Cms\Models\Asset;
+use Hirtz\Cms\Modules\Admin\AssetController;
+use Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits\UpdateFileButtonTrait;
 
 /**
  * @property Asset $model

@@ -3,9 +3,9 @@
 declare(strict_types=1);
 
 use Hirtz\Cms\Bootstrap;
-use Hirtz\Cms\models\Asset;
-use Hirtz\Cms\models\Entry;
-use Hirtz\Cms\models\Section;
+use Hirtz\Cms\Models\Asset;
+use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\tests\data\models\TestAsset;
 use Hirtz\Cms\tests\data\models\TestEntry;
 use Hirtz\Cms\tests\data\models\TestSection;

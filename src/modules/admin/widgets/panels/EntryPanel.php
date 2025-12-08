@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\modules\admin\widgets\panels;
+namespace Hirtz\Cms\Modules\Admin\Widgets\Panels;
 
-use Hirtz\Cms\models\Entry;
-use Hirtz\Cms\modules\admin\controllers\EntryController;
-use Hirtz\Skeleton\html\Button;
-use Hirtz\Skeleton\widgets\Modal;
+use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Modules\Admin\EntryController;
+use Hirtz\Skeleton\Html\Button;
+use Hirtz\Skeleton\Widgets\Modal;
 use Stringable;
 use Yii;
 

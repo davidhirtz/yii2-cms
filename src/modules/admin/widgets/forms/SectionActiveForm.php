@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\modules\admin\widgets\forms;
+namespace Hirtz\Cms\Modules\Admin\Widgets\Forms;
 
-use Hirtz\Cms\models\Entry;
-use Hirtz\Cms\models\Section;
+use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Models\Section;
 use Override;
 use Yii;
 use yii\helpers\Html;

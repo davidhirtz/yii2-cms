@@ -9,13 +9,13 @@ declare(strict_types=1);
  * @var Entry|Section $parent
  */
 
-use Hirtz\Cms\models\Entry;
-use Hirtz\Cms\models\Section;
-use Hirtz\Cms\modules\admin\controllers\AssetController;
-use Hirtz\Cms\modules\admin\widgets\navs\CmsSubmenu;
-use Hirtz\Media\modules\admin\widgets\grids\FileGridView;
-use Hirtz\Skeleton\web\View;
-use Hirtz\Skeleton\widgets\bootstrap\Panel;
+use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Models\Section;
+use Hirtz\Cms\Modules\Admin\AssetController;
+use Hirtz\Cms\Modules\Admin\Widgets\Forms\CmsSubmenu;
+use Hirtz\Media\Modules\Admin\Widgets\Grids\FileGridView;
+use Hirtz\Skeleton\Web\View;
+use Hirtz\Skeleton\Widgets\Bootstrap\Panel;
 use yii\data\ActiveDataProvider;
 
 $this->title(Yii::t('media', 'Assets'));

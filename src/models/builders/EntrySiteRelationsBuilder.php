@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\models\builders;
+namespace Hirtz\Cms\Models\Builders;
 
-use Hirtz\Cms\models\Asset;
-use Hirtz\Cms\models\Entry;
-use Hirtz\Cms\models\queries\EntryQuery;
-use Hirtz\Cms\models\SectionEntry;
-use Hirtz\Cms\modules\ModuleTrait;
+use Hirtz\Cms\Models\Asset;
+use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Models\Queries\EntryQuery;
+use Hirtz\Cms\Models\SectionEntry;
+use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Media\models\collections\FolderCollection;
 use Hirtz\Media\models\File;
-use Hirtz\Skeleton\helpers\ArrayHelper;
+use Hirtz\Skeleton\Helpers\ArrayHelper;
 use Yii;
 use yii\base\BaseObject;
 

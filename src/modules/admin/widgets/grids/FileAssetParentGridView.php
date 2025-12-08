@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\modules\admin\widgets\grids;
+namespace Hirtz\Cms\Modules\Admin\Widgets\Grids;
 
-use Hirtz\Cms\models\Asset;
-use Hirtz\Cms\models\Entry;
-use Hirtz\Cms\models\Section;
+use Hirtz\Cms\Models\Asset;
+use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Models\Section;
 use Hirtz\Media\models\File;
-use Hirtz\Skeleton\html\A;
-use Hirtz\Skeleton\html\Button;
-use Hirtz\Skeleton\html\Icon;
-use Hirtz\Skeleton\html\Table;
-use Hirtz\Skeleton\widgets\grids\buttons\DeleteButton;
-use Hirtz\Skeleton\widgets\grids\columns\ButtonsColumn;
-use Hirtz\Skeleton\widgets\grids\columns\CounterColumn;
-use Hirtz\Skeleton\widgets\grids\GridView;
+use Hirtz\Skeleton\Html\A;
+use Hirtz\Skeleton\Html\Button;
+use Hirtz\Skeleton\Html\Icon;
+use Hirtz\Skeleton\Html\Table;
+use Hirtz\Skeleton\Widgets\Grids\Buttons\DeleteButton;
+use Hirtz\Skeleton\Widgets\Grids\Columns\ButtonsColumn;
+use Hirtz\Skeleton\Widgets\Grids\Columns\CounterColumn;
+use Hirtz\Skeleton\Widgets\Grids\GridView;
 use Hirtz\Timeago\RelativeTimeColumn;
 use Override;
 use Yii;

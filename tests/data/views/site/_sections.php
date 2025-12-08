@@ -6,10 +6,10 @@ declare(strict_types=1);
  * @var Section[] $sections
  */
 
-use Hirtz\Cms\models\Section;
+use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\widgets\AdminLink;
 use Hirtz\Cms\widgets\Gallery;
-use Hirtz\Skeleton\web\View;
+use Hirtz\Skeleton\Web\View;
 
 foreach ($sections as $section) {
     ?>

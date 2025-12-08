@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\widgets;
 
-use Hirtz\Cms\models\Asset;
-use Hirtz\Cms\models\Entry;
-use Hirtz\Cms\models\Section;
-use Hirtz\Skeleton\widgets\Widget;
+use Hirtz\Cms\Models\Asset;
+use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Models\Section;
+use Hirtz\Skeleton\Widgets\Widget;
 use Override;
 use Yii;
 use yii\helpers\Html;

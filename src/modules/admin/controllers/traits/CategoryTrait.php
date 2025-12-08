@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\modules\admin\controllers\traits;
+namespace Hirtz\Cms\Modules\Admin\Traits;
 
-use Hirtz\Cms\models\Category;
+use Hirtz\Cms\Models\Category;
 use Yii;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;

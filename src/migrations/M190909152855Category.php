@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\migrations;
+namespace Hirtz\Cms\Migrations;
 
-use Hirtz\Cms\migrations\traits\I18nTablesTrait;
-use Hirtz\Cms\models\Category;
-use Hirtz\Cms\models\Entry;
-use Hirtz\Cms\models\EntryCategory;
-use Hirtz\Skeleton\db\traits\MigrationTrait;
-use Hirtz\Skeleton\models\User;
+use Hirtz\Cms\Migrations\Traits\I18nTablesTrait;
+use Hirtz\Cms\Models\Category;
+use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Models\EntryCategory;
+use Hirtz\Skeleton\Db\Traits\MigrationTrait;
+use Hirtz\Skeleton\Models\User;
 use yii\db\Migration;
 
 /**

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\modules\admin\controllers\traits;
+namespace Hirtz\Cms\Modules\Admin\Traits;
 
-use Hirtz\Cms\models\Asset;
-use Hirtz\Cms\models\Entry;
-use Hirtz\Cms\models\Section;
+use Hirtz\Cms\Models\Asset;
+use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Models\Section;
 use Yii;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;

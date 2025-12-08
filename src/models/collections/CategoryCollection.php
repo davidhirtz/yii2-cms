@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\models\collections;
+namespace Hirtz\Cms\Models\Collections;
 
-use Hirtz\Cms\models\Category;
-use Hirtz\Cms\models\Entry;
-use Hirtz\Cms\modules\ModuleTrait;
+use Hirtz\Cms\Models\Category;
+use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Modules\ModuleTrait;
 use Yii;
 use yii\caching\TagDependency;
 

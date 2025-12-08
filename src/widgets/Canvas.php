@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\widgets;
 
-use Hirtz\Cms\models\Asset;
+use Hirtz\Cms\Models\Asset;
 use Hirtz\Media\helpers\AspectRatio;
 use Hirtz\Media\helpers\Html;
 use Hirtz\Media\widgets\Picture;
-use Hirtz\Skeleton\widgets\Widget;
+use Hirtz\Skeleton\Widgets\Widget;
 use Override;
 use yii\helpers\ArrayHelper;
 

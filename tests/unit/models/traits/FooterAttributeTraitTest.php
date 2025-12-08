@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Cms\tests\unit\models\traits;
 
 use Codeception\Test\Unit;
-use Hirtz\Cms\models\traits\FooterAttributeTrait;
+use Hirtz\Cms\Models\traits\FooterAttributeTrait;
 use Hirtz\Cms\tests\data\models\TestEntry;
 
 class FooterAttributeTraitTest extends Unit

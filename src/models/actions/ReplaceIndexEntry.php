@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\models\actions;
+namespace Hirtz\Cms\Models\Actions;
 
-use Hirtz\Cms\models\Entry;
-use Hirtz\Cms\modules\ModuleTrait;
+use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Modules\ModuleTrait;
 use Yii;
 
 class ReplaceIndexEntry

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Hirtz\Cms\models\Category;
+use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\tests\data\models\TestEntry;
 use yii\db\Expression;
 

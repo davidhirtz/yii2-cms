@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\tests\data\models;
 
-use Hirtz\Cms\models\Section;
+use Hirtz\Cms\Models\Section;
 
 class TestSection extends Section
 {

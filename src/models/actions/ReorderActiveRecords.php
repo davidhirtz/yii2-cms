@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\models\actions;
+namespace Hirtz\Cms\Models\Actions;
 
-use Hirtz\Cms\modules\ModuleTrait;
-use Hirtz\Skeleton\db\ActiveRecord;
-use Hirtz\Skeleton\models\actions\ReorderActiveRecords as BaseReorderActiveRecords;
+use Hirtz\Cms\Modules\ModuleTrait;
+use Hirtz\Skeleton\Db\ActiveRecord;
+use Hirtz\Skeleton\Models\Actions\ReorderActiveRecords as BaseReorderActiveRecords;
 
 /**
  * @template TActiveRecord of ActiveRecord

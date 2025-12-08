@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\modules\admin\widgets\forms\traits;
+namespace Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits;
 
-use Hirtz\Skeleton\html\Div;
-use Hirtz\Skeleton\widgets\forms\fields\InputField;
+use Hirtz\Skeleton\Html\Div;
+use Hirtz\Skeleton\Widgets\Forms\Fields\InputField;
 use Stringable;
 
 trait SlugFieldTrait

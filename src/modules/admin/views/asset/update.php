@@ -8,17 +8,17 @@ declare(strict_types=1);
  * @var Asset $asset
  */
 
-use Hirtz\Cms\models\Asset;
-use Hirtz\Cms\models\Entry;
-use Hirtz\Cms\models\Section;
-use Hirtz\Cms\modules\admin\controllers\AssetController;
-use Hirtz\Cms\modules\admin\widgets\forms\AssetActiveForm;
-use Hirtz\Cms\modules\admin\widgets\navs\CmsSubmenu;
-use Hirtz\Cms\modules\admin\widgets\panels\AssetHelpPanel;
-use Hirtz\Skeleton\helpers\Html;
-use Hirtz\Skeleton\web\View;
-use Hirtz\Skeleton\widgets\bootstrap\Panel;
-use Hirtz\Skeleton\widgets\forms\DeleteActiveForm;
+use Hirtz\Cms\Models\Asset;
+use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Models\Section;
+use Hirtz\Cms\Modules\Admin\AssetController;
+use Hirtz\Cms\Modules\Admin\Widgets\Forms\AssetActiveForm;
+use Hirtz\Cms\Modules\Admin\Widgets\Forms\CmsSubmenu;
+use Hirtz\Cms\Modules\Admin\Widgets\Panels\AssetHelpPanel;
+use Hirtz\Skeleton\Helpers\Html;
+use Hirtz\Skeleton\Web\View;
+use Hirtz\Skeleton\Widgets\Bootstrap\Panel;
+use Hirtz\Skeleton\Widgets\Forms\DeleteActiveForm;
 
 $this->title(Yii::t('cms', 'Edit Asset'));
 ?>

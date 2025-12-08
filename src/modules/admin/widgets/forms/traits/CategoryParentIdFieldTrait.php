@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\modules\admin\widgets\forms\traits;
+namespace Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits;
 
-use Hirtz\Cms\modules\admin\widgets\forms\fields\CategoryParentIdSelectField;
+use Hirtz\Cms\Modules\Admin\Widgets\Forms\Fields\CategoryParentIdSelectField;
 use Hirtz\Cms\modules\ModuleTrait;
 use Stringable;
 

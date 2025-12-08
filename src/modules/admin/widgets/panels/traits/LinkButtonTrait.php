@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\modules\admin\widgets\panels\traits;
+namespace Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits;
 
-use Hirtz\Skeleton\html\Button;
+use Hirtz\Skeleton\Html\Button;
 use Stringable;
 use Yii;
 

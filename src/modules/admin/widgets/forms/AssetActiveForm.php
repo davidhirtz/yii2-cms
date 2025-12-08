@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\modules\admin\widgets\forms;
+namespace Hirtz\Cms\Modules\Admin\Widgets\Forms;
 
-use Hirtz\Cms\models\Asset;
-use Hirtz\Media\modules\admin\widgets\forms\traits\AssetFieldsTrait;
-use Hirtz\Skeleton\widgets\forms\traits\TypeFieldTrait;
+use Hirtz\Cms\Models\Asset;
+use Hirtz\Media\Modules\Admin\Widgets\Forms\Traits\AssetFieldsTrait;
+use Hirtz\Skeleton\Widgets\Forms\Traits\TypeFieldTrait;
 
 /**
  * @property Asset $model

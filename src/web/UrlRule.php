@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\web;
 
-use Hirtz\Cms\models\collections\CategoryCollection;
-use Hirtz\Skeleton\web\Request;
-use Hirtz\Skeleton\web\UrlManager;
+use Hirtz\Cms\Models\collections\CategoryCollection;
+use Hirtz\Skeleton\Web\Request;
+use Hirtz\Skeleton\Web\UrlManager;
 
 class UrlRule extends \yii\web\UrlRule
 {

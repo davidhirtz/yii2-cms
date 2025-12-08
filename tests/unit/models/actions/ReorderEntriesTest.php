@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Hirtz\Cms\tests\unit\models\actions;
 
 use Codeception\Test\Unit;
-use Hirtz\Cms\models\actions\ReorderEntries;
-use Hirtz\Cms\models\Entry;
+use Hirtz\Cms\Models\actions\ReorderEntries;
+use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\tests\data\models\TestEntry;
 use Hirtz\Cms\tests\support\fixtures\traits\CmsFixturesTrait;
 use Hirtz\Cms\tests\support\UnitTester;
-use Hirtz\Skeleton\models\Trail;
+use Hirtz\Skeleton\Models\Trail;
 use Yii;
 
 class ReorderEntriesTest extends Unit

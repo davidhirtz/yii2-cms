@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\modules\admin\widgets\grids\buttons;
+namespace Hirtz\Cms\Modules\Admin\Widgets\Forms\Buttons;
 
-use Hirtz\Cms\models\Entry;
-use Hirtz\Cms\models\Section;
-use Hirtz\Skeleton\widgets\grids\buttons\DeleteButton;
+use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Models\Section;
+use Hirtz\Skeleton\Widgets\Grids\Buttons\DeleteButton;
 use Stringable;
 use Yii;
 

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\modules\admin\controllers;
+namespace Hirtz\Cms\Modules\Admin\Controllers;
 
-use Hirtz\Cms\models\actions\ReorderCategories;
-use Hirtz\Cms\models\Category;
-use Hirtz\Cms\modules\admin\controllers\traits\CategoryTrait;
-use Hirtz\Cms\modules\admin\data\CategoryActiveDataProvider;
+use Hirtz\Cms\Models\actions\ReorderCategories;
+use Hirtz\Cms\Models\Category;
+use Hirtz\Cms\Modules\Admin\Traits\CategoryTrait;
+use Hirtz\Cms\Modules\Admin\Data\CategoryActiveDataProvider;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;

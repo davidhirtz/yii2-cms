@@ -1,30 +1,16 @@
 <?php
 
-/**
- * This is the configuration for generating message translations
- * for the Yii framework. It is used by the 'yii message' command.
- */
+declare(strict_types=1);
+
+$config = require Yii::getAlias('@skeleton/../messages/config.php');
+
 return [
-    'sourcePath' => dirname(__DIR__),
+    ...$config,
+    'sourcePath' => __DIR__ . '/../src/',
     'messagePath' => __DIR__,
-    'languages' => [
-        'de',
-        'en-US',
-        'fr',
-        'pt',
-        'ru',
-        'zh-CN',
-        'zh-TW',
-    ],
-    'ignoreCategories' => ['yii', 'skeleton', 'media'],
-    'overwrite' => true,
-    'removeUnused' => true,
-    'only' => ['*.php'],
-    'format' => 'php',
-    'sort' => true,
-    'except' => [
-        '/config',
-        '/messages',
-        '/tests',
+    'ignoreCategories' => [
+        'media',
+        'skeleton',
+        'yii',
     ],
 ];

@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\modules\admin\controllers;
+namespace Hirtz\Cms\Modules\Admin\Controllers;
 
-use Hirtz\Cms\models\actions\DuplicateSection;
-use Hirtz\Cms\models\actions\ReorderSections;
-use Hirtz\Cms\models\Category;
-use Hirtz\Cms\models\Entry;
-use Hirtz\Cms\models\queries\AssetQuery;
-use Hirtz\Cms\models\queries\SectionQuery;
-use Hirtz\Cms\models\Section;
-use Hirtz\Cms\modules\admin\controllers\traits\EntryTrait;
-use Hirtz\Cms\modules\admin\controllers\traits\SectionTrait;
-use Hirtz\Cms\modules\admin\data\EntryActiveDataProvider;
+use Hirtz\Cms\Models\actions\DuplicateSection;
+use Hirtz\Cms\Models\actions\ReorderSections;
+use Hirtz\Cms\Models\Category;
+use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Models\queries\AssetQuery;
+use Hirtz\Cms\Models\queries\SectionQuery;
+use Hirtz\Cms\Models\Section;
+use Hirtz\Cms\Modules\Admin\Traits\EntryTrait;
+use Hirtz\Cms\Modules\Admin\Traits\SectionTrait;
+use Hirtz\Cms\Modules\Admin\Data\EntryActiveDataProvider;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;

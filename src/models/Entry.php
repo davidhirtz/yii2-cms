@@ -2,21 +2,21 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\models;
+namespace Hirtz\Cms\Models;
 
-use Hirtz\Cms\models\queries\AssetQuery;
-use Hirtz\Cms\models\queries\EntryQuery;
-use Hirtz\Cms\models\queries\SectionQuery;
-use Hirtz\Cms\models\traits\SlugAttributeTrait;
+use Hirtz\Cms\Models\Queries\AssetQuery;
+use Hirtz\Cms\Models\Queries\EntryQuery;
+use Hirtz\Cms\Models\Queries\SectionQuery;
+use Hirtz\Cms\Models\Traits\SlugAttributeTrait;
 use Hirtz\Cms\Module;
 use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\datetime\DateTimeValidator;
 use Hirtz\Media\models\interfaces\AssetParentInterface;
 use Hirtz\Media\models\traits\AssetParentTrait;
-use Hirtz\Skeleton\behaviors\RedirectBehavior;
-use Hirtz\Skeleton\helpers\ArrayHelper;
-use Hirtz\Skeleton\models\interfaces\SitemapInterface;
-use Hirtz\Skeleton\models\traits\MaterializedTreeTrait;
+use Hirtz\Skeleton\Behaviors\RedirectBehavior;
+use Hirtz\Skeleton\Helpers\ArrayHelper;
+use Hirtz\Skeleton\Models\Interfaces\SitemapInterface;
+use Hirtz\Skeleton\Models\Traits\MaterializedTreeTrait;
 use Override;
 use Yii;
 use yii\db\ActiveQuery;

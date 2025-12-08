@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\models\actions;
+namespace Hirtz\Cms\Models\Actions;
 
-use Hirtz\Cms\models\Asset;
-use Hirtz\Cms\models\Entry;
-use Hirtz\Cms\models\Section;
+use Hirtz\Cms\Models\Asset;
+use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Models\Section;
 use davidhirtz\yii2\datetime\DateTime;
-use Hirtz\Skeleton\models\Trail;
+use Hirtz\Skeleton\Models\Trail;
 use Yii;
 
 /**

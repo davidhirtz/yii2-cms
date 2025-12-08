@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\models\traits;
+namespace Hirtz\Cms\Models\Traits;
 
-use Hirtz\Cms\models\Entry;
+use Hirtz\Cms\Models\Entry;
 use Yii;
 
 /**

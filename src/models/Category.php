@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\models;
+namespace Hirtz\Cms\Models;
 
-use Hirtz\Cms\models\collections\CategoryCollection;
-use Hirtz\Cms\models\queries\CategoryQuery;
-use Hirtz\Cms\models\queries\EntryQuery;
-use Hirtz\Cms\models\traits\SlugAttributeTrait;
-use Hirtz\Skeleton\behaviors\RedirectBehavior;
-use Hirtz\Skeleton\models\interfaces\SitemapInterface;
-use Hirtz\Skeleton\models\Trail;
-use Hirtz\Skeleton\models\traits\NestedTreeTrait;
+use Hirtz\Cms\Models\Collections\CategoryCollection;
+use Hirtz\Cms\Models\Queries\CategoryQuery;
+use Hirtz\Cms\Models\Queries\EntryQuery;
+use Hirtz\Cms\Models\Traits\SlugAttributeTrait;
+use Hirtz\Skeleton\Behaviors\RedirectBehavior;
+use Hirtz\Skeleton\Models\Interfaces\SitemapInterface;
+use Hirtz\Skeleton\Models\Trail;
+use Hirtz\Skeleton\Models\Traits\NestedTreeTrait;
 use Yii;
 use yii\db\ActiveQuery;
 

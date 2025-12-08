@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\models\actions;
+namespace Hirtz\Cms\Models\Actions;
 
-use Hirtz\Cms\models\Category;
-use Hirtz\Cms\models\EntryCategory;
-use Hirtz\Skeleton\models\Trail;
+use Hirtz\Cms\Models\Category;
+use Hirtz\Cms\Models\EntryCategory;
+use Hirtz\Skeleton\Models\Trail;
 use Yii;
 
 /**

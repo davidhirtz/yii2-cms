@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\modules\admin\controllers;
+namespace Hirtz\Cms\Modules\Admin\Controllers;
 
-use Hirtz\Cms\models\actions\ReorderSectionEntries;
-use Hirtz\Cms\models\Category;
-use Hirtz\Cms\models\Entry;
-use Hirtz\Cms\models\Section;
-use Hirtz\Cms\models\SectionEntry;
-use Hirtz\Cms\modules\admin\controllers\traits\SectionTrait;
-use Hirtz\Cms\modules\admin\data\EntryActiveDataProvider;
+use Hirtz\Cms\Models\actions\ReorderSectionEntries;
+use Hirtz\Cms\Models\Category;
+use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Models\Section;
+use Hirtz\Cms\Models\SectionEntry;
+use Hirtz\Cms\Modules\Admin\Traits\SectionTrait;
+use Hirtz\Cms\Modules\Admin\Data\EntryActiveDataProvider;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;

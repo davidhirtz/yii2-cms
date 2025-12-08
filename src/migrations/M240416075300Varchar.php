@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\migrations;
+namespace Hirtz\Cms\Migrations;
 
-use Hirtz\Cms\migrations\traits\I18nTablesTrait;
+use Hirtz\Cms\Migrations\Traits\I18nTablesTrait;
 use Hirtz\Cms\models\Asset;
 use Hirtz\Cms\models\Category;
 use Hirtz\Cms\models\Entry;
 use Hirtz\Cms\models\Section;
-use Hirtz\Skeleton\db\traits\MigrationTrait;
+use Hirtz\Skeleton\Db\Traits\MigrationTrait;
 use yii\db\Migration;
 
 class M240416075300Varchar extends Migration

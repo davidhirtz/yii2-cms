@@ -2,14 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\modules\admin\widgets\panels;
+namespace Hirtz\Cms\Modules\Admin\Widgets\Panels;
 
-use Hirtz\Cms\models\ActiveRecord;
-use Hirtz\Cms\modules\admin\widgets\panels\traits\LinkButtonTrait;
-use Hirtz\Media\modules\admin\widgets\panels\traits\DuplicateButtonTrait;
-use Hirtz\Skeleton\widgets\panels\Panel;
-use Hirtz\Skeleton\widgets\traits\ModelWidgetTrait;
-use Hirtz\Skeleton\widgets\Widget;
+use Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits\LinkButtonTrait;
+use Hirtz\Media\Modules\Admin\Widgets\Forms\Traits\DuplicateButtonTrait;
+use Hirtz\Skeleton\Widgets\Panels\Panel;
+use Hirtz\Skeleton\Widgets\Traits\ModelWidgetTrait;
+use Hirtz\Skeleton\Widgets\Widget;
 use Stringable;
 
 abstract class AbstractPanel extends Widget

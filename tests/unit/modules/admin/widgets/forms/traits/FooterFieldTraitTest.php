@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\tests\unit\modules\admin\widgets\forms\traits;
+namespace Hirtz\Cms\tests\unit\Modules\Admin\Widgets\Forms\Traits;
 
 use Codeception\Test\Unit;
-use Hirtz\Cms\models\traits\FooterAttributeTrait;
-use Hirtz\Cms\modules\admin\widgets\forms\EntryActiveForm;
-use Hirtz\Cms\modules\admin\widgets\forms\traits\FooterFieldTrait;
+use Hirtz\Cms\Models\traits\FooterAttributeTrait;
+use Hirtz\Cms\Modules\Admin\Widgets\Forms\EntryActiveForm;
+use Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits\FooterFieldTrait;
 use Hirtz\Cms\tests\data\models\TestEntry;
-use Hirtz\Skeleton\codeception\traits\AssetDirectoryTrait;
+use Hirtz\Skeleton\Codeception\traits\AssetDirectoryTrait;
 
 class FooterFieldTraitTest extends Unit
 {

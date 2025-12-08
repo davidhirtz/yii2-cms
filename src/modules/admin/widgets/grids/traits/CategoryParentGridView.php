@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\modules\admin\widgets\grids\traits;
+namespace Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits;
 
-use Hirtz\Cms\modules\admin\widgets\grids\CategoryGridView;
+use Hirtz\Cms\Modules\Admin\Widgets\Forms\CategoryGridView;
 use Override;
 
 class CategoryParentGridView extends CategoryGridView

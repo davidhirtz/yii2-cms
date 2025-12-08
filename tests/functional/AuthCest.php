@@ -11,8 +11,8 @@ namespace Hirtz\Cms\tests\functional;
 use Hirtz\Cms\Module;
 use Hirtz\Cms\tests\support\fixtures\UserFixture;
 use Hirtz\Cms\tests\support\FunctionalTester;
-use Hirtz\Skeleton\codeception\functional\BaseCest;
-use Hirtz\Skeleton\models\User;
+use Hirtz\Skeleton\Codeception\functional\BaseCest;
+use Hirtz\Skeleton\Models\User;
 use Yii;
 
 final class AuthCest extends BaseCest

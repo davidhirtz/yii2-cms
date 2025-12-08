@@ -3,17 +3,17 @@ declare(strict_types=1);
 
 /**
  * Sections.
- * @see \Hirtz\Cms\modules\admin\controllers\SectionController::actionIndex()
+ * @see \Hirtz\Cms\Modules\Admin\SectionController::actionIndex()
  *
- * @var \Hirtz\Skeleton\web\View $this
- * @var \Hirtz\Cms\models\Entry $entry
+ * @var \Hirtz\Skeleton\Web\View $this
+ * @var \Hirtz\Cms\Models\Entry $entry
  */
 
 $this->title(Yii::t('cms', 'Sections'));
 
-use Hirtz\Cms\modules\admin\widgets\grids\SectionGridView;
-use Hirtz\Cms\modules\admin\widgets\navs\CmsSubmenu;
-use Hirtz\Skeleton\widgets\bootstrap\Panel;
+use Hirtz\Cms\Modules\Admin\Widgets\Forms\SectionGridView;
+use Hirtz\Cms\Modules\Admin\Widgets\Forms\CmsSubmenu;
+use Hirtz\Skeleton\Widgets\Bootstrap\Panel;
 
 ?>
 

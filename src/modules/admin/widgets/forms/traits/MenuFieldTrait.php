@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\modules\admin\widgets\forms\traits;
+namespace Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits;
 
-use Hirtz\Cms\models\traits\MenuAttributeTrait;
-use Hirtz\Cms\modules\admin\widgets\forms\EntryActiveForm;
+use Hirtz\Cms\Models\traits\MenuAttributeTrait;
+use Hirtz\Cms\Modules\Admin\Widgets\Forms\EntryActiveForm;
 use Yii;
 use yii\widgets\ActiveField;
 

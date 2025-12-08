@@ -2,23 +2,23 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\modules\admin\widgets\forms;
+namespace Hirtz\Cms\Modules\Admin\Widgets\Forms;
 
-use Hirtz\Cms\models\Asset;
-use Hirtz\Cms\models\Category;
-use Hirtz\Cms\models\Entry;
-use Hirtz\Cms\models\Section;
-use Hirtz\Skeleton\widgets\forms\fields\InputField;
-use Hirtz\Skeleton\widgets\forms\fields\SelectField;
-use Hirtz\Skeleton\widgets\forms\fields\TextareaField;
-use Hirtz\Skeleton\widgets\forms\fields\TinyMceField;
+use Hirtz\Cms\Models\Asset;
+use Hirtz\Cms\Models\Category;
+use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Models\Section;
+use Hirtz\Skeleton\Widgets\Forms\Fields\InputField;
+use Hirtz\Skeleton\Widgets\Forms\Fields\SelectField;
+use Hirtz\Skeleton\Widgets\Forms\Fields\TextareaField;
+use Hirtz\Skeleton\Widgets\Forms\Fields\TinyMceField;
 use Stringable;
-use Hirtz\Skeleton\helpers\ArrayHelper;
+use Hirtz\Skeleton\Helpers\ArrayHelper;
 
 /**
  * @property Asset|Category|Entry|Section $model
  */
-abstract class ActiveForm extends \Hirtz\Skeleton\widgets\forms\ActiveForm
+abstract class ActiveForm extends \Hirtz\Skeleton\Widgets\Forms\ActiveForm
 {
     protected function getStatusField(): ?Stringable
     {

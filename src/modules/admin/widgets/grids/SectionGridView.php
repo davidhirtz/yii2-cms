@@ -2,22 +2,22 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\modules\admin\widgets\grids;
+namespace Hirtz\Cms\Modules\Admin\Widgets\Grids;
 
-use Hirtz\Cms\models\Entry;
-use Hirtz\Cms\models\Section;
+use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\modules\ModuleTrait;
-use Hirtz\Skeleton\helpers\Html;
-use Hirtz\Skeleton\html\A;
-use Hirtz\Skeleton\widgets\grids\buttons\CreateButton;
-use Hirtz\Skeleton\widgets\grids\buttons\DeleteButton;
-use Hirtz\Skeleton\widgets\grids\buttons\DraggableSortButton;
-use Hirtz\Skeleton\widgets\grids\buttons\ViewButton;
-use Hirtz\Skeleton\widgets\grids\columns\ButtonsColumn;
-use Hirtz\Skeleton\widgets\grids\columns\CounterColumn;
-use Hirtz\Skeleton\widgets\grids\GridView;
-use Hirtz\Skeleton\widgets\grids\traits\StatusGridViewTrait;
-use Hirtz\Skeleton\widgets\grids\traits\TypeGridViewTrait;
+use Hirtz\Skeleton\Helpers\Html;
+use Hirtz\Skeleton\Html\A;
+use Hirtz\Skeleton\Widgets\Grids\Buttons\CreateButton;
+use Hirtz\Skeleton\Widgets\Grids\Buttons\DeleteButton;
+use Hirtz\Skeleton\Widgets\Grids\Buttons\DraggableSortButton;
+use Hirtz\Skeleton\Widgets\Grids\Buttons\ViewButton;
+use Hirtz\Skeleton\Widgets\Grids\Columns\ButtonsColumn;
+use Hirtz\Skeleton\Widgets\Grids\Columns\CounterColumn;
+use Hirtz\Skeleton\Widgets\Grids\GridView;
+use Hirtz\Skeleton\Widgets\Grids\Traits\StatusGridViewTrait;
+use Hirtz\Skeleton\Widgets\Grids\Traits\TypeGridViewTrait;
 use Override;
 use Stringable;
 use Yii;

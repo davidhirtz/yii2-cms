@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\models;
+namespace Hirtz\Cms\Models;
 
-use Hirtz\Cms\models\queries\AssetQuery;
-use Hirtz\Cms\models\traits\EntryRelationTrait;
-use Hirtz\Cms\models\traits\SectionRelationTrait;
-use Hirtz\Cms\modules\admin\widgets\panels\FileAssetParentPanel;
+use Hirtz\Cms\Models\Queries\AssetQuery;
+use Hirtz\Cms\Models\Traits\EntryRelationTrait;
+use Hirtz\Cms\Models\Traits\SectionRelationTrait;
+use Hirtz\Cms\Modules\Admin\Widgets\Panels\FileAssetParentPanel;
 use davidhirtz\yii2\datetime\DateTime;
 use Hirtz\Media\models\File;
 use Hirtz\Media\models\interfaces\AssetInterface;
 use Hirtz\Media\models\traits\AssetTrait;
 use Hirtz\Media\models\traits\EmbedUrlTrait;
-use Hirtz\Skeleton\models\interfaces\DraftStatusAttributeInterface;
-use Hirtz\Skeleton\validators\RelationValidator;
+use Hirtz\Skeleton\Models\Interfaces\DraftStatusAttributeInterface;
+use Hirtz\Skeleton\Validators\RelationValidator;
 use Yii;
 
 /**

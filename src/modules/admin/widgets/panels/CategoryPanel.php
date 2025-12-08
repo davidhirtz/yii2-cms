@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\modules\admin\widgets\panels;
+namespace Hirtz\Cms\Modules\Admin\Widgets\Panels;
 
-use Hirtz\Cms\models\Category;
-use Hirtz\Skeleton\html\Button;
+use Hirtz\Cms\Models\Category;
+use Hirtz\Skeleton\Html\Button;
 use Stringable;
 use Yii;
 

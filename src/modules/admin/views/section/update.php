@@ -9,17 +9,17 @@ declare(strict_types=1);
  * @var Section $section
  */
 
-use Hirtz\Cms\models\Section;
-use Hirtz\Cms\modules\admin\controllers\SectionController;
-use Hirtz\Cms\modules\admin\widgets\forms\SectionActiveForm;
-use Hirtz\Cms\modules\admin\widgets\grids\AssetGridView;
-use Hirtz\Cms\modules\admin\widgets\grids\SectionLinkedEntryGridView;
-use Hirtz\Cms\modules\admin\widgets\navs\CmsSubmenu;
-use Hirtz\Cms\modules\admin\widgets\panels\SectionHelpPanel;
-use Hirtz\Skeleton\helpers\Html;
-use Hirtz\Skeleton\web\View;
-use Hirtz\Skeleton\widgets\bootstrap\Panel;
-use Hirtz\Skeleton\widgets\forms\DeleteActiveForm;
+use Hirtz\Cms\Models\Section;
+use Hirtz\Cms\Modules\Admin\SectionController;
+use Hirtz\Cms\Modules\Admin\Widgets\Forms\SectionActiveForm;
+use Hirtz\Cms\Modules\Admin\Widgets\Forms\AssetGridView;
+use Hirtz\Cms\Modules\Admin\Widgets\Forms\SectionLinkedEntryGridView;
+use Hirtz\Cms\Modules\Admin\Widgets\Forms\CmsSubmenu;
+use Hirtz\Cms\Modules\Admin\Widgets\Panels\SectionHelpPanel;
+use Hirtz\Skeleton\Helpers\Html;
+use Hirtz\Skeleton\Web\View;
+use Hirtz\Skeleton\Widgets\Bootstrap\Panel;
+use Hirtz\Skeleton\Widgets\Forms\DeleteActiveForm;
 
 $this->title(Yii::t('cms', 'Edit Section'));
 ?>

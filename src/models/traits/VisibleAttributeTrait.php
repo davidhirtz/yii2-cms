@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\models\traits;
+namespace Hirtz\Cms\Models\Traits;
 
 trait VisibleAttributeTrait
 {

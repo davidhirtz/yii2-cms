@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Hirtz\Cms\tests\unit\models\builders;
 
 use Codeception\Test\Unit;
-use Hirtz\Cms\models\builders\EntrySiteRelationsBuilder;
+use Hirtz\Cms\Models\builders\EntrySiteRelationsBuilder;
 use Hirtz\Cms\tests\data\models\TestEntry;
 use Hirtz\Cms\tests\support\fixtures\traits\CmsFixturesTrait;
 use Hirtz\Cms\tests\support\UnitTester;
-use Hirtz\Skeleton\db\ActiveQuery;
+use Hirtz\Skeleton\Db\ActiveQuery;
 
 class EntrySiteRelationsBuilderTest extends Unit
 {

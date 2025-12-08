@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\modules\admin\widgets\grids\columns;
+namespace Hirtz\Cms\Modules\Admin\Widgets\Forms\Columns;
 
-use Hirtz\Cms\models\Entry;
-use Hirtz\Cms\models\Section;
-use Hirtz\Cms\modules\admin\widgets\grids\EntryGridView;
-use Hirtz\Cms\modules\admin\widgets\grids\SectionGridView;
+use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Models\Section;
+use Hirtz\Cms\Modules\Admin\Widgets\Forms\EntryGridView;
+use Hirtz\Cms\Modules\Admin\Widgets\Forms\SectionGridView;
 use Hirtz\Cms\modules\ModuleTrait;
 use Hirtz\Media\models\interfaces\AssetParentInterface;
-use Hirtz\Skeleton\widgets\grids\columns\BadgeColumn;
+use Hirtz\Skeleton\Widgets\Grids\Columns\BadgeColumn;
 use Override;
 use Stringable;
 use yii\base\Model;

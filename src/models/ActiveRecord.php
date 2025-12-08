@@ -2,29 +2,29 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\models;
+namespace Hirtz\Cms\Models;
 
-use Hirtz\Cms\models\traits\SitemapTrait;
-use Hirtz\Cms\models\traits\VisibleAttributeTrait;
-use Hirtz\Cms\modules\ModuleTrait;
+use Hirtz\Cms\Models\Traits\SitemapTrait;
+use Hirtz\Cms\Models\Traits\VisibleAttributeTrait;
+use Hirtz\Cms\Modules\ModuleTrait;
 use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\datetime\DateTimeBehavior;
-use Hirtz\Skeleton\behaviors\BlameableBehavior;
-use Hirtz\Skeleton\behaviors\TimestampBehavior;
-use Hirtz\Skeleton\behaviors\TrailBehavior;
-use Hirtz\Skeleton\db\ActiveQuery;
-use Hirtz\Skeleton\db\ActiveRecord as BaseActiveRecord;
-use Hirtz\Skeleton\models\interfaces\DraftStatusAttributeInterface;
-use Hirtz\Skeleton\models\interfaces\I18nAttributeInterface;
-use Hirtz\Skeleton\models\interfaces\TrailModelInterface;
-use Hirtz\Skeleton\models\interfaces\TypeAttributeInterface;
-use Hirtz\Skeleton\models\traits\DraftStatusAttributeTrait;
-use Hirtz\Skeleton\models\traits\I18nAttributesTrait;
-use Hirtz\Skeleton\models\traits\TrailModelTrait;
-use Hirtz\Skeleton\models\traits\TypeAttributeTrait;
-use Hirtz\Skeleton\models\traits\UpdatedByUserTrait;
-use Hirtz\Skeleton\validators\DynamicRangeValidator;
-use Hirtz\Skeleton\validators\HtmlValidator;
+use Hirtz\Skeleton\Behaviors\BlameableBehavior;
+use Hirtz\Skeleton\Behaviors\TimestampBehavior;
+use Hirtz\Skeleton\Behaviors\TrailBehavior;
+use Hirtz\Skeleton\Db\ActiveQuery;
+use Hirtz\Skeleton\Db\ActiveRecord as BaseActiveRecord;
+use Hirtz\Skeleton\Models\Interfaces\DraftStatusAttributeInterface;
+use Hirtz\Skeleton\Models\Interfaces\I18nAttributeInterface;
+use Hirtz\Skeleton\Models\Interfaces\TrailModelInterface;
+use Hirtz\Skeleton\Models\Interfaces\TypeAttributeInterface;
+use Hirtz\Skeleton\Models\Traits\DraftStatusAttributeTrait;
+use Hirtz\Skeleton\Models\Traits\I18nAttributesTrait;
+use Hirtz\Skeleton\Models\Traits\TrailModelTrait;
+use Hirtz\Skeleton\Models\Traits\TypeAttributeTrait;
+use Hirtz\Skeleton\Models\Traits\UpdatedByUserTrait;
+use Hirtz\Skeleton\Validators\DynamicRangeValidator;
+use Hirtz\Skeleton\Validators\HtmlValidator;
 use Yii;
 
 /**

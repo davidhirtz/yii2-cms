@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\modules\admin\controllers;
+namespace Hirtz\Cms\Modules\Admin\Controllers;
 
-use Hirtz\Cms\models\actions\DuplicateAsset;
-use Hirtz\Cms\models\actions\ReorderAssets;
-use Hirtz\Cms\models\Asset;
-use Hirtz\Cms\models\Entry;
-use Hirtz\Cms\models\Section;
-use Hirtz\Cms\modules\admin\controllers\traits\AssetTrait;
-use Hirtz\Cms\modules\admin\controllers\traits\EntryTrait;
-use Hirtz\Cms\modules\admin\controllers\traits\SectionTrait;
+use Hirtz\Cms\Models\actions\DuplicateAsset;
+use Hirtz\Cms\Models\actions\ReorderAssets;
+use Hirtz\Cms\Models\Asset;
+use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Models\Section;
+use Hirtz\Cms\Modules\Admin\Traits\AssetTrait;
+use Hirtz\Cms\Modules\Admin\Traits\EntryTrait;
+use Hirtz\Cms\Modules\Admin\Traits\SectionTrait;
 use Hirtz\Media\models\Folder;
-use Hirtz\Media\modules\admin\controllers\traits\FileControllerTrait;
-use Hirtz\Media\modules\admin\data\FileActiveDataProvider;
+use Hirtz\Media\Modules\Admin\Controllers\Traits\FileControllerTrait;
+use Hirtz\Media\Modules\Admin\Data\FileActiveDataProvider;
 use Override;
 use Yii;
 use yii\filters\AccessControl;

@@ -2,22 +2,22 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\modules\admin\widgets\grids\traits;
+namespace Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits;
 
-use Hirtz\Cms\models\Category;
-use Hirtz\Cms\models\collections\CategoryCollection;
-use Hirtz\Cms\modules\admin\data\CategoryActiveDataProvider;
-use Hirtz\Cms\modules\admin\helpers\FrontendLink;
+use Hirtz\Cms\Models\Category;
+use Hirtz\Cms\Models\collections\CategoryCollection;
+use Hirtz\Cms\Modules\Admin\Data\CategoryActiveDataProvider;
+use Hirtz\Cms\Modules\Admin\Helpers\FrontendLink;
 use Hirtz\Cms\modules\ModuleTrait;
-use Hirtz\Skeleton\helpers\Html;
-use Hirtz\Skeleton\html\A;
-use Hirtz\Skeleton\html\Div;
-use Hirtz\Skeleton\widgets\grids\columns\BadgeColumn;
-use Hirtz\Skeleton\widgets\grids\columns\Column;
-use Hirtz\Skeleton\widgets\grids\columns\DataColumn;
-use Hirtz\Skeleton\widgets\grids\toolbars\FilterDropdown;
-use Hirtz\Skeleton\widgets\grids\traits\StatusGridViewTrait;
-use Hirtz\Skeleton\widgets\grids\traits\TypeGridViewTrait;
+use Hirtz\Skeleton\Helpers\Html;
+use Hirtz\Skeleton\Html\A;
+use Hirtz\Skeleton\Html\Div;
+use Hirtz\Skeleton\Widgets\Grids\Columns\BadgeColumn;
+use Hirtz\Skeleton\Widgets\Grids\Columns\Column;
+use Hirtz\Skeleton\Widgets\Grids\Columns\DataColumn;
+use Hirtz\Skeleton\Widgets\Grids\Toolbars\FilterDropdown;
+use Hirtz\Skeleton\Widgets\Grids\Traits\StatusGridViewTrait;
+use Hirtz\Skeleton\Widgets\Grids\Traits\TypeGridViewTrait;
 use Yii;
 use yii\helpers\Url;
 

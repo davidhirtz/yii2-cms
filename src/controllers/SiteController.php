@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\controllers;
+namespace Hirtz\Cms\Controllers;
 
 use Hirtz\Cms\models\builders\EntrySiteRelationsBuilder;
 use Hirtz\Cms\models\Entry;
 use Hirtz\Cms\models\queries\EntryQuery;
 use Hirtz\Cms\Module;
-use Hirtz\Skeleton\web\Controller;
+use Hirtz\Skeleton\Web\Controller;
 use Yii;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;

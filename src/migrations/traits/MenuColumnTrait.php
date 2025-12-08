@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\migrations\traits;
+namespace Hirtz\Cms\Migrations\Traits;
 
-use Hirtz\Cms\models\Entry;
+use Hirtz\Cms\Models\Entry;
 use yii\db\Migration;
 
 /**

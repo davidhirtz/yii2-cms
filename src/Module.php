@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms;
 
-use Hirtz\Cms\models\collections\CategoryCollection;
-use Hirtz\Skeleton\filters\PageCache;
-use Hirtz\Skeleton\modules\ModuleTrait;
+use Hirtz\Cms\Models\collections\CategoryCollection;
+use Hirtz\Skeleton\Filters\PageCache;
+use Hirtz\Skeleton\Modules\ModuleTrait;
 use Yii;
 use yii\caching\CacheInterface;
 use yii\caching\TagDependency;
 
-class Module extends \Hirtz\Skeleton\base\Module
+class Module extends \Hirtz\Skeleton\Base\Module
 {
     use ModuleTrait;
 

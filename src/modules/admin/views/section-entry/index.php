@@ -2,17 +2,17 @@
 declare(strict_types=1);
 
 /**
- * @see \Hirtz\Cms\modules\admin\controllers\SectionEntryController::actionIndex()
+ * @see \Hirtz\Cms\Modules\Admin\SectionEntryController::actionIndex()
  *
  * @var View $this
  * @var EntryActiveDataProvider $provider
  */
 
-use Hirtz\Cms\modules\admin\data\EntryActiveDataProvider;
-use Hirtz\Cms\modules\admin\widgets\grids\SectionEntryGridView;
-use Hirtz\Cms\modules\admin\widgets\navs\CmsSubmenu;
-use Hirtz\Skeleton\web\View;
-use Hirtz\Skeleton\widgets\bootstrap\Panel;
+use Hirtz\Cms\Modules\Admin\Data\EntryActiveDataProvider;
+use Hirtz\Cms\Modules\Admin\Widgets\Forms\SectionEntryGridView;
+use Hirtz\Cms\Modules\Admin\Widgets\Forms\CmsSubmenu;
+use Hirtz\Skeleton\Web\View;
+use Hirtz\Skeleton\Widgets\Bootstrap\Panel;
 
 $this->title(Yii::t('cms', 'Link entries'));
 ?>
