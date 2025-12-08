@@ -26,7 +26,8 @@ class CategoryParentIdSelectField extends SelectField
         $labels = Category::indentNestedTree(
             $categories,
             $this->model->getI18nAttributeName('name'),
-            $this->indent);
+            $this->indent
+        );
 
         $attributeNames = $this->model->getI18nAttributeNames('slug');
 

@@ -13,7 +13,7 @@ use davidhirtz\yii2\skeleton\widgets\grids\columns\ButtonColumn;
 use davidhirtz\yii2\skeleton\widgets\grids\columns\buttons\DraggableSortGridButton;
 use davidhirtz\yii2\skeleton\widgets\grids\columns\buttons\ViewGridButton;
 use davidhirtz\yii2\skeleton\widgets\grids\columns\Column;
-use davidhirtz\yii2\skeleton\widgets\grids\columns\TimeagoColumn;
+use davidhirtz\yii2\skeleton\widgets\grids\columns\RelativeTimeColumn;
 use davidhirtz\yii2\skeleton\widgets\grids\GridView;
 use davidhirtz\yii2\skeleton\widgets\grids\toolbars\CreateButton;
 use Override;
@@ -78,7 +78,7 @@ class CategoryGridView extends GridView
 
     protected function getUpdatedAtColumn(): ?Column
     {
-        return TimeagoColumn::make()
+        return RelativeTimeColumn::make()
             ->property('updated_at');
     }
 

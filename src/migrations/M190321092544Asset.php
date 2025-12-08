@@ -11,7 +11,6 @@ use davidhirtz\yii2\cms\models\Section;
 use davidhirtz\yii2\media\models\File;
 use davidhirtz\yii2\skeleton\db\traits\MigrationTrait;
 use davidhirtz\yii2\skeleton\models\User;
-
 use yii\db\Migration;
 
 /**

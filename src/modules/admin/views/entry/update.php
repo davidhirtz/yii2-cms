@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -31,6 +32,7 @@ echo FormContainer::make()
 
 if ($entry->hasAssetsEnabled()) {
     echo GridContainer::make()
+        ->attribute('id', 'assets')
         ->title($entry->getAttributeLabel('asset_count'))
         ->grid(AssetGridView::make()
             ->parent($entry));

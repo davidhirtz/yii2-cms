@@ -8,7 +8,6 @@ use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\models\Section;
-use davidhirtz\yii2\skeleton\helpers\Html;
 use davidhirtz\yii2\skeleton\widgets\forms\fields\InputField;
 use davidhirtz\yii2\skeleton\widgets\forms\fields\SelectField;
 use davidhirtz\yii2\skeleton\widgets\forms\fields\TextareaField;

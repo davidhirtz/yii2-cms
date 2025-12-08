@@ -57,13 +57,13 @@ class MetaTags extends BaseObject
      * @var string|false the og:type, if false, no og:type will be registered
      */
     public string|false $ogType = 'website';
-    
+
     protected View $view;
 
     public function init(): void
     {
         $this->view ??= Yii::$app->getView();
-        
+
         if ($this->enableImages) {
             $this->enableImages = $this->model instanceof Entry && static::getModule()->enableEntryAssets;
         }

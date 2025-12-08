@@ -16,7 +16,7 @@ use davidhirtz\yii2\skeleton\widgets\grids\buttons\DeleteButton;
 use davidhirtz\yii2\skeleton\widgets\grids\columns\ButtonsColumn;
 use davidhirtz\yii2\skeleton\widgets\grids\columns\CounterColumn;
 use davidhirtz\yii2\skeleton\widgets\grids\GridView;
-use davidhirtz\yii2\timeago\TimeagoColumn;
+use davidhirtz\yii2\timeago\RelativeTimeColumn;
 use Override;
 use Yii;
 use yii\data\ActiveDataProvider;
@@ -123,7 +123,7 @@ class FileAssetParentGridView extends GridView
     {
         return [
             'attribute' => 'updated_at',
-            'class' => TimeagoColumn::class,
+            'class' => RelativeTimeColumn::class,
         ];
     }
 
