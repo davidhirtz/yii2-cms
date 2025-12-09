@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * @see \Hirtz\Cms\Modules\Admin\EntryController::actionIndex()
+ * @see \Hirtz\Cms\Modules\Admin\Controllers\EntryController::actionIndex()
  *
  * @var View $this
  * @var EntryActiveDataProvider $provider

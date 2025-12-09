@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 /**
  * EntryCategory.
- * @see \Hirtz\Cms\Modules\Admin\EntryCategoryController::actionIndex()
+ * @see \Hirtz\Cms\Modules\Admin\Controllers\EntryCategoryController::actionIndex()
  *
  * @var \Hirtz\Skeleton\Web\View $this
  * @var \Hirtz\Cms\Modules\Admin\Data\CategoryActiveDataProvider $provider

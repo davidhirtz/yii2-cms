@@ -6,7 +6,7 @@ namespace Hirtz\Cms\Modules\Admin\Widgets\Grids;
 
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
-use Hirtz\Cms\Modules\Admin\SectionEntryController;
+use Hirtz\Cms\Modules\Admin\Controllers\SectionEntryController;
 use Hirtz\Cms\Modules\Admin\Data\EntryActiveDataProvider;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\Buttons\SectionEntryDeleteButton;
 use Hirtz\Skeleton\Widgets\Grids\Buttons\CreateButton;

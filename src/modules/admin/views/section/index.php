@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 /**
  * Sections.
- * @see \Hirtz\Cms\Modules\Admin\SectionController::actionIndex()
+ * @see \Hirtz\Cms\Modules\Admin\Controllers\SectionController::actionIndex()
  *
  * @var \Hirtz\Skeleton\Web\View $this
  * @var \Hirtz\Cms\Models\Entry $entry

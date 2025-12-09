@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 /**
- * @see \Hirtz\Cms\Modules\Admin\SectionEntryController::actionIndex()
+ * @see \Hirtz\Cms\Modules\Admin\Controllers\SectionEntryController::actionIndex()
  *
  * @var View $this
  * @var EntryActiveDataProvider $provider

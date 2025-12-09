@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
-use Hirtz\Cms\Modules\Admin\AssetController;
+use Hirtz\Cms\Modules\Admin\Controllers\AssetController;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\CmsSubmenu;
 use Hirtz\Media\Modules\Admin\Widgets\Grids\FileGridView;
 use Hirtz\Skeleton\Web\View;

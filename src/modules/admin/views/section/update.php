@@ -10,7 +10,7 @@ declare(strict_types=1);
  */
 
 use Hirtz\Cms\Models\Section;
-use Hirtz\Cms\Modules\Admin\SectionController;
+use Hirtz\Cms\Modules\Admin\Controllers\SectionController;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\SectionActiveForm;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\AssetGridView;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\SectionLinkedEntryGridView;

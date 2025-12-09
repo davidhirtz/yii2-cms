@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * @see \Hirtz\Cms\Modules\Admin\CategoryController::actionUpdate()
+ * @see \Hirtz\Cms\Modules\Admin\Controllers\CategoryController::actionUpdate()
  *
  * @var View $this
  * @var CategoryActiveDataProvider $provider

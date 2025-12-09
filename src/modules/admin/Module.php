@@ -6,12 +6,12 @@ namespace Hirtz\Cms\modules\admin;
 
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
-use Hirtz\Cms\Modules\Admin\AssetController;
-use Hirtz\Cms\Modules\Admin\CategoryController;
-use Hirtz\Cms\Modules\Admin\EntryCategoryController;
-use Hirtz\Cms\Modules\Admin\EntryController;
-use Hirtz\Cms\Modules\Admin\SectionController;
-use Hirtz\Cms\Modules\Admin\SectionEntryController;
+use Hirtz\Cms\Modules\Admin\Controllers\AssetController;
+use Hirtz\Cms\Modules\Admin\Controllers\CategoryController;
+use Hirtz\Cms\Modules\Admin\Controllers\EntryCategoryController;
+use Hirtz\Cms\Modules\Admin\Controllers\EntryController;
+use Hirtz\Cms\Modules\Admin\Controllers\SectionController;
+use Hirtz\Cms\Modules\Admin\Controllers\SectionEntryController;
 use Hirtz\Skeleton\Helpers\ArrayHelper;
 use Hirtz\Skeleton\Modules\Admin\Config\DashboardItemConfig;
 use Hirtz\Skeleton\Modules\Admin\Config\DashboardPanelConfig;

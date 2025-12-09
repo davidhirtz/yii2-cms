@@ -9,7 +9,7 @@ use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Models\SectionEntry;
-use Hirtz\Cms\Modules\Admin\Traits\SectionTrait;
+use Hirtz\Cms\Modules\Admin\Controllers\Traits\SectionControllerTrait;
 use Hirtz\Cms\Modules\Admin\Data\EntryActiveDataProvider;
 use Yii;
 use yii\filters\AccessControl;
@@ -21,7 +21,7 @@ use yii\web\Response;
 
 class SectionEntryController extends AbstractController
 {
-    use SectionTrait;
+    use SectionControllerTrait;
 
     #[\Override]
     public function behaviors(): array

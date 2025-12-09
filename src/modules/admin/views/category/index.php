@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * @see \Hirtz\Cms\Modules\Admin\CategoryController::actionIndex()
+ * @see \Hirtz\Cms\Modules\Admin\Controllers\CategoryController::actionIndex()
  *
  * @var View $this
  * @var CategoryActiveDataProvider $provider

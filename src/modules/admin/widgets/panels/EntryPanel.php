@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Modules\Admin\Widgets\Panels;
 
 use Hirtz\Cms\Models\Entry;
-use Hirtz\Cms\Modules\Admin\EntryController;
+use Hirtz\Cms\Modules\Admin\Controllers\EntryController;
 use Hirtz\Skeleton\Html\Button;
 use Hirtz\Skeleton\Widgets\Modal;
 use Stringable;

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\Modules\Admin\Traits;
+namespace Hirtz\Cms\Modules\Admin\Controllers\Traits;
 
 use Hirtz\Cms\Models\Category;
 use Yii;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 
-trait CategoryTrait
+trait CategoryControllerTrait
 {
     protected function findCategory(int $id, ?string $permissionName = null): Category
     {

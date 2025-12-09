@@ -6,8 +6,9 @@ namespace Hirtz\Cms\Modules\Admin\Controllers;
 
 use Hirtz\Cms\Models\actions\ReorderCategories;
 use Hirtz\Cms\Models\Category;
-use Hirtz\Cms\Modules\Admin\Traits\CategoryTrait;
+use Hirtz\Cms\Modules\Admin\Controllers\Traits\CategoryControllerTrait;
 use Hirtz\Cms\Modules\Admin\Data\CategoryActiveDataProvider;
+use Override;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
@@ -17,11 +18,11 @@ use yii\web\ServerErrorHttpException;
 
 class CategoryController extends AbstractController
 {
-    use CategoryTrait;
+    use CategoryControllerTrait;
 
     protected array|false|null $i18nTablesRoute = ['/admin/category/index'];
 
-    #[\Override]
+    #[Override]
     public function behaviors(): array
     {
         return [

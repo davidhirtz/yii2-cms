@@ -9,9 +9,9 @@ use Hirtz\Cms\Models\actions\ReorderAssets;
 use Hirtz\Cms\Models\Asset;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
-use Hirtz\Cms\Modules\Admin\Traits\AssetTrait;
-use Hirtz\Cms\Modules\Admin\Traits\EntryTrait;
-use Hirtz\Cms\Modules\Admin\Traits\SectionTrait;
+use Hirtz\Cms\Modules\Admin\Controllers\Traits\AssetControllerTrait;
+use Hirtz\Cms\Modules\Admin\Controllers\Traits\EntryControllerTrait;
+use Hirtz\Cms\Modules\Admin\Controllers\Traits\SectionControllerTrait;
 use Hirtz\Media\models\Folder;
 use Hirtz\Media\Modules\Admin\Controllers\Traits\FileControllerTrait;
 use Hirtz\Media\Modules\Admin\Data\FileActiveDataProvider;
@@ -23,9 +23,9 @@ use yii\web\Response;
 
 class AssetController extends AbstractController
 {
-    use AssetTrait;
-    use EntryTrait;
-    use SectionTrait;
+    use AssetControllerTrait;
+    use EntryControllerTrait;
+    use SectionControllerTrait;
     use FileControllerTrait;
 
     public function __construct($id, $module, $config = [])

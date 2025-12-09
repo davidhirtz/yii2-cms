@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * @see \Hirtz\Cms\Modules\Admin\EntryController::actionCreate()
+ * @see \Hirtz\Cms\Modules\Admin\Controllers\EntryController::actionCreate()
  *
  * @var View $this
  * @var Entry $entry

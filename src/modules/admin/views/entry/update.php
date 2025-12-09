@@ -10,7 +10,7 @@ declare(strict_types=1);
  */
 
 use Hirtz\Cms\Models\Entry;
-use Hirtz\Cms\Modules\Admin\EntryController;
+use Hirtz\Cms\Modules\Admin\Controllers\EntryController;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\EntryActiveForm;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\AssetGridView;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\CmsSubmenu;

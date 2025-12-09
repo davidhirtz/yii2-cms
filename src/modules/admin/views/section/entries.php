@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 /**
  * Section entries.
- * @see \Hirtz\Cms\Modules\Admin\SectionController::actionEntries()
+ * @see \Hirtz\Cms\Modules\Admin\Controllers\SectionController::actionEntries()
  *
  * @var View $this
  * @var Section $section

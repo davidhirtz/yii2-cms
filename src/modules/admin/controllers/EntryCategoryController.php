@@ -8,8 +8,8 @@ use Hirtz\Cms\Models\actions\ReorderEntryCategories;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\EntryCategory;
-use Hirtz\Cms\Modules\Admin\Traits\CategoryTrait;
-use Hirtz\Cms\Modules\Admin\Traits\EntryTrait;
+use Hirtz\Cms\Modules\Admin\Controllers\Traits\CategoryControllerTrait;
+use Hirtz\Cms\Modules\Admin\Controllers\Traits\EntryControllerTrait;
 use Hirtz\Cms\Modules\Admin\Data\CategoryActiveDataProvider;
 use Override;
 use Yii;
@@ -20,8 +20,8 @@ use yii\web\Response;
 
 class EntryCategoryController extends AbstractController
 {
-    use CategoryTrait;
-    use EntryTrait;
+    use CategoryControllerTrait;
+    use EntryControllerTrait;
 
     #[Override]
     public function behaviors(): array

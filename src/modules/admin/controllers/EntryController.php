@@ -9,7 +9,7 @@ use Hirtz\Cms\Models\actions\ReorderEntries;
 use Hirtz\Cms\Models\actions\ReplaceIndexEntry;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
-use Hirtz\Cms\Modules\Admin\Traits\EntryTrait;
+use Hirtz\Cms\Modules\Admin\Controllers\Traits\EntryControllerTrait;
 use Hirtz\Cms\Modules\Admin\Data\EntryActiveDataProvider;
 use Override;
 use Yii;
@@ -21,7 +21,7 @@ use yii\web\Response;
 
 class EntryController extends AbstractController
 {
-    use EntryTrait;
+    use EntryControllerTrait;
 
     protected array|false|null $i18nTablesRoute = ['/admin/entry/index'];
 

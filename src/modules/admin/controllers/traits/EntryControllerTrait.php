@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\Modules\Admin\Traits;
+namespace Hirtz\Cms\Modules\Admin\Controllers\Traits;
 
 use Hirtz\Cms\Models\Entry;
 use Yii;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 
-trait EntryTrait
+trait EntryControllerTrait
 {
     protected function findEntry(int $id, ?string $permissionName = null): Entry
     {

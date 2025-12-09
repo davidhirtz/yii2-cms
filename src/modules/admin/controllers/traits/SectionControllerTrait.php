@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\Modules\Admin\Traits;
+namespace Hirtz\Cms\Modules\Admin\Controllers\Traits;
 
 use Hirtz\Cms\Models\Section;
 use Yii;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 
-trait SectionTrait
+trait SectionControllerTrait
 {
     protected function findSection(int $id, ?string $permissionName = null): Section
     {

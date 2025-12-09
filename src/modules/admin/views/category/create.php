@@ -10,7 +10,7 @@ declare(strict_types=1);
  */
 
 use Hirtz\Cms\Models\Category;
-use Hirtz\Cms\Modules\Admin\CategoryController;
+use Hirtz\Cms\Modules\Admin\Controllers\CategoryController;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\CategoryActiveForm;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\CmsSubmenu;
 use Hirtz\Skeleton\Web\View;

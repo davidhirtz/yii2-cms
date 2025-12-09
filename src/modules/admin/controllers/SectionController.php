@@ -11,8 +11,8 @@ use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\queries\AssetQuery;
 use Hirtz\Cms\Models\queries\SectionQuery;
 use Hirtz\Cms\Models\Section;
-use Hirtz\Cms\Modules\Admin\Traits\EntryTrait;
-use Hirtz\Cms\Modules\Admin\Traits\SectionTrait;
+use Hirtz\Cms\Modules\Admin\Controllers\Traits\EntryControllerTrait;
+use Hirtz\Cms\Modules\Admin\Controllers\Traits\SectionControllerTrait;
 use Hirtz\Cms\Modules\Admin\Data\EntryActiveDataProvider;
 use Yii;
 use yii\filters\AccessControl;
@@ -23,8 +23,8 @@ use yii\web\Response;
 
 class SectionController extends AbstractController
 {
-    use EntryTrait;
-    use SectionTrait;
+    use EntryControllerTrait;
+    use SectionControllerTrait;
 
     /**
      * @var bool whether sections should be automatically inserted in {@see static::actionCreate()}.
