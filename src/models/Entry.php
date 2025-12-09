@@ -298,7 +298,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
                     ->column();
 
                 if ($sectionIds) {
-                    $this->on(static::EVENT_AFTER_DELETE, function () use ($sectionIds) {
+                    $this->on(static::EVENT_AFTER_DELETE, function () use ($sectionIds): void {
                         $sections = Section::find()
                             ->where(['id' => $sectionIds])
                             ->all();

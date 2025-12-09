@@ -24,7 +24,7 @@ class M190319185130Cms extends Migration
 
     public function safeUp(): void
     {
-        $this->i18nTablesCallback(function () {
+        $this->i18nTablesCallback(function (): void {
             $schema = $this->getDb()->getSchema();
 
             // Entry
@@ -93,7 +93,7 @@ class M190319185130Cms extends Migration
 
     public function safeDown(): void
     {
-        $this->i18nTablesCallback(function () {
+        $this->i18nTablesCallback(function (): void {
             $this->dropTable(Section::tableName());
             $this->dropTable(Entry::tableName());
         });

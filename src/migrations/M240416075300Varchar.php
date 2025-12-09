@@ -19,7 +19,7 @@ class M240416075300Varchar extends Migration
 
     public function safeUp(): void
     {
-        $this->i18nTablesCallback(function () {
+        $this->i18nTablesCallback(function (): void {
             foreach (Category::instance()->getI18nAttributeNames('name') as $attribute) {
                 $this->alterColumn(Category::tableName(), $attribute, (string)$this->string()->notNull());
             }

@@ -36,7 +36,7 @@ class FileAssetParentGridView extends GridView
     #[Override]
     public function init(): void
     {
-        Yii::$app->getI18n()->callback($this->language, function () {
+        Yii::$app->getI18n()->callback($this->language, function (): void {
             $this->dataProvider ??= new ActiveDataProvider([
                 'query' => Asset::find()
                     ->where(['file_id' => $this->file->id])

@@ -78,9 +78,9 @@ class SectionController extends AbstractController
         $query = Entry::find()
             ->where(['id' => $entry])
             ->with([
-                'sections' => function (SectionQuery $query) {
+                'sections' => function (SectionQuery $query): void {
                     $query->with([
-                        'assets' => function (AssetQuery $query) {
+                        'assets' => function (AssetQuery $query): void {
                             $query->with(['file', 'file.folder']);
                         }
                     ]);

@@ -125,7 +125,7 @@ class MetaTags extends BaseObject
     public function registerHrefLangLinkTags(): void
     {
         foreach ($this->languages as $language) {
-            Yii::$app->getI18n()->callback($language, function () use ($language) {
+            Yii::$app->getI18n()->callback($language, function () use ($language): void {
                 if ($route = $this->model->getRoute()) {
                     $url = Yii::$app->getUrlManager()->createAbsoluteUrl($route);
                     $this->view->registerHrefLangLinkTag($language, $url);

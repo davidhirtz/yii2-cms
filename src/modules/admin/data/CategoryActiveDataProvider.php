@@ -43,7 +43,7 @@ class CategoryActiveDataProvider extends ActiveDataProvider
     {
         if ($this->entry) {
             $this->query->joinWith([
-                'entryCategory' => function (ActiveQuery $query) {
+                'entryCategory' => function (ActiveQuery $query): void {
                     $query->onCondition(['entry_id' => $this->entry->id]);
                 }
             ]);

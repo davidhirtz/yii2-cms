@@ -21,7 +21,7 @@ class M240124120902Nullable extends Migration
 
     public function safeUp(): void
     {
-        $this->i18nTablesCallback(function () {
+        $this->i18nTablesCallback(function (): void {
             foreach (Category::instance()->getI18nAttributeNames('title') as $attribute) {
                 $this->alterColumn(Category::instance()->tableName(), $attribute, (string)$this->string(255)
                     ->null()

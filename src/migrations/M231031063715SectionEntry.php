@@ -25,7 +25,7 @@ class M231031063715SectionEntry extends Migration
 
     public function safeUp(): void
     {
-        $this->i18nTablesCallback(function () {
+        $this->i18nTablesCallback(function (): void {
             $schema = $this->getDb()->getSchema();
 
             if ($schema->getTableSchema(SectionEntry::tableName())) {
@@ -82,7 +82,7 @@ class M231031063715SectionEntry extends Migration
 
     public function safeDown(): void
     {
-        $this->i18nTablesCallback(function () {
+        $this->i18nTablesCallback(function (): void {
             $this->dropTable(SectionEntry::tableName());
             $this->dropColumn(Section::tableName(), 'entry_count');
         });

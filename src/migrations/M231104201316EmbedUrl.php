@@ -20,7 +20,7 @@ class M231104201316EmbedUrl extends Migration
 
     public function safeUp(): void
     {
-        $this->i18nTablesCallback(function () {
+        $this->i18nTablesCallback(function (): void {
             $linkAttributes = Asset::instance()->getI18nAttributeNames('link');
 
             $this->addColumn(Asset::tableName(), 'embed_url', (string)$this->text()
@@ -35,7 +35,7 @@ class M231104201316EmbedUrl extends Migration
 
     public function safeDown(): void
     {
-        $this->i18nTablesCallback(function () {
+        $this->i18nTablesCallback(function (): void {
             $this->dropI18nColumns(Asset::tableName(), ['embed_url']);
         });
     }

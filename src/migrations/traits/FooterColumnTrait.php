@@ -17,7 +17,7 @@ trait FooterColumnTrait
 
     protected function addShowInFooterColumn(): void
     {
-        $this->i18nTablesCallback(function () {
+        $this->i18nTablesCallback(function (): void {
             $this->addColumn(Entry::tableName(), 'show_in_footer', (string)$this->boolean()
                 ->notNull()
                 ->defaultValue(false)
@@ -40,7 +40,7 @@ trait FooterColumnTrait
 
     protected function dropShowInFooterColumn(): void
     {
-        $this->i18nTablesCallback(function () {
+        $this->i18nTablesCallback(function (): void {
             $this->dropColumn(Entry::tableName(), 'show_in_footer');
         });
     }

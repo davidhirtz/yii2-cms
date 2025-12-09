@@ -53,7 +53,7 @@ abstract class SetupController extends Controller
     public function actionIndex(): Response
     {
         foreach ($this->getLanguages() as $language) {
-            Yii::$app->getI18n()->callback($language, function () {
+            Yii::$app->getI18n()->callback($language, function (): void {
                 if ($this->shouldInsertCategories()) {
                     $this->insertCategories();
                 }
@@ -72,7 +72,7 @@ abstract class SetupController extends Controller
 
     protected function insertCategories(): void
     {
-        $this->insertInTransaction(function () {
+        $this->insertInTransaction(function (): void {
             foreach ($this->getCategoryAttributes() as $attributes) {
                 $category = Category::create();
                 $category->setAttributes($attributes);
@@ -86,7 +86,7 @@ abstract class SetupController extends Controller
 
     protected function insertEntries(): void
     {
-        $this->insertInTransaction(function () {
+        $this->insertInTransaction(function (): void {
             foreach ($this->getEntryAttributes() as $attributes) {
                 $this->insertEntry($attributes);
             }

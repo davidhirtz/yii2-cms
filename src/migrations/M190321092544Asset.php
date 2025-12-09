@@ -24,7 +24,7 @@ class M190321092544Asset extends Migration
 
     public function safeUp(): void
     {
-        $this->i18nTablesCallback(function () {
+        $this->i18nTablesCallback(function (): void {
             $schema = $this->getDb()->getSchema();
 
             $this->createTable(Asset::tableName(), [

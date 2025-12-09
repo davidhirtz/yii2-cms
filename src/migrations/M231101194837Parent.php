@@ -27,7 +27,7 @@ class M231101194837Parent extends Migration
 
     public function safeUp(): void
     {
-        $this->i18nTablesCallback(function () {
+        $this->i18nTablesCallback(function (): void {
             $schema = $this->getDb()->getSchema();
             $tableSchema = $schema->getTableSchema(Entry::tableName());
 
@@ -80,7 +80,7 @@ class M231101194837Parent extends Migration
 
     public function safeDown(): void
     {
-        $this->i18nTablesCallback(function () {
+        $this->i18nTablesCallback(function (): void {
             $schema = $this->getDb()->getSchema();
             $entry = Entry::instance();
 

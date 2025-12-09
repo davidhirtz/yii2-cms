@@ -15,7 +15,7 @@ trait SlugFieldTrait
         return $this->hasSlugField()
             ? InputField::make()
                 ->property('slug')
-                ->prepare(function (InputField $field) {
+                ->prepare(function (InputField $field): void {
                     $field->prepend(Div::make()
                         ->attribute('id', $this->getSlugId($field->language))
                         ->class('text-truncate hidden sm:block')

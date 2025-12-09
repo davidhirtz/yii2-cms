@@ -19,7 +19,7 @@ class M241001170341EntryParentStatus extends Migration
 
     public function safeUp(): void
     {
-        $this->i18nTablesCallback(function () {
+        $this->i18nTablesCallback(function (): void {
             $this->addColumn(Entry::tableName(), 'parent_status', (string)$this->tinyInteger()
                 ->notNull()
                 ->defaultValue(Entry::STATUS_DEFAULT)
@@ -43,7 +43,7 @@ class M241001170341EntryParentStatus extends Migration
 
     public function safeDown(): void
     {
-        $this->i18nTablesCallback(function () {
+        $this->i18nTablesCallback(function (): void {
             $this->dropColumn(Entry::tableName(), 'parent_status');
         });
     }

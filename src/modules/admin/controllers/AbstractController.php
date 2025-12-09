@@ -35,7 +35,7 @@ abstract class AbstractController extends Controller
             return;
         }
 
-        $this->getView()->on(View::EVENT_BEFORE_RENDER, function () {
+        $this->getView()->on(View::EVENT_BEFORE_RENDER, function (): void {
             if (!Yii::$container->has(NavBar::class)) {
                 Yii::$container->set(NavBar::class, [
                     'languageRoute' => $this->i18nTablesRoute,

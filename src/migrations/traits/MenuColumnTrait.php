@@ -17,7 +17,7 @@ trait MenuColumnTrait
 
     protected function addShowInMenuColumn(): void
     {
-        $this->i18nTablesCallback(function () {
+        $this->i18nTablesCallback(function (): void {
             $this->addColumn(Entry::tableName(), 'show_in_menu', (string)$this->boolean()
                 ->notNull()
                 ->defaultValue(false)
@@ -29,7 +29,7 @@ trait MenuColumnTrait
 
     protected function dropShowInMenuColumn(): void
     {
-        $this->i18nTablesCallback(function () {
+        $this->i18nTablesCallback(function (): void {
             $this->dropIndex('show_in_menu', Entry::tableName());
             $this->dropColumn(Entry::tableName(), 'show_in_menu');
         });

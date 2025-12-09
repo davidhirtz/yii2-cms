@@ -23,7 +23,7 @@ class M191106150324Slugs extends Migration
 
     public function safeUp(): void
     {
-        $this->i18nTablesCallback(function () {
+        $this->i18nTablesCallback(function (): void {
             $category = Category::instance();
 
             foreach ($category->getI18nAttributeNames('slug') as $attributeName) {

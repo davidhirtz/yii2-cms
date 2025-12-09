@@ -23,7 +23,7 @@ class M190909152855Category extends Migration
 
     public function safeUp(): void
     {
-        $this->i18nTablesCallback(function () {
+        $this->i18nTablesCallback(function (): void {
             $schema = $this->getDb()->getSchema();
 
             // Category
@@ -123,7 +123,7 @@ class M190909152855Category extends Migration
 
     public function safeDown(): void
     {
-        $this->i18nTablesCallback(function () {
+        $this->i18nTablesCallback(function (): void {
             $this->dropColumn(Entry::tableName(), 'category_ids');
 
             $this->dropTable(EntryCategory::tableName());

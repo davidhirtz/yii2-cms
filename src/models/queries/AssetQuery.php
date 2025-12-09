@@ -35,7 +35,7 @@ class AssetQuery extends I18nActiveQuery
     public function withFiles(): static
     {
         return $this->with([
-            'file' => function (FileQuery $query) {
+            'file' => function (FileQuery $query): void {
                 $query->selectSiteAttributes()
                     ->replaceI18nAttributes();
             }

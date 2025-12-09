@@ -117,7 +117,7 @@ class EntryQuery extends I18nActiveQuery
     protected function innerJoinWithEntryCategory(int $categoryId, bool $eagerLoading = false, bool $useAlias = false): static
     {
         return $this->innerJoinWith([
-            ($useAlias ? "entryCategory entryCategory$categoryId" : 'entryCategory') => function (ActiveQuery $query) use ($categoryId, $useAlias) {
+            ($useAlias ? "entryCategory entryCategory$categoryId" : 'entryCategory') => function (ActiveQuery $query) use ($categoryId, $useAlias): void {
                 $query->onCondition([($useAlias ? "[[entryCategory$categoryId]]" : EntryCategory::tableName()) . '.[[category_id]]' => $categoryId]);
             }
         ], $eagerLoading);
@@ -158,7 +158,7 @@ class EntryQuery extends I18nActiveQuery
     public function withSitemapAssets(): static
     {
         return $this->with([
-            'assets' => function (AssetQuery $query) {
+            'assets' => function (AssetQuery $query): void {
                 $query->selectSitemapAttributes()
                     ->replaceI18nAttributes()
                     ->whereStatus()
