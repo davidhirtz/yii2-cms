@@ -42,12 +42,10 @@ class Gallery extends Widget
                 $this->sharedViewports = $this->sharedViewports ? array_intersect($this->sharedViewports, $viewport) : $viewport;
             }
         }
-
-        parent::init();
     }
 
     #[Override]
-    public function render(): string
+    public function render(bool $refresh = false): string
     {
         $viewports = $this->getAssetsByViewports();
         $output = '';

@@ -49,8 +49,6 @@ class TestMenuFieldActiveForm extends EntryActiveForm
     {
         $this->action = '/';
         $this->fields = ['show_in_menu'];
-
-        parent::init();
     }
 }
 

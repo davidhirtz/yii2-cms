@@ -49,7 +49,6 @@ class EntryCategoryGridView extends GridView
         $this->attributes['hx-select'] ??= 'main';
 
         $this->initAncestors();
-        parent::init();
     }
 
     public function updatedAtColumn(): array

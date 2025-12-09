@@ -49,8 +49,6 @@ class TestFooterFieldActiveForm extends EntryActiveForm
     {
         $this->action = '/';
         $this->fields = ['show_in_footer'];
-
-        parent::init();
     }
 }
 

@@ -18,13 +18,11 @@ class SectionEntryGridView extends EntryGridView
     #[Override]
     public function init(): void
     {
-        $this->setId($this->getId(false) ?? 'section-entry-grid');
+        $this->setId($this->getId() ?? 'section-entry-grid');
 
         $this->rowAttributes ??= fn (Entry $entry) => [
             'class' => $entry->sectionEntry ? ['is-selected'] : [],
         ];
-
-        parent::init();
     }
 
     #[Override]

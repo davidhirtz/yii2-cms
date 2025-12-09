@@ -341,6 +341,7 @@ class EntryGridView extends GridView
         ];
     }
 
+    #[\Override]
     protected function isSortable(): bool
     {
         return $this->provider->category === null && parent::isSortable();

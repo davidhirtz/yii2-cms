@@ -25,7 +25,7 @@ class SectionLinkedEntryGridView extends EntryGridView
     #[Override]
     public function init(): void
     {
-        $this->setId($this->getId(false) ?? 'section-entry-grid');
+        $this->setId($this->getId() ?? 'section-entry-grid');
 
         $this->rowAttributes ??= function (Entry $entry): array {
             $allowedTypes = $this->dataProvider->section->getEntriesTypes();
@@ -50,8 +50,6 @@ class SectionLinkedEntryGridView extends EntryGridView
 
         /** @see SectionEntryController::actionOrder() */
         $this->orderRoute = ['section-entry/order', 'section' => $this->dataProvider->section->id];
-
-        parent::init();
     }
 
     #[Override]

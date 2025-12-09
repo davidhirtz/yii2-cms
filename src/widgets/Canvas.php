@@ -64,12 +64,10 @@ class Canvas extends Widget
         }
 
         $this->wrapperOptions = array_filter($this->wrapperOptions);
-
-        parent::init();
     }
 
     #[Override]
-    public function render(): string
+    public function render(bool $refresh = false): string
     {
         $content = $this->getContent();
         return $this->wrapContent($content);

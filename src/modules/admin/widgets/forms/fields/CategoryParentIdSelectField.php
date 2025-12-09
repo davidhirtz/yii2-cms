@@ -19,6 +19,7 @@ class CategoryParentIdSelectField extends SelectField
     use ModuleTrait;
     use ParentIdSelectFieldTrait;
 
+    #[\Override]
     protected function configure(): void
     {
         $categories = $this->getCategories();

@@ -22,7 +22,7 @@ class AdminLink extends Widget
     ];
 
     #[Override]
-    public function render(): string
+    public function render(bool $refresh = false): string
     {
         return $this->canUpdateModel() && ($route = $this->model->getAdminRoute())
             ? Html::a('', $route, $this->linkOptions)

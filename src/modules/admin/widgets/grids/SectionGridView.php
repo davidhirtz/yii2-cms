@@ -41,7 +41,7 @@ class SectionGridView extends GridView
     #[Override]
     public function init(): void
     {
-        $this->setId($this->getId(false) ?? 'section-grid');
+        $this->setId($this->getId() ?? 'section-grid');
 
         $this->dataProvider ??= new ArrayDataProvider([
             'allModels' => $this->entry->sections,
@@ -59,8 +59,6 @@ class SectionGridView extends GridView
         ];
 
         $this->orderRoute = ['order', 'entry' => $this->entry->id];
-
-        parent::init();
     }
 
     protected function initFooter(): void

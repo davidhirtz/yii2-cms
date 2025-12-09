@@ -34,7 +34,5 @@ class AssetActiveForm extends ActiveForm
             'link',
             'embed_url',
         ];
-
-        parent::init();
     }
 }

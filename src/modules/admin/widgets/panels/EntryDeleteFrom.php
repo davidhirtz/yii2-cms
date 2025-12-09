@@ -23,6 +23,7 @@ class EntryDeleteFrom extends Widget
     protected ?string $confirm = null;
     protected ?string $message = null;
 
+    #[\Override]
     protected function configure(): void
     {
         if ($this->model->isIndex()) {

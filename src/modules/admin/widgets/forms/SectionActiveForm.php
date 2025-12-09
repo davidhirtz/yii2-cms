@@ -34,8 +34,6 @@ class SectionActiveForm extends ActiveForm
             'content',
             'slug',
         ];
-
-        parent::init();
     }
 
     #[Override]

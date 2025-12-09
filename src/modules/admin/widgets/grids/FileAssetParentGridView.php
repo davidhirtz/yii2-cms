@@ -60,8 +60,6 @@ class FileAssetParentGridView extends GridView
             $this->updatedAtColumn(),
             $this->buttonsColumn(),
         ];
-
-        parent::init();
     }
 
     #[Override]
