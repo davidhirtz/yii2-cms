@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\tests\support\fixtures\traits;
+namespace Hirtz\Cms\tests\support\fixtures\Traits;
 
 use Hirtz\Cms\tests\support\fixtures\AssetFixture;
 use Hirtz\Cms\tests\support\fixtures\CategoryFixture;

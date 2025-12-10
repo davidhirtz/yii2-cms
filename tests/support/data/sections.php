@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Hirtz\Cms\tests\data\models\TestSection;
+use Hirtz\Cms\tests\data\Models\TestSection;
 use yii\db\Expression;
 
 $now = new Expression('UTC_TIMESTAMP()');

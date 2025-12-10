@@ -7,7 +7,7 @@ namespace Hirtz\Cms\Modules\Admin\Widgets\Panels;
 use Hirtz\Cms\Models\Asset;
 use Hirtz\Cms\Modules\Admin\Module;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\FileAssetParentGridView;
-use Hirtz\Media\models\File;
+use Hirtz\Media\Models\File;
 use Hirtz\Skeleton\Widgets\Bootstrap\Panel;
 use Yii;
 use yii\base\Widget;

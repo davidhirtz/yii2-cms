@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\tests\unit\models\actions;
+namespace Hirtz\Cms\tests\unit\Models\Actions;
 
 use Codeception\Test\Unit;
-use Hirtz\Cms\Models\actions\ReorderEntries;
+use Hirtz\Cms\Models\Actions\ReorderEntries;
 use Hirtz\Cms\Models\Entry;
-use Hirtz\Cms\tests\data\models\TestEntry;
-use Hirtz\Cms\tests\support\fixtures\traits\CmsFixturesTrait;
+use Hirtz\Cms\tests\data\Models\TestEntry;
+use Hirtz\Cms\tests\support\fixtures\Traits\CmsFixturesTrait;
 use Hirtz\Cms\tests\support\UnitTester;
 use Hirtz\Skeleton\Models\Trail;
 use Yii;

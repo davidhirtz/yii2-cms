@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Cms\widgets;
 
 use Hirtz\Cms\Models\Entry;
-use Hirtz\Cms\Models\queries\EntryQuery;
+use Hirtz\Cms\Models\Queries\EntryQuery;
 use Yii;
 
 /**
@@ -97,7 +97,7 @@ class NavItems
 
     /**
      * @param T $entry
-     * @see \Hirtz\Cms\Models\traits\MenuAttributeTrait::isMenuItem()
+     * @see \Hirtz\Cms\Models\Traits\MenuAttributeTrait::isMenuItem()
      */
     public static function getIsMenuItem(Entry $entry): bool
     {
@@ -108,7 +108,7 @@ class NavItems
 
     /**
      * @param T $entry
-     * @see \Hirtz\Cms\Models\traits\FooterAttributeTrait::isFooterItem()
+     * @see \Hirtz\Cms\Models\Traits\FooterAttributeTrait::isFooterItem()
      */
     public static function getIsFooterItem(Entry $entry): bool
     {

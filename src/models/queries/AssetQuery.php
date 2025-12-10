@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Models\Queries;
 
 use Hirtz\Cms\Models\Asset;
-use Hirtz\Media\models\queries\FileQuery;
+use Hirtz\Media\Models\Queries\FileQuery;
 use Hirtz\Skeleton\Db\I18nActiveQuery;
 
 /**

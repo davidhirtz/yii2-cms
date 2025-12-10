@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\tests\unit\models\traits;
+namespace Hirtz\Cms\tests\unit\Models\Traits;
 
 use Codeception\Test\Unit;
-use Hirtz\Cms\Models\traits\MenuAttributeTrait;
-use Hirtz\Cms\tests\data\models\TestEntry;
+use Hirtz\Cms\Models\Traits\MenuAttributeTrait;
+use Hirtz\Cms\tests\data\Models\TestEntry;
 
 class MenuAttributeTraitTest extends Unit
 {

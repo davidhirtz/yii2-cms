@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Migrations;
 
 use Hirtz\Cms\Migrations\Traits\I18nTablesTrait;
-use Hirtz\Cms\models\Asset;
-use Hirtz\Cms\models\Category;
-use Hirtz\Cms\models\Entry;
-use Hirtz\Cms\models\Section;
+use Hirtz\Cms\Models\Asset;
+use Hirtz\Cms\Models\Category;
+use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Models\Section;
 use Hirtz\Skeleton\Db\Traits\MigrationTrait;
 use yii\db\Migration;
 

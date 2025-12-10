@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Controllers;
 
-use Hirtz\Cms\Models\actions\DuplicateAsset;
-use Hirtz\Cms\Models\actions\ReorderAssets;
+use Hirtz\Cms\Models\Actions\DuplicateAsset;
+use Hirtz\Cms\Models\Actions\ReorderAssets;
 use Hirtz\Cms\Models\Asset;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Controllers\Traits\AssetControllerTrait;
 use Hirtz\Cms\Modules\Admin\Controllers\Traits\EntryControllerTrait;
 use Hirtz\Cms\Modules\Admin\Controllers\Traits\SectionControllerTrait;
-use Hirtz\Media\models\Folder;
+use Hirtz\Media\Models\Folder;
 use Hirtz\Media\Modules\Admin\Controllers\Traits\FileControllerTrait;
 use Hirtz\Media\Modules\Admin\Data\FileActiveDataProvider;
 use Override;

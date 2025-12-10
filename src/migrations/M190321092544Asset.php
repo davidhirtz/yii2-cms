@@ -8,7 +8,7 @@ use Hirtz\Cms\Migrations\Traits\I18nTablesTrait;
 use Hirtz\Cms\Models\Asset;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
-use Hirtz\Media\models\File;
+use Hirtz\Media\Models\File;
 use Hirtz\Skeleton\Db\Traits\MigrationTrait;
 use Hirtz\Skeleton\Models\User;
 use yii\db\Migration;

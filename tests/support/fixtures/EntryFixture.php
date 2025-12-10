@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\tests\support\fixtures;
 
-use Hirtz\Cms\tests\data\models\TestEntry;
+use Hirtz\Cms\tests\data\Models\TestEntry;
 use yii\test\ActiveFixture;
 
 class EntryFixture extends ActiveFixture

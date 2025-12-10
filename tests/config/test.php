@@ -6,9 +6,9 @@ use Hirtz\Cms\Bootstrap;
 use Hirtz\Cms\Models\Asset;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
-use Hirtz\Cms\tests\data\models\TestAsset;
-use Hirtz\Cms\tests\data\models\TestEntry;
-use Hirtz\Cms\tests\data\models\TestSection;
+use Hirtz\Cms\tests\data\Models\TestAsset;
+use Hirtz\Cms\tests\data\Models\TestEntry;
+use Hirtz\Cms\tests\data\Models\TestSection;
 use yii\web\Session;
 
 return [

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Controllers;
 
-use Hirtz\Cms\models\builders\EntrySiteRelationsBuilder;
-use Hirtz\Cms\models\Entry;
-use Hirtz\Cms\models\queries\EntryQuery;
+use Hirtz\Cms\Models\builders\EntrySiteRelationsBuilder;
+use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Module;
 use Hirtz\Skeleton\Web\Controller;
 use Yii;

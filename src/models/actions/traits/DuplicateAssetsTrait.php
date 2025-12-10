@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\Models\Actions\traits;
+namespace Hirtz\Cms\Models\Actions\Traits;
 
 use Hirtz\Cms\Models\Actions\DuplicateAsset;
 use Hirtz\Cms\Models\Asset;

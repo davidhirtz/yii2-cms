@@ -7,7 +7,7 @@ namespace Hirtz\Cms\Modules\Admin\Data;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\EntryCategory;
-use Hirtz\Cms\Models\queries\EntryQuery;
+use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Models\SectionEntry;
 use Hirtz\Cms\modules\ModuleTrait;

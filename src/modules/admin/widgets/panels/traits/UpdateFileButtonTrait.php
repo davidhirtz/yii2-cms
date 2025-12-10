@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits;
 
-use Hirtz\Media\models\File;
+use Hirtz\Media\Models\File;
 use Hirtz\Skeleton\Html\Button;
 use Stringable;
 use Yii;

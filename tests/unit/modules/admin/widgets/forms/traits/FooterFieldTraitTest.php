@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Hirtz\Cms\tests\unit\Modules\Admin\Widgets\Forms\Traits;
 
 use Codeception\Test\Unit;
-use Hirtz\Cms\Models\traits\FooterAttributeTrait;
+use Hirtz\Cms\Models\Traits\FooterAttributeTrait;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\EntryActiveForm;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits\FooterFieldTrait;
-use Hirtz\Cms\tests\data\models\TestEntry;
-use Hirtz\Skeleton\Codeception\traits\AssetDirectoryTrait;
+use Hirtz\Cms\tests\data\Models\TestEntry;
+use Hirtz\Skeleton\Codeception\Traits\AssetDirectoryTrait;
 
 class FooterFieldTraitTest extends Unit
 {

@@ -7,7 +7,7 @@ namespace Hirtz\Cms\Modules\Admin\Data;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\EntryCategory;
-use Hirtz\Cms\Models\queries\CategoryQuery;
+use Hirtz\Cms\Models\Queries\CategoryQuery;
 use Hirtz\Cms\modules\ModuleTrait;
 use Hirtz\Skeleton\Db\ActiveQuery;
 use Override;

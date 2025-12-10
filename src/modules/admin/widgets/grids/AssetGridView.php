@@ -10,7 +10,7 @@ use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Controllers\AssetController;
 use Hirtz\Cms\Modules\Admin\Controllers\EntryController;
 use Hirtz\Cms\modules\ModuleTrait;
-use Hirtz\Media\models\File;
+use Hirtz\Media\Models\File;
 use Hirtz\Media\Modules\Admin\Widgets\Grids\Columns\FileThumbnailColumn;
 use Hirtz\Media\Modules\Admin\Widgets\Grids\Traits\AssetGridViewTrait;
 use Hirtz\Media\Modules\Admin\Widgets\Grids\Traits\FileGridViewTrait;

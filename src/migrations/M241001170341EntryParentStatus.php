@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Migrations;
 
 use Hirtz\Cms\Migrations\Traits\I18nTablesTrait;
-use Hirtz\Cms\models\Entry;
+use Hirtz\Cms\Models\Entry;
 use yii\db\Expression;
 use yii\db\Migration;
 

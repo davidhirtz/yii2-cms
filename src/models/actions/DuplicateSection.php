@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Models\Actions;
 
-use Hirtz\Cms\Models\Actions\traits\DuplicateAssetsTrait;
+use Hirtz\Cms\Models\Actions\Traits\DuplicateAssetsTrait;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Models\SectionEntry;

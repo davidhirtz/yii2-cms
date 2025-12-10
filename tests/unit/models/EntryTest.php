@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\tests\unit\models;
+namespace Hirtz\Cms\tests\unit\Models;
 
 use Codeception\Test\Unit;
-use Hirtz\Cms\tests\data\models\TestEntry;
-use Hirtz\Cms\tests\support\fixtures\traits\CmsFixturesTrait;
+use Hirtz\Cms\tests\data\Models\TestEntry;
+use Hirtz\Cms\tests\support\fixtures\Traits\CmsFixturesTrait;
 use Hirtz\Cms\tests\support\UnitTester;
 use Yii;
 

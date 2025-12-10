@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\tests\support;
 
-use Hirtz\Cms\tests\data\models\TestAsset;
-use Hirtz\Cms\tests\data\models\TestEntry;
-use Hirtz\Cms\tests\data\models\TestSection;
-use Hirtz\Media\models\File;
+use Hirtz\Cms\tests\data\Models\TestAsset;
+use Hirtz\Cms\tests\data\Models\TestEntry;
+use Hirtz\Cms\tests\data\Models\TestSection;
+use Hirtz\Media\Models\File;
 
 /**
  * Inherited Methods

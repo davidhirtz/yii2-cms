@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Controllers;
 
-use Hirtz\Cms\Models\actions\DuplicateEntry;
-use Hirtz\Cms\Models\actions\ReorderEntries;
-use Hirtz\Cms\Models\actions\ReplaceIndexEntry;
+use Hirtz\Cms\Models\Actions\DuplicateEntry;
+use Hirtz\Cms\Models\Actions\ReorderEntries;
+use Hirtz\Cms\Models\Actions\ReplaceIndexEntry;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Modules\Admin\Controllers\Traits\EntryControllerTrait;

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Models\Events;
 
 use Hirtz\Cms\Models\Asset;
-use Hirtz\Media\models\File;
+use Hirtz\Media\Models\File;
 use Yii;
 use yii\base\ModelEvent;
 

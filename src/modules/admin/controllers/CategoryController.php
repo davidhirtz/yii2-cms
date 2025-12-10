@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Controllers;
 
-use Hirtz\Cms\Models\actions\ReorderCategories;
+use Hirtz\Cms\Models\Actions\ReorderCategories;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Modules\Admin\Controllers\Traits\CategoryControllerTrait;
 use Hirtz\Cms\Modules\Admin\Data\CategoryActiveDataProvider;

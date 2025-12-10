@@ -11,7 +11,7 @@ namespace Hirtz\Cms\tests\functional;
 use Hirtz\Cms\Controllers\SiteController;
 use Hirtz\Cms\Models\Asset;
 use Hirtz\Cms\Models\Entry;
-use Hirtz\Cms\tests\support\fixtures\traits\CmsFixturesTrait;
+use Hirtz\Cms\tests\support\fixtures\Traits\CmsFixturesTrait;
 use Hirtz\Cms\tests\support\FunctionalTester;
 use Hirtz\Cms\widgets\Gallery;
 use Hirtz\Cms\widgets\Sections;

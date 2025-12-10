@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\tests\data\models;
+namespace Hirtz\Cms\tests\data\Models;
 
 use Hirtz\Cms\Models\Entry;
 

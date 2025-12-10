@@ -7,7 +7,7 @@ namespace Hirtz\Cms\Modules\Admin\Widgets\Grids;
 use Hirtz\Cms\Models\Asset;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
-use Hirtz\Media\models\File;
+use Hirtz\Media\Models\File;
 use Hirtz\Skeleton\Html\A;
 use Hirtz\Skeleton\Html\Button;
 use Hirtz\Skeleton\Html\Icon;

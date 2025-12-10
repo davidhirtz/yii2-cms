@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits;
 
-use Hirtz\Cms\Models\traits\MenuAttributeTrait;
+use Hirtz\Cms\Models\Traits\MenuAttributeTrait;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\EntryActiveForm;
 use Yii;
 use yii\widgets\ActiveField;

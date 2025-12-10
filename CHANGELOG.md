@@ -388,7 +388,7 @@
 - Added `AdminLink` widget to display links to the backend
 - Added `CategoryCollection::getByEntry()`
 - Added `Hirtz\Cms\Modules\Admin\SetupController` to set up the entries
-- Moved `Hirtz\Cms\Models\traits\AssetParentTrait` to `Hirtz\Media\models\traits\AssetParentTrait`
+- Moved `Hirtz\Cms\Models\Traits\AssetParentTrait` to `Hirtz\Media\Models\Traits\AssetParentTrait`
 
 ## 2.0.2 (Nov 6, 2023)
 
@@ -401,7 +401,7 @@
 - Removed `ActiveRecord::updatePosition()`, `Category::updateEntryOrder()`, `Category::clone()`,
   `Entry::updateAssetOrder()`,`Entry::clone()`, `Entry::updateSectionOrder()`, `Section::clone()`,
   `Section::updateAssetOrder()`, `Section::updateSectionOrder()` use model actions found in
-  `Hirtz\Cms\Models\actions`
+  `Hirtz\Cms\Models\Actions`
 - Replaced `ModelCloneEvent` with `Hirtz\Skeleton\Models\Events\DuplicateActiveRecordEvent`
 
 ## 2.0.1 (Nov 4, 2023)
@@ -418,7 +418,7 @@
 - Changed namespaces from `Hirtz\Cms\admin\widgets\grid` to `Hirtz\Cms\admin\widgets\grids`
   and `Hirtz\Cms\admin\widgets\nav` to `Hirtz\Cms\admin\widgets\navs`
 - Changed namespaces for `LinkButtonTrait` and `UpdateFileButtonTrait`
-  to `Hirtz\Cms\admin\widgets\panels\traits`
+  to `Hirtz\Cms\admin\widgets\panels\Traits`
 - Merged `Hirtz\Cms\yii2-cms-parent` into this package
 - Moved source code to `src` folder
 - Moved all models, data providers and widgets out of `base` folder, to override them use Yii's dependency injection

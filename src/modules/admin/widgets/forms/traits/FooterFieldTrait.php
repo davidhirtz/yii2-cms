@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits;
 
-use Hirtz\Cms\Models\traits\FooterAttributeTrait;
+use Hirtz\Cms\Models\Traits\FooterAttributeTrait;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\EntryActiveForm;
 use yii\widgets\ActiveField;
 
