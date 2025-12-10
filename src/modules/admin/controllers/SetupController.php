@@ -9,7 +9,7 @@ use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\EntryCategory;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\modules\ModuleTrait;
-use Hirtz\Media\Models\collections\FolderCollection;
+use Hirtz\Media\Models\Collections\FolderCollection;
 use Hirtz\Skeleton\Log\ActiveRecordErrorLogger;
 use Hirtz\Skeleton\Models\User;
 use Hirtz\Skeleton\Web\Controller;

@@ -263,7 +263,7 @@
 ## 2.1.4 (Jan 7, 2024)
 
 - Enhanced `SetupController` to also allow setting up categories
-- Moved `CategoryCollection` to `Hirtz\Cms\Models\collections`
+- Moved `CategoryCollection` to `Hirtz\Cms\Models\Collections`
 - Removed `withFolder()` from `AssetQuery::withFiles()` query stack
 
 ## 2.1.3 (Jan 4, 2024)
@@ -424,7 +424,7 @@
 - Moved all models, data providers and widgets out of `base` folder, to override them use Yii's dependency injection
   container
 - Removed `CategoryTrait` and `Category::getCategories()` in favor
-  of `Hirtz\Cms\Models\collections\CategoryCollection`
+  of `Hirtz\Cms\Models\Collections\CategoryCollection`
 - Removed `ActiveForm::getActiveForm()`, to override the active forms, use Yii's dependency injection
   container
 

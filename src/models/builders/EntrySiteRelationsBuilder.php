@@ -9,7 +9,7 @@ use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Models\SectionEntry;
 use Hirtz\Cms\Modules\ModuleTrait;
-use Hirtz\Media\Models\collections\FolderCollection;
+use Hirtz\Media\Models\Collections\FolderCollection;
 use Hirtz\Media\Models\File;
 use Hirtz\Skeleton\Helpers\ArrayHelper;
 use Yii;

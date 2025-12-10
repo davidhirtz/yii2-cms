@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits;
 
 use Hirtz\Cms\Models\Category;
-use Hirtz\Cms\Models\collections\CategoryCollection;
+use Hirtz\Cms\Models\Collections\CategoryCollection;
 use Hirtz\Cms\Modules\Admin\Data\CategoryActiveDataProvider;
 use Hirtz\Cms\Modules\Admin\Helpers\FrontendLink;
 use Hirtz\Cms\modules\ModuleTrait;

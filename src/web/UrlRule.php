@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\web;
 
-use Hirtz\Cms\Models\collections\CategoryCollection;
+use Hirtz\Cms\Models\Collections\CategoryCollection;
 use Hirtz\Skeleton\Web\Request;
 use Hirtz\Skeleton\Web\UrlManager;
 

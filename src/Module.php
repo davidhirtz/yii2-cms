@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms;
 
-use Hirtz\Cms\Models\collections\CategoryCollection;
+use Hirtz\Cms\Models\Collections\CategoryCollection;
 use Hirtz\Skeleton\Filters\PageCache;
 use Hirtz\Skeleton\Modules\ModuleTrait;
 use Yii;

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Modules\Admin\Widgets\Forms\Fields;
 
 use Hirtz\Cms\Models\Category;
-use Hirtz\Cms\Models\collections\CategoryCollection;
+use Hirtz\Cms\Models\Collections\CategoryCollection;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits\ParentIdSelectFieldTrait;
 use Hirtz\Cms\modules\ModuleTrait;
 use Hirtz\Skeleton\Widgets\Forms\Fields\SelectField;
