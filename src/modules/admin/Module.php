@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\modules\admin;
+namespace Hirtz\Cms\Modules\Admin;
 
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
