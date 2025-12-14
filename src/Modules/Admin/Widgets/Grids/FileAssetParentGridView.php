@@ -1,0 +1,209 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Hirtz\Cms\Modules\Admin\Widgets\Grids;
+
+use Hirtz\Cms\Models\Asset;
+use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Models\Section;
+use Hirtz\Media\Models\File;
+use Hirtz\Skeleton\Html\A;
+use Hirtz\Skeleton\Html\Button;
+use Hirtz\Skeleton\Html\Icon;
+use Hirtz\Skeleton\Html\Table;
+use Hirtz\Skeleton\Widgets\Grids\Buttons\DeleteButton;
+use Hirtz\Skeleton\Widgets\Grids\Columns\ButtonsColumn;
+use Hirtz\Skeleton\Widgets\Grids\Columns\CounterColumn;
+use Hirtz\Skeleton\Widgets\Grids\GridView;
+use Hirtz\Timeago\RelativeTimeColumn;
+use Override;
+use Yii;
+use yii\data\ActiveDataProvider;
+use yii\db\ActiveRecordInterface;
+
+/**
+ * @extends GridView<Asset>
+ * @property ActiveDataProvider|null $dataProvider
+ */
+class FileAssetParentGridView extends GridView
+{
+    public File $file;
+    public string $language;
+
+    public string $layout = '{items}{pager}';
+
+    #[Override]
+    public function init(): void
+    {
+        Yii::$app->getI18n()->callback($this->language, function (): void {
+            $this->dataProvider ??= new ActiveDataProvider([
+                'query' => Asset::find()
+                    ->where(['file_id' => $this->file->id])
+                    ->with(['entry', 'section'])
+                    ->orderBy(['updated_at' => SORT_DESC]),
+            ]);
+
+            $this->dataProvider->getPagination()->pageParam = "cms-asset-page-$this->language";
+
+            /** @var Asset $asset */
+            foreach ($this->dataProvider->getModels() as $asset) {
+                $asset->populateRelation('file', $this->file);
+            }
+        });
+
+        $this->columns ??= [
+            $this->statusColumn(),
+            $this->typeColumn(),
+            $this->nameColumn(),
+            $this->assetCountColumn(),
+            $this->updatedAtColumn(),
+            $this->buttonsColumn(),
+        ];
+    }
+
+    #[Override]
+    protected function renderTable(): Table
+    {
+        return Table::make()
+            ->attributes($this->tableAttributes)
+            ->body($this->renderTableBody());
+    }
+
+    protected function statusColumn(): array
+    {
+        return [
+            'contentOptions' => ['class' => 'text-center'],
+            'content' => fn (Asset $asset) => Icon::make()
+                ->name($asset->getParent()->getStatusIcon())
+                ->tooltip($asset->getParent()->getStatusName()),
+        ];
+    }
+
+    protected function typeColumn(): array
+    {
+        return [
+            'content' => function (Asset $asset) {
+                $typeName = [
+                    $asset->entry->getTypeName() ?: (!$asset->section_id ? Yii::t('cms', 'Entry') : null),
+                ];
+
+                if ($asset->section_id) {
+                    $typeName[] = $asset->section->getTypeName() ?: Yii::t('cms', 'Section');
+                }
+
+                return A::make()
+                    ->text(implode(' / ', array_filter($typeName)))
+                    ->href($this->getRoute($asset));
+            }
+        ];
+    }
+
+    protected function nameColumn(): array
+    {
+        return [
+            'content' => fn (Asset $asset) => A::make()
+                ->text($asset->entry->getI18nAttribute('name'))
+                ->href($this->getRoute($asset))
+        ];
+    }
+
+    protected function assetCountColumn(): array
+    {
+        return [
+            'attribute' => 'parent.asset_count',
+            'class' => CounterColumn::class,
+            'route' => fn (Asset $asset) => $this->getRoute($asset),
+        ];
+    }
+
+    protected function updatedAtColumn(): array
+    {
+        return [
+            'attribute' => 'updated_at',
+            'class' => RelativeTimeColumn::class,
+        ];
+    }
+
+    protected function buttonsColumn(): array
+    {
+        return [
+            'class' => ButtonsColumn::class,
+            'content' => function (Asset $asset): array {
+                $user = Yii::$app->getUser();
+                $buttons = [];
+
+                $permissionName = $asset->isEntryAsset()
+                    ? Entry::AUTH_ENTRY_ASSET_UPDATE
+                    : Section::AUTH_SECTION_ASSET_UPDATE;
+
+                if ($user->can($permissionName, ['asset' => $asset])) {
+                    $buttons[] = Button::make()
+                        ->primary()
+                        ->icon('wrench')
+                        ->tooltip(Yii::t('cms', 'Edit Asset'))
+                        ->href($this->getI18nRoute(['cms/asset/update', 'id' => $asset->id]));
+                }
+
+                $permissionName = $asset->isEntryAsset()
+                    ? Entry::AUTH_ENTRY_ASSET_DELETE
+                    : Section::AUTH_SECTION_ASSET_DELETE;
+
+                if ($user->can($permissionName, ['asset' => $asset])) {
+                    $buttons[] = Yii::createObject(DeleteButton::class, [
+                        $asset,
+                        $this->getI18nRoute(['cms/asset/delete', 'id' => $asset->id]),
+                        Yii::t('media', 'Are you sure you want to remove this asset?'),
+                    ]);
+                }
+
+                return $buttons;
+            }
+        ];
+    }
+
+    #[Override]
+    protected function getRoute(ActiveRecordInterface $model, array $params = []): array|false
+    {
+        $user = Yii::$app->getUser();
+        $parent = $model->getParent();
+
+        if ($model->isEntryAsset()) {
+            if ($user->can(Entry::AUTH_ENTRY_UPDATE, ['entry' => $parent])) {
+                return $this->getI18nRoute([
+                    '/admin/entry/update',
+                    'id' => $parent->id,
+                    '#' => 'asset-' . $model->id,
+                    ...$params
+                ]);
+            }
+        }
+
+        if ($model->isSectionAsset()) {
+            if ($user->can(Section::AUTH_SECTION_UPDATE, ['section' => $parent])) {
+                return $this->getI18nRoute([
+                    '/admin/section/update',
+                    'id' => $parent->id,
+                    '#' => 'asset-' . $model->id,
+                    ...$params
+                ]);
+            }
+        }
+
+        return false;
+    }
+
+    protected function getI18nRoute(array $route): array
+    {
+        return [
+            ...$route,
+            'language' => $this->language !== Yii::$app->language ? $this->language : null,
+        ];
+    }
+
+    #[Override]
+    public function getModel(): Asset
+    {
+        return Asset::instance();
+    }
+}

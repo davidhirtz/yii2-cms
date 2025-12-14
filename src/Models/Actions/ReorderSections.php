@@ -1,0 +1,42 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Hirtz\Cms\Models\Actions;
+
+use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Models\Section;
+use davidhirtz\yii2\datetime\DateTime;
+use Hirtz\Skeleton\Models\Trail;
+use Yii;
+
+/**
+ * @template T of Section
+ * @template-extends ReorderActiveRecords<T>
+ */
+class ReorderSections extends ReorderActiveRecords
+{
+    public function __construct(protected Entry $entry, array $sectionIds = [])
+    {
+        $sections = $entry->getSections()
+            ->select(['id', 'position'])
+            ->andWhere(['id' => $sectionIds])
+            ->orderBy(['position' => SORT_ASC])
+            ->all();
+
+        $order = array_flip($sectionIds);
+
+        parent::__construct($sections, $order);
+    }
+
+    #[\Override]
+    protected function afterReorder(): void
+    {
+        Trail::createOrderTrail($this->entry, Yii::t('cms', 'Section order changed'));
+
+        $this->entry->updated_at = new DateTime();
+        $this->entry->update();
+
+        parent::afterReorder();
+    }
+}

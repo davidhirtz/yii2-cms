@@ -1,0 +1,61 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Hirtz\Cms\Modules\Admin\Widgets\Panels;
+
+use Hirtz\Cms\Models\Entry;
+use Hirtz\Skeleton\Widgets\Forms\DeleteActiveForm;
+use Hirtz\Skeleton\Widgets\Forms\FormContainer;
+use Hirtz\Skeleton\Widgets\Traits\ModelWidgetTrait;
+use Hirtz\Skeleton\Widgets\Widget;
+use Stringable;
+use Yii;
+
+/**
+ * @property Entry $model
+ */
+class EntryDeleteFrom extends Widget
+{
+    use ModelWidgetTrait;
+
+    protected string $title;
+    protected ?string $confirm = null;
+    protected ?string $message = null;
+
+    #[\Override]
+    protected function configure(): void
+    {
+        if ($this->model->isIndex()) {
+            $this->title ??= Yii::t('cms', 'Delete Homepage');
+            $this->confirm ??= Yii::t('cms', 'Are you sure you want to permanently delete the homepage?', [
+                'slug' => $this->model::getModule()->entryIndexSlug,
+            ]);
+        }
+
+        $this->title ??= Yii::t('cms', 'Delete Entry');
+
+        if ($this->model->entry_count) {
+            $this->message ??= Yii::t('cms', 'Warning: Deleting this entry cannot be undone. All related subentries and assets will also be unrecoverably deleted. Please be certain!');
+            $this->confirm ??= Yii::t('cms', 'Are you sure you want to permanently delete this entry and its related {n,plural,=1{subentry} other{# subentries}}?', [
+                'n' => $this->model->entry_count,
+            ]);
+        }
+
+        if ($this->model->section_count) {
+            $this->message ??= Yii::t('cms', 'Warning: Deleting this entry cannot be undone. All related sections will also be unrecoverably deleted. Please be certain!');
+        }
+
+        parent::configure();
+    }
+
+    protected function renderContent(): string|Stringable
+    {
+        return FormContainer::make()
+            ->title($this->title)
+            ->form(DeleteActiveForm::make()
+                ->model($this->model)
+                ->message($this->message)
+                ->confirm($this->confirm));
+    }
+}
