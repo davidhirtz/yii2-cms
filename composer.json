@@ -14,7 +14,7 @@
   "prefer-stable": true,
   "require": {
     "php": "^8.3",
-    "davidhirtz/yii2-media": "v3.x-dev"
+    "davidhirtz/yii2-media": "next-dev"
   },
   "require-dev": {
     "codeception/codeception": "^5.2",
