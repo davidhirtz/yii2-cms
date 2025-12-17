@@ -39,27 +39,27 @@ class Module extends \Hirtz\Skeleton\Base\Module implements ModuleInterface
         return [
             'asset' => [
                 'class' => AssetController::class,
-                'viewPath' => '@cms/modules/admin/views/asset',
+                'viewPath' => '@cms/../resources/views/admin/asset',
             ],
             'category' => [
                 'class' => CategoryController::class,
-                'viewPath' => '@cms/modules/admin/views/category',
+                'viewPath' => '@cms/../resources/views/admin/category',
             ],
             'entry' => [
                 'class' => EntryController::class,
-                'viewPath' => '@cms/modules/admin/views/entry',
+                'viewPath' => '@cms/../resources/views/admin/entry',
             ],
             'entry-category' => [
                 'class' => EntryCategoryController::class,
-                'viewPath' => '@cms/modules/admin/views/entry-category',
+                'viewPath' => '@cms/../resources/views/admin/entry-category',
             ],
             'section' => [
                 'class' => SectionController::class,
-                'viewPath' => '@cms/modules/admin/views/section',
+                'viewPath' => '@cms/../resources/views/admin/section',
             ],
             'section-entry' => [
                 'class' => SectionEntryController::class,
-                'viewPath' => '@cms/modules/admin/views/section-entry',
+                'viewPath' => '@cms/../resources/views/admin/section-entry',
             ],
         ];
     }
