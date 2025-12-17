@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\Modules\Admin\Widgets\Forms\Columns;
+namespace Hirtz\Cms\Modules\Admin\Widgets\Grids\Columns;
 
 use Hirtz\Cms\Models\Entry;
-use Hirtz\Cms\Modules\Admin\Widgets\Forms\EntryGridView;
+use Hirtz\Cms\Modules\Admin\Widgets\Grids\EntryGridView;
 use Hirtz\Cms\widgets\NavItems;
 use Hirtz\Skeleton\Html\Icon;
 use yii\grid\Column;

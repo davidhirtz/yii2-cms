@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\Modules\Admin\Widgets\Forms\Columns;
+namespace Hirtz\Cms\Modules\Admin\Widgets\Grids\Columns;
 
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
-use Hirtz\Cms\Modules\Admin\Widgets\Forms\EntryGridView;
+use Hirtz\Cms\Modules\Admin\Widgets\Grids\EntryGridView;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\SectionGridView;
 use Hirtz\Cms\modules\ModuleTrait;
 use Hirtz\Media\Models\interfaces\AssetParentInterface;

@@ -13,7 +13,7 @@ use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Controllers\AssetController;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\AssetActiveForm;
-use Hirtz\Cms\Modules\Admin\Widgets\Forms\CmsSubmenu;
+use Hirtz\Cms\Modules\Admin\Widgets\Navs\CmsSubmenu;
 use Hirtz\Cms\Modules\Admin\Widgets\Panels\AssetHelpPanel;
 use Hirtz\Skeleton\Helpers\Html;
 use Hirtz\Skeleton\Web\View;

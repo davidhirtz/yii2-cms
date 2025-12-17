@@ -14,7 +14,7 @@ use Hirtz\Cms\Modules\Admin\Controllers\SectionController;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\SectionActiveForm;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\AssetGridView;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\SectionLinkedEntryGridView;
-use Hirtz\Cms\Modules\Admin\Widgets\Forms\CmsSubmenu;
+use Hirtz\Cms\Modules\Admin\Widgets\Navs\CmsSubmenu;
 use Hirtz\Cms\Modules\Admin\Widgets\Panels\SectionHelpPanel;
 use Hirtz\Skeleton\Helpers\Html;
 use Hirtz\Skeleton\Web\View;

@@ -10,8 +10,8 @@ declare(strict_types=1);
  */
 
 use Hirtz\Cms\Modules\Admin\Data\EntryActiveDataProvider;
-use Hirtz\Cms\Modules\Admin\Widgets\Forms\EntryGridView;
-use Hirtz\Cms\Modules\Admin\Widgets\Forms\CmsSubmenu;
+use Hirtz\Cms\Modules\Admin\Widgets\Grids\EntryGridView;
+use Hirtz\Cms\Modules\Admin\Widgets\Navs\CmsSubmenu;
 use Hirtz\Skeleton\Web\View;
 use Hirtz\Skeleton\Widgets\Grids\GridContainer;
 
