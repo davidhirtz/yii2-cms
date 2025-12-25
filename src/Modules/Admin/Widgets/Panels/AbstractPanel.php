@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Widgets\Panels;
 
-use Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits\LinkButtonTrait;
-use Hirtz\Media\Modules\Admin\Widgets\Forms\Traits\DuplicateButtonTrait;
+use Hirtz\Cms\Modules\Admin\Widgets\Panels\Traits\LinkButtonTrait;
+use Hirtz\Media\Modules\Admin\Widgets\Panels\Traits\DuplicateButtonTrait;
 use Hirtz\Skeleton\Widgets\Panels\Panel;
 use Hirtz\Skeleton\Widgets\Traits\ModelWidgetTrait;
 use Hirtz\Skeleton\Widgets\Widget;

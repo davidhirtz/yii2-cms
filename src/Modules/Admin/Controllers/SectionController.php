@@ -14,6 +14,8 @@ use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Controllers\Traits\EntryControllerTrait;
 use Hirtz\Cms\Modules\Admin\Controllers\Traits\SectionControllerTrait;
 use Hirtz\Cms\Modules\Admin\Data\EntryActiveDataProvider;
+use Hirtz\Cms\Modules\Admin\Data\SectionActiveDataProvider;
+use Override;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
@@ -31,7 +33,7 @@ class SectionController extends AbstractController
      */
     public bool $autoCreateSection = true;
 
-    #[\Override]
+    #[Override]
     public function behaviors(): array
     {
         return [
@@ -75,28 +77,14 @@ class SectionController extends AbstractController
 
     public function actionIndex(int $entry): Response|string
     {
-        $query = Entry::find()
-            ->where(['id' => $entry])
-            ->with([
-                'sections' => function (SectionQuery $query): void {
-                    $query->with([
-                        'assets' => function (AssetQuery $query): void {
-                            $query->with(['file', 'file.folder']);
-                        }
-                    ]);
-                },
-            ]);
+        $entry = $this->findEntry($entry, Entry::AUTH_ENTRY_UPDATE);
 
-        if (!$entry = $query->one()) {
-            throw new NotFoundHttpException();
-        }
-
-        if (!Yii::$app->getUser()->can(Entry::AUTH_ENTRY_UPDATE, ['entry' => $entry])) {
-            throw new ForbiddenHttpException();
-        }
+        $provider = Yii::$container->get(SectionActiveDataProvider::class, [], [
+            'entry' => $entry,
+        ]);
 
         return $this->render('index', [
-            'entry' => $entry,
+            'provider' => $provider,
         ]);
     }
 

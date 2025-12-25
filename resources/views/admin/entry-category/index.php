@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 $this->title(Yii::t('cms', 'Categories'));
 
-use Hirtz\Cms\Modules\Admin\Widgets\Forms\EntryCategoryGridView;
+use Hirtz\Cms\Modules\Admin\Widgets\Grids\EntryCategoryGridView;
 use Hirtz\Cms\Modules\Admin\Widgets\Navs\CmsSubmenu;
 use Hirtz\Skeleton\Widgets\Bootstrap\Panel;
 

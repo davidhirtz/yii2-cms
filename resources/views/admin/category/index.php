@@ -10,7 +10,7 @@ declare(strict_types=1);
  */
 
 use Hirtz\Cms\Modules\Admin\Data\CategoryActiveDataProvider;
-use Hirtz\Cms\Modules\Admin\Widgets\Forms\CategoryGridView;
+use Hirtz\Cms\Modules\Admin\Widgets\Grids\CategoryGridView;
 use Hirtz\Cms\Modules\Admin\Widgets\Navs\CmsSubmenu;
 use Hirtz\Skeleton\Web\View;
 use Hirtz\Skeleton\Widgets\Grids\GridContainer;

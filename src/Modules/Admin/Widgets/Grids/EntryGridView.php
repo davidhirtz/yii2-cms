@@ -12,7 +12,7 @@ use Hirtz\Cms\Modules\Admin\Controllers\EntryController;
 use Hirtz\Cms\Modules\Admin\Data\EntryActiveDataProvider;
 use Hirtz\Cms\Modules\Admin\Helpers\FrontendLink;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\Columns\AssetCountColumn;
-use Hirtz\Cms\Modules\Admin\Widgets\Grids\Columns\EntryCountColumn;
+use Hirtz\Cms\Modules\Admin\Widgets\Grids\Columns\EntryEntryCountColumn;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\Columns\SectionCountColumn;
 use Hirtz\Cms\modules\ModuleTrait;
 use Hirtz\Skeleton\Helpers\Html;
@@ -206,7 +206,7 @@ class EntryGridView extends GridView
 
     protected function getEntryCountColumn(): ?Column
     {
-        return EntryCountColumn::make();
+        return EntryEntryCountColumn::make();
     }
 
     protected function getSectionCountColumn(): ?Column
@@ -247,18 +247,17 @@ class EntryGridView extends GridView
 
     protected function getButtonColumnContent(Entry $entry): array
     {
-        $user = Yii::$app->getUser();
         $buttons = [];
 
-        if ($this->isSortable() && $user->can(Entry::AUTH_ENTRY_ORDER)) {
+        if ($this->isSortable() && $this->webuser->can(Entry::AUTH_ENTRY_ORDER)) {
             $buttons[] = $this->getSortableButton();
         }
 
-        if ($user->can(Entry::AUTH_ENTRY_UPDATE, ['entry' => $entry])) {
+        if ($this->webuser->can(Entry::AUTH_ENTRY_UPDATE, ['entry' => $entry])) {
             $buttons[] = $this->getUpdateButton($entry);
         }
 
-        if ($this->showDeleteButton && $user->can(Entry::AUTH_ENTRY_DELETE, ['entry' => $entry])) {
+        if ($this->showDeleteButton && $this->webuser->can(Entry::AUTH_ENTRY_DELETE, ['entry' => $entry])) {
             $buttons[] = $this->getDeleteButton($entry);
         }
 
@@ -341,7 +340,7 @@ class EntryGridView extends GridView
         ];
     }
 
-    #[\Override]
+    #[Override]
     protected function isSortable(): bool
     {
         return $this->provider->category === null && parent::isSortable();

@@ -12,13 +12,12 @@ declare(strict_types=1);
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Controllers\SectionController;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\SectionActiveForm;
-use Hirtz\Cms\Modules\Admin\Widgets\Forms\AssetGridView;
-use Hirtz\Cms\Modules\Admin\Widgets\Forms\SectionLinkedEntryGridView;
+use Hirtz\Cms\Modules\Admin\Widgets\Grids\AssetGridView;
+use Hirtz\Cms\Modules\Admin\Widgets\Grids\SectionLinkedEntryGridView;
 use Hirtz\Cms\Modules\Admin\Widgets\Navs\CmsSubmenu;
 use Hirtz\Cms\Modules\Admin\Widgets\Panels\SectionHelpPanel;
 use Hirtz\Skeleton\Helpers\Html;
 use Hirtz\Skeleton\Web\View;
-use Hirtz\Skeleton\Widgets\Bootstrap\Panel;
 use Hirtz\Skeleton\Widgets\Forms\DeleteActiveForm;
 
 $this->title(Yii::t('cms', 'Edit Section'));

@@ -4,30 +4,32 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Widgets\Grids;
 
-use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
+use Hirtz\Cms\Modules\Admin\Data\SectionActiveDataProvider;
+use Hirtz\Cms\Modules\Admin\Widgets\Grids\Columns\AssetCountColumn;
+use Hirtz\Cms\Modules\Admin\Widgets\Grids\Columns\SectionEntryCountColumn;
 use Hirtz\Cms\modules\ModuleTrait;
-use Hirtz\Skeleton\Helpers\Html;
+use Hirtz\Media\Modules\Admin\Widgets\Grids\Columns\Thumbnail;
 use Hirtz\Skeleton\Html\A;
-use Hirtz\Skeleton\Widgets\Grids\Buttons\CreateButton;
-use Hirtz\Skeleton\Widgets\Grids\Buttons\DeleteButton;
-use Hirtz\Skeleton\Widgets\Grids\Buttons\DraggableSortButton;
-use Hirtz\Skeleton\Widgets\Grids\Buttons\ViewButton;
-use Hirtz\Skeleton\Widgets\Grids\Columns\ButtonsColumn;
-use Hirtz\Skeleton\Widgets\Grids\Columns\CounterColumn;
+use Hirtz\Skeleton\Html\Div;
+use Hirtz\Skeleton\Widgets\Grids\Columns\ButtonColumn;
+use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\DeleteGridButton;
+use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\DraggableSortGridButton;
+use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\ViewGridButton;
+use Hirtz\Skeleton\Widgets\Grids\Columns\Column;
+use Hirtz\Skeleton\Widgets\Grids\Columns\DataColumn;
 use Hirtz\Skeleton\Widgets\Grids\GridView;
+use Hirtz\Skeleton\Widgets\Grids\Toolbars\CreateButton;
 use Hirtz\Skeleton\Widgets\Grids\Traits\StatusGridViewTrait;
 use Hirtz\Skeleton\Widgets\Grids\Traits\TypeGridViewTrait;
 use Override;
 use Stringable;
 use Yii;
-use yii\data\ActiveDataProvider;
-use yii\data\ArrayDataProvider;
 use yii\helpers\StringHelper;
 
 /**
  * @extends GridView<Section>
- * @property ActiveDataProvider|ArrayDataProvider|null $dataProvider
+ * @property SectionActiveDataProvider $provider
  */
 class SectionGridView extends GridView
 {
@@ -35,165 +37,123 @@ class SectionGridView extends GridView
     use StatusGridViewTrait;
     use TypeGridViewTrait;
 
-    public Entry $entry;
     public bool $showDeleteButton = false;
 
     #[Override]
-    public function init(): void
+    public function configure(): void
     {
-        $this->setId($this->getId() ?? 'section-grid');
-
-        $this->dataProvider ??= new ArrayDataProvider([
-            'allModels' => $this->entry->sections,
-            'pagination' => false,
-            'sort' => false,
-        ]);
+        $this->attributes['id'] ??= 'sections';
+        $this->orderRoute = ['order', 'entry' => $this->provider->entry->id];
+        $this->model ??= Section::instance();
 
         $this->columns ??= [
-            $this->statusColumn(),
-            $this->typeColumn(),
-            $this->nameColumn(),
-            $this->entriesCountColumn(),
-            $this->assetCountColumn(),
-            $this->buttonsColumn(),
+            $this->getStatusColumn(),
+            $this->getTypeColumn(),
+            $this->getNameColumn(),
+            $this->getEntriesCountColumn(),
+            $this->getAssetCountColumn(),
+            $this->getButtonColumn(),
         ];
 
-        $this->orderRoute = ['order', 'entry' => $this->entry->id];
-    }
-
-    protected function initFooter(): void
-    {
         $this->footer ??= [
-            [
-                $this->getCreateButton(),
-            ],
+            $this->getCreateSectionButton(),
         ];
+
+        parent::configure();
     }
 
-    protected function getCreateButton(): ?Stringable
+    protected function getCreateSectionButton(): ?Stringable
     {
-        if (!Yii::$app->getUser()->can(Section::AUTH_SECTION_CREATE, ['entry' => $this->entry])) {
+        if (!Yii::$app->getUser()->can(Section::AUTH_SECTION_CREATE, ['entry' => $this->provider->entry])) {
             return null;
         }
 
-        return new CreateButton(Yii::t('skeleton', 'New Redirect'), ['/admin/section/create', 'entry' => $this->entry->id]);
+        return CreateButton::make()
+            ->text(Yii::t('cms', 'New Section'))
+            ->href(['/admin/section/create', 'entry' => $this->provider->entry->id]);
     }
 
-    protected function nameColumn(): array
+    protected function getNameColumn(): ?Column
     {
-        return [
-            'attribute' => $this->getModel()->getI18nAttributeName('name'),
-            'headerOptions' => ['class' => 'd-none d-md-table-cell'],
-            'contentOptions' => ['class' => 'd-none d-md-table-cell'],
-            'content' => function (Section $section) {
-                $html = $section->getNameColumnContent();
-
-                if (!$html) {
-                    $name = $section->getI18nAttribute('name');
-                    $html = $name ? Html::tag('strong', $name) : null;
-                }
-
-                $cssClass = null;
-
-                if (!$html && $section->assets) {
-                    $asset = current($section->assets);
-
-                    if ($asset->file->hasPreview()) {
-                        $html = Html::tag('div', Html::tag('div', '', [
-                            'style' => 'background-image:url(' . ($asset->file->getTransformationUrl('admin') ?: $asset->file->getUrl()) . ');',
-                            'class' => 'thumb',
-                        ]), ['style' => 'width:120px']);
-                    }
-                }
-
-                if (!$html) {
-                    $html = $section->getI18nAttribute('content') ?? '';
-                    $html = StringHelper::truncate($section->contentType === 'html' ? strip_tags($html) : $html, 100);
-                }
-
-                if (!$html) {
-                    $html = Yii::t('cms', '[ No title ]');
-                    $cssClass = 'text-muted';
-                }
-
-                return A::make()
-                    ->content($html)
-                    ->href($this->getRoute($section))
-                    ->class($cssClass);
-            }
-        ];
+        return DataColumn::make()
+            ->property('name')
+            ->content($this->getNameColumnContent(...));
     }
 
-    protected function assetCountColumn(): array
+    protected function getNameColumnContent(Section $section): Stringable|string
     {
-        return [
-            'attribute' => 'asset_count',
-            'class' => CounterColumn::class,
-            'route' => fn (Section $section) => $section->getAdminRoute() + ['#' => 'assets'],
-            'visible' => static::getModule()->enableSectionAssets,
-        ];
-    }
+        $html = $section->getNameColumnContent();
+        $cssClass = null;
 
-    protected function entriesCountColumn(): array
-    {
-        return [
-            'attribute' => 'entry_count',
-            'class' => CounterColumn::class,
-            'route' => fn (Section $section) => $section->getAdminRoute() + ['#' => 'entries'],
-            'visible' => $this->hasSectionEntries(),
-        ];
-    }
-
-    protected function hasSectionEntries(): bool
-    {
-        if (!static::getModule()->enableSectionEntries) {
-            return false;
+        if (!$html) {
+            $name = $section->getI18nAttribute('name');
+            $html = $name ? Div::make()->class('strong')->text($name) : null;
         }
 
-        foreach ($this->entry->sections as $section) {
-            if ($section->entry_count) {
-                return true;
+        if (!$html) {
+            foreach ($section->assets as $asset) {
+                if ($asset->file->hasPreview()) {
+                    $html = Thumbnail::make()->file($asset->file);
+                    break;
+                }
             }
         }
 
-        return false;
+        if (!$html) {
+            $html = $section->getI18nAttribute('content') ?? '';
+            $html = 'html' === $section->contentType ? strip_tags($html) : $html;
+            $html = StringHelper::truncate($html, 100);
+        }
+
+        if (!$html) {
+            $html = Yii::t('cms', '[ No title ]');
+            $cssClass = 'text-muted';
+        }
+
+        return A::make()
+            ->content($html)
+            ->href($this->getRoute($section))
+            ->class($cssClass);
     }
 
-    protected function buttonsColumn(): array
+    protected function getAssetCountColumn(): ?Column
     {
-        return [
-            'class' => ButtonsColumn::class,
-            'content' => $this->getRowButtons(...)
-        ];
+        return AssetCountColumn::make();
     }
 
-    protected function getRowButtons(Section $section): array
+    protected function getEntriesCountColumn(): ?Column
     {
-        $user = Yii::$app->getUser();
+        return SectionEntryCountColumn::make();
+    }
+
+    protected function getButtonColumn(): ?Column
+    {
+        return ButtonColumn::make()
+            ->content($this->getButtonColumnContent(...));
+    }
+
+    protected function getButtonColumnContent(Section $section): array
+    {
         $buttons = [];
 
         if (
             $this->isSortable()
-            && $this->dataProvider->getCount() > 1
-            && $user->can(Section::AUTH_SECTION_ORDER)
+            && $this->provider->getCount() > 1
+            && $this->webuser->can(Section::AUTH_SECTION_ORDER)
         ) {
-            $buttons[] = Yii::createObject(DraggableSortButton::class);
+            $buttons[] = DraggableSortGridButton::make();
         }
 
-        if ($user->can(Section::AUTH_SECTION_UPDATE, ['section' => $section])) {
-            $buttons[] = Yii::createObject(ViewButton::class, [$section]);
+        if ($this->webuser->can(Section::AUTH_SECTION_UPDATE, ['section' => $section])) {
+            $buttons[] = ViewGridButton::make()
+                ->model($section);
         }
 
-        if ($this->showDeleteButton && $user->can(Section::AUTH_SECTION_DELETE, ['section' => $section])) {
-            $buttons[] = Yii::createObject(DeleteButton::class, [$section]);
+        if ($this->showDeleteButton && $this->webuser->can(Section::AUTH_SECTION_DELETE, ['section' => $section])) {
+            $buttons[] = DeleteGridButton::make()
+                ->model($section);
         }
 
         return $buttons;
-    }
-
-    #[Override]
-    public function getModel(): Section
-    {
-        return Section::instance();
     }
 }

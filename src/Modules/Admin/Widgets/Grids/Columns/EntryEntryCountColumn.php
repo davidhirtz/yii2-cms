@@ -16,7 +16,7 @@ use yii\helpers\Url;
 /**
  * @property EntryGridView $grid
  */
-class EntryCountColumn extends BadgeColumn
+class EntryEntryCountColumn extends BadgeColumn
 {
     use ModuleTrait;
 

@@ -13,7 +13,7 @@ declare(strict_types=1);
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Modules\Admin\Data\CategoryActiveDataProvider;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\CategoryActiveForm;
-use Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits\CategoryParentGridView;
+use Hirtz\Cms\Modules\Admin\Widgets\Grids\Traits\CategoryParentGridView;
 use Hirtz\Cms\Modules\Admin\Widgets\Navs\CmsSubmenu;
 use Hirtz\Cms\Modules\Admin\Widgets\Panels\CategoryPanel;
 use Hirtz\Skeleton\Web\View;

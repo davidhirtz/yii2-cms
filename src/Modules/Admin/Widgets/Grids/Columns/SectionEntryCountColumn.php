@@ -4,37 +4,35 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Widgets\Grids\Columns;
 
-use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
-use Hirtz\Cms\Modules\Admin\Widgets\Grids\EntryGridView;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\SectionGridView;
 use Hirtz\Cms\modules\ModuleTrait;
-use Hirtz\Media\Models\interfaces\AssetParentInterface;
 use Hirtz\Skeleton\Widgets\Grids\Columns\BadgeColumn;
 use Override;
 use Stringable;
 use yii\base\Model;
 
 /**
- * @property EntryGridView|SectionGridView $grid
+ * @property SectionGridView $grid
  */
-class AssetCountColumn extends BadgeColumn
+class SectionEntryCountColumn extends BadgeColumn
 {
     use ModuleTrait;
 
     public function __construct()
     {
-        $this->url ??= fn (Entry|Section $model) => $model->getAdminRoute() + ['#' => 'assets'];
+        $this->property ??= 'entry_count';
+        $this->url ??= fn (Section $section) => $section->getAdminRoute() + ['#' => 'entries'];
     }
 
     public function isVisible(): bool
     {
-        if (!parent::isVisible()) {
+        if (!parent::isVisible() || !static::getModule()->enableSectionEntries) {
             return false;
         }
 
-        foreach ($this->grid->provider->getModels() as $model) {
-            if ($model->hasAssetsEnabled()) {
+        foreach ($this->grid->provider->getModels() as $section) {
+            if ($section->hasEntriesEnabled()) {
                 return true;
             }
         }
@@ -45,7 +43,7 @@ class AssetCountColumn extends BadgeColumn
     #[Override]
     protected function getBodyContent(array|Model $model, string|int $key, int $index): string|Stringable
     {
-        return $model instanceof AssetParentInterface && $model->hasAssetsEnabled()
+        return $model instanceof Section && $model->hasEntriesEnabled()
             ? parent::getBodyContent($model, $key, $index)
             : '';
     }

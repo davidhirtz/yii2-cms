@@ -2,13 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\Modules\Admin\Widgets\Panels;
+namespace Hirtz\Cms\Modules\Admin\Widgets\Forms;
 
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Skeleton\Widgets\Forms\DeleteActiveForm;
 use Hirtz\Skeleton\Widgets\Forms\FormContainer;
 use Hirtz\Skeleton\Widgets\Traits\ModelWidgetTrait;
 use Hirtz\Skeleton\Widgets\Widget;
+use Override;
 use Stringable;
 use Yii;
 
@@ -23,7 +24,7 @@ class EntryDeleteFrom extends Widget
     protected ?string $confirm = null;
     protected ?string $message = null;
 
-    #[\Override]
+    #[Override]
     protected function configure(): void
     {
         if ($this->model->isIndex()) {

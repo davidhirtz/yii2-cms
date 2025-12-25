@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Data\EntryActiveDataProvider;
-use Hirtz\Cms\Modules\Admin\Widgets\Forms\SectionParentEntryGridView;
+use Hirtz\Cms\Modules\Admin\Widgets\Grids\SectionParentEntryGridView;
 use Hirtz\Cms\Modules\Admin\Widgets\Navs\CmsSubmenu;
 use Hirtz\Skeleton\Web\View;
 use Hirtz\Skeleton\Widgets\Bootstrap\Panel;
