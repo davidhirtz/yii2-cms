@@ -21,6 +21,7 @@ class SectionCountColumn extends BadgeColumn
 
     public function __construct()
     {
+        $this->property ??= 'section_count';
         $this->url ??= fn (Entry $model) => ['section/index', 'entry' => $model->id];
     }
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits;
+namespace Hirtz\Cms\Modules\Admin\Widgets\Grids\Traits;
 
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Collections\CategoryCollection;
@@ -29,14 +29,6 @@ trait CategoryGridTrait
     use StatusGridViewTrait;
     use TypeGridViewTrait;
     use ModuleTrait;
-
-    protected function initHeader(): void
-    {
-        $this->header ??= [
-            $this->getCategoryDropdown(),
-            $this->search->getToolbarItem(),
-        ];
-    }
 
     protected function getNameColumn(): ?Column
     {
@@ -122,22 +114,6 @@ trait CategoryGridTrait
     protected function showCategoryAncestors(Category $category): bool
     {
         return $this->provider->searchString || $category->entryCategory;
-    }
-
-    protected function getCategoryDropdown(): ?FilterDropdown
-    {
-        return $this->provider->category
-            ? FilterDropdown::make()
-                ->items($this->getCategoryDropdownItems($this->provider->category))
-                ->label($this->provider->category->getI18nAttribute('name'))
-                ->param('id')
-            : null;
-    }
-
-    protected function getCategoryDropdownItems(Category $category): array
-    {
-        $attribute = $this->model->getI18nAttributeName('name');
-        return Category::indentNestedTree($category->getAncestors() + [$category], $attribute);
     }
 
     protected function initAncestors(): void

@@ -30,13 +30,12 @@ echo FormContainer::make()
     ->form(EntryActiveForm::make()
         ->model($entry));
 
-if ($entry->hasAssetsEnabled()) {
-    echo GridContainer::make()
-        ->attribute('id', 'assets')
-        ->title($entry->getAttributeLabel('asset_count'))
-        ->grid(AssetGridView::make()
-            ->parent($entry));
-}
+echo GridContainer::make()
+    ->attribute('id', 'assets')
+    ->attribute('hidden', !$entry->hasAssetsEnabled())
+    ->title($entry->getAttributeLabel('asset_count'))
+    ->grid(AssetGridView::make()
+        ->parent($entry));
 
 echo EntryPanel::make()
     ->model($entry);

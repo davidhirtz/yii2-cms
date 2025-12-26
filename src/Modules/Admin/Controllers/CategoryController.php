@@ -87,7 +87,7 @@ class CategoryController extends AbstractController
 
         if ($category->load(Yii::$app->getRequest()->post()) && $category->insert()) {
             $this->success(Yii::t('cms', 'The category was created.'));
-            return $this->redirect(['update', 'id' => $category->id]);
+            return $this->redirect(['index', 'parent' => $category->parent_id]);
         }
 
         return $this->render('create', [
@@ -105,7 +105,7 @@ class CategoryController extends AbstractController
             }
 
             if (!$category->hasErrors()) {
-                return $this->redirect(['update', 'id' => $category->id]);
+                return $this->redirect(['index', 'parent' => $category->parent_id]);
             }
         }
 
@@ -125,7 +125,7 @@ class CategoryController extends AbstractController
 
         if ($category->delete()) {
             $this->success(Yii::t('cms', 'The category was deleted.'));
-            return $this->redirect(['index']);
+            return $this->redirect(['index', 'parent' => $category->parent_id]);
         }
 
         $errors = $category->getFirstErrors();

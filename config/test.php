@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Hirtz\Cms\Bootstrap;
 
 $basePath = (getenv('BASE_PATH') ?: getcwd());
-$config = require("$basePath/vendor/davidhirtz/yii2-skeleton/tests/config.php");
+$config = require("$basePath/vendor/davidhirtz/yii2-skeleton/config/test.php");
 
 return [
     ...$config,

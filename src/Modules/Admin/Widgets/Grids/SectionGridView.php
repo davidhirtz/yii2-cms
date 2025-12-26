@@ -40,11 +40,11 @@ class SectionGridView extends GridView
     public bool $showDeleteButton = false;
 
     #[Override]
-    public function configure(): void
+    protected function configure(): void
     {
-        $this->attributes['id'] ??= 'sections';
-        $this->orderRoute = ['order', 'entry' => $this->provider->entry->id];
+        $this->attributes['id'] ??= 'section-grid-view';
         $this->model ??= Section::instance();
+        $this->orderRoute = ['order', 'entry' => $this->provider->entry->id];
 
         $this->columns ??= [
             $this->getStatusColumn(),

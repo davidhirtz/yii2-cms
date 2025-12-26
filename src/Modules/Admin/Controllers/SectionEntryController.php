@@ -11,6 +11,7 @@ use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Models\SectionEntry;
 use Hirtz\Cms\Modules\Admin\Controllers\Traits\SectionControllerTrait;
 use Hirtz\Cms\Modules\Admin\Data\EntryActiveDataProvider;
+use Override;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
@@ -23,7 +24,7 @@ class SectionEntryController extends AbstractController
 {
     use SectionControllerTrait;
 
-    #[\Override]
+    #[Override]
     public function behaviors(): array
     {
         return [
@@ -78,30 +79,26 @@ class SectionEntryController extends AbstractController
 
     public function actionCreate(int $section, int $entry): Response|string
     {
-        $sectionEntry = SectionEntry::create();
-        $sectionEntry->section_id = $section;
-        $sectionEntry->entry_id = $entry;
+        $section = $this->findSection($section, Section::AUTH_SECTION_UPDATE);
 
-        if (!Yii::$app->getUser()->can(Section::AUTH_SECTION_UPDATE, ['sectionEntry' => $sectionEntry])) {
-            throw new ForbiddenHttpException();
-        }
+        $sectionEntry = SectionEntry::create();
+        $sectionEntry->populateSectionRelation($section);
+        $sectionEntry->entry_id = $entry;
 
         if (!$sectionEntry->insert()) {
             throw new BadRequestHttpException(current($sectionEntry->getFirstErrors()));
         }
 
-        if (!Yii::$app->getRequest()->getIsAjax()) {
-            $this->success(Yii::t('cms', 'Entry added to section.'));
-            return $this->redirect(['index', 'section' => $sectionEntry->section_id]);
-        }
-
-        return $this->asJson([]);
+        $this->success(Yii::t('cms', 'Entry added to section.'));
+        return $this->redirect($section->getAdminRoute() + ['#' => 'entries']);
     }
 
     public function actionDelete(int $section, int $entry): Response|string
     {
+        $section = $this->findSection($section, Section::AUTH_SECTION_UPDATE);
+
         $sectionEntry = SectionEntry::findOne([
-            'section_id' => $section,
+            'section_id' => $section->id,
             'entry_id' => $entry,
         ]);
 
@@ -113,12 +110,8 @@ class SectionEntryController extends AbstractController
             throw new BadRequestHttpException(current($sectionEntry->getFirstErrors()));
         }
 
-        if (!Yii::$app->getRequest()->getIsAjax()) {
-            $this->success(Yii::t('cms', 'Entry removed from section.'));
-            return $this->redirect(['index', 'section' => $sectionEntry->section_id]);
-        }
-
-        return $this->asJson([]);
+        $this->success(Yii::t('cms', 'Entry removed from section.'));
+        return $this->redirect($section->getAdminRoute() + ['#' => 'entries']);
     }
 
     public function actionOrder(int $section): void

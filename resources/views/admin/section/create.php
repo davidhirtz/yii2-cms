@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -12,22 +13,14 @@ use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Controllers\SectionController;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\SectionActiveForm;
 use Hirtz\Cms\Modules\Admin\Widgets\Navs\CmsSubmenu;
-use Hirtz\Skeleton\Helpers\Html;
 use Hirtz\Skeleton\Web\View;
-use Hirtz\Skeleton\Widgets\Bootstrap\Panel;
+use Hirtz\Skeleton\Widgets\Forms\FormContainer;
 
-$this->title(Yii::t('cms', 'Create New Section'));
-?>
 
-<?= CmsSubmenu::widget([
-    'model' => $section->entry,
-]); ?>
+echo CmsSubmenu::make()
+    ->model($section);
 
-<?= Html::errorSummary($section); ?>
-
-<?= Panel::widget([
-    'title' => $this->title,
-    'content' => SectionActiveForm::widget([
-        'model' => $section,
-    ]),
-]); ?>
+echo FormContainer::make()
+    ->title($this->title)
+    ->form(SectionActiveForm::make()
+        ->model($section));

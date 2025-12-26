@@ -15,59 +15,47 @@ use Hirtz\Cms\Modules\Admin\Widgets\Forms\SectionActiveForm;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\AssetGridView;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\SectionLinkedEntryGridView;
 use Hirtz\Cms\Modules\Admin\Widgets\Navs\CmsSubmenu;
-use Hirtz\Cms\Modules\Admin\Widgets\Panels\SectionHelpPanel;
-use Hirtz\Skeleton\Helpers\Html;
+use Hirtz\Cms\Modules\Admin\Widgets\Panels\SectionPanel;
 use Hirtz\Skeleton\Web\View;
 use Hirtz\Skeleton\Widgets\Forms\DeleteActiveForm;
+use Hirtz\Skeleton\Widgets\Forms\FormContainer;
+use Hirtz\Skeleton\Widgets\Grids\GridContainer;
 
 $this->title(Yii::t('cms', 'Edit Section'));
-?>
 
-<?= CmsSubmenu::widget([
-    'model' => $section,
-]); ?>
+echo CmsSubmenu::make()
+    ->model($section);
 
-<?= Html::errorSummary($section); ?>
+echo FormContainer::make()
+    ->title($this->title)
+    ->form(SectionActiveForm::make()
+        ->model($section));
 
-<?= Panel::widget([
-    'title' => $this->title,
-    'content' => SectionActiveForm::widget([
-        'model' => $section,
-    ]),
-]); ?>
+if ($section::getModule()->enableSectionAssets) {
+    echo GridContainer::make()
+        ->attribute('id', 'assets')
+        ->attribute('hidden', !$section->hasAssetsEnabled())
+        ->title($section->getAttributeLabel('asset_count'))
+        ->grid(AssetGridView::make()
+            ->parent($section));
+}
 
-<?php if ($section->hasAssetsEnabled()) {
-    echo Panel::widget([
-        'id' => 'assets',
-        'title' => $section->getAttributeLabel('asset_count'),
-        'content' => AssetGridView::widget([
-            'parent' => $section,
-        ]),
-    ]);
-} ?>
+if ($section::getModule()->enableSectionEntries) {
+    echo GridContainer::make()
+        ->attribute('id', 'entries')
+        ->attribute('hidden', !$section->hasEntriesEnabled())
+        ->title(Yii::t('cms', 'Linked entries'))
+        ->grid(SectionLinkedEntryGridView::make()
+            ->section($section));
+}
 
-<?php if ($section->hasEntriesEnabled()) {
-    echo Panel::widget([
-        'id' => 'entries',
-        'title' => Yii::t('cms', 'Linked entries'),
-        'content' => SectionLinkedEntryGridView::widget([
-            'section' => $section,
-        ]),
-    ]);
-} ?>
+echo SectionPanel::make()
+    ->model($section);
 
-<?= SectionHelpPanel::widget([
-    'id' => 'operations',
-    'model' => $section,
-]); ?>
-
-<?php if (Yii::$app->getUser()->can(Section::AUTH_SECTION_DELETE, ['section' => $section])) {
-    echo Panel::widget([
-        'id' => 'delete',
-        'type' => 'danger',
-        'title' => Yii::t('cms', 'Delete Section'),
-        'content' => DeleteActiveForm::widget([
-            'model' => $section,
-        ]),
-    ]);
-} ?>
+if (Yii::$app->getUser()->can(Section::AUTH_SECTION_DELETE, ['section' => $section])) {
+    echo FormContainer::make()
+        ->danger()
+        ->title(Yii::t('cms', 'Delete Section'))
+        ->form(DeleteActiveForm::make()
+            ->model($section));
+}

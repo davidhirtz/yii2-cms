@@ -58,7 +58,7 @@ class AssetGridView extends GridView
     #[Override]
     protected function configure(): void
     {
-        $this->attributes['id'] ??= 'asset-grid';
+        $this->attributes['id'] ??= 'asset-grid-view';
         $this->model ??= Asset::instance();
 
         $this->provider ??= new ActiveDataProvider([

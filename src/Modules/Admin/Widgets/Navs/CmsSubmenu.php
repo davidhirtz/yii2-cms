@@ -193,12 +193,12 @@ class CmsSubmenu extends Submenu
                 ->label($this->showEntryTypes ? $entry->getTypeName() : Yii::t('cms', 'Entry'))
                 ->url(['/admin/entry/update', 'id' => $entry->id])
                 ->icon($entry->getStatusIcon())
-                ->routes([
+                ->routes(array_filter([
                     'admin/entry/update',
                     'admin/cms/asset/' => ['entry'],
                     !$this->isSection() ? 'admin/cms/asset/update' : null,
                     ...$this->additionalActiveRoutes['entry'] ?? [],
-                ]),
+                ])),
         ];
     }
 

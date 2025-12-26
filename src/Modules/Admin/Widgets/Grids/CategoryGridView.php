@@ -7,7 +7,7 @@ namespace Hirtz\Cms\Modules\Admin\Widgets\Grids;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Modules\Admin\Controllers\CategoryController;
 use Hirtz\Cms\Modules\Admin\Data\CategoryActiveDataProvider;
-use Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits\CategoryGridTrait;
+use Hirtz\Cms\Modules\Admin\Widgets\Grids\Traits\CategoryGridTrait;
 use Hirtz\Cms\modules\ModuleTrait;
 use Hirtz\Skeleton\Widgets\Grids\Columns\ButtonColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\DraggableSortGridButton;
@@ -16,6 +16,7 @@ use Hirtz\Skeleton\Widgets\Grids\Columns\Column;
 use Hirtz\Skeleton\Widgets\Grids\Columns\RelativeTimeColumn;
 use Hirtz\Skeleton\Widgets\Grids\GridView;
 use Hirtz\Skeleton\Widgets\Grids\Toolbars\CreateButton;
+use Hirtz\Skeleton\Widgets\Grids\Toolbars\FilterDropdown;
 use Override;
 use Stringable;
 use Yii;
@@ -33,17 +34,20 @@ class CategoryGridView extends GridView
     public bool $showUrl = true;
 
     #[Override]
-    public function configure(): void
+    protected function configure(): void
     {
-        $this->attributes['id'] ??= 'categories';
-        $this->model ??= Category::instance();
+        $this->initAncestors();
 
-        if ($this->provider->category) {
-            $this->layout = '{items}';
-        }
+        $this->attributes['id'] ??= 'category-grid-view';
+        $this->model ??= Category::instance();
 
         /** @see CategoryController::actionOrder() */
         $this->orderRoute = ['order', 'id' => $this->provider->category->id ?? null];
+
+        $this->header ??= [
+            $this->getCategoryDropdown(),
+            $this->search->getToolbarItem(),
+        ];
 
         $this->columns ??= [
             $this->getStatusColumn(),
@@ -55,14 +59,28 @@ class CategoryGridView extends GridView
             $this->getButtonColumn(),
         ];
 
-        $this->initAncestors();
-        $this->initHeader();
-
         $this->footer ??= [
             $this->getCreateCategoryButton(),
         ];
 
         parent::configure();
+    }
+
+
+    protected function getCategoryDropdown(): ?FilterDropdown
+    {
+        return $this->provider->category
+            ? FilterDropdown::make()
+                ->items($this->getCategoryDropdownItems($this->provider->category))
+                ->label($this->provider->category->getI18nAttribute('name'))
+                ->param('parent')
+            : null;
+    }
+
+    protected function getCategoryDropdownItems(Category $category): array
+    {
+        $attribute = $this->model->getI18nAttributeName('name');
+        return Category::indentNestedTree($category->getAncestors() + [$category], $attribute);
     }
 
     protected function getCreateCategoryButton(): ?Stringable

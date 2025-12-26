@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits;
+namespace Hirtz\Cms\Modules\Admin\Widgets\Grids\Traits;
 
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\CategoryGridView;
 use Override;
@@ -10,7 +10,7 @@ use Override;
 class CategoryParentGridView extends CategoryGridView
 {
     #[Override]
-    public function configure(): void
+    protected function configure(): void
     {
         $this->layout = '{items}';
 

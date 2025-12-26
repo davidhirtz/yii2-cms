@@ -228,7 +228,7 @@ class SectionController extends AbstractController
     ): Response|string {
         $section = $this->findSection($id, Section::AUTH_SECTION_UPDATE);
 
-        $provider = Yii::$container->get(EntryActiveDataProvider::class, [], [
+        $provider = Yii::$container->get(EntryActiveDataProvider::class, config:[
             'category' => Category::findOne($category),
             'parent' => $parent ? Entry::findOne($parent) : null,
             'searchString' => $q,

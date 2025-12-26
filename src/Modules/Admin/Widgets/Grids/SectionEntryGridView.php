@@ -6,7 +6,7 @@ namespace Hirtz\Cms\Modules\Admin\Widgets\Grids;
 
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
-use Hirtz\Cms\Modules\Admin\Widgets\Forms\Buttons\SectionEntryDeleteButton;
+use Hirtz\Cms\Modules\Admin\Widgets\Grids\Buttons\SectionEntryDeleteButton;
 use Hirtz\Skeleton\Html\Button;
 use Override;
 use Yii;
@@ -16,20 +16,20 @@ class SectionEntryGridView extends EntryGridView
     public string $layout = '{header}{summary}{items}{pager}';
 
     #[Override]
-    public function init(): void
+    protected function configure(): void
     {
-        $this->setId($this->getId() ?? 'section-entry-grid');
-
         $this->rowAttributes ??= fn (Entry $entry) => [
             'class' => $entry->sectionEntry ? ['is-selected'] : [],
         ];
+
+        parent::configure();
     }
 
     #[Override]
     protected function getTypeDropdownItems(): array
     {
         $items = parent::getTypeDropdownItems();
-        $entryTypes = $this->dataProvider->section->getEntriesTypes();
+        $entryTypes = $this->provider->section->getEntriesTypes();
 
         if ($entryTypes) {
             $items = array_intersect_key($items, array_flip($entryTypes));
@@ -46,7 +46,7 @@ class SectionEntryGridView extends EntryGridView
     protected function getButtonColumnContent(Entry $entry): array
     {
         $canUpdate = Yii::$app->getUser()->can(Section::AUTH_SECTION_UPDATE, [
-            'section' => $this->dataProvider->section,
+            'section' => $this->provider->section,
         ]);
 
         if (!$canUpdate) {
@@ -54,10 +54,12 @@ class SectionEntryGridView extends EntryGridView
         }
 
         if ($entry->sectionEntry) {
-            return [Yii::createObject(SectionEntryDeleteButton::class, [$entry, $this->dataProvider->section])];
+            return [
+                SectionEntryDeleteButton::make($entry, $this->provider->section),
+            ];
         }
 
-        $allowedTypes = $this->dataProvider->section->getEntriesTypes();
+        $allowedTypes = $this->provider->section->getEntriesTypes();
 
         if ($allowedTypes && !in_array($entry->type, $allowedTypes, true)) {
             return [];
@@ -68,7 +70,7 @@ class SectionEntryGridView extends EntryGridView
                 ->primary()
                 ->icon('star')
                 ->tooltip(Yii::t('cms', 'Add to section'))
-                ->post(['section-entry/create', 'section' => $this->dataProvider->section->id, 'entry' => $entry->id]),
+                ->post(['section-entry/create', 'section' => $this->provider->section->id, 'entry' => $entry->id]),
         ];
     }
 }

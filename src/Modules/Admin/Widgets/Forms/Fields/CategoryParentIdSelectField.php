@@ -9,6 +9,7 @@ use Hirtz\Cms\Models\Collections\CategoryCollection;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits\ParentIdSelectFieldTrait;
 use Hirtz\Cms\modules\ModuleTrait;
 use Hirtz\Skeleton\Widgets\Forms\Fields\SelectField;
+use Override;
 
 /**
  * @template T of Category
@@ -19,7 +20,7 @@ class CategoryParentIdSelectField extends SelectField
     use ModuleTrait;
     use ParentIdSelectFieldTrait;
 
-    #[\Override]
+    #[Override]
     protected function configure(): void
     {
         $categories = $this->getCategories();

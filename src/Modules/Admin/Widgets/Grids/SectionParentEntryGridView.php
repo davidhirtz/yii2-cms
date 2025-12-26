@@ -13,7 +13,13 @@ use Yii;
 
 class SectionParentEntryGridView extends EntryGridView
 {
-    public Section $section;
+    protected Section $section;
+
+    public function section(Section $section): static
+    {
+        $this->section = $section;
+        return $this;
+    }
 
     /**
      * @see SectionController::actionDuplicate()

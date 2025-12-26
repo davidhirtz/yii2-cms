@@ -85,9 +85,9 @@ class EntryGridView extends GridView
     private ?array $categoryNames = null;
 
     #[Override]
-    public function configure(): void
+    protected function configure(): void
     {
-        $this->attributes['id'] ??= 'entries';
+        $this->attributes['id'] ??= 'entry-grid-view';
 
         $enableCategories = static::getModule()->enableCategories;
         $this->showCategories ??= $enableCategories && count($this->getCategories()) > 0;

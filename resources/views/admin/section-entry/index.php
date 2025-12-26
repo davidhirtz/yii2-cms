@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -10,24 +11,22 @@ declare(strict_types=1);
 
 use Hirtz\Cms\Modules\Admin\Data\EntryActiveDataProvider;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\SectionEntryGridView;
+use Hirtz\Cms\Modules\Admin\Widgets\Grids\SectionParentEntryGridView;
 use Hirtz\Cms\Modules\Admin\Widgets\Navs\CmsSubmenu;
 use Hirtz\Skeleton\Web\View;
-use Hirtz\Skeleton\Widgets\Bootstrap\Panel;
+use Hirtz\Skeleton\Widgets\Grids\GridContainer;
+
 
 $this->title(Yii::t('cms', 'Link entries'));
-?>
 
-<?= CmsSubmenu::widget([
-    'model' => $provider->section,
-]); ?>
+echo CmsSubmenu::make()
+    ->model($provider->section);
 
-<?php $this->setBreadcrumbs([
+$this->breadcrumbs([
     Yii::t('cms', 'Entries') => $provider->section->getAdminRoute() + ['#' => 'entries'],
     Yii::t('cms', 'Link entries'),
-]); ?>
+]);
 
-<?= Panel::widget([
-    'content' => SectionEntryGridView::widget([
-        'dataProvider' => $provider,
-    ]),
-]); ?>
+echo GridContainer::make()
+    ->grid(SectionEntryGridView::make()
+        ->provider($provider));

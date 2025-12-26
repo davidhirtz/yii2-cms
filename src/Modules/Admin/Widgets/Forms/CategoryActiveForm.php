@@ -21,7 +21,7 @@ class CategoryActiveForm extends ActiveForm
     use SlugFieldTrait;
 
     #[Override]
-    public function configure(): void
+    protected function configure(): void
     {
         $this->rows ??= [
             [

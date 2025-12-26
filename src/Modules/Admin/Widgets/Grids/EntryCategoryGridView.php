@@ -7,7 +7,7 @@ namespace Hirtz\Cms\Modules\Admin\Widgets\Grids;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\EntryCategory;
 use Hirtz\Cms\Modules\Admin\Data\CategoryActiveDataProvider;
-use Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits\CategoryGridTrait;
+use Hirtz\Cms\Modules\Admin\Widgets\Grids\Traits\CategoryGridTrait;
 use Hirtz\Cms\modules\ModuleTrait;
 use Hirtz\Skeleton\Html\Button;
 use Hirtz\Skeleton\Widgets\Grids\Columns\ButtonsColumn;
@@ -31,6 +31,8 @@ class EntryCategoryGridView extends GridView
     #[Override]
     public function init(): void
     {
+        $this->initAncestors();
+
         $this->rowAttributes ??= fn (Category $category) => [
             'class' => $category->entryCategory ? 'is-selected' : null,
         ];
@@ -47,8 +49,6 @@ class EntryCategoryGridView extends GridView
 
         // Category counter in submenu needs to be updated when categories are added/removed.
         $this->attributes['hx-select'] ??= 'main';
-
-        $this->initAncestors();
     }
 
     public function updatedAtColumn(): array
