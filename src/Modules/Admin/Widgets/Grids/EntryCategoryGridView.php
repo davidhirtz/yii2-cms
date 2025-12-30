@@ -5,20 +5,21 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Modules\Admin\Widgets\Grids;
 
 use Hirtz\Cms\Models\Category;
-use Hirtz\Cms\Models\EntryCategory;
 use Hirtz\Cms\Modules\Admin\Data\CategoryActiveDataProvider;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\Traits\CategoryGridTrait;
 use Hirtz\Cms\modules\ModuleTrait;
 use Hirtz\Skeleton\Html\Button;
-use Hirtz\Skeleton\Widgets\Grids\Columns\ButtonsColumn;
+use Hirtz\Skeleton\Widgets\Grids\Columns\ButtonColumn;
+use Hirtz\Skeleton\Widgets\Grids\Columns\Column;
+use Hirtz\Skeleton\Widgets\Grids\Columns\RelativeTimeColumn;
 use Hirtz\Skeleton\Widgets\Grids\GridView;
-use Hirtz\Timeago\Timeago;
 use Override;
 use yii\db\ActiveRecordInterface;
 
 /**
- * @extends GridView<Category>
- * @property CategoryActiveDataProvider $dataProvider
+ * @template T of Category
+ * @extends GridView<T>
+ * @property CategoryActiveDataProvider $provider
  */
 class EntryCategoryGridView extends GridView
 {
@@ -29,7 +30,7 @@ class EntryCategoryGridView extends GridView
     public bool $showUrl = false;
 
     #[Override]
-    public function init(): void
+    public function configure(): void
     {
         $this->initAncestors();
 
@@ -38,57 +39,53 @@ class EntryCategoryGridView extends GridView
         ];
 
         $this->columns ??= [
-            $this->statusColumn(),
-            $this->typeColumn(),
+            $this->getStatusColumn(),
+            $this->getTypeColumn(),
             $this->getNameColumn(),
             $this->getBranchCountColumn(),
             $this->getEntryCountColumn(),
-            $this->updatedAtColumn(),
-            $this->buttonsColumn(),
+            $this->getUpdatedAtColumn(),
+            $this->getButtonColumn(),
         ];
 
-        // Category counter in submenu needs to be updated when categories are added/removed.
-        $this->attributes['hx-select'] ??= 'main';
+        parent::configure();
     }
 
-    public function updatedAtColumn(): array
+    protected function getUpdatedAtColumn(): ?Column
     {
-        return [
-            'label' => EntryCategory::instance()->getAttributeLabel('updated_at'),
-            'headerOptions' => ['class' => 'd-none d-lg-table-cell text-nowrap'],
-            'contentOptions' => ['class' => 'd-none d-lg-table-cell text-nowrap'],
-            'content' => fn (Category $category) => $category->entryCategory
-                ? ($this->dateFormat
-                    ? $category->entryCategory->updated_at->format($this->dateFormat)
-                    : Timeago::tag($category->entryCategory->updated_at))
-                : null
-        ];
+        return RelativeTimeColumn::make()
+            ->property('updated_at');
     }
 
-    public function buttonsColumn(): array
+    protected function getButtonColumn(): ?Column
     {
-        return [
-            'class' => ButtonsColumn::class,
-            'content' => function (Category $category): array {
-                // Categories can always be removed even, if they were not supposed to have entries enabled
-                if (!$category->hasEntriesEnabled() && !$category->entryCategory) {
-                    return [];
-                }
 
-                return [
-                    Button::make()
-                        ->primary()
-                        ->icon($category->entryCategory ? 'ban' : 'star')
-                        ->post([
-                            $category->entryCategory ? 'delete' : 'create',
-                            'entry' => $this->dataProvider->entry->id,
-                            'category' => $category->id,
-                        ]),
-                ];
-            }
+        return ButtonColumn::make()
+            ->content($this->getButtonColumnContent(...));
+    }
+
+    protected function getButtonColumnContent(Category $category): array
+    {
+        // Categories can always be removed even, if they were not supposed to have entries enabled
+        if (!$category->hasEntriesEnabled() && !$category->entryCategory) {
+            return [];
+        }
+
+        return [
+            Button::make()
+                ->primary()
+                ->icon($category->entryCategory ? 'ban' : 'star')
+                ->post([
+                    $category->entryCategory ? 'delete' : 'create',
+                    'entry' => $this->provider->entry->id,
+                    'category' => $category->id,
+                ]),
         ];
     }
 
+    /**
+     * @param T $model
+     */
     #[Override]
     protected function getRoute(ActiveRecordInterface $model, array $params = []): array|false
     {

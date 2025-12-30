@@ -15,9 +15,9 @@ use Hirtz\Skeleton\Html\Div;
 use Hirtz\Skeleton\Widgets\Grids\Columns\BadgeColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Column;
 use Hirtz\Skeleton\Widgets\Grids\Columns\DataColumn;
-use Hirtz\Skeleton\Widgets\Grids\Toolbars\FilterDropdown;
 use Hirtz\Skeleton\Widgets\Grids\Traits\StatusGridViewTrait;
 use Hirtz\Skeleton\Widgets\Grids\Traits\TypeGridViewTrait;
+use Stringable;
 use Yii;
 use yii\helpers\Url;
 
@@ -34,11 +34,11 @@ trait CategoryGridTrait
     {
         return DataColumn::make()
             ->property('name')
-            ->property($this->model->getI18nAttributeName('name'))
+            ->property(Category::instance()->getI18nAttributeName('name'))
             ->content($this->getNameColumnContent(...));
     }
 
-    protected function getNameColumnContent(Category $category): string
+    protected function getNameColumnContent(Category $category): string|Stringable
     {
         $name = $category->getI18nAttribute('name');
 
@@ -53,7 +53,7 @@ trait CategoryGridTrait
 
         if ($this->showCategoryAncestors($category)) {
             $html .= Div::make()
-                ->class('small')
+                ->class('small', 'strong')
                 ->content($this->getCategoryAncestors($category));
         }
 

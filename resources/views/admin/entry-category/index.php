@@ -1,28 +1,25 @@
 <?php
+
 declare(strict_types=1);
 
 /**
- * EntryCategory.
  * @see \Hirtz\Cms\Modules\Admin\Controllers\EntryCategoryController::actionIndex()
  *
- * @var \Hirtz\Skeleton\Web\View $this
- * @var \Hirtz\Cms\Modules\Admin\Data\CategoryActiveDataProvider $provider
+ * @var View $this
+ * @var CategoryActiveDataProvider $provider
  */
+
+use Hirtz\Cms\Modules\Admin\Data\CategoryActiveDataProvider;
+use Hirtz\Cms\Modules\Admin\Widgets\Grids\EntryCategoryGridView;
+use Hirtz\Cms\Modules\Admin\Widgets\Navs\CmsSubmenu;
+use Hirtz\Skeleton\Web\View;
+use Hirtz\Skeleton\Widgets\Grids\GridContainer;
 
 $this->title(Yii::t('cms', 'Categories'));
 
-use Hirtz\Cms\Modules\Admin\Widgets\Grids\EntryCategoryGridView;
-use Hirtz\Cms\Modules\Admin\Widgets\Navs\CmsSubmenu;
-use Hirtz\Skeleton\Widgets\Bootstrap\Panel;
+echo CmsSubmenu::make()
+    ->model($provider->entry);
 
-?>
-
-<?= CmsSubmenu::widget([
-    'model' => $provider->entry,
-]); ?>
-
-<?= Panel::widget([
-    'content' => EntryCategoryGridView::widget([
-        'dataProvider' => $provider,
-    ]),
-]); ?>
+echo GridContainer::make()
+    ->grid(EntryCategoryGridView::make()
+        ->provider($provider));
