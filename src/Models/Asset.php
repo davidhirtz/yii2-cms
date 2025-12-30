@@ -10,7 +10,7 @@ use Hirtz\Cms\Models\Traits\SectionRelationTrait;
 use Hirtz\Cms\Modules\Admin\Widgets\Panels\FileAssetParentPanel;
 use davidhirtz\yii2\datetime\DateTime;
 use Hirtz\Media\Models\File;
-use Hirtz\Media\Models\interfaces\AssetInterface;
+use Hirtz\Media\Models\Interfaces\AssetInterface;
 use Hirtz\Media\Models\Traits\AssetTrait;
 use Hirtz\Media\Models\Traits\EmbedUrlTrait;
 use Hirtz\Skeleton\Models\Interfaces\DraftStatusAttributeInterface;

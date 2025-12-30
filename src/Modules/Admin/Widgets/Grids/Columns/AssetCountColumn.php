@@ -9,7 +9,7 @@ use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\EntryGridView;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\SectionGridView;
 use Hirtz\Cms\modules\ModuleTrait;
-use Hirtz\Media\Models\interfaces\AssetParentInterface;
+use Hirtz\Media\Models\Interfaces\AssetParentInterface;
 use Hirtz\Skeleton\Widgets\Grids\Columns\BadgeColumn;
 use Override;
 use Stringable;

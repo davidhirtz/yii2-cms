@@ -6,12 +6,13 @@ namespace Hirtz\Cms\Modules\Admin\Widgets\Panels;
 
 use Hirtz\Cms\Models\Asset;
 use Hirtz\Cms\Modules\Admin\Controllers\AssetController;
-use Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits\UpdateFileButtonTrait;
+use Hirtz\Cms\Modules\Admin\Widgets\Panels\Traits\UpdateFileButtonTrait;
 
 /**
- * @property Asset $model
+ * @template T of Asset
+ * @extends AbstractPanel<T>
  */
-class AssetHelpPanel extends AbstractPanel
+class AssetPanel extends AbstractPanel
 {
     use UpdateFileButtonTrait;
 

@@ -9,7 +9,7 @@ use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Models\Queries\SectionQuery;
 use Hirtz\Cms\Models\Traits\EntryRelationTrait;
 use Hirtz\Cms\Models\Traits\SlugAttributeTrait;
-use Hirtz\Media\Models\interfaces\AssetParentInterface;
+use Hirtz\Media\Models\Interfaces\AssetParentInterface;
 use Hirtz\Media\Models\Traits\AssetParentTrait;
 use Hirtz\Skeleton\Db\ActiveQuery;
 use Hirtz\Skeleton\Validators\RelationValidator;

@@ -12,7 +12,8 @@ use Stringable;
 use Yii;
 
 /**
- * @property Entry $model
+ * @template T of Entry
+ * @extends AbstractPanel<T>
  */
 class EntryPanel extends AbstractPanel
 {

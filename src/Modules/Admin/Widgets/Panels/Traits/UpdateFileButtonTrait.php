@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits;
+namespace Hirtz\Cms\Modules\Admin\Widgets\Panels\Traits;
 
 use Hirtz\Media\Models\File;
 use Hirtz\Skeleton\Html\Button;

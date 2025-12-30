@@ -10,7 +10,8 @@ use Stringable;
 use Yii;
 
 /**
- * @property Section $model
+ * @template T of Section
+ * @extends AbstractPanel<T>
  */
 class SectionPanel extends AbstractPanel
 {

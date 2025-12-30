@@ -104,6 +104,7 @@ class AssetController extends AbstractController
     public function actionCreate(
         ?int $entry = null,
         ?int $section = null,
+        ?int $file = null,
         ?int $folder = null
     ): Response|string {
         if ($entry) {
@@ -114,7 +115,11 @@ class AssetController extends AbstractController
             $entry = null;
         }
 
-        $file = $this->insertFileFromRequest($folder);
+        if ($file) {
+            $file = $this->findFile($file);
+        }
+
+        $file ??= $this->insertFileFromRequest($folder);
 
         if ($this->request->preferNoContent()) {
             $this->response->setStatusCode(204);
@@ -126,10 +131,12 @@ class AssetController extends AbstractController
 
         $asset = Asset::create();
         $asset->loadDefaultValues();
-        $asset->populateEntryRelation($entry);
         $asset->populateSectionRelation($section);
+        $asset->populateEntryRelation($entry);
         $asset->populateFileRelation($file);
         $asset->insert();
+
+        $this->error($asset);
 
         return $this->redirectToParent($asset);
     }
@@ -188,10 +195,8 @@ class AssetController extends AbstractController
 
     private function redirectToParent(Asset $asset, bool $isDeleted = false): Response
     {
-        $route = $asset->section_id
-            ? ['/admin/section/update', 'id' => $asset->section_id]
-            : ['/admin/entry/update', 'id' => $asset->entry_id];
-
-        return $this->redirect($route + ['#' => $isDeleted ? 'assets' : ('asset-' . $asset->id)]);
+        return $this->redirect($asset->parent->getAdminRoute() + [
+                '#' => $isDeleted ? 'assets' : "asset-$asset->id",
+            ]);
     }
 }

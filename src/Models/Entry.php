@@ -11,7 +11,7 @@ use Hirtz\Cms\Models\Traits\SlugAttributeTrait;
 use Hirtz\Cms\Module;
 use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\datetime\DateTimeValidator;
-use Hirtz\Media\Models\interfaces\AssetParentInterface;
+use Hirtz\Media\Models\Interfaces\AssetParentInterface;
 use Hirtz\Media\Models\Traits\AssetParentTrait;
 use Hirtz\Skeleton\Behaviors\RedirectBehavior;
 use Hirtz\Skeleton\Helpers\ArrayHelper;

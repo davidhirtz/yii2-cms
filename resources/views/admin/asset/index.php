@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -15,21 +16,20 @@ use Hirtz\Cms\Modules\Admin\Controllers\AssetController;
 use Hirtz\Cms\Modules\Admin\Widgets\Navs\CmsSubmenu;
 use Hirtz\Media\Modules\Admin\Widgets\Grids\FileGridView;
 use Hirtz\Skeleton\Web\View;
-use Hirtz\Skeleton\Widgets\Bootstrap\Panel;
+use Hirtz\Skeleton\Widgets\Grids\GridContainer;
 use yii\data\ActiveDataProvider;
 
 $this->title(Yii::t('media', 'Assets'));
-?>
 
-<?= CmsSubmenu::widget([
-    'model' => $parent,
-]); ?>
+echo CmsSubmenu::make()
+    ->model($parent);
 
-<?php $this->setBreadcrumb(Yii::t('media', 'Assets'), [$parent instanceof Section ? '/admin/section/update' : '/admin/entry/update', 'id' => $parent->id, '#' => 'assets']); ?>
+$this->addBreadcrumb(Yii::t('media', 'Assets'), [$parent instanceof Section
+    ? '/admin/section/update'
+    : '/admin/entry/update', 'id' => $parent->id, '#' => 'assets',
+]);
 
-<?= Panel::widget([
-    'content' => FileGridView::widget([
-        'dataProvider' => $provider,
-        'parent' => $parent,
-    ]),
-]); ?>
+echo GridContainer::make()
+    ->grid(FileGridView::make()
+        ->provider($provider)
+        ->parent($parent));
