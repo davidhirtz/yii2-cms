@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Migrations\Traits;
 
-use Hirtz\Cms\modules\ModuleTrait;
+use Hirtz\Cms\Modules\ModuleTrait;
 use Yii;
 
 trait I18nTablesTrait

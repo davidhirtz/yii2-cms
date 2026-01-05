@@ -55,12 +55,22 @@ class EntryPanel extends AbstractPanel
      */
     protected function getDuplicateButton(): ?Stringable
     {
-        // Todo add modal confirmation for duplicating entries with subentries
-        //        if ($this->model->entry_count > 1) {
-        //            $options['data-confirm'] ??= Yii::t('cms', 'Do you want to duplicate this entry and its {n} subentries?', [
-        //                'n' => Yii::$app->getFormatter()->asInteger($this->model->entry_count),
-        //            ]);
-        //        }
+        if ($this->model->entry_count > 1) {
+            $modal = Modal::make()
+                ->title(Yii::t('cms', 'Do you want to duplicate this entry and its {n} subentries?', [
+                    'n' => Yii::$app->getFormatter()->asInteger($this->model->entry_count),
+                ]))
+                ->footer(Button::make()
+                    ->primary()
+                    ->text(Yii::t('media', 'Duplicate'))
+                    ->post(['duplicate', 'id' => $this->model->id], true));
+
+            return Button::make()
+                ->primary()
+                ->text(Yii::t('cms', 'Duplicate'))
+                ->icon('copy')
+                ->modal($modal);
+        }
 
         return parent::getDuplicateButton();
     }

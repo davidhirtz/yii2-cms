@@ -10,78 +10,44 @@ use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Helpers\FrontendLink;
 use Hirtz\Cms\Modules\Admin\Module;
-use Hirtz\Cms\modules\ModuleTrait;
+use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Skeleton\Helpers\Html;
 use Hirtz\Skeleton\Widgets\Navs\NavItem;
 use Hirtz\Skeleton\Widgets\Navs\Submenu;
-use Hirtz\Skeleton\Widgets\Traits\ModelWidgetTrait;
 use Override;
 use Yii;
 
-/**
- * @property Asset|Category|Entry|Section|null $model
- */
 class CmsSubmenu extends Submenu
 {
     use ModuleTrait;
-    use ModelWidgetTrait;
 
-    /**
-     * @var bool whether default categories should be shown as nav items
-     */
-    public bool $showDefaultCategories = true;
-
-    /**
-     * @var int the number of parent categories should be shown in the breadcrumb. Set to `0` to disable parent
-     * category breadcrumbs.
-     */
-    public int $parentCategoryBreadcrumbCount = 2;
-
-    /**
-     * @var bool whether entry types should be listed as items
-     */
-    public bool $showEntryTypes = false;
-
-    /**
-     * @var bool whether entry categories should be visible
-     */
-    public bool $showEntryCategories = true;
-
-    /**
-     * @var bool whether entry sections should be visible
-     */
-    public bool $showEntrySections = true;
-
-    /**
-     * @var bool whether to show the admin module in the breadcrumbs
-     */
-    public bool $showModuleBreadcrumbs = true;
-
-    /**
-     * @var array<string, array> additional active routes, indexed by the item name
-     */
-    public array $additionalActiveRoutes = [];
-
-    /**
-     * @var bool whether the website url to given model should be displayed
-     */
-    public bool $showUrl = true;
-
+    protected Asset|Category|Entry|Section|null $model = null;
     protected Module $module;
-    protected bool $isAsset = false;
 
-    public function __construct()
+    protected array $additionalActiveRoutes = [];
+    protected int $parentCategoryBreadcrumbCount = 2;
+    protected bool $showDefaultCategories = true;
+    protected bool $showEntryCategories = true;
+    protected bool $showEntrySections = true;
+    protected bool $showEntryTypes = false;
+    protected bool $showModuleBreadcrumbs = true;
+    protected bool $showUrl = true;
+
+    private bool $isAsset = false;
+
+    public function model(Asset|Category|Entry|Section|null $model): static
     {
-        /** @var Module $module */
-        $module = Yii::$app->getModule('admin')->getModule('cms');
-        $this->module = $module;
-
-        parent::__construct();
+        $this->model = $model;
+        return $this;
     }
 
     #[Override]
     protected function configure(): void
     {
+        /** @var Module $module */
+        $module = Yii::$app->getModule('admin')->getModule('cms');
+        $this->module = $module;
+
         if ($this->model instanceof Asset) {
             $this->model($this->model->getParent());
             $this->isAsset = true;

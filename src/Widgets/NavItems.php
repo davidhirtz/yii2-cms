@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\widgets;
+namespace Hirtz\Cms\Widgets;
 
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Queries\EntryQuery;

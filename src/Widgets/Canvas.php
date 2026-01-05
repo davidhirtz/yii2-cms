@@ -2,153 +2,146 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\widgets;
+namespace Hirtz\Cms\Widgets;
 
 use Hirtz\Cms\Models\Asset;
 use Hirtz\Media\helpers\AspectRatio;
 use Hirtz\Media\helpers\Html;
-use Hirtz\Media\widgets\Picture;
+use Hirtz\Media\Widgets\Picture;
+use Hirtz\Skeleton\Html\A;
+use Hirtz\Skeleton\Html\Div;
+use Hirtz\Skeleton\Html\Traits\TagAttributesTrait;
+use Hirtz\Skeleton\Html\Traits\TagUrlTrait;
 use Hirtz\Skeleton\Widgets\Widget;
 use Override;
-use yii\helpers\ArrayHelper;
+use Stringable;
 
 class Canvas extends Widget
 {
-    public ?Asset $asset = null;
+    use TagAttributesTrait;
+    use TagUrlTrait;
 
-    public array $captionOptions = [];
-    public array $linkOptions = [];
-    public array $pictureOptions = [];
-    public array $wrapperOptions = ['class' => 'canvas'];
+    protected Asset $asset;
 
-    public string $template = '{media}{embed}{caption}';
-    public array $parts = [];
+    protected array $captionAttributes = [];
+    protected array $linkAttributes = [];
+    protected array $pictureAttributes = [];
 
-    public bool $enableLinkWrapper = true;
+    protected string $layout = '{media}{embed}{caption}';
+    protected array $parts = [];
 
-    public bool $enableMaxWidth = false;
-    public ?int $defaultMaxWidth = null;
+    protected bool $enableLinkWrapper = true;
 
-    public bool $enableWrapperHeight = true;
+    protected bool $enableMaxWidth = false;
+    protected ?int $defaultMaxWidth = null;
 
-    public int|false $lazyLoadingParentPosition = 2;
-    public string $embedViewFile = 'widgets/_embed';
+    protected bool $enableWrapperHeight = true;
 
-    public function init(): void
+    protected int|false $lazyLoadingParentPosition = 2;
+    protected string $embedViewFile = 'widgets/_embed';
+
+    public function configure(): void
     {
-        if ($this->asset) {
-            $this->linkOptions['aria-label'] ??= $this->asset->getVisibleAttribute('name');
+        $this->attributes['class'] ??= 'canvas';
+        $this->linkAttributes['aria-label'] ??= $this->asset->getVisibleAttribute('name');
 
-            if ($this->asset->file->hasDimensions()) {
-                if ($this->enableWrapperHeight) {
-                    $this->setWrapperHeight();
-                }
+        $this->url ??= $this->asset->getVisibleAttribute('link');
 
-                if ($this->enableMaxWidth) {
-                    $width = $this->asset->file->width;
-
-                    if ($this->defaultMaxWidth === null || $width < $this->defaultMaxWidth) {
-                        $this->wrapperOptions['style']['max-width'] = "{$width}px";
-                    }
-                }
+        if ($this->asset->file->hasDimensions()) {
+            if ($this->enableWrapperHeight) {
+                $this->attributes['style']['aspect-ratio'] ??= $this->getAspectRatio();
             }
 
-            if ($this->lazyLoadingParentPosition !== false
-                && $this->asset->parent->position > $this->lazyLoadingParentPosition) {
-                $this->pictureOptions['imgOptions']['loading'] ??= 'lazy';
+            if ($this->enableMaxWidth) {
+                $width = $this->asset->file->width;
+
+                if ($this->defaultMaxWidth === null || $width < $this->defaultMaxWidth) {
+                    $this->attributes['style']['max-width'] = "{$width}px";
+                }
             }
+        }
+
+        if (
+            false !== $this->lazyLoadingParentPosition
+            && $this->asset->parent->position > $this->lazyLoadingParentPosition
+        ) {
+            $this->pictureAttributes['imgOptions']['loading'] ??= 'lazy';
         }
 
         if ($this->enableLinkWrapper) {
-            $this->enableLinkWrapper = !str_contains($this->template, '{link}');
+            $this->enableLinkWrapper = !str_contains($this->layout, '{link}');
         }
 
-        $this->wrapperOptions = array_filter($this->wrapperOptions);
+        parent::configure();
     }
 
     #[Override]
-    public function render(bool $refresh = false): string
+    protected function renderContent(): string|Stringable
     {
-        $content = $this->getContent();
-        return $this->wrapContent($content);
+        return $this->wrapContent($this->getContent());
     }
 
-    /**
-     * @uses static::renderAdmin()
-     * @uses static::renderCaption()
-     * @uses static::renderEmbed()
-     * @uses static::renderLink()
-     * @uses static::renderMedia()
-     */
     protected function getContent(): string
     {
-        return preg_replace_callback(
-            '/{(\\w+)}/',
-            function ($matches) {
-                $methodName = 'render' . ucfirst($matches[1]);
-                return method_exists($this, $methodName) ? $this->$methodName() : $matches[0];
-            },
-            $this->template
-        );
+        return strtr($this->layout, [
+            '{admin}' => $this->getAdminLink(),
+            '{caption}' => $this->getCaption(),
+            '{embed}' => $this->getEmbed(),
+            '{link}' => $this->getLink(),
+            '{media}' => $this->getMedia(),
+        ]);
     }
 
-    protected function renderAdmin(): string
+    protected function getAdminLink(): string
     {
         return AdminLink::tag($this->asset);
     }
 
-    protected function renderCaption(): string
+    protected function getCaption(): ?Stringable
     {
-        if (!$content = $this->asset?->getVisibleAttribute('content')) {
+        $content = $this->asset->getVisibleAttribute('content');
+
+        if ('html' !== $this->asset->contentType) {
+            $content = $content ? Html::encode($content) : '';
+        }
+
+        return $content
+            ? Div::make()->attributes($this->captionAttributes)->content($content)
+            : null;
+    }
+
+    protected function getEmbed(): string
+    {
+        if (!$this->asset->getVisibleAttribute('embed_url')) {
             return '';
         }
 
-        $encode = ArrayHelper::remove($this->captionOptions, 'encode', false);
-        $content = $encode ? Html::encode($content) : $content;
-
-        return Html::tag('div', $content, $this->captionOptions);
+        return $this->view->render($this->embedViewFile, ['asset' => $this->asset], $this);
     }
 
-    protected function renderEmbed(): string
+    protected function getLink(): ?Stringable
     {
-        if (!$this->asset?->getVisibleAttribute('embed_url')) {
-            return '';
-        }
-
-        return $this->getView()->render($this->embedViewFile, ['asset' => $this->asset], $this);
+        return $this->url ? A::make()->attributes($this->linkAttributes)->href($this->url) : null;
     }
 
-    protected function renderLink(): string
+    protected function getMedia(): string
     {
-        $link = $this->asset?->getVisibleAttribute('link');
-        return $link ? Html::a('', $link, $this->linkOptions) : '';
+        return Picture::make()
+            ->model($this->asset)
+            ->attributes($this->pictureAttributes);
     }
 
-    protected function renderMedia(): string
+    protected function wrapContent(string $content): Stringable
     {
-        if (!$this->asset) {
-            return '';
-        }
-
-        return Picture::widget([
-            'asset' => $this->asset,
-            ...$this->pictureOptions
-        ]);
-    }
-
-    protected function wrapContent(string $content): string
-    {
-        if ($this->enableLinkWrapper && ($link = $this->asset->getVisibleAttribute('link'))) {
-            $options = ArrayHelper::merge($this->wrapperOptions, $this->linkOptions);
-            return Html::a($content, $link, $options);
-        }
-
-        return $this->wrapperOptions ? Html::tag('div', $content, $this->wrapperOptions) : $content;
-    }
-
-    protected function setWrapperHeight(): void
-    {
-        $this->wrapperOptions['style']['aspect-ratio'] ??= $this->getAspectRatio();
+        return $this->enableLinkWrapper && $this->url
+            ? A::make()
+                ->attributes($this->linkAttributes)
+                ->addAttributes($this->attributes)
+                ->href($this->url)
+                ->content($content)
+            : Div::make()
+                ->attributes($this->attributes)
+                ->content($content);
     }
 
     protected function getAspectRatio(): ?string

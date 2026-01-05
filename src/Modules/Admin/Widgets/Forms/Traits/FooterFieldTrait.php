@@ -5,22 +5,21 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits;
 
 use Hirtz\Cms\Models\Traits\FooterAttributeTrait;
-use Hirtz\Cms\Modules\Admin\Widgets\Forms\EntryActiveForm;
-use yii\widgets\ActiveField;
+use Hirtz\Skeleton\Widgets\Forms\Fields\CheckboxField;
+use Stringable;
 
 /**
  * @property FooterAttributeTrait $model
- * @mixin EntryActiveForm
- * @noinspection PhpUnused
  */
 trait FooterFieldTrait
 {
-    protected function showInFooterField(array $options = []): string|ActiveField
+    protected function getShowInFooterField(array $options = []): ?Stringable
     {
         if (!$this->model->hasShowInFooterEnabled() && !$this->model->isFooterItem()) {
-            return '';
+            return null;
         }
 
-        return $this->field($this->model, 'show_in_footer', $options)->checkbox();
+        return CheckboxField::make()
+            ->property('show_in_footer');
     }
 }

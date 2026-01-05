@@ -9,7 +9,7 @@ use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Controllers\AssetController;
 use Hirtz\Cms\Modules\Admin\Controllers\EntryController;
-use Hirtz\Cms\modules\ModuleTrait;
+use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Media\Models\File;
 use Hirtz\Media\Modules\Admin\Widgets\Grids\Columns\FileThumbnailColumn;
 use Hirtz\Media\Modules\Admin\Widgets\Grids\Traits\AssetGridViewTrait;

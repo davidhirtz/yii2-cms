@@ -6,7 +6,7 @@ namespace Hirtz\Cms\Modules\Admin\Widgets\Grids\Columns;
 
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\SectionGridView;
-use Hirtz\Cms\modules\ModuleTrait;
+use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Skeleton\Widgets\Grids\Columns\BadgeColumn;
 use Override;
 use Stringable;

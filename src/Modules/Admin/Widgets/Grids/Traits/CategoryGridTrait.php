@@ -8,7 +8,7 @@ use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Collections\CategoryCollection;
 use Hirtz\Cms\Modules\Admin\Data\CategoryActiveDataProvider;
 use Hirtz\Cms\Modules\Admin\Helpers\FrontendLink;
-use Hirtz\Cms\modules\ModuleTrait;
+use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Skeleton\Helpers\Html;
 use Hirtz\Skeleton\Html\A;
 use Hirtz\Skeleton\Html\Div;

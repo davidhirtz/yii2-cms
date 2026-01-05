@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Modules\Admin\Controllers;
 
 use Hirtz\Cms\Modules\Admin\Module;
-use Hirtz\Cms\modules\ModuleTrait;
+use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Skeleton\Web\Controller;
 use Hirtz\Skeleton\Widgets\Navs\NavBar;
 use Override;

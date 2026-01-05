@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits;
 
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\Fields\CategoryParentIdSelectField;
-use Hirtz\Cms\modules\ModuleTrait;
+use Hirtz\Cms\Modules\ModuleTrait;
 use Stringable;
 
 trait CategoryParentIdFieldTrait

@@ -14,7 +14,7 @@ use Hirtz\Cms\Modules\Admin\Helpers\FrontendLink;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\Columns\AssetCountColumn;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\Columns\EntryEntryCountColumn;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\Columns\SectionCountColumn;
-use Hirtz\Cms\modules\ModuleTrait;
+use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Skeleton\Helpers\Html;
 use Hirtz\Skeleton\Html\A;
 use Hirtz\Skeleton\Html\Button;

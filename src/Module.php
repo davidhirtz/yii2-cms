@@ -7,6 +7,7 @@ namespace Hirtz\Cms;
 use Hirtz\Cms\Models\Collections\CategoryCollection;
 use Hirtz\Skeleton\Filters\PageCache;
 use Hirtz\Skeleton\Modules\ModuleTrait;
+use Override;
 use Yii;
 use yii\caching\CacheInterface;
 use yii\caching\TagDependency;
@@ -90,7 +91,7 @@ class Module extends \Hirtz\Skeleton\Base\Module
      */
     public string|false $entryIndexSlug = 'home';
 
-    #[\Override]
+    #[Override]
     public function init(): void
     {
         if (!$this->enableSections) {

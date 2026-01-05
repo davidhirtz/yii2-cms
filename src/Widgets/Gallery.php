@@ -2,70 +2,111 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\widgets;
+namespace Hirtz\Cms\Widgets;
 
+use Closure;
 use Hirtz\Cms\Models\Asset;
-use Hirtz\Media\helpers\Html;
+use Hirtz\Skeleton\Html\Div;
+use Hirtz\Skeleton\Html\Traits\TagAttributesTrait;
 use Hirtz\Skeleton\Widgets\Widget;
 use Override;
+use Stringable;
 
 /**
  * @template T of Asset
  */
 class Gallery extends Widget
 {
+    use TagAttributesTrait;
+
     /**
      * @var T[]
      */
-    public ?array $assets = null;
+    protected ?array $assets = null;
 
-    public ?int $start = null;
-    public ?int $limit = null;
-    public array $viewParams = [];
+    protected ?Closure $content = null;
 
-    public array $options = [];
-    public array $wrapperOptions = [];
+    protected ?int $start = null;
+    protected ?int $limit = null;
+    protected string $viewFile = 'widgets/_assets';
+    protected array $viewParams = [];
 
-    public array $viewports = [
+    protected array $viewports = [
         'hidden-sm' => [Asset::TYPE_DEFAULT, Asset::TYPE_VIEWPORT_MOBILE],
         'hidden block-sm' => [Asset::TYPE_DEFAULT, Asset::TYPE_VIEWPORT_DESKTOP]
     ];
 
-    public string $viewFile = 'widgets/_assets';
+    private array $sharedViewports = [];
 
-    protected array $sharedViewports = [];
-
-    public function init(): void
+    public function assets(array $assets): static
     {
-        if ($this->viewports) {
-            foreach ($this->viewports as $viewport) {
-                $this->sharedViewports = $this->sharedViewports ? array_intersect($this->sharedViewports, $viewport) : $viewport;
-            }
-        }
+        $this->assets = $assets;
+        return $this;
+    }
+
+    public function content(Closure $content): static
+    {
+        $this->content = $content;
+        return $this;
+    }
+
+    public function start(?int $start): static
+    {
+        $this->start = $start;
+        return $this;
+    }
+
+    public function limit(?int $limit): static
+    {
+        $this->limit = $limit;
+        return $this;
+    }
+
+    public function viewFile(?string $viewFile): static
+    {
+        $this->viewFile = $viewFile;
+        return $this;
+    }
+
+    public function viewParams(array $viewParams): static
+    {
+        $this->viewParams = $viewParams;
+        return $this;
     }
 
     #[Override]
-    public function render(bool $refresh = false): string
+    public function configure(): void
+    {
+        if ($this->viewports) {
+            foreach ($this->viewports as $viewport) {
+                $this->sharedViewports = $this->sharedViewports
+                    ? array_intersect($this->sharedViewports, $viewport)
+                    : $viewport;
+            }
+        }
+
+        parent::configure();
+    }
+
+    #[Override]
+    protected function renderContent(): string|Stringable
     {
         $viewports = $this->getAssetsByViewports();
         $output = '';
 
         foreach ($viewports as $cssClass => $assets) {
-            if ($this->start !== null || $this->limit !== null) {
+            if (null !== $this->start || null !== $this->limit) {
                 $assets = array_slice($assets, $this->start ?: 0, $this->limit);
             }
 
             $content = $this->renderAssetsInternal($assets);
 
-            if ($content) {
-                $wrapperOptions = $this->wrapperOptions;
-
-                if (is_string($cssClass)) {
-                    Html::addCssClass($wrapperOptions, $cssClass);
-                }
-
-                $output .= $wrapperOptions ? Html::tag('div', $content, $wrapperOptions) : $content;
-            }
+            $output .= $cssClass || $this->attributes
+                ? Div::make()
+                    ->attributes($this->attributes)
+                    ->addClass($cssClass)
+                    ->content($content)
+                : $content;
         }
 
         return $output;
@@ -76,20 +117,19 @@ class Gallery extends Widget
      */
     protected function renderAssetsInternal(array $assets): string
     {
-        if ($assets) {
-            $content = $this->getView()->render($this->viewFile, [...$this->viewParams, 'assets' => $assets], $this);
-            $options = $this->prepareOptions($this->options, $assets);
-
-            return $options ? Html::tag('div', $content, $options) : $content;
+        if (!$assets) {
+            return '';
         }
 
-        return '';
+        return $this->content
+            ? call_user_func($this->content, $assets)
+            : $this->view->render($this->viewFile, [...$this->viewParams, 'assets' => $assets]);
     }
 
     /**
      * @return T[][]
      */
-    public function getAssetsByViewports(): array
+    protected function getAssetsByViewports(): array
     {
         $sameViewport = true;
         $viewports = [];
@@ -108,15 +148,6 @@ class Gallery extends Widget
             }
         }
 
-        return $sameViewport ? [$this->assets] : $viewports;
-    }
-
-    /**
-     * @param T[] $assets
-     * @noinspection PhpUnusedParameterInspection
-     */
-    protected function prepareOptions(array $options, array $assets = []): array
-    {
-        return $options;
+        return $sameViewport ? [null => $this->assets] : $viewports;
     }
 }

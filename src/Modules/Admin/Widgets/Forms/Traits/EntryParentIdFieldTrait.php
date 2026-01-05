@@ -6,7 +6,7 @@ namespace Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits;
 
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\Fields\EntryParentIdSelectField;
-use Hirtz\Cms\modules\ModuleTrait;
+use Hirtz\Cms\Modules\ModuleTrait;
 use Stringable;
 
 /**

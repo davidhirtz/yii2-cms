@@ -1,0 +1,29 @@
+<?php
+
+declare(strict_types=1);
+
+/**
+ * @var string $content
+ * @var View $this
+ */
+
+use Hirtz\Skeleton\Web\View;
+use yii\helpers\Html;
+
+?>
+<?php $this->beginPage() ?>
+    <!DOCTYPE html>
+    <html lang="<?= $this->getHtmlLangAttribute(); ?>">
+    <head>
+        <meta charset="<?= Yii::$app->charset; ?>">
+        <?= Html::csrfMetaTags(); ?>
+        <title><?= Html::encode($this->getDocumentTitle()); ?></title>
+        <?php $this->head(); ?>
+    </head>
+    <body>
+    <?php $this->beginBody(); ?>
+    <?= $content; ?>
+    <?php $this->endBody(); ?>
+    </body>
+    </html>
+<?php $this->endPage(); ?>

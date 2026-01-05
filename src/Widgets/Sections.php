@@ -2,11 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\widgets;
+namespace Hirtz\Cms\Widgets;
 
+use Closure;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Skeleton\Widgets\Widget;
+use Override;
 use Stringable;
 
 /**
@@ -14,41 +16,40 @@ use Stringable;
  */
 class Sections extends Widget
 {
-    public ?Entry $entry = null;
+    protected Entry $entry;
+    protected string $viewFile = '_sections';
+    protected array $viewParams = [];
+    protected ?Closure $visible = null;
 
     /**
-     * @var Section[]|null
+     * @var T[]
      */
-    public ?array $sections = null;
+    protected array $sections;
 
     /**
-     * @var array containing additional view parameters.
+     * @var T[][]
      */
-    public array $viewParams = [];
+    protected array $groups;
 
-    /**
-     * @var string the path to the view file
-     */
-    public string $viewFile = '_sections';
+    public function entry(Entry $entry): static
+    {
+        $this->entry = $entry;
+        return $this;
+    }
 
-    /**
-     * @var array|null the generated section blocks
-     */
-    public ?array $groups = null;
-
-    /**
-     * @var callable|null an anonymous function with the signature `function ($section)`, where `$section` is the
-     * {@see Section} object that you can modify in the function.
-     */
-    public mixed $isVisible = null;
-
-    protected function renderContent(): string|Stringable
+    protected function configure(): void
     {
         $this->sections ??= $this->entry->sections ?? [];
 
         $this->prepareSections();
         $this->createSectionGroups();
 
+        parent::configure();
+    }
+
+    #[Override]
+    protected function renderContent(): string|Stringable
+    {
         return implode('', $this->groups);
     }
 
@@ -58,9 +59,9 @@ class Sections extends Widget
         $position = 1;
 
         foreach ($this->sections as $section) {
-            $visible = $section->getTypeOptions()['visible'] ?? $this->isVisible;
+            $visible = $section->getTypeOptions()['visible'] ?? $this->visible;
 
-            if (!is_callable($visible) || $visible($section)) {
+            if (is_callable($visible) ? call_user_func($visible, $section) : ($visible ?? true)) {
                 $section->position = $position++;
                 $sections[] = $section;
             }
@@ -93,7 +94,7 @@ class Sections extends Widget
     }
 
     /**
-     * Renders adjacent sections by type starting with the given section ands removes them from the stack.
+     * Renders adjacent sections by type starting with the given section and removes them from the stack.
      * @noinspection PhpUnused
      */
     public function renderAdjacentSectionsByType(Section $section, ?string $viewFile = null): string
@@ -153,7 +154,7 @@ class Sections extends Widget
         $viewFile ??= $this->getSectionViewFile(current($sections));
 
         return $viewFile && $sections
-            ? $this->view->render($viewFile, [...$this->viewParams, 'sections' => $sections], $this)
+            ? $this->view->render($viewFile, [...$this->viewParams, 'sections' => $sections])
             : '';
     }
 

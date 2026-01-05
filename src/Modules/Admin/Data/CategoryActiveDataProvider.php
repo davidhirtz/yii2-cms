@@ -8,7 +8,7 @@ use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\EntryCategory;
 use Hirtz\Cms\Models\Queries\CategoryQuery;
-use Hirtz\Cms\modules\ModuleTrait;
+use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Skeleton\Db\ActiveQuery;
 use Override;
 use yii\data\ActiveDataProvider;

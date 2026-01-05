@@ -7,7 +7,7 @@ namespace Hirtz\Cms\Modules\Admin\Widgets\Forms\Fields;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits\ParentIdSelectFieldTrait;
-use Hirtz\Cms\modules\ModuleTrait;
+use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Skeleton\Helpers\ArrayHelper;
 use Hirtz\Skeleton\Helpers\Html;
 use Hirtz\Skeleton\Widgets\Forms\Fields\SelectField;

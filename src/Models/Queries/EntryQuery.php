@@ -16,7 +16,7 @@ use Override;
 
 /**
  * @template T of Entry
- * @template-extends I18nActiveQuery<T>
+ * @extends I18nActiveQuery<T>
  */
 class EntryQuery extends I18nActiveQuery
 {

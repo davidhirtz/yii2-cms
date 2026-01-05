@@ -10,7 +10,7 @@ use Hirtz\Cms\Models\EntryCategory;
 use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Models\SectionEntry;
-use Hirtz\Cms\modules\ModuleTrait;
+use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Skeleton\Data\ActiveDataProvider;
 use yii\data\Pagination;
 use yii\data\Sort;

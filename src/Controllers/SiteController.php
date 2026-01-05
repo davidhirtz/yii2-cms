@@ -18,10 +18,13 @@ use yii\web\Response;
  */
 class SiteController extends Controller
 {
-    /**
-     * @var bool Whether to redirect trailing slashes from URLs
-     */
     public bool $redirectTrailingSlash = true;
+
+    public function init(): void
+    {
+        $this->layout ??= 'main';
+        parent::init();
+    }
 
     public function actionIndex(): Response|string
     {
@@ -55,10 +58,13 @@ class SiteController extends Controller
 
     protected function findEntry(string $slug): ?Entry
     {
-        return $this->getQuery()
+        /** @var Entry|null $entry */
+        $entry = $this->getQuery()
             ->whereSlug($slug)
             ->limit(1)
             ->one();
+
+        return $entry;
     }
 
     protected function validateEntryResponse(?Entry $entry): ?Response
@@ -80,7 +86,7 @@ class SiteController extends Controller
 
     protected function getQuery(): EntryQuery
     {
-        $status = Yii::$app->getRequest()->getIsDraft() ? Entry::STATUS_DRAFT : Entry::STATUS_ENABLED;
+        $status = $this->request->getIsDraft() ? Entry::STATUS_DRAFT : Entry::STATUS_ENABLED;
 
         return Entry::find()
             ->selectSiteAttributes()

@@ -2,90 +2,65 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\widgets;
+namespace Hirtz\Cms\Widgets;
 
 use Hirtz\Cms\Models\Asset;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
-use Hirtz\Cms\modules\ModuleTrait;
+use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Skeleton\Base\Traits\ContainerConfigurationTrait;
-use Hirtz\Skeleton\Web\View;
 use Hirtz\Skeleton\Widgets\Widget;
+use Stringable;
 use Yii;
-use yii\base\BaseObject;
 
-class MetaTags extends BaseObject
+class MetaTags extends Widget
 {
     use ContainerConfigurationTrait;
     use ModuleTrait;
 
-    public Category|Entry|null $model = null;
+    protected Category|Entry $model;
 
-    public ?array $languages = null;
+    protected ?array $languages = null;
+    protected bool $enableHrefLangLinks = true;
+    protected bool $enableCanonicalUrl = false;
+    protected bool $enableImages = true;
+    protected bool $enableSocialMetaTags = true;
+    protected ?int $assetType = Asset::TYPE_META_IMAGE;
+    protected ?string $transformationName = null;
+    protected string|false $ogType = 'website';
 
-    /**
-     * @var bool whether href links should be registered, defaults to `true`.
-     */
-    public bool $enableHrefLangLinks = true;
-
-    /**
-     * @var bool whether the canonical url should be registered, defaults to `false`.
-     */
-    public bool $enableCanonicalUrl = false;
-
-    /**
-     * @var bool whether assets should be registered as meta images
-     */
-    public bool $enableImages = true;
-
-    /**
-     * @var bool whether social meta-tags should be registered as meta images
-     */
-    public bool $enableSocialMetaTags = true;
-
-    /**
-     * @var int|null the asset type for meta images, if empty all assets of the entry will be included
-     */
-    public ?int $assetType = Asset::TYPE_META_IMAGE;
-
-    /**
-     * @var string|null the transformation for the meta-images, if null, the original asset file will be included
-     */
-    public ?string $transformationName = null;
-
-    /**
-     * @var string|false the og:type, if false, no og:type will be registered
-     */
-    public string|false $ogType = 'website';
-
-    protected View $view;
-
-    public function init(): void
+    public function model(Category|Entry $model): static
     {
-        $this->view ??= Yii::$app->getView();
+        $this->model = $model;
+        return $this;
+    }
 
-        if ($this->enableImages) {
-            $this->enableImages = $this->model instanceof Entry && static::getModule()->enableEntryAssets;
-        }
+    protected function configure(): void
+    {
+        $this->enableImages = $this->enableImages
+            && $this->model instanceof Entry
+            && static::getModule()->enableEntryAssets;
 
-        if ($this->languages === null) {
+        if (null === $this->languages) {
             $manager = Yii::$app->getUrlManager();
 
-            if ($manager->i18nUrl || $manager->i18nSubdomain) {
-                $this->languages = array_keys($manager->languages);
-            }
+            $this->languages = $manager->i18nUrl || $manager->i18nSubdomain ? array_keys($manager->languages) : [];
         }
 
-        if (!$this->languages) {
+        if (count($this->languages) < 2) {
             $this->enableHrefLangLinks = false;
         }
 
-        $this->registerMetaTags();
-
-        parent::init();
+        parent::configure();
     }
 
-    public function registerMetaTags(): void
+    protected function renderContent(): string|Stringable
+    {
+        $this->registerMetaTags();
+        return '';
+    }
+
+    protected function registerMetaTags(): void
     {
         $this->setDocumentTitle();
         $this->setMetaDescription();
@@ -122,7 +97,7 @@ class MetaTags extends BaseObject
         }
     }
 
-    public function registerHrefLangLinkTags(): void
+    protected function registerHrefLangLinkTags(): void
     {
         foreach ($this->languages as $language) {
             Yii::$app->getI18n()->callback($language, function () use ($language): void {
@@ -136,26 +111,26 @@ class MetaTags extends BaseObject
         $this->registerDefaultHrefLangLinkTag();
     }
 
-    public function registerDefaultHrefLangLinkTag(): void
+    protected function registerDefaultHrefLangLinkTag(): void
     {
         $this->view->registerDefaultHrefLangLinkTag(Yii::$app->getUrlManager()->defaultLanguage);
     }
 
-    public function registerCanonicalUrlTags(): void
+    protected function registerCanonicalUrlTags(): void
     {
         if ($route = $this->model->getRoute()) {
             $this->view->registerCanonicalTag(Yii::$app->getUrlManager()->createAbsoluteUrl($route));
         }
     }
 
-    public function registerSocialMetaTags(): void
+    protected function registerSocialMetaTags(): void
     {
         if ($this->ogType) {
             $this->view->registerOpenGraphMetaTags($this->ogType);
         }
     }
 
-    public function registerImageMetaTags(): void
+    protected function registerImageMetaTags(): void
     {
         foreach ($this->model->assets as $asset) {
             if ($asset->isSectionAsset() || ($this->assetType && $this->assetType !== $asset->type)) {
