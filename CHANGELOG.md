@@ -406,7 +406,7 @@
 
 ## 2.0.1 (Nov 4, 2023)
 
-- Added `Hirtz\Cms\Models\builders\EntrySiteRelationsBuilder` which loads all relations needed in the
+- Added `Hirtz\Cms\Models\Builders\EntrySiteRelationsBuilder` which loads all relations needed in the
   frontend `SiteController`
 - Added `entryIndexSlug` which automatically loads the entry index page in the frontend `SiteController::actionIndex()`
 - Added `enableUrlRules` to automatically register URL rules in the CMS Module config, defaults to `true`

@@ -28,6 +28,7 @@ class AdminLink extends Widget
         return $this;
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this->attributes['class'] ??= 'admin overlay';

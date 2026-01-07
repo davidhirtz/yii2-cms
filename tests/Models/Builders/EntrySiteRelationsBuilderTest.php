@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Tests\Models\Builders;
 
-use Hirtz\Cms\Models\builders\EntrySiteRelationsBuilder;
+use Hirtz\Cms\Models\Builders\EntrySiteRelationsBuilder;
 use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Cms\Test\Fixtures\Traits\FixtureTrait;
 use Hirtz\Cms\Test\Models\TestEntry;
@@ -16,6 +16,7 @@ class EntrySiteRelationsBuilderTest extends TestCase
     use FixtureTrait;
     use ModuleTrait;
 
+    #[\Override]
     protected function setUp(): void
     {
         parent::setUp();

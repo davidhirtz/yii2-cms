@@ -54,8 +54,8 @@ class SectionActiveForm extends ActiveForm
 
         $url = $isDraft ? $manager->createDraftUrl($route) : $manager->createAbsoluteUrl($route);
 
-        if ($this->maxBaseUrlLength && strlen($url) > $this->maxBaseUrlLength) {
-            $url = Html::tag('span', substr($url, 0, $this->maxBaseUrlLength) . '…#', ['title' => $url]);
+        if ($this->maxBaseUrlLength && strlen((string) $url) > $this->maxBaseUrlLength) {
+            $url = Html::tag('span', substr((string) $url, 0, $this->maxBaseUrlLength) . '…#', ['title' => $url]);
         }
 
         return $url;

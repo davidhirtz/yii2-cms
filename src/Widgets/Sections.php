@@ -37,6 +37,7 @@ class Sections extends Widget
         return $this;
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this->sections ??= $this->entry->sections ?? [];

@@ -7,8 +7,8 @@ declare(strict_types=1);
  */
 
 use Hirtz\Cms\Models\Section;
-use Hirtz\Cms\widgets\AdminLink;
-use Hirtz\Cms\widgets\Gallery;
+use Hirtz\Cms\Widgets\AdminLink;
+use Hirtz\Cms\Widgets\Gallery;
 use Hirtz\Skeleton\Web\View;
 
 foreach ($sections as $section) {

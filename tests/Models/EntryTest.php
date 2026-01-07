@@ -14,6 +14,7 @@ class EntryTest extends TestCase
     use FixtureTrait;
     use ModuleTrait;
 
+    #[\Override]
     protected function setUp(): void
     {
         parent::setUp();

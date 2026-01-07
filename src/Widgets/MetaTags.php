@@ -35,6 +35,7 @@ class MetaTags extends Widget
         return $this;
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this->enableImages = $this->enableImages

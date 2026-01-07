@@ -11,13 +11,14 @@ use Hirtz\Skeleton\Data\ActiveDataProvider;
 use Override;
 
 /**
- * @property SectionQuery $query
+ * @property SectionQuery|null $query
  * @extends ActiveDataProvider<Section>
  */
 class SectionActiveDataProvider extends ActiveDataProvider
 {
     public Entry $entry;
 
+    #[Override]
     public function init(): void
     {
         $this->setSort(false);

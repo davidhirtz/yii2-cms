@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Models;
 
+use davidhirtz\yii2\datetime\DateTime;
 use Hirtz\Cms\Models\Queries\AssetQuery;
 use Hirtz\Cms\Models\Traits\EntryRelationTrait;
 use Hirtz\Cms\Models\Traits\SectionRelationTrait;
-use Hirtz\Cms\Modules\Admin\Widgets\Panels\FileAssetParentPanel;
-use davidhirtz\yii2\datetime\DateTime;
+use Hirtz\Cms\Modules\Admin\Widgets\Grids\FileAssetGridContainer;
 use Hirtz\Media\Models\File;
 use Hirtz\Media\Models\Interfaces\AssetInterface;
 use Hirtz\Media\Models\Traits\AssetTrait;
@@ -245,19 +245,21 @@ class Asset extends ActiveRecord implements AssetInterface, DraftStatusAttribute
     }
 
     /**
-     * @return class-string<FileAssetParentPanel>
+     * @return class-string<FileAssetGridContainer>
      */
-    public function getFilePanelClass(): string
+    public function getFileRelationGridContainerClass(): string
     {
-        return FileAssetParentPanel::class;
+        return FileAssetGridContainer::class;
     }
 
     public function getFileCountAttributeNames(): array
     {
         $languages = static::getModule()->getLanguages();
-        $attributes = array_map(fn ($lang) => Yii::$app->getI18n()->getAttributeName('cms_asset_count', $lang), $languages);
 
-        return array_combine($languages, $attributes);
+        return array_combine($languages, array_map(
+            fn ($lang) => Yii::$app->getI18n()->getAttributeName('cms_asset_count', $lang),
+            $languages
+        ));
     }
 
     public function getAdminRoute(): false|array

@@ -6,47 +6,47 @@ namespace Hirtz\Cms\Modules\Admin\Widgets\Grids\Columns;
 
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\EntryGridView;
-use Hirtz\Cms\widgets\NavItems;
+use Hirtz\Cms\Widgets\NavItems;
 use Hirtz\Skeleton\Html\Icon;
-use yii\grid\Column;
+use Hirtz\Skeleton\Widgets\Grids\Columns\LinkColumn;
+use Stringable;
 
 /**
  * @property EntryGridView $grid
  */
-class MenuColumn extends Column
+class MenuColumn extends LinkColumn
 {
-    public $contentOptions = [
-        'class' => 'text-center',
-    ];
-
-    public function init(): void
+    public function __construct()
     {
-        if ($this->visible) {
-            $this->visible = false;
+        if ($this->isVisible()) {
+            $visible = false;
 
-            foreach ($this->grid->dataProvider->getModels() as $model) {
+            foreach ($this->grid->provider->getModels() as $model) {
                 if ($this->getIsMenuItem($model)) {
-                    $this->visible = true;
+                    $visible = true;
                     break;
                 }
             }
+
+            $this->visible($visible);
         }
 
-        parent::init();
+        $this->url ??= fn (Entry $model) => $model->getAdminRoute();
+        $this->content ??= fn (Entry $model) => $this->getContent($model);
     }
 
-    /**
-     * @param Entry $model
-     */
-    #[\Override]
-    protected function renderDataCellContent($model, $key, $index): string
+    protected function getContent(Entry $entry): ?Stringable
     {
-        return $this->getIsMenuItem($model)
-            ? Icon::make()
-                ->name('stream')
-                ->tooltip($model->getAttributeLabel('show_in_menu'))
-                ->render()
-            : '';
+        return $this->getMenuIcon($entry)
+            ? $this->getMenuIcon($entry)
+            : null;
+    }
+
+    protected function getMenuIcon(Entry $entry): Stringable
+    {
+        return Icon::make()
+            ->name('stream')
+            ->tooltip($entry->getAttributeLabel('show_in_menu'));
     }
 
     protected function getIsMenuItem(Entry $entry): bool

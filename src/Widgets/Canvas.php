@@ -40,6 +40,7 @@ class Canvas extends Widget
     protected int|false $lazyLoadingParentPosition = 2;
     protected string $embedViewFile = 'widgets/_embed';
 
+    #[\Override]
     public function configure(): void
     {
         $this->attributes['class'] ??= 'canvas';

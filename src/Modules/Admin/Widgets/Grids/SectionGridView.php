@@ -101,7 +101,7 @@ class SectionGridView extends GridView
 
         if (!$html) {
             $html = $section->getI18nAttribute('content') ?? '';
-            $html = 'html' === $section->contentType ? strip_tags($html) : $html;
+            $html = 'html' === $section->contentType ? strip_tags((string) $html) : $html;
             $html = StringHelper::truncate($html, 100);
         }
 
