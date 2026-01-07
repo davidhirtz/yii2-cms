@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Cms;
 
 use Hirtz\Cms\Models\Asset;
-use Hirtz\Cms\Models\events\FileBeforeDeleteEventHandler;
+use Hirtz\Cms\Models\Events\FileBeforeDeleteEventHandler;
 use Hirtz\Media\Models\File;
 use Hirtz\Skeleton\Web\Application;
 use Yii;

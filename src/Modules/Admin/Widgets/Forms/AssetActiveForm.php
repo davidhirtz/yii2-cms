@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Modules\Admin\Widgets\Forms;
 
 use Hirtz\Cms\Models\Asset;
+use Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits\ActiveFormFieldsTrait;
 use Hirtz\Media\Modules\Admin\Widgets\Forms\Traits\AssetFieldsTrait;
+use Hirtz\Skeleton\Widgets\Forms\ActiveForm;
 use Hirtz\Skeleton\Widgets\Forms\Fields\InputField;
 use Override;
 use Stringable;
@@ -15,6 +17,7 @@ use Stringable;
  */
 class AssetActiveForm extends ActiveForm
 {
+    use ActiveFormFieldsTrait;
     use AssetFieldsTrait;
 
     #[Override]
@@ -36,12 +39,6 @@ class AssetActiveForm extends ActiveForm
         ];
 
         parent::configure();
-    }
-
-    protected function getLinkField(): ?Stringable
-    {
-        return InputField::make()
-            ->property('link');
     }
 
     protected function getEmbedUrlField(): ?Stringable

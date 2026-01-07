@@ -5,25 +5,22 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Modules\Admin\Widgets\Forms;
 
 use Hirtz\Cms\Models\Entry;
-use Hirtz\Cms\Modules\Admin\Helpers\FrontendLink;
-use Hirtz\Cms\Modules\Admin\Widgets\Forms\Fields\CategoryParentIdSelectField;
+use Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits\ActiveFormFieldsTrait;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits\EntryParentIdFieldTrait;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits\MetaFieldsTrait;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits\SlugFieldTrait;
-use davidhirtz\yii2\datetime\DateTimeInput;
+use Hirtz\Skeleton\Widgets\Forms\ActiveForm;
 use Hirtz\Skeleton\Widgets\Forms\Fields\DateTimeField;
-use Hirtz\Skeleton\Widgets\Forms\Fields\Field;
-use Hirtz\Skeleton\Widgets\Forms\Fields\InputField;
 use Override;
 use Stringable;
 use Yii;
-use yii\widgets\ActiveField;
 
 /**
  * @property Entry $model
  */
 class EntryActiveForm extends ActiveForm
 {
+    use ActiveFormFieldsTrait;
     use EntryParentIdFieldTrait;
     use MetaFieldsTrait;
     use SlugFieldTrait;
@@ -65,7 +62,7 @@ class EntryActiveForm extends ActiveForm
         $route = ['/', 'language' => $manager->i18nUrl || $manager->i18nSubdomain ? $language : null];
         $url = $this->model->isEnabled() ? $manager->createAbsoluteUrl($route) : $manager->createDraftUrl($route);
 
-        return rtrim((string) $url, '/') . '/';
+        return rtrim($url, '/') . '/';
     }
 
     protected function hasSlugField(): bool

@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Modules\Admin\Widgets\Forms;
 
 use Hirtz\Cms\Models\Category;
+use Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits\ActiveFormFieldsTrait;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits\CategoryParentIdFieldTrait;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits\MetaFieldsTrait;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits\SlugFieldTrait;
+use Hirtz\Skeleton\Widgets\Forms\ActiveForm;
 use Override;
 use Yii;
 
@@ -16,6 +18,7 @@ use Yii;
  */
 class CategoryActiveForm extends ActiveForm
 {
+    use ActiveFormFieldsTrait;
     use CategoryParentIdFieldTrait;
     use MetaFieldsTrait;
     use SlugFieldTrait;

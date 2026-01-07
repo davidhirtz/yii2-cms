@@ -2,30 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\Modules\Admin\Widgets\Forms;
+namespace Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits;
 
-use Hirtz\Cms\Models\Asset;
-use Hirtz\Cms\Models\Category;
-use Hirtz\Cms\Models\Entry;
-use Hirtz\Cms\Models\Section;
 use Hirtz\Skeleton\Widgets\Forms\Fields\InputField;
 use Hirtz\Skeleton\Widgets\Forms\Fields\SelectField;
 use Hirtz\Skeleton\Widgets\Forms\Fields\TextareaField;
 use Hirtz\Skeleton\Widgets\Forms\Fields\TinyMceField;
 use Stringable;
-use Hirtz\Skeleton\Helpers\ArrayHelper;
 
-/**
- * @property Asset|Category|Entry|Section $model
- */
-abstract class ActiveForm extends \Hirtz\Skeleton\Widgets\Forms\ActiveForm
+trait ActiveFormFieldsTrait
 {
     protected function getStatusField(): ?Stringable
     {
         return SelectField::make()
-            ->model($this->model)
-            ->property('status')
-            ->items(ArrayHelper::getColumn($this->model::getStatuses(), 'name'));
+            ->property('status');
     }
 
     protected function getTypeField(): ?Stringable
@@ -52,5 +42,11 @@ abstract class ActiveForm extends \Hirtz\Skeleton\Widgets\Forms\ActiveForm
                 ->validator($this->model->htmlValidator)
             : TextareaField::make()
                 ->property('content');
+    }
+
+    protected function getLinkField(): ?Stringable
+    {
+        return InputField::make()
+            ->property('link');
     }
 }

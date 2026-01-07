@@ -9,9 +9,9 @@ use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Controllers\AssetController;
 use Hirtz\Cms\Modules\Admin\Controllers\EntryController;
+use Hirtz\Cms\Modules\Admin\Widgets\Grids\Columns\AssetThumbnailColumn;
 use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Media\Models\File;
-use Hirtz\Media\Modules\Admin\Widgets\Grids\Columns\FileThumbnailColumn;
 use Hirtz\Media\Modules\Admin\Widgets\Grids\Traits\AssetGridViewTrait;
 use Hirtz\Media\Modules\Admin\Widgets\Grids\Traits\FileGridViewTrait;
 use Hirtz\Skeleton\Html\A;
@@ -34,8 +34,10 @@ use yii\db\ActiveQuery;
 use yii\db\ActiveRecordInterface;
 
 /**
- * @extends GridView<Asset>
- * @property ActiveDataProvider|null $provider
+ * @template T of Asset
+ * @extends GridView<T>
+ *
+ * @property Entry|Section $parent
  */
 class AssetGridView extends GridView
 {
@@ -45,15 +47,7 @@ class AssetGridView extends GridView
     use StatusGridViewTrait;
     use TypeGridViewTrait;
 
-    public Entry|Section $parent;
-
     public string $layout = '{header}{items}{footer}';
-
-    public function parent(Entry|Section $parent): static
-    {
-        $this->parent = $parent;
-        return $this;
-    }
 
     #[Override]
     protected function configure(): void
@@ -179,7 +173,7 @@ class AssetGridView extends GridView
     protected function getNameColumn(): ?Column
     {
         return DataColumn::make()
-            ->property($this->model->getI18nAttributeName('name'))
+            ->property(Asset::instance()->getI18nAttributeName('name'))
             ->content($this->getNameColumnContent(...));
     }
 
@@ -205,7 +199,7 @@ class AssetGridView extends GridView
 
     protected function getThumbnailColumn(): ?Column
     {
-        return FileThumbnailColumn::make()
+        return AssetThumbnailColumn::make()
             ->url(fn (Asset $asset) => $this->getRoute($asset));
     }
 

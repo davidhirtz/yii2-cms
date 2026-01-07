@@ -13,6 +13,7 @@ use Hirtz\Media\Modules\Admin\Widgets\Panels\Traits\DuplicateButtonTrait;
 use Hirtz\Skeleton\Widgets\Panels\Panel;
 use Hirtz\Skeleton\Widgets\Traits\ModelWidgetTrait;
 use Hirtz\Skeleton\Widgets\Widget;
+use Override;
 use Stringable;
 
 /**
@@ -25,6 +26,7 @@ abstract class AbstractPanel extends Widget
     use ModelWidgetTrait;
     use LinkButtonTrait;
 
+    #[Override]
     protected function renderContent(): string|Stringable
     {
         return Panel::make()
