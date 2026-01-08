@@ -62,7 +62,7 @@ class EntryActiveForm extends ActiveForm
         $route = ['/', 'language' => $manager->i18nUrl || $manager->i18nSubdomain ? $language : null];
         $url = $this->model->isEnabled() ? $manager->createAbsoluteUrl($route) : $manager->createDraftUrl($route);
 
-        return rtrim((string) $url, '/') . '/';
+        return rtrim($url, '/') . '/';
     }
 
     protected function hasSlugField(): bool

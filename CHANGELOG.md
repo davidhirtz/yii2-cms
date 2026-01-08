@@ -307,7 +307,7 @@
 
 ## 2.0.19 (Nov 14, 2023)
 
-- Updated widgets to use `\Hirtz\Media\helpers\Html` helper class
+- Updated widgets to use `\Hirtz\Media\Helpers\Html` helper class
 
 ## 2.0.18 (Nov 14, 2023)
 

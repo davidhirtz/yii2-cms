@@ -55,15 +55,11 @@ class AdminLink extends Widget
             return $webuser->can(Section::AUTH_SECTION_UPDATE, ['section' => $this->model]);
         }
 
-        if ($this->model instanceof Asset) {
-            $permissionName = $this->model->isEntryAsset()
-                ? Entry::AUTH_ENTRY_ASSET_UPDATE
-                : Section::AUTH_SECTION_ASSET_UPDATE;
+        $permissionName = $this->model->isEntryAsset()
+            ? Entry::AUTH_ENTRY_ASSET_UPDATE
+            : Section::AUTH_SECTION_ASSET_UPDATE;
 
-            return $webuser->can($permissionName, ['asset' => $this->model]);
-        }
-
-        return false;
+        return $webuser->can($permissionName, ['asset' => $this->model]);
     }
 
     public static function tag(Asset|Entry|Section $model): string

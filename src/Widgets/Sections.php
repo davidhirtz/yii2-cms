@@ -27,7 +27,7 @@ class Sections extends Widget
     protected array $sections;
 
     /**
-     * @var T[][]
+     * @var string[]
      */
     protected array $groups;
 
@@ -37,7 +37,7 @@ class Sections extends Widget
         return $this;
     }
 
-    #[\Override]
+    #[Override]
     protected function configure(): void
     {
         $this->sections ??= $this->entry->sections ?? [];

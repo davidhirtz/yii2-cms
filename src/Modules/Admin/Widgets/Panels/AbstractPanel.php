@@ -11,7 +11,6 @@ use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Widgets\Panels\Traits\LinkButtonTrait;
 use Hirtz\Media\Modules\Admin\Widgets\Panels\Traits\DuplicateButtonTrait;
 use Hirtz\Skeleton\Widgets\Panels\Panel;
-use Hirtz\Skeleton\Widgets\Traits\ModelWidgetTrait;
 use Hirtz\Skeleton\Widgets\Widget;
 use Override;
 use Stringable;
@@ -23,8 +22,15 @@ use Stringable;
 abstract class AbstractPanel extends Widget
 {
     use DuplicateButtonTrait;
-    use ModelWidgetTrait;
     use LinkButtonTrait;
+
+    protected Asset|Category|Entry|Section $model;
+
+    public function model(Asset|Category|Entry|Section $model): static
+    {
+        $this->model = $model;
+        return $this;
+    }
 
     #[Override]
     protected function renderContent(): string|Stringable

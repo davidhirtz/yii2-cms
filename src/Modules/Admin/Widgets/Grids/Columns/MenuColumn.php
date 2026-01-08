@@ -37,7 +37,7 @@ class MenuColumn extends LinkColumn
 
     protected function getContent(Entry $entry): ?Stringable
     {
-        return $this->getMenuIcon($entry)
+        return $this->getIsMenuItem($entry)
             ? $this->getMenuIcon($entry)
             : null;
     }

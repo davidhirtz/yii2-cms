@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Widgets;
 
 use Hirtz\Cms\Models\Asset;
-use Hirtz\Media\helpers\AspectRatio;
-use Hirtz\Media\helpers\Html;
+use Hirtz\Media\Helpers\AspectRatio;
+use Hirtz\Media\Helpers\Html;
 use Hirtz\Media\Widgets\Picture;
+use Hirtz\Skeleton\Helpers\ArrayHelper;
 use Hirtz\Skeleton\Html\A;
 use Hirtz\Skeleton\Html\Div;
 use Hirtz\Skeleton\Html\Traits\TagAttributesTrait;
@@ -40,7 +41,7 @@ class Canvas extends Widget
     protected int|false $lazyLoadingParentPosition = 2;
     protected string $embedViewFile = 'widgets/_embed';
 
-    #[\Override]
+    #[Override]
     public function configure(): void
     {
         $this->attributes['class'] ??= 'canvas';
@@ -125,11 +126,16 @@ class Canvas extends Widget
         return $this->url ? A::make()->attributes($this->linkAttributes)->href($this->url) : null;
     }
 
-    protected function getMedia(): string
+    protected function getMedia(): ?Stringable
     {
+        $imgAttributes = ArrayHelper::remove($this->pictureAttributes, 'imgAttributes', []);
+        $webpAttributes = ArrayHelper::remove($this->pictureAttributes, 'webpAttributes', []);
+
         return Picture::make()
-            ->model($this->asset)
-            ->attributes($this->pictureAttributes);
+            ->asset($this->asset)
+            ->pictureAttributes($this->pictureAttributes)
+            ->imgAttributes($imgAttributes)
+            ->webpAttributes($webpAttributes);
     }
 
     protected function wrapContent(string $content): Stringable

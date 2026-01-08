@@ -42,5 +42,5 @@ echo EntryPanel::make()
 
 if (Yii::$app->getUser()->can(Entry::AUTH_ENTRY_DELETE, ['entry' => $entry])) {
     echo EntryDeleteFrom::make()
-        ->model($entry);
+        ->entry($entry);
 }
