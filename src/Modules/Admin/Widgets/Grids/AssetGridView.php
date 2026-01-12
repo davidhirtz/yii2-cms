@@ -134,19 +134,18 @@ class AssetGridView extends GridView
 
     protected function getButtonColumnContent(Asset $asset): array
     {
-        $user = Yii::$app->getUser();
         $buttons = [];
 
         if ($this->isSortable() && $this->provider->getCount() > 1) {
             if ($asset->isEntryAsset()
-                ? $user->can(Entry::AUTH_ENTRY_ASSET_ORDER, ['entry' => $asset->entry])
-                : $user->can(Section::AUTH_SECTION_ASSET_ORDER, ['section' => $asset->section])
+                ? $this->webuser->can(Entry::AUTH_ENTRY_ASSET_ORDER, ['entry' => $asset->entry])
+                : $this->webuser->can(Section::AUTH_SECTION_ASSET_ORDER, ['section' => $asset->section])
             ) {
                 $buttons[] = DraggableSortGridButton::make();
             }
         }
 
-        if ($user->can(File::AUTH_FILE_UPDATE, ['file' => $asset->file])) {
+        if ($this->webuser->can(File::AUTH_FILE_UPDATE, ['file' => $asset->file])) {
             $buttons[] = $this->getFileUpdateButton($asset);
         }
 
@@ -154,7 +153,7 @@ class AssetGridView extends GridView
             ? Entry::AUTH_ENTRY_ASSET_UPDATE
             : Section::AUTH_SECTION_ASSET_UPDATE;
 
-        if ($user->can($permission, ['asset' => $asset])) {
+        if ($this->webuser->can($permission, ['asset' => $asset])) {
             $buttons[] = ViewGridButton::make()
                 ->model($asset);
         }
@@ -163,7 +162,7 @@ class AssetGridView extends GridView
             ? Entry::AUTH_ENTRY_ASSET_DELETE
             : Section::AUTH_SECTION_ASSET_DELETE;
 
-        if ($user->can($permission, ['asset' => $asset])) {
+        if ($this->webuser->can($permission, ['asset' => $asset])) {
             $buttons[] = $this->getDeleteButton($asset);
         }
 
