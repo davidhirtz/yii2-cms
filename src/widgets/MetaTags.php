@@ -131,7 +131,11 @@ class MetaTags extends Widget
 
     public function registerDefaultHrefLangLinkTag(): void
     {
-        $this->getView()->registerDefaultHrefLangLinkTag(Yii::$app->getUrlManager()->defaultLanguage);
+        $language = Yii::$app->getUrlManager()->defaultLanguage;
+
+        if (false !== $language) {
+            $this->getView()->registerDefaultHrefLangLinkTag($language);
+        }
     }
 
     public function registerCanonicalUrlTags(): void
