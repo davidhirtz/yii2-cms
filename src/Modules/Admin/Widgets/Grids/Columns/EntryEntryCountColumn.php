@@ -11,7 +11,7 @@ use Hirtz\Skeleton\Widgets\Grids\Columns\BadgeColumn;
 use Override;
 use Stringable;
 use yii\base\Model;
-use yii\helpers\Url;
+use Hirtz\Skeleton\Helpers\Url;;
 
 /**
  * @property EntryGridView $grid

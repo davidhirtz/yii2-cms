@@ -108,6 +108,7 @@ class EntrySiteRelationsBuilder extends Component
         $this->populateAssetRelations();
     }
 
+    #[\Override]
     public function trigger($name, ?Event $event = null): void
     {
         parent::trigger($name, $event ?? new EntrySiteRelationsBuilderEvent());
