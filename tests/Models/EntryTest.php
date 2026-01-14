@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Tests\Models;
 
 use Hirtz\Cms\Modules\ModuleTrait;
-use Hirtz\Cms\Test\Fixtures\Traits\FixtureTrait;
+use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
 use Hirtz\Cms\Test\Models\TestEntry;
 use Hirtz\Cms\Test\TestCase;
 
 class EntryTest extends TestCase
 {
-    use FixtureTrait;
+    use CmsFixtureTrait;
     use ModuleTrait;
 
     #[\Override]

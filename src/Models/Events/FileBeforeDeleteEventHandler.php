@@ -9,9 +9,9 @@ use Hirtz\Media\Models\File;
 use Yii;
 use yii\base\ModelEvent;
 
-class FileBeforeDeleteEventHandler
+readonly class FileBeforeDeleteEventHandler
 {
-    public function __construct(protected readonly ModelEvent $event, protected readonly File $file)
+    public function __construct(protected ModelEvent $event, protected File $file)
     {
         $this->handleEvent();
     }

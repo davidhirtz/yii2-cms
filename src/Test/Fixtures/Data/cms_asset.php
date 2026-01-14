@@ -7,6 +7,7 @@ use yii\db\Expression;
 
 return [
     'entry-asset' => [
+        'id' => 1,
         'status' => TestAsset::STATUS_ENABLED,
         'type' => TestAsset::TYPE_DEFAULT,
         'entry_id' => 1,
@@ -15,6 +16,7 @@ return [
         'created_at' => new Expression('UTC_TIMESTAMP()'),
     ],
     'entry-meta-image' => [
+        'id' => 2,
         'status' => TestAsset::STATUS_ENABLED,
         'type' => TestAsset::TYPE_META_IMAGE,
         'entry_id' => 1,
@@ -23,6 +25,7 @@ return [
         'created_at' => new Expression('UTC_TIMESTAMP()'),
     ],
     'post-asset' => [
+        'id' => 3,
         'status' => TestAsset::STATUS_ENABLED,
         'type' => TestAsset::TYPE_DEFAULT,
         'entry_id' => 6,
@@ -31,6 +34,7 @@ return [
         'created_at' => new Expression('UTC_TIMESTAMP()'),
     ],
     'section-image-1' => [
+        'id' => 4,
         'status' => TestAsset::STATUS_ENABLED,
         'type' => TestAsset::TYPE_DEFAULT,
         'entry_id' => 1,
@@ -40,6 +44,7 @@ return [
         'created_at' => new Expression('UTC_TIMESTAMP()'),
     ],
     'section-image-2' => [
+        'id' => 5,
         'status' => TestAsset::STATUS_ENABLED,
         'type' => TestAsset::TYPE_VIEWPORT_MOBILE,
         'entry_id' => 1,
@@ -49,6 +54,7 @@ return [
         'created_at' => new Expression('UTC_TIMESTAMP()'),
     ],
     'section-image-draft' => [
+        'id' => 6,
         'status' => TestAsset::STATUS_DRAFT,
         'type' => TestAsset::TYPE_DEFAULT,
         'entry_id' => 1,
@@ -58,6 +64,7 @@ return [
         'created_at' => new Expression('UTC_TIMESTAMP()'),
     ],
     'section-image-disabled' => [
+        'id' => 7,
         'status' => TestAsset::STATUS_DISABLED,
         'type' => TestAsset::TYPE_VIEWPORT_MOBILE,
         'entry_id' => 1,

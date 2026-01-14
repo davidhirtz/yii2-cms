@@ -16,11 +16,9 @@ use Hirtz\Cms\Test\Models\TestSection;
 use Hirtz\Media\Models\File;
 use Hirtz\Media\Test\Fixtures\FileFixture;
 use Hirtz\Skeleton\Test\Fixtures\UserFixture;
-use Override;
 
-trait FixtureTrait
+trait CmsFixtureTrait
 {
-    #[Override]
     public function fixtures(): array
     {
         return [

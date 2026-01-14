@@ -10,7 +10,7 @@ namespace Hirtz\Cms\Tests\Controllers;
 
 use Hirtz\Cms\Models\Asset;
 use Hirtz\Cms\Models\Entry;
-use Hirtz\Cms\Test\Fixtures\Traits\FixtureTrait;
+use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
 use Hirtz\Cms\Test\TestCase;
 use Hirtz\Skeleton\Test\Traits\FunctionalTestTrait;
 use Override;
@@ -18,7 +18,7 @@ use Yii;
 
 final class SiteControllerFunctionalTest extends TestCase
 {
-    use FixtureTrait;
+    use CmsFixtureTrait;
     use FunctionalTestTrait;
 
     #[Override]

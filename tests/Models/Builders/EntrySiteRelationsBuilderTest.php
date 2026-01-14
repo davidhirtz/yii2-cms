@@ -6,14 +6,14 @@ namespace Hirtz\Cms\Tests\Models\Builders;
 
 use Hirtz\Cms\Models\Builders\EntrySiteRelationsBuilder;
 use Hirtz\Cms\Modules\ModuleTrait;
-use Hirtz\Cms\Test\Fixtures\Traits\FixtureTrait;
+use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
 use Hirtz\Cms\Test\Models\TestEntry;
 use Hirtz\Cms\Test\TestCase;
 use Hirtz\Skeleton\Db\ActiveQuery;
 
 class EntrySiteRelationsBuilderTest extends TestCase
 {
-    use FixtureTrait;
+    use CmsFixtureTrait;
     use ModuleTrait;
 
     #[\Override]

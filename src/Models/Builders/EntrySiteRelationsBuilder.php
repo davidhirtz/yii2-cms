@@ -6,6 +6,7 @@ namespace Hirtz\Cms\Models\Builders;
 
 use Hirtz\Cms\Models\Asset;
 use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Models\Events\EntrySiteRelationsBuilderEvent;
 use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Models\SectionEntry;
 use Hirtz\Cms\Modules\ModuleTrait;
@@ -13,14 +14,19 @@ use Hirtz\Media\Models\Collections\FolderCollection;
 use Hirtz\Media\Models\File;
 use Hirtz\Skeleton\Helpers\ArrayHelper;
 use Yii;
-use yii\base\BaseObject;
+use yii\base\Component;
+use yii\base\Event;
 
 /**
  * @template T of Entry
  */
-class EntrySiteRelationsBuilder extends BaseObject
+class EntrySiteRelationsBuilder extends Component
 {
     use ModuleTrait;
+
+    public const string EVENT_AFTER_LOAD_ASSETS = 'afterLoadAssets';
+    public const string EVENT_AFTER_LOAD_ENTRIES = 'afterLoadEntries';
+    public const string EVENT_AFTER_LOAD_FILES = 'afterLoadFiles';
 
     public Entry $entry;
 
@@ -44,15 +50,31 @@ class EntrySiteRelationsBuilder extends BaseObject
      */
     public bool $autoloadEntryAncestors = true;
 
-    protected array $fileIds = [];
+    /**
+     * @var int[]
+     */
+    public array $fileIds = [];
+
+    /**
+     * @var int[]
+     */
     protected array $relatedEntryIds = [];
+
+    /**
+     * @var int[]
+     */
     protected array $sectionIdsWithAssets = [];
+
+    /**
+     * @var int[]
+     */
     protected array $sectionIdsWithEntries = [];
 
     public function init(): void
     {
-        ArrayHelper::index($this->entries, 'id');
-        ArrayHelper::index($this->files, 'id');
+        $this->assets = ArrayHelper::index($this->assets, 'id');
+        $this->entries = ArrayHelper::index($this->entries, 'id');
+        $this->files = ArrayHelper::index($this->files, 'id');
 
         $this->entries[$this->entry->id] = $this->entry;
 
@@ -72,14 +94,23 @@ class EntrySiteRelationsBuilder extends BaseObject
 
         $this->loadSectionEntries();
         $this->loadEntries();
+        $this->trigger(self::EVENT_AFTER_LOAD_ENTRIES);
 
         $this->populateParentRelations();
         $this->populateSectionEntryRelations();
 
         $this->loadAssets();
+        $this->trigger(self::EVENT_AFTER_LOAD_ASSETS);
+
         $this->loadFiles();
+        $this->trigger(self::EVENT_AFTER_LOAD_FILES);
 
         $this->populateAssetRelations();
+    }
+
+    public function trigger($name, ?Event $event = null): void
+    {
+        parent::trigger($name, $event ?? new EntrySiteRelationsBuilderEvent());
     }
 
     protected function loadSections(): void

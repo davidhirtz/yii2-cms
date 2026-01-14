@@ -9,7 +9,9 @@ use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Skeleton\Base\Traits\ContainerConfigurationTrait;
+use Hirtz\Skeleton\Web\UrlManager;
 use Hirtz\Skeleton\Widgets\Widget;
+use Override;
 use Stringable;
 use Yii;
 
@@ -29,13 +31,21 @@ class MetaTags extends Widget
     protected ?string $transformationName = null;
     protected string|false $ogType = 'website';
 
+    private UrlManager $urlManager;
+
+    public function __construct($config = [])
+    {
+        $this->urlManager = Yii::$app->getUrlManager();
+        parent::__construct($config);
+    }
+
     public function model(Category|Entry $model): static
     {
         $this->model = $model;
         return $this;
     }
 
-    #[\Override]
+    #[Override]
     protected function configure(): void
     {
         $this->enableImages = $this->enableImages
@@ -43,9 +53,9 @@ class MetaTags extends Widget
             && static::getModule()->enableEntryAssets;
 
         if (null === $this->languages) {
-            $manager = Yii::$app->getUrlManager();
-
-            $this->languages = $manager->i18nUrl || $manager->i18nSubdomain ? array_keys($manager->languages) : [];
+            $this->languages = $this->urlManager->i18nUrl || $this->urlManager->i18nSubdomain
+                ? array_keys($this->urlManager->languages)
+                : [];
         }
 
         if (count($this->languages) < 2) {
@@ -103,7 +113,7 @@ class MetaTags extends Widget
         foreach ($this->languages as $language) {
             Yii::$app->getI18n()->callback($language, function () use ($language): void {
                 if ($route = $this->model->getRoute()) {
-                    $url = Yii::$app->getUrlManager()->createAbsoluteUrl($route);
+                    $url = $this->urlManager->createAbsoluteUrl($route);
                     $this->view->registerHrefLangLinkTag($language, $url);
                 }
             });
@@ -114,13 +124,15 @@ class MetaTags extends Widget
 
     protected function registerDefaultHrefLangLinkTag(): void
     {
-        $this->view->registerDefaultHrefLangLinkTag(Yii::$app->getUrlManager()->defaultLanguage);
+        if (false !== $this->urlManager->defaultLanguage) {
+            $this->view->registerDefaultHrefLangLinkTag($this->urlManager->defaultLanguage);
+        }
     }
 
     protected function registerCanonicalUrlTags(): void
     {
         if ($route = $this->model->getRoute()) {
-            $this->view->registerCanonicalTag(Yii::$app->getUrlManager()->createAbsoluteUrl($route));
+            $this->view->registerCanonicalTag($this->urlManager->createAbsoluteUrl($route));
         }
     }
 

@@ -6,7 +6,7 @@ namespace Hirtz\Cms\Tests\Models\Actions;
 
 use Hirtz\Cms\Models\Actions\ReorderEntries;
 use Hirtz\Cms\Models\Entry;
-use Hirtz\Cms\Test\Fixtures\Traits\FixtureTrait;
+use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
 use Hirtz\Cms\Test\Models\TestEntry;
 use Hirtz\Cms\Test\TestCase;
 use Hirtz\Skeleton\Models\Trail;
@@ -14,7 +14,7 @@ use Yii;
 
 class ReorderEntriesTest extends TestCase
 {
-    use FixtureTrait;
+    use CmsFixtureTrait;
 
     public function testRootOrderEntries(): void
     {

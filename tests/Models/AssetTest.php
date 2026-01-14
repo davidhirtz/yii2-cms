@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Tests\Models;
 
-use Hirtz\Cms\Test\Fixtures\Traits\FixtureTrait;
+use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
 use Hirtz\Cms\Test\Models\TestAsset;
 use Hirtz\Cms\Test\TestCase;
 
 
 class AssetTest extends TestCase
 {
-    use FixtureTrait;
+    use CmsFixtureTrait;
 
     public function testCreateEntryAsset(): void
     {
