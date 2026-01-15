@@ -7,11 +7,13 @@ namespace Hirtz\Cms\Modules\Admin\Widgets\Grids\Columns;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\EntryGridView;
 use Hirtz\Cms\Modules\ModuleTrait;
+use Hirtz\Skeleton\Helpers\Url;
 use Hirtz\Skeleton\Widgets\Grids\Columns\BadgeColumn;
 use Override;
 use Stringable;
 use yii\base\Model;
-use Hirtz\Skeleton\Helpers\Url;;
+
+;
 
 /**
  * @property EntryGridView $grid
@@ -23,7 +25,13 @@ class EntryEntryCountColumn extends BadgeColumn
     public function __construct()
     {
         $this->property ??= 'entry_count';
-        $this->url ??= fn (Entry $model) => Url::current(['parent' => $model->id, 'type' => null, 'q' => null]);
+
+        $this->url ??= fn (Entry $model) => Url::current([
+            'category' => null,
+            'parent' => $model->id,
+            'q' => null,
+            'type' => null,
+        ]);
     }
 
     public function isVisible(): bool

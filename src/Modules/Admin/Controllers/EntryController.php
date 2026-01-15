@@ -11,13 +11,15 @@ use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Modules\Admin\Controllers\Traits\EntryControllerTrait;
 use Hirtz\Cms\Modules\Admin\Data\EntryActiveDataProvider;
+use Hirtz\Skeleton\Helpers\Url;
 use Override;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
-use Hirtz\Skeleton\Helpers\Url;;
 use yii\web\ForbiddenHttpException;
 use yii\web\Response;
+
+;
 
 class EntryController extends AbstractController
 {
@@ -78,7 +80,7 @@ class EntryController extends AbstractController
             return $this->redirect(Url::current(['type' => static::getModule()->defaultEntryType]));
         }
 
-        $provider = Yii::$container->get(EntryActiveDataProvider::class, [], [
+        $provider = Yii::$container->get(EntryActiveDataProvider::class, config: [
             'category' => Category::findOne($category),
             'parent' => Entry::findOne($parent),
             'searchString' => $q,

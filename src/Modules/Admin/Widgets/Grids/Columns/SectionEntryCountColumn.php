@@ -32,7 +32,7 @@ class SectionEntryCountColumn extends BadgeColumn
         }
 
         foreach ($this->grid->provider->getModels() as $section) {
-            if ($section->hasEntriesEnabled()) {
+            if ($section->hasEntriesEnabled() && $section->entry_count > 0) {
                 return true;
             }
         }

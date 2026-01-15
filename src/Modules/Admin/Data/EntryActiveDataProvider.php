@@ -12,6 +12,7 @@ use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Models\SectionEntry;
 use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Skeleton\Data\ActiveDataProvider;
+use Override;
 use yii\data\Pagination;
 use yii\data\Sort;
 use yii\helpers\ArrayHelper;
@@ -24,35 +25,12 @@ class EntryActiveDataProvider extends ActiveDataProvider
 {
     use ModuleTrait;
 
-    /**
-     * @var Section|null the section to filter by
-     */
-    public ?Section $section = null;
-
-    /**
-     * @var bool whether to inner join the section
-     */
-    public bool $innerJoinSection = true;
-
-    /**
-     * @var Category|null the category to filter by
-     */
     public ?Category $category = null;
-
-    /**
-     * @var Entry|null the parent entry to filter by
-     */
     public ?Entry $parent = null;
-
-    /**
-     * @var string|null the search string
-     */
-    public ?string $searchString = null;
-
-    /**
-     * @var int|null the entry type
-     */
+    public ?Section $section = null;
     public ?int $type = null;
+    public ?string $searchString = null;
+    public bool $innerJoinSection = true;
 
     public function __construct($config = [])
     {
@@ -60,7 +38,7 @@ class EntryActiveDataProvider extends ActiveDataProvider
         parent::__construct($config);
     }
 
-    #[\Override]
+    #[Override]
     protected function prepareQuery(): void
     {
         $this->initQuery();
@@ -146,7 +124,7 @@ class EntryActiveDataProvider extends ActiveDataProvider
         }
     }
 
-    #[\Override]
+    #[Override]
     protected function prepareModels(): array
     {
         if ($this->getSort() !== false) {
@@ -162,19 +140,19 @@ class EntryActiveDataProvider extends ActiveDataProvider
         return $models;
     }
 
-    #[\Override]
+    #[Override]
     public function getPagination(): Pagination|false
     {
         return !$this->isOrderedByPosition() ? parent::getPagination() : false;
     }
 
-    #[\Override]
+    #[Override]
     public function getSort(): Sort|false
     {
         return !$this->isOrderedByPosition() ? parent::getSort() : false;
     }
 
-    #[\Override]
+    #[Override]
     public function setSort($value): void
     {
         if (is_array($value)) {

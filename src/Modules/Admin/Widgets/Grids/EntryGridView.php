@@ -47,39 +47,12 @@ class EntryGridView extends GridView
     use StatusGridViewTrait;
     use TypeGridViewTrait;
 
-    /**
-     * @var bool whether entry urls should be displayed in the name column
-     */
     public bool $showUrl = true;
-
-    /**
-     * @var bool|null whether category column should be visible when {@see EntryActiveprovider::$type} is null
-     */
     public ?bool $showCategories = null;
-
-    /**
-     * @var bool whether categories should be selectable via dropdown
-     */
     public bool $showCategoryDropdown = true;
-
-    /**
-     * @var int|false defines when dropdown filter text field is shown for category dropdown
-     */
     public int|false $showCategoryDropdownFilterMinCount = 1;
-
-    /**
-     * @var bool whether entry types should be selectable via dropdown
-     */
     public bool $showTypeDropdown = true;
-
-    /**
-     * @var bool whether the delete-button should be visible in the entry grid
-     */
     public bool $showDeleteButton = false;
-
-    /**
-     * @var array|null set to null for inheritors to override
-     */
     public ?array $orderRoute = null;
 
     private ?array $categoryNames = null;
