@@ -95,7 +95,7 @@ class EntryActiveDataProvider extends ActiveDataProvider
 
     protected function whereType(): void
     {
-        $typeOptions = Entry::instance()::getTypes()[$this->type] ?? false;
+        $typeOptions = Entry::instance()::getTypes()[$this->type ?? ''] ?? false;
 
         if ($typeOptions) {
             if (isset($typeOptions['orderBy'])) {

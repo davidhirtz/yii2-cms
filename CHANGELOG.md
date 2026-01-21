@@ -1,3 +1,7 @@
+## 2.4.9 (in development)
+
+- PHP 8.5 compatibility fixes
+
 ## 2.4.8 (Jan 12, 2026)
 
 - Fixed error in `MetaTags::registerDefaultHrefLangLinkTag()` if the default language was set to `false`
