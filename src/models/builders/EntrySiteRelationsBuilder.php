@@ -59,7 +59,7 @@ class EntrySiteRelationsBuilder extends BaseObject
         if ($this->autoloadEntryAncestors) {
             $this->relatedEntryIds = [
                 ...$this->relatedEntryIds,
-                ...array_map('intval', $this->entry->getAncestorIds()),
+                ...array_map(intval(...), $this->entry->getAncestorIds()),
             ];
         }
 
@@ -174,7 +174,7 @@ class EntrySiteRelationsBuilder extends BaseObject
         }
 
         foreach ($this->entries as $entry) {
-            if (!$entry->isRelationPopulated('parent')) {
+            if (!$entry->isRelationPopulated('parent') && $entry->parent_id) {
                 $entry->populateParentRelation($this->entries[$entry->parent_id] ?? null);
             }
         }

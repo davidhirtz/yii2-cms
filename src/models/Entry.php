@@ -143,7 +143,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
         $this->ensureSlug();
 
         foreach ($this->getI18nAttributeNames('slug') as $attributeName) {
-            $this->$attributeName = rtrim($this->$attributeName, '/');
+            $this->$attributeName = rtrim((string) $this->$attributeName, '/');
         }
 
         return parent::beforeValidate();
@@ -237,7 +237,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
 
         if ($this->shouldUpdateParentAfterSave && array_key_exists('parent_id', $changedAttributes)) {
             $allRelatedAncestorIds = ArrayHelper::cacheStringToArray($changedAttributes['path'] ?? '', $this->getAncestorIds());
-            $allRelatedAncestorIds = array_map('intval', $allRelatedAncestorIds);
+            $allRelatedAncestorIds = array_map(intval(...), $allRelatedAncestorIds);
 
             if ($this->parent) {
                 $allRelatedAncestorIds = array_diff($allRelatedAncestorIds, [$this->parent_id]);
@@ -475,7 +475,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
      */
     public function getCategoryIds(): array
     {
-        return array_map('intval', ArrayHelper::cacheStringToArray($this->category_ids));
+        return array_map(intval(...), ArrayHelper::cacheStringToArray($this->category_ids));
     }
 
     public function getCategoryCount(): int

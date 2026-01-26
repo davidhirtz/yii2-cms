@@ -19,12 +19,12 @@
     "codeception/module-asserts": "^3.0",
     "codeception/module-filesystem": "^3.0",
     "codeception/module-phpbrowser": "^3.0",
-    "codeception/module-yii2": "^1.1",
+    "codeception/module-yii2": "^2.0",
     "codeception/specify": "^2.0",
     "codeception/verify": "^3.0",
     "phpro/grumphp-shim": "^2.4",
     "rector/rector": "^2.2",
-    "symplify/easy-coding-standard": "^12.5",
+    "symplify/easy-coding-standard": "^13.0",
     "yiisoft/yii2-debug": "^2.1"
   },
   "autoload": {
@@ -41,6 +41,9 @@
     "allow-plugins": {
       "yiisoft/yii2-composer": true,
       "phpro/grumphp-shim": true
+    },
+    "platform": {
+      "php": "8.3"
     }
   },
   "extra": {

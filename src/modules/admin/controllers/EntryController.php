@@ -136,7 +136,7 @@ class EntryController extends AbstractController
     {
         $request = Yii::$app->getRequest();
 
-        if ($entryIds = array_map('intval', $request->post('selection', []))) {
+        if ($entryIds = array_map(intval(...), $request->post('selection', []))) {
             $entries = Entry::findAll(['id' => $entryIds]);
             $isUpdated = false;
 

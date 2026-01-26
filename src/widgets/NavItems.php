@@ -20,7 +20,7 @@ class NavItems
      */
     public static function getMenuItems(): array
     {
-        return array_filter(static::getEntries(), fn ($entry) => static::getIsMenuItem($entry));
+        return array_filter(static::getEntries(), static::getIsMenuItem(...));
     }
 
     /**
@@ -47,7 +47,7 @@ class NavItems
      */
     public static function getFooterItems(): array
     {
-        return array_filter(static::getEntries(), fn ($entry) => static::getIsFooterItem($entry));
+        return array_filter(static::getEntries(), static::getIsFooterItem(...));
     }
 
     /**
