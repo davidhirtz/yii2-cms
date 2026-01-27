@@ -51,10 +51,12 @@ class Section extends ActiveRecord implements AssetParentInterface
 
     private ?array $_trailParents = null;
 
-    #[  Override]
+    #[Override]
     public function rules(): array
     {
-        return [...parent::rules(), ...$this->getI18nRules([
+        return [
+            ...parent::rules(),
+            ...$this->getI18nRules([
             [
                 ['entry_id'],
                 RelationValidator::class,

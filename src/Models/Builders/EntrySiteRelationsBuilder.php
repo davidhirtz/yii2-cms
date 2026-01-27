@@ -206,7 +206,7 @@ class EntrySiteRelationsBuilder extends Component
         }
 
         foreach ($this->entries as $entry) {
-            if (!$entry->isRelationPopulated('parent')) {
+            if (!$entry->isRelationPopulated('parent') && $entry->parent_id) {
                 $entry->populateParentRelation($this->entries[$entry->parent_id] ?? null);
             }
         }
