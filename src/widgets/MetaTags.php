@@ -8,6 +8,7 @@ use davidhirtz\yii2\cms\models\Asset;
 use davidhirtz\yii2\cms\models\Category;
 use davidhirtz\yii2\cms\models\Entry;
 use davidhirtz\yii2\cms\modules\ModuleTrait;
+use davidhirtz\yii2\media\models\Transformation;
 use davidhirtz\yii2\skeleton\widgets\Widget;
 use Yii;
 
@@ -48,7 +49,7 @@ class MetaTags extends Widget
     /**
      * @var string|null the transformation for the meta-images, if null, the original asset file will be included
      */
-    public ?string $transformationName = null;
+    public ?string $transformationName = Transformation::NAME_OPEN_GRAPH;
 
     /**
      * @var string|false the og:type, if false, no og:type will be registered
