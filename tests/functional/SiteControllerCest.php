@@ -87,6 +87,8 @@ class SiteControllerCest extends BaseCest
         $url = $asset->file->getTransformationUrl(Transformation::NAME_OPEN_GRAPH) ?? $asset->file->getUrl();
         $url = $urlManager->createAbsoluteUrl($url);
 
+        print_r($I->grabPageSource());
+
         $I->seeInSource('<link href="' . $url . '" rel="image_src">');
     }
 
