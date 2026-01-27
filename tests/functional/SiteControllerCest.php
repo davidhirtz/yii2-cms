@@ -15,14 +15,16 @@ use davidhirtz\yii2\cms\tests\support\fixtures\traits\CmsFixturesTrait;
 use davidhirtz\yii2\cms\tests\support\FunctionalTester;
 use davidhirtz\yii2\cms\widgets\Gallery;
 use davidhirtz\yii2\cms\widgets\Sections;
+use davidhirtz\yii2\media\models\Transformation;
 use davidhirtz\yii2\skeleton\codeception\functional\BaseCest;
+use Override;
 use Yii;
 
 class SiteControllerCest extends BaseCest
 {
     use CmsFixturesTrait;
 
-    #[\Override]
+    #[Override]
     public function _before(): void
     {
         Yii::$container->setDefinitions([
@@ -82,7 +84,7 @@ class SiteControllerCest extends BaseCest
 
         /** @var Asset $asset */
         $asset = current(array_filter($entry->assets, fn (Asset $asset) => $asset->type == Asset::TYPE_META_IMAGE));
-        $url = $urlManager->createAbsoluteUrl($asset->file->getUrl());
+        $url = $urlManager->createAbsoluteUrl($asset->file->getTransformationUrl(Transformation::NAME_OPEN_GRAPH));
 
         $I->seeInSource('<link href="' . $url . '" rel="image_src">');
     }
