@@ -1,3 +1,8 @@
+## 2.4.10 (Jan 27, 2026)
+
+- Added default value for `MetaTags::$transformationName`
+- Enhanced `Entry::$description` validation to remove line breaks (Issue #20)
+
 ## 2.4.9 (Jan 26, 2026)
 
 - PHP 8.5 compatibility fixes

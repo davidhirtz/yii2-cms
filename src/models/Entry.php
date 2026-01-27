@@ -142,8 +142,14 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
 
         $this->ensureSlug();
 
+        foreach ($this->getI18nAttributeNames('description') as $attributeName) {
+            $description = preg_replace('/\R+/', ' ', (string) $this->$attributeName);
+            $description = preg_replace('/\s+/', ' ', $description);
+            $this->$attributeName = trim($description);
+        }
+
         foreach ($this->getI18nAttributeNames('slug') as $attributeName) {
-            $this->$attributeName = rtrim((string) $this->$attributeName, '/');
+            $this->$attributeName = rtrim((string)$this->$attributeName, '/');
         }
 
         return parent::beforeValidate();
