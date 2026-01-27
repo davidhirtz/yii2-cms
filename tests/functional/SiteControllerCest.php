@@ -83,8 +83,9 @@ class SiteControllerCest extends BaseCest
         }
 
         /** @var Asset $asset */
-        $asset = current(array_filter($entry->assets, fn (Asset $asset) => $asset->type == Asset::TYPE_META_IMAGE));
-        $url = $urlManager->createAbsoluteUrl($asset->file->getTransformationUrl(Transformation::NAME_OPEN_GRAPH));
+        $asset = current(array_filter($entry->assets, fn (Asset $asset) => $asset->type === Asset::TYPE_META_IMAGE));
+        $url = $asset->file->getTransformationUrl(Transformation::NAME_OPEN_GRAPH) ?? $asset->file->getUrl();
+        $url = $urlManager->createAbsoluteUrl($url);
 
         $I->seeInSource('<link href="' . $url . '" rel="image_src">');
     }
