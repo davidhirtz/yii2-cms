@@ -158,20 +158,26 @@ class MetaTags extends Widget
         foreach ($this->model->assets as $asset) {
             if (!$asset->section_id && (!$this->assetType || $this->assetType == $asset->type)) {
                 $file = $asset->file;
-                if ($this->transformationName) {
-                    if ($url = $file->getTransformationUrl($this->transformationName)) {
-                        $width = $file->getTransformationOption($this->transformationName, 'width');
-                        $height = $file->getTransformationOption($this->transformationName, 'height');
 
-                        if (!$height) {
-                            $height = ceil($width * $file->getHeightPercentage() / 100);
-                        }
-
-                        $this->getView()->registerImageMetaTags($url, (int)$width, (int)$height);
-                    }
-                } else {
-                    $this->getView()->registerImageMetaTags($file->getUrl(), $file->width, $file->height);
+                if (!$file->hasPreview()) {
+                    continue;
                 }
+
+                $url = $this->transformationName ? $file->getTransformationUrl($this->transformationName) : null;
+
+                if (!$url) {
+                    $this->getView()->registerImageMetaTags($file->getUrl(), $file->width, $file->height);
+                    continue;
+                }
+
+                $width = $file->getTransformationOption($this->transformationName, 'width');
+                $height = $file->getTransformationOption($this->transformationName, 'height');
+
+                if (!$height) {
+                    $height = ceil($width * $file->getHeightPercentage() / 100);
+                }
+
+                $this->getView()->registerImageMetaTags($url, (int)$width, (int)$height);
             }
         }
     }
