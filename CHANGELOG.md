@@ -1,4 +1,4 @@
-## 2.4.11 (Jan 27, 2026)
+## 2.4.11 (Jan 29, 2026)
 
 - Fixed `EntryGridView` to allow sorting by position with selected category
 
