@@ -382,11 +382,9 @@ class EntryGridView extends GridView
         return Entry::instance();
     }
 
-    #[\Override]
+    #[Override]
     public function isSortedByPosition(): bool
     {
-        return $this->search === null
-            && $this->dataProvider->category === null
-            && parent::isSortedByPosition();
+        return $this->search === null && parent::isSortedByPosition();
     }
 }
