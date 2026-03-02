@@ -13,10 +13,10 @@ use Hirtz\Cms\Modules\Admin\Controllers\EntryController;
 use Hirtz\Cms\Modules\Admin\Controllers\SectionController;
 use Hirtz\Cms\Modules\Admin\Controllers\SectionEntryController;
 use Hirtz\Skeleton\Helpers\ArrayHelper;
-use Hirtz\Skeleton\Modules\Admin\Config\DashboardItemConfig;
-use Hirtz\Skeleton\Modules\Admin\Config\DashboardPanelConfig;
+use Hirtz\Skeleton\Modules\Admin\Config\DashboardItem;
 use Hirtz\Skeleton\Modules\Admin\Config\MainMenuItemConfig;
 use Hirtz\Skeleton\Modules\Admin\ModuleInterface;
+use Hirtz\Skeleton\Modules\Admin\Widgets\Panels\DashboardPanel;
 use Override;
 use Yii;
 
@@ -67,16 +67,16 @@ class Module extends \Hirtz\Skeleton\Base\Module implements ModuleInterface
     public function getDashboardPanels(): array
     {
         return [
-            'cms' => new DashboardPanelConfig(
+            'cms' => new DashboardPanel(
                 name: $this->getName(),
                 items: [
-                    new DashboardItemConfig(
+                    new DashboardItem(
                         label: Yii::t('cms', 'Create New Entry'),
                         url: ['/admin/entry/create'],
                         icon: 'pen',
                         roles: [Entry::AUTH_ENTRY_CREATE],
                     ),
-                    new DashboardItemConfig(
+                    new DashboardItem(
                         label: Yii::t('cms', 'View All Entries'),
                         url: ['/admin/entry/index'],
                         icon: 'book',
