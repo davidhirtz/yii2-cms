@@ -10,6 +10,7 @@ use Hirtz\Cms\Models\Section;
 use Hirtz\Skeleton\Html\A;
 use Hirtz\Skeleton\Html\Traits\TagAttributesTrait;
 use Hirtz\Skeleton\Widgets\Widget;
+use Override;
 use Stringable;
 use Yii;
 
@@ -28,7 +29,7 @@ class AdminLink extends Widget
         return $this;
     }
 
-    #[\Override]
+    #[Override]
     protected function configure(): void
     {
         $this->attributes['class'] ??= 'admin overlay';

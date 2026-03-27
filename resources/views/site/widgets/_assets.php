@@ -9,9 +9,9 @@ declare(strict_types=1);
 
 use Hirtz\Cms\Models\Asset;
 use Hirtz\Cms\Widgets\Gallery;
-use Hirtz\Media\widgets\Picture;
+use Hirtz\Media\widgets\Media;
 
 foreach ($assets as $asset) {
-    echo Picture::make()
+    echo Media::make()
         ->asset($asset);
 }

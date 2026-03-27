@@ -1,3 +1,7 @@
+## 3.0 (in development)
+
+- Replaced `Canvas` with `Artwork`
+
 ## 2.4.10 (Jan 27, 2026)
 
 - Added default value for `MetaTags::$transformationName`
