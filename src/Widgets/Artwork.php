@@ -13,7 +13,7 @@ use Hirtz\Skeleton\Html\Div;
 use Hirtz\Skeleton\Html\Figcaption;
 use Hirtz\Skeleton\Html\Figure;
 use Hirtz\Skeleton\Html\Traits\TagAttributesTrait;
-use Hirtz\Skeleton\Html\Traits\TagUrlTrait;
+use Hirtz\Skeleton\Widgets\Traits\UrlTrait;
 use Hirtz\Skeleton\Widgets\Widget;
 use Override;
 use Stringable;
@@ -21,7 +21,7 @@ use Stringable;
 class Artwork extends Widget
 {
     use TagAttributesTrait;
-    use TagUrlTrait;
+    use UrlTrait;
 
     protected Asset $asset;
 
