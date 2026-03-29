@@ -7,8 +7,8 @@ namespace Hirtz\Cms\Modules\Admin\Widgets\Grids\Columns;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\EntryGridView;
 use Hirtz\Cms\Widgets\NavItems;
-use Hirtz\Skeleton\Html\Icon;
 use Hirtz\Skeleton\Widgets\Grids\Columns\LinkColumn;
+use Hirtz\Skeleton\Widgets\Icon;
 use Stringable;
 
 /**
