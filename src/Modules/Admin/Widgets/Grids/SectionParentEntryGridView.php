@@ -7,7 +7,7 @@ namespace Hirtz\Cms\Modules\Admin\Widgets\Grids;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Controllers\SectionController;
-use Hirtz\Skeleton\Html\Button;
+use Hirtz\Skeleton\Widgets\Buttons\Button;
 use Override;
 use Yii;
 

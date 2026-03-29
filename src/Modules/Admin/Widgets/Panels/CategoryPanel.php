@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Modules\Admin\Widgets\Panels;
 
 use Hirtz\Cms\Models\Category;
-use Hirtz\Skeleton\Html\Button;
+use Hirtz\Skeleton\Widgets\Buttons\Button;
 use Stringable;
 use Yii;
 

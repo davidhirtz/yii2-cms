@@ -6,7 +6,7 @@ namespace Hirtz\Cms\Modules\Admin\Widgets\Panels;
 
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Modules\Admin\Controllers\EntryController;
-use Hirtz\Skeleton\Html\Button;
+use Hirtz\Skeleton\Widgets\Buttons\Button;
 use Hirtz\Skeleton\Widgets\Modal;
 use Stringable;
 use Yii;
