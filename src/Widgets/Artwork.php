@@ -27,11 +27,9 @@ class Artwork extends Widget
 
     protected bool $adminLink = true;
     protected bool $aspectRatio = true;
+    protected string|false $embedViewFile = 'widgets/_embed';
     protected int|false $lazyLoadingPosition = 5;
     protected bool|int $maxWidth = false;
-
-    protected int|false $lazyLoadingParentPosition = 2;
-    protected string|false $embedViewFile = 'widgets/_embed';
 
     private ?Closure $caption;
     private ?Closure $figure;
@@ -152,7 +150,7 @@ class Artwork extends Widget
                 ->addClass('relative');
         }
 
-        return $this->wrapper ? call_user_func($this->wrapper, $wrapper) : $wrapper;
+        return $this->wrapper ? ($this->wrapper)($wrapper) : $wrapper;
     }
 
     protected function renderFigure(): string|Stringable
@@ -174,7 +172,7 @@ class Artwork extends Widget
         $figure = Figure::make()
             ->content($media, $caption);
 
-        return $this->figure ? call_user_func($this->figure, $figure) : $figure;
+        return $this->figure ? ($this->figure)($figure) : $figure;
     }
 
     protected function renderCaption(): ?Stringable
@@ -189,7 +187,7 @@ class Artwork extends Widget
             $content = Figcaption::make()->content($content);
         }
 
-        return $this->caption ? call_user_func($this->caption, $content) : $content;
+        return $this->caption ? ($this->caption)($content) : $content;
     }
 
     protected function renderMedia(): ?Stringable
@@ -199,12 +197,12 @@ class Artwork extends Widget
             ->aspectRatio($this->aspectRatio);
 
         if ($this->lazyLoadingPosition !== false) {
-            $media->lazyLoading($this->lazyLoadingParentPosition <= self::$counter);
+            $media->lazyLoading($this->lazyLoadingPosition <= self::$counter);
             self::$counter++;
         }
 
         if ($this->media) {
-            $media = call_user_func($this->media, $media);
+            $media = ($this->media)($media);
         }
 
         $link = $this->url
@@ -214,7 +212,7 @@ class Artwork extends Widget
                 ->href($this->url)
             : null;
 
-        $link = $this->link ? call_user_func($this->link, $link) : $link;
+        $link = $this->link ? ($this->link)($link) : $link;
 
         return $link ?: $media;
     }
