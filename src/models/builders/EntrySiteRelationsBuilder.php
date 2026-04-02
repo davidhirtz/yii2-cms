@@ -187,7 +187,7 @@ class EntrySiteRelationsBuilder extends BaseObject
         }
 
         foreach ($this->entry->sections as $section) {
-            $entries = [];
+            $entries = $section->getRelatedRecords()['entries'] ?? [];
 
             if ($section->entry_count) {
                 $allowedTypes = $section->getEntriesTypes();

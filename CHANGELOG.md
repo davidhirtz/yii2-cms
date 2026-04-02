@@ -1,3 +1,7 @@
+## 2.4.12 (Apr 2, 2026)
+
+- Fixed `EntrySiteRelationsBuilder` overwrites of previously loaded related entries
+
 ## 2.4.11 (Jan 29, 2026)
 
 - Fixed `EntryGridView` to allow sorting by position with selected category
