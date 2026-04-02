@@ -7,18 +7,16 @@ namespace Hirtz\Cms\Modules\Admin\Helpers;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
-use Hirtz\Skeleton\Helpers\Html;
+use Hirtz\Skeleton\Html\A;
 use Stringable;
 use Yii;
 
-class FrontendLink implements Stringable
+readonly class FrontendLink implements Stringable
 {
-    protected readonly ?Entry $entry;
+    protected ?Entry $entry;
 
-    public function __construct(
-        protected readonly Category|Entry|Section $model,
-        protected array $options = [],
-    ) {
+    public function __construct(protected Category|Entry|Section $model)
+    {
         if ($this->model instanceof Section) {
             $this->entry = $this->model->entry;
         } elseif ($this->model instanceof Entry) {
@@ -39,14 +37,12 @@ class FrontendLink implements Stringable
         $manager = Yii::$app->getUrlManager();
         $url = $this->isDraft() ? $manager->createDraftUrl($route) : $manager->createAbsoluteUrl($route);
 
-        if ($this->isDisabled()) {
-            Html::addCssClass($this->options, 'text-invalid');
-        }
-
-        return Html::a(Html::encode($url), $url, [
-            'target' => '_blank',
-            ...$this->options,
-        ]);
+        return A::make()
+            ->class($this->isDisabled() ? 'text-invalid' : null)
+            ->text($url)
+            ->href($url)
+            ->target('_blank')
+            ->render();
     }
 
     protected function isDisabled(): bool

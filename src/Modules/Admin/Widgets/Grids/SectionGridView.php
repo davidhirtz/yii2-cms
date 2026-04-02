@@ -12,6 +12,7 @@ use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Media\Modules\Admin\Widgets\Grids\Columns\Thumbnail;
 use Hirtz\Skeleton\Html\A;
 use Hirtz\Skeleton\Html\Div;
+use Hirtz\Skeleton\Widgets\Buttons\CreateButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\ButtonColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\DeleteGridButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\DraggableSortGridButton;
@@ -19,7 +20,6 @@ use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\ViewGridButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Column;
 use Hirtz\Skeleton\Widgets\Grids\Columns\DataColumn;
 use Hirtz\Skeleton\Widgets\Grids\GridView;
-use Hirtz\Skeleton\Widgets\Grids\Toolbars\CreateButton;
 use Hirtz\Skeleton\Widgets\Grids\Traits\StatusGridViewTrait;
 use Hirtz\Skeleton\Widgets\Grids\Traits\TypeGridViewTrait;
 use Override;
@@ -62,15 +62,12 @@ class SectionGridView extends GridView
         parent::configure();
     }
 
-    protected function getCreateSectionButton(): ?Stringable
+    protected function getCreateSectionButton(): string|Stringable
     {
-        if (!Yii::$app->getUser()->can(Section::AUTH_SECTION_CREATE, ['entry' => $this->provider->entry])) {
-            return null;
-        }
-
         return CreateButton::make()
-            ->text(Yii::t('cms', 'New Section'))
-            ->href(['/admin/section/create', 'entry' => $this->provider->entry->id]);
+            ->href(['/admin/section/create', 'entry' => $this->provider->entry->id])
+            ->roles([Section::AUTH_SECTION_CREATE])
+            ->text(Yii::t('cms', 'New Section'));
     }
 
     protected function getNameColumn(): ?Column
@@ -101,7 +98,7 @@ class SectionGridView extends GridView
 
         if (!$html) {
             $html = $section->getI18nAttribute('content') ?? '';
-            $html = 'html' === $section->contentType ? strip_tags((string) $html) : $html;
+            $html = 'html' === $section->contentType ? strip_tags((string)$html) : $html;
             $html = StringHelper::truncate($html, 100);
         }
 

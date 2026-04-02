@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin;
 
-use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Modules\Admin\Controllers\AssetController;
 use Hirtz\Cms\Modules\Admin\Controllers\CategoryController;
@@ -12,9 +11,9 @@ use Hirtz\Cms\Modules\Admin\Controllers\EntryCategoryController;
 use Hirtz\Cms\Modules\Admin\Controllers\EntryController;
 use Hirtz\Cms\Modules\Admin\Controllers\SectionController;
 use Hirtz\Cms\Modules\Admin\Controllers\SectionEntryController;
+use Hirtz\Cms\Modules\Admin\Widgets\Navs\CmsMainMenuNavItem;
 use Hirtz\Skeleton\Helpers\ArrayHelper;
 use Hirtz\Skeleton\Modules\Admin\Config\DashboardItem;
-use Hirtz\Skeleton\Modules\Admin\Config\MainMenuItemConfig;
 use Hirtz\Skeleton\Modules\Admin\ModuleInterface;
 use Hirtz\Skeleton\Modules\Admin\Widgets\Panels\DashboardPanel;
 use Override;
@@ -26,6 +25,7 @@ use Yii;
 class Module extends \Hirtz\Skeleton\Base\Module implements ModuleInterface
 {
     public array|string $url = ['/admin/entry/index'];
+    public bool $showEntryTypesInAside = false;
 
     #[Override]
     public function init(): void
@@ -95,13 +95,7 @@ class Module extends \Hirtz\Skeleton\Base\Module implements ModuleInterface
     public function getMainMenuItems(): array
     {
         return [
-            'cms' => new MainMenuItemConfig(
-                label: $this->getName(),
-                url: $this->url,
-                icon: 'book',
-                roles: [Category::AUTH_CATEGORY_UPDATE, Entry::AUTH_ENTRY_UPDATE],
-                routes: ['admin/category', 'admin/entry', 'admin/entry-category', 'admin/section', 'cms/'],
-            ),
+            CmsMainMenuNavItem::make()
         ];
     }
 }

@@ -15,9 +15,8 @@ use Hirtz\Cms\Modules\Admin\Widgets\Navs\CmsSubmenu;
 use Hirtz\Skeleton\Web\View;
 use Hirtz\Skeleton\Widgets\Grids\GridContainer;
 
-$this->title(Yii::t('cms', 'Categories'));
-
 echo CmsSubmenu::make()
+    ->title($provider->category?->getI18nAttribute('name') ?? Yii::t('cms', 'Categories'))
     ->model($provider->category);
 
 echo GridContainer::make()

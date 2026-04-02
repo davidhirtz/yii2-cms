@@ -10,15 +10,15 @@ declare(strict_types=1);
  */
 
 use Hirtz\Cms\Modules\Admin\Data\EntryActiveDataProvider;
+use Hirtz\Cms\Modules\Admin\Widgets\Buttons\EntryCreateButton;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\EntryGridView;
 use Hirtz\Cms\Modules\Admin\Widgets\Navs\CmsSubmenu;
 use Hirtz\Skeleton\Web\View;
 use Hirtz\Skeleton\Widgets\Grids\GridContainer;
 
-$this->title(Yii::t('cms', 'Entries'));
-
 echo CmsSubmenu::make()
-    ->model($provider->parent);
+    ->model($provider->parent)
+    ->content(EntryCreateButton::make());
 
 echo GridContainer::make()
     ->grid(EntryGridView::make()

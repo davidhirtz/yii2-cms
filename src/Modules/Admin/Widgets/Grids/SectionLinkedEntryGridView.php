@@ -10,7 +10,7 @@ use Hirtz\Cms\Modules\Admin\Controllers\SectionEntryController;
 use Hirtz\Cms\Modules\Admin\Data\EntryActiveDataProvider;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\Buttons\SectionEntryDeleteButton;
 use Hirtz\Skeleton\Html\Div;
-use Hirtz\Skeleton\Widgets\Grids\Toolbars\CreateButton;
+use Hirtz\Skeleton\Widgets\Buttons\CreateButton;
 use Hirtz\Skeleton\Widgets\Grids\Toolbars\GridToolbarItem;
 use Override;
 use Stringable;
@@ -71,7 +71,7 @@ class SectionLinkedEntryGridView extends EntryGridView
         parent::configure();
     }
 
-    protected function getSelectEntriesButton(): ?Stringable
+    protected function getSelectEntriesButton(): string|Stringable
     {
         $entryTypes = $this->provider->section->getEntriesTypes();
 

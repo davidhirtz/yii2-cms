@@ -16,10 +16,8 @@ use Hirtz\Cms\Modules\Admin\Widgets\Navs\CmsSubmenu;
 use Hirtz\Skeleton\Web\View;
 use Hirtz\Skeleton\Widgets\Forms\FormContainer;
 
-$this->title(Yii::t('cms', 'Create New Category'));
-
 echo CmsSubmenu::make()
-    ->model($category);
+    ->title(Yii::t('cms', 'New Category'));
 
 echo FormContainer::make()
     ->title($this->title)

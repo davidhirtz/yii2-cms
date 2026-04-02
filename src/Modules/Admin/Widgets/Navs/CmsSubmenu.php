@@ -11,15 +11,25 @@ use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Helpers\FrontendLink;
 use Hirtz\Cms\Modules\Admin\Module;
 use Hirtz\Cms\Modules\ModuleTrait;
-use Hirtz\Skeleton\Helpers\Html;
+use Hirtz\Skeleton\Html\Traits\TagContentTrait;
+use Hirtz\Skeleton\Widgets\Navs\Header;
 use Hirtz\Skeleton\Widgets\Navs\NavItem;
 use Hirtz\Skeleton\Widgets\Navs\Submenu;
+use Hirtz\Skeleton\Widgets\Navs\Traits\NavItemTrait;
+use Hirtz\Skeleton\Widgets\Traits\TitleTrait;
+use Hirtz\Skeleton\Widgets\Traits\UrlTrait;
+use Hirtz\Skeleton\Widgets\Widget;
 use Override;
+use Stringable;
 use Yii;
 
-class CmsSubmenu extends Submenu
+class CmsSubmenu extends Widget
 {
     use ModuleTrait;
+    use TitleTrait;
+    use TagContentTrait;
+    use UrlTrait;
+    use NavItemTrait;
 
     protected Asset|Category|Entry|Section|null $model = null;
     protected Module $module;
@@ -61,10 +71,9 @@ class CmsSubmenu extends Submenu
         }
 
         $this->title ??= $isEntry ? $model->getI18nAttribute('name') : $this->module->getName();
-        $this->url ??= $isEntry ? ['/admin/entry/update', 'id' => $model->id] : $this->module->url;
 
-        if ($this->title && $this->showUrl) {
-            $this->content($this->getUrl());
+        if ($isEntry) {
+            $this->url ??= $model->getAdminRoute();
         }
 
         if ($this->showEntryCategories) {
@@ -79,65 +88,25 @@ class CmsSubmenu extends Submenu
                 : static::getModule()->enableSections;
         }
 
-        $this->items = [...$this->items, ...$isEntry ? $this->getEntryItems() : $this->getDefaultItems()];
+        if ($isEntry) {
+            $this->items = [...$this->items, ...$this->getEntryItems()];
+        }
 
         $this->setBreadcrumbs();
+
         parent::configure();
     }
 
-    protected function getDefaultItems(): array
+    #[Override]
+    protected function renderContent(): string|Stringable
     {
-        return array_filter([...$this->getEntryGridViewItems(), ...$this->getCategoryGridViewItems()]);
-    }
-
-    protected function getEntryGridViewItems(): array
-    {
-        if (!Yii::$app->getUser()->can(Entry::AUTH_ENTRY_UPDATE)) {
-            return [];
-        }
-
-        if ($this->showEntryTypes) {
-            $items = [];
-
-            foreach (Entry::instance()::getTypes() as $type => $attributes) {
-                $items[] = NavItem::make()
-                    ->label($attributes['plural'] ?? $attributes['name'])
-                    ->url(['/admin/entry/index', 'type' => $type])
-                    ->icon($attributes['icon'] ?? 'book')
-                    ->routes(['admin/entry' => ['type' => $type]]);
-            }
-
-            return $items;
-        }
-
-        return [
-            NavItem::make()
-                ->label(Yii::t('cms', 'Entries'))
-                ->url(['/admin/entry/index'])
-                ->icon('book')
-                ->routes([
-                    'admin/entry/',
-                    ...$this->additionalActiveRoutes['entries'] ?? [],
-                ]),
-        ];
-    }
-
-    protected function getCategoryGridViewItems(): array
-    {
-        if (!$this->showDefaultCategories || !Yii::$app->getUser()->can(Category::AUTH_CATEGORY_UPDATE)) {
-            return [];
-        }
-
-        return [
-            NavItem::make()
-                ->label(Yii::t('cms', 'Categories'))
-                ->url(['/admin/category/index'])
-                ->icon('folder-open')
-                ->routes([
-                    'admin/category/',
-                    ...$this->additionalActiveRoutes['categories'] ?? [],
-                ]),
-        ];
+        return Submenu::make()
+            ->title($this->title)
+            ->url($this->url)
+            ->header(fn (Header $header) => $header
+                ->content(...$this->content)
+                ->subheading($this->renderFrontendLink()))
+            ->items(...$this->items);
     }
 
     protected function getEntryItems(): array
@@ -336,10 +305,9 @@ class CmsSubmenu extends Submenu
     }
 
 
-    protected function getUrl(): string
+    protected function renderFrontendLink(): ?string
     {
-        $link = $this->model ? FrontendLink::tag($this->model) : null;
-        return $link ? Html::tag('div', $link, ['class' => 'small']) : '';
+        return $this->showUrl && $this->model ? FrontendLink::tag($this->model) : null;
     }
 
     protected function isSection(): bool

@@ -11,6 +11,7 @@ use Hirtz\Cms\Modules\Admin\Controllers\EntryCategoryController;
 use Hirtz\Cms\Modules\Admin\Controllers\EntryController;
 use Hirtz\Cms\Modules\Admin\Data\EntryActiveDataProvider;
 use Hirtz\Cms\Modules\Admin\Helpers\FrontendLink;
+use Hirtz\Cms\Modules\Admin\Widgets\Buttons\EntryCreateButton;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\Columns\AssetCountColumn;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\Columns\EntryEntryCountColumn;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\Columns\SectionCountColumn;
@@ -19,6 +20,7 @@ use Hirtz\Skeleton\Helpers\Html;
 use Hirtz\Skeleton\Html\A;
 use Hirtz\Skeleton\Html\Div;
 use Hirtz\Skeleton\Widgets\Buttons\Button;
+use Hirtz\Skeleton\Widgets\Buttons\CreateButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\ButtonColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\DeleteGridButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\DraggableSortGridButton;
@@ -27,7 +29,6 @@ use Hirtz\Skeleton\Widgets\Grids\Columns\Column;
 use Hirtz\Skeleton\Widgets\Grids\Columns\DataColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\RelativeTimeColumn;
 use Hirtz\Skeleton\Widgets\Grids\GridView;
-use Hirtz\Skeleton\Widgets\Grids\Toolbars\CreateButton;
 use Hirtz\Skeleton\Widgets\Grids\Toolbars\FilterDropdown;
 use Hirtz\Skeleton\Widgets\Grids\Traits\StatusGridViewTrait;
 use Hirtz\Skeleton\Widgets\Grids\Traits\TypeGridViewTrait;
@@ -131,19 +132,9 @@ class EntryGridView extends GridView
         return array_map(fn ($category) => $this->getNestedCategoryNames()[$category->id], $this->getCategories());
     }
 
-    protected function getCreateEntryButton(): ?Stringable
+    protected function getCreateEntryButton(): string|Stringable
     {
-        if (!Yii::$app->getUser()->can(Entry::AUTH_ENTRY_CREATE)) {
-            return null;
-        }
-
-        return CreateButton::make()
-            ->text(Yii::t('cms', 'New Entry'))
-            ->href([
-                '/admin/entry/create',
-                ...Yii::$app->getRequest()->getQueryParams(),
-                'type' => $this->provider->type,
-            ]);
+        return EntryCreateButton::make();
     }
 
     protected function getNameColumn(): ?Column
