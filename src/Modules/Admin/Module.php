@@ -16,6 +16,7 @@ use Hirtz\Skeleton\Helpers\ArrayHelper;
 use Hirtz\Skeleton\Modules\Admin\Config\DashboardItem;
 use Hirtz\Skeleton\Modules\Admin\ModuleInterface;
 use Hirtz\Skeleton\Modules\Admin\Widgets\Panels\DashboardPanel;
+use Hirtz\Skeleton\Widgets\Navs\Nav;
 use Override;
 use Yii;
 
@@ -32,6 +33,13 @@ class Module extends \Hirtz\Skeleton\Base\Module implements ModuleInterface
     {
         $this->controllerMap = ArrayHelper::merge($this->getCoreControllerMap(), $this->controllerMap);
         parent::init();
+    }
+
+    public function aside(Nav $nav): Nav
+    {
+        return $nav->addItem(CmsMainMenuNavItem::make()
+            ->label($this->getName())
+            ->showEntryTypes($this->showEntryTypesInAside));
     }
 
     protected function getCoreControllerMap(): array
@@ -94,8 +102,6 @@ class Module extends \Hirtz\Skeleton\Base\Module implements ModuleInterface
 
     public function getMainMenuItems(): array
     {
-        return [
-            CmsMainMenuNavItem::make()
-        ];
+        return [];
     }
 }

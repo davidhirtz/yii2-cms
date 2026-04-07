@@ -106,7 +106,7 @@ class CmsSubmenu extends Widget
             ->header(fn (Header $header) => $header
                 ->content(...$this->content)
                 ->subheading($this->renderFrontendLink()))
-            ->items(...$this->items);
+            ->items($this->items);
     }
 
     protected function getEntryItems(): array

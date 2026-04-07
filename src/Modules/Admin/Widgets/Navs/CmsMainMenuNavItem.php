@@ -6,8 +6,8 @@ namespace Hirtz\Cms\Modules\Admin\Widgets\Navs;
 
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
-use Hirtz\Cms\Modules\Admin\Module;
 use Hirtz\Cms\Modules\ModuleTrait;
+use Hirtz\Skeleton\Widgets\Icon;
 use Hirtz\Skeleton\Widgets\Navs\NavItem;
 use Override;
 use Yii;
@@ -16,24 +16,19 @@ class CmsMainMenuNavItem extends NavItem
 {
     use ModuleTrait;
 
-    protected Module $module;
+    protected bool $showEntryTypes = false;
 
-    public function __construct($config = [])
+    public function showEntryTypes(bool $showEntryTypes): static
     {
-        /** @var Module $module */
-        $module = Yii::$app->getModule('admin')->getModule('cms');
-        $this->module = $module;
-
-        parent::__construct($config);
+        $this->showEntryTypes = $showEntryTypes;
+        return $this;
     }
 
     #[Override]
     protected function configure(): void
     {
-        $this->icon('book')
-            ->label($this->module->getName())
-            ->url(['/admin/entry/index'])
-            ->roles([Category::AUTH_CATEGORY_UPDATE, Entry::AUTH_ENTRY_UPDATE]);
+        $this->icon ??= Icon::make()->name('book');
+        $this->roles ??= [Category::AUTH_CATEGORY_UPDATE, Entry::AUTH_ENTRY_UPDATE];
 
         $this->addEntrySubnavItems();
         $this->addCategorySubnavItems();
@@ -43,7 +38,7 @@ class CmsMainMenuNavItem extends NavItem
 
     protected function addEntrySubnavItems(): void
     {
-        if ($this->module->showEntryTypesInAside) {
+        if ($this->showEntryTypes) {
             $typeOptions = Entry::instance()::getTypes();
             $currentType = $this->view->params['entryType'] ?? key($typeOptions);
 
@@ -65,7 +60,7 @@ class CmsMainMenuNavItem extends NavItem
 
     protected function addCategorySubnavItems(): void
     {
-        if (self::getModule()->enableCategories) {
+        if (static::getModule()->enableCategories) {
             $this->addItem(NavItem::make()
                 ->label(Yii::t('cms', 'Categories'))
                 ->url(['/admin/category/index'])
