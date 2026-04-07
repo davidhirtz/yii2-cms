@@ -27,6 +27,8 @@ class CmsMainMenuNavItem extends NavItem
     #[Override]
     protected function configure(): void
     {
+        $this->attributes['order'] ??= 10;
+
         $this->icon ??= Icon::make()->name('book');
         $this->roles ??= [Category::AUTH_CATEGORY_UPDATE, Entry::AUTH_ENTRY_UPDATE];
 

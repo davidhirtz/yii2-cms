@@ -39,7 +39,8 @@ class Module extends \Hirtz\Skeleton\Base\Module implements ModuleInterface
     {
         return $nav->addItem(CmsMainMenuNavItem::make()
             ->label($this->getName())
-            ->showEntryTypes($this->showEntryTypesInAside));
+            ->showEntryTypes($this->showEntryTypesInAside)
+            ->url($this->url));
     }
 
     protected function getCoreControllerMap(): array
@@ -98,10 +99,5 @@ class Module extends \Hirtz\Skeleton\Base\Module implements ModuleInterface
     public function getName(): string
     {
         return Yii::t('cms', 'Entries');
-    }
-
-    public function getMainMenuItems(): array
-    {
-        return [];
     }
 }
