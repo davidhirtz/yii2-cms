@@ -11,7 +11,7 @@ use Hirtz\Cms\Modules\Admin\Controllers\EntryCategoryController;
 use Hirtz\Cms\Modules\Admin\Controllers\EntryController;
 use Hirtz\Cms\Modules\Admin\Controllers\SectionController;
 use Hirtz\Cms\Modules\Admin\Controllers\SectionEntryController;
-use Hirtz\Cms\Modules\Admin\Widgets\Navs\CmsMainMenuNavItem;
+use Hirtz\Cms\Modules\Admin\Widgets\Navs\CmsNavItem;
 use Hirtz\Skeleton\Helpers\ArrayHelper;
 use Hirtz\Skeleton\Modules\Admin\Config\DashboardItem;
 use Hirtz\Skeleton\Modules\Admin\ModuleInterface;
@@ -26,7 +26,6 @@ use Yii;
 class Module extends \Hirtz\Skeleton\Base\Module implements ModuleInterface
 {
     public array|string $url = ['/admin/entry/index'];
-    public bool $showEntryTypesInAside = false;
 
     #[Override]
     public function init(): void
@@ -37,10 +36,7 @@ class Module extends \Hirtz\Skeleton\Base\Module implements ModuleInterface
 
     public function aside(Nav $nav): Nav
     {
-        return $nav->addItem(CmsMainMenuNavItem::make()
-            ->label($this->getName())
-            ->showEntryTypes($this->showEntryTypesInAside)
-            ->url($this->url));
+        return $nav->addItem(CmsNavItem::make());
     }
 
     protected function getCoreControllerMap(): array

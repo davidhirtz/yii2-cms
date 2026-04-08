@@ -25,8 +25,8 @@ class EntryCreateButton extends Widget
 
         return CreateButton::make()
             ->attributes($this->attributes)
-            ->href($route)
+            ->url($route)
             ->roles([Entry::AUTH_ENTRY_CREATE])
-            ->text(Yii::t('cms', 'New Entry'));
+            ->label(Yii::t('cms', 'Create Entry'));
     }
 }

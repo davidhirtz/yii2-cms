@@ -70,7 +70,7 @@ class CmsSubmenu extends Widget
             $this->showDefaultCategories = static::getModule()->enableCategories;
         }
 
-        $this->title ??= $isEntry ? $model->getI18nAttribute('name') : $this->module->getName();
+        $this->title ??= $isEntry ? $model->getI18nAttribute('name') : Yii::t('cms', 'Entries');
 
         if ($isEntry) {
             $this->url ??= $model->getAdminRoute();

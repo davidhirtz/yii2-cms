@@ -33,7 +33,7 @@ class MetaTags extends Widget
 
     private UrlManager $urlManager;
 
-    public function __construct($config = [])
+    public function __construct(array $config = [])
     {
         $this->urlManager = Yii::$app->getUrlManager();
         parent::__construct($config);

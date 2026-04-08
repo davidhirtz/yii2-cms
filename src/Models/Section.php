@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Models;
 
+use Closure;
 use Hirtz\Cms\Models\Queries\AssetQuery;
 use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Models\Queries\SectionQuery;
@@ -298,7 +299,7 @@ class Section extends ActiveRecord implements AssetParentInterface
     {
         if (isset(static::getTypes()[$this->type]['nameColumn'])) {
             $nameColumn = static::getTypes()[$this->type]['nameColumn'];
-            return is_callable($nameColumn) ? call_user_func($nameColumn, $this) : $nameColumn;
+            return $nameColumn instanceof Closure ? ($nameColumn)($this) : $nameColumn;
         }
 
         return null;

@@ -76,9 +76,9 @@ class SectionLinkedEntryGridView extends EntryGridView
         $entryTypes = $this->provider->section->getEntriesTypes();
 
         return CreateButton::make()
-            ->text(Yii::t('cms', 'Link entries'))
+            ->label(Yii::t('cms', 'Link entries'))
             ->icon('link')
-            ->href([
+            ->url([
                 'section-entry/index',
                 'section' => $this->provider->section->id,
                 'type' => $entryTypes ? current($entryTypes) : null,
