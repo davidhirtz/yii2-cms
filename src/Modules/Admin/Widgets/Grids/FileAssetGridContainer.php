@@ -39,7 +39,7 @@ class FileAssetGridContainer extends Widget implements FileRelationGridContainer
 
     protected function getTitle(string $language): string
     {
-        $title = Yii::t('app', 'Entries');
+        $title = Yii::t('cms', 'Entries');
 
         if ($language !== Yii::$app->language && self::getModule()->enableI18nTables) {
             $title .= ' (' . strtoupper($language) . ')';
