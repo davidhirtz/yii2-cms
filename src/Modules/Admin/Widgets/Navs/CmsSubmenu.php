@@ -18,6 +18,7 @@ use Hirtz\Skeleton\Widgets\Navs\Submenu;
 use Hirtz\Skeleton\Widgets\Navs\Traits\NavItemTrait;
 use Hirtz\Skeleton\Widgets\Traits\TitleTrait;
 use Hirtz\Skeleton\Widgets\Traits\UrlTrait;
+use Hirtz\Skeleton\Widgets\Traits\VisibilityTrait;
 use Hirtz\Skeleton\Widgets\Widget;
 use Override;
 use Stringable;
@@ -30,6 +31,7 @@ class CmsSubmenu extends Widget
     use TagContentTrait;
     use UrlTrait;
     use NavItemTrait;
+    use VisibilityTrait;
 
     protected Asset|Category|Entry|Section|null $model = null;
     protected Module $module;

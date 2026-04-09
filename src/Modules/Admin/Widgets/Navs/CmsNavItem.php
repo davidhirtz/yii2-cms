@@ -36,7 +36,7 @@ class CmsNavItem extends NavItem
         }
 
         $this->label ??= $this->showCategories || $this->showEntryTypes
-            ? Yii::t('cms', 'Contents')
+            ? Yii::t('cms', 'Content')
             : Yii::t('cms', 'Entries');
 
         $this->addEntrySubnavItems();
