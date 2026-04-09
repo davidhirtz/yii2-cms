@@ -23,7 +23,7 @@ class CmsNavItem extends NavItem
         $this->icon ??= 'book';
         $this->order ??= 10;
         $this->roles ??= [Category::AUTH_CATEGORY_UPDATE, Entry::AUTH_ENTRY_UPDATE];
-        $this->url ??= ['/admin/entry/index'];
+        $this->url ??= ['/admin/cms/entry/index'];
 
         parent::__construct($config);
     }
@@ -58,15 +58,15 @@ class CmsNavItem extends NavItem
                 $this->addItem(NavItem::make()
                     ->active($currentType === $type))
                     ->label($attributes['label'] ?? $attributes['plural'] ?? $attributes['name'])
-                    ->url(['/admin/entry/index', 'type' => $type])
+                    ->url(['/admin/cms/entry/index', 'type' => $type])
                     ->roles([Entry::AUTH_ENTRY_UPDATE]);
             }
         } else {
             $this->addItem(NavItem::make()
                 ->label(Yii::t('cms', 'Entries'))
-                ->url(['/admin/entry/index'])
+                ->url(['/admin/cms/entry/index'])
                 ->roles([Entry::AUTH_ENTRY_UPDATE])
-                ->routes(['admin/entry', 'admin/entry-category', 'admin/section', 'cms/']));
+                ->routes(['admin/cms/entry', 'admin/cms/section']));
         }
     }
 
@@ -74,8 +74,8 @@ class CmsNavItem extends NavItem
     {
         $this->addItem(NavItem::make()
             ->label(Yii::t('cms', 'Categories'))
-            ->url(['/admin/category/index'])
+            ->url(['/admin/cms/category/index'])
             ->roles([Category::AUTH_CATEGORY_UPDATE])
-            ->routes(['admin/category']));
+            ->routes(['admin/cms/category']));
     }
 }

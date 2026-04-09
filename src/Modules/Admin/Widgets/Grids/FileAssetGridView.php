@@ -163,7 +163,7 @@ class FileAssetGridView extends GridView
 
         if ($user->can($permissionName, ['asset' => $asset])) {
             $buttons[] = ViewGridButton::make()
-                ->url($this->getI18nRoute(['cms/asset/update', 'id' => $asset->id]));
+                ->url($this->getI18nRoute(['/admin/cms/asset/update', 'id' => $asset->id]));
         }
 
         $permissionName = $asset->isEntryAsset()

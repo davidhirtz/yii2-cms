@@ -86,7 +86,7 @@ class CategoryGridView extends GridView
     protected function getCreateCategoryButton(): string|Stringable
     {
         return CreateButton::make()
-            ->url(['/admin/category/create', 'id' => $this->provider->category->id ?? null])
+            ->url(['/admin/cms/category/create', 'id' => $this->provider->category->id ?? null])
             ->roles([Category::AUTH_CATEGORY_CREATE])
             ->label(Yii::t('cms', 'Create Category'));
     }

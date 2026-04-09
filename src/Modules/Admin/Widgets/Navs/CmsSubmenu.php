@@ -128,10 +128,10 @@ class CmsSubmenu extends Widget
         return [
             NavItem::make()
                 ->label($this->showEntryTypes ? $entry->getTypeName() : Yii::t('cms', 'Entry'))
-                ->url(['/admin/entry/update', 'id' => $entry->id])
+                ->url(['/admin/cms/entry/update', 'id' => $entry->id])
                 ->icon($entry->getStatusIcon())
                 ->routes(array_filter([
-                    'admin/entry/update',
+                    'admin/cms/entry/update',
                     'admin/cms/asset/' => ['entry'],
                     !$this->isSection() ? 'admin/cms/asset/update' : null,
                     ...$this->additionalActiveRoutes['entry'] ?? [],
@@ -150,11 +150,11 @@ class CmsSubmenu extends Widget
         return [
             NavItem::make()
                 ->label(Yii::t('cms', 'Subentries'))
-                ->url(['/admin/entry/index', 'parent' => $entry->id])
+                ->url(['/admin/cms/entry/index', 'parent' => $entry->id])
                 ->icon('book')
                 ->badge($entry->entry_count)
                 ->routes([
-                    'admin/entry/index',
+                    'admin/cms/entry/index',
                     ...$this->additionalActiveRoutes['subentries'] ?? [],
                 ]),
         ];
@@ -174,10 +174,10 @@ class CmsSubmenu extends Widget
         return [
             NavItem::make()
                 ->label(Yii::t('cms', 'Categories'))
-                ->url(['/admin/entry-category/index', 'entry' => $entry->id])
+                ->url(['/admin/cms/entry-category/index', 'entry' => $entry->id])
                 ->icon('folder-open')
                 ->badge($entry->getCategoryCount())
-                ->routes(['admin/entry-category/']),
+                ->routes(['admin/cms/entry-category/']),
         ];
     }
 
@@ -196,16 +196,16 @@ class CmsSubmenu extends Widget
         return [
             NavItem::make()
                 ->label(Yii::t('cms', 'Sections'))
-                ->url(['/admin/section/index', 'entry' => $entry->id])
+                ->url(['/admin/cms/section/index', 'entry' => $entry->id])
                 ->icon('th-list')
                 ->badge($entry->section_count)
                 ->routes([
-                    'admin/section/',
+                    'admin/cms/section/',
                     'admin/cms/asset/' => ['section'],
                     ...$this->isSection()
                         ? [
                             'admin/cms/asset/update',
-                            'admin/section-entry',
+                            'admin/cms/section-entry',
                         ]
                         : [],
                     ...$this->additionalActiveRoutes['sections'] ?? [],
@@ -232,8 +232,8 @@ class CmsSubmenu extends Widget
 
     protected function setModuleBreadcrumbs(): void
     {
-        $this->view->addBreadcrumb($this->module->getName(), [
-            '/admin/entry/index',
+        $this->view->addBreadcrumb(Yii::t('cms', 'Entries'), [
+            '/admin/cms/entry/index',
             'type' => static::getModule()->defaultEntryType,
         ]);
     }
@@ -245,14 +245,14 @@ class CmsSubmenu extends Widget
         if ($this->showEntryTypes) {
             if ($typeOptions = (Entry::instance()::getTypes()[$model->type] ?? null)) {
                 $this->view->addBreadcrumb($typeOptions['plural'] ?? $typeOptions['name'], [
-                    '/admin/entry/index',
+                    '/admin/cms/entry/index',
                     'type' => $model->type,
                 ]);
             }
         }
 
         if ($model->parent_id) {
-            $isIndex = Yii::$app->requestedRoute === 'admin/entry/index';
+            $isIndex = Yii::$app->requestedRoute === 'admin/cms/entry/index';
 
             foreach ($model->ancestors as $ancestor) {
                 $this->view->addBreadcrumb($ancestor->getI18nAttribute('name'), $isIndex
@@ -279,7 +279,7 @@ class CmsSubmenu extends Widget
 
     protected function setCategoryBreadcrumbs(): void
     {
-        $this->view->addBreadcrumb(Yii::t('cms', 'Categories'), ['/admin/category/index']);
+        $this->view->addBreadcrumb(Yii::t('cms', 'Categories'), ['/admin/cms/category/index']);
 
         if ($this->parentCategoryBreadcrumbCount > 0) {
             $categories = $this->model->ancestors;

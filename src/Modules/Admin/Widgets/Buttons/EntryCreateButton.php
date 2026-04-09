@@ -16,7 +16,7 @@ class EntryCreateButton extends CreateButton
         $this->roles ??= [Entry::AUTH_ENTRY_CREATE];
 
         $this->url ??= [
-            '/admin/entry/create',
+            '/admin/cms/entry/create',
             ...Yii::$app->getRequest()->getQueryParams(),
             'type' => Yii::$app->getView()->params['entryType'] ?? null,
         ];

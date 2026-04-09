@@ -16,7 +16,7 @@ class EntryControllerFunctionTest extends TestCase
 
     public function testIndexAsGuest(): void
     {
-        $this->open('/admin/entry/index');
+        $this->open('/admin/cms/entry/index');
         self::assertCurrentUrlEquals('https://www.test.localhost/admin/account/login');
     }
 
@@ -25,7 +25,7 @@ class EntryControllerFunctionTest extends TestCase
         $user = $this->getUserFromFixture('admin');
         Yii::$app->getUser()->login($user);
 
-        $this->open('/admin/entry/index');
+        $this->open('/admin/cms/entry/index');
         self::assertResponseStatusCodeSame(403);
     }
 
@@ -36,7 +36,7 @@ class EntryControllerFunctionTest extends TestCase
 
         Yii::$app->getUser()->login($user);
 
-        $this->open('/admin/entry/index');
+        $this->open('/admin/cms/entry/index');
         self::assertResponseIsSuccessful();
     }
 }

@@ -7,11 +7,11 @@ namespace Hirtz\Cms\Modules\Admin\Controllers;
 use Hirtz\Cms\Modules\Admin\Module;
 use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Skeleton\Web\Controller;
-use Hirtz\Skeleton\Widgets\Navs\NavBar;
 use Override;
-use Yii;
-use yii\base\View;
 
+/**
+ * @extends Controller<Module>
+ */
 abstract class AbstractController extends Controller
 {
     use ModuleTrait;
@@ -47,8 +47,6 @@ abstract class AbstractController extends Controller
 
     protected function getAdminModuleDefaultRoute(): array
     {
-        /** @var Module $module */
-        $module = Yii::$app->getModule('admin')->getModule('cms');
-        return $module->url;
+        return ['/admin/cms/'];
     }
 }

@@ -476,7 +476,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
 
     public function getAdminRoute(): false|array
     {
-        return $this->id ? ['/admin/entry/update', 'id' => $this->id] : false;
+        return $this->id ? ['/admin/cms/entry/update', 'id' => $this->id] : false;
     }
 
     /**

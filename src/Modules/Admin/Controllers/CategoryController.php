@@ -20,7 +20,7 @@ class CategoryController extends AbstractController
 {
     use CategoryControllerTrait;
 
-    protected array|false|null $i18nTablesRoute = ['/admin/category/index'];
+    protected array|false|null $i18nTablesRoute = ['/admin/cms/category/index'];
 
     #[Override]
     public function behaviors(): array

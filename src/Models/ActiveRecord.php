@@ -186,7 +186,7 @@ abstract class ActiveRecord extends BaseActiveRecord implements
         return $this->isEnabled();
     }
 
-    #[\Override]
+    #[Override]
     public function attributeLabels(): array
     {
         return [

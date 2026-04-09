@@ -8,8 +8,6 @@ use Hirtz\Cms\Models\Actions\DuplicateSection;
 use Hirtz\Cms\Models\Actions\ReorderSections;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
-use Hirtz\Cms\Models\Queries\AssetQuery;
-use Hirtz\Cms\Models\Queries\SectionQuery;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Controllers\Traits\EntryControllerTrait;
 use Hirtz\Cms\Modules\Admin\Controllers\Traits\SectionControllerTrait;
@@ -19,8 +17,6 @@ use Override;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
-use yii\web\ForbiddenHttpException;
-use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 class SectionController extends AbstractController

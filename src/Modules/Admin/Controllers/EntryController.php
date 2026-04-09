@@ -19,13 +19,11 @@ use yii\filters\VerbFilter;
 use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
-;
-
 class EntryController extends AbstractController
 {
     use EntryControllerTrait;
 
-    protected array|false|null $i18nTablesRoute = ['/admin/entry/index'];
+    protected array|false|null $i18nTablesRoute = ['/admin/cms/entry/index'];
 
     #[Override]
     public function behaviors(): array

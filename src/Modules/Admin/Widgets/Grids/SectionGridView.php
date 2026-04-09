@@ -67,7 +67,7 @@ class SectionGridView extends GridView
         return CreateButton::make()
             ->label(Yii::t('cms', 'New Section'))
             ->roles([Section::AUTH_SECTION_CREATE])
-            ->url(['/admin/section/create', 'entry' => $this->provider->entry->id]);
+            ->url(['/admin/cms/section/create', 'entry' => $this->provider->entry->id]);
     }
 
     protected function getNameColumn(): ?Column

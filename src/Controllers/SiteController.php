@@ -9,6 +9,7 @@ use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Module;
 use Hirtz\Skeleton\Web\Controller;
+use Override;
 use Yii;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -20,7 +21,7 @@ class SiteController extends Controller
 {
     public bool $redirectTrailingSlash = true;
 
-    #[\Override]
+    #[Override]
     public function init(): void
     {
         $this->layout ??= 'main';

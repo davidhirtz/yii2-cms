@@ -8,6 +8,7 @@ use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\EntryCategory;
 use Hirtz\Cms\Models\Section;
+use Hirtz\Cms\Modules\Admin\Module;
 use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Media\Models\Collections\FolderCollection;
 use Hirtz\Skeleton\Log\ActiveRecordErrorLogger;
@@ -24,6 +25,9 @@ use yii\web\Response;
  * @noinspection PhpUnused
  */
 
+/**
+ * @extends Controller<Module>
+ */
 abstract class SetupController extends Controller
 {
     use ModuleTrait;
@@ -67,7 +71,7 @@ abstract class SetupController extends Controller
 
         $this->ensureDefaultFolder();
 
-        return $this->redirect(['/admin/entry/index']);
+        return $this->redirect(['/admin/cms/entry/index']);
     }
 
     protected function insertCategories(): void

@@ -25,8 +25,8 @@ echo CmsSubmenu::make()
     ->model($parent);
 
 $this->addBreadcrumb(Yii::t('media', 'Assets'), [$parent instanceof Section
-    ? '/admin/section/update'
-    : '/admin/entry/update', 'id' => $parent->id, '#' => 'assets',
+    ? '/admin/cms/section/update'
+    : '/admin/cms/entry/update', 'id' => $parent->id, '#' => 'assets',
 ]);
 
 echo GridContainer::make()

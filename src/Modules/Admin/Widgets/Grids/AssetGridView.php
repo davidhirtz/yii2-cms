@@ -223,7 +223,7 @@ class AssetGridView extends GridView
         $permissionName = $model->isEntryAsset() ? Entry::AUTH_ENTRY_ASSET_UPDATE : Section::AUTH_SECTION_ASSET_UPDATE;
 
         return Yii::$app->getUser()->can($permissionName, ['asset' => $model])
-            ? ['cms/asset/update', 'id' => $model->id, ...$params]
+            ? ['/admin/cms/asset/update', 'id' => $model->id, ...$params]
             : false;
     }
 }

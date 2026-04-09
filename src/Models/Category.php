@@ -295,7 +295,7 @@ class Category extends ActiveRecord implements SitemapInterface
 
     public function getAdminRoute(): false|array
     {
-        return $this->id ? ['/admin/category/update', 'id' => $this->id] : false;
+        return $this->id ? ['/admin/cms/category/update', 'id' => $this->id] : false;
     }
 
     public function getRoute(): false|array

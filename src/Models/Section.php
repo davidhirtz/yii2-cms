@@ -307,7 +307,7 @@ class Section extends ActiveRecord implements AssetParentInterface
 
     public function getAdminRoute(): array|false
     {
-        return $this->id ? ['/admin/section/update', 'id' => $this->id] : false;
+        return $this->id ? ['/admin/cms/section/update', 'id' => $this->id] : false;
     }
 
     public function getEntriesOrderBy(): ?array
