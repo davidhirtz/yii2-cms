@@ -61,6 +61,6 @@ if (Yii::$app->getUser()->can(File::AUTH_FILE_DELETE, ['file' => $asset->file]))
         ->title(Yii::t('media', 'Delete File'))
         ->form(DeleteActiveForm::make()
             ->model($asset->file)
-            ->action(['/admin/file/delete', 'id' => $asset->file_id])
+            ->action(['/admin/media/file/delete', 'id' => $asset->file_id])
             ->message(Yii::t('cms', 'Warning: Deleting this file cannot be undone. All related assets will also be unrecoverably deleted. Please be certain!')));
 }

@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace Hirtz\Cms;
 
 use Hirtz\Cms\Models\Asset;
+use Hirtz\Cms\Models\Category;
+use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Events\FileBeforeDeleteEventHandler;
 use Hirtz\Media\Models\File;
+use Hirtz\Skeleton\Modules\Admin\Controllers\DashboardController;
 use Hirtz\Skeleton\Web\Application;
 use Yii;
 use yii\base\BootstrapInterface;
@@ -54,6 +57,11 @@ class Bootstrap implements BootstrapInterface
                 $event->sender,
             ])
         );
+
+        DashboardController::addRoles([
+            Entry::AUTH_ENTRY_UPDATE,
+            Category::AUTH_CATEGORY_UPDATE,
+        ]);
 
         $app->setMigrationNamespace('Hirtz\Cms\Migrations');
     }

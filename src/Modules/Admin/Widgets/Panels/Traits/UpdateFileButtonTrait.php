@@ -18,7 +18,7 @@ trait UpdateFileButtonTrait
                 ->secondary()
                 ->icon('image')
                 ->text(Yii::t('media', 'Edit File'))
-                ->href(['/admin/file/update', 'id' => $this->model->file_id])
+                ->href(['/admin/media/file/update', 'id' => $this->model->file_id])
                 ->target('_blank')
             : null;
     }
