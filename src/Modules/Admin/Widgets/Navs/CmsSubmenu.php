@@ -15,7 +15,7 @@ use Hirtz\Skeleton\Html\Traits\TagContentTrait;
 use Hirtz\Skeleton\Widgets\Navs\Header;
 use Hirtz\Skeleton\Widgets\Navs\NavItem;
 use Hirtz\Skeleton\Widgets\Navs\Submenu;
-use Hirtz\Skeleton\Widgets\Navs\Traits\NavItemTrait;
+use Hirtz\Skeleton\Widgets\Navs\Traits\ItemTrait;
 use Hirtz\Skeleton\Widgets\Traits\TitleTrait;
 use Hirtz\Skeleton\Widgets\Traits\UrlTrait;
 use Hirtz\Skeleton\Widgets\Traits\VisibilityTrait;
@@ -26,11 +26,14 @@ use Yii;
 
 class CmsSubmenu extends Widget
 {
+    /** @use ItemTrait<NavItem> */
+    use ItemTrait;
+
     use ModuleTrait;
     use TitleTrait;
     use TagContentTrait;
     use UrlTrait;
-    use NavItemTrait;
+
     use VisibilityTrait;
 
     protected Asset|Category|Entry|Section|null $model = null;
