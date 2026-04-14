@@ -13,7 +13,7 @@ use Yii;
 
 class SectionEntryGridView extends EntryGridView
 {
-    public string $layout = '{header}{summary}{items}{pager}';
+    protected string $layout = '{header}{summary}{items}{pager}';
 
     #[Override]
     protected function configure(): void

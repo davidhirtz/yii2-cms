@@ -11,16 +11,13 @@ use Hirtz\Cms\Modules\Admin\Controllers\EntryCategoryController;
 use Hirtz\Cms\Modules\Admin\Controllers\EntryController;
 use Hirtz\Cms\Modules\Admin\Data\EntryActiveDataProvider;
 use Hirtz\Cms\Modules\Admin\Helpers\FrontendLink;
-use Hirtz\Cms\Modules\Admin\Widgets\Buttons\EntryCreateButton;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\Columns\AssetCountColumn;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\Columns\EntryEntryCountColumn;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\Columns\SectionCountColumn;
 use Hirtz\Cms\Modules\ModuleTrait;
-use Hirtz\Skeleton\Helpers\Html;
 use Hirtz\Skeleton\Html\A;
 use Hirtz\Skeleton\Html\Div;
 use Hirtz\Skeleton\Widgets\Buttons\Button;
-use Hirtz\Skeleton\Widgets\Buttons\CreateButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\ButtonColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\DeleteGridButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\DraggableSortGridButton;
@@ -30,6 +27,7 @@ use Hirtz\Skeleton\Widgets\Grids\Columns\DataColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\RelativeTimeColumn;
 use Hirtz\Skeleton\Widgets\Grids\GridView;
 use Hirtz\Skeleton\Widgets\Grids\Toolbars\FilterDropdown;
+use Hirtz\Skeleton\Widgets\Grids\Toolbars\GridSearchForm;
 use Hirtz\Skeleton\Widgets\Grids\Traits\StatusGridViewTrait;
 use Hirtz\Skeleton\Widgets\Grids\Traits\TypeGridViewTrait;
 use Override;
@@ -48,13 +46,13 @@ class EntryGridView extends GridView
     use StatusGridViewTrait;
     use TypeGridViewTrait;
 
-    public bool $showUrl = true;
-    public ?bool $showCategories = null;
-    public bool $showCategoryDropdown = true;
-    public int|false $showCategoryDropdownFilterMinCount = 1;
-    public bool $showTypeDropdown = true;
-    public bool $showDeleteButton = false;
-    public ?array $orderRoute = null;
+    protected bool $showUrl = true;
+    protected ?bool $showCategories = null;
+    protected bool $showCategoryDropdown = true;
+    protected int|false $showCategoryDropdownFilterMinCount = 1;
+    protected bool $showTypeDropdown = true;
+    protected bool $showDeleteButton = false;
+    protected ?array $orderRoute = null;
 
     private ?array $categoryNames = null;
 
@@ -93,7 +91,7 @@ class EntryGridView extends GridView
         $this->header ??= [
             $this->showTypeDropdown ? $this->getTypeDropdown() : null,
             $this->showCategoryDropdown ? $this->getCategoryDropdown() : null,
-            $this->search->getToolbarItem(),
+            GridSearchForm::make()->grid($this),
         ];
 
         $this->columns ??= [
@@ -105,10 +103,6 @@ class EntryGridView extends GridView
             $this->getAssetCountColumn(),
             $this->getDateColumn(),
             $this->getButtonColumn(),
-        ];
-
-        $this->footer ??= [
-            $this->getCreateEntryButton(),
         ];
 
         parent::configure();
@@ -132,11 +126,6 @@ class EntryGridView extends GridView
         return array_map(fn ($category) => $this->getNestedCategoryNames()[$category->id], $this->getCategories());
     }
 
-    protected function getCreateEntryButton(): string|Stringable
-    {
-        return EntryCreateButton::make();
-    }
-
     protected function getNameColumn(): ?Column
     {
         return DataColumn::make()
@@ -149,7 +138,7 @@ class EntryGridView extends GridView
         $name = $entry->getI18nAttribute('name');
 
         $html = $name
-            ? Html::markKeywords(Html::encode($name), $this->search->getKeywords())
+            ? $this->search->markKeywords($name)
             : Yii::t('cms', '[ No title ]');
 
         $html = A::make()

@@ -10,6 +10,7 @@ use Hirtz\Cms\Modules\Admin\Data\CategoryActiveDataProvider;
 use Hirtz\Cms\Modules\Admin\Helpers\FrontendLink;
 use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Skeleton\Helpers\Html;
+use Hirtz\Skeleton\Helpers\Url;
 use Hirtz\Skeleton\Html\A;
 use Hirtz\Skeleton\Html\Div;
 use Hirtz\Skeleton\Widgets\Grids\Columns\BadgeColumn;
@@ -19,7 +20,6 @@ use Hirtz\Skeleton\Widgets\Grids\Traits\StatusGridViewTrait;
 use Hirtz\Skeleton\Widgets\Grids\Traits\TypeGridViewTrait;
 use Stringable;
 use Yii;
-use Hirtz\Skeleton\Helpers\Url;;
 
 /**
  * @property CategoryActiveDataProvider $dataProvider
@@ -43,7 +43,7 @@ trait CategoryGridTrait
         $name = $category->getI18nAttribute('name');
 
         $html = $name
-            ? Html::markKeywords(Html::encode($name), $this->search->getKeywords())
+            ? $this->search->markKeywords($name)
             : Yii::t('cms', '[ No title ]');
 
         $html = A::make()

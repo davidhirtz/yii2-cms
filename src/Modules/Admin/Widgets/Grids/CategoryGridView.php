@@ -17,6 +17,8 @@ use Hirtz\Skeleton\Widgets\Grids\Columns\Column;
 use Hirtz\Skeleton\Widgets\Grids\Columns\RelativeTimeColumn;
 use Hirtz\Skeleton\Widgets\Grids\GridView;
 use Hirtz\Skeleton\Widgets\Grids\Toolbars\FilterDropdown;
+use Hirtz\Skeleton\Widgets\Grids\Toolbars\GridFooter;
+use Hirtz\Skeleton\Widgets\Grids\Toolbars\GridSearchForm;
 use Override;
 use Stringable;
 use Yii;
@@ -46,7 +48,7 @@ class CategoryGridView extends GridView
 
         $this->header ??= [
             $this->getCategoryDropdown(),
-            $this->search->getToolbarItem(),
+            GridSearchForm::make()->grid($this),
         ];
 
         $this->columns ??= [
@@ -65,7 +67,6 @@ class CategoryGridView extends GridView
 
         parent::configure();
     }
-
 
     protected function getCategoryDropdown(): ?FilterDropdown
     {
