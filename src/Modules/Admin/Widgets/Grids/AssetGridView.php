@@ -31,7 +31,6 @@ use Stringable;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\db\ActiveQuery;
-use yii\db\ActiveRecordInterface;
 
 /**
  * @template T of Asset
@@ -179,7 +178,6 @@ class AssetGridView extends GridView
     protected function getNameColumnContent(Asset $asset): ?Stringable
     {
         $name = $asset->getI18nAttribute('name');
-        $route = $this->getRoute($asset);
 
         $content = $name
             ? Div::make()
@@ -189,17 +187,17 @@ class AssetGridView extends GridView
                 ->class('text-muted')
                 ->text($asset->file->name);
 
-        return $route
+        return $this->canUpdateAsset($asset)
             ? A::make()
                 ->content($content)
-                ->href($route)
+                ->href($asset->getAdminRoute())
             : $content;
     }
 
     protected function getThumbnailColumn(): ?Column
     {
         return AssetThumbnailColumn::make()
-            ->url(fn (Asset $asset) => $this->getRoute($asset));
+            ->url(fn (Asset $asset): ?array => $this->canUpdateAsset($asset) ? $asset->getAdminRoute() : null);
     }
 
     protected function getFileUploadRoute(): array
@@ -214,16 +212,9 @@ class AssetGridView extends GridView
         return [$action, $this->parent->getParamName() => $this->parent->id, ...$params];
     }
 
-    /**
-     * @param Asset $model
-     */
-    #[Override]
-    protected function getRoute(ActiveRecordInterface $model, array $params = []): array|false
+    protected function canUpdateAsset(Asset $asset): bool
     {
-        $permissionName = $model->isEntryAsset() ? Entry::AUTH_ENTRY_ASSET_UPDATE : Section::AUTH_SECTION_ASSET_UPDATE;
-
-        return Yii::$app->getUser()->can($permissionName, ['asset' => $model])
-            ? ['/admin/cms/asset/update', 'id' => $model->id, ...$params]
-            : false;
+        $permissionName = $asset->isEntryAsset() ? Entry::AUTH_ENTRY_ASSET_UPDATE : Section::AUTH_SECTION_ASSET_UPDATE;
+        return Yii::$app->getUser()->can($permissionName, ['asset' => $asset]);
     }
 }

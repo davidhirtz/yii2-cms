@@ -33,7 +33,6 @@ use Hirtz\Skeleton\Widgets\Grids\Traits\TypeGridViewTrait;
 use Override;
 use Stringable;
 use Yii;
-use yii\db\ActiveRecordInterface;
 
 /**
  * @template T of Entry
@@ -143,7 +142,7 @@ class EntryGridView extends GridView
 
         $html = A::make()
             ->content($html)
-            ->href($this->getRoute($entry))
+            ->href($entry->getAdminRoute())
             ->class($name ? 'strong' : 'strong text-muted');
 
         if ($this->showUrl) {
@@ -278,19 +277,6 @@ class EntryGridView extends GridView
                 ->class('d-none d-md-block small')
                 ->content($link)
             : null;
-    }
-
-    /**
-     * @param T $model
-     */
-    #[Override]
-    protected function getRoute(ActiveRecordInterface $model, array $params = []): array|false
-    {
-        return [
-            ...Yii::$app->getRequest()->get(),
-            ...$model->getAdminRoute(),
-            ...$params,
-        ];
     }
 
     #[Override]

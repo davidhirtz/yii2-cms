@@ -293,9 +293,9 @@ class Category extends ActiveRecord implements SitemapInterface
         return $this->getTypeName() ?: Yii::t('cms', 'Category');
     }
 
-    public function getAdminRoute(): false|array
+    public function getAdminRoute(): array
     {
-        return $this->id ? ['/admin/cms/category/update', 'id' => $this->id] : false;
+        return $this->id ? ['/admin/cms/category/update', 'id' => $this->id] : ['/admin/cms/category/index'];
     }
 
     public function getRoute(): false|array

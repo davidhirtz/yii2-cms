@@ -14,7 +14,6 @@ use Hirtz\Skeleton\Widgets\Grids\Columns\Column;
 use Hirtz\Skeleton\Widgets\Grids\Columns\RelativeTimeColumn;
 use Hirtz\Skeleton\Widgets\Grids\GridView;
 use Override;
-use yii\db\ActiveRecordInterface;
 
 /**
  * @template T of Category
@@ -81,14 +80,5 @@ class EntryCategoryGridView extends GridView
                     'category' => $category->id,
                 ]),
         ];
-    }
-
-    /**
-     * @param T $model
-     */
-    #[Override]
-    protected function getRoute(ActiveRecordInterface $model, array $params = []): array|false
-    {
-        return ['category/update', 'id' => $model->id];
     }
 }

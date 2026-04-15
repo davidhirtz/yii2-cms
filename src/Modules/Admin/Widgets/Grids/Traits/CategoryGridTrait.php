@@ -49,7 +49,7 @@ trait CategoryGridTrait
         $html = A::make()
             ->class($name ? 'strong' : 'strong text-muted')
             ->content($html)
-            ->href($this->getRoute($category));
+            ->href($category->getAdminRoute());
 
         if ($this->showCategoryAncestors($category)) {
             $html .= Div::make()
@@ -105,7 +105,7 @@ trait CategoryGridTrait
         foreach ($category->getAncestors() as $parent) {
             $parents[] = A::make()
                 ->text($parent->name)
-                ->href($this->getRoute($parent));
+                ->href($parent->getAdminRoute());
         }
 
         return implode(' / ', $parents);
