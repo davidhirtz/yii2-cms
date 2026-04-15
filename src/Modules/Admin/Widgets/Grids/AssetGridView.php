@@ -52,7 +52,6 @@ class AssetGridView extends GridView
     protected function configure(): void
     {
         $this->attributes['id'] ??= 'asset-grid-view';
-        $this->model ??= Asset::instance();
 
         $this->provider ??= new ActiveDataProvider([
             'query' => $this->getParentAssetQuery(),

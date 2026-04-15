@@ -43,7 +43,6 @@ class SectionGridView extends GridView
     protected function configure(): void
     {
         $this->attributes['id'] ??= 'section-grid-view';
-        $this->model ??= Section::instance();
         $this->orderRoute = ['order', 'entry' => $this->provider->entry->id];
 
         $this->columns ??= [

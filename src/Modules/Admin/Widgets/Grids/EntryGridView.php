@@ -67,8 +67,7 @@ class EntryGridView extends GridView
             $this->showCategoryDropdown = $enableCategories;
         }
 
-        $this->model ??= Entry::instance();
-        $types = $this->model::getTypes();
+        $types = Entry::instance()::getTypes();
 
         if ($enableCategories && $this->provider->type) {
             $this->showCategories = $types[$this->provider->type]['showCategories'] ?? $this->showCategories;

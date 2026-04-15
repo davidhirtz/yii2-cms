@@ -17,7 +17,6 @@ use Hirtz\Skeleton\Widgets\Grids\Columns\Column;
 use Hirtz\Skeleton\Widgets\Grids\Columns\RelativeTimeColumn;
 use Hirtz\Skeleton\Widgets\Grids\GridView;
 use Hirtz\Skeleton\Widgets\Grids\Toolbars\FilterDropdown;
-use Hirtz\Skeleton\Widgets\Grids\Toolbars\GridFooter;
 use Hirtz\Skeleton\Widgets\Grids\Toolbars\GridSearchForm;
 use Override;
 use Stringable;
@@ -41,7 +40,6 @@ class CategoryGridView extends GridView
         $this->initAncestors();
 
         $this->attributes['id'] ??= 'category-grid-view';
-        $this->model ??= Category::instance();
 
         /** @see CategoryController::actionOrder() */
         $this->orderRoute = ['order', 'id' => $this->provider->category->id ?? null];
@@ -80,7 +78,7 @@ class CategoryGridView extends GridView
 
     protected function getCategoryDropdownItems(Category $category): array
     {
-        $attribute = $this->model->getI18nAttributeName('name');
+        $attribute = Category::instance()->getI18nAttributeName('name');
         return Category::indentNestedTree($category->getAncestors() + [$category], $attribute);
     }
 
