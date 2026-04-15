@@ -32,6 +32,8 @@ class EntryEntryCountColumn extends BadgeColumn
             'q' => null,
             'type' => null,
         ]);
+
+        parent::__construct();
     }
 
     public function isVisible(): bool

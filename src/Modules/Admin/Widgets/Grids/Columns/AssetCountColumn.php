@@ -25,6 +25,7 @@ class AssetCountColumn extends BadgeColumn
     public function __construct()
     {
         $this->url ??= fn (Entry|Section $model) => $model->getAdminRoute() + ['#' => 'assets'];
+        parent::__construct();
     }
 
     public function isVisible(): bool

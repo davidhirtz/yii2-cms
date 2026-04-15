@@ -23,6 +23,8 @@ class SectionCountColumn extends BadgeColumn
     {
         $this->property ??= 'section_count';
         $this->url ??= fn (Entry $model) => ['section/index', 'entry' => $model->id];
+
+        parent::__construct();
     }
 
     public function isVisible(): bool

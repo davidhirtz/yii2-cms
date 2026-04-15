@@ -23,6 +23,8 @@ class SectionEntryCountColumn extends BadgeColumn
     {
         $this->property ??= 'entry_count';
         $this->url ??= fn (Section $section) => $section->getAdminRoute() + ['#' => 'entries'];
+
+        parent::__construct();
     }
 
     public function isVisible(): bool

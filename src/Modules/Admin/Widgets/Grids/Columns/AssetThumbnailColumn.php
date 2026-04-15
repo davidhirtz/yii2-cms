@@ -13,8 +13,13 @@ use yii\base\Model;
 
 class AssetThumbnailColumn extends LinkColumn
 {
-    protected string $format = 'raw';
     public ?array $headerAttributes = ['class' => 'grid-col-thumbnail'];
+
+    public function __construct(array $config = [])
+    {
+        $this->format ??= 'raw';
+        parent::__construct($config);
+    }
 
     #[Override]
     protected function getValue(array|Model $model, string|int $key, int $index): string|Stringable

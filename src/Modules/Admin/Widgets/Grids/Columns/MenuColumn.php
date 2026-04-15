@@ -33,6 +33,8 @@ class MenuColumn extends LinkColumn
 
         $this->url ??= fn (Entry $model) => $model->getAdminRoute();
         $this->content ??= $this->getContent(...);
+
+        parent::__construct();
     }
 
     protected function getContent(Entry $entry): ?Stringable
