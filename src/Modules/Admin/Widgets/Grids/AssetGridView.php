@@ -21,9 +21,8 @@ use Hirtz\Skeleton\Widgets\Grids\Columns\ButtonColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\DraggableSortGridButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\ViewGridButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Column;
-use Hirtz\Skeleton\Widgets\Grids\Columns\PropertyColumn;
+use Hirtz\Skeleton\Widgets\Grids\Columns\DataColumn;
 use Hirtz\Skeleton\Widgets\Grids\GridView;
-use Hirtz\Skeleton\Widgets\Grids\Toolbars\GridToolbarItem;
 use Hirtz\Skeleton\Widgets\Grids\Traits\StatusGridViewTrait;
 use Hirtz\Skeleton\Widgets\Grids\Traits\TypeGridViewTrait;
 use Override;
@@ -67,13 +66,7 @@ class AssetGridView extends GridView
             $this->getButtonColumn(),
         ];
 
-        $this->footer ??= [
-            GridToolbarItem::make()
-                ->class('form-row')
-                ->content(Div::make()
-                    ->class('form-content btn-group')
-                    ->content(...$this->getFooterButtons())),
-        ];
+        $this->footer ??= $this->getFooterButtons();
 
         /**
          * @see EntryController::actionOrder()
@@ -89,6 +82,12 @@ class AssetGridView extends GridView
         return $this->parent->getAssets()
             ->andWhere(['section_id' => $this->parent instanceof Section ? $this->parent->id : null])
             ->with('file');
+    }
+
+    #[Override]
+    protected function getStatusDropdownItems(): array
+    {
+        return Asset::instance()::getStatuses();
     }
 
     /**
@@ -169,7 +168,7 @@ class AssetGridView extends GridView
 
     protected function getNameColumn(): ?Column
     {
-        return PropertyColumn::make()
+        return DataColumn::make()
             ->property(Asset::instance()->getI18nAttributeName('name'))
             ->content($this->getNameColumnContent(...));
     }

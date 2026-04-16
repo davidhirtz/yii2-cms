@@ -18,7 +18,7 @@ use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\DeleteGridButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\DraggableSortGridButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\ViewGridButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Column;
-use Hirtz\Skeleton\Widgets\Grids\Columns\PropertyColumn;
+use Hirtz\Skeleton\Widgets\Grids\Columns\DataColumn;
 use Hirtz\Skeleton\Widgets\Grids\GridView;
 use Hirtz\Skeleton\Widgets\Grids\Traits\StatusGridViewTrait;
 use Hirtz\Skeleton\Widgets\Grids\Traits\TypeGridViewTrait;
@@ -61,6 +61,12 @@ class SectionGridView extends GridView
         parent::configure();
     }
 
+    #[Override]
+    protected function getStatusDropdownItems(): array
+    {
+        return Section::instance()::getStatuses();
+    }
+
     protected function getCreateSectionButton(): string|Stringable
     {
         return CreateButton::make()
@@ -71,7 +77,7 @@ class SectionGridView extends GridView
 
     protected function getNameColumn(): ?Column
     {
-        return PropertyColumn::make()
+        return DataColumn::make()
             ->property('name')
             ->content($this->getNameColumnContent(...));
     }

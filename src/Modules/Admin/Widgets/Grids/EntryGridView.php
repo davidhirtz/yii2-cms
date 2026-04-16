@@ -23,7 +23,7 @@ use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\DeleteGridButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\DraggableSortGridButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\ViewGridButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Column;
-use Hirtz\Skeleton\Widgets\Grids\Columns\PropertyColumn;
+use Hirtz\Skeleton\Widgets\Grids\Columns\DataColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\RelativeTimeColumn;
 use Hirtz\Skeleton\Widgets\Grids\GridView;
 use Hirtz\Skeleton\Widgets\Grids\Toolbars\FilterDropdown;
@@ -114,7 +114,7 @@ class EntryGridView extends GridView
             ? FilterDropdown::make()
                 ->items($items)
                 ->label(Yii::t('cms', 'All Categories'))
-                ->param('category')
+                ->paramName('category')
                 ->filterable($this->showCategoryDropdownFilterMinCount && $this->showCategoryDropdownFilterMinCount < count($items))
             : null;
     }
@@ -124,9 +124,15 @@ class EntryGridView extends GridView
         return array_map(fn ($category) => $this->getNestedCategoryNames()[$category->id], $this->getCategories());
     }
 
+
+    protected function getStatusDropdownItems(): array
+    {
+        return Entry::instance()::getStatuses();
+    }
+
     protected function getNameColumn(): ?Column
     {
-        return PropertyColumn::make()
+        return DataColumn::make()
             ->property('name')
             ->content($this->getNameColumnContent(...));
     }
@@ -179,7 +185,7 @@ class EntryGridView extends GridView
 
     protected function publishDateColumn(): ?Column
     {
-        return PropertyColumn::make()
+        return DataColumn::make()
             ->property('publish_date')
             ->format('date');
     }

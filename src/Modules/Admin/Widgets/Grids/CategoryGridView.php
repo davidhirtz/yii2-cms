@@ -72,7 +72,7 @@ class CategoryGridView extends GridView
             ? FilterDropdown::make()
                 ->items($this->getCategoryDropdownItems($this->provider->category))
                 ->label($this->provider->category->getI18nAttribute('name'))
-                ->param('parent')
+                ->paramName('parent')
             : null;
     }
 

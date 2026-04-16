@@ -15,7 +15,7 @@ use Hirtz\Skeleton\Html\A;
 use Hirtz\Skeleton\Html\Div;
 use Hirtz\Skeleton\Widgets\Grids\Columns\BadgeColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Column;
-use Hirtz\Skeleton\Widgets\Grids\Columns\PropertyColumn;
+use Hirtz\Skeleton\Widgets\Grids\Columns\DataColumn;
 use Hirtz\Skeleton\Widgets\Grids\Traits\StatusGridViewTrait;
 use Hirtz\Skeleton\Widgets\Grids\Traits\TypeGridViewTrait;
 use Stringable;
@@ -30,9 +30,14 @@ trait CategoryGridTrait
     use TypeGridViewTrait;
     use ModuleTrait;
 
+    protected function getStatusDropdownItems(): array
+    {
+        return Category::instance()::getStatuses();
+    }
+
     protected function getNameColumn(): ?Column
     {
-        return PropertyColumn::make()
+        return DataColumn::make()
             ->property('name')
             ->property(Category::instance()->getI18nAttributeName('name'))
             ->content($this->getNameColumnContent(...));

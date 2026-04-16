@@ -108,9 +108,9 @@ class CmsSubmenu extends Widget
         return Submenu::make()
             ->title($this->title)
             ->url($this->url)
-            ->header(fn (Header $header) => $header
-                ->content(...$this->content)
-                ->subheading($this->renderFrontendLink()))
+//            ->header(fn (Header $header) => $header
+//                ->content(...$this->content)
+//                ->subheading($this->renderFrontendLink()))
             ->items($this->items);
     }
 
