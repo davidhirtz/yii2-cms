@@ -18,7 +18,7 @@ class EntryCreateButton extends CreateButton
         $this->url ??= [
             '/admin/cms/entry/create',
             ...Yii::$app->getRequest()->getQueryParams(),
-            'type' => Yii::$app->getView()->params['entryType'] ?? null,
+            'type' => $this->view->params['entryType'] ?? null,
         ];
 
         parent::__construct($config);

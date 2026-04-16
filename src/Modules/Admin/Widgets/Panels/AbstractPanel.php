@@ -9,7 +9,7 @@ use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Widgets\Panels\Traits\LinkButtonTrait;
-use Hirtz\Media\Modules\Admin\Widgets\Panels\Traits\DuplicateButtonTrait;
+use Hirtz\Skeleton\Widgets\Buttons\DuplicateButton;
 use Hirtz\Skeleton\Widgets\Panels\Panel;
 use Hirtz\Skeleton\Widgets\Widget;
 use Override;
@@ -21,7 +21,6 @@ use Stringable;
  */
 abstract class AbstractPanel extends Widget
 {
-    use DuplicateButtonTrait;
     use LinkButtonTrait;
 
     protected Asset|Category|Entry|Section $model;
@@ -38,6 +37,11 @@ abstract class AbstractPanel extends Widget
         return Panel::make()
             ->attribute('id', 'operations')
             ->buttons(...$this->getButtons());
+    }
+
+    protected function getDuplicateButton(): ?Stringable
+    {
+        return DuplicateButton::make()->model($this->model);
     }
 
     abstract protected function getButtons(): array;
