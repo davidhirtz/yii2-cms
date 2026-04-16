@@ -43,10 +43,10 @@ class SectionCountColumn extends BadgeColumn
     }
 
     #[Override]
-    protected function getBodyContent(array|Model $model, string|int $key, int $index): string|Stringable
+    protected function getBody(array|Model $model, string|int $key, int $index): string|Stringable
     {
         return $model instanceof Entry && $model->hasSectionsEnabled()
-            ? parent::getBodyContent($model, $key, $index)
+            ? parent::getBody($model, $key, $index)
             : '';
     }
 }

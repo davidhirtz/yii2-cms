@@ -9,6 +9,7 @@ use Hirtz\Cms\Modules\Admin\Widgets\Grids\EntryGridView;
 use Hirtz\Cms\Widgets\NavItems;
 use Hirtz\Skeleton\Widgets\Grids\Columns\LinkColumn;
 use Hirtz\Skeleton\Widgets\Icon;
+use Override;
 use Stringable;
 
 /**
@@ -16,25 +17,26 @@ use Stringable;
  */
 class MenuColumn extends LinkColumn
 {
-    public function __construct()
+    public function __construct(array $config = [])
     {
-        if ($this->isVisible()) {
-            $visible = false;
-
-            foreach ($this->grid->provider->getModels() as $model) {
-                if ($this->getIsMenuItem($model)) {
-                    $visible = true;
-                    break;
-                }
-            }
-
-            $this->visible($visible);
-        }
-
         $this->url ??= fn (Entry $model) => $model->getAdminRoute();
         $this->content ??= $this->getContent(...);
 
-        parent::__construct();
+        parent::__construct($config);
+    }
+
+    #[Override]
+    public function isVisible(): bool
+    {
+        if (parent::isVisible()) {
+            foreach ($this->grid->provider->getModels() as $model) {
+                if ($this->getIsMenuItem($model)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     protected function getContent(Entry $entry): ?Stringable

@@ -24,19 +24,20 @@ class AssetCountColumn extends BadgeColumn
 
     public function __construct()
     {
+        $this->property ??= 'asset_count';
         $this->url ??= fn (Entry|Section $model) => $model->getAdminRoute() + ['#' => 'assets'];
+
         parent::__construct();
     }
 
+    #[Override]
     public function isVisible(): bool
     {
-        if (!parent::isVisible()) {
-            return false;
-        }
-
-        foreach ($this->grid->provider->getModels() as $model) {
-            if ($model->hasAssetsEnabled()) {
-                return true;
+        if (parent::isVisible()) {
+            foreach ($this->grid->provider->getModels() as $model) {
+                if ($model->hasAssetsEnabled()) {
+                    return true;
+                }
             }
         }
 
@@ -44,10 +45,10 @@ class AssetCountColumn extends BadgeColumn
     }
 
     #[Override]
-    protected function getBodyContent(array|Model $model, string|int $key, int $index): string|Stringable
+    protected function getBody(array|Model $model, string|int $key, int $index): string|Stringable
     {
         return $model instanceof AssetParentInterface && $model->hasAssetsEnabled()
-            ? parent::getBodyContent($model, $key, $index)
+            ? parent::getBody($model, $key, $index)
             : '';
     }
 }
