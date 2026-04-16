@@ -77,7 +77,7 @@ class FileAssetGridView extends GridView
     {
         return LinkColumn::make()
             ->property('status')
-            ->header(false)
+            ->title(false)
             ->content($this->getStatusIcon(...))
             ->url(fn (Asset $asset) => $asset->getAdminRoute())
             ->centered();
