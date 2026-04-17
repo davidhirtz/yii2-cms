@@ -89,7 +89,7 @@ class EntryGridView extends GridView
         $this->header ??= [
             $this->showTypeDropdown ? $this->getTypeDropdown() : null,
             $this->showCategoryDropdown ? $this->getCategoryDropdown() : null,
-            GridSearchForm::make()->grid($this),
+            $this->getSearchInput(),
         ];
 
         $this->columns ??= [

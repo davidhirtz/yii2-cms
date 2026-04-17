@@ -46,7 +46,7 @@ class CategoryGridView extends GridView
 
         $this->header ??= [
             $this->getCategoryDropdown(),
-            GridSearchForm::make()->grid($this),
+            $this->getSearchInput(),
         ];
 
         $this->columns ??= [
