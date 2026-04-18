@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Widgets\Grids;
 
-use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Collections\CategoryCollection;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Modules\Admin\Controllers\EntryCategoryController;
@@ -14,6 +13,7 @@ use Hirtz\Cms\Modules\Admin\Helpers\FrontendLink;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\Columns\AssetCountColumn;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\Columns\EntryEntryCountColumn;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\Columns\SectionCountColumn;
+use Hirtz\Cms\Modules\Admin\Widgets\Grids\Toolbars\CategoryFilterDropdown;
 use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Skeleton\Html\A;
 use Hirtz\Skeleton\Html\Div;
@@ -26,11 +26,12 @@ use Hirtz\Skeleton\Widgets\Grids\Columns\Column;
 use Hirtz\Skeleton\Widgets\Grids\Columns\DataColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\RelativeTimeColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\StatusIconColumn;
+use Hirtz\Skeleton\Widgets\Grids\Columns\TypeColumn;
 use Hirtz\Skeleton\Widgets\Grids\GridView;
-use Hirtz\Skeleton\Widgets\Grids\Toolbars\FilterDropdown;
-use Hirtz\Skeleton\Widgets\Grids\Traits\TypeGridViewTrait;
+use Hirtz\Skeleton\Widgets\Grids\Toolbars\TypeFilterDropdown;
 use Override;
 use Stringable;
+use Traversable;
 use Yii;
 
 /**
@@ -41,12 +42,10 @@ use Yii;
 class EntryGridView extends GridView
 {
     use ModuleTrait;
-    use TypeGridViewTrait;
 
     protected bool $showUrl = true;
     protected ?bool $showCategories = null;
     protected bool $showCategoryDropdown = true;
-    protected int|false $showCategoryDropdownFilterMinCount = 1;
     protected bool $showTypeDropdown = true;
     protected bool $showDeleteButton = false;
     protected ?array $orderRoute = null;
@@ -59,7 +58,6 @@ class EntryGridView extends GridView
         $this->attributes['id'] ??= 'entry-grid-view';
 
         $enableCategories = static::getModule()->enableCategories;
-        $this->showCategories ??= $enableCategories && count($this->getCategories()) > 0;
 
         if ($this->showCategoryDropdown) {
             $this->showCategoryDropdown = $enableCategories;
@@ -72,10 +70,6 @@ class EntryGridView extends GridView
             $this->showCategoryDropdown = $types[$this->provider->type]['showCategoryDropdown'] ?? $this->showCategoryDropdown;
         }
 
-        if ($this->showTypeDropdown) {
-            $this->showTypeDropdown = count($types) > 1;
-        }
-
         /**
          * @see EntryController::actionOrder()
          * @see EntryCategoryController::actionOrder()
@@ -85,8 +79,8 @@ class EntryGridView extends GridView
             : ['order', 'parent' => $this->provider->parent?->id];
 
         $this->header ??= [
-            $this->showTypeDropdown ? $this->getTypeDropdown() : null,
-            $this->showCategoryDropdown ? $this->getCategoryDropdown() : null,
+            $this->getTypeDropdown(),
+            $this->getCategoryDropdown(),
             $this->getSearchInput(),
         ];
 
@@ -104,28 +98,36 @@ class EntryGridView extends GridView
         parent::configure();
     }
 
-    protected function getCategoryDropdown(): ?FilterDropdown
+    protected function getTypeDropdown(): ?Stringable
     {
-        $items = $this->getCategoryDropdownItems();
-
-        return $items
-            ? FilterDropdown::make()
-                ->items($items)
-                ->label(Yii::t('cms', 'All Categories'))
-                ->paramName('category')
-                ->filterable($this->showCategoryDropdownFilterMinCount && $this->showCategoryDropdownFilterMinCount < count($items))
-            : null;
+        return TypeFilterDropdown::make()
+            ->model(Entry::instance())
+            ->visible($this->showTypeDropdown);
     }
 
-    protected function getCategoryDropdownItems(): array
+    protected function getCategoryDropdown(): ?Stringable
     {
-        return array_map(fn ($category) => $this->getNestedCategoryNames()[$category->id], $this->getCategories());
+        return CategoryFilterDropdown::make()
+                ->visible($this->showCategoryDropdown);
     }
-
 
     protected function getStatusColumn(): ?Column
     {
         return StatusIconColumn::make();
+    }
+
+    protected function getTypeColumn(): ?Column
+    {
+        return $this->provider->type === null
+            ? TypeColumn::make()
+                ->url(fn (Entry $model) => $model->getAdminRoute())
+                ->visible($this->hasVisibleTypes())
+            : null;
+    }
+
+    protected function hasVisibleTypes(): bool
+    {
+        return count(Entry::instance()::getTypes()) > 1;
     }
 
     protected function getNameColumn(): ?Column
@@ -200,23 +202,19 @@ class EntryGridView extends GridView
             ->content($this->getButtonColumnContent(...));
     }
 
-    protected function getButtonColumnContent(Entry $entry): array
+    protected function getButtonColumnContent(Entry $entry): Traversable
     {
-        $buttons = [];
-
         if ($this->isSortable() && $this->webuser->can(Entry::AUTH_ENTRY_ORDER)) {
-            $buttons[] = $this->getSortableButton();
+            yield $this->getSortableButton();
         }
 
         if ($this->webuser->can(Entry::AUTH_ENTRY_UPDATE, ['entry' => $entry])) {
-            $buttons[] = $this->getUpdateButton($entry);
+            yield $this->getUpdateButton($entry);
         }
 
         if ($this->showDeleteButton && $this->webuser->can(Entry::AUTH_ENTRY_DELETE, ['entry' => $entry])) {
-            $buttons[] = $this->getDeleteButton($entry);
+            yield $this->getDeleteButton($entry);
         }
-
-        return $buttons;
     }
 
     protected function getSortableButton(): ?Stringable
@@ -241,7 +239,7 @@ class EntryGridView extends GridView
         $categoryIds = $entry->getCategoryIds();
         $categories = [];
 
-        foreach ($this->getCategories() as $category) {
+        foreach (CategoryCollection::getAll() as $category) {
             if ($category->hasEntriesEnabled() && in_array($category->id, $categoryIds, true)) {
                 $categories[] = Button::make()
                     ->secondary()
@@ -256,19 +254,6 @@ class EntryGridView extends GridView
                 ->class('btn-group')
                 ->content(...$categories)
             : null;
-    }
-
-    protected function getCategories(): array
-    {
-        return CategoryCollection::getAll();
-    }
-
-    protected function getNestedCategoryNames(): array
-    {
-        return $this->categoryNames ??= Category::indentNestedTree(
-            CategoryCollection::getAll(),
-            Category::instance()->getI18nAttributeName('name'),
-        );
     }
 
     protected function getUrl(Entry $entry): ?Stringable

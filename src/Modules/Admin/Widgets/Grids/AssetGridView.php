@@ -23,9 +23,8 @@ use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\ViewGridButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Column;
 use Hirtz\Skeleton\Widgets\Grids\Columns\DataColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\StatusIconColumn;
+use Hirtz\Skeleton\Widgets\Grids\Columns\TypeColumn;
 use Hirtz\Skeleton\Widgets\Grids\GridView;
-use Hirtz\Skeleton\Widgets\Grids\Traits\StatusGridViewTrait;
-use Hirtz\Skeleton\Widgets\Grids\Traits\TypeGridViewTrait;
 use Override;
 use Stringable;
 use Yii;
@@ -43,7 +42,6 @@ class AssetGridView extends GridView
     use AssetGridViewTrait;
     use ModuleTrait;
     use FileGridViewTrait;
-    use TypeGridViewTrait;
 
     protected string $layout = '{header}{items}{footer}';
 
@@ -120,6 +118,12 @@ class AssetGridView extends GridView
     protected function getStatusColumn(): ?Column
     {
         return StatusIconColumn::make();
+    }
+
+    protected function getTypeColumn(): ?Column
+    {
+        return TypeColumn::make()
+            ->url(fn (Asset $model) => $model->getAdminRoute());
     }
 
     protected function getButtonColumn(): ?Column

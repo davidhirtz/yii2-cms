@@ -16,8 +16,9 @@ use Hirtz\Skeleton\Html\Div;
 use Hirtz\Skeleton\Widgets\Grids\Columns\BadgeColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Column;
 use Hirtz\Skeleton\Widgets\Grids\Columns\DataColumn;
+use Hirtz\Skeleton\Widgets\Grids\Columns\LinkColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\StatusIconColumn;
-use Hirtz\Skeleton\Widgets\Grids\Traits\TypeGridViewTrait;
+use Hirtz\Skeleton\Widgets\Grids\Columns\TypeColumn;
 use Stringable;
 use Yii;
 
@@ -26,12 +27,25 @@ use Yii;
  */
 trait CategoryGridTrait
 {
-    use TypeGridViewTrait;
     use ModuleTrait;
 
     protected function getStatusColumn(): ?Column
     {
         return StatusIconColumn::make();
+    }
+
+    protected function getTypeColumn(): ?Column
+    {
+        return $this->provider->type === null
+            ? TypeColumn::make()
+                ->url(fn (Category $model) => $model->getAdminRoute())
+                ->visible($this->hasVisibleTypes())
+            : null;
+    }
+
+    protected function hasVisibleTypes(): bool
+    {
+        return count(Category::instance()::getTypes()) > 1;
     }
 
     protected function getNameColumn(): ?Column

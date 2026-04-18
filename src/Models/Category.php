@@ -12,6 +12,7 @@ use Hirtz\Skeleton\Behaviors\RedirectBehavior;
 use Hirtz\Skeleton\Models\Interfaces\SitemapInterface;
 use Hirtz\Skeleton\Models\Trail;
 use Hirtz\Skeleton\Models\Traits\NestedTreeTrait;
+use Override;
 use Yii;
 use yii\db\ActiveQuery;
 
@@ -47,7 +48,7 @@ class Category extends ActiveRecord implements SitemapInterface
     public string|false $contentType = false;
     public array|string|null $slugTargetAttribute = 'slug';
 
-    #[\Override]
+    #[Override]
     public function behaviors(): array
     {
         return [
@@ -56,7 +57,7 @@ class Category extends ActiveRecord implements SitemapInterface
         ];
     }
 
-    #[\Override]
+    #[Override]
     public function rules(): array
     {
         return [
@@ -104,7 +105,7 @@ class Category extends ActiveRecord implements SitemapInterface
         ];
     }
 
-    #[\Override]
+    #[Override]
     public function beforeValidate(): bool
     {
         $this->ensureSlug();
@@ -116,7 +117,7 @@ class Category extends ActiveRecord implements SitemapInterface
         return parent::beforeValidate();
     }
 
-    #[\Override]
+    #[Override]
     public function beforeSave($insert): bool
     {
         if (!$this->slug) {
@@ -136,7 +137,7 @@ class Category extends ActiveRecord implements SitemapInterface
      * need to be added to the new parent categories, if {@see \Hirtz\Cms\Module::$inheritNestedCategories}
      * is true. Previous parent {@see EntryCategory} relations will not be deleted.
      */
-    #[\Override]
+    #[Override]
     public function afterSave($insert, $changedAttributes): void
     {
         if (!$insert) {
@@ -150,7 +151,7 @@ class Category extends ActiveRecord implements SitemapInterface
         parent::afterSave($insert, $changedAttributes);
     }
 
-    #[\Override]
+    #[Override]
     public function beforeDelete(): bool
     {
         if ($isValid = parent::beforeDelete()) {
@@ -164,7 +165,7 @@ class Category extends ActiveRecord implements SitemapInterface
         return $isValid;
     }
 
-    #[\Override]
+    #[Override]
     public function afterDelete(): void
     {
         $this->updateNestedTreeAfterDelete();
@@ -248,7 +249,7 @@ class Category extends ActiveRecord implements SitemapInterface
         }
     }
 
-    #[\Override]
+    #[Override]
     public static function find(): CategoryQuery
     {
         return Yii::createObject(CategoryQuery::class, [static::class]);
@@ -266,7 +267,7 @@ class Category extends ActiveRecord implements SitemapInterface
             ->orderBy(['id' => SORT_ASC]);
     }
 
-    #[\Override]
+    #[Override]
     public function getTrailAttributes(): array
     {
         return array_diff(parent::getTrailAttributes(), [
@@ -328,7 +329,7 @@ class Category extends ActiveRecord implements SitemapInterface
         return static::getModule()->inheritNestedCategories;
     }
 
-    #[\Override]
+    #[Override]
     public function attributeLabels(): array
     {
         return [
@@ -343,13 +344,13 @@ class Category extends ActiveRecord implements SitemapInterface
         ];
     }
 
-    #[\Override]
+    #[Override]
     public function formName(): string
     {
         return 'Category';
     }
 
-    #[\Override]
+    #[Override]
     public static function tableName(): string
     {
         return static::getModule()->getTableName('category');

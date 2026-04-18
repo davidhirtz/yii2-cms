@@ -20,8 +20,8 @@ use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\ViewGridButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Column;
 use Hirtz\Skeleton\Widgets\Grids\Columns\DataColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\StatusIconColumn;
+use Hirtz\Skeleton\Widgets\Grids\Columns\TypeColumn;
 use Hirtz\Skeleton\Widgets\Grids\GridView;
-use Hirtz\Skeleton\Widgets\Grids\Traits\TypeGridViewTrait;
 use Override;
 use Stringable;
 use Yii;
@@ -34,7 +34,6 @@ use yii\helpers\StringHelper;
 class SectionGridView extends GridView
 {
     use ModuleTrait;
-    use TypeGridViewTrait;
 
     public bool $showDeleteButton = false;
 
@@ -71,6 +70,12 @@ class SectionGridView extends GridView
     protected function getStatusColumn(): ?Column
     {
         return StatusIconColumn::make();
+    }
+
+    protected function getTypeColumn(): ?Column
+    {
+        return TypeColumn::make()
+                ->url(fn (Section $model) => $model->getAdminRoute());
     }
 
     protected function getNameColumn(): ?Column

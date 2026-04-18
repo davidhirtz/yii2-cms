@@ -38,7 +38,7 @@ class AdminLink extends Widget
         parent::configure();
     }
 
-    public function renderContent(): string|Stringable
+    protected function renderContent(): string|Stringable
     {
         $route = $this->canUpdateModel() ? $this->model->getAdminRoute() : null;
         return $route ? A::make()->attributes($this->attributes)->href($route) : '';
