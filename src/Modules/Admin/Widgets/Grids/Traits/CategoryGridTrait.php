@@ -16,7 +16,7 @@ use Hirtz\Skeleton\Html\Div;
 use Hirtz\Skeleton\Widgets\Grids\Columns\BadgeColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Column;
 use Hirtz\Skeleton\Widgets\Grids\Columns\DataColumn;
-use Hirtz\Skeleton\Widgets\Grids\Traits\StatusGridViewTrait;
+use Hirtz\Skeleton\Widgets\Grids\Columns\StatusIconColumn;
 use Hirtz\Skeleton\Widgets\Grids\Traits\TypeGridViewTrait;
 use Stringable;
 use Yii;
@@ -26,13 +26,12 @@ use Yii;
  */
 trait CategoryGridTrait
 {
-    use StatusGridViewTrait;
     use TypeGridViewTrait;
     use ModuleTrait;
 
-    protected function getStatusDropdownItems(): array
+    protected function getStatusColumn(): ?Column
     {
-        return Category::instance()::getStatuses();
+        return StatusIconColumn::make();
     }
 
     protected function getNameColumn(): ?Column

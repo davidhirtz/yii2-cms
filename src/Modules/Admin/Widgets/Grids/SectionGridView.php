@@ -19,8 +19,8 @@ use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\DraggableSortGridButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\ViewGridButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Column;
 use Hirtz\Skeleton\Widgets\Grids\Columns\DataColumn;
+use Hirtz\Skeleton\Widgets\Grids\Columns\StatusIconColumn;
 use Hirtz\Skeleton\Widgets\Grids\GridView;
-use Hirtz\Skeleton\Widgets\Grids\Traits\StatusGridViewTrait;
 use Hirtz\Skeleton\Widgets\Grids\Traits\TypeGridViewTrait;
 use Override;
 use Stringable;
@@ -34,7 +34,6 @@ use yii\helpers\StringHelper;
 class SectionGridView extends GridView
 {
     use ModuleTrait;
-    use StatusGridViewTrait;
     use TypeGridViewTrait;
 
     public bool $showDeleteButton = false;
@@ -61,18 +60,17 @@ class SectionGridView extends GridView
         parent::configure();
     }
 
-    #[Override]
-    protected function getStatusDropdownItems(): array
-    {
-        return Section::instance()::getStatuses();
-    }
-
     protected function getCreateSectionButton(): string|Stringable
     {
         return CreateButton::make()
             ->label(Yii::t('cms', 'New Section'))
             ->roles([Section::AUTH_SECTION_CREATE])
             ->url(['/admin/cms/section/create', 'entry' => $this->provider->entry->id]);
+    }
+
+    protected function getStatusColumn(): ?Column
+    {
+        return StatusIconColumn::make();
     }
 
     protected function getNameColumn(): ?Column

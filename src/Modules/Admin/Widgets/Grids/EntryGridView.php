@@ -25,10 +25,9 @@ use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\ViewGridButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Column;
 use Hirtz\Skeleton\Widgets\Grids\Columns\DataColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\RelativeTimeColumn;
+use Hirtz\Skeleton\Widgets\Grids\Columns\StatusIconColumn;
 use Hirtz\Skeleton\Widgets\Grids\GridView;
 use Hirtz\Skeleton\Widgets\Grids\Toolbars\FilterDropdown;
-use Hirtz\Skeleton\Widgets\Grids\Toolbars\GridSearchForm;
-use Hirtz\Skeleton\Widgets\Grids\Traits\StatusGridViewTrait;
 use Hirtz\Skeleton\Widgets\Grids\Traits\TypeGridViewTrait;
 use Override;
 use Stringable;
@@ -42,7 +41,6 @@ use Yii;
 class EntryGridView extends GridView
 {
     use ModuleTrait;
-    use StatusGridViewTrait;
     use TypeGridViewTrait;
 
     protected bool $showUrl = true;
@@ -125,9 +123,9 @@ class EntryGridView extends GridView
     }
 
 
-    protected function getStatusDropdownItems(): array
+    protected function getStatusColumn(): ?Column
     {
-        return Entry::instance()::getStatuses();
+        return StatusIconColumn::make();
     }
 
     protected function getNameColumn(): ?Column

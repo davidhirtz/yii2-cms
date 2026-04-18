@@ -22,6 +22,7 @@ use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\DraggableSortGridButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\ViewGridButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Column;
 use Hirtz\Skeleton\Widgets\Grids\Columns\DataColumn;
+use Hirtz\Skeleton\Widgets\Grids\Columns\StatusIconColumn;
 use Hirtz\Skeleton\Widgets\Grids\GridView;
 use Hirtz\Skeleton\Widgets\Grids\Traits\StatusGridViewTrait;
 use Hirtz\Skeleton\Widgets\Grids\Traits\TypeGridViewTrait;
@@ -42,7 +43,6 @@ class AssetGridView extends GridView
     use AssetGridViewTrait;
     use ModuleTrait;
     use FileGridViewTrait;
-    use StatusGridViewTrait;
     use TypeGridViewTrait;
 
     protected string $layout = '{header}{items}{footer}';
@@ -84,12 +84,6 @@ class AssetGridView extends GridView
             ->with('file');
     }
 
-    #[Override]
-    protected function getStatusDropdownItems(): array
-    {
-        return Asset::instance()::getStatuses();
-    }
-
     /**
      * @see AssetController::actionCreate()
      */
@@ -121,6 +115,11 @@ class AssetGridView extends GridView
             ->text(Yii::t('cms', 'Link assets'))
             ->icon('images')
             ->href($this->getParentRoute('cms/asset/index'));
+    }
+
+    protected function getStatusColumn(): ?Column
+    {
+        return StatusIconColumn::make();
     }
 
     protected function getButtonColumn(): ?Column
