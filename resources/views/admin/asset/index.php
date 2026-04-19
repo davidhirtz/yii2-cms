@@ -13,7 +13,7 @@ declare(strict_types=1);
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Controllers\AssetController;
-use Hirtz\Cms\Modules\Admin\Widgets\Navs\CmsSubmenu;
+use Hirtz\Cms\Modules\Admin\Widgets\Navs\EntrySubmenu;
 use Hirtz\Media\Modules\Admin\Widgets\Grids\FileGridView;
 use Hirtz\Skeleton\Web\View;
 use Hirtz\Skeleton\Widgets\Grids\GridContainer;
@@ -21,7 +21,7 @@ use yii\data\ActiveDataProvider;
 
 $this->title(Yii::t('media', 'Assets'));
 
-echo CmsSubmenu::make()
+echo EntrySubmenu::make()
     ->model($parent);
 
 $this->addBreadcrumb(Yii::t('media', 'Assets'), [$parent instanceof Section

@@ -69,7 +69,8 @@ class SectionGridView extends GridView
 
     protected function getStatusColumn(): ?Column
     {
-        return StatusIconColumn::make();
+        return StatusIconColumn::make()
+            ->url(fn (Section $model) => $model->getAdminRoute());
     }
 
     protected function getTypeColumn(): ?Column

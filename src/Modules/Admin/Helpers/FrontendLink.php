@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Helpers;
 
+use Hirtz\Cms\Models\Asset;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
@@ -15,9 +16,11 @@ readonly class FrontendLink implements Stringable
 {
     protected ?Entry $entry;
 
-    public function __construct(protected Category|Entry|Section $model)
+    public function __construct(protected Asset|Category|Entry|Section $model)
     {
-        if ($this->model instanceof Section) {
+        if ($this->model instanceof Asset) {
+            $this->entry = $this->model->isEntryAsset() ? $this->model->entry : $this->model->section->entry;
+        } elseif ($this->model instanceof Section) {
             $this->entry = $this->model->entry;
         } elseif ($this->model instanceof Entry) {
             $this->entry = $this->model;
@@ -77,7 +80,7 @@ readonly class FrontendLink implements Stringable
         return false;
     }
 
-    public static function tag(Category|Entry|Section $model, array $options = []): string
+    public static function tag(Asset|Category|Entry|Section $model, array $options = []): string
     {
         $link = Yii::$container->get(FrontendLink::class, [
             'model' => $model,

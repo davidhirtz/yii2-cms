@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 use Hirtz\Cms\Modules\Admin\Data\EntryActiveDataProvider;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\EntryGridView;
-use Hirtz\Cms\Modules\Admin\Widgets\Navs\CmsSubmenu;
+use Hirtz\Cms\Modules\Admin\Widgets\Navs\EntrySubmenu;
 use Hirtz\Cms\Modules\Admin\Widgets\Navs\EntryHeader;
 use Hirtz\Skeleton\Web\View;
 use Hirtz\Skeleton\Widgets\Grids\GridContainer;
@@ -20,7 +20,7 @@ echo EntryHeader::make()
     ->provider($provider);
 
 if ($provider->parent) {
-    echo CmsSubmenu::make()
+    echo EntrySubmenu::make()
         ->model($provider->parent);
 }
 

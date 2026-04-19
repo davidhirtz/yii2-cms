@@ -14,7 +14,7 @@ use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Controllers\AssetController;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\AssetActiveForm;
-use Hirtz\Cms\Modules\Admin\Widgets\Navs\CmsSubmenu;
+use Hirtz\Cms\Modules\Admin\Widgets\Navs\EntrySubmenu;
 use Hirtz\Cms\Modules\Admin\Widgets\Panels\AssetPanel;
 use Hirtz\Media\Models\File;
 use Hirtz\Skeleton\Web\View;
@@ -23,7 +23,7 @@ use Hirtz\Skeleton\Widgets\Forms\FormContainer;
 
 $this->title(Yii::t('cms', 'Edit Asset'));
 
-echo CmsSubmenu::make()
+echo EntrySubmenu::make()
     ->model($asset);
 
 echo FormContainer::make()

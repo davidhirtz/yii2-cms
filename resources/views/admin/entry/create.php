@@ -11,11 +11,15 @@ declare(strict_types=1);
 
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\EntryActiveForm;
-use Hirtz\Cms\Modules\Admin\Widgets\Navs\CmsSubmenu;
+use Hirtz\Cms\Modules\Admin\Widgets\Navs\EntryHeader;
+use Hirtz\Cms\Modules\Admin\Widgets\Navs\EntrySubmenu;
 use Hirtz\Skeleton\Web\View;
 use Hirtz\Skeleton\Widgets\Forms\FormContainer;
 
-echo CmsSubmenu::make()
+echo EntryHeader::make()
+    ->model($section);
+
+echo EntrySubmenu::make()
     ->title(Yii::t('cms', 'New Entry'));
 
 echo FormContainer::make()

@@ -14,16 +14,18 @@ use Hirtz\Cms\Modules\Admin\Controllers\SectionController;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\SectionActiveForm;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\AssetGridView;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\SectionLinkedEntryGridView;
-use Hirtz\Cms\Modules\Admin\Widgets\Navs\CmsSubmenu;
+use Hirtz\Cms\Modules\Admin\Widgets\Navs\EntryHeader;
+use Hirtz\Cms\Modules\Admin\Widgets\Navs\EntrySubmenu;
 use Hirtz\Cms\Modules\Admin\Widgets\Panels\SectionPanel;
 use Hirtz\Skeleton\Web\View;
 use Hirtz\Skeleton\Widgets\Forms\DeleteActiveForm;
 use Hirtz\Skeleton\Widgets\Forms\FormContainer;
 use Hirtz\Skeleton\Widgets\Grids\GridContainer;
 
-$this->title(Yii::t('cms', 'Edit Section'));
+echo EntryHeader::make()
+    ->model($section);
 
-echo CmsSubmenu::make()
+echo EntrySubmenu::make()
     ->model($section);
 
 echo FormContainer::make()

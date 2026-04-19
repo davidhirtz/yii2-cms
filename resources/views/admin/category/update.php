@@ -14,7 +14,7 @@ use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Modules\Admin\Data\CategoryActiveDataProvider;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\CategoryActiveForm;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\Traits\CategoryParentGridView;
-use Hirtz\Cms\Modules\Admin\Widgets\Navs\CmsSubmenu;
+use Hirtz\Cms\Modules\Admin\Widgets\Navs\EntrySubmenu;
 use Hirtz\Cms\Modules\Admin\Widgets\Panels\CategoryPanel;
 use Hirtz\Skeleton\Web\View;
 use Hirtz\Skeleton\Widgets\Forms\DeleteActiveForm;
@@ -24,7 +24,7 @@ use Hirtz\Skeleton\Widgets\Grids\GridContainer;
 $this->title(Yii::t('cms', 'Edit Category'));
 
 
-echo CmsSubmenu::make()
+echo EntrySubmenu::make()
     ->model($category);
 
 echo FormContainer::make()

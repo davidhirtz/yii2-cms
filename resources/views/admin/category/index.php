@@ -11,11 +11,11 @@ declare(strict_types=1);
 
 use Hirtz\Cms\Modules\Admin\Data\CategoryActiveDataProvider;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\CategoryGridView;
-use Hirtz\Cms\Modules\Admin\Widgets\Navs\CmsSubmenu;
+use Hirtz\Cms\Modules\Admin\Widgets\Navs\EntrySubmenu;
 use Hirtz\Skeleton\Web\View;
 use Hirtz\Skeleton\Widgets\Grids\GridContainer;
 
-echo CmsSubmenu::make()
+echo EntrySubmenu::make()
     ->title($provider->category?->getI18nAttribute('name') ?? Yii::t('cms', 'Categories'))
     ->model($provider->category);
 

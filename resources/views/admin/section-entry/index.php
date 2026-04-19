@@ -12,14 +12,14 @@ declare(strict_types=1);
 use Hirtz\Cms\Modules\Admin\Data\EntryActiveDataProvider;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\SectionEntryGridView;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\SectionParentEntryGridView;
-use Hirtz\Cms\Modules\Admin\Widgets\Navs\CmsSubmenu;
+use Hirtz\Cms\Modules\Admin\Widgets\Navs\EntrySubmenu;
 use Hirtz\Skeleton\Web\View;
 use Hirtz\Skeleton\Widgets\Grids\GridContainer;
 
 
 $this->title(Yii::t('cms', 'Link entries'));
 
-echo CmsSubmenu::make()
+echo EntrySubmenu::make()
     ->model($provider->section);
 
 $this->breadcrumbs([
