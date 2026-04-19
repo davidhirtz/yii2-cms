@@ -63,6 +63,7 @@ class CmsNavItem extends NavItem
             }
         } else {
             $this->addItem(NavItem::make()
+                ->icon('newspaper')
                 ->label(Yii::t('cms', 'Entries'))
                 ->url(['/admin/cms/entry/index'])
                 ->roles([Entry::AUTH_ENTRY_UPDATE])
@@ -73,6 +74,7 @@ class CmsNavItem extends NavItem
     protected function addCategorySubnavItems(): void
     {
         $this->addItem(NavItem::make()
+            ->icon('folder-open')
             ->label(Yii::t('cms', 'Categories'))
             ->url(['/admin/cms/category/index'])
             ->roles([Category::AUTH_CATEGORY_UPDATE])

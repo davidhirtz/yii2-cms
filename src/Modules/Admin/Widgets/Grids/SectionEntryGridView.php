@@ -8,7 +8,10 @@ use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\Buttons\SectionEntryDeleteButton;
 use Hirtz\Skeleton\Widgets\Buttons\Button;
+use Hirtz\Skeleton\Widgets\Grids\Toolbars\TypeFilterDropdown;
 use Override;
+use Stringable;
+use Traversable;
 use Yii;
 
 class SectionEntryGridView extends EntryGridView
@@ -25,13 +28,20 @@ class SectionEntryGridView extends EntryGridView
         parent::configure();
     }
 
-    #[Override]
+    protected function getTypeDropdown(): ?Stringable
+    {
+        return TypeFilterDropdown::make()
+            ->items($this->getTypeDropdownItems())
+            ->model(Entry::instance())
+            ->visible($this->showTypeDropdown);
+    }
+
     protected function getTypeDropdownItems(): array
     {
-        $items = parent::getTypeDropdownItems();
+        $items = Entry::instance()::getTypes();
         $entryTypes = $this->provider->section->getEntriesTypes();
 
-        if ($entryTypes) {
+        if ($entryTypes !== null) {
             $items = array_intersect_key($items, array_flip($entryTypes));
         }
 
@@ -43,34 +53,28 @@ class SectionEntryGridView extends EntryGridView
      * @see SectionEntryController::actionDelete()
      */
     #[Override]
-    protected function getButtonColumnContent(Entry $entry): array
+    protected function getButtonColumnContent(Entry $entry): Traversable
     {
         $canUpdate = Yii::$app->getUser()->can(Section::AUTH_SECTION_UPDATE, [
             'section' => $this->provider->section,
         ]);
 
         if (!$canUpdate) {
-            return [];
+            yield;
         }
 
         if ($entry->sectionEntry) {
-            return [
-                SectionEntryDeleteButton::make($entry, $this->provider->section),
-            ];
+            yield SectionEntryDeleteButton::make($entry, $this->provider->section);
         }
 
         $allowedTypes = $this->provider->section->getEntriesTypes();
 
-        if ($allowedTypes && !in_array($entry->type, $allowedTypes, true)) {
-            return [];
-        }
-
-        return [
-            Button::make()
+        if ($allowedTypes === null || in_array($entry->type, $allowedTypes, true)) {
+            yield Button::make()
                 ->primary()
                 ->icon('star')
                 ->tooltip(Yii::t('cms', 'Add to section'))
-                ->post(['section-entry/create', 'section' => $this->provider->section->id, 'entry' => $entry->id]),
-        ];
+                ->post(['section-entry/create', 'section' => $this->provider->section->id, 'entry' => $entry->id]);
+        }
     }
 }

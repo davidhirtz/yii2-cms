@@ -9,11 +9,12 @@ use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Controllers\SectionEntryController;
 use Hirtz\Cms\Modules\Admin\Data\EntryActiveDataProvider;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\Buttons\SectionEntryDeleteButton;
-use Hirtz\Skeleton\Html\Div;
+use Hirtz\Skeleton\Widgets\Buttons\ButtonGroup;
 use Hirtz\Skeleton\Widgets\Buttons\CreateButton;
 use Hirtz\Skeleton\Widgets\Grids\Toolbars\GridToolbarItem;
 use Override;
 use Stringable;
+use Traversable;
 use Yii;
 use yii\helpers\Inflector;
 
@@ -63,8 +64,8 @@ class SectionLinkedEntryGridView extends EntryGridView
         $this->footer ??= [
             GridToolbarItem::make()
                 ->class('form-row')
-                ->content(Div::make()
-                    ->class('form-content btn-group')
+                ->content(ButtonGroup::make()
+                    ->class('form-content')
                     ->content($this->getSelectEntriesButton())),
         ];
 
@@ -86,20 +87,16 @@ class SectionLinkedEntryGridView extends EntryGridView
     }
 
     #[Override]
-    protected function getButtonColumnContent(Entry $entry): array
+    protected function getButtonColumnContent(Entry $entry): Traversable
     {
         if (!$this->webuser->can(Section::AUTH_SECTION_UPDATE, ['entry' => $entry])) {
-            return [];
+            yield;
         }
-
-        $buttons = [];
 
         if ($this->isSortable() && $this->provider->getCount() > 1) {
-            $buttons[] = $this->getSortableButton();
+            yield $this->getSortableButton();
         }
 
-        $buttons[] = Yii::createObject(SectionEntryDeleteButton::class, [$entry, $this->provider->section]);
-
-        return $buttons;
+        yield Yii::createObject(SectionEntryDeleteButton::class, [$entry, $this->provider->section]);
     }
 }

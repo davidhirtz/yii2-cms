@@ -9,6 +9,7 @@ use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Controllers\SectionController;
 use Hirtz\Skeleton\Widgets\Buttons\Button;
 use Override;
+use Traversable;
 use Yii;
 
 class SectionParentEntryGridView extends EntryGridView
@@ -26,30 +27,24 @@ class SectionParentEntryGridView extends EntryGridView
      * @see SectionController::actionMove()
      */
     #[Override]
-    protected function getButtonColumnContent(Entry $entry): array
+    protected function getButtonColumnContent(Entry $entry): Traversable
     {
-        $user = Yii::$app->getUser();
-
-        if (!$user->can(Section::AUTH_SECTION_UPDATE, ['entry' => $entry])) {
-            return [];
+        if (!$this->webuser->can(Section::AUTH_SECTION_UPDATE, ['entry' => $entry])) {
+            yield;
         }
 
-        $buttons = [];
-
-        if ($user->can(Section::AUTH_SECTION_UPDATE, ['section' => $this->section])) {
-            $buttons[] = Button::make()
+        if ($this->webuser->can(Section::AUTH_SECTION_UPDATE, ['section' => $this->section])) {
+            yield Button::make()
                 ->primary()
                 ->icon('copy')
                 ->tooltip(Yii::t('cms', 'Move Section'))
                 ->post(['move', 'id' => $this->section->id, 'entry' => $entry->id], true);
         }
 
-        $buttons[] = Button::make()
+        yield Button::make()
             ->primary()
             ->icon('paste')
             ->tooltip(Yii::t('cms', 'Copy Section'))
             ->post(['duplicate', 'id' => $this->section->id, 'entry' => $entry->id], true);
-
-        return $buttons;
     }
 }

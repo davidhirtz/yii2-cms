@@ -18,6 +18,7 @@ use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Skeleton\Html\A;
 use Hirtz\Skeleton\Html\Div;
 use Hirtz\Skeleton\Widgets\Buttons\Button;
+use Hirtz\Skeleton\Widgets\Buttons\ButtonGroup;
 use Hirtz\Skeleton\Widgets\Grids\Columns\ButtonColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\DeleteGridButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\DraggableSortGridButton;
@@ -108,7 +109,7 @@ class EntryGridView extends GridView
     protected function getCategoryDropdown(): ?Stringable
     {
         return CategoryFilterDropdown::make()
-                ->visible($this->showCategoryDropdown);
+            ->visible($this->showCategoryDropdown);
     }
 
     protected function getStatusColumn(): ?Column
@@ -249,11 +250,7 @@ class EntryGridView extends GridView
             }
         }
 
-        return $categories
-            ? Div::make()
-                ->class('btn-group')
-                ->content(...$categories)
-            : null;
+        return $categories ? ButtonGroup::make()->content(...$categories) : null;
     }
 
     protected function getUrl(Entry $entry): ?Stringable

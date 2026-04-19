@@ -13,7 +13,7 @@ use Hirtz\Cms\Modules\Admin\Widgets\Grids\Columns\AssetThumbnailColumn;
 use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Media\Models\File;
 use Hirtz\Media\Modules\Admin\Widgets\Grids\Traits\AssetGridViewTrait;
-use Hirtz\Media\Modules\Admin\Widgets\Grids\Traits\FileGridViewTrait;
+use Hirtz\Media\Modules\Admin\Widgets\Buttons\FileButtonsTrait;
 use Hirtz\Skeleton\Html\A;
 use Hirtz\Skeleton\Html\Div;
 use Hirtz\Skeleton\Widgets\Buttons\Button;
@@ -41,7 +41,7 @@ class AssetGridView extends GridView
 {
     use AssetGridViewTrait;
     use ModuleTrait;
-    use FileGridViewTrait;
+    use FileButtonsTrait;
 
     protected string $layout = '{header}{items}{footer}';
 
