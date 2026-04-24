@@ -48,6 +48,7 @@ class EntryHeader extends Header
             $entry = $this->model instanceof Section ? $this->model->entry : $this->model;
 
             $this->title ??= $entry->getOldAttribute($entry->getI18nAttributeName('name'));
+            $this->subheading ??= FrontendLink::make()->model($this->model);
             $this->url ??= $entry->getAdminRoute();
 
             if ($this->model instanceof Section) {
@@ -62,6 +63,7 @@ class EntryHeader extends Header
 
         if ($this->provider) {
             $typeOptions = Entry::instance()::getTypes()[$this->provider->type] ?? null;
+
             $this->subtitle ??= $this->getPaginationSubtitle($this->provider);
             $this->title ??= $typeOptions['plural'] ?? $typeOptions['name'] ?? Yii::t('cms', 'Entries');
             $this->url ??= ['/admin/cms/entry/index', 'type' => $this->provider?->type];

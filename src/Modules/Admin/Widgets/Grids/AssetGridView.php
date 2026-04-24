@@ -112,7 +112,7 @@ class AssetGridView extends GridView
             ->primary()
             ->text(Yii::t('cms', 'Link assets'))
             ->icon('images')
-            ->href($this->getParentRoute('cms/asset/index'));
+            ->url($this->getParentRoute('cms/asset/index'));
     }
 
     protected function getStatusColumn(): ?Column

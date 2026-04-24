@@ -30,7 +30,7 @@ class SectionPanel extends AbstractPanel
             ->primary()
             ->text(Yii::t('cms', 'Move / Copy'))
             ->icon('copy')
-            ->href(['entries', 'id' => $this->model->id]);
+            ->url(['entries', 'id' => $this->model->id]);
     }
 
     protected function isDraft(): bool

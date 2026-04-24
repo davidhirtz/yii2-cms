@@ -9,7 +9,7 @@ use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Modules\Admin\Controllers\EntryCategoryController;
 use Hirtz\Cms\Modules\Admin\Controllers\EntryController;
 use Hirtz\Cms\Modules\Admin\Data\EntryActiveDataProvider;
-use Hirtz\Cms\Modules\Admin\Helpers\FrontendLink;
+use Hirtz\Cms\Modules\Admin\Widgets\Navs\FrontendLink;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\Columns\AssetCountColumn;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\Columns\EntryEntryCountColumn;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\Columns\SectionCountColumn;
@@ -255,13 +255,9 @@ class EntryGridView extends GridView
 
     protected function getUrl(Entry $entry): ?Stringable
     {
-        $link = FrontendLink::tag($entry);
-
-        return $link
-            ? Div::make()
-                ->class('d-none d-md-block small')
-                ->content($link)
-            : null;
+        return Div::make()
+            ->class('d-none d-md-block small')
+            ->content(FrontendLink::make()->model($entry));
     }
 
     #[Override]

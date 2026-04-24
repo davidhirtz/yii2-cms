@@ -559,7 +559,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
 
         if ($this->hasInvalidParentStatus()) {
             $parentStatus = static::getStatuses()[$this->parent_status]['name'] ?? '';
-            $status .= " (" . $this->getAttributeLabel('parent_status') . ": $parentStatus)";
+            $status .= ' (' . $this->getAttributeLabel('parent_status') . ": $parentStatus)";
         }
 
         return $status;

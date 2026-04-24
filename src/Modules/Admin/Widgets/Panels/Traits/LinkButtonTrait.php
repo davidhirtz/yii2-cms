@@ -29,7 +29,7 @@ trait LinkButtonTrait
             ->secondary()
             ->text(Yii::t('cms', 'Open website'))
             ->icon('external-link-alt')
-            ->href($url)
+            ->url($url)
             ->target('_blank');
     }
 

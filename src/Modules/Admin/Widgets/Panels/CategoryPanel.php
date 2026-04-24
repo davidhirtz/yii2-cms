@@ -31,7 +31,7 @@ class CategoryPanel extends AbstractPanel
                 ->primary()
                 ->text(Yii::t('cms', 'View All Entries'))
                 ->icon('book')
-                ->href(['entry/index', 'category' => $this->model->id])
+                ->url(['entry/index', 'category' => $this->model->id])
             : null;
     }
 
@@ -41,6 +41,6 @@ class CategoryPanel extends AbstractPanel
             ->primary()
             ->text(Yii::t('cms', 'New Category'))
             ->icon('plus')
-            ->href(['category/create', 'id' => $this->model->id]);
+            ->url(['category/create', 'id' => $this->model->id]);
     }
 }

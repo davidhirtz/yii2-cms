@@ -7,7 +7,7 @@ namespace Hirtz\Cms\Modules\Admin\Widgets\Grids\Traits;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Collections\CategoryCollection;
 use Hirtz\Cms\Modules\Admin\Data\CategoryActiveDataProvider;
-use Hirtz\Cms\Modules\Admin\Helpers\FrontendLink;
+use Hirtz\Cms\Modules\Admin\Widgets\Navs\FrontendLink;
 use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Skeleton\Helpers\Html;
 use Hirtz\Skeleton\Helpers\Url;
@@ -108,7 +108,7 @@ trait CategoryGridTrait
 
     protected function getUrl(Category $category): string
     {
-        $link = FrontendLink::tag($category);
+        $link = FrontendLink::make()->model($category);
         return $link ? Html::tag('div', $link, ['class' => 'd-none d-md-block small']) : '';
     }
 
