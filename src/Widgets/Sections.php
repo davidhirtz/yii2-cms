@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Widgets;
 
-use Closure;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Skeleton\Widgets\Widget;
@@ -19,7 +18,6 @@ class Sections extends Widget
     protected Entry $entry;
     protected string $viewFile = '_sections';
     protected array $viewParams = [];
-    protected ?Closure $visible = null;
 
     /**
      * @var T[]

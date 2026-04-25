@@ -62,7 +62,7 @@ class EntryHeader extends Header
         }
 
         if ($this->provider) {
-            $typeOptions = Entry::instance()::getTypes()[$this->provider->type] ?? null;
+            $typeOptions = $this->provider->type ? Entry::instance()::getTypes()[$this->provider->type] ?? null : null;
 
             $this->subtitle ??= $this->getPaginationSubtitle($this->provider);
             $this->title ??= $typeOptions['plural'] ?? $typeOptions['name'] ?? Yii::t('cms', 'Entries');
