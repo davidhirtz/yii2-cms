@@ -1,3 +1,7 @@
+## 2.4.14 (May 21, 2026)
+
+- Fixed UTF-8 incompatible `Entry::$description` sanitization
+- 
 ## 2.4.13 (May 21, 2026)
 
 - Removed UTF-8 incompatible `trim` sanitization for `Entry::$description`
