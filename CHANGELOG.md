@@ -1,3 +1,7 @@
+## 2.4.13 (May 21, 2026)
+
+- Removed UTF-8 incompatible `trim` sanitization for `Entry::$description`
+
 ## 2.4.12 (Apr 2, 2026)
 
 - Fixed `EntrySiteRelationsBuilder` overwrites of previously loaded related entries
