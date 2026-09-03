@@ -1,5 +1,9 @@
 ## 3.0 (in development)
 
+- Replaced `Bootstrap::getDefaultUrlRules()` with `Bootstrap::getDefaultRoutes()`
+- Added `Entry::ROUTE_INDEX` and `Entry::ROUTE_VIEW` route names
+- Added `ActiveRecord::getRouteName()`, `getRouteParams()`, `getUrl()` and `getDraftUrl()`;
+  `getRoute()` is unchanged and still used as a fallback when the named route is not registered
 - Replaced `Canvas` with `Artwork`
 
 ## 2.4.10 (Jan 27, 2026)

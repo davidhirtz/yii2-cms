@@ -9,7 +9,6 @@ use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Skeleton\Widgets\Attributes\Configure;
 use Hirtz\Skeleton\Widgets\Traits\ModelTrait;
-use Yii;
 
 /**
  * @property Category|Entry|Section $model
@@ -25,14 +24,11 @@ trait FrontendUrlTrait
             return;
         }
 
-        $route = $this->model->getRoute();
+        $url = $this->isDraft() ? $this->model->getDraftUrl() : $this->model->getUrl(true);
 
-        if ($route === false) {
-            return;
+        if ($url !== false) {
+            $this->url = $url;
         }
-
-        $manager = Yii::$app->getUrlManager();
-        $this->url = $this->isDraft() ? $manager->createDraftUrl($route) : $manager->createAbsoluteUrl($route);
     }
 
     protected function isDisabled(): bool
