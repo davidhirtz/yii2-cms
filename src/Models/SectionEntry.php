@@ -162,7 +162,7 @@ class SectionEntry extends \Hirtz\Skeleton\Db\ActiveRecord
     #[\Override]
     public function attributeLabels(): array
     {
-        return [...parent::attributeLabels(), 'section_id' => Lang::t('cms', 'SECTION_ENTRY_SECTION_ID_LABEL_ALT_2'), 'entry_id' => Lang::t('cms', 'SECTION_ENTRY_ENTRY_ID_LABEL'), 'updated_at' => Lang::t('cms', 'SECTION_ENTRY_SECTION_ID_LABEL')];
+        return [...parent::attributeLabels(), 'section_id' => Lang::t('cms', 'SECTION_ENTRY_SECTION_ID_LABEL'), 'entry_id' => Lang::t('cms', 'SECTION_ENTRY_ENTRY_ID_LABEL'), 'updated_at' => Lang::t('cms', 'SECTION_ENTRY_UPDATED_AT_LABEL')];
     }
 
     #[\Override]
