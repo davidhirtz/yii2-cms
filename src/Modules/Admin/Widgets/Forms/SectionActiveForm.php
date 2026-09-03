@@ -43,7 +43,7 @@ class SectionActiveForm extends ActiveForm
 
         $route = [
             ...$this->model->entry->getRoute(),
-            'language' => $manager->hasI18nUrls() ? $language : null,
+            'language' => $manager->i18nUrl ? $language : null,
             '#' => '',
         ];
 

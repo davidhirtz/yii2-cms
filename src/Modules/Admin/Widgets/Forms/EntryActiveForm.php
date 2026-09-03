@@ -59,7 +59,7 @@ class EntryActiveForm extends ActiveForm
     protected function getSlugBaseUrl(?string $language = null): string
     {
         $manager = Yii::$app->getUrlManager();
-        $route = ['/', 'language' => $manager->i18nUrl || $manager->i18nSubdomain ? $language : null];
+        $route = ['/', 'language' => $manager->i18nUrl ? $language : null];
         $url = $this->model->isEnabled() ? $manager->createAbsoluteUrl($route) : $manager->createDraftUrl($route);
 
         return rtrim((string) $url, '/') . '/';

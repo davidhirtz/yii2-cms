@@ -59,7 +59,7 @@ trait SitemapTrait
     protected function getSitemapLanguages(): array
     {
         $manager = Yii::$app->getUrlManager();
-        return $this->i18nAttributes && $manager->hasI18nUrls() ? array_keys($manager->languages) : [null];
+        return $this->i18nAttributes && $manager->i18nUrl ? array_keys($manager->languages) : [null];
     }
 
     /**

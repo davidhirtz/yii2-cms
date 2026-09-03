@@ -53,7 +53,7 @@ class MetaTags extends Widget
             && static::getModule()->enableEntryAssets;
 
         if (null === $this->languages) {
-            $this->languages = $this->urlManager->i18nUrl || $this->urlManager->i18nSubdomain
+            $this->languages = $this->urlManager->i18nUrl
                 ? array_keys($this->urlManager->languages)
                 : [];
         }
