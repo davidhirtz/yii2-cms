@@ -81,7 +81,7 @@ class EntryCategoryController extends AbstractController
         }
 
         $entryCategory->insert();
-        $this->errorOrSuccess($entryCategory, Lang::t('cms', 'ENTRY_CATEGORY_FLASH_CATEGORY_LINKED_TO_ENTRY'));
+        $this->errorOrSuccess($entryCategory, Lang::t('cms', 'ENTRY_CATEGORY_SUCCESS_LINKED'));
 
         return $this->redirectToIndex($entryCategory);
     }
@@ -98,7 +98,7 @@ class EntryCategoryController extends AbstractController
         }
 
         $entryCategory->delete();
-        $this->errorOrSuccess($entryCategory, Lang::t('cms', 'ENTRY_CATEGORY_FLASH_CATEGORY_REMOVED_FROM_ENTRY'));
+        $this->errorOrSuccess($entryCategory, Lang::t('cms', 'ENTRY_CATEGORY_SUCCESS_REMOVED'));
 
         return $this->redirectToIndex($entryCategory);
     }

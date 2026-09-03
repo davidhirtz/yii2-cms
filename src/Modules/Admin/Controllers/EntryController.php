@@ -105,7 +105,7 @@ class EntryController extends AbstractController
         }
 
         if ($entry->load($request->post()) && $entry->insert()) {
-            $this->success(Lang::t('cms', 'ENTRY_FLASH_THE_ENTRY_WAS_CREATED'));
+            $this->success(Lang::t('cms', 'ENTRY_SUCCESS_CREATED'));
             return $this->redirectToEntry($entry);
         }
 
@@ -121,7 +121,7 @@ class EntryController extends AbstractController
 
         if ($entry->load($request->post())) {
             if ($entry->update()) {
-                $this->success(Lang::t('cms', 'ENTRY_FLASH_THE_ENTRY_WAS_UPDATED'));
+                $this->success(Lang::t('cms', 'ENTRY_SUCCESS_UPDATED'));
             }
 
             if (!$entry->hasErrors()) {
@@ -157,7 +157,7 @@ class EntryController extends AbstractController
             }
 
             if ($isUpdated) {
-                $this->success(Lang::t('cms', 'ENTRY_FLASH_THE_SELECTED_ENTRIES_WERE_UPDATED'));
+                $this->success(Lang::t('cms', 'ENTRY_SUCCESS_SELECTED_UPDATED'));
             }
         }
 
@@ -175,7 +175,7 @@ class EntryController extends AbstractController
         if ($errors = $duplicate->getFirstErrors()) {
             $this->error($errors);
         } else {
-            $this->success(Lang::t('cms', 'ENTRY_FLASH_THE_ENTRY_WAS_DUPLICATED'));
+            $this->success(Lang::t('cms', 'ENTRY_SUCCESS_DUPLICATED'));
         }
 
         return $this->redirect(['update', 'id' => $duplicate->id ?? $entry->id]);
@@ -198,7 +198,7 @@ class EntryController extends AbstractController
         ]);
 
         if ($entry->isIndex()) {
-            $this->success(Lang::t('cms', 'ENTRY_FLASH_THE_ENTRY_WAS_UPDATED'));
+            $this->success(Lang::t('cms', 'ENTRY_SUCCESS_UPDATED'));
         }
 
         $this->error($entry);
@@ -210,7 +210,7 @@ class EntryController extends AbstractController
         $entry = $this->findEntry($id, Entry::AUTH_ENTRY_DELETE);
 
         if ($entry->delete()) {
-            $this->success(Lang::t('cms', 'ENTRY_FLASH_THE_ENTRY_WAS_DELETED'));
+            $this->success(Lang::t('cms', 'ENTRY_SUCCESS_DELETED'));
         } elseif ($errors = $entry->getFirstErrors()) {
             $this->error($errors);
         }

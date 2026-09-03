@@ -45,7 +45,7 @@ class EntryActionDropdown extends ActionDropdown
     {
         if ($this->model->entry_count > 1) {
             $modal = Modal::make()
-                ->title(Lang::t('cms', 'ENTRY_ACTION_DROPDOWN_DO_YOU_WANT_TO_DUPLICATE_THIS', [
+                ->title(Lang::t('cms', 'ENTRY_ACTION_DROPDOWN_DUPLICATE_TITLE', [
                     'n' => Yii::$app->getFormatter()->asInteger($this->model->entry_count),
                 ]))
                 ->footer(Button::make()
@@ -86,7 +86,7 @@ class EntryActionDropdown extends ActionDropdown
 
         $modal = Modal::make()
             ->title(Lang::t('cms', 'ENTRY_ACTION_DROPDOWN_MAKE_HOMEPAGE'))
-            ->content(Lang::t('cms', 'ENTRY_ACTION_DROPDOWN_PLEASE_CONFIRM_THAT_YOU_WANT_TO'))
+            ->content(Lang::t('cms', 'ENTRY_ACTION_DROPDOWN_MAKE_TITLE'))
             ->footer(Button::make()
                 ->danger()
                 ->post(['replace-index', 'id' => $this->model->id], true)

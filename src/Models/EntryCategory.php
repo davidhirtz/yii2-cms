@@ -4,21 +4,20 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Models;
 
-use Hirtz\Skeleton\I18n\Lang;
+use davidhirtz\yii2\datetime\DateTime;
 use Hirtz\Cms\Models\Traits\CategoryRelationTrait;
 use Hirtz\Cms\Models\Traits\EntryRelationTrait;
 use Hirtz\Cms\Modules\ModuleTrait;
-use davidhirtz\yii2\datetime\DateTime;
 use Hirtz\Skeleton\Behaviors\BlameableBehavior;
 use Hirtz\Skeleton\Behaviors\TimestampBehavior;
 use Hirtz\Skeleton\Behaviors\TrailBehavior;
+use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Skeleton\Log\ActiveRecordErrorLogger;
 use Hirtz\Skeleton\Models\Interfaces\TrailModelInterface;
 use Hirtz\Skeleton\Models\Traits\TrailModelTrait;
 use Hirtz\Skeleton\Models\Traits\UpdatedByUserTrait;
 use Hirtz\Skeleton\Validators\RelationValidator;
 use Override;
-use Yii;
 
 /**
  * Represents a relation between an entry and a category.
@@ -226,7 +225,7 @@ class EntryCategory extends \Hirtz\Skeleton\Db\ActiveRecord implements TrailMode
     #[Override]
     public function getTrailModelName(): string
     {
-        return Lang::t('cms', 'ENTRY_CATEGORY_ENTRY_CATEGORY');
+        return Lang::t('cms', 'ENTRY_CATEGORY_TRAIL_NAME');
     }
 
     #[Override]
@@ -238,7 +237,12 @@ class EntryCategory extends \Hirtz\Skeleton\Db\ActiveRecord implements TrailMode
     #[Override]
     public function attributeLabels(): array
     {
-        return [...parent::attributeLabels(), 'entry_id' => Lang::t('cms', 'ENTRY_CATEGORY_ENTRY_ID_LABEL_ALT'), 'category_id' => Lang::t('cms', 'ENTRY_CATEGORY_ENTRY_ID_LABEL_ALT_2'), 'updated_at' => Lang::t('cms', 'ENTRY_CATEGORY_ENTRY_ID_LABEL')];
+        return [
+            ...parent::attributeLabels(),
+            'entry_id' => Lang::t('cms', 'ENTRY_CATEGORY_ENTRY_ID_LABEL'),
+            'category_id' => Lang::t('cms', 'ENTRY_CATEGORY_CATEGORY_ID_LABEL'),
+            'updated_at' => Lang::t('cms', 'ENTRY_CATEGORY_UPDATED_AT_LABEL'),
+        ];
     }
 
     #[Override]

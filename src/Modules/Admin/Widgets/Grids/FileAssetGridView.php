@@ -175,7 +175,7 @@ class FileAssetGridView extends GridView
             $buttons[] = DeleteGridButton::make()
                 ->model($asset)
                 ->url($this->getI18nRoute(['cms/asset/delete', 'id' => $asset->id]))
-                ->title(Lang::t('media', 'COMMON_ARE_YOU_SURE_YOU_WANT_TO'));
+                ->title(Lang::t('media', 'COMMON_REMOVE_TITLE'));
         }
 
         return $buttons;

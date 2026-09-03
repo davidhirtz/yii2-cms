@@ -94,7 +94,7 @@ class SectionController extends AbstractController
         $section->loadDefaultValues();
 
         if (($this->autoCreateSection || $section->load(Yii::$app->getRequest()->post())) && $section->insert()) {
-            $this->success(Lang::t('cms', 'SECTION_FLASH_THE_SECTION_WAS_CREATED'));
+            $this->success(Lang::t('cms', 'SECTION_SUCCESS_CREATED'));
             return $this->redirect(['update', 'id' => $section->id]);
         }
 
@@ -109,7 +109,7 @@ class SectionController extends AbstractController
 
         if ($section->load(Yii::$app->getRequest()->post())) {
             if ($section->update()) {
-                $this->success(Lang::t('cms', 'SECTION_FLASH_THE_SECTION_WAS_UPDATED'));
+                $this->success(Lang::t('cms', 'SECTION_SUCCESS_UPDATED'));
             }
 
             if (!$section->hasErrors()) {
@@ -145,7 +145,7 @@ class SectionController extends AbstractController
             }
 
             if ($isUpdated) {
-                $this->success(Lang::t('cms', 'SECTION_FLASH_THE_SELECTED_SECTIONS_WERE_UPDATED'));
+                $this->success(Lang::t('cms', 'SECTION_SUCCESS_SELECTED_UPDATED'));
             }
         }
 
@@ -161,7 +161,7 @@ class SectionController extends AbstractController
         $section->populateEntryRelation($entry);
 
         if ($section->update()) {
-            $this->success(Lang::t('cms', 'SECTION_FLASH_THE_SECTION_WAS_MOVED'));
+            $this->success(Lang::t('cms', 'SECTION_SUCCESS_MOVED'));
         }
 
         if ($errors = $section->getFirstErrors()) {
@@ -186,7 +186,7 @@ class SectionController extends AbstractController
             return $this->redirect(['index', 'entry' => $section->entry_id]);
         }
 
-        $this->success(Lang::t('cms', 'SECTION_FLASH_THE_SECTION_WAS_DUPLICATED'));
+        $this->success(Lang::t('cms', 'SECTION_SUCCESS_DUPLICATED'));
         return $this->redirect(['update', 'id' => $duplicate->id]);
     }
 
@@ -199,7 +199,7 @@ class SectionController extends AbstractController
                 return '';
             }
 
-            $this->success(Lang::t('cms', 'SECTION_FLASH_THE_SECTION_WAS_DELETED'));
+            $this->success(Lang::t('cms', 'SECTION_SUCCESS_DELETED'));
         }
 
         if ($errors = $section->getFirstErrors()) {

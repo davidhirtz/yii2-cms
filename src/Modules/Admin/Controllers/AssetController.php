@@ -147,7 +147,7 @@ class AssetController extends AbstractController
         $asset = $this->findAsset($id, Asset::AUTH_ASSET_UPDATE);
 
         if ($asset->load(Yii::$app->getRequest()->post()) && $asset->update()) {
-            $this->success(Lang::t('cms', 'ASSET_FLASH_THE_ASSET_WAS_UPDATED'));
+            $this->success(Lang::t('cms', 'ASSET_SUCCESS_UPDATED'));
             return $this->redirectToParent($asset);
         }
 
@@ -161,7 +161,7 @@ class AssetController extends AbstractController
         $asset = $this->findAsset($id, Asset::AUTH_ASSET_DELETE);
 
         $asset->delete();
-        $this->errorOrSuccess($asset, Lang::t('cms', 'ASSET_FLASH_THE_ASSET_WAS_DELETED'));
+        $this->errorOrSuccess($asset, Lang::t('cms', 'ASSET_SUCCESS_DELETED'));
 
         return $this->redirectToParent($asset, true);
     }
@@ -179,7 +179,7 @@ class AssetController extends AbstractController
             return $this->redirect(['update', 'id' => $asset->id]);
         }
 
-        $this->success(Lang::t('cms', 'ASSET_FLASH_THE_ASSET_WAS_DUPLICATED'));
+        $this->success(Lang::t('cms', 'ASSET_SUCCESS_DUPLICATED'));
         return $this->redirect(['update', 'id' => $duplicate->id]);
     }
 

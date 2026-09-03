@@ -29,7 +29,7 @@ trait MenuFieldTrait
             foreach ($this->model->ancestors as $ancestor) {
                 if (!$ancestor->isMenuItem()) {
                     return $field->addClass('text-invalid')
-                        ->tooltip(Lang::t('cms', 'MENU_FIELD_PARENT_ENTRY_IS_NOT_A_MENU', [
+                        ->tooltip(Lang::t('cms', 'MENU_FIELD_PARENT_ENTRY', [
                             'entry' => $ancestor->getI18nAttribute('name'),
                         ]));
                 }

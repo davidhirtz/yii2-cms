@@ -87,7 +87,7 @@ class CategoryController extends AbstractController
         }
 
         if ($category->load(Yii::$app->getRequest()->post()) && $category->insert()) {
-            $this->success(Lang::t('cms', 'CATEGORY_FLASH_THE_CATEGORY_WAS_CREATED'));
+            $this->success(Lang::t('cms', 'CATEGORY_SUCCESS_CREATED'));
             return $this->redirect(['index', 'parent' => $category->parent_id]);
         }
 
@@ -102,7 +102,7 @@ class CategoryController extends AbstractController
 
         if ($category->load(Yii::$app->getRequest()->post())) {
             if ($category->update()) {
-                $this->success(Lang::t('cms', 'CATEGORY_FLASH_THE_CATEGORY_WAS_UPDATED'));
+                $this->success(Lang::t('cms', 'CATEGORY_SUCCESS_UPDATED'));
             }
 
             if (!$category->hasErrors()) {
@@ -125,7 +125,7 @@ class CategoryController extends AbstractController
         $category = $this->findCategory($id, Category::AUTH_CATEGORY_DELETE);
 
         if ($category->delete()) {
-            $this->success(Lang::t('cms', 'CATEGORY_FLASH_THE_CATEGORY_WAS_DELETED'));
+            $this->success(Lang::t('cms', 'CATEGORY_SUCCESS_DELETED'));
             return $this->redirect(['index', 'parent' => $category->parent_id]);
         }
 

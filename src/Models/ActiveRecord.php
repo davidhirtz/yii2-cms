@@ -251,10 +251,10 @@ abstract class ActiveRecord extends BaseActiveRecord implements
         return [
             ...parent::attributeLabels(),
             ...$this->getTraitAttributeLabels(),
-            'entry_id' => Lang::t('cms', 'ACTIVE_RECORD_ENTRY_ID_LABEL'),
-            'name' => Lang::t('cms', 'ACTIVE_RECORD_NAME_LABEL'),
-            'content' => Lang::t('cms', 'ACTIVE_RECORD_CONTENT_LABEL'),
-            'asset_count' => Lang::t('media', 'ACTIVE_RECORD_ASSET_COUNT_LABEL'),
+            'entry_id' => Lang::t('cms', 'MODEL_ENTRY_ID_LABEL'),
+            'name' => Lang::t('cms', 'MODEL_NAME_LABEL'),
+            'content' => Lang::t('cms', 'MODEL_CONTENT_LABEL'),
+            'asset_count' => Lang::t('media', 'MODEL_ASSET_COUNT_LABEL'),
         ];
     }
 }

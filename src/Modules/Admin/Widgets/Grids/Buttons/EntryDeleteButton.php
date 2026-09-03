@@ -28,7 +28,7 @@ class EntryDeleteButton extends DeleteButton
     {
         if ($this->model->isIndex()) {
             $this->label ??= Lang::t('cms', 'COMMON_DELETE_HOMEPAGE');
-            $this->title ??= Lang::t('cms', 'COMMON_ARE_YOU_SURE_YOU_WANT_TO');
+            $this->title ??= Lang::t('cms', 'COMMON_DELETE_TITLE');
         }
 
         $this->url ??= ['/admin/cms/entry/delete', 'id' => $this->model->id];

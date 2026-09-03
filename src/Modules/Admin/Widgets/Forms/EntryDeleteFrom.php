@@ -31,7 +31,7 @@ class EntryDeleteFrom extends Widget
     {
         if ($this->entry->isIndex()) {
             $this->title ??= Lang::t('cms', 'COMMON_DELETE_HOMEPAGE');
-            $this->confirm ??= Lang::t('cms', 'COMMON_ARE_YOU_SURE_YOU_WANT_TO', [
+            $this->confirm ??= Lang::t('cms', 'COMMON_DELETE_TITLE', [
                 'slug' => $this->entry::getModule()->entryIndexSlug,
             ]);
         }
@@ -39,14 +39,14 @@ class EntryDeleteFrom extends Widget
         $this->title ??= Lang::t('cms', 'ENTRY_DELETE_FROM_DELETE_ENTRY');
 
         if ($this->entry->entry_count) {
-            $this->message ??= Lang::t('cms', 'ENTRY_DELETE_FROM_FLASH_WARNING_DELETING_THIS_ENTRY_CANNOT_BE_ALT');
-            $this->confirm ??= Lang::t('cms', 'ENTRY_DELETE_FROM_CONFIRM_ARE_YOU_SURE_YOU_WANT_TO', [
+            $this->message ??= Lang::t('cms', 'ENTRY_DELETE_FROM_WARNING_DELETED_CANNOT');
+            $this->confirm ??= Lang::t('cms', 'ENTRY_DELETE_TITLE', [
                 'n' => $this->entry->entry_count,
             ]);
         }
 
         if ($this->entry->section_count) {
-            $this->message ??= Lang::t('cms', 'ENTRY_DELETE_FROM_FLASH_WARNING_DELETING_THIS_ENTRY_CANNOT_BE');
+            $this->message ??= Lang::t('cms', 'ENTRY_DELETE_FROM_WARNING_DELETED_DELETING');
         }
 
         parent::configure();

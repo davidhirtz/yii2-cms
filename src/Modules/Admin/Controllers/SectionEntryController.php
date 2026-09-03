@@ -90,7 +90,7 @@ class SectionEntryController extends AbstractController
             throw new BadRequestHttpException(current($sectionEntry->getFirstErrors()));
         }
 
-        $this->success(Lang::t('cms', 'SECTION_ENTRY_FLASH_ENTRY_ADDED_TO_SECTION'));
+        $this->success(Lang::t('cms', 'SECTION_ENTRY_SUCCESS_ADDED'));
         return $this->redirect($section->getAdminRoute() + ['#' => 'entries']);
     }
 
@@ -111,7 +111,7 @@ class SectionEntryController extends AbstractController
             throw new BadRequestHttpException(current($sectionEntry->getFirstErrors()));
         }
 
-        $this->success(Lang::t('cms', 'SECTION_ENTRY_FLASH_ENTRY_REMOVED_FROM_SECTION'));
+        $this->success(Lang::t('cms', 'SECTION_ENTRY_SUCCESS_REMOVED'));
         return $this->redirect($section->getAdminRoute() + ['#' => 'entries']);
     }
 

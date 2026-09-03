@@ -27,7 +27,7 @@ readonly class SectionEntryDeleteButton implements Stringable
     {
         return DeleteGridButton::make()
             ->url(['section-entry/delete', 'section' => $this->section->id, 'entry' => $this->entry->id])
-            ->title(Lang::t('cms', 'SECTION_ENTRY_DELETE_CONFIRM_ARE_YOU_SURE_YOU_WANT_TO'))
+            ->title(Lang::t('cms', 'SECTION_ENTRY_REMOVE_TITLE'))
             ->render();
     }
 }

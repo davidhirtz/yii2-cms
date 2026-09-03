@@ -31,7 +31,7 @@ class ReorderSectionEntries extends ReorderActiveRecords
     #[\Override]
     protected function afterReorder(): void
     {
-        Trail::createOrderTrail($this->section, Lang::t('cms', 'REORDER_SECTION_ENTRIES_LINKED_ENTRY_ORDER_CHANGED'));
+        Trail::createOrderTrail($this->section, Lang::t('cms', 'REORDER_SECTION_ENTRIES_LINKED'));
         parent::afterReorder();
     }
 }
