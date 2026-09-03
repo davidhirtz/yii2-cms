@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Controllers;
 
+use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Actions\DuplicateSection;
 use Hirtz\Cms\Models\Actions\ReorderSections;
 use Hirtz\Cms\Models\Category;
@@ -93,7 +94,7 @@ class SectionController extends AbstractController
         $section->loadDefaultValues();
 
         if (($this->autoCreateSection || $section->load(Yii::$app->getRequest()->post())) && $section->insert()) {
-            $this->success(Yii::t('cms', 'The section was created.'));
+            $this->success(Lang::t('cms', 'SECTION_FLASH_THE_SECTION_WAS_CREATED'));
             return $this->redirect(['update', 'id' => $section->id]);
         }
 
@@ -108,7 +109,7 @@ class SectionController extends AbstractController
 
         if ($section->load(Yii::$app->getRequest()->post())) {
             if ($section->update()) {
-                $this->success(Yii::t('cms', 'The section was updated.'));
+                $this->success(Lang::t('cms', 'SECTION_FLASH_THE_SECTION_WAS_UPDATED'));
             }
 
             if (!$section->hasErrors()) {
@@ -144,7 +145,7 @@ class SectionController extends AbstractController
             }
 
             if ($isUpdated) {
-                $this->success(Yii::t('cms', 'The selected sections were updated.'));
+                $this->success(Lang::t('cms', 'SECTION_FLASH_THE_SELECTED_SECTIONS_WERE_UPDATED'));
             }
         }
 
@@ -160,7 +161,7 @@ class SectionController extends AbstractController
         $section->populateEntryRelation($entry);
 
         if ($section->update()) {
-            $this->success(Yii::t('cms', 'The section was moved.'));
+            $this->success(Lang::t('cms', 'SECTION_FLASH_THE_SECTION_WAS_MOVED'));
         }
 
         if ($errors = $section->getFirstErrors()) {
@@ -185,7 +186,7 @@ class SectionController extends AbstractController
             return $this->redirect(['index', 'entry' => $section->entry_id]);
         }
 
-        $this->success(Yii::t('cms', 'The section was duplicated.'));
+        $this->success(Lang::t('cms', 'SECTION_FLASH_THE_SECTION_WAS_DUPLICATED'));
         return $this->redirect(['update', 'id' => $duplicate->id]);
     }
 
@@ -198,7 +199,7 @@ class SectionController extends AbstractController
                 return '';
             }
 
-            $this->success(Yii::t('cms', 'The section was deleted.'));
+            $this->success(Lang::t('cms', 'SECTION_FLASH_THE_SECTION_WAS_DELETED'));
         }
 
         if ($errors = $section->getFirstErrors()) {

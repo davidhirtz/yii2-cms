@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Widgets\Grids;
 
+use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Data\SectionActiveDataProvider;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\Columns\AssetCountColumn;
@@ -62,7 +63,7 @@ class SectionGridView extends GridView
     protected function getCreateSectionButton(): string|Stringable
     {
         return CreateButton::make()
-            ->label(Yii::t('cms', 'New Section'))
+            ->label(Lang::t('cms', 'SECTION_NEW_SECTION'))
             ->roles([Section::AUTH_SECTION_CREATE])
             ->url(['/admin/cms/section/create', 'entry' => $this->provider->entry->id]);
     }
@@ -112,7 +113,7 @@ class SectionGridView extends GridView
         }
 
         if (!$html) {
-            $html = Yii::t('cms', '[ No title ]');
+            $html = Lang::t('cms', 'COMMON_NO_TITLE');
             $cssClass = 'text-muted';
         }
 

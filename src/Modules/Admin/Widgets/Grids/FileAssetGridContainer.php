@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Widgets\Grids;
 
+use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Asset;
 use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Media\Modules\Admin\Widgets\Grids\Interfaces\FileRelationGridContainerInterface;
@@ -39,7 +40,7 @@ class FileAssetGridContainer extends Widget implements FileRelationGridContainer
 
     protected function getTitle(string $language): string
     {
-        $title = Yii::t('cms', 'Entries');
+        $title = Lang::t('cms', 'COMMON_ENTRIES');
 
         if ($language !== Yii::$app->language && self::getModule()->enableI18nTables) {
             $title .= ' (' . strtoupper($language) . ')';

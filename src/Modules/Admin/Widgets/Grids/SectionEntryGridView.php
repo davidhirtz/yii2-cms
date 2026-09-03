@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Widgets\Grids;
 
+use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\Buttons\SectionEntryDeleteButton;
@@ -73,7 +74,7 @@ class SectionEntryGridView extends EntryGridView
             yield Button::make()
                 ->primary()
                 ->icon('star')
-                ->tooltip(Yii::t('cms', 'Add to section'))
+                ->tooltip(Lang::t('cms', 'SECTION_ENTRY_ADD_TO_SECTION'))
                 ->post(['section-entry/create', 'section' => $this->provider->section->id, 'entry' => $entry->id]);
         }
     }

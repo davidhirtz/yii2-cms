@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Widgets\Navs;
 
+use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Modules\ModuleTrait;
@@ -36,8 +37,8 @@ class CmsNavItem extends NavItem
         }
 
         $this->label ??= $this->showCategories || $this->showEntryTypes
-            ? Yii::t('cms', 'Contents')
-            : Yii::t('cms', 'Entries');
+            ? Lang::t('cms', 'CMS_NAV_ITEM_CONTENTS')
+            : Lang::t('cms', 'COMMON_ENTRIES');
 
         $this->addEntrySubnavItems();
 
@@ -64,7 +65,7 @@ class CmsNavItem extends NavItem
         } else {
             $this->addItem(NavItem::make()
                 ->icon('newspaper')
-                ->label(Yii::t('cms', 'Entries'))
+                ->label(Lang::t('cms', 'COMMON_ENTRIES'))
                 ->url(['/admin/cms/entry/index'])
                 ->roles([Entry::AUTH_ENTRY_UPDATE])
                 ->routes(['admin/cms/entry', 'admin/cms/section']));
@@ -75,7 +76,7 @@ class CmsNavItem extends NavItem
     {
         $this->addItem(NavItem::make()
             ->icon('folder-open')
-            ->label(Yii::t('cms', 'Categories'))
+            ->label(Lang::t('cms', 'COMMON_CATEGORIES'))
             ->url(['/admin/cms/category/index'])
             ->roles([Category::AUTH_CATEGORY_UPDATE])
             ->routes(['admin/cms/category']));

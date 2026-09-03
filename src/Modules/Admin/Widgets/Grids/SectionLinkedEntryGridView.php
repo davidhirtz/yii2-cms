@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Widgets\Grids;
 
+use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Controllers\SectionEntryController;
@@ -77,7 +78,7 @@ class SectionLinkedEntryGridView extends EntryGridView
         $entryTypes = $this->provider->section->getEntriesTypes();
 
         return CreateButton::make()
-            ->label(Yii::t('cms', 'Link entries'))
+            ->label(Lang::t('cms', 'SECTION_LINKED_ENTRY_LINK_ENTRIES'))
             ->icon('link')
             ->url([
                 'section-entry/index',

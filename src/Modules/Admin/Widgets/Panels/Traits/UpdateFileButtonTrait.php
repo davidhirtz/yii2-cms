@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Widgets\Panels\Traits;
 
+use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Media\Models\File;
 use Hirtz\Skeleton\Widgets\Buttons\Button;
 use Stringable;
@@ -17,7 +18,7 @@ trait UpdateFileButtonTrait
             ? Button::make()
                 ->secondary()
                 ->icon('image')
-                ->text(Yii::t('media', 'Edit File'))
+                ->text(Lang::t('media', 'COMMON_EDIT_FILE'))
                 ->url(['/admin/media/file/update', 'id' => $this->model->file_id])
                 ->target('_blank')
             : null;

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Controllers;
 
+use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Actions\ReorderSectionEntries;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
@@ -89,7 +90,7 @@ class SectionEntryController extends AbstractController
             throw new BadRequestHttpException(current($sectionEntry->getFirstErrors()));
         }
 
-        $this->success(Yii::t('cms', 'Entry added to section.'));
+        $this->success(Lang::t('cms', 'SECTION_ENTRY_FLASH_ENTRY_ADDED_TO_SECTION'));
         return $this->redirect($section->getAdminRoute() + ['#' => 'entries']);
     }
 
@@ -110,7 +111,7 @@ class SectionEntryController extends AbstractController
             throw new BadRequestHttpException(current($sectionEntry->getFirstErrors()));
         }
 
-        $this->success(Yii::t('cms', 'Entry removed from section.'));
+        $this->success(Lang::t('cms', 'SECTION_ENTRY_FLASH_ENTRY_REMOVED_FROM_SECTION'));
         return $this->redirect($section->getAdminRoute() + ['#' => 'entries']);
     }
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Widgets\Grids;
 
+use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Asset;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
@@ -103,12 +104,12 @@ class FileAssetGridView extends GridView
         $type = $asset->entry->getTypeName();
 
         if (!$type && !$asset->section_id) {
-            return Yii::t('cms', 'Entry');
+            return Lang::t('cms', 'COMMON_ENTRY');
         }
 
         if ($asset->section) {
             $type .= ($type ? " / " : '')
-                . ($asset->section->getTypeName() ?: Yii::t('cms', 'Section'));
+                . ($asset->section->getTypeName() ?: Lang::t('cms', 'COMMON_SECTION'));
         }
 
         return $type;
@@ -174,7 +175,7 @@ class FileAssetGridView extends GridView
             $buttons[] = DeleteGridButton::make()
                 ->model($asset)
                 ->url($this->getI18nRoute(['cms/asset/delete', 'id' => $asset->id]))
-                ->title(Yii::t('media', 'Are you sure you want to remove this asset?'));
+                ->title(Lang::t('media', 'COMMON_ARE_YOU_SURE_YOU_WANT_TO'));
         }
 
         return $buttons;

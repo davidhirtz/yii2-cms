@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Models\Actions;
 
+use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Entry;
 use davidhirtz\yii2\datetime\DateTime;
 use Hirtz\Skeleton\Models\Trail;
@@ -31,7 +32,7 @@ class ReorderEntries extends ReorderActiveRecords
     #[\Override]
     protected function afterReorder(): void
     {
-        Trail::createOrderTrail($this->parent, Yii::t('cms', 'Entry order changed'));
+        Trail::createOrderTrail($this->parent, Lang::t('cms', 'COMMON_ENTRY_ORDER_CHANGED'));
 
         if ($this->parent) {
             $this->parent->updated_at = new DateTime();

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Widgets\Navs;
 
+use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Modules\Admin\Data\CategoryActiveDataProvider;
 use Hirtz\Skeleton\Widgets\Buttons\CreateButton;
 use Hirtz\Skeleton\Widgets\Navs\Header;
@@ -22,7 +23,7 @@ class CategoryHeader extends Header
     #[Override]
     protected function configure(): void
     {
-        $this->title ??= $this->provider->category?->getI18nAttribute('name') ?? Yii::t('cms', 'Categories');
+        $this->title ??= $this->provider->category?->getI18nAttribute('name') ?? Lang::t('cms', 'COMMON_CATEGORIES');
         $this->url ??= ['/admin/cms/entry/index', 'type' => $this->provider?->type];
 
         if ($this->provider) {
@@ -37,7 +38,7 @@ class CategoryHeader extends Header
     protected function getCreateCategoryButton(): ?Stringable
     {
         return CreateButton::make()
-            ->label(Yii::t('cms', 'Create Category'))
+            ->label(Lang::t('cms', 'CATEGORY_HEADER_CREATE_CATEGORY'))
             ->icon('plus')
             ->url(['/admin/cms/category/create', 'parent' => $this->provider->category?->id]);
     }

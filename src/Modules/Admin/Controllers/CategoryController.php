@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Controllers;
 
+use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Actions\ReorderCategories;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Modules\Admin\Controllers\Traits\CategoryControllerTrait;
@@ -86,7 +87,7 @@ class CategoryController extends AbstractController
         }
 
         if ($category->load(Yii::$app->getRequest()->post()) && $category->insert()) {
-            $this->success(Yii::t('cms', 'The category was created.'));
+            $this->success(Lang::t('cms', 'CATEGORY_FLASH_THE_CATEGORY_WAS_CREATED'));
             return $this->redirect(['index', 'parent' => $category->parent_id]);
         }
 
@@ -101,7 +102,7 @@ class CategoryController extends AbstractController
 
         if ($category->load(Yii::$app->getRequest()->post())) {
             if ($category->update()) {
-                $this->success(Yii::t('cms', 'The category was updated.'));
+                $this->success(Lang::t('cms', 'CATEGORY_FLASH_THE_CATEGORY_WAS_UPDATED'));
             }
 
             if (!$category->hasErrors()) {
@@ -124,7 +125,7 @@ class CategoryController extends AbstractController
         $category = $this->findCategory($id, Category::AUTH_CATEGORY_DELETE);
 
         if ($category->delete()) {
-            $this->success(Yii::t('cms', 'The category was deleted.'));
+            $this->success(Lang::t('cms', 'CATEGORY_FLASH_THE_CATEGORY_WAS_DELETED'));
             return $this->redirect(['index', 'parent' => $category->parent_id]);
         }
 

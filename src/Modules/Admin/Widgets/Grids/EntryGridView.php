@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Widgets\Grids;
 
+use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Collections\CategoryCollection;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Modules\Admin\Controllers\EntryCategoryController;
@@ -144,7 +145,7 @@ class EntryGridView extends GridView
 
         $html = $name
             ? $this->search->markKeywords($name)
-            : Yii::t('cms', '[ No title ]');
+            : Lang::t('cms', 'COMMON_NO_TITLE');
 
         $html = A::make()
             ->content($html)

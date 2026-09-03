@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Models\Traits;
 
+use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Entry;
 use Yii;
 
@@ -26,7 +27,7 @@ trait MenuAttributeTrait
     public function getMenuAttributeTraitAttributeLabels(): array
     {
         return [
-            'show_in_menu' => Yii::t('cms', 'Show in menu'),
+            'show_in_menu' => Lang::t('cms', 'MENU_ATTRIBUTE_SHOW_IN_MENU'),
         ];
     }
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Controllers;
 
+use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Actions\ReorderEntryCategories;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
@@ -80,7 +81,7 @@ class EntryCategoryController extends AbstractController
         }
 
         $entryCategory->insert();
-        $this->errorOrSuccess($entryCategory, Yii::t('cms', 'Category linked to entry.'));
+        $this->errorOrSuccess($entryCategory, Lang::t('cms', 'ENTRY_CATEGORY_FLASH_CATEGORY_LINKED_TO_ENTRY'));
 
         return $this->redirectToIndex($entryCategory);
     }
@@ -97,7 +98,7 @@ class EntryCategoryController extends AbstractController
         }
 
         $entryCategory->delete();
-        $this->errorOrSuccess($entryCategory, Yii::t('cms', 'Category removed from entry.'));
+        $this->errorOrSuccess($entryCategory, Lang::t('cms', 'ENTRY_CATEGORY_FLASH_CATEGORY_REMOVED_FROM_ENTRY'));
 
         return $this->redirectToIndex($entryCategory);
     }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Widgets\Grids\Buttons;
 
+use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Skeleton\Base\Traits\ContainerConfigurationTrait;
@@ -26,7 +27,7 @@ readonly class SectionEntryDeleteButton implements Stringable
     {
         return DeleteGridButton::make()
             ->url(['section-entry/delete', 'section' => $this->section->id, 'entry' => $this->entry->id])
-            ->title(Yii::t('cms', 'Are you sure you want to remove this entry from the section?'))
+            ->title(Lang::t('cms', 'SECTION_ENTRY_DELETE_CONFIRM_ARE_YOU_SURE_YOU_WANT_TO'))
             ->render();
     }
 }

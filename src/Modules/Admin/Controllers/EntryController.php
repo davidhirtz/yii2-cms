@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Controllers;
 
+use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Actions\DuplicateEntry;
 use Hirtz\Cms\Models\Actions\ReorderEntries;
 use Hirtz\Cms\Models\Actions\ReplaceIndexEntry;
@@ -104,7 +105,7 @@ class EntryController extends AbstractController
         }
 
         if ($entry->load($request->post()) && $entry->insert()) {
-            $this->success(Yii::t('cms', 'The entry was created.'));
+            $this->success(Lang::t('cms', 'ENTRY_FLASH_THE_ENTRY_WAS_CREATED'));
             return $this->redirectToEntry($entry);
         }
 
@@ -120,7 +121,7 @@ class EntryController extends AbstractController
 
         if ($entry->load($request->post())) {
             if ($entry->update()) {
-                $this->success(Yii::t('cms', 'The entry was updated.'));
+                $this->success(Lang::t('cms', 'ENTRY_FLASH_THE_ENTRY_WAS_UPDATED'));
             }
 
             if (!$entry->hasErrors()) {
@@ -156,7 +157,7 @@ class EntryController extends AbstractController
             }
 
             if ($isUpdated) {
-                $this->success(Yii::t('cms', 'The selected entries were updated.'));
+                $this->success(Lang::t('cms', 'ENTRY_FLASH_THE_SELECTED_ENTRIES_WERE_UPDATED'));
             }
         }
 
@@ -174,7 +175,7 @@ class EntryController extends AbstractController
         if ($errors = $duplicate->getFirstErrors()) {
             $this->error($errors);
         } else {
-            $this->success(Yii::t('cms', 'The entry was duplicated.'));
+            $this->success(Lang::t('cms', 'ENTRY_FLASH_THE_ENTRY_WAS_DUPLICATED'));
         }
 
         return $this->redirect(['update', 'id' => $duplicate->id ?? $entry->id]);
@@ -197,7 +198,7 @@ class EntryController extends AbstractController
         ]);
 
         if ($entry->isIndex()) {
-            $this->success(Yii::t('cms', 'The entry was updated.'));
+            $this->success(Lang::t('cms', 'ENTRY_FLASH_THE_ENTRY_WAS_UPDATED'));
         }
 
         $this->error($entry);
@@ -209,7 +210,7 @@ class EntryController extends AbstractController
         $entry = $this->findEntry($id, Entry::AUTH_ENTRY_DELETE);
 
         if ($entry->delete()) {
-            $this->success(Yii::t('cms', 'The entry was deleted.'));
+            $this->success(Lang::t('cms', 'ENTRY_FLASH_THE_ENTRY_WAS_DELETED'));
         } elseif ($errors = $entry->getFirstErrors()) {
             $this->error($errors);
         }

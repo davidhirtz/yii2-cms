@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Models;
 
+use Hirtz\Skeleton\I18n\Lang;
 use Closure;
 use Hirtz\Cms\Models\Queries\AssetQuery;
 use Hirtz\Cms\Models\Queries\EntryQuery;
@@ -281,7 +282,7 @@ class Section extends ActiveRecord implements AssetParentInterface
     public function getTrailModelName(): string
     {
         if ($this->id) {
-            return Yii::t('skeleton', '{model} #{id}', [
+            return Lang::t('skeleton', 'COMMON_MODEL_ID', [
                 'model' => $this->getTypeName() ?: $this->getTrailModelType(),
                 'id' => $this->id,
             ]);
@@ -292,7 +293,7 @@ class Section extends ActiveRecord implements AssetParentInterface
 
     public function getTrailModelType(): string
     {
-        return Yii::t('cms', 'Section');
+        return Lang::t('cms', 'COMMON_SECTION');
     }
 
     public function getNameColumnContent(): ?string
@@ -330,6 +331,18 @@ class Section extends ActiveRecord implements AssetParentInterface
         return ($route = $this->entry->getRoute()) ? [...$route, '#' => $this->getHtmlId()] : false;
     }
 
+    #[Override]
+    public function getRouteName(): ?string
+    {
+        return $this->entry->getRouteName();
+    }
+
+    #[Override]
+    public function getRouteParams(): array
+    {
+        return [...$this->entry->getRouteParams(), '#' => $this->getHtmlId()];
+    }
+
     public function getViewFile(): ?string
     {
         return $this->getTypeOptions()['viewFile'] ?? null;
@@ -355,10 +368,10 @@ class Section extends ActiveRecord implements AssetParentInterface
     {
         return [
             ...parent::attributeLabels(),
-            'entry_id' => Yii::t('cms', 'Entry'),
-            'entry_count' => Yii::t('cms', 'Entries'),
-            'slug' => Yii::t('cms', 'Url'),
-            'section_count' => Yii::t('cms', 'Sections')
+            'entry_id' => Lang::t('cms', 'SECTION_ENTRY_ID_LABEL'),
+            'entry_count' => Lang::t('cms', 'SECTION_ENTRY_COUNT_LABEL'),
+            'slug' => Lang::t('cms', 'SECTION_SLUG_LABEL'),
+            'section_count' => Lang::t('cms', 'SECTION_SECTION_COUNT_LABEL')
         ];
     }
 

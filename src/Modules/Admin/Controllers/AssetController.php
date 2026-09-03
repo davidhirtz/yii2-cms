@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Controllers;
 
+use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Actions\DuplicateAsset;
 use Hirtz\Cms\Models\Actions\ReorderAssets;
 use Hirtz\Cms\Models\Asset;
@@ -146,7 +147,7 @@ class AssetController extends AbstractController
         $asset = $this->findAsset($id, Asset::AUTH_ASSET_UPDATE);
 
         if ($asset->load(Yii::$app->getRequest()->post()) && $asset->update()) {
-            $this->success(Yii::t('cms', 'The asset was updated.'));
+            $this->success(Lang::t('cms', 'ASSET_FLASH_THE_ASSET_WAS_UPDATED'));
             return $this->redirectToParent($asset);
         }
 
@@ -160,7 +161,7 @@ class AssetController extends AbstractController
         $asset = $this->findAsset($id, Asset::AUTH_ASSET_DELETE);
 
         $asset->delete();
-        $this->errorOrSuccess($asset, Yii::t('cms', 'The asset was deleted.'));
+        $this->errorOrSuccess($asset, Lang::t('cms', 'ASSET_FLASH_THE_ASSET_WAS_DELETED'));
 
         return $this->redirectToParent($asset, true);
     }
@@ -178,7 +179,7 @@ class AssetController extends AbstractController
             return $this->redirect(['update', 'id' => $asset->id]);
         }
 
-        $this->success(Yii::t('cms', 'The asset was duplicated.'));
+        $this->success(Lang::t('cms', 'ASSET_FLASH_THE_ASSET_WAS_DUPLICATED'));
         return $this->redirect(['update', 'id' => $duplicate->id]);
     }
 

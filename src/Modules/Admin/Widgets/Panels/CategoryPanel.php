@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Widgets\Panels;
 
+use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Skeleton\Widgets\Buttons\Button;
 use Stringable;
@@ -29,7 +30,7 @@ class CategoryPanel extends AbstractPanel
         return $this->model->hasEntriesEnabled()
             ? Button::make()
                 ->primary()
-                ->text(Yii::t('cms', 'View All Entries'))
+                ->text(Lang::t('cms', 'CATEGORY_VIEW_ALL_ENTRIES'))
                 ->icon('book')
                 ->url(['entry/index', 'category' => $this->model->id])
             : null;
@@ -39,7 +40,7 @@ class CategoryPanel extends AbstractPanel
     {
         return Button::make()
             ->primary()
-            ->text(Yii::t('cms', 'New Category'))
+            ->text(Lang::t('cms', 'CATEGORY_NEW_CATEGORY'))
             ->icon('plus')
             ->url(['category/create', 'id' => $this->model->id]);
     }

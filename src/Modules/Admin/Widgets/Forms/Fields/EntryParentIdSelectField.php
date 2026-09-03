@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Widgets\Forms\Fields;
 
+use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits\ParentIdSelectFieldTrait;
@@ -46,7 +47,7 @@ class EntryParentIdSelectField extends SelectField
     {
         foreach ($entries as $entry) {
             if ($entry->parent_id === $parentId) {
-                $name = Html::encode($entry->getI18nAttribute('name') ?: Yii::t('cms', '[ No title ]'));
+                $name = Html::encode($entry->getI18nAttribute('name') ?: Lang::t('cms', 'COMMON_NO_TITLE'));
                 $count = count($entry->getAncestorIds());
                 $indent = ($count ? (str_repeat($this->indent, $count) . ' ') : '');
 

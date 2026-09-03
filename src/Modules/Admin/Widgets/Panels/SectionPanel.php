@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Widgets\Panels;
 
+use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Skeleton\Widgets\Buttons\Button;
 use Stringable;
@@ -28,7 +29,7 @@ class SectionPanel extends AbstractPanel
     {
         return Button::make()
             ->primary()
-            ->text(Yii::t('cms', 'Move / Copy'))
+            ->text(Lang::t('cms', 'SECTION_MOVE_COPY'))
             ->icon('copy')
             ->url(['entries', 'id' => $this->model->id]);
     }

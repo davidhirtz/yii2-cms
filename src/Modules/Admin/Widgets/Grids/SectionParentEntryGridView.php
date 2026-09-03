@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Widgets\Grids;
 
+use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Controllers\SectionController;
@@ -37,14 +38,14 @@ class SectionParentEntryGridView extends EntryGridView
             yield Button::make()
                 ->primary()
                 ->icon('copy')
-                ->tooltip(Yii::t('cms', 'Move Section'))
+                ->tooltip(Lang::t('cms', 'SECTION_PARENT_ENTRY_MOVE_SECTION'))
                 ->post(['move', 'id' => $this->section->id, 'entry' => $entry->id], true);
         }
 
         yield Button::make()
             ->primary()
             ->icon('paste')
-            ->tooltip(Yii::t('cms', 'Copy Section'))
+            ->tooltip(Lang::t('cms', 'SECTION_PARENT_ENTRY_COPY_SECTION'))
             ->post(['duplicate', 'id' => $this->section->id, 'entry' => $entry->id], true);
     }
 }

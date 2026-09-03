@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Widgets\Grids\Toolbars;
 
+use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Collections\CategoryCollection;
 use Hirtz\Skeleton\Widgets\Grids\Toolbars\FilterDropdown;
@@ -15,7 +16,7 @@ class CategoryFilterDropdown extends FilterDropdown
     #[Override]
     protected function configure(): void
     {
-        $this->label ??= Yii::t('cms', 'All Categories');
+        $this->label ??= Lang::t('cms', 'CATEGORY_FILTER_DROPDOWN_ALL_CATEGORIES');
         $this->paramName ??= 'category';
 
         $this->items = array_map(fn ($category) => $this->getNestedCategoryNames()[$category->id], $this->getCategories());

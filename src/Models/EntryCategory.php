@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Models;
 
+use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Traits\CategoryRelationTrait;
 use Hirtz\Cms\Models\Traits\EntryRelationTrait;
 use Hirtz\Cms\Modules\ModuleTrait;
@@ -225,19 +226,19 @@ class EntryCategory extends \Hirtz\Skeleton\Db\ActiveRecord implements TrailMode
     #[Override]
     public function getTrailModelName(): string
     {
-        return Yii::t('cms', 'Entry–Category');
+        return Lang::t('cms', 'ENTRY_CATEGORY_ENTRY_CATEGORY');
     }
 
     #[Override]
     public function getTrailModelType(): string
     {
-        return Yii::t('skeleton', 'Relation');
+        return Lang::t('skeleton', 'COMMON_RELATION');
     }
 
     #[Override]
     public function attributeLabels(): array
     {
-        return [...parent::attributeLabels(), 'entry_id' => Yii::t('cms', 'Entry'), 'category_id' => Yii::t('cms', 'Category'), 'updated_at' => Yii::t('cms', 'Added')];
+        return [...parent::attributeLabels(), 'entry_id' => Lang::t('cms', 'ENTRY_CATEGORY_ENTRY_ID_LABEL_ALT'), 'category_id' => Lang::t('cms', 'ENTRY_CATEGORY_ENTRY_ID_LABEL_ALT_2'), 'updated_at' => Lang::t('cms', 'ENTRY_CATEGORY_ENTRY_ID_LABEL')];
     }
 
     #[Override]

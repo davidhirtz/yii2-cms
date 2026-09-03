@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Widgets\Navs;
 
+use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Asset;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
@@ -72,7 +73,7 @@ class EntrySubmenu extends Submenu
     {
         return NavItem::make()
             ->icon('cog')
-            ->label(Yii::t('skeleton', 'General'))
+            ->label(Lang::t('skeleton', 'COMMON_GENERAL'))
             ->routes(['admin/cms/entry/update', ...$this->additionalActiveRoutes['entry'] ?? []])
             ->url(['/admin/cms/entry/update', 'id' => $this->model->id]);
     }
@@ -92,7 +93,7 @@ class EntrySubmenu extends Submenu
         return NavItem::make()
             ->badge($this->model->entry_count)
             ->icon('book')
-            ->label(Yii::t('cms', 'Subentries'))
+            ->label(Lang::t('cms', 'COMMON_SUBENTRIES'))
             ->routes(['admin/cms/entry/index', ...$this->additionalActiveRoutes['subentries'] ?? []])
             ->url(['/admin/cms/entry/index', 'parent' => $this->model->id])
             ->visible($this->model->hasDescendantsEnabled());
@@ -103,7 +104,7 @@ class EntrySubmenu extends Submenu
         return NavItem::make()
             ->badge($this->model->getCategoryCount())
             ->icon('folder-open')
-            ->label(Yii::t('cms', 'Categories'))
+            ->label(Lang::t('cms', 'COMMON_CATEGORIES'))
             ->routes(['admin/cms/entry-category/'])
             ->url(['/admin/cms/entry-category/index', 'entry' => $this->model->id])
             ->visible($this->showEntryCategories);
@@ -113,7 +114,7 @@ class EntrySubmenu extends Submenu
     protected function getEntrySectionsItem(): ?Stringable
     {
         return NavItem::make()
-            ->label(Yii::t('cms', 'Sections'))
+            ->label(Lang::t('cms', 'COMMON_SECTIONS'))
             ->url(['/admin/cms/section/index', 'entry' => $this->model->id])
             ->icon('th-list')
             ->badge($this->model->section_count)
@@ -124,7 +125,7 @@ class EntrySubmenu extends Submenu
 
     protected function setCategoryBreadcrumbs(): void
     {
-        $this->view->addBreadcrumb(Yii::t('cms', 'Categories'), ['/admin/cms/category/index']);
+        $this->view->addBreadcrumb(Lang::t('cms', 'COMMON_CATEGORIES'), ['/admin/cms/category/index']);
 
         if ($this->parentCategoryBreadcrumbCount > 0) {
             $categories = $this->model->ancestors;
@@ -148,6 +149,6 @@ class EntrySubmenu extends Submenu
     protected function setAssetBreadcrumbs(): void
     {
         $route = $this->model->getAdminRoute() + ['#' => 'assets'];
-        $this->view->addBreadcrumb(Yii::t('cms', 'Assets'), $route);
+        $this->view->addBreadcrumb(Lang::t('cms', 'ENTRY_SUBMENU_ASSETS'), $route);
     }
 }

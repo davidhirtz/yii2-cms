@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Widgets\Navs;
 
+use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Data\EntryActiveDataProvider;
@@ -52,7 +53,7 @@ class EntryHeader extends Header
             $this->url ??= $entry->getAdminRoute();
 
             if ($this->model instanceof Section) {
-                $this->subtitle ??= Yii::t('skeleton', '{model} #{id}', [
+                $this->subtitle ??= Lang::t('skeleton', 'COMMON_MODEL_ID', [
                     'model' => $this->model->getTypeName(),
                     'id' => $this->model->id,
                 ]);
@@ -65,7 +66,7 @@ class EntryHeader extends Header
             $typeOptions = $this->provider->type ? Entry::instance()::getTypes()[$this->provider->type] ?? null : null;
 
             $this->subtitle ??= $this->getPaginationSubtitle($this->provider);
-            $this->title ??= $typeOptions['plural'] ?? $typeOptions['name'] ?? Yii::t('cms', 'Entries');
+            $this->title ??= $typeOptions['plural'] ?? $typeOptions['name'] ?? Lang::t('cms', 'COMMON_ENTRIES');
             $this->url ??= ['/admin/cms/entry/index', 'type' => $this->provider?->type];
 
             $this->addContent($this->getCreateEntryButton());

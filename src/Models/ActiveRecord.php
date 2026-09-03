@@ -4,16 +4,19 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Models;
 
+use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Traits\SitemapTrait;
 use Hirtz\Cms\Models\Traits\VisibleAttributeTrait;
 use Hirtz\Cms\Modules\ModuleTrait;
 use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\datetime\DateTimeBehavior;
 use Hirtz\Skeleton\Behaviors\BlameableBehavior;
+use Hirtz\Skeleton\Behaviors\RedirectBehavior;
 use Hirtz\Skeleton\Behaviors\TimestampBehavior;
 use Hirtz\Skeleton\Behaviors\TrailBehavior;
 use Hirtz\Skeleton\Db\ActiveQuery;
 use Hirtz\Skeleton\Db\ActiveRecord as BaseActiveRecord;
+use Hirtz\Skeleton\Helpers\Url;
 use Hirtz\Skeleton\Models\Interfaces\DraftStatusAttributeInterface;
 use Hirtz\Skeleton\Models\Interfaces\I18nAttributeInterface;
 use Hirtz\Skeleton\Models\Interfaces\TrailModelInterface;
@@ -178,6 +181,57 @@ abstract class ActiveRecord extends BaseActiveRecord implements
 
     abstract public function getRoute(): array|false;
 
+    public function getRouteName(): ?string
+    {
+        return null;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function getRouteParams(): array
+    {
+        return [];
+    }
+
+    /**
+     * Returns `false` when the model has no public URL, matching {@see RedirectBehavior::getUrl()},
+     * whose implementation this shadows.
+     */
+    public function getUrl(bool|string $scheme = false): false|string
+    {
+        $name = $this->getRegisteredRouteName();
+
+        if ($name !== null) {
+            return Url::route($name, $this->getRouteParams(), $scheme);
+        }
+
+        return ($route = $this->getRoute()) ? Url::to($route, $scheme) : false;
+    }
+
+    public function getDraftUrl(): false|string
+    {
+        $name = $this->getRegisteredRouteName();
+
+        if ($name !== null) {
+            return Url::draftRoute($name, $this->getRouteParams());
+        }
+
+        return ($route = $this->getRoute()) ? Url::draft($route) : false;
+    }
+
+    /**
+     * Returns `null` when the model declares no route name, or when that name is not registered —
+     * the case for an application that disables {@see Module::$enableUrlRules} and declares its own
+     * rules. Callers then fall back to {@see static::getRoute()}.
+     */
+    protected function getRegisteredRouteName(): ?string
+    {
+        $name = $this->getRouteName();
+
+        return $name !== null && Yii::$app->getUrlManager()->hasRoute($name) ? $name : null;
+    }
+
     /**
      * @noinspection PhpUnusedParameterInspection
      */
@@ -192,10 +246,10 @@ abstract class ActiveRecord extends BaseActiveRecord implements
         return [
             ...parent::attributeLabels(),
             ...$this->getTraitAttributeLabels(),
-            'entry_id' => Yii::t('cms', 'Entry'),
-            'name' => Yii::t('cms', 'Title'),
-            'content' => Yii::t('cms', 'Content'),
-            'asset_count' => Yii::t('media', 'Assets'),
+            'entry_id' => Lang::t('cms', 'ACTIVE_RECORD_ENTRY_ID_LABEL'),
+            'name' => Lang::t('cms', 'ACTIVE_RECORD_NAME_LABEL'),
+            'content' => Lang::t('cms', 'ACTIVE_RECORD_CONTENT_LABEL'),
+            'asset_count' => Lang::t('media', 'ACTIVE_RECORD_ASSET_COUNT_LABEL'),
         ];
     }
 }

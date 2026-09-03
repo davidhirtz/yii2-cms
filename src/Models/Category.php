@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Models;
 
+use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Collections\CategoryCollection;
 use Hirtz\Cms\Models\Queries\CategoryQuery;
 use Hirtz\Cms\Models\Queries\EntryQuery;
@@ -280,7 +281,7 @@ class Category extends ActiveRecord implements SitemapInterface
     public function getTrailModelName(): string
     {
         if ($this->id) {
-            return $this->getI18nAttribute('name') ?: Yii::t('skeleton', '{model} #{id}', [
+            return $this->getI18nAttribute('name') ?: Lang::t('skeleton', 'COMMON_MODEL_ID', [
                 'model' => $this->getTrailModelType(),
                 'id' => $this->id,
             ]);
@@ -291,7 +292,7 @@ class Category extends ActiveRecord implements SitemapInterface
 
     public function getTrailModelType(): string
     {
-        return $this->getTypeName() ?: Yii::t('cms', 'Category');
+        return $this->getTypeName() ?: Lang::t('cms', 'COMMON_CATEGORY');
     }
 
     public function getAdminRoute(): array
@@ -302,6 +303,18 @@ class Category extends ActiveRecord implements SitemapInterface
     public function getRoute(): false|array
     {
         return array_filter(['/cms/site/index', 'category' => $this->getI18nAttribute('slug')]);
+    }
+
+    #[Override]
+    public function getRouteName(): ?string
+    {
+        return Entry::ROUTE_INDEX;
+    }
+
+    #[Override]
+    public function getRouteParams(): array
+    {
+        return array_filter(['category' => $this->getI18nAttribute('slug')]);
     }
 
     public function getEntriesOrderBy(): bool|array
@@ -334,13 +347,13 @@ class Category extends ActiveRecord implements SitemapInterface
     {
         return [
             ...parent::attributeLabels(),
-            'name' => Yii::t('cms', 'Name'),
-            'parent_id' => Yii::t('cms', 'Parent category'),
-            'slug' => Yii::t('cms', 'Url'),
-            'title' => Yii::t('cms', 'Meta title'),
-            'description' => Yii::t('cms', 'Meta description'),
-            'branchCount' => Yii::t('cms', 'Subcategories'),
-            'entry_count' => Yii::t('cms', 'Entries')
+            'name' => Lang::t('cms', 'CATEGORY_NAME_LABEL'),
+            'parent_id' => Lang::t('cms', 'CATEGORY_PARENT_ID_LABEL'),
+            'slug' => Lang::t('cms', 'CATEGORY_SLUG_LABEL'),
+            'title' => Lang::t('cms', 'CATEGORY_TITLE_LABEL'),
+            'description' => Lang::t('cms', 'CATEGORY_DESCRIPTION_LABEL'),
+            'branchCount' => Lang::t('cms', 'CATEGORY_BRANCHCOUNT_LABEL'),
+            'entry_count' => Lang::t('cms', 'CATEGORY_ENTRY_COUNT_LABEL')
         ];
     }
 

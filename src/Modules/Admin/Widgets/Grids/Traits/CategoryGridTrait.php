@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Widgets\Grids\Traits;
 
+use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Collections\CategoryCollection;
 use Hirtz\Cms\Modules\Admin\Data\CategoryActiveDataProvider;
@@ -62,7 +63,7 @@ trait CategoryGridTrait
 
         $html = $name
             ? $this->search->markKeywords($name)
-            : Yii::t('cms', '[ No title ]');
+            : Lang::t('cms', 'COMMON_NO_TITLE');
 
         $html = A::make()
             ->class($name ? 'strong' : 'strong text-muted')

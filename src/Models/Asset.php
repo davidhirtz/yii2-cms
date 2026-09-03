@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Models;
 
+use Hirtz\Skeleton\I18n\Lang;
 use davidhirtz\yii2\datetime\DateTime;
 use Hirtz\Cms\Models\Queries\AssetQuery;
 use Hirtz\Cms\Models\Traits\EntryRelationTrait;
@@ -274,7 +275,7 @@ class Asset extends ActiveRecord implements AssetInterface, DraftStatusAttribute
 
     public function getTrailModelType(): string
     {
-        return Yii::t('cms', 'Asset');
+        return Lang::t('cms', 'COMMON_ASSET');
     }
 
     public function getTrailParents(): array
@@ -298,11 +299,11 @@ class Asset extends ActiveRecord implements AssetInterface, DraftStatusAttribute
         return [
             ...parent::attributeLabels(),
             ...$this->getEmbedUrlTraitAttributeLabels(),
-            'section_id' => Yii::t('cms', 'Section'),
-            'file_id' => Yii::t('media', 'File'),
-            'content' => Yii::t('media', 'Caption'),
-            'alt_text' => Yii::t('cms', 'Alt text'),
-            'link' => Yii::t('cms', 'Link'),
+            'section_id' => Lang::t('cms', 'ASSET_SECTION_ID_LABEL'),
+            'file_id' => Lang::t('media', 'ASSET_FILE_ID_LABEL'),
+            'content' => Lang::t('media', 'ASSET_CONTENT_LABEL'),
+            'alt_text' => Lang::t('cms', 'ASSET_ALT_TEXT_LABEL'),
+            'link' => Lang::t('cms', 'ASSET_LINK_LABEL'),
         ];
     }
 

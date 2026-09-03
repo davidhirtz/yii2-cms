@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Widgets\Panels\Traits;
 
+use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Skeleton\Widgets\Buttons\Button;
 use Stringable;
 use Yii;
@@ -16,18 +17,15 @@ trait LinkButtonTrait
             return null;
         }
 
-        $route = $this->model->getRoute();
+        $url = $this->isDraft() ? $this->model->getDraftUrl() : $this->model->getUrl(true);
 
-        if (!$route) {
+        if (!$url) {
             return null;
         }
 
-        $manager = Yii::$app->getUrlManager();
-        $url = $this->isDraft() ? $manager->createDraftUrl($route) : $manager->createAbsoluteUrl($route);
-
         return Button::make()
             ->secondary()
-            ->text(Yii::t('cms', 'Open website'))
+            ->text(Lang::t('cms', 'COMMON_OPEN_WEBSITE'))
             ->icon('external-link-alt')
             ->url($url)
             ->target('_blank');

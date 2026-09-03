@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Widgets\Grids;
 
+use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Asset;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
@@ -110,7 +111,7 @@ class AssetGridView extends GridView
     {
         return Button::make()
             ->primary()
-            ->text(Yii::t('cms', 'Link assets'))
+            ->text(Lang::t('cms', 'COMMON_LINK_ASSETS'))
             ->icon('images')
             ->url($this->getParentRoute('cms/asset/index'));
     }

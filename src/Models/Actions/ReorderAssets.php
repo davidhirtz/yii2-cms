@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Models\Actions;
 
+use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Asset;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
@@ -32,14 +33,14 @@ class ReorderAssets extends ReorderActiveRecords
     #[\Override]
     protected function afterReorder(): void
     {
-        $trail = Trail::createOrderTrail($this->parent, Yii::t('cms', 'Asset order changed'));
+        $trail = Trail::createOrderTrail($this->parent, Lang::t('cms', 'REORDER_ASSETS_ASSET_ORDER_CHANGED'));
 
         $this->parent->updated_at = new DateTime();
         $this->parent->update();
 
         if ($this->parent instanceof Section) {
             $entry = $this->parent->entry;
-            Trail::createOrderTrail($entry, Yii::t('cms', 'Section asset order changed'), [
+            Trail::createOrderTrail($entry, Lang::t('cms', 'REORDER_ASSETS_SECTION_ASSET_ORDER_CHANGED'), [
                 'trail_id' => $trail->id,
             ]);
 

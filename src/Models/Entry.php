@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Models;
 
+use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Queries\AssetQuery;
 use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Models\Queries\SectionQuery;
@@ -53,6 +54,9 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
     use AssetParentTrait;
     use MaterializedTreeTrait;
     use SlugAttributeTrait;
+
+    final public const string ROUTE_INDEX = 'cms.entry.index';
+    final public const string ROUTE_VIEW = 'cms.entry.view';
 
     final public const string AUTH_ENTRY_CREATE = 'entryCreate';
     final public const string AUTH_ENTRY_DELETE = 'entryDelete';
@@ -198,7 +202,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
                 || is_dir($path)
                 || is_file($path)
             ) {
-                $this->addError('slug', Yii::t('cms', 'The URL "{path}" is protected.', [
+                $this->addError('slug', Lang::t('cms', 'ENTRY_THE_URL_IS_PROTECTED', [
                     'path' => $slug,
                 ]));
             }
@@ -512,6 +516,22 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
         return $this->hasRoute() ? array_filter(['/cms/site/view', 'slug' => $this->getFormattedSlug()]) : false;
     }
 
+    #[Override]
+    public function getRouteName(): ?string
+    {
+        if ($this->isIndex()) {
+            return static::ROUTE_INDEX;
+        }
+
+        return $this->hasRoute() ? static::ROUTE_VIEW : null;
+    }
+
+    #[Override]
+    public function getRouteParams(): array
+    {
+        return $this->isIndex() ? [] : array_filter(['slug' => $this->getFormattedSlug()]);
+    }
+
     /**
      * @return Asset[]
      */
@@ -583,7 +603,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
     public function getTrailModelName(): string
     {
         if ($this->id) {
-            return $this->getI18nAttribute('name') ?: Yii::t('skeleton', '{model} #{id}', [
+            return $this->getI18nAttribute('name') ?: Lang::t('skeleton', 'COMMON_MODEL_ID', [
                 'model' => $this->getTrailModelType(),
                 'id' => $this->id,
             ]);
@@ -594,7 +614,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
 
     public function getTrailModelType(): string
     {
-        return $this->getTypeName() ?: Yii::t('cms', 'Entry');
+        return $this->getTypeName() ?: Lang::t('cms', 'COMMON_ENTRY');
     }
 
     public function getViewFile(): ?string
@@ -676,14 +696,14 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
     {
         return [
             ...parent::attributeLabels(),
-            'parent_id' => Yii::t('cms', 'Parent entry'),
-            'parent_status' => Yii::t('cms', 'Parent status'),
-            'slug' => Yii::t('cms', 'Url'),
-            'title' => Yii::t('cms', 'Meta title'),
-            'description' => Yii::t('cms', 'Meta description'),
-            'publish_date' => Yii::t('cms', 'Published'),
-            'entry_count' => Yii::t('cms', 'Subentries'),
-            'section_count' => Yii::t('cms', 'Sections')
+            'parent_id' => Lang::t('cms', 'ENTRY_PARENT_ID_LABEL'),
+            'parent_status' => Lang::t('cms', 'ENTRY_PARENT_STATUS_LABEL'),
+            'slug' => Lang::t('cms', 'ENTRY_SLUG_LABEL'),
+            'title' => Lang::t('cms', 'ENTRY_TITLE_LABEL'),
+            'description' => Lang::t('cms', 'ENTRY_DESCRIPTION_LABEL'),
+            'publish_date' => Lang::t('cms', 'ENTRY_PUBLISH_DATE_LABEL'),
+            'entry_count' => Lang::t('cms', 'ENTRY_ENTRY_COUNT_LABEL'),
+            'section_count' => Lang::t('cms', 'ENTRY_SECTION_COUNT_LABEL')
         ];
     }
 
