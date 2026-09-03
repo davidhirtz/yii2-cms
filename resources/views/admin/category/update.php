@@ -14,18 +14,15 @@ use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Modules\Admin\Data\CategoryActiveDataProvider;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\CategoryActiveForm;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\Traits\CategoryParentGridView;
-use Hirtz\Cms\Modules\Admin\Widgets\Navs\EntrySubmenu;
+use Hirtz\Cms\Modules\Admin\Widgets\Navs\CategoryHeader;
 use Hirtz\Cms\Modules\Admin\Widgets\Panels\CategoryPanel;
 use Hirtz\Skeleton\Web\View;
 use Hirtz\Skeleton\Widgets\Forms\DeleteActiveForm;
 use Hirtz\Skeleton\Widgets\Forms\FormContainer;
 use Hirtz\Skeleton\Widgets\Grids\GridContainer;
 
-$this->title(Yii::t('cms', 'Edit Category'));
-
-
-echo EntrySubmenu::make()
-    ->model($category);
+echo CategoryHeader::make()
+    ->title(Yii::t('cms', 'Edit Category'));
 
 echo FormContainer::make()
     ->title($this->title)

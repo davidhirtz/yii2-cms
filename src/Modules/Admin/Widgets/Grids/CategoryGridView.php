@@ -9,7 +9,6 @@ use Hirtz\Cms\Modules\Admin\Controllers\CategoryController;
 use Hirtz\Cms\Modules\Admin\Data\CategoryActiveDataProvider;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\Traits\CategoryGridTrait;
 use Hirtz\Cms\Modules\ModuleTrait;
-use Hirtz\Skeleton\Widgets\Buttons\CreateButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\ButtonColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\DraggableSortGridButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\ViewGridButton;
@@ -17,10 +16,7 @@ use Hirtz\Skeleton\Widgets\Grids\Columns\Column;
 use Hirtz\Skeleton\Widgets\Grids\Columns\RelativeTimeColumn;
 use Hirtz\Skeleton\Widgets\Grids\GridView;
 use Hirtz\Skeleton\Widgets\Grids\Toolbars\FilterDropdown;
-use Hirtz\Skeleton\Widgets\Grids\Toolbars\GridSearchForm;
 use Override;
-use Stringable;
-use Yii;
 
 /**
  * @extends GridView<Category>
@@ -59,10 +55,6 @@ class CategoryGridView extends GridView
             $this->getButtonColumn(),
         ];
 
-        $this->footer ??= [
-            $this->getCreateCategoryButton(),
-        ];
-
         parent::configure();
     }
 
@@ -80,14 +72,6 @@ class CategoryGridView extends GridView
     {
         $attribute = Category::instance()->getI18nAttributeName('name');
         return Category::indentNestedTree($category->getAncestors() + [$category], $attribute);
-    }
-
-    protected function getCreateCategoryButton(): string|Stringable
-    {
-        return CreateButton::make()
-            ->url(['/admin/cms/category/create', 'id' => $this->provider->category->id ?? null])
-            ->roles([Category::AUTH_CATEGORY_CREATE])
-            ->label(Yii::t('cms', 'Create Category'));
     }
 
     protected function getUpdatedAtColumn(): ?Column

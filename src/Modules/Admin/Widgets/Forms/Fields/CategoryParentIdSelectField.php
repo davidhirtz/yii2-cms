@@ -10,6 +10,7 @@ use Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits\ParentIdSelectFieldTrait;
 use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Skeleton\Widgets\Forms\Fields\SelectField;
 use Override;
+use Stringable;
 
 /**
  * @template T of Category
@@ -47,6 +48,12 @@ class CategoryParentIdSelectField extends SelectField
         }
 
         parent::configure();
+    }
+
+    #[Override]
+    protected function renderContent(): string|Stringable
+    {
+        return $this->items ? parent::renderContent() : '';
     }
 
     protected function getCategories(): array

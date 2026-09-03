@@ -4,12 +4,16 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Widgets\Grids\Columns;
 
+use Hirtz\Cms\Models\Asset;
 use Hirtz\Media\Models\Interfaces\AssetInterface;
 use Hirtz\Media\Modules\Admin\Widgets\Grids\Columns\Thumbnail;
 use Hirtz\Skeleton\Widgets\Grids\Columns\LinkColumn;
 use Stringable;
-use yii\base\Model;
 
+/**
+ * @template T of Asset
+ * @extends LinkColumn<T>
+ */
 class AssetThumbnailColumn extends LinkColumn
 {
     public function __construct(array $config = [])
@@ -20,8 +24,11 @@ class AssetThumbnailColumn extends LinkColumn
         parent::__construct($config);
     }
 
-    protected function getThumbnail(array|Model $model): string|Stringable
+    /**
+     * @param T $model
+     */
+    protected function getThumbnail(AssetInterface $model): string|Stringable
     {
-        return $model instanceof AssetInterface ? Thumbnail::make()->file($model->file) : '';
+        return Thumbnail::make()->file($model->file);
     }
 }

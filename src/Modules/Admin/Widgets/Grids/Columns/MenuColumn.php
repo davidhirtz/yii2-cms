@@ -13,6 +13,9 @@ use Override;
 use Stringable;
 
 /**
+ * @template T of Entry
+ * @extends LinkColumn<T>
+ *
  * @property EntryGridView $grid
  */
 class MenuColumn extends LinkColumn

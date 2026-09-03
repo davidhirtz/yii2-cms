@@ -12,11 +12,11 @@ declare(strict_types=1);
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Modules\Admin\Controllers\CategoryController;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\CategoryActiveForm;
-use Hirtz\Cms\Modules\Admin\Widgets\Navs\EntrySubmenu;
+use Hirtz\Cms\Modules\Admin\Widgets\Navs\CategoryHeader;
 use Hirtz\Skeleton\Web\View;
 use Hirtz\Skeleton\Widgets\Forms\FormContainer;
 
-echo EntrySubmenu::make()
+echo CategoryHeader::make()
     ->title(Yii::t('cms', 'New Category'));
 
 echo FormContainer::make()
