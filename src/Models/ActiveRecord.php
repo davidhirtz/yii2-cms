@@ -203,7 +203,12 @@ abstract class ActiveRecord extends BaseActiveRecord implements
         $name = $this->getRegisteredRouteName();
 
         if ($name !== null) {
-            return Url::route($name, $this->getRouteParams(), $scheme);
+            $params = $this->getRouteParams();
+            $urlManager = Yii::$app->getUrlManager();
+
+            return $scheme === false
+                ? $urlManager->generate($name, $params)
+                : $urlManager->generateAbsolute($name, $params, is_string($scheme) ? $scheme : null);
         }
 
         return ($route = $this->getRoute()) ? Url::to($route, $scheme) : false;
@@ -214,7 +219,7 @@ abstract class ActiveRecord extends BaseActiveRecord implements
         $name = $this->getRegisteredRouteName();
 
         if ($name !== null) {
-            return Url::draftRoute($name, $this->getRouteParams());
+            return Yii::$app->getUrlManager()->generateDraft($name, $this->getRouteParams());
         }
 
         return ($route = $this->getRoute()) ? Url::draft($route) : false;
