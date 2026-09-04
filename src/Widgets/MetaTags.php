@@ -123,9 +123,7 @@ class MetaTags extends Widget
 
     protected function registerDefaultHrefLangLinkTag(): void
     {
-        if (false !== $this->urlManager->defaultLanguage) {
-            $this->view->registerDefaultHrefLangLinkTag($this->urlManager->defaultLanguage);
-        }
+        $this->view->registerDefaultHrefLangLinkTag($this->urlManager->defaultLanguage);
     }
 
     protected function registerCanonicalUrlTags(): void
