@@ -15,7 +15,7 @@ use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 /**
- * @property Module $module
+ * @extends Controller<Module>
  */
 class SiteController extends Controller
 {
