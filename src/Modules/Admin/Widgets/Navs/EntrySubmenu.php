@@ -14,7 +14,6 @@ use Hirtz\Skeleton\Widgets\Navs\NavItem;
 use Hirtz\Skeleton\Widgets\Navs\Submenu;
 use Hirtz\Skeleton\Widgets\Traits\ModelTrait;
 use Override;
-use Stringable;
 use Yii;
 
 class EntrySubmenu extends Submenu
@@ -69,7 +68,7 @@ class EntrySubmenu extends Submenu
         parent::configure();
     }
 
-    protected function getEntryUpdateItem(): ?Stringable
+    protected function getEntryUpdateItem(): ?NavItem
     {
         return NavItem::make()
             ->icon('cog')
@@ -78,7 +77,7 @@ class EntrySubmenu extends Submenu
             ->url(['/admin/cms/entry/update', 'id' => $this->model->id]);
     }
 
-    protected function getAssetsItem(): ?Stringable
+    protected function getAssetsItem(): ?NavItem
     {
         return NavItem::make()
             ->badge($this->model->asset_count)
@@ -88,7 +87,7 @@ class EntrySubmenu extends Submenu
             ->url(['/admin/cms/asset/index', 'entry' => $this->model->id]);
     }
 
-    public function getSubentriesItem(): ?Stringable
+    public function getSubentriesItem(): ?NavItem
     {
         return NavItem::make()
             ->badge($this->model->entry_count)
@@ -99,7 +98,7 @@ class EntrySubmenu extends Submenu
             ->visible($this->model->hasDescendantsEnabled());
     }
 
-    protected function getEntryCategoriesItem(): ?Stringable
+    protected function getEntryCategoriesItem(): ?NavItem
     {
         return NavItem::make()
             ->badge($this->model->getCategoryCount())
@@ -111,7 +110,7 @@ class EntrySubmenu extends Submenu
     }
 
 
-    protected function getEntrySectionsItem(): ?Stringable
+    protected function getEntrySectionsItem(): ?NavItem
     {
         return NavItem::make()
             ->label(Lang::t('cms', 'COMMON_SECTIONS'))
