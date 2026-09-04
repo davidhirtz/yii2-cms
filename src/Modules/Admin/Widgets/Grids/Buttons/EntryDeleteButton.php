@@ -13,7 +13,7 @@ use Yii;
 /**
  * @see EntryController::actionDelete()
  *
- * @property Entry $model
+ * @extends DeleteButton<Entry>
  */
 class EntryDeleteButton extends DeleteButton
 {
