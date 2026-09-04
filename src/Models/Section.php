@@ -202,12 +202,18 @@ class Section extends ActiveRecord implements AssetParentInterface
     /**
      * @return ActiveQuery<SectionEntry>
      */
+    /**
+     * @return ActiveQuery<SectionEntry>
+     */
     public function getSectionEntry(): ActiveQuery
     {
         return $this->hasOne(SectionEntry::class, ['section_id' => 'id'])
             ->inverseOf('section');
     }
 
+    /**
+     * @return ActiveQuery<SectionEntry>
+     */
     /**
      * @return ActiveQuery<SectionEntry>
      */

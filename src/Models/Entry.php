@@ -348,18 +348,27 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
         return $relation;
     }
 
+    /**
+     * @return ActiveQuery<EntryCategory>
+     */
     public function getEntryCategory(): ActiveQuery
     {
         return $this->hasOne(EntryCategory::class, ['entry_id' => 'id'])
             ->inverseOf('entry');
     }
 
+    /**
+     * @return ActiveQuery<EntryCategory>
+     */
     public function getEntryCategories(): ActiveQuery
     {
         return $this->hasMany(EntryCategory::class, ['entry_id' => 'id'])
             ->inverseOf('entry');
     }
 
+    /**
+     * @return ActiveQuery<SectionEntry>
+     */
     public function getSectionEntry(): ActiveQuery
     {
         return $this->hasOne(SectionEntry::class, ['entry_id' => 'id'])

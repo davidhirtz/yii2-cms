@@ -173,6 +173,9 @@ class Category extends ActiveRecord implements SitemapInterface
         parent::afterDelete();
     }
 
+    /**
+     * @return ActiveQuery<EntryCategory>
+     */
     public function getEntryCategory(): ActiveQuery
     {
         return $this->hasOne(EntryCategory::class, ['category_id' => 'id'])
@@ -188,6 +191,9 @@ class Category extends ActiveRecord implements SitemapInterface
         return $relation;
     }
 
+    /**
+     * @return ActiveQuery<EntryCategory>
+     */
     public function getEntryCategories(): ActiveQuery
     {
         return $this->hasMany(EntryCategory::class, ['category_id' => 'id'])
