@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Widgets\Forms\Fields;
 
-use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits\ParentIdSelectFieldTrait;
 use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Skeleton\Helpers\ArrayHelper;
 use Hirtz\Skeleton\Helpers\Html;
+use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Skeleton\Widgets\Forms\Fields\SelectField;
 use Override;
-use Yii;
+use Stringable;
 
 /**
  * @template T of Entry
@@ -38,6 +38,12 @@ class EntryParentIdSelectField extends SelectField
         $this->promptAttributes = ArrayHelper::remove($this->attributes, 'promptAttributes', []);
 
         parent::configure();
+    }
+
+    #[Override]
+    protected function renderContent(): string|Stringable
+    {
+        return $this->items ? parent::renderContent() : '';
     }
 
     /**

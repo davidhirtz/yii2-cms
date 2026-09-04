@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Widgets\Navs;
 
-use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Modules\ModuleTrait;
+use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Skeleton\Widgets\Navs\NavItem;
 use Override;
-use Yii;
 
 class CmsNavItem extends NavItem
 {
@@ -36,11 +35,13 @@ class CmsNavItem extends NavItem
             $this->showCategories = static::getModule()->enableCategories;
         }
 
-        $this->label ??= $this->showCategories || $this->showEntryTypes
-            ? Lang::t('cms', 'CMS_NAV_ITEM_CONTENTS')
-            : Lang::t('cms', 'COMMON_ENTRIES');
+        $this->label ??= Lang::t('cms', 'COMMON_ENTRIES');
 
-        $this->addEntrySubnavItems();
+        if ($this->showEntryTypes) {
+            $this->addEntrySubnavItems();
+        } else {
+            $this->routes(['admin/cms/entry', 'admin/cms/section']);
+        }
 
         if ($this->showCategories) {
             $this->addCategorySubnavItems();
@@ -51,31 +52,21 @@ class CmsNavItem extends NavItem
 
     protected function addEntrySubnavItems(): void
     {
-        if ($this->showEntryTypes) {
-            $typeOptions = Entry::instance()::getTypes();
-            $currentType = $this->view->params['entryType'] ?? key($typeOptions);
+        $typeOptions = Entry::instance()::getTypes();
+        $currentType = $this->view->params['entryType'] ?? key($typeOptions);
 
-            foreach ($typeOptions as $type => $attributes) {
-                $this->addItem(NavItem::make()
-                    ->active($currentType === $type))
-                    ->label($attributes['label'] ?? $attributes['plural'] ?? $attributes['name'])
-                    ->url(['/admin/cms/entry/index', 'type' => $type])
-                    ->roles([Entry::AUTH_ENTRY_UPDATE]);
-            }
-        } else {
+        foreach ($typeOptions as $type => $attributes) {
             $this->addItem(NavItem::make()
-                ->icon('newspaper')
-                ->label(Lang::t('cms', 'COMMON_ENTRIES'))
-                ->url(['/admin/cms/entry/index'])
-                ->roles([Entry::AUTH_ENTRY_UPDATE])
-                ->routes(['admin/cms/entry', 'admin/cms/section']));
+                ->active($currentType === $type))
+                ->label($attributes['label'] ?? $attributes['plural'] ?? $attributes['name'])
+                ->url(['/admin/cms/entry/index', 'type' => $type])
+                ->roles([Entry::AUTH_ENTRY_UPDATE]);
         }
     }
 
     protected function addCategorySubnavItems(): void
     {
         $this->addItem(NavItem::make()
-            ->icon('folder-open')
             ->label(Lang::t('cms', 'COMMON_CATEGORIES'))
             ->url(['/admin/cms/category/index'])
             ->roles([Category::AUTH_CATEGORY_UPDATE])
