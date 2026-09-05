@@ -67,7 +67,7 @@ class EntryHeader extends Header
 
             $this->subtitle ??= $this->getPaginationSubtitle($this->provider);
             $this->title ??= $typeOptions['plural'] ?? $typeOptions['name'] ?? Lang::t('cms', 'COMMON_ENTRIES');
-            $this->url ??= ['/admin/cms/entry/index', 'type' => $this->provider?->type];
+            $this->url ??= ['/admin/cms/entry/index', 'type' => $this->provider->type];
 
             $this->addContent($this->getCreateEntryButton());
         }

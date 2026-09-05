@@ -32,8 +32,6 @@ class EntrySubmenu extends Submenu
     protected bool $showEntryCategories = true;
     protected bool $showEntrySections = true;
 
-    private bool $isAsset = false;
-
     #[Override]
     protected function configure(): void
     {
@@ -43,7 +41,6 @@ class EntrySubmenu extends Submenu
 
         if ($this->model instanceof Asset) {
             $this->model($this->model->getParent());
-            $this->isAsset = true;
         }
 
         if ($this->showEntryCategories) {
