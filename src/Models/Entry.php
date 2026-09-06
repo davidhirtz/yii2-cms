@@ -15,7 +15,6 @@ use davidhirtz\yii2\datetime\DateTimeValidator;
 use Hirtz\Media\Models\Interfaces\AssetParentInterface;
 use Hirtz\Media\Models\Traits\AssetParentTrait;
 use Hirtz\Skeleton\Behaviors\RedirectBehavior;
-use Hirtz\Skeleton\Helpers\ArrayHelper;
 use Hirtz\Skeleton\Models\Interfaces\SitemapInterface;
 use Hirtz\Skeleton\Models\Traits\MaterializedTreeTrait;
 use Override;
@@ -25,7 +24,7 @@ use yii\db\ActiveQuery;
 /**
  * @property int|null $parent_id
  * @property int|null $parent_status
- * @property string|null $path
+ * @property array|null $path
  * @property string $parent_slug
  * @property int|null|false $position
  * @property string $name
@@ -34,7 +33,7 @@ use yii\db\ActiveQuery;
  * @property string|null $description
  * @property string $content
  * @property DateTime|null $publish_date
- * @property string|null $category_ids
+ * @property array|null $category_ids
  * @property int $entry_count
  * @property int $section_count
  * @property int $asset_count
@@ -220,7 +219,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
                 : static::STATUS_ENABLED;
 
             $this->path = $this->parent
-                ? ArrayHelper::createCacheString(ArrayHelper::cacheStringToArray($this->parent->path, $this->parent_id))
+                ? [...$this->parent->path ?? [], $this->parent_id]
                 : null;
 
             $this->position = null;
@@ -238,7 +237,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
             foreach ($this->getChildren(true) as $entry) {
                 $entry->populateParentRelation($this);
                 $entry->parent_status = min($this->status, $this->parent_status);
-                $entry->path = ArrayHelper::createCacheString(ArrayHelper::cacheStringToArray($this->path, $this->id));
+                $entry->path = [...$this->path ?? [], $this->id];
 
                 foreach ($entry->getI18nAttributeNames('parent_slug') as $language => $attributeName) {
                     $entry->{$attributeName} = $this->getFormattedSlug($language);
@@ -249,7 +248,10 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
         }
 
         if ($this->shouldUpdateParentAfterSave && array_key_exists('parent_id', $changedAttributes)) {
-            $allRelatedAncestorIds = ArrayHelper::cacheStringToArray($changedAttributes['path'] ?? '', $this->getAncestorIds());
+            $allRelatedAncestorIds = array_unique(array_filter([
+                ...$changedAttributes['path'] ?? [],
+                ...$this->getAncestorIds(),
+            ]));
             $allRelatedAncestorIds = array_map(intval(...), $allRelatedAncestorIds);
 
             if ($this->parent) {
@@ -468,9 +470,11 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
 
     public function recalculateCategoryIds(): static
     {
-        $this->category_ids = ArrayHelper::createCacheString($this->getEntryCategories()
+        $categoryIds = $this->getEntryCategories()
             ->select(['category_id'])
-            ->column());
+            ->column();
+
+        $this->category_ids = $categoryIds ? array_map(intval(...), $categoryIds) : null;
 
         return $this;
     }
@@ -497,7 +501,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
      */
     public function getCategoryIds(): array
     {
-        return array_map(intval(...), ArrayHelper::cacheStringToArray($this->category_ids));
+        return array_map(intval(...), $this->category_ids ?? []);
     }
 
     public function getCategoryCount(): int

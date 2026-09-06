@@ -56,7 +56,7 @@ class EntryTest extends TestCase
         self::assertTrue($entry->update() === 1);
 
         self::assertEquals('test-2', $entry->parent_slug);
-        self::assertEquals('2', $entry->path);
+        self::assertEquals([2], $entry->path);
         self::assertEquals(2, $entry->parent->id);
         self::assertEquals(2, $entry->parent->entry_count);
 

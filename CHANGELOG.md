@@ -5,6 +5,8 @@
 - Added `ActiveRecord::getRouteName()`, `getRouteParams()`, `getUrl()` and `getDraftUrl()`;
   `getRoute()` is unchanged and still used as a fallback when the named route is not registered
 - Replaced `Canvas` with `Artwork`
+- Changed `Entry::$path` and `Entry::$category_ids` to JSON `array` columns (were comma-separated
+  strings); added migration `M260906100000Json` to convert existing data
 
 ## 2.4.10 (Jan 27, 2026)
 
