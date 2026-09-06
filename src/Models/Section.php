@@ -13,7 +13,7 @@ use Hirtz\Cms\Models\Traits\EntryRelationTrait;
 use Hirtz\Cms\Models\Traits\SlugAttributeTrait;
 use Hirtz\Media\Models\Interfaces\AssetParentInterface;
 use Hirtz\Media\Models\Traits\AssetParentTrait;
-use Hirtz\Skeleton\Db\ActiveQuery;
+use yii\db\ActiveQuery;
 use Hirtz\Skeleton\Validators\RelationValidator;
 use Override;
 use Yii;
@@ -202,18 +202,12 @@ class Section extends ActiveRecord implements AssetParentInterface
     /**
      * @return ActiveQuery<SectionEntry>
      */
-    /**
-     * @return ActiveQuery<SectionEntry>
-     */
     public function getSectionEntry(): ActiveQuery
     {
         return $this->hasOne(SectionEntry::class, ['section_id' => 'id'])
             ->inverseOf('section');
     }
 
-    /**
-     * @return ActiveQuery<SectionEntry>
-     */
     /**
      * @return ActiveQuery<SectionEntry>
      */
