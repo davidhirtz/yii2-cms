@@ -24,7 +24,7 @@ use Hirtz\Skeleton\Widgets\Forms\FormContainer;
 $this->title(Yii::t('cms', 'Edit Asset'));
 
 echo EntrySubmenu::make()
-    ->model($asset);
+    ->model($asset->entry);
 
 echo FormContainer::make()
     ->title($this->title)

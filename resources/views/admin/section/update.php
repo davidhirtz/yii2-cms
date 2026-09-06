@@ -26,7 +26,7 @@ echo EntryHeader::make()
     ->model($section);
 
 echo EntrySubmenu::make()
-    ->model($section);
+    ->model($section->entry);
 
 echo FormContainer::make()
     ->title($this->title)

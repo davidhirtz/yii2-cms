@@ -22,7 +22,7 @@ echo EntryHeader::make()
     ->model($section);
 
 echo EntrySubmenu::make()
-    ->model($section);
+    ->model($section->entry);
 
 $this->addBreadcrumb(Yii::t('cms', 'Move / Copy'));
 

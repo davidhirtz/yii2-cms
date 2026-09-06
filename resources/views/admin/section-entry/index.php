@@ -11,16 +11,14 @@ declare(strict_types=1);
 
 use Hirtz\Cms\Modules\Admin\Data\EntryActiveDataProvider;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\SectionEntryGridView;
-use Hirtz\Cms\Modules\Admin\Widgets\Grids\SectionParentEntryGridView;
 use Hirtz\Cms\Modules\Admin\Widgets\Navs\EntrySubmenu;
 use Hirtz\Skeleton\Web\View;
 use Hirtz\Skeleton\Widgets\Grids\GridContainer;
 
-
 $this->title(Yii::t('cms', 'Link entries'));
 
 echo EntrySubmenu::make()
-    ->model($provider->section);
+    ->model($provider->section->entry);
 
 $this->breadcrumbs([
     Yii::t('cms', 'Entries') => $provider->section->getAdminRoute() + ['#' => 'entries'],

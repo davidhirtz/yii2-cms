@@ -22,7 +22,7 @@ use yii\data\ActiveDataProvider;
 $this->title(Yii::t('media', 'Assets'));
 
 echo EntrySubmenu::make()
-    ->model($parent);
+    ->model($parent instanceof Section ? $parent->entry : $parent);
 
 $this->addBreadcrumb(Yii::t('media', 'Assets'), [$parent instanceof Section
     ? '/admin/cms/section/update'
