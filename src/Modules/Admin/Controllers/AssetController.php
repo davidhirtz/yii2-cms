@@ -12,148 +12,17 @@ use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Controllers\Traits\AssetControllerTrait;
 use Hirtz\Cms\Modules\Admin\Controllers\Traits\EntryControllerTrait;
 use Hirtz\Cms\Modules\Admin\Controllers\Traits\SectionControllerTrait;
-use Hirtz\Media\Models\Folder;
 use Hirtz\Media\Modules\Admin\Controllers\Traits\FileControllerTrait;
-use Hirtz\Media\Modules\Admin\Data\FileActiveDataProvider;
 use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Skeleton\Widgets\Flashes;
-use Override;
-use Yii;
-use yii\filters\AccessControl;
-use yii\filters\VerbFilter;
 use yii\web\Response;
 
-class AssetController extends AbstractController
+abstract class AssetController extends AbstractController
 {
     use AssetControllerTrait;
     use EntryControllerTrait;
     use SectionControllerTrait;
     use FileControllerTrait;
-
-    public function __construct($id, $module, $config = [])
-    {
-        parent::__construct($id, $module, $config);
-    }
-
-    #[Override]
-    public function behaviors(): array
-    {
-        return [
-            ...parent::behaviors(),
-            'access' => [
-                'class' => AccessControl::class,
-                'rules' => [
-                    [
-                        'allow' => true,
-                        'actions' => ['index', 'update'],
-                        'roles' => [Entry::AUTH_ENTRY_ASSET_UPDATE, Section::AUTH_SECTION_ASSET_UPDATE],
-                    ],
-                    [
-                        'allow' => true,
-                        'actions' => ['create', 'duplicate'],
-                        'roles' => [Entry::AUTH_ENTRY_ASSET_CREATE, Section::AUTH_SECTION_ASSET_CREATE],
-                    ],
-                    [
-                        'allow' => true,
-                        'actions' => ['delete'],
-                        'roles' => [Entry::AUTH_ENTRY_ASSET_DELETE, Section::AUTH_SECTION_ASSET_DELETE],
-                    ],
-                    [
-                        'allow' => true,
-                        'actions' => ['order'],
-                        'roles' => ['entryAssetOrder', Section::AUTH_SECTION_ASSET_ORDER],
-                    ],
-                ],
-            ],
-            'verbs' => [
-                'class' => VerbFilter::class,
-                'actions' => [
-                    'delete' => ['post'],
-                    'duplicate' => ['post'],
-                    'order' => ['post'],
-                ],
-            ],
-        ];
-    }
-
-    public function actionIndex(
-        ?int $entry = null,
-        ?int $section = null,
-        ?int $folder = null,
-        ?bool $link = false,
-        ?string $q = null
-    ): Response|string {
-        $parent = $section
-            ? $this->findSection($section, Section::AUTH_SECTION_ASSET_UPDATE)
-            : $this->findEntry($entry, Entry::AUTH_ENTRY_ASSET_UPDATE);
-
-        $query = $parent instanceof Entry
-            ? $parent->getAssets()->withoutSections()
-            : $parent->getAssets();
-
-        if (!$link) {
-            $query->withFiles();
-        }
-
-        $parent->populateRelation('assets', $query->all());
-
-        if (!$link) {
-            return $this->render('index', [
-                'provider' => null,
-                'parent' => $parent,
-            ]);
-        }
-
-        $provider = Yii::$container->get(FileActiveDataProvider::class, [], [
-            'folder' => Folder::findOne($folder),
-            'search' => $q,
-        ]);
-
-        return $this->render('index', [
-            'provider' => $provider,
-            'parent' => $parent,
-        ]);
-    }
-
-    public function actionCreate(
-        ?int $entry = null,
-        ?int $section = null,
-        ?int $file = null,
-        ?int $folder = null
-    ): Response|string {
-        if ($entry) {
-            $entry = $this->findEntry($entry, Entry::AUTH_ENTRY_ASSET_CREATE);
-            $section = null;
-        } else {
-            $section = $this->findSection($section, Section::AUTH_SECTION_ASSET_CREATE);
-            $entry = null;
-        }
-
-        if ($file) {
-            $file = $this->findFile($file);
-        }
-
-        $file ??= $this->insertFileFromRequest($folder);
-
-        if ($this->request->preferNoContent()) {
-            $this->response->setStatusCode(204);
-        }
-
-        if (!$this->response->getIsOk() || $file->hasErrors()) {
-            return $this->response;
-        }
-
-        $asset = Asset::create();
-        $asset->loadDefaultValues();
-        $asset->populateSectionRelation($section);
-        $asset->populateEntryRelation($entry);
-        $asset->populateFileRelation($file);
-        $asset->insert();
-
-        $this->error($asset);
-
-        return $this->redirectToParent($asset);
-    }
 
     public function actionUpdate(int $id): Response|string
     {
@@ -179,7 +48,7 @@ class AssetController extends AbstractController
         $asset->delete();
         $this->errorOrSuccess($asset, Lang::t('cms', 'ASSET_SUCCESS_DELETED'));
 
-        return $this->redirectToParent($asset, true);
+        return $this->redirectToParent($asset);
     }
 
     public function actionDuplicate(int $id): Response|string
@@ -203,7 +72,7 @@ class AssetController extends AbstractController
     {
         $parent = $section
             ? $this->findSection($section, Section::AUTH_SECTION_ASSET_ORDER)
-            : $this->findEntry($entry, 'entryAssetOrder');
+            : $this->findEntry($entry, Entry::AUTH_ENTRY_ASSET_ORDER);
 
         $success = ReorderAssets::runWithBodyParam('asset', [
             'parent' => $parent,
@@ -216,10 +85,5 @@ class AssetController extends AbstractController
         return (string)Flashes::make();
     }
 
-    private function redirectToParent(Asset $asset, bool $isDeleted = false): Response
-    {
-        return $this->redirect($asset->parent->getAdminRoute() + [
-                '#' => $isDeleted ? 'assets' : "asset-$asset->id",
-            ]);
-    }
+    abstract protected function redirectToParent(Asset $asset): Response;
 }

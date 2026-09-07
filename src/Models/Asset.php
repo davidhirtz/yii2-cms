@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Models;
 
-use Hirtz\Skeleton\I18n\Lang;
 use davidhirtz\yii2\datetime\DateTime;
 use Hirtz\Cms\Models\Queries\AssetQuery;
 use Hirtz\Cms\Models\Traits\EntryRelationTrait;
@@ -14,6 +13,7 @@ use Hirtz\Media\Models\File;
 use Hirtz\Media\Models\Interfaces\AssetInterface;
 use Hirtz\Media\Models\Traits\AssetTrait;
 use Hirtz\Media\Models\Traits\EmbedUrlTrait;
+use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Skeleton\Models\Interfaces\DraftStatusAttributeInterface;
 use Hirtz\Skeleton\Validators\RelationValidator;
 use Override;
@@ -265,7 +265,12 @@ class Asset extends ActiveRecord implements AssetInterface, DraftStatusAttribute
 
     public function getAdminRoute(): false|array
     {
-        return $this->id ? ['/admin/cms/asset/update', 'id' => $this->id] : false;
+        return $this->id
+            ? [
+                $this->section_id ? '/admin/cms/section-asset/update' : '/admin/cms/entry-asset/update',
+                'id' => $this->id,
+            ]
+            : false;
     }
 
     public function getRoute(): array|false

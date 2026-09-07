@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * @see AssetController::actionUpdate()
+ * @see EntryAssetController::actionUpdate()
  *
  * @var View $this
  * @var Asset $asset
@@ -13,7 +13,9 @@ use Hirtz\Cms\Models\Asset;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Controllers\AssetController;
+use Hirtz\Cms\Modules\Admin\Controllers\EntryAssetController;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\AssetActiveForm;
+use Hirtz\Cms\Modules\Admin\Widgets\Navs\EntryHeader;
 use Hirtz\Cms\Modules\Admin\Widgets\Navs\EntrySubmenu;
 use Hirtz\Cms\Modules\Admin\Widgets\Panels\AssetPanel;
 use Hirtz\Media\Models\File;
@@ -21,7 +23,8 @@ use Hirtz\Skeleton\Web\View;
 use Hirtz\Skeleton\Widgets\Forms\DeleteActiveForm;
 use Hirtz\Skeleton\Widgets\Forms\FormContainer;
 
-$this->title(Yii::t('cms', 'Edit Asset'));
+echo EntryHeader::make()
+    ->model($asset->entry);
 
 echo EntrySubmenu::make()
     ->model($asset->entry);

@@ -8,7 +8,7 @@ use Hirtz\Cms\Models\Asset;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Controllers\AssetController;
-use Hirtz\Cms\Modules\Admin\Controllers\EntryController;
+use Hirtz\Cms\Modules\Admin\Data\AssetArrayDataProvider;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\Columns\AssetThumbnailColumn;
 use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Media\Models\File;
@@ -29,20 +29,18 @@ use Hirtz\Skeleton\Widgets\Grids\GridView;
 use Override;
 use Stringable;
 use Yii;
-use yii\data\ArrayDataProvider;
 use yii\db\ActiveQuery;
 
 /**
  * @template T of Asset
  * @extends GridView<T>
  *
- * @property Entry|Section $parent
+ * @property AssetArrayDataProvider $provider
  */
 class AssetGridView extends GridView
 {
     use AssetGridViewTrait;
     use ModuleTrait;
-    use FileButtonsTrait;
 
     protected string $layout = '{header}{items}{footer}';
 
@@ -50,11 +48,6 @@ class AssetGridView extends GridView
     protected function configure(): void
     {
         $this->attributes['id'] ??= 'asset-grid-view';
-
-        $this->provider ??= new ArrayDataProvider([
-            'allModels' => $this->parent->assets,
-            'sort' => false,
-        ]);
 
         $this->columns ??= [
             $this->getStatusColumn(),
@@ -65,14 +58,6 @@ class AssetGridView extends GridView
             $this->getButtonColumn(),
         ];
 
-        $this->footer ??= $this->getFooterButtons();
-
-        /**
-         * @see EntryController::actionOrder()
-         * @see SectionController::actionOrder()
-         */
-        $this->orderRoute = ['cms/asset/order', $this->parent->getParamName() => $this->parent->id];
-
         parent::configure();
     }
 
@@ -81,39 +66,6 @@ class AssetGridView extends GridView
         return $this->parent->getAssets()
             ->andWhere(['section_id' => $this->parent instanceof Section ? $this->parent->id : null])
             ->with('file');
-    }
-
-    /**
-     * @see AssetController::actionCreate()
-     */
-    protected function getFooterButtons(): array
-    {
-        $user = Yii::$app->getUser();
-        $buttons = [];
-
-        $hasPermission = $this->parent instanceof Entry
-            ? $user->can(Entry::AUTH_ENTRY_ASSET_CREATE, ['entry' => $this->parent])
-            : $user->can(Section::AUTH_SECTION_ASSET_CREATE, ['section' => $this->parent]);
-
-        if ($hasPermission) {
-            if ($user->can(File::AUTH_FILE_CREATE)) {
-                $buttons[] = $this->getFileUploadButton();
-                $buttons[] = $this->getFileImportButton();
-            }
-
-            $buttons[] = $this->getAssetLinkButton();
-        }
-
-        return $buttons;
-    }
-
-    protected function getAssetLinkButton(): ?Stringable
-    {
-        return Button::make()
-            ->primary()
-            ->text(Lang::t('cms', 'COMMON_LINK_ASSETS'))
-            ->icon('images')
-            ->url($this->getParentRoute('cms/asset/index'));
     }
 
     protected function getStatusColumn(): ?Column
@@ -200,18 +152,6 @@ class AssetGridView extends GridView
     {
         return AssetThumbnailColumn::make()
             ->url(fn (Asset $asset): ?array => $this->canUpdateAsset($asset) ? $asset->getAdminRoute() : null);
-    }
-
-    protected function getFileUploadRoute(): array
-    {
-        return $this->getParentRoute('/admin/cms/asset/create', [
-            'folder' => Yii::$app->getRequest()->get('folder'),
-        ]);
-    }
-
-    protected function getParentRoute(string $action, $params = []): array
-    {
-        return [$action, $this->parent->getParamName() => $this->parent->id, ...$params];
     }
 
     protected function canUpdateAsset(Asset $asset): bool
