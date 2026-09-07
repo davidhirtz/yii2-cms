@@ -1,5 +1,9 @@
 ## 3.0 (in development)
 
+- `actionOrder()` in the entry, section, category, asset, section-entry and entry-category admin
+  controllers now returns a flash fragment (was `void`) and emits a success flash after a reorder;
+  added the `ENTRY_SUCCESS_ORDERED`, `SECTION_SUCCESS_ORDERED`, `CATEGORY_SUCCESS_ORDERED` and
+  `ASSET_SUCCESS_ORDERED` messages
 - Added `CategorySubmenu` and gave `CategoryHeader` a `ModelTrait`; the category update view now shows
   the category name (with frontend link) in the header and a submenu (general / subcategories) like
   entries. Subcategories are browsed through the category index (`parent` param) instead of an inline

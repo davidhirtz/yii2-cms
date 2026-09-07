@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Modules\Admin\Controllers;
 
 use Hirtz\Skeleton\I18n\Lang;
+use Hirtz\Skeleton\Widgets\Flashes;
 use Hirtz\Cms\Models\Actions\DuplicateSection;
 use Hirtz\Cms\Models\Actions\ReorderSections;
 use Hirtz\Cms\Models\Category;
@@ -209,11 +210,17 @@ class SectionController extends AbstractController
         return $this->redirect(['index', 'entry' => $section->entry_id]);
     }
 
-    public function actionOrder(int $entry): void
+    public function actionOrder(int $entry): string
     {
-        ReorderSections::runWithBodyParam('section', [
+        $success = ReorderSections::runWithBodyParam('section', [
             'entry' => $this->findEntry($entry, Section::AUTH_SECTION_ORDER),
         ]);
+
+        if ($success) {
+            $this->success(Lang::t('cms', 'SECTION_SUCCESS_ORDERED'));
+        }
+
+        return (string) Flashes::make();
     }
 
     public function actionEntries(

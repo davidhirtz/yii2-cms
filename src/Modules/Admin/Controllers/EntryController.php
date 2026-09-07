@@ -13,6 +13,7 @@ use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Modules\Admin\Controllers\Traits\EntryControllerTrait;
 use Hirtz\Cms\Modules\Admin\Data\EntryActiveDataProvider;
 use Hirtz\Skeleton\Helpers\Url;
+use Hirtz\Skeleton\Widgets\Flashes;
 use Override;
 use Yii;
 use yii\filters\AccessControl;
@@ -218,11 +219,17 @@ class EntryController extends AbstractController
         return $this->redirect([...Yii::$app->getRequest()->get(), 'index']);
     }
 
-    public function actionOrder(?int $parent = null): void
+    public function actionOrder(?int $parent = null): string
     {
-        ReorderEntries::runWithBodyParam('entry', [
+        $success = ReorderEntries::runWithBodyParam('entry', [
             'parent' => $parent ? $this->findEntry($parent, Entry::AUTH_ENTRY_UPDATE) : null,
         ]);
+
+        if ($success) {
+            $this->success(Lang::t('cms', 'ENTRY_SUCCESS_ORDERED'));
+        }
+
+        return (string) Flashes::make();
     }
 
     protected function redirectToEntry(Entry $entry): Response

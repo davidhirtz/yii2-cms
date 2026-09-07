@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Modules\Admin\Controllers;
 
 use Hirtz\Skeleton\I18n\Lang;
+use Hirtz\Skeleton\Widgets\Flashes;
 use Hirtz\Cms\Models\Actions\ReorderEntryCategories;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
@@ -113,10 +114,16 @@ class EntryCategoryController extends AbstractController
         ]);
     }
 
-    public function actionOrder(int $category): void
+    public function actionOrder(int $category): string
     {
-        ReorderEntryCategories::runWithBodyParam('entry', [
+        $success = ReorderEntryCategories::runWithBodyParam('entry', [
             'category' => $this->findCategory($category, Entry::AUTH_ENTRY_ORDER),
         ]);
+
+        if ($success) {
+            $this->success(Lang::t('cms', 'ENTRY_SUCCESS_ORDERED'));
+        }
+
+        return (string) Flashes::make();
     }
 }

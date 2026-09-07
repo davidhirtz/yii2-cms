@@ -13,6 +13,7 @@ use Hirtz\Cms\Models\SectionEntry;
 use Hirtz\Cms\Modules\Admin\Controllers\Traits\SectionControllerTrait;
 use Hirtz\Cms\Modules\Admin\Data\EntryActiveDataProvider;
 use Hirtz\Skeleton\Helpers\Url;
+use Hirtz\Skeleton\Widgets\Flashes;
 use Override;
 use Yii;
 use yii\filters\AccessControl;
@@ -115,10 +116,16 @@ class SectionEntryController extends AbstractController
         return $this->redirect($section->getAdminRoute() + ['#' => 'entries']);
     }
 
-    public function actionOrder(int $section): void
+    public function actionOrder(int $section): string
     {
-        ReorderSectionEntries::runWithBodyParam('entry', [
+        $success = ReorderSectionEntries::runWithBodyParam('entry', [
             'section' => $this->findSection($section, Section::AUTH_SECTION_UPDATE),
         ]);
+
+        if ($success) {
+            $this->success(Lang::t('cms', 'ENTRY_SUCCESS_ORDERED'));
+        }
+
+        return (string) Flashes::make();
     }
 }

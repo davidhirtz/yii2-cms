@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Modules\Admin\Controllers;
 
 use Hirtz\Skeleton\I18n\Lang;
+use Hirtz\Skeleton\Widgets\Flashes;
 use Hirtz\Cms\Models\Actions\DuplicateAsset;
 use Hirtz\Cms\Models\Actions\ReorderAssets;
 use Hirtz\Cms\Models\Asset;
@@ -183,15 +184,21 @@ class AssetController extends AbstractController
         return $this->redirect(['update', 'id' => $duplicate->id]);
     }
 
-    public function actionOrder(?int $entry = null, ?int $section = null): void
+    public function actionOrder(?int $entry = null, ?int $section = null): string
     {
         $parent = $section
             ? $this->findSection($section, Section::AUTH_SECTION_ASSET_ORDER)
             : $this->findEntry($entry, 'entryAssetOrder');
 
-        ReorderAssets::runWithBodyParam('asset', [
+        $success = ReorderAssets::runWithBodyParam('asset', [
             'parent' => $parent,
         ]);
+
+        if ($success) {
+            $this->success(Lang::t('cms', 'ASSET_SUCCESS_ORDERED'));
+        }
+
+        return (string) Flashes::make();
     }
 
     private function redirectToParent(Asset $asset, bool $isDeleted = false): Response

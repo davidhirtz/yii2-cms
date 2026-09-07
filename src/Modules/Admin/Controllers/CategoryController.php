@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Modules\Admin\Controllers;
 
 use Hirtz\Skeleton\I18n\Lang;
+use Hirtz\Skeleton\Widgets\Flashes;
 use Hirtz\Cms\Models\Actions\ReorderCategories;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Modules\Admin\Controllers\Traits\CategoryControllerTrait;
@@ -128,10 +129,16 @@ class CategoryController extends AbstractController
         throw new ServerErrorHttpException(reset($errors));
     }
 
-    public function actionOrder(?int $id = null): void
+    public function actionOrder(?int $id = null): string
     {
-        ReorderCategories::runWithBodyParam('category', [
+        $success = ReorderCategories::runWithBodyParam('category', [
             'parent' => $id ? $this->findCategory($id, Category::AUTH_CATEGORY_ORDER) : null,
         ]);
+
+        if ($success) {
+            $this->success(Lang::t('cms', 'CATEGORY_SUCCESS_ORDERED'));
+        }
+
+        return (string) Flashes::make();
     }
 }
