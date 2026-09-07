@@ -5,6 +5,9 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
+    'ASSET_ACTION_DROPDOWN_DELETE' => '',
+    'ASSET_ACTION_DROPDOWN_DELETE_FILE_MESSAGE' => '',
+    'ASSET_ACTION_DROPDOWN_DELETE_MESSAGE' => '',
     'ASSET_ALT_TEXT_LABEL' => '',
     'ASSET_LINK_LABEL' => '',
     'ASSET_SECTION_ID_LABEL' => '',

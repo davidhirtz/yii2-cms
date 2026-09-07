@@ -16,7 +16,7 @@ trait UpdateFileButtonTrait
     {
         return Yii::$app->getUser()->can(File::AUTH_FILE_CREATE)
             ? Button::make()
-                ->secondary()
+                ->primary()
                 ->icon('image')
                 ->text(Lang::t('media', 'COMMON_EDIT_FILE'))
                 ->url(['/admin/media/file/update', 'id' => $this->model->file_id])

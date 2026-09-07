@@ -5,6 +5,9 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
+    'ASSET_ACTION_DROPDOWN_DELETE' => 'Medium entfernen',
+    'ASSET_ACTION_DROPDOWN_DELETE_FILE_MESSAGE' => 'Achtung: Das Löschen dieser Datei kann nicht rückgängig gemacht werden. Alle verknüpften Medien werden ebenfalls unwiderruflich gelöscht. Bitte sei sicher!',
+    'ASSET_ACTION_DROPDOWN_DELETE_MESSAGE' => 'Hinweis: Das Entfernen eines Mediums löscht nicht die eigentliche Datei.',
     'ASSET_ALT_TEXT_LABEL' => 'Alt text',
     'ASSET_LINK_LABEL' => 'Link',
     'ASSET_SECTION_ID_LABEL' => 'Sektion',

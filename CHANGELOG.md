@@ -13,6 +13,10 @@
 - Added `SectionActionDropdown` and `SectionDeleteButton`; the section update view now renders the
   actions (move/copy, duplicate, open website, delete) as a dropdown in the header. Removed
   `SectionPanel` and the inline `DeleteActiveForm` from the section update view
+- Added `AssetActionDropdown`; the entry-asset update view now renders the actions (edit file,
+  duplicate, remove asset, delete file) as a dropdown in `EntryHeader`. Removed `AssetPanel` and the
+  inline `DeleteActiveForm`s from the entry-asset update view. Added the `ASSET_ACTION_DROPDOWN_DELETE`,
+  `ASSET_ACTION_DROPDOWN_DELETE_MESSAGE` and `ASSET_ACTION_DROPDOWN_DELETE_FILE_MESSAGE` messages
 - Added `CategoryActionDropdown` and `CategoryDeleteButton`; the category update view now renders the
   actions (create, view entries, open website, delete) as a dropdown in `CategoryHeader`. Removed
   `CategoryPanel` and the inline `DeleteActiveForm` from the category update view
