@@ -8,7 +8,6 @@ use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
 use Hirtz\Cms\Test\Models\TestAsset;
 use Hirtz\Cms\Test\TestCase;
 
-
 class AssetTest extends TestCase
 {
     use CmsFixtureTrait;

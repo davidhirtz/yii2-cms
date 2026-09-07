@@ -265,12 +265,7 @@ class Asset extends ActiveRecord implements AssetInterface, DraftStatusAttribute
 
     public function getAdminRoute(): false|array
     {
-        return $this->id
-            ? [
-                $this->section_id ? '/admin/cms/section-asset/update' : '/admin/cms/entry-asset/update',
-                'id' => $this->id,
-            ]
-            : false;
+        return $this->id ? ['/admin/cms/asset/update', 'id' => $this->id] : false;
     }
 
     public function getRoute(): array|false

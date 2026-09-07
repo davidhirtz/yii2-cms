@@ -13,18 +13,16 @@ declare(strict_types=1);
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Data\EntryActiveDataProvider;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\SectionParentEntryGridView;
-use Hirtz\Cms\Modules\Admin\Widgets\Navs\EntryHeader;
-use Hirtz\Cms\Modules\Admin\Widgets\Navs\EntrySubmenu;
+use Hirtz\Cms\Modules\Admin\Widgets\Navs\SectionHeader;
+use Hirtz\Cms\Modules\Admin\Widgets\Navs\SectionSubmenu;
 use Hirtz\Skeleton\Web\View;
 use Hirtz\Skeleton\Widgets\Grids\GridContainer;
 
-echo EntryHeader::make()
+echo SectionHeader::make()
     ->model($section);
 
-echo EntrySubmenu::make()
-    ->model($section->entry);
-
-$this->addBreadcrumb(Yii::t('cms', 'Move / Copy'));
+echo SectionSubmenu::make()
+    ->model($section);
 
 echo GridContainer::make()
     ->grid(SectionParentEntryGridView::make()

@@ -13,7 +13,7 @@ class EntryCreateButton extends CreateButton
 {
     public function __construct(array $config = [])
     {
-        $this->label ??= Lang::t('cms', 'ENTRY_CREATE_CREATE_ENTRY');
+        $this->label ??= Lang::t('cms', 'ENTRY_CREATE_BUTTON');
         $this->roles ??= [Entry::AUTH_ENTRY_CREATE];
 
         $this->url ??= [

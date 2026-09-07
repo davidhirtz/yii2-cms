@@ -1,5 +1,11 @@
 ## 3.0 (in development)
 
+- Consolidated the split entry/section asset controllers back into a single `AssetController`; entry
+  and section assets are served under `admin/cms/asset/*` again (removed `EntryAssetController` and
+  the planned `section-asset` route). Added the thin `AssetHeader` and `AssetSubmenu` dispatcher
+  widgets, which render the parent-specific `EntryHeader`/`SectionHeader` and `EntrySubmenu`
+  (plus `SectionSubmenu` for section parents). `actionCreate()` keeps the GET file-picker /
+  POST-insert split. Moved the entry-asset views to `resources/views/admin/asset/`
 - Added a `depth` column to the category table (`M260907100000Depth`), backfilled from the existing
   nested set, matching `NestedTreeTrait`'s new depth tracking
 - `actionOrder()` in the entry, section, category, asset, section-entry and entry-category admin

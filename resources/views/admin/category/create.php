@@ -17,7 +17,7 @@ use Hirtz\Skeleton\Web\View;
 use Hirtz\Skeleton\Widgets\Forms\FormContainer;
 
 echo CategoryHeader::make()
-    ->title(Yii::t('cms', 'New Category'));
+    ->title(Yii::t('cms', 'CATEGORY_CREATE_HEADLINE'));
 
 echo FormContainer::make()
     ->title($this->title)

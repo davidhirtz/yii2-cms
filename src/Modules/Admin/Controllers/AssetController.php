@@ -12,17 +12,142 @@ use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Controllers\Traits\AssetControllerTrait;
 use Hirtz\Cms\Modules\Admin\Controllers\Traits\EntryControllerTrait;
 use Hirtz\Cms\Modules\Admin\Controllers\Traits\SectionControllerTrait;
+use Hirtz\Cms\Modules\Admin\Data\AssetArrayDataProvider;
+use Hirtz\Media\Models\Folder;
 use Hirtz\Media\Modules\Admin\Controllers\Traits\FileControllerTrait;
+use Hirtz\Media\Modules\Admin\Data\FileActiveDataProvider;
 use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Skeleton\Widgets\Flashes;
+use Override;
+use Yii;
+use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
+use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
-abstract class AssetController extends AbstractController
+class AssetController extends AbstractController
 {
     use AssetControllerTrait;
     use EntryControllerTrait;
     use SectionControllerTrait;
     use FileControllerTrait;
+
+    #[Override]
+    public function behaviors(): array
+    {
+        return [
+            ...parent::behaviors(),
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['index', 'update'],
+                        'roles' => [Entry::AUTH_ENTRY_ASSET_UPDATE, Section::AUTH_SECTION_ASSET_UPDATE],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['create', 'duplicate'],
+                        'roles' => [Entry::AUTH_ENTRY_ASSET_CREATE, Section::AUTH_SECTION_ASSET_CREATE],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['delete'],
+                        'roles' => [Entry::AUTH_ENTRY_ASSET_DELETE, Section::AUTH_SECTION_ASSET_DELETE],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['order'],
+                        'roles' => [Entry::AUTH_ENTRY_ASSET_ORDER, Section::AUTH_SECTION_ASSET_ORDER],
+                    ],
+                ],
+            ],
+            'verbs' => [
+                'class' => VerbFilter::class,
+                'actions' => [
+                    'delete' => ['post'],
+                    'duplicate' => ['post'],
+                    'order' => ['post'],
+                ],
+            ],
+        ];
+    }
+
+    public function actionIndex(?int $entry = null, ?int $section = null): Response|string
+    {
+        $parent = $this->findAssetParent(
+            $entry,
+            $section,
+            Entry::AUTH_ENTRY_ASSET_UPDATE,
+            Section::AUTH_SECTION_ASSET_UPDATE,
+        );
+
+        $provider = Yii::$container->get(AssetArrayDataProvider::class, config: [
+            'parent' => $parent,
+        ]);
+
+        return $this->render('index', [
+            'parent' => $parent,
+            'provider' => $provider,
+        ]);
+    }
+
+    public function actionCreate(
+        ?int $entry = null,
+        ?int $section = null,
+        ?int $file = null,
+        ?int $folder = null,
+        ?string $q = null
+    ): Response|string {
+        $parent = $this->findAssetParent(
+            $entry,
+            $section,
+            Entry::AUTH_ENTRY_ASSET_CREATE,
+            Section::AUTH_SECTION_ASSET_CREATE,
+        );
+
+        if ($this->request->getIsGet()) {
+            $provider = Yii::$container->get(FileActiveDataProvider::class, config: [
+                'folder' => Folder::findOne($folder),
+                'search' => $q,
+            ]);
+
+            return $this->render('create', [
+                'provider' => $provider,
+                'parent' => $parent,
+            ]);
+        }
+
+        if ($file) {
+            $file = $this->findFile($file);
+        }
+
+        $file ??= $this->insertFileFromRequest($folder);
+
+        if ($this->request->preferNoContent()) {
+            $this->response->setStatusCode(204);
+        }
+
+        if (!$this->response->getIsOk() || $file->hasErrors()) {
+            return $this->response;
+        }
+
+        $asset = Asset::create();
+        $asset->loadDefaultValues();
+
+        if ($parent instanceof Section) {
+            $asset->populateSectionRelation($parent);
+        } else {
+            $asset->populateEntryRelation($parent);
+        }
+
+        $asset->populateFileRelation($file);
+        $asset->insert();
+
+        $this->error($asset);
+
+        return $this->redirectToParent($asset);
+    }
 
     public function actionUpdate(int $id): Response|string
     {
@@ -70,9 +195,12 @@ abstract class AssetController extends AbstractController
 
     public function actionOrder(?int $entry = null, ?int $section = null): string
     {
-        $parent = $section
-            ? $this->findSection($section, Section::AUTH_SECTION_ASSET_ORDER)
-            : $this->findEntry($entry, Entry::AUTH_ENTRY_ASSET_ORDER);
+        $parent = $this->findAssetParent(
+            $entry,
+            $section,
+            Entry::AUTH_ENTRY_ASSET_ORDER,
+            Section::AUTH_SECTION_ASSET_ORDER,
+        );
 
         $success = ReorderAssets::runWithBodyParam('asset', [
             'parent' => $parent,
@@ -85,5 +213,31 @@ abstract class AssetController extends AbstractController
         return (string)Flashes::make();
     }
 
-    abstract protected function redirectToParent(Asset $asset): Response;
+    protected function redirectToParent(Asset $asset): Response
+    {
+        $parent = $asset->parent;
+
+        return $this->redirect([
+            '/admin/cms/asset/index',
+            $parent->getParamName() => $parent->id,
+            '#' => "asset-$asset->id",
+        ]);
+    }
+
+    protected function findAssetParent(
+        ?int $entry,
+        ?int $section,
+        string $entryPermission,
+        string $sectionPermission
+    ): Entry|Section {
+        if ($section) {
+            return $this->findSection($section, $sectionPermission);
+        }
+
+        if ($entry) {
+            return $this->findEntry($entry, $entryPermission);
+        }
+
+        throw new NotFoundHttpException();
+    }
 }

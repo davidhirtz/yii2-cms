@@ -39,13 +39,6 @@ class EntryHeader extends Header
             $this->subheading ??= FrontendLink::make()->model($this->model)->addClass('hidden-sticky');
             $this->url ??= $this->model->getAdminRoute();
 
-            if ($this->model instanceof Section) {
-                $this->subtitle ??= Lang::t('skeleton', 'COMMON_MODEL_ID', [
-                    'model' => $this->model->getTypeName(),
-                    'id' => $this->model->id,
-                ]);
-            }
-
             $this->addEntryBreadcrumbs($this->model);
         }
 

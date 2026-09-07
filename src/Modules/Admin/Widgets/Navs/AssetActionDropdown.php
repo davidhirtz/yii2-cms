@@ -39,8 +39,7 @@ class AssetActionDropdown extends ActionDropdown
     }
 
     /**
-     * @see EntryAssetController::actionDuplicate()
-     * @see SectionAssetController::actionDuplicate()
+     * @see AssetController::actionDuplicate()
      */
     protected function getDuplicateButton(): ?Stringable
     {
@@ -49,8 +48,7 @@ class AssetActionDropdown extends ActionDropdown
     }
 
     /**
-     * @see EntryAssetController::actionDelete()
-     * @see SectionAssetController::actionDelete()
+     * @see AssetController::actionDelete()
      */
     protected function getAssetDeleteButton(): ?Stringable
     {

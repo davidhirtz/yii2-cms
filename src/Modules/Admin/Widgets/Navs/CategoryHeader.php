@@ -6,6 +6,7 @@ namespace Hirtz\Cms\Modules\Admin\Widgets\Navs;
 
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Modules\Admin\Data\CategoryActiveDataProvider;
+use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Skeleton\Widgets\Buttons\CreateButton;
 use Hirtz\Skeleton\Widgets\Navs\Header;
@@ -21,6 +22,7 @@ class CategoryHeader extends Header
      * @use ModelTrait<Category>
      */
     use ModelTrait;
+    use ModuleTrait;
 
     /**
      * @use ProviderTrait<CategoryActiveDataProvider|null>
@@ -33,6 +35,8 @@ class CategoryHeader extends Header
     protected function configure(): void
     {
         $this->model ??= $this->provider?->category;
+
+        $this->addEntriesBreadcrumb();
 
         if ($this->model) {
             $this->title ??= $this->model->getOldAttribute($this->model->getI18nAttributeName('name'));
@@ -54,6 +58,14 @@ class CategoryHeader extends Header
         }
 
         parent::configure();
+    }
+
+    protected function addEntriesBreadcrumb(): void
+    {
+        $this->addBreadcrumb(Yii::t('cms', 'COMMON_ENTRIES'), [
+            '/admin/cms/entry/index',
+            'type' => static::getModule()->defaultEntryType,
+        ]);
     }
 
     protected function addCategoryBreadcrumbs(Category $category): void
@@ -81,9 +93,9 @@ class CategoryHeader extends Header
     protected function getCreateCategoryButton(): ?Stringable
     {
         return CreateButton::make()
-            ->label(Lang::t('cms', 'CATEGORY_HEADER_CREATE_CATEGORY'))
+            ->label(Lang::t('cms', 'CATEGORY_CREATE_BUTTON'))
             ->icon('plus')
-            ->url(['/admin/cms/category/create', 'parent' => $this->provider?->category->id]);
+            ->url(['/admin/cms/category/create', 'parent' => $this->provider?->category?->id]);
     }
 
     protected function getCategoryActionDropdown(): ?Stringable

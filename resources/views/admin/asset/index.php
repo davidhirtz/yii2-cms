@@ -3,30 +3,31 @@
 declare(strict_types=1);
 
 /**
- * @see EntryAssetController::actionIndex()
+ * @see AssetController::actionIndex()
  *
  * @var View $this
  * @var AssetArrayDataProvider $provider
- * @var Entry $entry
+ * @var Entry|Section $parent
  */
 
 use Hirtz\Cms\Models\Entry;
-use Hirtz\Cms\Modules\Admin\Controllers\EntryAssetController;
+use Hirtz\Cms\Models\Section;
+use Hirtz\Cms\Modules\Admin\Controllers\AssetController;
 use Hirtz\Cms\Modules\Admin\Data\AssetArrayDataProvider;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\AssetGridView;
+use Hirtz\Cms\Modules\Admin\Widgets\Navs\AssetHeader;
 use Hirtz\Cms\Modules\Admin\Widgets\Navs\AssetParentActionDropdown;
-use Hirtz\Cms\Modules\Admin\Widgets\Navs\EntryHeader;
-use Hirtz\Cms\Modules\Admin\Widgets\Navs\EntrySubmenu;
+use Hirtz\Cms\Modules\Admin\Widgets\Navs\AssetSubmenu;
 use Hirtz\Skeleton\Web\View;
 use Hirtz\Skeleton\Widgets\Grids\GridContainer;
 
-echo EntryHeader::make()
-    ->model($entry)
+echo AssetHeader::make()
+    ->model($parent)
     ->content(AssetParentActionDropdown::make()
         ->provider($provider));
 
-echo EntrySubmenu::make()
-    ->model($entry);
+echo AssetSubmenu::make()
+    ->model($parent);
 
 echo GridContainer::make()
     ->grid(AssetGridView::make()

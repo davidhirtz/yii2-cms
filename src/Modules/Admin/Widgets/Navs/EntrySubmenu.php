@@ -76,11 +76,11 @@ class EntrySubmenu extends Submenu
             ->label($this->model->getAttributeLabel('asset_count'))
             ->routes(
                 [
-                    'admin/cms/entry-asset/',
+                    'admin/cms/asset/' => ['entry'],
                     ...$this->additionalActiveRoutes['assets'] ?? [],
                 ]
             )
-            ->url(['/admin/cms/entry-asset/index', 'entry' => $this->model->id]);
+            ->url(['/admin/cms/asset/index', 'entry' => $this->model->id]);
     }
 
     public function getSubentriesItem(): ?NavItem

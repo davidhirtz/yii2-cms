@@ -27,11 +27,21 @@ class SectionSubmenu extends Submenu
     protected function configure(): void
     {
         $this->addItem(
+            $this->getSectionsItem(),
             $this->getSectionUpdateItem(),
             $this->getAssetsItem(),
         );
 
         parent::configure();
+    }
+
+    protected function getSectionsItem(): ?NavItem
+    {
+        return NavItem::make()
+            ->icon('angle-double-left')
+            ->badge($this->model->entry->section_count)
+            ->label(Lang::t('cms', 'COMMON_SECTIONS'))
+            ->url(['/admin/cms/section/index', 'entry' => $this->model->entry_id]);
     }
 
     protected function getSectionUpdateItem(): ?NavItem
@@ -52,10 +62,10 @@ class SectionSubmenu extends Submenu
             ->label($this->model->getAttributeLabel('asset_count'))
             ->routes(
                 [
-                    'admin/cms/section-asset/',
+                    'admin/cms/asset/' => ['section'],
                     ...$this->additionalActiveRoutes['assets'] ?? [],
                 ]
             )
-            ->url(['/admin/cms/section-asset/index', 'section' => $this->model->id]);
+            ->url(['/admin/cms/asset/index', 'section' => $this->model->id]);
     }
 }

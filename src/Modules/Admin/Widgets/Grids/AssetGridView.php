@@ -7,7 +7,6 @@ namespace Hirtz\Cms\Modules\Admin\Widgets\Grids;
 use Hirtz\Cms\Models\Asset;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
-use Hirtz\Cms\Modules\Admin\Controllers\AssetController;
 use Hirtz\Cms\Modules\Admin\Data\AssetArrayDataProvider;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\Columns\AssetThumbnailColumn;
 use Hirtz\Cms\Modules\ModuleTrait;
@@ -29,7 +28,6 @@ use Hirtz\Skeleton\Widgets\Grids\GridView;
 use Override;
 use Stringable;
 use Yii;
-use yii\db\ActiveQuery;
 
 /**
  * @template T of Asset
@@ -58,14 +56,10 @@ class AssetGridView extends GridView
             $this->getButtonColumn(),
         ];
 
-        parent::configure();
-    }
+        $parent = $this->provider->parent;
+        $this->orderRoute = ['/admin/cms/asset/order', $parent->getParamName() => $parent->id];
 
-    protected function getParentAssetQuery(): ActiveQuery
-    {
-        return $this->parent->getAssets()
-            ->andWhere(['section_id' => $this->parent instanceof Section ? $this->parent->id : null])
-            ->with('file');
+        parent::configure();
     }
 
     protected function getStatusColumn(): ?Column

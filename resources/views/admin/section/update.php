@@ -24,9 +24,6 @@ echo SectionHeader::make()
     ->content(SectionActionDropdown::make()
         ->model($section));
 
-echo EntrySubmenu::make()
-    ->model($section->entry);
-
 echo SectionSubmenu::make()
     ->model($section);
 
