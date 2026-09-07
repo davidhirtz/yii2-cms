@@ -10,19 +10,20 @@ declare(strict_types=1);
  * @var Category $category
  */
 
-use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Modules\Admin\Data\CategoryActiveDataProvider;
+use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\CategoryActiveForm;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\Traits\CategoryParentGridView;
+use Hirtz\Cms\Modules\Admin\Widgets\Navs\CategoryActionDropdown;
 use Hirtz\Cms\Modules\Admin\Widgets\Navs\CategoryHeader;
-use Hirtz\Cms\Modules\Admin\Widgets\Panels\CategoryPanel;
 use Hirtz\Skeleton\Web\View;
-use Hirtz\Skeleton\Widgets\Forms\DeleteActiveForm;
 use Hirtz\Skeleton\Widgets\Forms\FormContainer;
 use Hirtz\Skeleton\Widgets\Grids\GridContainer;
 
 echo CategoryHeader::make()
-    ->title(Yii::t('cms', 'Edit Category'));
+    ->title(Yii::t('cms', 'Edit Category'))
+    ->content(CategoryActionDropdown::make()
+        ->model($category));
 
 echo FormContainer::make()
     ->title($this->title)
@@ -34,16 +35,4 @@ if ($category->getBranchCount()) {
         ->title(Yii::t('cms', 'Subcategories'))
         ->grid(CategoryParentGridView::make()
             ->provider($provider));
-}
-
-echo CategoryPanel::make()
-    ->model($category);
-
-if (Yii::$app->getUser()->can(Category::AUTH_CATEGORY_DELETE, ['category' => $category])) {
-    echo FormContainer::make()
-        ->danger()
-        ->title(Yii::t('cms', 'Delete Category'))
-        ->form(DeleteActiveForm::make()
-            ->model($category)
-            ->message(Yii::t('cms', 'Warning: Deleting this category cannot be undone. All related sections will also be unrecoverably deleted. All subcategories will also be unrecoverably deleted. Please be certain!')));
 }

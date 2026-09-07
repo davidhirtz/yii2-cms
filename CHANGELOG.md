@@ -1,5 +1,10 @@
 ## 3.0 (in development)
 
+- Added `CategoryActionDropdown` and `CategoryDeleteButton`; the category update view now renders the
+  actions (create, view entries, open website, delete) as a dropdown in `CategoryHeader`. Removed
+  `CategoryPanel` and the inline `DeleteActiveForm` from the category update view
+- Removed the orphaned `EntryPanel` and `EntryDeleteFrom` widgets (superseded by `EntryActionDropdown`)
+  and their unused `ENTRY_DELETE_FROM_*` / `ENTRY_DELETE_TITLE` messages
 - Replaced `Bootstrap::getDefaultUrlRules()` with `Bootstrap::getDefaultRoutes()`
 - Added `Entry::ROUTE_INDEX` and `Entry::ROUTE_VIEW` route names
 - Added `ActiveRecord::getRouteName()`, `getRouteParams()`, `getUrl()` and `getDraftUrl()`;
