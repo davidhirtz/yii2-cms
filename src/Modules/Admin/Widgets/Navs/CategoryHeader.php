@@ -27,6 +27,8 @@ class CategoryHeader extends Header
      */
     use ProviderTrait;
 
+    protected int $maxParentBreadcrumbCount = 2;
+
     #[Override]
     protected function configure(): void
     {
@@ -58,13 +60,20 @@ class CategoryHeader extends Header
     {
         $this->addBreadcrumb(Yii::t('cms', 'COMMON_CATEGORIES'), ['/admin/cms/category/index']);
 
-        if ($category->parent_id) {
+        if ($category->parent_id && $this->maxParentBreadcrumbCount > 0) {
             $isIndex = Yii::$app->requestedRoute === 'admin/cms/category/index';
+            $count = count($this->model->getAncestors());
 
-            foreach ($category->ancestors as $ancestor) {
-                $this->addBreadcrumb($ancestor->getI18nAttribute('name'), $isIndex
-                    ? ['index', 'parent' => $ancestor->id]
-                    : $ancestor->getAdminRoute());
+            if ($count > $this->maxParentBreadcrumbCount) {
+                $this->addBreadcrumb('…');
+            }
+
+            foreach ($this->model->getAncestors() as $ancestor) {
+                if (--$count < $this->maxParentBreadcrumbCount) {
+                    $this->addBreadcrumb($ancestor->getI18nAttribute('name'), $isIndex
+                        ? ['index', 'parent' => $ancestor->id]
+                        : $ancestor->getAdminRoute());
+                }
             }
         }
     }
@@ -74,7 +83,7 @@ class CategoryHeader extends Header
         return CreateButton::make()
             ->label(Lang::t('cms', 'CATEGORY_HEADER_CREATE_CATEGORY'))
             ->icon('plus')
-            ->url(['/admin/cms/category/create', 'parent' => $this->provider->category?->id]);
+            ->url(['/admin/cms/category/create', 'parent' => $this->provider?->category->id]);
     }
 
     protected function getCategoryActionDropdown(): ?Stringable

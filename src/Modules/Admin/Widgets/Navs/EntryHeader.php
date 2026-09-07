@@ -4,26 +4,25 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Widgets\Navs;
 
-use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Data\EntryActiveDataProvider;
 use Hirtz\Cms\Modules\Admin\Widgets\Buttons\EntryCreateButton;
-use Hirtz\Cms\Modules\ModuleTrait;
+use Hirtz\Cms\Modules\Admin\Widgets\Navs\Traits\EntryHeaderTrait;
+use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Skeleton\Widgets\Navs\Header;
 use Hirtz\Skeleton\Widgets\Traits\ModelTrait;
 use Hirtz\Skeleton\Widgets\Traits\ProviderTrait;
 use Override;
 use Stringable;
-use Yii;
 
 class EntryHeader extends Header
 {
     /**
-     * @use ModelTrait<Entry|Section>
+     * @use ModelTrait<Entry>
      */
     use ModelTrait;
-    use ModuleTrait;
+    use EntryHeaderTrait;
 
     /**
      * @use ProviderTrait<EntryActiveDataProvider|null>
@@ -36,11 +35,9 @@ class EntryHeader extends Header
         $this->model ??= $this->provider?->parent;
 
         if ($this->model) {
-            $entry = $this->model instanceof Section ? $this->model->entry : $this->model;
-
-            $this->title ??= $entry->getOldAttribute($entry->getI18nAttributeName('name'));
+            $this->title ??= $this->model->getOldAttribute($this->model->getI18nAttributeName('name'));
             $this->subheading ??= FrontendLink::make()->model($this->model)->addClass('hidden-sticky');
-            $this->url ??= $entry->getAdminRoute();
+            $this->url ??= $this->model->getAdminRoute();
 
             if ($this->model instanceof Section) {
                 $this->subtitle ??= Lang::t('skeleton', 'COMMON_MODEL_ID', [
@@ -49,7 +46,7 @@ class EntryHeader extends Header
                 ]);
             }
 
-            $this->addEntryBreadcrumbs($entry);
+            $this->addEntryBreadcrumbs($this->model);
         }
 
         if ($this->provider) {
@@ -63,24 +60,6 @@ class EntryHeader extends Header
         }
 
         parent::configure();
-    }
-
-    protected function addEntryBreadcrumbs(Entry $entry): void
-    {
-        $this->addBreadcrumb(Yii::t('app', 'Entries'), [
-            '/admin/cms/entry/index',
-            'type' => static::getModule()->defaultEntryType,
-        ]);
-
-        if ($entry->parent_id) {
-            $isIndex = Yii::$app->requestedRoute === 'admin/cms/entry/index';
-
-            foreach ($entry->ancestors as $ancestor) {
-                $this->addBreadcrumb($ancestor->getI18nAttribute('name'), $isIndex
-                    ? ['index', 'parent' => $ancestor->id]
-                    : $ancestor->getAdminRoute());
-            }
-        }
     }
 
     protected function getCreateEntryButton(): ?Stringable

@@ -27,7 +27,6 @@ class EntrySubmenu extends Submenu
     protected Module $module;
 
     protected array $additionalActiveRoutes = [];
-    protected int $parentCategoryBreadcrumbCount = 2;
     protected bool $showEntryCategories = true;
     protected bool $showEntrySections = true;
 
@@ -116,35 +115,5 @@ class EntrySubmenu extends Submenu
             ->badge($this->model->section_count)
             ->routes(['admin/cms/section/', ...$this->additionalActiveRoutes['sections'] ?? []])
             ->visible($this->showEntrySections);
-    }
-
-
-    protected function setCategoryBreadcrumbs(): void
-    {
-        $this->view->addBreadcrumb(Lang::t('cms', 'COMMON_CATEGORIES'), ['/admin/cms/category/index']);
-
-        if ($this->parentCategoryBreadcrumbCount > 0) {
-            $categories = $this->model->ancestors;
-            $count = count($categories);
-
-            if ($count > $this->parentCategoryBreadcrumbCount) {
-                $this->view->addBreadcrumb('…');
-            }
-
-            foreach ($categories as $category) {
-                if (--$count < $this->parentCategoryBreadcrumbCount) {
-                    $this->view->addBreadcrumb($category->getI18nAttribute('name'), $category->getAdminRoute());
-                }
-            }
-            if (!$this->model->getIsNewRecord()) {
-                $this->view->addBreadcrumb($this->model->getI18nAttribute('name'), $this->model->getAdminRoute());
-            }
-        }
-    }
-
-    protected function setAssetBreadcrumbs(): void
-    {
-        $route = $this->model->getAdminRoute() + ['#' => 'assets'];
-        $this->view->addBreadcrumb(Lang::t('cms', 'ENTRY_SUBMENU_ASSETS'), $route);
     }
 }

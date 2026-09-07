@@ -38,6 +38,9 @@ use yii\db\ActiveQuery;
  */
 class Category extends ActiveRecord implements SitemapInterface
 {
+    /**
+     * @use NestedTreeTrait<static>
+     */
     use NestedTreeTrait;
     use SlugAttributeTrait;
 
