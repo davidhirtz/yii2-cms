@@ -76,11 +76,11 @@ class CategoryController extends AbstractController
         ]);
     }
 
-    public function actionCreate(?int $id = null): Response|string
+    public function actionCreate(?int $parent = null): Response|string
     {
         $category = Category::create();
         $category->loadDefaultValues();
-        $category->parent_id = $id;
+        $category->parent_id = $parent;
 
         if (!Yii::$app->getUser()->can(Category::AUTH_CATEGORY_CREATE, ['category' => $category])) {
             throw new ForbiddenHttpException();

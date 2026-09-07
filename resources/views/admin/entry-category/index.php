@@ -11,11 +11,15 @@ declare(strict_types=1);
 
 use Hirtz\Cms\Modules\Admin\Data\CategoryActiveDataProvider;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\EntryCategoryGridView;
+use Hirtz\Cms\Modules\Admin\Widgets\Navs\EntryHeader;
 use Hirtz\Cms\Modules\Admin\Widgets\Navs\EntrySubmenu;
 use Hirtz\Skeleton\Web\View;
 use Hirtz\Skeleton\Widgets\Grids\GridContainer;
 
 $this->title(Yii::t('cms', 'Categories'));
+
+echo EntryHeader::make()
+    ->model($provider->entry);
 
 echo EntrySubmenu::make()
     ->model($provider->entry);

@@ -49,7 +49,7 @@ class EntryHeader extends Header
             $entry = $this->model instanceof Section ? $this->model->entry : $this->model;
 
             $this->title ??= $entry->getOldAttribute($entry->getI18nAttributeName('name'));
-            $this->subheading ??= FrontendLink::make()->model($this->model);
+            $this->subheading ??= FrontendLink::make()->model($this->model)->addClass('hidden-sticky');
             $this->url ??= $entry->getAdminRoute();
 
             if ($this->model instanceof Section) {
