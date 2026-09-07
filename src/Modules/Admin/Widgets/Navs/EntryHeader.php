@@ -10,7 +10,6 @@ use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Data\EntryActiveDataProvider;
 use Hirtz\Cms\Modules\Admin\Widgets\Buttons\EntryCreateButton;
 use Hirtz\Cms\Modules\ModuleTrait;
-use Hirtz\Skeleton\Models\Breadcrumb;
 use Hirtz\Skeleton\Widgets\Navs\Header;
 use Hirtz\Skeleton\Widgets\Traits\ModelTrait;
 use Hirtz\Skeleton\Widgets\Traits\ProviderTrait;
@@ -35,15 +34,6 @@ class EntryHeader extends Header
     protected function configure(): void
     {
         $this->model ??= $this->provider?->parent;
-
-        if (!$this->provider || $this->model) {
-            $this->breadcrumbs ??= [
-                new Breadcrumb(Yii::t('app', 'Entries'), [
-                    '/admin/cms/entry/index',
-                    'type' => static::getModule()->defaultEntryType,
-                ]),
-            ];
-        }
 
         if ($this->model) {
             $entry = $this->model instanceof Section ? $this->model->entry : $this->model;
@@ -77,6 +67,11 @@ class EntryHeader extends Header
 
     protected function addEntryBreadcrumbs(Entry $entry): void
     {
+        $this->addBreadcrumb(Yii::t('app', 'Entries'), [
+            '/admin/cms/entry/index',
+            'type' => static::getModule()->defaultEntryType,
+        ]);
+
         if ($entry->parent_id) {
             $isIndex = Yii::$app->requestedRoute === 'admin/cms/entry/index';
 
