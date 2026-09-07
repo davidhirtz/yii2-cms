@@ -1,5 +1,8 @@
 ## 3.0 (in development)
 
+- Added `SectionActionDropdown` and `SectionDeleteButton`; the section update view now renders the
+  actions (move/copy, duplicate, open website, delete) as a dropdown in the header. Removed
+  `SectionPanel` and the inline `DeleteActiveForm` from the section update view
 - Added `CategoryActionDropdown` and `CategoryDeleteButton`; the category update view now renders the
   actions (create, view entries, open website, delete) as a dropdown in `CategoryHeader`. Removed
   `CategoryPanel` and the inline `DeleteActiveForm` from the category update view

@@ -16,14 +16,15 @@ use Hirtz\Cms\Modules\Admin\Widgets\Grids\AssetGridView;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\SectionLinkedEntryGridView;
 use Hirtz\Cms\Modules\Admin\Widgets\Navs\EntryHeader;
 use Hirtz\Cms\Modules\Admin\Widgets\Navs\EntrySubmenu;
-use Hirtz\Cms\Modules\Admin\Widgets\Panels\SectionPanel;
+use Hirtz\Cms\Modules\Admin\Widgets\Navs\SectionActionDropdown;
 use Hirtz\Skeleton\Web\View;
-use Hirtz\Skeleton\Widgets\Forms\DeleteActiveForm;
 use Hirtz\Skeleton\Widgets\Forms\FormContainer;
 use Hirtz\Skeleton\Widgets\Grids\GridContainer;
 
 echo EntryHeader::make()
-    ->model($section);
+    ->model($section)
+    ->content(SectionActionDropdown::make()
+        ->model($section));
 
 echo EntrySubmenu::make()
     ->model($section->entry);
@@ -49,15 +50,4 @@ if ($section::getModule()->enableSectionEntries) {
         ->title(Yii::t('cms', 'Linked entries'))
         ->grid(SectionLinkedEntryGridView::make()
             ->section($section));
-}
-
-echo SectionPanel::make()
-    ->model($section);
-
-if (Yii::$app->getUser()->can(Section::AUTH_SECTION_DELETE, ['section' => $section])) {
-    echo FormContainer::make()
-        ->danger()
-        ->title(Yii::t('cms', 'Delete Section'))
-        ->form(DeleteActiveForm::make()
-            ->model($section));
 }
