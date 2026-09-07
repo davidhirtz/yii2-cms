@@ -1,5 +1,7 @@
 ## 3.0 (in development)
 
+- Added a `depth` column to the category table (`M260907100000Depth`), backfilled from the existing
+  nested set, matching `NestedTreeTrait`'s new depth tracking
 - `actionOrder()` in the entry, section, category, asset, section-entry and entry-category admin
   controllers now returns a flash fragment (was `void`) and emits a success flash after a reorder;
   added the `ENTRY_SUCCESS_ORDERED`, `SECTION_SUCCESS_ORDERED`, `CATEGORY_SUCCESS_ORDERED` and
