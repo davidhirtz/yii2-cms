@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Models;
 
-use Hirtz\Skeleton\I18n\Lang;
+use davidhirtz\yii2\datetime\DateTime;
+use davidhirtz\yii2\datetime\DateTimeValidator;
 use Hirtz\Cms\Models\Queries\AssetQuery;
 use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Models\Queries\SectionQuery;
 use Hirtz\Cms\Models\Traits\SlugAttributeTrait;
 use Hirtz\Cms\Module;
-use davidhirtz\yii2\datetime\DateTime;
-use davidhirtz\yii2\datetime\DateTimeValidator;
 use Hirtz\Media\Models\Interfaces\AssetParentInterface;
 use Hirtz\Media\Models\Traits\AssetParentTrait;
 use Hirtz\Skeleton\Behaviors\RedirectBehavior;
+use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Skeleton\Models\Interfaces\SitemapInterface;
 use Hirtz\Skeleton\Models\Traits\MaterializedTreeTrait;
 use Override;
@@ -94,7 +94,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
                 [
                     ['slug'],
                     'required',
-                    'when' => $this->isSlugRequired(...)
+                    'when' => $this->isSlugRequired(...),
                 ],
                 [
                     ['name', 'slug', 'title', 'description', 'content'],
@@ -126,7 +126,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
                 ],
                 [
                     ['publish_date'],
-                    ...(array)$this->dateTimeValidator
+                    ...(array)$this->dateTimeValidator,
                 ],
             ]),
         ];
@@ -146,7 +146,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
         $this->ensureSlug();
 
         foreach ($this->getI18nAttributeNames('description') as $attributeName) {
-            $description = preg_replace('/\R+/', ' ', (string) $this->$attributeName);
+            $description = preg_replace('/\R+/', ' ', (string)$this->$attributeName);
             $description = preg_replace('/\s+/', ' ', $description);
             $this->$attributeName = trim($description);
         }
@@ -394,11 +394,13 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
         return Yii::createObject(EntryQuery::class, [static::class]);
     }
 
+    #[Override]
     public function findSiblings(): EntryQuery
     {
         return static::find()->where(['parent_id' => $this->parent_id]);
     }
 
+    #[Override]
     public function getSitemapQuery(): EntryQuery
     {
         $query = static::find()
@@ -491,6 +493,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
         return $this;
     }
 
+    #[Override]
     public function getAdminRoute(): false|array
     {
         return $this->id ? ['/admin/cms/entry/update', 'id' => $this->id] : false;
@@ -506,7 +509,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
 
     public function getCategoryCount(): int
     {
-        return count($this->getCategoryIds());
+        return $this->category_ids ? count($this->category_ids) : 0;
     }
 
     public function getDescendantsOrderBy(): array
@@ -520,6 +523,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
         return substr(trim($slug, '/'), 0, 255);
     }
 
+    #[Override]
     public function getRoute(): false|array
     {
         if ($this->isIndex()) {
@@ -554,7 +558,8 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
             return [];
         }
 
-        return array_filter($this->assets, fn (Asset $asset): bool => $asset->section_id === null && $asset->type !== $asset::TYPE_META_IMAGE);
+        return array_filter($this->assets, fn (Asset $asset): bool => $asset->section_id === null
+            && $asset->type !== $asset::TYPE_META_IMAGE);
     }
 
     /**
@@ -716,7 +721,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
             'description' => Lang::t('cms', 'ENTRY_DESCRIPTION_LABEL'),
             'publish_date' => Lang::t('cms', 'ENTRY_PUBLISH_DATE_LABEL'),
             'entry_count' => Lang::t('cms', 'ENTRY_ENTRY_COUNT_LABEL'),
-            'section_count' => Lang::t('cms', 'ENTRY_SECTION_COUNT_LABEL')
+            'section_count' => Lang::t('cms', 'ENTRY_SECTION_COUNT_LABEL'),
         ];
     }
 

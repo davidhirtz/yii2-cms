@@ -39,10 +39,6 @@ class EntrySubmenu extends Submenu
         $module = Yii::$app->getModule('admin')->getModule('cms');
         $this->module = $module;
 
-        if ($this->model instanceof Asset) {
-            $this->model($this->model->getParent());
-        }
-
         if ($this->showEntryCategories) {
             $this->showEntryCategories = $this->model->hasCategoriesEnabled()
                 && $this->webuser->can(Entry::AUTH_ENTRY_CATEGORY_UPDATE, ['entry' => $this->model]);
@@ -71,7 +67,7 @@ class EntrySubmenu extends Submenu
             ->icon('cog')
             ->label(Lang::t('skeleton', 'COMMON_GENERAL'))
             ->routes(['admin/cms/entry/update', ...$this->additionalActiveRoutes['entry'] ?? []])
-            ->url(['/admin/cms/entry/update', 'id' => $this->model->id]);
+            ->url($this->model->getAdminRoute());
     }
 
     protected function getAssetsItem(): ?NavItem

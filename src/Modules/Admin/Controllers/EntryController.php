@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Controllers;
 
-use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Actions\DuplicateEntry;
 use Hirtz\Cms\Models\Actions\ReorderEntries;
 use Hirtz\Cms\Models\Actions\ReplaceIndexEntry;
@@ -13,6 +12,7 @@ use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Modules\Admin\Controllers\Traits\EntryControllerTrait;
 use Hirtz\Cms\Modules\Admin\Data\EntryActiveDataProvider;
 use Hirtz\Skeleton\Helpers\Url;
+use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Skeleton\Widgets\Flashes;
 use Override;
 use Yii;
@@ -99,13 +99,11 @@ class EntryController extends AbstractController
         $entry->populateParentRelation(Entry::findOne($parent));
         $entry->type = $type ?: static::getModule()->defaultEntryType;
 
-        $request = Yii::$app->getRequest();
-
         if (!Yii::$app->getUser()->can(Entry::AUTH_ENTRY_CREATE, ['entry' => $entry])) {
             throw new ForbiddenHttpException();
         }
 
-        if ($entry->load($request->post()) && $entry->insert()) {
+        if ($entry->load($this->request->post()) && $entry->insert()) {
             $this->success(Lang::t('cms', 'ENTRY_SUCCESS_CREATED'));
             return $this->redirectToEntry($entry);
         }
@@ -118,9 +116,8 @@ class EntryController extends AbstractController
     public function actionUpdate(int $id): Response|string
     {
         $entry = $this->findEntry($id, Entry::AUTH_ENTRY_UPDATE);
-        $request = Yii::$app->getRequest();
 
-        if ($entry->load($request->post())) {
+        if ($entry->load($this->request->post())) {
             if ($entry->update()) {
                 $this->success(Lang::t('cms', 'ENTRY_SUCCESS_UPDATED'));
             }
@@ -137,15 +134,13 @@ class EntryController extends AbstractController
 
     public function actionUpdateAll(): Response|string
     {
-        $request = Yii::$app->getRequest();
-
-        if ($entryIds = array_map(intval(...), $request->post('selection', []))) {
+        if ($entryIds = array_map(intval(...), $this->request->post('selection', []))) {
             $entries = Entry::findAll(['id' => $entryIds]);
             $isUpdated = false;
 
             foreach ($entries as $entry) {
                 if (Yii::$app->getUser()->can(Entry::AUTH_ENTRY_UPDATE, ['entry' => $entry])) {
-                    if ($entry->load($request->post())) {
+                    if ($entry->load($this->request->post())) {
                         if ($entry->update()) {
                             $isUpdated = true;
                         }
@@ -162,7 +157,7 @@ class EntryController extends AbstractController
             }
         }
 
-        return $this->redirect($request->getReferrer() ?? ['index']);
+        return $this->redirect($this->request->getReferrer() ?? ['index']);
     }
 
     public function actionDuplicate(int $id): Response|string
@@ -216,7 +211,7 @@ class EntryController extends AbstractController
             $this->error($errors);
         }
 
-        return $this->redirect([...Yii::$app->getRequest()->get(), 'index']);
+        return $this->redirect([...$this->request->get(), 'index']);
     }
 
     public function actionOrder(?int $parent = null): string
@@ -229,11 +224,11 @@ class EntryController extends AbstractController
             $this->success(Lang::t('cms', 'ENTRY_SUCCESS_ORDERED'));
         }
 
-        return (string) Flashes::make();
+        return (string)Flashes::make();
     }
 
     protected function redirectToEntry(Entry $entry): Response
     {
-        return $this->redirect([...Yii::$app->getRequest()->get(), 'update', 'id' => $entry->id]);
+        return $this->redirect([...$this->request->get(), $entry->getAdminRoute()]);
     }
 }

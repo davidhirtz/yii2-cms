@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Controllers;
 
-use Hirtz\Skeleton\I18n\Lang;
-use Hirtz\Skeleton\Widgets\Flashes;
 use Hirtz\Cms\Models\Actions\DuplicateAsset;
 use Hirtz\Cms\Models\Actions\ReorderAssets;
 use Hirtz\Cms\Models\Asset;
@@ -17,6 +15,8 @@ use Hirtz\Cms\Modules\Admin\Controllers\Traits\SectionControllerTrait;
 use Hirtz\Media\Models\Folder;
 use Hirtz\Media\Modules\Admin\Controllers\Traits\FileControllerTrait;
 use Hirtz\Media\Modules\Admin\Data\FileActiveDataProvider;
+use Hirtz\Skeleton\I18n\Lang;
+use Hirtz\Skeleton\Widgets\Flashes;
 use Override;
 use Yii;
 use yii\filters\AccessControl;
@@ -80,16 +80,28 @@ class AssetController extends AbstractController
         ?int $entry = null,
         ?int $section = null,
         ?int $folder = null,
+        ?bool $link = false,
         ?string $q = null
     ): Response|string {
         $parent = $section
             ? $this->findSection($section, Section::AUTH_SECTION_ASSET_UPDATE)
             : $this->findEntry($entry, Entry::AUTH_ENTRY_ASSET_UPDATE);
 
-        if ($parent instanceof Entry) {
-            $parent->populateRelation('assets', $parent->getAssets()
-                ->withoutSections()
-                ->all());
+        $query = $parent instanceof Entry
+            ? $parent->getAssets()->withoutSections()
+            : $parent->getAssets();
+
+        if (!$link) {
+            $query->withFiles();
+        }
+
+        $parent->populateRelation('assets', $query->all());
+
+        if (!$link) {
+            return $this->render('index', [
+                'provider' => null,
+                'parent' => $parent,
+            ]);
         }
 
         $provider = Yii::$container->get(FileActiveDataProvider::class, [], [
@@ -147,8 +159,11 @@ class AssetController extends AbstractController
     {
         $asset = $this->findAsset($id, Asset::AUTH_ASSET_UPDATE);
 
-        if ($asset->load(Yii::$app->getRequest()->post()) && $asset->update()) {
-            $this->success(Lang::t('cms', 'ASSET_SUCCESS_UPDATED'));
+        if ($asset->load($this->request->post())) {
+            if ($asset->update()) {
+                $this->success(Lang::t('cms', 'ASSET_SUCCESS_UPDATED'));
+            }
+
             return $this->redirectToParent($asset);
         }
 
@@ -198,7 +213,7 @@ class AssetController extends AbstractController
             $this->success(Lang::t('cms', 'ASSET_SUCCESS_ORDERED'));
         }
 
-        return (string) Flashes::make();
+        return (string)Flashes::make();
     }
 
     private function redirectToParent(Asset $asset, bool $isDeleted = false): Response

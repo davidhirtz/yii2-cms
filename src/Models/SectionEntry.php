@@ -14,6 +14,7 @@ use Hirtz\Skeleton\Behaviors\TimestampBehavior;
 use Hirtz\Skeleton\Behaviors\TrailBehavior;
 use Hirtz\Skeleton\Models\Traits\UpdatedByUserTrait;
 use Hirtz\Skeleton\Validators\RelationValidator;
+use Override;
 use Yii;
 
 /**
@@ -33,7 +34,7 @@ class SectionEntry extends \Hirtz\Skeleton\Db\ActiveRecord
     use SectionRelationTrait;
     use UpdatedByUserTrait;
 
-    #[\Override]
+    #[Override]
     public function behaviors(): array
     {
         return [
@@ -42,7 +43,7 @@ class SectionEntry extends \Hirtz\Skeleton\Db\ActiveRecord
         ];
     }
 
-    #[\Override]
+    #[Override]
     public function rules(): array
     {
         return [...parent::rules(), [
@@ -76,7 +77,7 @@ class SectionEntry extends \Hirtz\Skeleton\Db\ActiveRecord
         }
     }
 
-    #[\Override]
+    #[Override]
     public function beforeSave($insert): bool
     {
         $this->attachBehaviors([
@@ -92,7 +93,7 @@ class SectionEntry extends \Hirtz\Skeleton\Db\ActiveRecord
         return parent::beforeSave($insert);
     }
 
-    #[\Override]
+    #[Override]
     public function afterSave($insert, $changedAttributes): void
     {
         if ($insert && !$this->getIsBatch()) {
@@ -103,7 +104,7 @@ class SectionEntry extends \Hirtz\Skeleton\Db\ActiveRecord
         parent::afterSave($insert, $changedAttributes);
     }
 
-    #[\Override]
+    #[Override]
     public function afterDelete(): void
     {
         if (!$this->getIsBatch()) {
@@ -159,19 +160,19 @@ class SectionEntry extends \Hirtz\Skeleton\Db\ActiveRecord
         return Lang::t('skeleton', 'COMMON_RELATION');
     }
 
-    #[\Override]
+    #[Override]
     public function attributeLabels(): array
     {
         return [...parent::attributeLabels(), 'section_id' => Lang::t('cms', 'SECTION_ENTRY_SECTION_ID_LABEL'), 'entry_id' => Lang::t('cms', 'SECTION_ENTRY_ENTRY_ID_LABEL'), 'updated_at' => Lang::t('cms', 'SECTION_ENTRY_UPDATED_AT_LABEL')];
     }
 
-    #[\Override]
+    #[Override]
     public function formName(): string
     {
         return 'SectionEntry';
     }
 
-    #[\Override]
+    #[Override]
     public static function tableName(): string
     {
         return static::getModule()->getTableName('section_entry');

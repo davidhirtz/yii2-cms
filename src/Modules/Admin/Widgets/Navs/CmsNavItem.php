@@ -40,7 +40,11 @@ class CmsNavItem extends NavItem
         if ($this->showEntryTypes) {
             $this->addEntrySubnavItems();
         } else {
-            $this->routes(['admin/cms/entry', 'admin/cms/section']);
+            $this->routes([
+                'admin/cms/entry',
+                'admin/cms/section',
+                'admin/cms/asset',
+            ]);
         }
 
         if ($this->showCategories) {
