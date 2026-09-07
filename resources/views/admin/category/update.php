@@ -6,33 +6,22 @@ declare(strict_types=1);
  * @see \Hirtz\Cms\Modules\Admin\Controllers\CategoryController::actionUpdate()
  *
  * @var View $this
- * @var CategoryActiveDataProvider $provider
  * @var Category $category
  */
 
-use Hirtz\Cms\Modules\Admin\Data\CategoryActiveDataProvider;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\CategoryActiveForm;
-use Hirtz\Cms\Modules\Admin\Widgets\Grids\Traits\CategoryParentGridView;
-use Hirtz\Cms\Modules\Admin\Widgets\Navs\CategoryActionDropdown;
 use Hirtz\Cms\Modules\Admin\Widgets\Navs\CategoryHeader;
+use Hirtz\Cms\Modules\Admin\Widgets\Navs\CategorySubmenu;
 use Hirtz\Skeleton\Web\View;
 use Hirtz\Skeleton\Widgets\Forms\FormContainer;
-use Hirtz\Skeleton\Widgets\Grids\GridContainer;
 
 echo CategoryHeader::make()
-    ->title(Yii::t('cms', 'Edit Category'))
-    ->content(CategoryActionDropdown::make()
-        ->model($category));
+    ->model($category);
+
+echo CategorySubmenu::make()
+    ->model($category);
 
 echo FormContainer::make()
-    ->title($this->title)
     ->form(CategoryActiveForm::make()
         ->model($category));
-
-if ($category->getBranchCount()) {
-    echo GridContainer::make()
-        ->title(Yii::t('cms', 'Subcategories'))
-        ->grid(CategoryParentGridView::make()
-            ->provider($provider));
-}

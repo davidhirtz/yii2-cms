@@ -1,5 +1,9 @@
 ## 3.0 (in development)
 
+- Added `CategorySubmenu` and gave `CategoryHeader` a `ModelTrait`; the category update view now shows
+  the category name (with frontend link) in the header and a submenu (general / subcategories) like
+  entries. Subcategories are browsed through the category index (`parent` param) instead of an inline
+  grid in the update view. Removed `CategoryParentGridView`. Added the `COMMON_SUBCATEGORIES` message
 - Added `SectionActionDropdown` and `SectionDeleteButton`; the section update view now renders the
   actions (move/copy, duplicate, open website, delete) as a dropdown in the header. Removed
   `SectionPanel` and the inline `DeleteActiveForm` from the section update view

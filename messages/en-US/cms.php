@@ -62,6 +62,7 @@ return [
     'COMMON_OPEN_WEBSITE' => 'Open website',
     'COMMON_SECTION' => 'Section',
     'COMMON_SECTIONS' => 'Sections',
+    'COMMON_SUBCATEGORIES' => 'Subcategories',
     'COMMON_SUBENTRIES' => 'Subentries',
     'ENTRY_ACTION_DROPDOWN_DUPLICATE' => 'Duplicate',
     'ENTRY_ACTION_DROPDOWN_DUPLICATE_TITLE' => 'Do you want to duplicate this entry and its {n} subentries?',

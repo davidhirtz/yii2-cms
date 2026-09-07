@@ -15,7 +15,6 @@ use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\ViewGridButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Column;
 use Hirtz\Skeleton\Widgets\Grids\Columns\RelativeTimeColumn;
 use Hirtz\Skeleton\Widgets\Grids\GridView;
-use Hirtz\Skeleton\Widgets\Grids\Toolbars\FilterDropdown;
 use Override;
 
 /**
@@ -41,7 +40,6 @@ class CategoryGridView extends GridView
         $this->orderRoute = ['order', 'id' => $this->provider->category->id ?? null];
 
         $this->header ??= [
-            $this->getCategoryDropdown(),
             $this->getSearchInput(),
         ];
 
@@ -56,22 +54,6 @@ class CategoryGridView extends GridView
         ];
 
         parent::configure();
-    }
-
-    protected function getCategoryDropdown(): ?FilterDropdown
-    {
-        return $this->provider->category
-            ? FilterDropdown::make()
-                ->items($this->getCategoryDropdownItems($this->provider->category))
-                ->label($this->provider->category->getI18nAttribute('name'))
-                ->paramName('parent')
-            : null;
-    }
-
-    protected function getCategoryDropdownItems(Category $category): array
-    {
-        $attribute = Category::instance()->getI18nAttributeName('name');
-        return Category::indentNestedTree($category->getAncestors() + [$category], $attribute);
     }
 
     protected function getUpdatedAtColumn(): ?Column

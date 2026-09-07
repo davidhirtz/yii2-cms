@@ -110,12 +110,7 @@ class CategoryController extends AbstractController
             }
         }
 
-        $provider = Yii::$container->get(CategoryActiveDataProvider::class, [], [
-            'category' => $category,
-        ]);
-
         return $this->render('update', [
-            'provider' => $provider,
             'category' => $category,
         ]);
     }

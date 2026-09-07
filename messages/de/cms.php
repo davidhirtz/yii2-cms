@@ -62,6 +62,7 @@ return [
     'COMMON_OPEN_WEBSITE' => 'Webseite öffnen',
     'COMMON_SECTION' => 'Sektion',
     'COMMON_SECTIONS' => 'Sektionen',
+    'COMMON_SUBCATEGORIES' => 'Unterkategorien',
     'COMMON_SUBENTRIES' => 'Untereinträge',
     'ENTRY_ACTION_DROPDOWN_DUPLICATE' => 'Duplizieren',
     'ENTRY_ACTION_DROPDOWN_DUPLICATE_TITLE' => 'Wollen Sie diesen Eintrag und seine {n} Untereinträge duplizieren?',
