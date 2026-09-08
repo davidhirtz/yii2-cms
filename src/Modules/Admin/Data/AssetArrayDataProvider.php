@@ -17,6 +17,7 @@ class AssetArrayDataProvider extends ArrayDataProvider
 {
     public Entry|Section $parent;
 
+    #[\Override]
     public function init(): void
     {
         $query = $this->parent instanceof Entry

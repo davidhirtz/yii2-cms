@@ -215,6 +215,7 @@ class Asset extends ActiveRecord implements AssetInterface, DraftStatusAttribute
         ];
     }
 
+    #[\Override]
     public function getSitemapUrl(?string $language = null): array|false
     {
         if ($this->includeInSitemap($language)) {

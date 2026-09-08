@@ -31,11 +31,11 @@ class Artwork extends Widget
     protected int|false $lazyLoadingPosition = 5;
     protected bool|int $maxWidth = false;
 
-    private ?Closure $caption;
-    private ?Closure $figure;
-    private ?Closure $link;
-    private ?Closure $media;
-    private ?Closure $wrapper;
+    private ?Closure $caption = null;
+    private ?Closure $figure = null;
+    private ?Closure $link = null;
+    private ?Closure $media = null;
+    private ?Closure $wrapper = null;
 
     private static int $counter = 0;
 

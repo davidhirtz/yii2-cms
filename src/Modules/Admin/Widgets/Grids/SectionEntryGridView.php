@@ -29,6 +29,7 @@ class SectionEntryGridView extends EntryGridView
         parent::configure();
     }
 
+    #[\Override]
     protected function getTypeDropdown(): ?Stringable
     {
         return TypeFilterDropdown::make()

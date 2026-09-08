@@ -52,11 +52,9 @@ class MetaTags extends Widget
             && $this->model instanceof Entry
             && static::getModule()->enableEntryAssets;
 
-        if (null === $this->languages) {
-            $this->languages = $this->urlManager->i18nUrl
-                ? array_keys($this->urlManager->languages)
-                : [];
-        }
+        $this->languages ??= $this->urlManager->i18nUrl
+            ? array_keys($this->urlManager->languages)
+            : [];
 
         if (count($this->languages) < 2) {
             $this->enableHrefLangLinks = false;

@@ -28,6 +28,7 @@ use Hirtz\Skeleton\Models\Traits\TypeAttributeTrait;
 use Hirtz\Skeleton\Models\Traits\UpdatedByUserTrait;
 use Hirtz\Skeleton\Validators\DynamicRangeValidator;
 use Hirtz\Skeleton\Validators\HtmlValidator;
+use Override;
 use Yii;
 
 /**
@@ -69,7 +70,7 @@ abstract class ActiveRecord extends BaseActiveRecord implements
      */
     public array|string|null $htmlValidator = HtmlValidator::class;
 
-    #[\Override]
+    #[Override]
     public function behaviors(): array
     {
         return [
@@ -82,7 +83,7 @@ abstract class ActiveRecord extends BaseActiveRecord implements
         ];
     }
 
-    #[\Override]
+    #[Override]
     public function rules(): array
     {
         return [
@@ -105,7 +106,7 @@ abstract class ActiveRecord extends BaseActiveRecord implements
         ];
     }
 
-    #[\Override]
+    #[Override]
     public function beforeValidate(): bool
     {
         $this->status ??= static::STATUS_DEFAULT;
@@ -114,7 +115,7 @@ abstract class ActiveRecord extends BaseActiveRecord implements
         return parent::beforeValidate();
     }
 
-    #[\Override]
+    #[Override]
     public function beforeSave($insert): bool
     {
         $this->attachBehaviors([
@@ -127,14 +128,14 @@ abstract class ActiveRecord extends BaseActiveRecord implements
         return parent::beforeSave($insert);
     }
 
-    #[\Override]
+    #[Override]
     public function afterSave($insert, $changedAttributes): void
     {
         static::getModule()->invalidatePageCache();
         parent::afterSave($insert, $changedAttributes);
     }
 
-    #[\Override]
+    #[Override]
     public function afterDelete(): void
     {
         static::getModule()->invalidatePageCache();

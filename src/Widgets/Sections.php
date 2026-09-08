@@ -133,9 +133,7 @@ class Sections extends Widget
 
         foreach ($this->sections as $key => $section) {
             if (call_user_func($callback, $section, $sections)) {
-                if ($viewFile === null) {
-                    $viewFile = $this->getSectionViewFile($section);
-                }
+                $viewFile ??= $this->getSectionViewFile($section);
 
                 $sections[] = $this->sections[$key];
                 unset($this->sections[$key]);

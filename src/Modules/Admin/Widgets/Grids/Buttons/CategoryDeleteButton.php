@@ -16,6 +16,7 @@ use Override;
  */
 class CategoryDeleteButton extends DeleteButton
 {
+    #[\Override]
     public function isVisible(): bool
     {
         return parent::isVisible()

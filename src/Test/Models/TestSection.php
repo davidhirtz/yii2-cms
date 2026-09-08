@@ -13,6 +13,7 @@ class TestSection extends Section
     public const int TYPE_GALLERY = 3;
     public const int TYPE_BLOG = 4;
 
+    #[\Override]
     public static function getTypes(): array
     {
         return [

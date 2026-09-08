@@ -566,6 +566,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
      * Extends the default XML sitemap url by image URLs if related assets were found. This is automatically the
      * case if {@see Module::$enableImageSitemaps} is set to `true`.
      */
+    #[\Override]
     public function getSitemapUrl(?string $language = null): array|false
     {
         if ($url = parent::getSitemapUrl($language)) {
@@ -618,6 +619,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
         ]);
     }
 
+    #[\Override]
     public function getTrailModelName(): string
     {
         if ($this->id) {

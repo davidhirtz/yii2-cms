@@ -279,6 +279,7 @@ class Section extends ActiveRecord implements AssetParentInterface
         return $this->_trailParents ?? [$this->entry];
     }
 
+    #[\Override]
     public function getTrailModelName(): string
     {
         if ($this->id) {

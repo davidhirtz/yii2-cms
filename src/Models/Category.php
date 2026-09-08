@@ -270,6 +270,7 @@ class Category extends ActiveRecord implements SitemapInterface
         return static::find()->where(['parent_id' => $this->parent_id]);
     }
 
+    #[\Override]
     public function getSitemapQuery(): CategoryQuery
     {
         return static::find()
@@ -287,6 +288,7 @@ class Category extends ActiveRecord implements SitemapInterface
         ]);
     }
 
+    #[\Override]
     public function getTrailModelName(): string
     {
         if ($this->id) {

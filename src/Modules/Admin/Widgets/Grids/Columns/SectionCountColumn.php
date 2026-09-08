@@ -27,6 +27,7 @@ class SectionCountColumn extends BadgeColumn
         parent::__construct();
     }
 
+    #[\Override]
     public function isVisible(): bool
     {
         if (!parent::isVisible() || !static::getModule()->enableSections) {

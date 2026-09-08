@@ -11,6 +11,7 @@ class TestEntry extends Entry
     public const int TYPE_PAGE = 1;
     public const int TYPE_POST = 2;
 
+    #[\Override]
     public static function getTypes(): array
     {
         return [
