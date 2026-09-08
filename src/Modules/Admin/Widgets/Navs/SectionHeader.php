@@ -32,7 +32,21 @@ class SectionHeader extends Header
         ]);
 
         $this->addEntryBreadcrumbs($this->model->entry);
+        $this->addSectionBreadcrumbs();
 
         parent::configure();
+    }
+
+    protected function addSectionBreadcrumbs(): void
+    {
+        $this->addBreadcrumb(
+            $this->model->entry->getI18nAttribute('name'),
+            $this->model->entry->getAdminRoute(),
+        );
+
+        $this->addBreadcrumb(Lang::t('cms', 'COMMON_SECTIONS'), [
+            '/admin/cms/section/index',
+            'entry' => $this->model->entry_id,
+        ]);
     }
 }

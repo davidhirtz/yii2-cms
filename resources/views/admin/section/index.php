@@ -10,6 +10,7 @@ declare(strict_types=1);
  */
 
 use Hirtz\Cms\Modules\Admin\Data\SectionActiveDataProvider;
+use Hirtz\Cms\Modules\Admin\Widgets\Buttons\SectionCreateButton;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\SectionGridView;
 use Hirtz\Cms\Modules\Admin\Widgets\Navs\EntryHeader;
 use Hirtz\Cms\Modules\Admin\Widgets\Navs\EntrySubmenu;
@@ -17,7 +18,9 @@ use Hirtz\Skeleton\Web\View;
 use Hirtz\Skeleton\Widgets\Grids\GridContainer;
 
 echo EntryHeader::make()
-    ->model($provider->entry);
+    ->model($provider->entry)
+    ->content(SectionCreateButton::make()
+        ->model($provider->entry));
 
 echo EntrySubmenu::make()
     ->model($provider->entry);

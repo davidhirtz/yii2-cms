@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Widgets\Grids;
 
-use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Asset;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Media\Modules\Admin\Widgets\Grids\Traits\AssetGridViewTrait;
 use Hirtz\Media\Traits\FilePropertyTrait;
+use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Skeleton\Widgets\Grids\Columns\BadgeColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\ButtonColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\DeleteGridButton;
@@ -96,7 +96,7 @@ class FileAssetGridView extends GridView
         return LinkColumn::make()
             ->property('type')
             ->content($this->getTypeColumnContent(...))
-            ->url(fn (Asset $asset) => $this->getParentRoute($asset));
+            ->url(fn (Asset $asset) => $asset->getParent()->getAdminRoute());
     }
 
     protected function getTypeColumnContent(Asset $asset): string|Stringable
@@ -133,7 +133,7 @@ class FileAssetGridView extends GridView
         return BadgeColumn::make()
             ->property('asset_count')
             ->content($this->getAssetCountColumnContent(...))
-            ->url(fn (Asset $asset) => [...$this->getParentRoute($asset), '#' => 'assets']);
+            ->url($this->getParentRoute(...));
     }
 
     protected function getAssetCountColumnContent(Asset $asset): string
@@ -183,12 +183,16 @@ class FileAssetGridView extends GridView
 
     protected function getParentRoute(Asset $asset): array|false
     {
-        $hasPermission = $asset->isEntryAsset()
-            ? Yii::$app->getUser()->can(Entry::AUTH_ENTRY_UPDATE, ['entry' => $asset->parent])
-            : Yii::$app->getUser()->can(Section::AUTH_SECTION_UPDATE, ['section' => $asset->parent]);
+        $parent = $asset->getParent();
 
-        return $hasPermission
-            ? $this->getI18nRoute([...$asset->parent->getAdminRoute(), '#' => "asset-$asset->id"])
+        if ($asset->isEntryAsset()) {
+            return $this->webuser->can(Entry::AUTH_ENTRY_UPDATE, ['entry' => $parent])
+                ? ['/admin/cms/asset/index', 'entry' => $parent->id]
+                : false;
+        }
+
+        return Yii::$app->getUser()->can(Section::AUTH_SECTION_UPDATE, ['section' => $parent])
+            ? ['/admin/cms/asset/index', 'section' => $parent->id]
             : false;
     }
 

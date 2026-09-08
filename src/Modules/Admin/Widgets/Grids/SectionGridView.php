@@ -13,7 +13,6 @@ use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Media\Modules\Admin\Widgets\Grids\Columns\Thumbnail;
 use Hirtz\Skeleton\Html\A;
 use Hirtz\Skeleton\Html\Div;
-use Hirtz\Skeleton\Widgets\Buttons\CreateButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\ButtonColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\DeleteGridButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\DraggableSortGridButton;
@@ -25,7 +24,6 @@ use Hirtz\Skeleton\Widgets\Grids\Columns\TypeColumn;
 use Hirtz\Skeleton\Widgets\Grids\GridView;
 use Override;
 use Stringable;
-use Yii;
 use yii\helpers\StringHelper;
 
 /**
@@ -53,19 +51,7 @@ class SectionGridView extends GridView
             $this->getButtonColumn(),
         ];
 
-        $this->footer ??= [
-            $this->getCreateSectionButton(),
-        ];
-
         parent::configure();
-    }
-
-    protected function getCreateSectionButton(): string|Stringable
-    {
-        return CreateButton::make()
-            ->label(Lang::t('cms', 'SECTION_NEW_SECTION'))
-            ->roles([Section::AUTH_SECTION_CREATE])
-            ->url(['/admin/cms/section/create', 'entry' => $this->provider->entry->id]);
     }
 
     protected function getStatusColumn(): ?Column

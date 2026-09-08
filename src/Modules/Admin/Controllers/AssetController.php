@@ -106,47 +106,45 @@ class AssetController extends AbstractController
             Section::AUTH_SECTION_ASSET_CREATE,
         );
 
-        if ($this->request->getIsGet()) {
-            $provider = Yii::$container->get(FileActiveDataProvider::class, config: [
-                'folder' => Folder::findOne($folder),
-                'search' => $q,
-            ]);
+        if ($this->request->getIsPost()) {
+            if ($file) {
+                $file = $this->findFile($file);
+            }
 
-            return $this->render('create', [
-                'provider' => $provider,
-                'parent' => $parent,
-            ]);
+            $file ??= $this->insertFileFromRequest($folder);
+
+            if ($this->request->preferNoContent()) {
+                $this->response->setStatusCode(204);
+            }
+
+            if (!$this->response->getIsOk() || $file->hasErrors()) {
+                return $this->response;
+            }
+
+            $asset = Asset::create();
+            $asset->loadDefaultValues();
+
+            if ($parent instanceof Section) {
+                $asset->populateSectionRelation($parent);
+            } else {
+                $asset->populateEntryRelation($parent);
+            }
+
+            $asset->populateFileRelation($file);
+            $asset->insert();
+
+            $this->errorOrSuccess($asset, Yii::t('cms', 'ASSET_SUCCESS_CREATED'));
         }
 
-        if ($file) {
-            $file = $this->findFile($file);
-        }
+        $provider = Yii::$container->get(FileActiveDataProvider::class, config: [
+            'folder' => Folder::findOne($folder),
+            'search' => $q,
+        ]);
 
-        $file ??= $this->insertFileFromRequest($folder);
-
-        if ($this->request->preferNoContent()) {
-            $this->response->setStatusCode(204);
-        }
-
-        if (!$this->response->getIsOk() || $file->hasErrors()) {
-            return $this->response;
-        }
-
-        $asset = Asset::create();
-        $asset->loadDefaultValues();
-
-        if ($parent instanceof Section) {
-            $asset->populateSectionRelation($parent);
-        } else {
-            $asset->populateEntryRelation($parent);
-        }
-
-        $asset->populateFileRelation($file);
-        $asset->insert();
-
-        $this->error($asset);
-
-        return $this->redirectToParent($asset);
+        return $this->render('create', [
+            'provider' => $provider,
+            'parent' => $parent,
+        ]);
     }
 
     public function actionUpdate(int $id): Response|string

@@ -25,7 +25,11 @@ class AssetCountColumn extends BadgeColumn
     public function __construct()
     {
         $this->property ??= 'asset_count';
-        $this->url ??= fn (Entry|Section $model) => $model->getAdminRoute() + ['#' => 'assets'];
+
+        $this->url ??= fn (Entry|Section $model) => [
+            '/admin/cms/asset/index',
+            ($model instanceof Entry ? 'entry' : 'section') => $model->id,
+        ];
 
         parent::__construct();
     }
