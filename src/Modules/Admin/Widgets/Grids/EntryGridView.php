@@ -52,8 +52,6 @@ class EntryGridView extends GridView
     protected bool $showDeleteButton = false;
     protected ?array $orderRoute = null;
 
-    private ?array $categoryNames = null;
-
     #[Override]
     protected function configure(): void
     {

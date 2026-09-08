@@ -10,11 +10,11 @@ use Hirtz\Cms\Models\Section;
 use Hirtz\Skeleton\Widgets\Attributes\Configure;
 use Hirtz\Skeleton\Widgets\Traits\ModelTrait;
 
-/**
- * @property Category|Entry|Section $model
- */
 trait FrontendUrlTrait
 {
+    /**
+     * @use ModelTrait<Category|Entry|Section>
+     */
     use ModelTrait;
 
     #[Configure]

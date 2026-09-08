@@ -148,6 +148,6 @@ class Gallery extends Widget
             }
         }
 
-        return $sameViewport ? [null => $this->assets] : $viewports;
+        return $sameViewport ? ['' => $this->assets] : $viewports;
     }
 }

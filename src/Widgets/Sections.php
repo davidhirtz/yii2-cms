@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Widgets;
 
+use Closure;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Skeleton\Widgets\Widget;
@@ -60,7 +61,7 @@ class Sections extends Widget
         foreach ($this->sections as $section) {
             $visible = $section->getTypeOptions()['visible'] ?? $this->visible;
 
-            if (is_callable($visible) ? call_user_func($visible, $section) : ($visible ?? true)) {
+            if ($visible instanceof Closure ? $visible($section) : $visible) {
                 $section->position = $position++;
                 $sections[] = $section;
             }

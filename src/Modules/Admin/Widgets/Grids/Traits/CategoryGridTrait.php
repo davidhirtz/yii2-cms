@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Widgets\Grids\Traits;
 
-use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Collections\CategoryCollection;
 use Hirtz\Cms\Modules\Admin\Data\CategoryActiveDataProvider;
@@ -14,14 +13,13 @@ use Hirtz\Skeleton\Helpers\Html;
 use Hirtz\Skeleton\Helpers\Url;
 use Hirtz\Skeleton\Html\A;
 use Hirtz\Skeleton\Html\Div;
+use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Skeleton\Widgets\Grids\Columns\BadgeColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Column;
 use Hirtz\Skeleton\Widgets\Grids\Columns\DataColumn;
-use Hirtz\Skeleton\Widgets\Grids\Columns\LinkColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\StatusIconColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\TypeColumn;
 use Stringable;
-use Yii;
 
 /**
  * @property CategoryActiveDataProvider $dataProvider
@@ -107,10 +105,10 @@ trait CategoryGridTrait
             ->value(fn (Category $category) => $category->hasEntriesEnabled() ? $category->entry_count : null);
     }
 
-    protected function getUrl(Category $category): string
+    protected function getUrl(Category $category): string|Stringable
     {
-        $link = FrontendLink::make()->model($category);
-        return $link ? Html::tag('div', $link, ['class' => 'd-none d-md-block small']) : '';
+        $link = (string)FrontendLink::make()->model($category);
+        return $link ? Div::make()->content($link)->class('d-none d-md-block small') : '';
     }
 
     protected function getCategoryAncestors(Category $category): string

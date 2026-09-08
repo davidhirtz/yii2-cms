@@ -6,10 +6,13 @@ namespace Hirtz\Cms\Models\Traits;
 
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Queries\EntryQuery;
+use yii\db\ActiveRecord;
 
 /**
  * @property int|null $entry_id
  * @property-read Entry|null $entry {@see static::getEntry()}
+ *
+ * @mixin ActiveRecord
  */
 trait EntryRelationTrait
 {
