@@ -47,6 +47,26 @@ trait PermalinkTrait
     }
 
     /**
+     * The public URL a permalink URI resolves to. Used to record a {@see \Hirtz\Skeleton\Models\Redirect} for a
+     * URI this model no longer has, which is why it takes the URI rather than reading the current one.
+     */
+    public function getPermalinkUrl(string $uri, ?string $language = null): false|string
+    {
+        $route = $this->getRoute();
+
+        if (!$route || !array_key_exists('slug', $route)) {
+            return false;
+        }
+
+        $route['slug'] = $uri;
+
+        return Yii::$app->getI18n()->callback(
+            $language ?? Yii::$app->language,
+            fn (): string => Yii::$app->getUrlManager()->createUrl($route)
+        );
+    }
+
+    /**
      * @return array<string, mixed>
      */
     public function getPermalinkAttributes(): array

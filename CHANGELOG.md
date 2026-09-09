@@ -1,5 +1,13 @@
 ## 3.0 (in development)
 
+- **Breaking:** `Entry` and `Category` no longer attach `RedirectBehavior`. `SavePermalinks` and
+  `DeletePermalinks` record and remove the `Redirect` records instead, via the new
+  `PermalinkInterface::getPermalinkUrl()`. The behaviour captured the previous URL in `afterFind()`, which
+  would have meant a query per row once the slug lived in a related record; the actions already know both
+  URIs. Descendants rewritten by a parent rename now get redirects explicitly rather than as a side effect
+  of being re-saved. `RedirectBehavior` itself is unchanged and still used by `Hirtz\Media\Models\File`
+- `Category::getRoute()`, `getRouteName()` and `getRouteParams()` return the entry view route when the
+  category has a permalink, and the previous `index` route with a `category` param when it does not
 - `SiteController::actionView()` now resolves its slug against the `Permalink` table and renders either an
   entry or a category, instead of querying entries by slug. **Breaking:** `findEntry()` takes a `Permalink`
   rather than a `string`, and the new `renderPermalink()`, `renderEntry()`, `renderCategory()`,

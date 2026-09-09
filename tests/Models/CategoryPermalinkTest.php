@@ -60,7 +60,7 @@ class CategoryPermalinkTest extends TestCase
 
         $parent->refresh();
         $parent->slug = 'stories';
-        self::assertTrue($parent->update() !== false);
+        self::assertNotFalse($parent->update());
 
         self::assertSame('stories', $this->findPermalinkUri($parent));
         self::assertSame('stories/sport', $this->findPermalinkUri($child));
@@ -76,7 +76,7 @@ class CategoryPermalinkTest extends TestCase
 
         $child->refresh();
         $child->parent_id = $second->id;
-        self::assertTrue($child->update() !== false);
+        self::assertNotFalse($child->update());
 
         self::assertSame('second/child', $this->findPermalinkUri($child));
         self::assertSame('second/child/grandchild', $this->findPermalinkUri($grandchild));
@@ -95,7 +95,7 @@ class CategoryPermalinkTest extends TestCase
         $rgt = $parent->rgt;
 
         $parent->slug = 'stories';
-        self::assertTrue($parent->update() !== false);
+        self::assertNotFalse($parent->update());
         $parent->refresh();
         $child->refresh();
 
@@ -109,7 +109,7 @@ class CategoryPermalinkTest extends TestCase
         $category = $this->createCategory('news');
         $id = $category->id;
 
-        self::assertTrue($category->delete() !== false);
+        self::assertNotFalse($category->delete());
 
         self::assertSame(0, (int)Permalink::find()
             ->whereModel(Category::class, $id)

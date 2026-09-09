@@ -12,7 +12,6 @@ use Hirtz\Cms\Models\Queries\CategoryQuery;
 use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Models\Traits\PermalinkTrait;
 use Hirtz\Cms\Models\Traits\SlugAttributeTrait;
-use Hirtz\Skeleton\Behaviors\RedirectBehavior;
 use Hirtz\Skeleton\Models\Interfaces\SitemapInterface;
 use Hirtz\Skeleton\Models\Trail;
 use Hirtz\Skeleton\Models\Traits\NestedTreeTrait;
@@ -53,15 +52,6 @@ class Category extends ActiveRecord implements PermalinkInterface, SitemapInterf
 
     public string|false $contentType = false;
     public array|string|null $slugTargetAttribute = 'slug';
-
-    #[Override]
-    public function behaviors(): array
-    {
-        return [
-            ...parent::behaviors(),
-            'RedirectBehavior' => RedirectBehavior::class,
-        ];
-    }
 
     #[Override]
     public function rules(): array
@@ -321,19 +311,25 @@ class Category extends ActiveRecord implements PermalinkInterface, SitemapInterf
 
     public function getRoute(): false|array
     {
+        if ($this->hasPermalink()) {
+            return ['/cms/site/view', 'slug' => $this->getFormattedSlug()];
+        }
+
         return array_filter(['/cms/site/index', 'category' => $this->getI18nAttribute('slug')]);
     }
 
     #[Override]
     public function getRouteName(): ?string
     {
-        return Entry::ROUTE_INDEX;
+        return $this->hasPermalink() ? Entry::ROUTE_VIEW : Entry::ROUTE_INDEX;
     }
 
     #[Override]
     public function getRouteParams(): array
     {
-        return array_filter(['category' => $this->getI18nAttribute('slug')]);
+        return $this->hasPermalink()
+            ? ['slug' => $this->getFormattedSlug()]
+            : array_filter(['category' => $this->getI18nAttribute('slug')]);
     }
 
     public function getEntriesOrderBy(): bool|array

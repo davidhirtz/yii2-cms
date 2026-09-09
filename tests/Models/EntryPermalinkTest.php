@@ -6,7 +6,9 @@ namespace Hirtz\Cms\Tests\Models;
 
 use Hirtz\Cms\Models\Permalink;
 use Hirtz\Cms\Test\Models\TestEntry;
+use Hirtz\Cms\Test\Models\TestSection;
 use Hirtz\Cms\Test\TestCase;
+use Hirtz\Skeleton\Models\Redirect;
 use Override;
 
 /**
@@ -39,7 +41,7 @@ class EntryPermalinkTest extends TestCase
         $entry = $this->createEntry('test-entry');
 
         $entry->slug = 'renamed';
-        self::assertTrue($entry->update() !== false);
+        self::assertNotFalse($entry->update());
 
         self::assertPermalinkMatchesEntry($entry);
         self::assertSame('renamed', $entry->getPermalink()->uri);
@@ -66,7 +68,7 @@ class EntryPermalinkTest extends TestCase
 
         $parent->refresh();
         $parent->slug = 'renamed';
-        self::assertTrue($parent->update() !== false);
+        self::assertNotFalse($parent->update());
 
         self::assertSame('renamed/child', $this->findPermalinkUri($child));
         self::assertSame('renamed/child/grandchild', $this->findPermalinkUri($grandchild));
@@ -81,7 +83,7 @@ class EntryPermalinkTest extends TestCase
 
         $child->refresh();
         $child->parent_id = $second->id;
-        self::assertTrue($child->update() !== false);
+        self::assertNotFalse($child->update());
 
         self::assertSame('second/child', $this->findPermalinkUri($child));
         self::assertSame('second/child/grandchild', $this->findPermalinkUri($grandchild));
@@ -92,7 +94,7 @@ class EntryPermalinkTest extends TestCase
         $entry = $this->createEntry('test-entry');
         $id = $entry->id;
 
-        self::assertTrue($entry->delete() !== false);
+        self::assertNotFalse($entry->delete());
 
         self::assertSame(0, (int)Permalink::find()
             ->whereModel(TestEntry::class, $id)
@@ -105,7 +107,7 @@ class EntryPermalinkTest extends TestCase
         $child = $this->createEntry('child', $parent);
 
         $parent->refresh();
-        self::assertTrue($parent->delete() !== false);
+        self::assertNotFalse($parent->delete());
 
         self::assertSame(0, (int)Permalink::find()
             ->whereModel(TestEntry::class, $child->id)
@@ -127,6 +129,75 @@ class EntryPermalinkTest extends TestCase
         self::assertSame('second/child', $this->findPermalinkUri($two));
     }
 
+    public function testRenameRecordsARedirect(): void
+    {
+        $entry = $this->createEntryWithSection('test-entry');
+
+        $entry->slug = 'renamed';
+        self::assertNotFalse($entry->update());
+
+        self::assertSame('renamed', $this->findRedirectTarget('test-entry'));
+    }
+
+    /**
+     * `RedirectBehavior` only produced these because every descendant happened to be re-saved. Recording them from
+     * the permalink action makes it explicit.
+     */
+    public function testRenamingAParentRecordsRedirectsForDescendants(): void
+    {
+        $parent = $this->createEntryWithSection('parent');
+        $this->createEntryWithSection('child', $parent);
+
+        $parent->refresh();
+        $parent->slug = 'renamed';
+        self::assertNotFalse($parent->update());
+
+        self::assertSame('renamed', $this->findRedirectTarget('parent'));
+        self::assertSame('renamed/child', $this->findRedirectTarget('parent/child'));
+    }
+
+    /**
+     * Two renames in a row must leave one hop, not a chain.
+     */
+    public function testRepeatedRenamesDoNotChainRedirects(): void
+    {
+        $entry = $this->createEntryWithSection('first');
+
+        $entry->slug = 'second';
+        self::assertNotFalse($entry->update());
+
+        $entry->refresh();
+        $entry->slug = 'third';
+        self::assertNotFalse($entry->update());
+
+        self::assertSame('third', $this->findRedirectTarget('first'));
+        self::assertSame('third', $this->findRedirectTarget('second'));
+    }
+
+    public function testDeletingAnEntryRemovesRedirectsPointingAtIt(): void
+    {
+        $entry = $this->createEntryWithSection('first');
+
+        $entry->slug = 'second';
+        self::assertNotFalse($entry->update());
+        self::assertSame('second', $this->findRedirectTarget('first'));
+
+        $entry->refresh();
+        self::assertNotFalse($entry->delete());
+
+        self::assertNull($this->findRedirectTarget('first'));
+    }
+
+    protected function findRedirectTarget(string $requestUri): ?string
+    {
+        $redirect = Redirect::find()
+            ->where(['request_uri' => $requestUri])
+            ->limit(1)
+            ->one();
+
+        return $redirect?->url;
+    }
+
     protected function findPermalinkUri(TestEntry $entry): ?string
     {
         $permalink = Permalink::find()
@@ -144,6 +215,24 @@ class EntryPermalinkTest extends TestCase
             self::assertNotNull($permalink, "Missing permalink for language $language.");
             self::assertSame($entry->getFormattedSlug($language), $permalink->uri);
         }
+    }
+
+    /**
+     * {@see TestEntry::hasRoute()} needs sections or children, so an entry without either has no URL and therefore
+     * nothing to redirect.
+     */
+    protected function createEntryWithSection(string $slug, ?TestEntry $parent = null): TestEntry
+    {
+        $entry = $this->createEntry($slug, $parent);
+
+        $section = TestSection::create();
+        $section->entry_id = $entry->id;
+        $section->name = 'Test section';
+
+        self::assertTrue($section->save(), implode(' ', $section->getErrorSummary(true)));
+        $entry->refresh();
+
+        return $entry;
     }
 
     protected function createEntry(string $slug, ?TestEntry $parent = null): TestEntry

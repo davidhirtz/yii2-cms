@@ -15,7 +15,6 @@ use Hirtz\Cms\Models\Traits\SlugAttributeTrait;
 use Hirtz\Cms\Module;
 use Hirtz\Media\Models\Interfaces\AssetParentInterface;
 use Hirtz\Media\Models\Traits\AssetParentTrait;
-use Hirtz\Skeleton\Behaviors\RedirectBehavior;
 use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Skeleton\Models\Interfaces\SitemapInterface;
 use Hirtz\Skeleton\Models\Traits\MaterializedTreeTrait;
@@ -75,15 +74,6 @@ class Entry extends ActiveRecord implements AssetParentInterface, PermalinkInter
     public array|string $dateTimeValidator = DateTimeValidator::class;
     public array|string|null $slugTargetAttribute = ['slug', 'parent_slug'];
     public bool|null $shouldUpdateParentAfterSave = null;
-
-    #[Override]
-    public function behaviors(): array
-    {
-        return [
-            ...parent::behaviors(),
-            'RedirectBehavior' => RedirectBehavior::class,
-        ];
-    }
 
     #[Override]
     public function rules(): array
