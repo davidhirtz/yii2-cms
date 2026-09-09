@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Controllers;
 
 use Hirtz\Cms\Models\Builders\EntrySiteRelationsBuilder;
+use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Models\Permalink;
+use Hirtz\Cms\Models\Queries\CategoryQuery;
 use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Module;
 use Hirtz\Skeleton\Web\Controller;
@@ -45,7 +48,46 @@ class SiteController extends Controller
             }
         }
 
-        $entry = $this->findEntry($slug);
+        $permalink = $this->findPermalink($slug);
+
+        if (!$permalink) {
+            throw new NotFoundHttpException();
+        }
+
+        return $this->renderPermalink($permalink);
+    }
+
+    protected function findPermalink(string $slug): ?Permalink
+    {
+        /** @var Permalink|null $permalink */
+        $permalink = Permalink::find()
+            ->whereUri($slug)
+            ->limit(1)
+            ->one();
+
+        return $permalink;
+    }
+
+    /**
+     * Override this method to render models beyond entries and categories. {@see Permalink::isModel()} matches
+     * subclasses, which matters because the record stores the class the container resolved, not the base one.
+     */
+    protected function renderPermalink(Permalink $permalink): Response|string
+    {
+        if ($permalink->isModel(Entry::class)) {
+            return $this->renderEntry($permalink);
+        }
+
+        if ($permalink->isModel(Category::class)) {
+            return $this->renderCategory($permalink);
+        }
+
+        throw new NotFoundHttpException();
+    }
+
+    protected function renderEntry(Permalink $permalink): Response|string
+    {
+        $entry = $this->findEntry($permalink);
 
         if ($response = $this->validateEntryResponse($entry)) {
             return $response;
@@ -58,11 +100,11 @@ class SiteController extends Controller
         ]);
     }
 
-    protected function findEntry(string $slug): ?Entry
+    protected function findEntry(Permalink $permalink): ?Entry
     {
         /** @var Entry|null $entry */
         $entry = $this->getQuery()
-            ->whereSlug($slug)
+            ->whereId($permalink->model_id)
             ->limit(1)
             ->one();
 
@@ -86,6 +128,55 @@ class SiteController extends Controller
         ]);
     }
 
+    protected function renderCategory(Permalink $permalink): Response|string
+    {
+        $category = $this->findCategory($permalink);
+
+        if ($response = $this->validateCategoryResponse($category)) {
+            return $response;
+        }
+
+        return $this->render('category', [
+            'category' => $category,
+            'entries' => $this->findCategoryEntries($category),
+        ]);
+    }
+
+    /**
+     * Guards against a permalink that outlived its category's URL, the way {@see static::validateEntryResponse()}
+     * guards the entry branch. Turning `Module::$enableCategoryUrls` off leaves the records behind until they are
+     * rebuilt, and they must not keep resolving in the meantime.
+     */
+    protected function validateCategoryResponse(?Category $category): ?Response
+    {
+        if (!$category?->hasPermalink()) {
+            throw new NotFoundHttpException();
+        }
+
+        return null;
+    }
+
+    /**
+     * @return Entry[]
+     */
+    protected function findCategoryEntries(Category $category): array
+    {
+        return $this->getQuery()
+            ->whereCategory($category)
+            ->all();
+    }
+
+    protected function findCategory(Permalink $permalink): ?Category
+    {
+        /** @var Category|null $category */
+        $category = $this->getCategoryQuery()
+            ->andWhere([Category::tableName() . '.[[id]]' => $permalink->model_id])
+            ->limit(1)
+            ->one();
+
+        return $category;
+    }
+
     protected function getQuery(): EntryQuery
     {
         $status = $this->request->getIsDraft() ? Entry::STATUS_DRAFT : Entry::STATUS_ENABLED;
@@ -96,5 +187,15 @@ class SiteController extends Controller
             ->addSelectI18nSlugTargetAttributes()
             ->whereStatus($status)
             ->andWhereParentStatus();
+    }
+
+    protected function getCategoryQuery(): CategoryQuery
+    {
+        $status = $this->request->getIsDraft() ? Category::STATUS_DRAFT : Category::STATUS_ENABLED;
+
+        return Category::find()
+            ->selectSiteAttributes()
+            ->replaceI18nAttributes()
+            ->whereStatus($status);
     }
 }

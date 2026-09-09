@@ -8,6 +8,7 @@ use Hirtz\Cms\Test\Fixtures\AssetFixture;
 use Hirtz\Cms\Test\Fixtures\CategoryFixture;
 use Hirtz\Cms\Test\Fixtures\EntryCategoryFixture;
 use Hirtz\Cms\Test\Fixtures\EntryFixture;
+use Hirtz\Cms\Test\Fixtures\PermalinkFixture;
 use Hirtz\Cms\Test\Fixtures\SectionEntryFixture;
 use Hirtz\Cms\Test\Fixtures\SectionFixture;
 use Hirtz\Cms\Test\Models\TestAsset;
@@ -27,6 +28,7 @@ trait CmsFixtureTrait
             'entry' => EntryFixture::class,
             'entry_category' => EntryCategoryFixture::class,
             'file' => FileFixture::class,
+            'permalink' => PermalinkFixture::class,
             'section' => SectionFixture::class,
             'section_entry' => SectionEntryFixture::class,
             'user' => UserFixture::class,

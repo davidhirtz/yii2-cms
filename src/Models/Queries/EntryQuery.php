@@ -141,6 +141,11 @@ class EntryQuery extends I18nActiveQuery
         return $this->whereSlug(static::getModule()->entryIndexSlug);
     }
 
+    public function whereId(int $id): static
+    {
+        return $this->andWhere([Entry::tableName() . '.[[id]]' => $id]);
+    }
+
     public function whereSlug(string $slug): static
     {
         if (in_array('parent_slug', (array)Entry::instance()->slugTargetAttribute, true)) {

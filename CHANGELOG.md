@@ -1,5 +1,14 @@
 ## 3.0 (in development)
 
+- `SiteController::actionView()` now resolves its slug against the `Permalink` table and renders either an
+  entry or a category, instead of querying entries by slug. **Breaking:** `findEntry()` takes a `Permalink`
+  rather than a `string`, and the new `renderPermalink()`, `renderEntry()`, `renderCategory()`,
+  `findCategory()`, `findCategoryEntries()`, `validateCategoryResponse()` and `getCategoryQuery()` methods
+  are the extension points; override `renderPermalink()` to resolve further models. Added
+  `EntryQuery::whereId()`, the default `site/category` view, and `AdminLink` support for categories.
+  `validateCategoryResponse()` re-checks `hasPermalink()`, so permalinks left behind after
+  `Module::$enableCategoryUrls` is turned off stop resolving. Added `PermalinkFixture`, which derives its
+  rows from the entry fixture data — fixtures insert rows directly, so no permalink would otherwise exist
 - Added `PermalinkInterface::getPermalinkAttributes()`, extra attributes copied onto a model's `Permalink`
   records on every save. It exists so `yii2-cms-tenant` can carry `tenant_id` across, which is what
   scopes the uniqueness of a URL to a single tenant

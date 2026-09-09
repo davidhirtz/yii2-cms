@@ -9,6 +9,7 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Tests\Controllers;
 
 use Hirtz\Cms\Models\Asset;
+use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
 use Hirtz\Cms\Test\TestCase;
@@ -120,5 +121,66 @@ final class SiteControllerFunctionalTest extends TestCase
 
         $this->open($urlManager->createUrl($entry->getRoute()) . '/');
         self::assertCurrentUrlEquals($urlManager->createUrl($entry->getRoute()));
+    }
+
+    public function testUnknownSlug(): void
+    {
+        $this->open('/there-is-no-such-page');
+        self::assertResponseStatusCodeSame(404);
+    }
+
+    /**
+     * The same action resolves an entry or a category, depending only on what the permalink points at.
+     */
+    public function testCategoryIsResolvedByTheSameAction(): void
+    {
+        Category::getModule()->enableCategoryUrls = true;
+
+        $category = $this->createCategory('news');
+
+        $this->open('/news');
+
+        self::assertResponseIsSuccessful();
+        self::assertPageTitleSame($category->name);
+    }
+
+    public function testCategoryIsNotResolvedWhenCategoryUrlsAreDisabled(): void
+    {
+        Category::getModule()->enableCategoryUrls = true;
+        $this->createCategory('news');
+
+        Category::getModule()->enableCategoryUrls = false;
+
+        $this->open('/news');
+        self::assertResponseStatusCodeSame(404);
+    }
+
+    public function testNestedCategoryResolvesUnderItsFullPath(): void
+    {
+        Category::getModule()->enableCategoryUrls = true;
+
+        $parent = $this->createCategory('news');
+        $child = $this->createCategory('sport', $parent);
+
+        $this->open('/news/sport');
+
+        self::assertResponseIsSuccessful();
+        self::assertPageTitleSame($child->name);
+    }
+
+    protected function createCategory(string $slug, ?Category $parent = null): Category
+    {
+        $module = Category::getModule();
+        $module->enableCategories = true;
+        $module->enableNestedCategories = true;
+
+        $category = Category::create();
+        $category->name = ucfirst($slug);
+        $category->slug = $slug;
+        $category->parent_id = $parent?->id;
+
+        self::assertTrue($category->save(), implode(' ', $category->getErrorSummary(true)));
+
+        return $category;
     }
 }

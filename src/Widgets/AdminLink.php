@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Widgets;
 
 use Hirtz\Cms\Models\Asset;
+use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Skeleton\Html\A;
@@ -15,15 +16,15 @@ use Stringable;
 use Yii;
 
 /**
- * @property Asset|Entry|Section|null $model
+ * @property Asset|Category|Entry|Section|null $model
  */
 class AdminLink extends Widget
 {
     use TagAttributesTrait;
 
-    protected Asset|Entry|Section $model;
+    protected Asset|Category|Entry|Section $model;
 
-    public function model(Asset|Entry|Section $model): static
+    public function model(Asset|Category|Entry|Section $model): static
     {
         $this->model = $model;
         return $this;
@@ -56,6 +57,10 @@ class AdminLink extends Widget
             return $webuser->can(Section::AUTH_SECTION_UPDATE, ['section' => $this->model]);
         }
 
+        if ($this->model instanceof Category) {
+            return $webuser->can(Category::AUTH_CATEGORY_UPDATE, ['category' => $this->model]);
+        }
+
         $permissionName = $this->model->isEntryAsset()
             ? Entry::AUTH_ENTRY_ASSET_UPDATE
             : Section::AUTH_SECTION_ASSET_UPDATE;
@@ -63,7 +68,7 @@ class AdminLink extends Widget
         return $webuser->can($permissionName, ['asset' => $this->model]);
     }
 
-    public static function tag(Asset|Entry|Section $model): string
+    public static function tag(Asset|Category|Entry|Section $model): string
     {
         return self::make()->model($model)->render();
     }
