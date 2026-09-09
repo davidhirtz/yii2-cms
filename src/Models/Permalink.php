@@ -105,10 +105,6 @@ class Permalink extends ActiveRecord
         ];
     }
 
-    /**
-     * Prevents a permalink from shadowing a static route or a file in the web root, which would leave the record
-     * unreachable without any error.
-     */
     protected function validateUri(): void
     {
         if ($this->hasErrors('uri')) {

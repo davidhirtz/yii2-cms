@@ -415,6 +415,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, PermalinkInter
         $query = static::find()
             ->selectSitemapAttributes()
             ->enabled()
+            ->withPermalinks()
             ->orderBy(['id' => SORT_ASC]);
 
         if (static::getModule()->enableImageSitemaps) {
@@ -528,17 +529,10 @@ class Entry extends ActiveRecord implements AssetParentInterface, PermalinkInter
 
     public function composeFormattedSlug(?string $language = null): string
     {
-        $slug = $this->getSlugPrefix($language) . '/' . $this->getI18nAttribute('slug', $language);
-        return substr(trim($slug, '/'), 0, 255);
-    }
+        $path = $this->parent?->getFormattedSlug($language) ?? '';
+        $slug = $path . '/' . $this->getI18nAttribute('slug', $language);
 
-    /**
-     * The ancestors' path. Read from the parent rather than a materialized column, which is why
-     * {@see static::afterSave()} writes this record before cascading to children.
-     */
-    public function getSlugPrefix(?string $language = null): string
-    {
-        return $this->parent?->getFormattedSlug($language) ?? '';
+        return substr(trim($slug, '/'), 0, 255);
     }
 
     #[Override]
@@ -725,9 +719,6 @@ class Entry extends ActiveRecord implements AssetParentInterface, PermalinkInter
         return self::class;
     }
 
-    /**
-     * The slug has no column to read a NOT NULL constraint off any more, and an entry always needs one.
-     */
     public function isSlugRequired(): bool
     {
         return true;

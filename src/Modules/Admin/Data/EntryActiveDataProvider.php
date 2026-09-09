@@ -68,6 +68,8 @@ class EntryActiveDataProvider extends ActiveDataProvider
         if ($this->searchString) {
             $this->query->matching($this->searchString);
         }
+
+        $this->query->withPermalinks();
     }
 
     protected function whereType(): void

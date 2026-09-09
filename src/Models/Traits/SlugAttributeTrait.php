@@ -10,31 +10,13 @@ use yii\helpers\Inflector;
 
 trait SlugAttributeTrait
 {
-    /**
-     * @var bool whether slugs should not automatically be checked and processed.
-     */
     public bool $customSlugBehavior = false;
-    /**
-     * @var bool whether slugs should be generated in lower case.
-     */
     public bool $slugLowercase = true;
-
-    /**
-     * @var int|false the maximum length of the slug, or false if not limited.
-     */
     public int|false $slugMaxLength = 100;
-
-    /**
-     * @var string the replacement to use for spaces.
-     */
     public string $slugReplacement = '-';
-
-    /**
-     * @var array|string the class name of the unique validator
-     */
     public array|string $slugUniqueValidator = UniqueValidator::class;
 
-    private ?bool $_isSlugRequired = null;
+    private ?bool $isSlugRequired = null;
 
     public function ensureSlug(string $attribute = 'name'): void
     {
@@ -79,17 +61,14 @@ trait SlugAttributeTrait
         }
     }
 
-    /**
-     * @return bool whether slugs are required, override this method to not rely on db schema.
-     */
     public function isSlugRequired(): bool
     {
-        if ($this->_isSlugRequired === null) {
+        if ($this->isSlugRequired === null) {
             $schema = static::getDb()->getSchema();
-            $this->_isSlugRequired = !$schema->getTableSchema(static::tableName())->getColumn('slug')->allowNull;
+            $this->isSlugRequired = !$schema->getTableSchema(static::tableName())->getColumn('slug')->allowNull;
         }
 
-        return $this->_isSlugRequired;
+        return $this->isSlugRequired;
     }
 
     protected function isUniqueRule(mixed $ruleName): bool

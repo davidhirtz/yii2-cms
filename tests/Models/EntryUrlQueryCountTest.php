@@ -71,6 +71,7 @@ class EntryUrlQueryCountTest extends TestCase
         return Entry::find()
             ->selectSiteAttributes()
             ->replaceI18nAttributes()
+            ->withPermalinks()
             ->andWhere(['id' => $ids])
             ->all();
     }

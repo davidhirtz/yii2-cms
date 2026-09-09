@@ -24,7 +24,7 @@
   `M260909170000DropEntrySlug`). `Entry::$slug` survives as a virtual attribute backed by `Permalink::$slug`, so
   `$entry->slug`, the validation rules and the admin form are unchanged, but `Entry::$parent_slug` and
   `Entry::$slugTargetAttribute` are gone. `PermalinkTrait` appends the slug names to `attributes()` and keeps them
-  out of the INSERT and UPDATE; `Entry::getSlugPrefix()` reads the parent instead of a materialised column.
+  out of the INSERT and UPDATE;
   `EntryQuery::addSelectI18nSlugTargetAttributes()` is replaced by `withPermalinks()`, and `whereSlug()` matches
   against the permalink table; added `EntryQuery::whereNotSlug()` and `whereId()`. `Entry::hasRoute()` is now
   `section_count || entry_count`, and `Entry::isSlugRequired()` returns `true` rather than reading a column that no

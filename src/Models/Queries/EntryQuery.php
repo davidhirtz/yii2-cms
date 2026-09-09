@@ -35,9 +35,6 @@ class EntryQuery extends I18nActiveQuery
         return $this;
     }
 
-    /**
-     * Slugs live in {@see Permalink} records now, so they are eager loaded rather than selected.
-     */
     public function withPermalinks(): static
     {
         return $this->with('permalinks');
@@ -65,8 +62,7 @@ class EntryQuery extends I18nActiveQuery
             ['updated_by_user_id', 'created_at']
         );
 
-        return $this->addSelect($this->prefixColumns($attributes))
-            ->withPermalinks();
+        return $this->addSelect($this->prefixColumns($attributes));
     }
 
     /**
@@ -82,7 +78,7 @@ class EntryQuery extends I18nActiveQuery
             'section_count',
             'entry_count',
             'updated_at',
-        ]))->withPermalinks();
+        ]));
     }
 
     public function matching(?string $search): static
@@ -183,9 +179,6 @@ class EntryQuery extends I18nActiveQuery
         ]);
     }
 
-    /**
-     * @return \yii\db\Query
-     */
     protected function getPermalinkSubQuery(): Query
     {
         return (new Query())

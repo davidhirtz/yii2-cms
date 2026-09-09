@@ -180,6 +180,7 @@ class SiteController extends Controller
         return Entry::find()
             ->selectSiteAttributes()
             ->replaceI18nAttributes()
+            ->withPermalinks()
             ->whereStatus($status)
             ->andWhereParentStatus();
     }

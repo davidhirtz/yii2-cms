@@ -195,6 +195,7 @@ class EntrySiteRelationsBuilder extends Component
         return Entry::find()
             ->selectSiteAttributes()
             ->replaceI18nAttributes()
+            ->withPermalinks()
             ->whereStatus()
             ->indexBy('id');
     }

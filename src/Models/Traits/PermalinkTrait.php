@@ -142,9 +142,6 @@ trait PermalinkTrait
     }
 
     /**
-     * @return list<string>
-     */
-    /**
      * The full path this model resolves under, read from the permalink record.
      *
      * This must not walk up the tree: it is called for every row a listing renders, through `getRoute()`, and
@@ -153,7 +150,7 @@ trait PermalinkTrait
      */
     public function getFormattedSlug(?string $language = null): string
     {
-        $permalink = $this->getPermalink($language);
+        $permalink = $this->getPermalink($language) ?? current($this->permalinks);
 
         return $permalink instanceof Permalink
             ? $permalink->uri
