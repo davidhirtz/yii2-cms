@@ -1,5 +1,9 @@
 ## 3.0 (in development)
 
+- Added the `permalink` console controller: `permalink/rebuild` rewrites every entry and category permalink and
+  `permalink/prune` removes orphaned ones. Permalinks are written on save, so anything that changes them outside a
+  save — adding a language, toggling `Module::$enableCategoryUrls` — needs a one-off rebuild. Added
+  `PermalinkInterface::savePermalinks()` and `deletePermalinks()` to the interface
 - **Breaking:** the `entry` table no longer has `slug` / `parent_slug` columns (migration
   `M260909170000DropEntrySlug`). `Entry::$slug` survives as a virtual attribute backed by `Permalink::$slug`, so
   `$entry->slug`, the validation rules and the admin form are unchanged, but `Entry::$parent_slug` and

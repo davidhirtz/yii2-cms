@@ -57,6 +57,13 @@ interface PermalinkInterface extends I18nAttributeInterface
     public function getPermalinkUrl(string $uri, ?string $language = null): false|string;
 
     /**
+     * @return list<string> the languages whose URL changed
+     */
+    public function savePermalinks(): array;
+
+    public function deletePermalinks(): void;
+
+    /**
      * Extra attributes copied onto the model's {@see Permalink} records on every save. `yii2-cms-tenant` uses this
      * to carry `tenant_id` across, which is what scopes the uniqueness of a URL to one tenant.
      *

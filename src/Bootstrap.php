@@ -66,6 +66,8 @@ class Bootstrap implements BootstrapInterface
         ]);
 
         $app->setMigrationNamespace('Hirtz\Cms\Migrations');
+
+        $app->controllerMap['permalink'] ??= Console\Controllers\PermalinkController::class;
     }
 
     /**
