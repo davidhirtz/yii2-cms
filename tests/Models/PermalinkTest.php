@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Tests\Models;
 
+use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Permalink;
 use Hirtz\Cms\Test\Models\TestEntry;
 use Hirtz\Cms\Test\TestCase;
@@ -97,7 +98,7 @@ class PermalinkTest extends TestCase
     {
         $permalink = $this->createPermalink('blog/hello-world', 'hello-world');
 
-        self::assertTrue($permalink->isModel(TestEntry::class));
+        self::assertTrue($permalink->isModel(Entry::class));
         self::assertFalse($permalink->isModel(Permalink::class));
     }
 
@@ -107,7 +108,7 @@ class PermalinkTest extends TestCase
         $permalink->language = Yii::$app->language;
         $permalink->uri = $uri;
         $permalink->slug = $slug;
-        $permalink->model = TestEntry::class;
+        $permalink->model = Entry::class;
         $permalink->model_id = $modelId;
 
         return $permalink;

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Models\Queries;
 
+use Hirtz\Cms\Models\Interfaces\PermalinkInterface;
 use Hirtz\Cms\Models\Permalink;
 use Hirtz\Skeleton\Db\ActiveQuery;
 use Yii;
@@ -31,13 +32,17 @@ class PermalinkQuery extends ActiveQuery
             ->andWhere([$this->getTableAlias() . '.[[uri]]' => trim($uri, '/')]);
     }
 
-    public function whereModel(ActiveRecordInterface|string $model, ?int $modelId = null): static
+    public function whereModel(PermalinkInterface|string $model, ?int $modelId = null): static
     {
-        $modelId ??= $model instanceof ActiveRecordInterface ? $model->getPrimaryKey() : null;
+        if ($model instanceof PermalinkInterface) {
+            $modelId ??= $model instanceof ActiveRecordInterface ? $model->getPrimaryKey() : null;
+            $model = $model->getPermalinkModelClass();
+        }
+
         $alias = $this->getTableAlias();
 
         return $this->andWhere([
-            "$alias.[[model]]" => is_string($model) ? $model : $model::class,
+            "$alias.[[model]]" => $model,
             "$alias.[[model_id]]" => $modelId,
         ]);
     }

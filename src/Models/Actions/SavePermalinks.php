@@ -128,7 +128,7 @@ class SavePermalinks
     {
         $permalink = Permalink::create();
         $permalink->language = $language;
-        $permalink->model = $this->model::class;
+        $permalink->model = $this->model->getPermalinkModelClass();
         $permalink->model_id = $this->model->id;
 
         return $permalink;

@@ -6,40 +6,23 @@ namespace Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits;
 
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\Fields\CategoryParentIdSelectField;
 use Hirtz\Cms\Modules\ModuleTrait;
-use Stringable;
+use Hirtz\Skeleton\Widgets\Forms\Fields\SelectField;
+use Override;
 
 trait CategoryParentIdFieldTrait
 {
     use ModuleTrait;
+    use ParentIdFieldTrait;
 
-    protected function getParentIdField(): ?Stringable
+    #[Override]
+    protected function createParentIdSelectField(): SelectField
     {
-        if (!static::getModule()->enableNestedCategories || !$this->model->hasParentEnabled()) {
-            return null;
-        }
-
-        return CategoryParentIdSelectField::make()
-            ->attributes($this->getParentIdAttributes())
-            ->property('parent_id')
-            ->prompt();
+        return CategoryParentIdSelectField::make();
     }
 
-    protected function getParentIdAttributes(): array
+    #[Override]
+    protected function hasParentIdField(): bool
     {
-        $attributes = [];
-
-        if (
-            !$this->model->slugTargetAttribute
-            || !in_array('parent_id', (array)$this->model->slugTargetAttribute, true)
-        ) {
-            return $attributes;
-        }
-
-        foreach ($this->model->getI18nAttributeNames('slug') as $language => $attributeName) {
-            $attributes['data-form-target'][] = $this->getSlugId($language);
-            $attributes['prompt']['options']['data-value'][] = $this->getSlugBaseUrl($language);
-        }
-
-        return $attributes;
+        return static::getModule()->enableNestedCategories && $this->model->hasParentEnabled();
     }
 }

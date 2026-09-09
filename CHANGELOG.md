@@ -1,5 +1,21 @@
 ## 3.0 (in development)
 
+- **Breaking:** the `entry` table no longer has `slug` / `parent_slug` columns (migration
+  `M260909170000DropEntrySlug`). `Entry::$slug` survives as a virtual attribute backed by `Permalink::$slug`, so
+  `$entry->slug`, the validation rules and the admin form are unchanged, but `Entry::$parent_slug` and
+  `Entry::$slugTargetAttribute` are gone. `PermalinkTrait` appends the slug names to `attributes()` and keeps them
+  out of the INSERT and UPDATE; `Entry::getSlugPrefix()` reads the parent instead of a materialised column.
+  `EntryQuery::addSelectI18nSlugTargetAttributes()` is replaced by `withPermalinks()`, and `whereSlug()` matches
+  against the permalink table; added `EntryQuery::whereNotSlug()` and `whereId()`. `Entry::hasRoute()` is now
+  `section_count || entry_count`, and `Entry::isSlugRequired()` returns `true` rather than reading a column that no
+  longer exists
+- **Breaking:** `Permalink::$model` stores the canonical base class (`Entry::class`, `Category::class`) via the new
+  `PermalinkInterface::getPermalinkModelClass()`, not the container-resolved one. Migration
+  `M260909180000PermalinkModelClass` normalises existing rows. Storing the runtime class made a record invisible from
+  another load path, because the container resolves `Entry::class` differently per application
+- **Breaking:** `EntryParentIdFieldTrait` and `CategoryParentIdFieldTrait` are now thin wrappers around the shared
+  `ParentIdFieldTrait`; they only differed because entries keyed off `parent_slug` and categories off `parent_id` in
+  the removed `$slugTargetAttribute`. Removed the dead `Web\UrlRule`
 - **Breaking:** `Entry` and `Category` no longer attach `RedirectBehavior`. `SavePermalinks` and
   `DeletePermalinks` record and remove the `Redirect` records instead, via the new
   `PermalinkInterface::getPermalinkUrl()`. The behaviour captured the previous URL in `afterFind()`, which

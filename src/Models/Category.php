@@ -342,6 +342,11 @@ class Category extends ActiveRecord implements PermalinkInterface, SitemapInterf
         return static::getModule()->enableCategoryUrls;
     }
 
+    public function getPermalinkModelClass(): string
+    {
+        return self::class;
+    }
+
     /**
      * Unlike {@see Entry}, a category does not materialise its parent path in a column, so the prefix is walked up
      * the parent relation. {@see UpdateDescendantPermalinks} populates that relation to keep the walk query free.

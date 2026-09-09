@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Tests\Models;
 
+use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Permalink;
 use Hirtz\Cms\Test\Models\TestEntry;
 use Hirtz\Cms\Test\Models\TestSection;
@@ -31,9 +32,9 @@ class EntryPermalinkTest extends TestCase
         $entry = $this->createEntry('test-entry');
         $permalink = $entry->getPermalink();
 
-        self::assertSame(TestEntry::class, $permalink->model);
+        self::assertSame(Entry::class, $permalink->model);
         self::assertSame($entry->id, $permalink->model_id);
-        self::assertTrue($permalink->isModel(TestEntry::class));
+        self::assertTrue($permalink->isModel(Entry::class));
     }
 
     public function testPermalinkFollowsARename(): void
@@ -97,7 +98,7 @@ class EntryPermalinkTest extends TestCase
         self::assertNotFalse($entry->delete());
 
         self::assertSame(0, (int)Permalink::find()
-            ->whereModel(TestEntry::class, $id)
+            ->whereModel(Entry::class, $id)
             ->count());
     }
 
@@ -108,9 +109,10 @@ class EntryPermalinkTest extends TestCase
 
         $parent->refresh();
         self::assertNotFalse($parent->delete());
+        self::assertNull(TestEntry::findOne($child->id), 'The child entry was not deleted.');
 
         self::assertSame(0, (int)Permalink::find()
-            ->whereModel(TestEntry::class, $child->id)
+            ->whereModel(Entry::class, $child->id)
             ->count());
     }
 
@@ -201,7 +203,7 @@ class EntryPermalinkTest extends TestCase
     protected function findPermalinkUri(TestEntry $entry): ?string
     {
         $permalink = Permalink::find()
-            ->whereModel(TestEntry::class, $entry->id)
+            ->whereModel(Entry::class, $entry->id)
             ->whereLanguage()
             ->one();
 

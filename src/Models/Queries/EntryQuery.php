@@ -7,12 +7,15 @@ namespace Hirtz\Cms\Models\Queries;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\EntryCategory;
+use Hirtz\Cms\Models\Permalink;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Models\SectionEntry;
 use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Skeleton\Db\ActiveQuery;
 use Hirtz\Skeleton\Db\I18nActiveQuery;
 use Override;
+use Yii;
+use yii\db\Query;
 
 /**
  * @template T of Entry
@@ -22,13 +25,22 @@ class EntryQuery extends I18nActiveQuery
 {
     use ModuleTrait;
 
-    public function addSelectI18nSlugTargetAttributes(): static
+    /**
+     * The virtual slug is reported by `attributes()` but has no column, so it must not reach the SELECT.
+     */
+    #[Override]
+    public function selectAllColumns(): static
     {
-        if ($slugTargetAttribute = Entry::instance()->slugTargetAttribute) {
-            $this->addSelect($this->prefixColumns(Entry::instance()->getI18nAttributesNames($slugTargetAttribute)));
-        }
-
+        $this->select = $this->prefixColumns($this->getModelInstance()->getColumnAttributes());
         return $this;
+    }
+
+    /**
+     * Slugs live in {@see Permalink} records now, so they are eager loaded rather than selected.
+     */
+    public function withPermalinks(): static
+    {
+        return $this->with('permalinks');
     }
 
     public function andWhereParentStatus(): static
@@ -48,10 +60,13 @@ class EntryQuery extends I18nActiveQuery
      */
     public function selectSiteAttributes(): static
     {
-        return $this->addSelect($this->prefixColumns(array_diff(
-            $this->getModelInstance()->attributes(),
+        $attributes = array_diff(
+            $this->getModelInstance()->getColumnAttributes(),
             ['updated_by_user_id', 'created_at']
-        )));
+        );
+
+        return $this->addSelect($this->prefixColumns($attributes))
+            ->withPermalinks();
     }
 
     /**
@@ -63,10 +78,11 @@ class EntryQuery extends I18nActiveQuery
             'id',
             'status',
             'type',
-            ...Entry::instance()->getI18nAttributesNames(['slug', 'parent_slug']),
+            'parent_id',
             'section_count',
+            'entry_count',
             'updated_at',
-        ]));
+        ]))->withPermalinks();
     }
 
     public function matching(?string $search): static
@@ -80,11 +96,7 @@ class EntryQuery extends I18nActiveQuery
 
     public function whereHasDescendantsEnabled(): static
     {
-        return $this->andWhere([
-            '!=',
-            $this->getI18nAttributeName('slug'),
-            static::getModule()->entryIndexSlug,
-        ]);
+        return $this->whereNotSlug(static::getModule()->entryIndexSlug);
     }
 
     public function whereCategory(array|Category|int $category, bool $eagerLoading = false): static
@@ -146,18 +158,43 @@ class EntryQuery extends I18nActiveQuery
         return $this->andWhere([Entry::tableName() . '.[[id]]' => $id]);
     }
 
+    /**
+     * Matches the full path against the {@see Permalink} table. Kept for callers that only have a slug; the site
+     * controller resolves the permalink first and then loads the entry by id.
+     */
     public function whereSlug(string $slug): static
     {
-        if (in_array('parent_slug', (array)Entry::instance()->slugTargetAttribute, true)) {
-            $slug = explode('/', $slug);
+        return $this->andWhere([
+            Entry::tableName() . '.[[id]]' => $this->getPermalinkSubQuery()
+                ->andWhere(['uri' => trim($slug, '/')]),
+        ]);
+    }
 
-            return $this->andWhere([
-                $this->getI18nAttributeName('slug') => array_pop($slug),
-                $this->getI18nAttributeName('parent_slug') => implode('/', $slug) ?: null,
-            ]);
+    public function whereNotSlug(?string $slug): static
+    {
+        if (!$slug) {
+            return $this;
         }
 
-        return $this->andWhere([$this->getI18nAttributeName('slug') => trim($slug, '/')]);
+        return $this->andWhere([
+            'not in',
+            Entry::tableName() . '.[[id]]',
+            $this->getPermalinkSubQuery()->andWhere(['uri' => trim($slug, '/')]),
+        ]);
+    }
+
+    /**
+     * @return \yii\db\Query
+     */
+    protected function getPermalinkSubQuery(): Query
+    {
+        return (new Query())
+            ->select('model_id')
+            ->from(Permalink::tableName())
+            ->where([
+                'model' => $this->getModelInstance()->getPermalinkModelClass(),
+                'language' => Yii::$app->language,
+            ]);
     }
 
     public function withSitemapAssets(): static

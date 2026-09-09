@@ -73,7 +73,6 @@ class NavItems
         return Entry::find()
             ->selectSiteAttributes()
             ->replaceI18nAttributes()
-            ->addSelect(Entry::instance()->getI18nAttributesNames(['slug', 'parent_slug']))
             ->where(static::getEntryQueryWhere())
             ->whereStatus()
             ->andWhereParentStatus()

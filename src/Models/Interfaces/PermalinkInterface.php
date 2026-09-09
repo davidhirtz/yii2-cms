@@ -31,6 +31,18 @@ interface PermalinkInterface extends I18nAttributeInterface
     public function getPermalink(?string $language = null): ?Permalink;
 
     /**
+     * The class stored in {@see Permalink::$model}, and matched on when reading the records back.
+     *
+     * It must be the canonical base class, never `static::class`: the container resolves `Entry::class` to whatever
+     * an application configured, so the very same row is a `TestEntry` when a test builds it and a
+     * `Hirtz\Cms\Tenant\Models\Entry` when a relation loads it. Keying on the runtime class makes the record
+     * invisible from the other path.
+     *
+     * @return class-string
+     */
+    public function getPermalinkModelClass(): string;
+
+    /**
      * The languages a {@see Permalink} record is written for.
      *
      * @return list<string>

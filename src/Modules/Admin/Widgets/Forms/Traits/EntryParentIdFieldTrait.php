@@ -7,7 +7,8 @@ namespace Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\Fields\EntryParentIdSelectField;
 use Hirtz\Cms\Modules\ModuleTrait;
-use Stringable;
+use Hirtz\Skeleton\Widgets\Forms\Fields\SelectField;
+use Override;
 
 /**
  * @template T of Entry
@@ -15,32 +16,17 @@ use Stringable;
 trait EntryParentIdFieldTrait
 {
     use ModuleTrait;
+    use ParentIdFieldTrait;
 
-    protected function getParentIdField(): ?Stringable
+    #[Override]
+    protected function createParentIdSelectField(): SelectField
     {
-        if (!static::getModule()->enableNestedEntries || !$this->model->hasParentEnabled()) {
-            return null;
-        }
-
-        return EntryParentIdSelectField::make()
-            ->attributes($this->getParentIdAttributes())
-            ->prompt();
+        return EntryParentIdSelectField::make();
     }
 
-    protected function getParentIdAttributes(): array
+    #[Override]
+    protected function hasParentIdField(): bool
     {
-        $attributes = [];
-
-        if (!in_array('parent_slug', (array)$this->model->slugTargetAttribute, true)) {
-            return $attributes;
-        }
-
-        foreach ($this->model->getI18nAttributeNames('slug') as $language => $attribute) {
-            $attributes['data-form-target'][] = '#' . $this->getSlugId($language);
-            $attributes['promptAttributes']['data-value'][] = $this->getSlugBaseUrl($language);
-        }
-
-        return $attributes;
+        return static::getModule()->enableNestedEntries && $this->model->hasParentEnabled();
     }
-
 }

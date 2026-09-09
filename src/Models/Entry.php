@@ -26,10 +26,9 @@ use yii\db\ActiveQuery;
  * @property int|null $parent_id
  * @property int|null $parent_status
  * @property array|null $path
- * @property string $parent_slug
  * @property int|null|false $position
  * @property string $name
- * @property string|null $slug
+ * @property string|null $slug virtual, backed by {@see Permalink::$slug}
  * @property string|null $title
  * @property string|null $description
  * @property string $content
@@ -72,7 +71,6 @@ class Entry extends ActiveRecord implements AssetParentInterface, PermalinkInter
 
     public string|false $contentType = false;
     public array|string $dateTimeValidator = DateTimeValidator::class;
-    public array|string|null $slugTargetAttribute = ['slug', 'parent_slug'];
     public bool|null $shouldUpdateParentAfterSave = null;
 
     #[Override]
@@ -111,11 +109,6 @@ class Entry extends ActiveRecord implements AssetParentInterface, PermalinkInter
                 ],
                 [
                     ['slug'],
-                    $this->slugUniqueValidator,
-                    'targetAttribute' => $this->slugTargetAttribute,
-                ],
-                [
-                    ['slug'],
                     $this->validateSlug(...),
                 ],
                 [
@@ -130,12 +123,6 @@ class Entry extends ActiveRecord implements AssetParentInterface, PermalinkInter
     public function beforeValidate(): bool
     {
         $this->ensureRequiredI18nAttributes();
-
-        if ($this->isAttributeChanged('parent_id')) {
-            foreach ($this->getI18nAttributeNames('parent_slug') as $language => $attributeName) {
-                $this->{$attributeName} = $this->parent?->getFormattedSlug($language);
-            }
-        }
 
         $this->ensureSlug();
 
@@ -179,27 +166,48 @@ class Entry extends ActiveRecord implements AssetParentInterface, PermalinkInter
         }
     }
 
+    /**
+     * Validates the {@see Permalink} this slug would produce rather than the slug itself, so uniqueness, length and
+     * the protected-path check all come from one place — and stay correct for `yii2-cms-tenant`, which scopes
+     * uniqueness to a tenant.
+     */
     protected function validateSlug(): void
     {
         foreach ($this->getI18nAttributeNames('slug') as $language => $attributeName) {
-            if ($this->hasErrors($attributeName)) {
+            if ($this->hasErrors($attributeName) || !$this->$attributeName || !$this->hasPermalink()) {
                 continue;
             }
 
-            $slug = $this->getFormattedSlug($language);
-            $param = explode('/', $slug)[0];
-            $path = Yii::getAlias("@webroot/$slug");
+            $permalink = $this->buildPermalink($language);
 
-            if (
-                in_array($param, Yii::$app->getUrlManager()->getImmutableRuleParams(), true)
-                || is_dir($path)
-                || is_file($path)
-            ) {
-                $this->addError('slug', Lang::t('cms', 'ENTRY_THE_URL_IS_PROTECTED', [
-                    'path' => $slug,
-                ]));
+            // Only the URI rules: on insert there is no id yet for the permalink's own `model_id` to be valid.
+            if (!$permalink->validate(['uri', 'slug'])) {
+                foreach ($permalink->getFirstErrors() as $error) {
+                    $this->addError($attributeName, $error);
+                }
             }
         }
+    }
+
+    /**
+     * The permalink this model's current state would be saved as, used for validation and by {@see SavePermalinks}.
+     */
+    public function buildPermalink(?string $language = null): Permalink
+    {
+        $language ??= Yii::$app->language;
+        $permalink = $this->getPermalink($language) ?? Permalink::create();
+
+        if ($permalink->getIsNewRecord()) {
+            $permalink->language = $language;
+            $permalink->model = $this->getPermalinkModelClass();
+            $permalink->model_id = $this->id;
+        }
+
+        $permalink->uri = $this->getFormattedSlug($language);
+        $permalink->slug = (string)$this->getI18nAttribute('slug', $language);
+        $permalink->setAttributes($this->getPermalinkAttributes(), false);
+
+        return $permalink;
     }
 
     #[Override]
@@ -226,23 +234,22 @@ class Entry extends ActiveRecord implements AssetParentInterface, PermalinkInter
     public function afterSave($insert, $changedAttributes): void
     {
         // Depth first: children derive their prefix from this record, so it has to be written first.
-        $this->savePermalinks();
+        $changedLanguages = $this->savePermalinks();
 
-        if ($this->isMaterializedTreeChanged($changedAttributes)) {
+        // Not on insert: a new record always reports a changed permalink and has no children, and priming the
+        // children cache here would leave it empty for the rest of this instance's life.
+        if (!$insert && $this->entry_count && ($changedLanguages || $this->isMaterializedTreeChanged($changedAttributes))) {
             Yii::debug('Updating child entries ...', __METHOD__);
 
             foreach ($this->getChildren(true) as $entry) {
                 $entry->populateParentRelation($this);
                 $entry->parent_status = min($this->status, $this->parent_status);
                 $entry->path = [...$this->path ?? [], $this->id];
-
-                foreach ($entry->getI18nAttributeNames('parent_slug') as $language => $attributeName) {
-                    $entry->{$attributeName} = $this->getFormattedSlug($language);
-                }
-
                 $entry->update();
             }
         }
+
+        $this->updateOldSlugAttributes();
 
         if ($this->shouldUpdateParentAfterSave && array_key_exists('parent_id', $changedAttributes)) {
             $allRelatedAncestorIds = array_unique(array_filter([
@@ -518,8 +525,17 @@ class Entry extends ActiveRecord implements AssetParentInterface, PermalinkInter
 
     public function getFormattedSlug(?string $language = null): string
     {
-        $slug = $this->getI18nAttribute('parent_slug', $language) . '/' . $this->getI18nAttribute('slug', $language);
+        $slug = $this->getSlugPrefix($language) . '/' . $this->getI18nAttribute('slug', $language);
         return substr(trim($slug, '/'), 0, 255);
+    }
+
+    /**
+     * The ancestors' path. Read from the parent rather than a materialised column, which is why
+     * {@see static::afterSave()} writes this record before cascading to children.
+     */
+    public function getSlugPrefix(?string $language = null): string
+    {
+        return $this->parent?->getFormattedSlug($language) ?? '';
     }
 
     #[Override]
@@ -608,7 +624,6 @@ class Entry extends ActiveRecord implements AssetParentInterface, PermalinkInter
     {
         return array_diff(parent::getTrailAttributes(), [
             'path',
-            'parent_slug',
             'parent_status',
             'category_ids',
             'entry_count',
@@ -649,7 +664,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, PermalinkInter
 
         $changedAttributes ??= $this->getDirtyAttributes();
 
-        foreach ($this->getI18nAttributesNames(['status', 'parent_status', 'path', 'slug', 'parent_slug']) as $key) {
+        foreach (['status', 'parent_status', 'path'] as $key) {
             if (array_key_exists($key, $changedAttributes)) {
                 return true;
             }
@@ -662,7 +677,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, PermalinkInter
     public function isTransactional($operation): bool
     {
         return parent::isTransactional($operation)
-            || ($this->isMaterializedTreeChanged() && !static::getDb()->getTransaction());
+            || (($this->entry_count > 0 || $this->isMaterializedTreeChanged()) && !static::getDb()->getTransaction());
     }
 
     public function hasAssetsEnabled(): bool
@@ -702,10 +717,27 @@ class Entry extends ActiveRecord implements AssetParentInterface, PermalinkInter
         return true;
     }
 
+    public function getPermalinkModelClass(): string
+    {
+        return self::class;
+    }
+
+    /**
+     * The slug has no column to read a NOT NULL constraint off any more, and an entry always needs one.
+     */
+    public function isSlugRequired(): bool
+    {
+        return true;
+    }
+
+    protected function hasVirtualSlug(): bool
+    {
+        return true;
+    }
+
     public function hasRoute(): bool
     {
-        return $this->section_count > 0
-            || (in_array('parent_slug', (array)$this->slugTargetAttribute, true) && $this->entry_count > 0);
+        return $this->section_count > 0 || $this->entry_count > 0;
     }
 
     public function isIndex(): bool

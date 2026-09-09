@@ -53,9 +53,9 @@ class EntryTest extends TestCase
         $entry = $this->getEntryFromFixture('post-1');
         $entry->parent_id = 2;
 
-        self::assertTrue($entry->update() === 1);
+        self::assertNotFalse($entry->update());
 
-        self::assertEquals('test-2', $entry->parent_slug);
+        self::assertEquals('test-2/post-1', $entry->getFormattedSlug());
         self::assertEquals([2], $entry->path);
         self::assertEquals(2, $entry->parent->id);
         self::assertEquals(2, $entry->parent->entry_count);
@@ -72,7 +72,8 @@ class EntryTest extends TestCase
 
         $entry->refresh();
 
-        self::assertEquals('new-slug', $entry->parent_slug);
+        self::assertEquals('new-slug/post-1', $entry->getFormattedSlug());
+        self::assertEquals('new-slug/post-1', $entry->getPermalink()->uri);
         self::assertEquals(TestEntry::STATUS_ENABLED, $entry->parent_status);
     }
 

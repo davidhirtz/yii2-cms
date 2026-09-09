@@ -7,13 +7,18 @@ namespace Hirtz\Cms\Migrations\Traits;
 use Hirtz\Cms\Models\Entry;
 use Exception;
 
+/**
+ * Only used by the historical migrations that created the entry slug columns. Those columns are dropped again by
+ * {@see \Hirtz\Cms\Migrations\M260909170000DropEntrySlug}, so this must not read anything off the current model
+ * beyond its I18N attribute names.
+ */
 trait SlugIndexTrait
 {
     protected function createSlugIndex(): void
     {
         $entry = Entry::instance();
         $schema = $this->getDb()->getSchema()->getTableSchema($entry::tableName());
-        $slugTargetAttribute = $entry->slugTargetAttribute ?? ['slug'];
+        $slugTargetAttribute = ['slug', 'parent_slug'];
 
         foreach ($entry->getI18nAttributeNames('slug') as $language => $indexName) {
             $attributes = $entry->getI18nAttributesNames($slugTargetAttribute, [$language]);

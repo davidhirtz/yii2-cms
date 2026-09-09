@@ -9,6 +9,7 @@ use Hirtz\Cms\Models\Actions\SavePermalinks;
 use Hirtz\Cms\Models\Interfaces\PermalinkInterface;
 use Hirtz\Cms\Models\Permalink;
 use Hirtz\Cms\Models\Queries\PermalinkQuery;
+use Override;
 use Yii;
 use yii\db\ActiveRecord;
 
@@ -21,11 +22,97 @@ use yii\db\ActiveRecord;
  */
 trait PermalinkTrait
 {
+    /**
+     * Whether the slug lives in {@see Permalink} records instead of columns on this model. When it does, the slug
+     * attribute names are appended to {@see static::attributes()} so the model, its rules and the admin form keep
+     * treating them as ordinary attributes, and {@see static::insertInternal()} / {@see static::updateInternal()}
+     * keep them out of the INSERT and UPDATE.
+     */
+    protected function hasVirtualSlug(): bool
+    {
+        return false;
+    }
+
+    #[Override]
+    public function attributes(): array
+    {
+        return $this->hasVirtualSlug()
+            ? [...parent::attributes(), ...$this->getI18nAttributesNames('slug')]
+            : parent::attributes();
+    }
+
+    /**
+     * @return list<string>
+     */
+    protected function getVirtualSlugAttributes(): array
+    {
+        return $this->hasVirtualSlug() ? array_values($this->getI18nAttributesNames('slug')) : [];
+    }
+
+    /**
+     * The attributes that are actually columns. Queries select these rather than {@see static::attributes()}, which
+     * also reports the virtual slug.
+     *
+     * @return list<string>
+     */
+    public function getColumnAttributes(): array
+    {
+        return array_values(array_diff($this->attributes(), $this->getVirtualSlugAttributes()));
+    }
+
+    #[Override]
+    protected function insertInternal($attributes = null): bool
+    {
+        return parent::insertInternal($attributes ?? $this->getColumnAttributes());
+    }
+
+    #[Override]
+    protected function updateInternal($attributes = null): false|int
+    {
+        return parent::updateInternal($attributes ?? $this->getColumnAttributes());
+    }
+
+    #[Override]
+    public function afterFind(): void
+    {
+        $this->populateSlugAttributes();
+        parent::afterFind();
+    }
+
+    /**
+     * Reads the slug back out of the permalink records. The old values are set too, so an unchanged slug does not
+     * count as dirty for the rest of the model's life.
+     */
+    protected function populateSlugAttributes(): void
+    {
+        if (!$this->hasVirtualSlug()) {
+            return;
+        }
+
+        foreach ($this->getI18nAttributeNames('slug') as $language => $attribute) {
+            $slug = $this->getPermalink($language)?->slug;
+
+            $this->setAttribute($attribute, $slug);
+            $this->setOldAttribute($attribute, $slug);
+        }
+    }
+
+    /**
+     * Yii replaces the old attributes with only what it wrote, so the virtual ones have to be restored afterwards or
+     * they stay dirty forever and every later save cascades to the whole subtree.
+     */
+    protected function updateOldSlugAttributes(): void
+    {
+        foreach ($this->getVirtualSlugAttributes() as $attribute) {
+            $this->setOldAttribute($attribute, $this->getAttribute($attribute));
+        }
+    }
+
     public function getPermalinks(): PermalinkQuery
     {
         /** @var PermalinkQuery<Permalink> $relation */
         $relation = $this->hasMany(Permalink::class, ['model_id' => 'id'])
-            ->andOnCondition([Permalink::tableName() . '.[[model]]' => static::class])
+            ->andOnCondition([Permalink::tableName() . '.[[model]]' => $this->getPermalinkModelClass()])
             ->indexBy('language');
 
         return $relation;

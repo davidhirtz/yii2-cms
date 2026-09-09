@@ -7,12 +7,14 @@ namespace Hirtz\Cms\Test\Fixtures;
 use Hirtz\Cms\Models\Permalink;
 use Hirtz\Cms\Test\Models\TestEntry;
 use Override;
+use Yii;
 use yii\db\Expression;
 use yii\test\ActiveFixture;
 
 /**
- * Fixtures insert rows straight into the table, so no model event fires and no permalink is written. This derives
- * them from the entry fixture data instead of repeating the slugs, which keeps the two from drifting apart.
+ * Fixtures insert rows straight into the table, so no model event fires and no permalink would be written for a
+ * fixture-loaded entry. The data file carries only the URI and the leaf; language, model and timestamps are filled
+ * in here so the rows follow whatever language the test runs in.
  */
 class PermalinkFixture extends ActiveFixture
 {
@@ -25,30 +27,16 @@ class PermalinkFixture extends ActiveFixture
     #[Override]
     protected function getData(): array
     {
-        $entry = TestEntry::instance();
-        $entries = require(__DIR__ . '/Data/entry.php');
-
         $now = new Expression('UTC_TIMESTAMP()');
+        $permalinks = require(__DIR__ . '/Data/permalink.php');
         $data = [];
 
-        foreach ($entry->getI18nAttributeNames('slug') as $language => $slugAttribute) {
-            $parentSlugAttribute = $entry->getI18nAttributeName('parent_slug', $language);
-
-            foreach ($entries as $key => $attributes) {
-                $slug = $attributes[$slugAttribute] ?? null;
-
-                if (!$slug) {
-                    continue;
-                }
-
-                $prefix = (string)($attributes[$parentSlugAttribute] ?? '');
-
+        foreach (TestEntry::instance()->getPermalinkLanguages() as $language) {
+            foreach ($permalinks as $key => $attributes) {
                 $data["$key-$language"] = [
+                    ...$attributes,
                     'language' => $language,
-                    'uri' => trim("$prefix/$slug", '/'),
-                    'slug' => $slug,
-                    'model' => TestEntry::class,
-                    'model_id' => $attributes['id'],
+                    'model' => TestEntry::instance()->getPermalinkModelClass(),
                     'created_at' => $now,
                 ];
             }
