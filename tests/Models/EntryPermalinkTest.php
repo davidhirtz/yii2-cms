@@ -10,6 +10,7 @@ use Hirtz\Cms\Test\Models\TestEntry;
 use Hirtz\Cms\Test\Models\TestSection;
 use Hirtz\Cms\Test\TestCase;
 use Hirtz\Skeleton\Models\Redirect;
+use Hirtz\Skeleton\Models\Trail;
 use Override;
 
 /**
@@ -209,6 +210,78 @@ class EntryPermalinkTest extends TestCase
         self::assertNotFalse($entry->delete());
 
         self::assertNull($this->findRedirectTarget('first'));
+    }
+
+    /**
+     * The slug is no longer a column on the entry, so nothing reports it as changed unless the model does. Without
+     * that, renaming an entry left no trace in the trail at all.
+     */
+    public function testRenameIsRecordedInTheTrail(): void
+    {
+        $entry = $this->createEntry('before');
+
+        $entry->slug = 'after';
+        self::assertNotFalse($entry->update());
+
+        $data = $this->findTrailData($entry, Trail::TYPE_UPDATE);
+
+        self::assertNotEmpty($data, 'No trail record was written for the rename.');
+        self::assertSame(['before', 'after'], $data['slug'] ?? null);
+    }
+
+    public function testTrailIsWrittenOnTheEntryNotThePermalink(): void
+    {
+        $entry = $this->createEntry('before');
+
+        $entry->slug = 'after';
+        self::assertNotFalse($entry->update());
+
+        self::assertSame(0, (int)Trail::find()
+            ->where(['model' => Permalink::class])
+            ->count());
+    }
+
+    public function testCreateRecordsTheSlugInTheTrail(): void
+    {
+        $entry = $this->createEntry('brand-new');
+
+        $data = $this->findTrailData($entry, Trail::TYPE_CREATE);
+
+        self::assertNotEmpty($data);
+        self::assertSame('brand-new', $data['slug'] ?? null);
+    }
+
+    /**
+     * A parent rename rewrites descendant permalinks, but their own slug is unchanged, so they must not report one.
+     */
+    public function testRenamingAParentDoesNotTrailDescendantSlugs(): void
+    {
+        $parent = $this->createEntry('parent');
+        $child = $this->createEntry('child', $parent);
+
+        $parent->refresh();
+        $parent->slug = 'renamed';
+        self::assertNotFalse($parent->update());
+
+        self::assertArrayNotHasKey('slug', $this->findTrailData($child, Trail::TYPE_UPDATE));
+    }
+
+    /**
+     * @return array<string, mixed> the most recent trail data of that type, empty when no record was written
+     */
+    protected function findTrailData(TestEntry $entry, int $type): array
+    {
+        $trail = Trail::find()
+            ->where([
+                'model' => $entry->getTrailBehavior()->modelClass,
+                'model_id' => $entry->id,
+                'type' => $type,
+            ])
+            ->orderBy(['id' => SORT_DESC])
+            ->limit(1)
+            ->one();
+
+        return $trail instanceof Trail ? (array)$trail->data : [];
     }
 
     protected function findRedirectTarget(string $requestUri): ?string

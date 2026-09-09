@@ -103,6 +103,28 @@ trait PermalinkTrait
     }
 
     /**
+     * Reports a renamed slug as a changed attribute so `TrailBehavior` logs it on the owner's own trail record,
+     * rather than on the permalink. The slug is kept out of the UPDATE, so Yii never reports it itself.
+     *
+     * Call this before {@see static::updateOldSlugAttributes()}, which is what makes the two values equal again.
+     *
+     * @param array<string, mixed> $changedAttributes
+     * @return array<string, mixed>
+     */
+    protected function addSlugChangedAttributes(array $changedAttributes): array
+    {
+        foreach ($this->getVirtualSlugAttributes() as $attribute) {
+            $old = $this->getOldAttribute($attribute);
+
+            if ($old !== $this->getAttribute($attribute)) {
+                $changedAttributes[$attribute] = $old;
+            }
+        }
+
+        return $changedAttributes;
+    }
+
+    /**
      * Yii replaces the old attributes with only what it wrote, so the virtual ones have to be restored afterwards or
      * they stay dirty forever and every later save cascades to the whole subtree.
      */

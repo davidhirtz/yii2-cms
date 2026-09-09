@@ -233,6 +233,9 @@ class Entry extends ActiveRecord implements AssetParentInterface, PermalinkInter
     #[Override]
     public function afterSave($insert, $changedAttributes): void
     {
+        // Before the old values are reset below, so a rename reaches the trail record.
+        $changedAttributes = $this->addSlugChangedAttributes($changedAttributes);
+
         // Depth first: children derive their prefix from this record, so it has to be written first.
         $changedLanguages = $this->savePermalinks();
 

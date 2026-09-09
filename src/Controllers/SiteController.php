@@ -59,13 +59,10 @@ class SiteController extends Controller
 
     protected function findPermalink(string $slug): ?Permalink
     {
-        /** @var Permalink|null $permalink */
-        $permalink = Permalink::find()
+        return Permalink::find()
             ->whereUri($slug)
             ->limit(1)
             ->one();
-
-        return $permalink;
     }
 
     /**
@@ -122,8 +119,7 @@ class SiteController extends Controller
 
     protected function populateEntryRelations(Entry $entry): void
     {
-        Yii::createObject([
-            'class' => EntrySiteRelationsBuilder::class,
+        Yii::$container->get(EntrySiteRelationsBuilder::class, config: [
             'entry' => $entry,
         ]);
     }

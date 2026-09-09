@@ -1,5 +1,10 @@
 ## 3.0 (in development)
 
+- A renamed entry slug is recorded in the `Trail` again, on the entry's own record rather than on the permalink.
+  The slug is no longer a column, so Yii never reported it as changed and neither the update nor the create trail
+  mentioned it. `PermalinkTrait::addSlugChangedAttributes()` adds it back to the changed attributes. A parent rename
+  still records nothing on its descendants, whose own slug is unchanged — matching how `parent_slug` was excluded
+  from the trail before
 - Fixed `EntryController::redirectToEntry()`, which appended `Entry::getAdminRoute()` instead of spreading it. The
   route element was then an array and `Url::toRoute()` failed with "Array to string conversion" on every redirect
   after an entry update

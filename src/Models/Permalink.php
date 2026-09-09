@@ -152,6 +152,9 @@ class Permalink extends ActiveRecord
         $this->parent_id = $parent?->id;
     }
 
+    /**
+     * @return PermalinkQuery<static>
+     */
     #[Override]
     public static function find(): PermalinkQuery
     {
