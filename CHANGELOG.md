@@ -1,5 +1,8 @@
 ## 3.0 (in development)
 
+- Added `PermalinkInterface::getPermalinkAttributes()`, extra attributes copied onto a model's `Permalink`
+  records on every save. It exists so `yii2-cms-tenant` can carry `tenant_id` across, which is what
+  scopes the uniqueness of a URL to a single tenant
 - `Category` now implements `PermalinkInterface` via `PermalinkTrait`, behind the new
   `Module::$enableCategoryUrls` (defaults to `false`, and is forced off when `enableCategories` is).
   With it enabled a category gets a `Permalink` record whose `uri` is its **full nested path** —

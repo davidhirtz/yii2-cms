@@ -47,6 +47,14 @@ trait PermalinkTrait
     }
 
     /**
+     * @return array<string, mixed>
+     */
+    public function getPermalinkAttributes(): array
+    {
+        return [];
+    }
+
+    /**
      * @return list<string> the languages whose URL changed, so the caller can decide whether descendants need
      * rewriting.
      */
