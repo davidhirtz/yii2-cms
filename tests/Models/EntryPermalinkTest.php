@@ -37,6 +37,27 @@ class EntryPermalinkTest extends TestCase
         self::assertTrue($permalink->isModel(Entry::class));
     }
 
+    /**
+     * Renaming touches no column on the entry itself, so Yii reports no affected rows. Callers read the return
+     * value as success, so it has to account for the permalink that was rewritten.
+     */
+    public function testSlugOnlyUpdateReportsAnAffectedRow(): void
+    {
+        $entry = $this->createEntry('before');
+
+        $entry->slug = 'after';
+
+        self::assertSame(1, $entry->update());
+        self::assertSame('after', $this->findPermalinkUri($entry));
+    }
+
+    public function testUnchangedUpdateReportsNoAffectedRow(): void
+    {
+        $entry = $this->createEntry('unchanged');
+
+        self::assertSame(0, $entry->update());
+    }
+
     public function testPermalinkFollowsARename(): void
     {
         $entry = $this->createEntry('test-entry');

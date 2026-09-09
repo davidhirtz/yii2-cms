@@ -1,5 +1,10 @@
 ## 3.0 (in development)
 
+- Fixed `EntryController::redirectToEntry()`, which appended `Entry::getAdminRoute()` instead of spreading it. The
+  route element was then an array and `Url::toRoute()` failed with "Array to string conversion" on every redirect
+  after an entry update
+- Fixed a slug-only entry update reporting no affected rows. Renaming touches no column on the entry itself, so
+  `update()` returned `0` and callers read it as a failure — the admin success flash never appeared
 - Added the `permalink` console controller: `permalink/rebuild` rewrites every entry and category permalink and
   `permalink/prune` removes orphaned ones. Permalinks are written on save, so anything that changes them outside a
   save — adding a language, toggling `Module::$enableCategoryUrls` — needs a one-off rebuild. Added

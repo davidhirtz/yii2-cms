@@ -69,7 +69,12 @@ trait PermalinkTrait
     #[Override]
     protected function updateInternal($attributes = null): false|int
     {
-        return parent::updateInternal($attributes ?? $this->getColumnAttributes());
+        $slugs = $this->getDirtyAttributes($this->getVirtualSlugAttributes());
+        $result = parent::updateInternal($attributes ?? $this->getColumnAttributes());
+
+        // Renaming only the slug touches no column on this model, so Yii reports no affected rows even though a
+        // permalink was rewritten. Callers read that 0 as "nothing happened".
+        return $result === 0 && $slugs ? 1 : $result;
     }
 
     #[Override]
