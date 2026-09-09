@@ -46,9 +46,13 @@ trait PermalinkTrait
         return array_keys($this->getI18nAttributeNames('slug'));
     }
 
-    public function savePermalinks(): void
+    /**
+     * @return list<string> the languages whose URL changed, so the caller can decide whether descendants need
+     * rewriting.
+     */
+    public function savePermalinks(): array
     {
-        SavePermalinks::run(['model' => $this]);
+        return SavePermalinks::run(['model' => $this])->getChangedLanguages();
     }
 
     public function deletePermalinks(): void

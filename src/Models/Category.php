@@ -6,8 +6,11 @@ namespace Hirtz\Cms\Models;
 
 use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Collections\CategoryCollection;
+use Hirtz\Cms\Models\Actions\UpdateDescendantPermalinks;
+use Hirtz\Cms\Models\Interfaces\PermalinkInterface;
 use Hirtz\Cms\Models\Queries\CategoryQuery;
 use Hirtz\Cms\Models\Queries\EntryQuery;
+use Hirtz\Cms\Models\Traits\PermalinkTrait;
 use Hirtz\Cms\Models\Traits\SlugAttributeTrait;
 use Hirtz\Skeleton\Behaviors\RedirectBehavior;
 use Hirtz\Skeleton\Models\Interfaces\SitemapInterface;
@@ -30,15 +33,17 @@ use yii\db\ActiveQuery;
  * @property int $entry_count
  *
  * @property-read Entry[] $entries {@see static::getEntries()}
+ * @property-read Permalink[] $permalinks {@see static::getPermalinks()}
  * @property-read EntryCategory|null $entryCategory {@see static::getEntryCategory()}
  * @property-read EntryCategory[] $entryCategories {@see static::getEntryCategories()}
  * @property-read static|null $parent {@see static::getParent()}
  * @property-read static[] $ancestors {@see static::getAncestors()}
  * @property-read static[] $descendants {@see static::getDescendants()}
  */
-class Category extends ActiveRecord implements SitemapInterface
+class Category extends ActiveRecord implements PermalinkInterface, SitemapInterface
 {
     use NestedTreeTrait;
+    use PermalinkTrait;
     use SlugAttributeTrait;
 
     final public const string AUTH_CATEGORY_CREATE = 'categoryCreate';
@@ -141,6 +146,11 @@ class Category extends ActiveRecord implements SitemapInterface
     #[Override]
     public function afterSave($insert, $changedAttributes): void
     {
+        // Unlike entries, categories have no descendant re-save to piggyback on, so the subtree is rewritten here.
+        if ($this->savePermalinks() && $this->getBranchCount()) {
+            UpdateDescendantPermalinks::run(['model' => $this]);
+        }
+
         if (!$insert) {
             if ($this->parent_id && array_key_exists('parent_id', $changedAttributes)) {
                 $this->insertEntryCategoryAncestors();
@@ -169,6 +179,7 @@ class Category extends ActiveRecord implements SitemapInterface
     #[Override]
     public function afterDelete(): void
     {
+        $this->deletePermalinks();
         $this->updateNestedTreeAfterDelete();
         parent::afterDelete();
     }
@@ -328,6 +339,40 @@ class Category extends ActiveRecord implements SitemapInterface
     public function getEntriesOrderBy(): bool|array
     {
         return [EntryCategory::tableName() . '.[[position]]' => SORT_ASC];
+    }
+
+    public function hasPermalink(): bool
+    {
+        return static::getModule()->enableCategoryUrls;
+    }
+
+    /**
+     * Unlike {@see Entry}, a category does not materialise its parent path in a column, so the prefix is walked up
+     * the parent relation. {@see UpdateDescendantPermalinks} populates that relation to keep the walk query free.
+     */
+    public function getFormattedSlug(?string $language = null): string
+    {
+        $slug = (string)$this->getI18nAttribute('slug', $language);
+        $prefix = $this->parent?->getFormattedSlug($language);
+
+        return trim($prefix ? "$prefix/$slug" : $slug, '/');
+    }
+
+    /**
+     * Repeats {@see NestedTreeTrait::isTransactional()}, which this method shadows, and additionally covers a rename
+     * that has to rewrite a subtree of permalinks.
+     */
+    #[Override]
+    public function isTransactional($operation): bool
+    {
+        if ($this->isAttributeChanged('parent_id') || parent::isTransactional($operation)) {
+            return true;
+        }
+
+        return !$this->getIsNewRecord()
+            && $this->hasPermalink()
+            && $this->getBranchCount() > 0
+            && $this->hasChangedAttributes($this->getI18nAttributesNames('slug'));
     }
 
     public function hasDescendantsEnabled(): bool

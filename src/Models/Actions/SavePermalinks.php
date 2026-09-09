@@ -41,6 +41,14 @@ class SavePermalinks
         return $this->changedLanguages;
     }
 
+    /**
+     * @return list<string>
+     */
+    public function getChangedLanguages(): array
+    {
+        return $this->changedLanguages;
+    }
+
     protected function savePermalink(string $language): void
     {
         $permalink = $this->model->getPermalink($language);

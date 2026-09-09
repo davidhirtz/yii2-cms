@@ -1,5 +1,15 @@
 ## 3.0 (in development)
 
+- `Category` now implements `PermalinkInterface` via `PermalinkTrait`, behind the new
+  `Module::$enableCategoryUrls` (defaults to `false`, and is forced off when `enableCategories` is).
+  With it enabled a category gets a `Permalink` record whose `uri` is its **full nested path** —
+  category slugs used to be single segments assembled into a path only at URL-generation time, so this
+  is the one genuine behaviour change in the permalink work. Added `Category::hasPermalink()` and
+  `Category::getFormattedSlug()`, and the `UpdateDescendantPermalinks` action, which rewrites a subtree
+  after a rename or a move; categories cannot reuse the entry cascade because re-saving a descendant
+  would run `updateTreeBeforeSave()` and disturb the nested set. `Category::isTransactional()` now also
+  covers a rename that rewrites a subtree, which `NestedTreeTrait` does not. Resolving these URLs
+  arrives with the site controller change; for now the records are only written
 - `Entry` now implements `PermalinkInterface` via `PermalinkTrait` and writes a `Permalink` record per
   language from `afterSave()`, deleting them again from `afterDelete()`. Added the `SavePermalinks` and
   `DeletePermalinks` actions and `Entry::hasPermalink()`. The slug columns stay the source of truth for
