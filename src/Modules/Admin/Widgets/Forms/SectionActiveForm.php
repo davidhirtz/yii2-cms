@@ -37,6 +37,7 @@ class SectionActiveForm extends ActiveForm
         parent::configure();
     }
 
+    #[Override]
     public function getSlugBaseUrl(?string $language = null): string
     {
         $manager = Yii::$app->getUrlManager();

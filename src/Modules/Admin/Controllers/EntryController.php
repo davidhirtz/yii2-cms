@@ -231,8 +231,6 @@ class EntryController extends AbstractController
     {
         $route = $entry->getAdminRoute();
 
-        // `getAdminRoute()` is an array, so it has to be spread: appending it made the route element itself an
-        // array, which `Url::toRoute()` then tried to use as the route string.
         return $this->redirect($route
             ? [...$this->request->get(), ...$route]
             : [...$this->request->get(), 'index']);

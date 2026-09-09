@@ -72,8 +72,6 @@ trait PermalinkTrait
         $slugs = $this->getDirtyAttributes($this->getVirtualSlugAttributes());
         $result = parent::updateInternal($attributes ?? $this->getColumnAttributes());
 
-        // Renaming only the slug touches no column on this model, so Yii reports no affected rows even though a
-        // permalink was rewritten. Callers read that 0 as "nothing happened".
         return $result === 0 && $slugs ? 1 : $result;
     }
 
@@ -103,11 +101,6 @@ trait PermalinkTrait
     }
 
     /**
-     * Reports a renamed slug as a changed attribute so `TrailBehavior` logs it on the owner's own trail record,
-     * rather than on the permalink. The slug is kept out of the UPDATE, so Yii never reports it itself.
-     *
-     * Call this before {@see static::updateOldSlugAttributes()}, which is what makes the two values equal again.
-     *
      * @param array<string, mixed> $changedAttributes
      * @return array<string, mixed>
      */
@@ -124,10 +117,6 @@ trait PermalinkTrait
         return $changedAttributes;
     }
 
-    /**
-     * Yii replaces the old attributes with only what it wrote, so the virtual ones have to be restored afterwards or
-     * they stay dirty forever and every later save cascades to the whole subtree.
-     */
     protected function updateOldSlugAttributes(): void
     {
         foreach ($this->getVirtualSlugAttributes() as $attribute) {

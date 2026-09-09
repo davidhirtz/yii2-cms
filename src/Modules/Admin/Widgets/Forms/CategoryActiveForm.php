@@ -44,6 +44,7 @@ class CategoryActiveForm extends ActiveForm
         parent::configure();
     }
 
+    #[Override]
     protected function getSlugBaseUrl(?string $language = null): string
     {
         if (!$this->model->getRoute()) {

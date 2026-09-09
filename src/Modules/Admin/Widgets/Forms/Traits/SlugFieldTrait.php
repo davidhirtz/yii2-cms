@@ -18,14 +18,16 @@ trait SlugFieldTrait
                 ->prepare(
                     fn (InputField $field) => $field->prepend(
                         Div::make()
-                        ->attribute('id', $this->getSlugId($field->language))
-                        ->class('text-truncate hidden sm:block')
-                        ->addStyle(['max-width' => 'min(24rem, 40vw)'])
-                        ->text($this->getSlugBaseUrl($field->language))
+                            ->attribute('id', $this->getSlugId($field->language))
+                            ->class('text-truncate hidden sm:block')
+                            ->addStyle(['max-width' => 'min(24rem, 40vw)'])
+                            ->text($this->getSlugBaseUrl($field->language))
                     )
                 )
             : null;
     }
+
+    abstract protected function getSlugBaseUrl(string $language): string;
 
     protected function hasSlugField(): bool
     {

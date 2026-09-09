@@ -533,7 +533,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, PermalinkInter
     }
 
     /**
-     * The ancestors' path. Read from the parent rather than a materialised column, which is why
+     * The ancestors' path. Read from the parent rather than a materialized column, which is why
      * {@see static::afterSave()} writes this record before cascading to children.
      */
     public function getSlugPrefix(?string $language = null): string
@@ -584,7 +584,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, PermalinkInter
      * Extends the default XML sitemap url by image URLs if related assets were found. This is automatically the
      * case if {@see Module::$enableImageSitemaps} is set to `true`.
      */
-    #[\Override]
+    #[Override]
     public function getSitemapUrl(?string $language = null): array|false
     {
         if ($url = parent::getSitemapUrl($language)) {
@@ -636,7 +636,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, PermalinkInter
         ]);
     }
 
-    #[\Override]
+    #[Override]
     public function getTrailModelName(): string
     {
         if ($this->id) {

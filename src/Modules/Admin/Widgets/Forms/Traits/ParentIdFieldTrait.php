@@ -7,10 +7,6 @@ namespace Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits;
 use Hirtz\Skeleton\Widgets\Forms\Fields\SelectField;
 use Stringable;
 
-/**
- * The entry and category parent fields differed only because entries keyed off `parent_slug` and categories off
- * `parent_id` in the removed `$slugTargetAttribute`. Both now key off `hasPermalink()`, so one trait serves both.
- */
 trait ParentIdFieldTrait
 {
     protected function getParentIdField(): ?Stringable
@@ -29,9 +25,6 @@ trait ParentIdFieldTrait
 
     abstract protected function hasParentIdField(): bool;
 
-    /**
-     * Wires the parent select to the slug field, so picking a parent updates the URL prefix shown in front of it.
-     */
     protected function getParentIdAttributes(): array
     {
         $attributes = [];

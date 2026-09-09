@@ -5,12 +5,15 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Modules\Admin\Widgets\Forms;
 
 use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Modules\Admin\Widgets\Forms\Fields\EntryParentIdSelectField;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits\ActiveFormFieldsTrait;
-use Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits\EntryParentIdFieldTrait;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits\MetaFieldsTrait;
+use Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits\ParentIdFieldTrait;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits\SlugFieldTrait;
+use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Skeleton\Widgets\Forms\ActiveForm;
 use Hirtz\Skeleton\Widgets\Forms\Fields\DateTimeField;
+use Hirtz\Skeleton\Widgets\Forms\Fields\SelectField;
 use Override;
 use Stringable;
 use Yii;
@@ -21,13 +24,11 @@ use Yii;
 class EntryActiveForm extends ActiveForm
 {
     use ActiveFormFieldsTrait;
-    use EntryParentIdFieldTrait;
     use MetaFieldsTrait;
+    use ModuleTrait;
+    use ParentIdFieldTrait;
     use SlugFieldTrait;
 
-    /**
-     * @return void
-     */
     #[Override]
     protected function configure(): void
     {
@@ -44,7 +45,7 @@ class EntryActiveForm extends ActiveForm
                 $this->getTitleField(),
                 $this->getDescriptionField(),
                 $this->getSlugField(),
-            ]
+            ],
         ];
 
         parent::configure();
@@ -56,13 +57,33 @@ class EntryActiveForm extends ActiveForm
             ->property('publish_date');
     }
 
+    #[Override]
+    protected function createParentIdSelectField(): SelectField
+    {
+        return EntryParentIdSelectField::make();
+    }
+
+    #[Override]
+    protected function hasParentIdField(): bool
+    {
+        return static::getModule()->enableNestedEntries && $this->model->hasParentEnabled();
+    }
+
+    #[Override]
     protected function getSlugBaseUrl(?string $language = null): string
     {
         $manager = Yii::$app->getUrlManager();
-        $route = ['/', 'language' => $manager->i18nUrl ? $language : null];
+
+        $route = [
+            '/cms/site/index',
+            ...$this->model->getRouteParams(),
+            'language' => $manager->i18nUrl ? $language : null,
+            'slug' => null,
+        ];
+
         $url = $this->model->isEnabled() ? $manager->createAbsoluteUrl($route) : $manager->createDraftUrl($route);
 
-        return rtrim((string) $url, '/') . '/';
+        return rtrim($url, '/') . '/';
     }
 
     protected function hasSlugField(): bool

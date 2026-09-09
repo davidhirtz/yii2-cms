@@ -43,7 +43,12 @@ class EntryParentIdSelectField extends SelectField
     #[Override]
     protected function renderContent(): string|Stringable
     {
-        return $this->items ? parent::renderContent() : '';
+        if (!$this->items) {
+            // Always render row (e.g. for `yii2-cms-tenant`) but hide it if no suitable parent entries are found
+            $this->rowAttributes['hidden'] = true;
+        }
+
+        return parent::renderContent();
     }
 
     /**
@@ -52,26 +57,28 @@ class EntryParentIdSelectField extends SelectField
     protected function setItemsFromEntries(array $entries, ?int $parentId = null): void
     {
         foreach ($entries as $entry) {
-            if ($entry->parent_id === $parentId) {
-                $name = Html::encode($entry->getI18nAttribute('name') ?: Lang::t('cms', 'COMMON_NO_TITLE'));
-                $count = count($entry->getAncestorIds());
-                $indent = ($count ? (str_repeat($this->indent, $count) . ' ') : '');
+            if ($entry->parent_id !== $parentId) {
+                continue;
+            }
 
-                $item = [
-                    'label' => $indent . $name,
-                    'disabled' => !$this->model->getIsNewRecord()
-                        && in_array($this->model->id, [...$entry->getAncestorIds(), $entry->id], true),
-                ];
+            $name = Html::encode($entry->getI18nAttribute('name') ?: Lang::t('cms', 'COMMON_NO_TITLE'));
+            $count = count($entry->getAncestorIds());
+            $indent = ($count ? (str_repeat($this->indent, $count) . ' ') : '');
 
-                foreach ($this->model->getI18nAttributeNames('slug') as $language => $attribute) {
-                    $item['data-value'][] = $this->getParentIdOptionDataValue($entry, $language);
-                }
+            $item = [
+                'label' => $indent . $name,
+                'disabled' => !$this->model->getIsNewRecord()
+                    && in_array($this->model->id, [...$entry->getAncestorIds(), $entry->id], true),
+            ];
 
-                $this->addItem($entry->id, $item);
+            foreach ($this->model->getI18nAttributeNames('slug') as $language => $attribute) {
+                $item['data-value'][] = $this->getParentIdOptionDataValue($entry, $language);
+            }
 
-                if ($entry->entry_count) {
-                    $this->setItemsFromEntries($entries, $entry->id);
-                }
+            $this->addItem($entry->id, $item);
+
+            if ($entry->entry_count) {
+                $this->setItemsFromEntries($entries, $entry->id);
             }
         }
     }
