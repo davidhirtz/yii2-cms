@@ -9,6 +9,8 @@ use davidhirtz\yii2\datetime\DateTimeValidator;
 use Hirtz\Cms\Models\Queries\AssetQuery;
 use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Models\Queries\SectionQuery;
+use Hirtz\Cms\Models\Interfaces\PermalinkInterface;
+use Hirtz\Cms\Models\Traits\PermalinkTrait;
 use Hirtz\Cms\Models\Traits\SlugAttributeTrait;
 use Hirtz\Cms\Module;
 use Hirtz\Media\Models\Interfaces\AssetParentInterface;
@@ -39,6 +41,7 @@ use yii\db\ActiveQuery;
  * @property int $asset_count
  *
  * @property-read Asset[] $assets {@see static::getAssets()}
+ * @property-read Permalink[] $permalinks {@see static::getPermalinks()}
  * @property-read EntryCategory $entryCategory {@see static::getEntryCategory()}
  * @property-read EntryCategory[] $entryCategories {@see static::getEntryCategories()}
  * @property-read SectionEntry|null $sectionEntry {@see static::getSectionEntry()}
@@ -48,10 +51,11 @@ use yii\db\ActiveQuery;
  * @method EntryQuery findChildren()
  * @method EntryQuery findDescendants()
  */
-class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterface
+class Entry extends ActiveRecord implements AssetParentInterface, PermalinkInterface, SitemapInterface
 {
     use AssetParentTrait;
     use MaterializedTreeTrait;
+    use PermalinkTrait;
     use SlugAttributeTrait;
 
     final public const string ROUTE_INDEX = 'cms.entry.index';
@@ -231,6 +235,9 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
     #[Override]
     public function afterSave($insert, $changedAttributes): void
     {
+        // Depth first: children derive their prefix from this record, so it has to be written first.
+        $this->savePermalinks();
+
         if ($this->isMaterializedTreeChanged($changedAttributes)) {
             Yii::debug('Updating child entries ...', __METHOD__);
 
@@ -329,6 +336,8 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
     #[Override]
     public function afterDelete(): void
     {
+        $this->deletePermalinks();
+
         if (!$this->getIsBatch()) {
             if ($this->parent_id) {
                 foreach ($this->ancestors as $ancestor) {
@@ -696,6 +705,11 @@ class Entry extends ActiveRecord implements AssetParentInterface, SitemapInterfa
     public function hasSectionsEnabled(): bool
     {
         return static::getModule()->enableSections;
+    }
+
+    public function hasPermalink(): bool
+    {
+        return true;
     }
 
     public function hasRoute(): bool

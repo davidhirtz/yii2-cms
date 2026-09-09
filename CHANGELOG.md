@@ -1,5 +1,11 @@
 ## 3.0 (in development)
 
+- `Entry` now implements `PermalinkInterface` via `PermalinkTrait` and writes a `Permalink` record per
+  language from `afterSave()`, deleting them again from `afterDelete()`. Added the `SavePermalinks` and
+  `DeletePermalinks` actions and `Entry::hasPermalink()`. The slug columns stay the source of truth for
+  now — permalinks are written alongside them and nothing reads them yet, so URLs are unchanged. The
+  existing descendant cascade in `Entry::afterSave()` carries the rewrite, so a rename or a move
+  updates the whole subtree
 - Added the `Permalink` model, `PermalinkQuery` and migration `M260909100000Permalink`, the first step
   of moving the entry and category slugs out of the model tables. A permalink holds the full
   resolvable path in `uri` (unique per `language`) and the editable leaf segment in `slug`, and points
