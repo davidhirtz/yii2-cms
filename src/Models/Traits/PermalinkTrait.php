@@ -144,6 +144,25 @@ trait PermalinkTrait
     /**
      * @return list<string>
      */
+    /**
+     * The full path this model resolves under, read from the permalink record.
+     *
+     * This must not walk up the tree: it is called for every row a listing renders, through `getRoute()`, and
+     * composing the path from the parent instead costs a query per row plus one per level of nesting.
+     * {@see static::composeFormattedSlug()} is the save path, which does recompute it.
+     */
+    public function getFormattedSlug(?string $language = null): string
+    {
+        $permalink = $this->getPermalink($language);
+
+        return $permalink instanceof Permalink
+            ? $permalink->uri
+            : $this->composeFormattedSlug($language);
+    }
+
+    /**
+     * @return list<string>
+     */
     public function getPermalinkLanguages(): array
     {
         return array_keys($this->getI18nAttributeNames('slug'));

@@ -1,5 +1,11 @@
 ## 3.0 (in development)
 
+- **Breaking:** `PermalinkInterface::getFormattedSlug()` reads the stored permalink URI instead of composing the
+  path from the parent, and the composing version moved to the new `composeFormattedSlug()`, which only the save
+  path calls. `getRoute()` runs `getFormattedSlug()` for every row a listing renders, so composing there cost a
+  query per row plus one per level of nesting — three nested entries needed six queries just to build their URLs,
+  and now need none. Callers that want the recomputed path (rather than the stored one) must switch to
+  `composeFormattedSlug()`
 - A renamed entry slug is recorded in the `Trail` again, on the entry's own record rather than on the permalink.
   The slug is no longer a column, so Yii never reported it as changed and neither the update nor the create trail
   mentioned it. `PermalinkTrait::addSlugChangedAttributes()` adds it back to the changed attributes. A parent rename

@@ -50,9 +50,16 @@ interface PermalinkInterface extends I18nAttributeInterface
     public function getPermalinkLanguages(): array;
 
     /**
-     * The full path this model resolves under, without leading or trailing slashes.
+     * The full path this model resolves under, without leading or trailing slashes. Reads the stored permalink, so
+     * it is safe to call for every row of a listing.
      */
     public function getFormattedSlug(?string $language = null): string;
+
+    /**
+     * Recomputes that path from the current attributes and the parent, for the save path to compare against. This
+     * one does walk up the tree, so it belongs nowhere near a listing.
+     */
+    public function composeFormattedSlug(?string $language = null): string;
 
     public function getPermalinkUrl(string $uri, ?string $language = null): false|string;
 

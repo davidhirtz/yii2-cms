@@ -61,7 +61,7 @@ class SavePermalinks
         }
 
         $permalink ??= $this->createPermalink($language);
-        $permalink->uri = $this->model->getFormattedSlug($language);
+        $permalink->uri = $this->model->composeFormattedSlug($language);
         $permalink->slug = $slug;
         $permalink->setAttributes($this->model->getPermalinkAttributes(), false);
 

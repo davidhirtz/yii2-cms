@@ -203,7 +203,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, PermalinkInter
             $permalink->model_id = $this->id;
         }
 
-        $permalink->uri = $this->getFormattedSlug($language);
+        $permalink->uri = $this->composeFormattedSlug($language);
         $permalink->slug = (string)$this->getI18nAttribute('slug', $language);
         $permalink->setAttributes($this->getPermalinkAttributes(), false);
 
@@ -526,7 +526,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, PermalinkInter
         return ['position' => SORT_ASC];
     }
 
-    public function getFormattedSlug(?string $language = null): string
+    public function composeFormattedSlug(?string $language = null): string
     {
         $slug = $this->getSlugPrefix($language) . '/' . $this->getI18nAttribute('slug', $language);
         return substr(trim($slug, '/'), 0, 255);
