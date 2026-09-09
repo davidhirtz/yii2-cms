@@ -1,5 +1,12 @@
 ## 3.0 (in development)
 
+- Added the `Permalink` model, `PermalinkQuery` and migration `M260909100000Permalink`, the first step
+  of moving the entry and category slugs out of the model tables. A permalink holds the full
+  resolvable path in `uri` (unique per `language`) and the editable leaf segment in `slug`, and points
+  at its owner through the polymorphic `model` / `model_id` pair and at its parent through
+  `parent_id`. The migration is additive and backfills entries from `slug` / `parent_slug`; nothing
+  writes permalinks yet. Added the `PERMALINK_PROTECTED_ERROR`, `PERMALINK_SLUG_LABEL` and
+  `PERMALINK_URI_LABEL` messages
 - Consolidated the split entry/section asset controllers back into a single `AssetController`; entry
   and section assets are served under `admin/cms/asset/*` again (removed `EntryAssetController` and
   the planned `section-asset` route). Added the thin `AssetHeader` and `AssetSubmenu` dispatcher
