@@ -141,28 +141,20 @@ trait PermalinkTrait
         return $permalinks[$language ?? Yii::$app->language] ?? null;
     }
 
-    /**
-     * The full path this model resolves under, read from the permalink record.
-     *
-     * This must not walk up the tree: it is called for every row a listing renders, through `getRoute()`, and
-     * composing the path from the parent instead costs a query per row plus one per level of nesting.
-     * {@see static::composeFormattedSlug()} is the save path, which does recompute it.
-     */
     public function getFormattedSlug(?string $language = null): string
     {
-        $permalink = $this->getPermalink($language) ?? current($this->permalinks);
+        $permalink = $this->getPermalink($language)
+            ?? $this->permalinks[Yii::$app->sourceLanguage]
+            ?? current($this->permalinks);
 
-        return $permalink instanceof Permalink
-            ? $permalink->uri
-            : $this->composeFormattedSlug($language);
+        return $permalink instanceof Permalink ? $permalink->uri : '';
     }
 
-    /**
-     * @return list<string>
-     */
     public function getPermalinkLanguages(): array
     {
-        return array_keys($this->getI18nAttributeNames('slug'));
+        return $this->isI18nAttribute('slug')
+            ? array_keys($this->getI18nAttributeNames('slug'))
+            : [Yii::$app->sourceLanguage];
     }
 
     /**
@@ -180,7 +172,7 @@ trait PermalinkTrait
         $route['slug'] = $uri;
 
         return Yii::$app->getI18n()->callback(
-            $language ?? Yii::$app->language,
+            $language ?? Yii::$app->sourceLanguage,
             fn (): string => Yii::$app->getUrlManager()->createUrl($route)
         );
     }
@@ -193,17 +185,13 @@ trait PermalinkTrait
         return [];
     }
 
-    /**
-     * @return list<string> the languages whose URL changed, so the caller can decide whether descendants need
-     * rewriting.
-     */
     public function savePermalinks(): array
     {
-        return SavePermalinks::run(['model' => $this])->getChangedLanguages();
+        return (new SavePermalinks($this))->save();
     }
 
     public function deletePermalinks(): void
     {
-        DeletePermalinks::run(['model' => $this]);
+        (new DeletePermalinks($this))->delete();
     }
 }

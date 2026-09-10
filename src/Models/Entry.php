@@ -345,6 +345,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, PermalinkInter
                 }
             }
         }
+
         parent::afterDelete();
     }
 

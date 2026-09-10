@@ -10,10 +10,6 @@ use Hirtz\Cms\Models\Permalink;
 use Hirtz\Skeleton\Models\Redirect;
 use Yii;
 
-/**
- * Deletes all {@see Permalink} records of a model. The relation is polymorphic, so this cannot be a foreign key
- * cascade.
- */
 class DeletePermalinks
 {
     public function __construct(
@@ -21,7 +17,7 @@ class DeletePermalinks
     ) {
     }
 
-    public function deletePermalinks(): void
+    public function delete(): void
     {
         foreach ($this->model->getPermalinks()->all() as $permalink) {
             $this->deleteRedirects($permalink);
@@ -50,16 +46,5 @@ class DeletePermalinks
         foreach ($redirects as $redirect) {
             $redirect->delete();
         }
-    }
-
-    /**
-     * @param array{model: ActiveRecord&PermalinkInterface} $params
-     */
-    public static function run(array $params): static
-    {
-        $action = Yii::createObject(static::class, $params);
-        $action->deletePermalinks();
-
-        return $action;
     }
 }

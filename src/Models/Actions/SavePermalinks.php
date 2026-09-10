@@ -10,10 +10,6 @@ use Hirtz\Cms\Models\Permalink;
 use Hirtz\Skeleton\Models\Redirect;
 use Yii;
 
-/**
- * Writes the {@see Permalink} records of a model, one per language, and removes the ones it must no longer have.
- * Returns the languages whose URL changed, so the caller can decide whether descendants need rewriting.
- */
 class SavePermalinks
 {
     /**
@@ -29,7 +25,7 @@ class SavePermalinks
     /**
      * @return list<string>
      */
-    public function savePermalinks(): array
+    public function save(): array
     {
         $this->changedLanguages = [];
 
@@ -39,14 +35,6 @@ class SavePermalinks
 
         $this->model->refreshRelation('permalinks');
 
-        return $this->changedLanguages;
-    }
-
-    /**
-     * @return list<string>
-     */
-    public function getChangedLanguages(): array
-    {
         return $this->changedLanguages;
     }
 
@@ -87,10 +75,6 @@ class SavePermalinks
         Yii::warning("Permalink for $model {$this->model->id} could not be saved: $errors", __METHOD__);
     }
 
-    /**
-     * Takes over from `RedirectBehavior`, which the owners no longer attach. It knows both URIs, so descendants
-     * rewritten by a parent's rename get their redirects too, and no URL has to be captured on every find.
-     */
     protected function insertRedirect(string $previousUri, Permalink $permalink): void
     {
         $from = Redirect::sanitizeUrl($this->model->getPermalinkUrl($previousUri, $permalink->language));
@@ -108,9 +92,6 @@ class SavePermalinks
         $redirect->insert();
     }
 
-    /**
-     * Repoints redirects that targeted the old URL, so a chain of renames does not become a chain of redirects.
-     */
     protected function updatePreviousRedirects(string $from, string $to): void
     {
         /** @var Redirect[] $redirects */
@@ -140,16 +121,5 @@ class SavePermalinks
             $permalink->delete();
             $this->changedLanguages[] = $language;
         }
-    }
-
-    /**
-     * @param array{model: ActiveRecord&PermalinkInterface} $params
-     */
-    public static function run(array $params): static
-    {
-        $action = Yii::createObject(static::class, $params);
-        $action->savePermalinks();
-
-        return $action;
     }
 }
