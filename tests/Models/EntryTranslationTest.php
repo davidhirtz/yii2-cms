@@ -27,8 +27,7 @@ class EntryTranslationTest extends TestCase
 
         Yii::$app->getI18n()->setLanguages(['en-US', 'de']);
 
-        // The query layer reads `i18nAttributes` off the shared model instance, so it has to be configured, not set
-        // on a single record.
+        // The query layer reads `i18nAttributes` off the shared instance(), so it has to be configured.
         Yii::$container->setDefinitions([
             Entry::class => ['class' => TestEntry::class, 'i18nAttributes' => ['name', 'slug']],
             TestEntry::class => ['i18nAttributes' => ['name', 'slug']],

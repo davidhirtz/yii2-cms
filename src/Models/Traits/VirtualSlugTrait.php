@@ -9,12 +9,8 @@ use Override;
 use yii\db\ActiveRecord;
 
 /**
- * Adds a model's permalink-backed slug to the virtual attribute mechanism of {@see TranslationTrait}: the slug
- * attribute names are still reported by {@see static::attributes()}, so the model, its rules and the admin form treat
- * them as ordinary attributes, but they are kept out of the INSERT/UPDATE and read lazily from the permalink on first
- * access — so an entry that is loaded and never asked for its slug never queries the permalink table.
- *
- * Used together with {@see PermalinkTrait} on a model whose table has no slug column ({@see \Hirtz\Cms\Models\Entry}).
+ * Adds the permalink-backed slug to the virtual attributes of {@see TranslationTrait}. Used with {@see PermalinkTrait}
+ * on a model without a slug column ({@see \Hirtz\Cms\Models\Entry}).
  *
  * @mixin ActiveRecord
  */
@@ -23,8 +19,6 @@ trait VirtualSlugTrait
     private bool $_slugsPopulated = false;
 
     /**
-     * The slug lives in a {@see \Hirtz\Cms\Models\Permalink}, not in a translation record.
-     *
      * @return list<string>
      */
     #[Override]

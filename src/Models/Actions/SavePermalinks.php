@@ -124,9 +124,8 @@ class SavePermalinks
     }
 
     /**
-     * A slug that became translated leaves its {@see Permalink::LANGUAGE_ALL} record behind, one that stopped being
-     * translated leaves its per-language records. Both would keep resolving next to the new ones. The reload doubles
-     * as the relation refresh after the writes above.
+     * Removes the records of languages no longer written, e.g. the {@see Permalink::LANGUAGE_ALL} one once the slug
+     * became translated. The reload doubles as the relation refresh.
      *
      * @param list<string> $languages
      */

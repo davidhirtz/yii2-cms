@@ -78,11 +78,6 @@ class EntryPermalinkLanguageTest extends TestCase
         self::assertNull(Permalink::find()->whereUri('contact', 'de')->one());
     }
 
-    /**
-     * An entry saved while its slug was untranslated keeps the language-agnostic record until it is saved again. That
-     * save has to write one record per language and remove the fallback, not rewrite the fallback with one language's
-     * slug — which is what reusing it in {@see \Hirtz\Cms\Models\Traits\PermalinkTrait::buildPermalink()} did.
-     */
     public function testSlugBecomingTranslatedReplacesTheFallbackRecord(): void
     {
         $entry = $this->createEntry('contact');
