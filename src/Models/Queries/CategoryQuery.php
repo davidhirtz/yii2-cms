@@ -19,7 +19,7 @@ class CategoryQuery extends I18nActiveQuery
         return $this->addSelect($this->prefixColumns(array_diff($this->getModelInstance()->getColumnAttributes(), [
             'updated_by_user_id',
             'created_at',
-        ])))->with('permalinks');
+        ])));
     }
 
     public function selectSitemapAttributes(): static
