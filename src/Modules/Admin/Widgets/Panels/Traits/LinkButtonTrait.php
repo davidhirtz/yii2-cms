@@ -19,7 +19,7 @@ trait LinkButtonTrait
 
         $route = $this->model->getRoute();
 
-        if (!$route) {
+        if ($route === false) {
             return null;
         }
 
