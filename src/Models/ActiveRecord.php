@@ -11,12 +11,10 @@ use Hirtz\Cms\Modules\ModuleTrait;
 use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\datetime\DateTimeBehavior;
 use Hirtz\Skeleton\Behaviors\BlameableBehavior;
-use Hirtz\Skeleton\Behaviors\RedirectBehavior;
 use Hirtz\Skeleton\Behaviors\TimestampBehavior;
 use Hirtz\Skeleton\Behaviors\TrailBehavior;
 use Hirtz\Skeleton\Db\ActiveQuery;
 use Hirtz\Skeleton\Db\ActiveRecord as BaseActiveRecord;
-use Hirtz\Skeleton\Helpers\Url;
 use Hirtz\Skeleton\Models\Interfaces\DraftStatusAttributeInterface;
 use Hirtz\Skeleton\Models\Interfaces\I18nAttributeInterface;
 use Hirtz\Skeleton\Models\Interfaces\TrailModelInterface;
@@ -181,62 +179,6 @@ abstract class ActiveRecord extends BaseActiveRecord implements
     abstract public function getAdminRoute(): array|false;
 
     abstract public function getRoute(): array|false;
-
-    public function getRouteName(): ?string
-    {
-        return null;
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    public function getRouteParams(): array
-    {
-        return [];
-    }
-
-    /**
-     * Returns `false` when the model has no public URL, matching {@see RedirectBehavior::getUrl()},
-     * whose implementation this shadows.
-     */
-    public function getUrl(bool|string $scheme = false): false|string
-    {
-        $name = $this->getRegisteredRouteName();
-
-        if ($name !== null) {
-            $params = $this->getRouteParams();
-            $urlManager = Yii::$app->getUrlManager();
-
-            return $scheme === false
-                ? $urlManager->generate($name, $params)
-                : $urlManager->generateAbsolute($name, $params, is_string($scheme) ? $scheme : null);
-        }
-
-        return ($route = $this->getRoute()) ? Url::to($route, $scheme) : false;
-    }
-
-    public function getDraftUrl(): false|string
-    {
-        $name = $this->getRegisteredRouteName();
-
-        if ($name !== null) {
-            return Yii::$app->getUrlManager()->generateDraft($name, $this->getRouteParams());
-        }
-
-        return ($route = $this->getRoute()) ? Url::draft($route) : false;
-    }
-
-    /**
-     * Returns `null` when the model declares no route name, or when that name is not registered —
-     * the case for an application that disables {@see Module::$enableUrlRules} and declares its own
-     * rules. Callers then fall back to {@see static::getRoute()}.
-     */
-    protected function getRegisteredRouteName(): ?string
-    {
-        $name = $this->getRouteName();
-
-        return $name !== null && Yii::$app->getUrlManager()->hasRoute($name) ? $name : null;
-    }
 
     /**
      * @noinspection PhpUnusedParameterInspection

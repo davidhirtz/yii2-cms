@@ -9,6 +9,7 @@ use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Skeleton\Widgets\Attributes\Configure;
 use Hirtz\Skeleton\Widgets\Traits\ModelTrait;
+use Yii;
 
 trait FrontendUrlTrait
 {
@@ -24,11 +25,14 @@ trait FrontendUrlTrait
             return;
         }
 
-        $url = $this->isDraft() ? $this->model->getDraftUrl() : $this->model->getUrl(true);
+        $route = $this->model->getRoute();
 
-        if ($url !== false) {
-            $this->url = $url;
+        if ($route === false) {
+            return;
         }
+
+        $manager = Yii::$app->getUrlManager();
+        $this->url = $this->isDraft() ? $manager->createDraftUrl($route) : $manager->createAbsoluteUrl($route);
     }
 
     protected function isDisabled(): bool

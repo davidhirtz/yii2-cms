@@ -59,9 +59,6 @@ class Entry extends ActiveRecord implements AssetParentInterface, PermalinkInter
     use SlugAttributeTrait;
     use VirtualSlugTrait;
 
-    final public const string ROUTE_INDEX = 'cms.entry.index';
-    final public const string ROUTE_VIEW = 'cms.entry.view';
-
     final public const string AUTH_ENTRY_CREATE = 'entryCreate';
     final public const string AUTH_ENTRY_DELETE = 'entryDelete';
     final public const string AUTH_ENTRY_UPDATE = 'entryUpdate';
@@ -532,22 +529,6 @@ class Entry extends ActiveRecord implements AssetParentInterface, PermalinkInter
         }
 
         return $this->hasRoute() ? array_filter(['/cms/site/view', 'slug' => $this->getFormattedSlug()]) : false;
-    }
-
-    #[Override]
-    public function getRouteName(): ?string
-    {
-        if ($this->isIndex()) {
-            return static::ROUTE_INDEX;
-        }
-
-        return $this->hasRoute() ? static::ROUTE_VIEW : null;
-    }
-
-    #[Override]
-    public function getRouteParams(): array
-    {
-        return $this->isIndex() ? [] : array_filter(['slug' => $this->getFormattedSlug()]);
     }
 
     /**

@@ -19,6 +19,7 @@ use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Widgets\AdminLink;
 use Hirtz\Cms\Widgets\MetaTags;
 use Hirtz\Skeleton\Helpers\Html;
+use Hirtz\Skeleton\Helpers\Url;
 use Hirtz\Skeleton\Web\View;
 
 echo MetaTags::make()
@@ -32,7 +33,7 @@ echo MetaTags::make()
     <?php if ($entries) { ?>
         <ul class="entries">
             <?php foreach ($entries as $entry) {
-                $url = $entry->getUrl();
+                $url = ($route = $entry->getRoute()) ? Url::to($route) : false;
                 $name = Html::encode((string)$entry->getI18nAttribute('name'));
                 ?>
                 <li><?= $url ? Html::a($name, $url) : $name; ?></li>

@@ -34,7 +34,6 @@ class EntryUrlQueryCountTest extends TestCase
         foreach ($entries as $entry) {
             $entry->getFormattedSlug();
             $entry->getRoute();
-            $entry->getUrl();
         }
 
         foreach ($entries as $entry) {

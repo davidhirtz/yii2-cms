@@ -332,18 +332,6 @@ class Section extends ActiveRecord implements AssetParentInterface
         return ($route = $this->entry->getRoute()) ? [...$route, '#' => $this->getHtmlId()] : false;
     }
 
-    #[Override]
-    public function getRouteName(): ?string
-    {
-        return $this->entry->getRouteName();
-    }
-
-    #[Override]
-    public function getRouteParams(): array
-    {
-        return [...$this->entry->getRouteParams(), '#' => $this->getHtmlId()];
-    }
-
     public function getViewFile(): ?string
     {
         return $this->getTypeOptions()['viewFile'] ?? null;

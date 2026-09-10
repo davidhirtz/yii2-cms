@@ -32,10 +32,6 @@
   `CategoryPanel` and the inline `DeleteActiveForm` from the category update view
 - Removed the orphaned `EntryPanel` and `EntryDeleteFrom` widgets (superseded by `EntryActionDropdown`)
   and their unused `ENTRY_DELETE_FROM_*` / `ENTRY_DELETE_TITLE` messages
-- Replaced `Bootstrap::getDefaultUrlRules()` with `Bootstrap::getDefaultRoutes()`
-- Added `Entry::ROUTE_INDEX` and `Entry::ROUTE_VIEW` route names
-- Added `ActiveRecord::getRouteName()`, `getRouteParams()`, `getUrl()` and `getDraftUrl()`;
-  `getRoute()` is unchanged and still used as a fallback when the named route is not registered
 - Replaced `Canvas` with `Artwork`
 - Changed `Entry::$path` and `Entry::$category_ids` to JSON `array` columns (were comma-separated
   strings); added migration `M260906100000Json` to convert existing data

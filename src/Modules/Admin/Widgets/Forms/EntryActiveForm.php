@@ -76,7 +76,7 @@ class EntryActiveForm extends ActiveForm
 
         $route = [
             '/cms/site/index',
-            ...$this->model->getRouteParams(),
+            ...$this->getSlugBaseRouteParams(),
             'language' => $manager->i18nUrl ? $language : null,
             'slug' => null,
         ];
@@ -84,6 +84,14 @@ class EntryActiveForm extends ActiveForm
         $url = $this->model->isEnabled() ? $manager->createAbsoluteUrl($route) : $manager->createDraftUrl($route);
 
         return rtrim($url, '/') . '/';
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    protected function getSlugBaseRouteParams(): array
+    {
+        return [];
     }
 
     protected function hasSlugField(): bool

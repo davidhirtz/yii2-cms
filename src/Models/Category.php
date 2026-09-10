@@ -308,20 +308,6 @@ class Category extends ActiveRecord implements PermalinkInterface, SitemapInterf
         return array_filter(['/cms/site/index', 'category' => $this->getI18nAttribute('slug')]);
     }
 
-    #[Override]
-    public function getRouteName(): ?string
-    {
-        return $this->hasPermalink() ? Entry::ROUTE_VIEW : Entry::ROUTE_INDEX;
-    }
-
-    #[Override]
-    public function getRouteParams(): array
-    {
-        return $this->hasPermalink()
-            ? ['slug' => $this->getFormattedSlug()]
-            : array_filter(['category' => $this->getI18nAttribute('slug')]);
-    }
-
     public function getEntriesOrderBy(): bool|array
     {
         return [EntryCategory::tableName() . '.[[position]]' => SORT_ASC];

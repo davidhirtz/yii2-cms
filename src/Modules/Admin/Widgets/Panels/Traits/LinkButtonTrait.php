@@ -7,6 +7,7 @@ namespace Hirtz\Cms\Modules\Admin\Widgets\Panels\Traits;
 use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Skeleton\Widgets\Buttons\Button;
 use Stringable;
+use Yii;
 
 trait LinkButtonTrait
 {
@@ -16,11 +17,14 @@ trait LinkButtonTrait
             return null;
         }
 
-        $url = $this->isDraft() ? $this->model->getDraftUrl() : $this->model->getUrl(true);
+        $route = $this->model->getRoute();
 
-        if (!$url) {
+        if (!$route) {
             return null;
         }
+
+        $manager = Yii::$app->getUrlManager();
+        $url = $this->isDraft() ? $manager->createDraftUrl($route) : $manager->createAbsoluteUrl($route);
 
         return Button::make()
             ->primary()

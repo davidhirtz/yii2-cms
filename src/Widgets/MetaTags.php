@@ -110,8 +110,8 @@ class MetaTags extends Widget
     {
         foreach ($this->languages as $language) {
             Yii::$app->getI18n()->callback($language, function () use ($language): void {
-                if ($url = $this->model->getUrl(true)) {
-                    $this->view->registerHrefLangLinkTag($language, $url);
+                if ($route = $this->model->getRoute()) {
+                    $this->view->registerHrefLangLinkTag($language, $this->urlManager->createAbsoluteUrl($route));
                 }
             });
         }
@@ -126,8 +126,8 @@ class MetaTags extends Widget
 
     protected function registerCanonicalUrlTags(): void
     {
-        if ($url = $this->model->getUrl(true)) {
-            $this->view->registerCanonicalTag($url);
+        if ($route = $this->model->getRoute()) {
+            $this->view->registerCanonicalTag($this->urlManager->createAbsoluteUrl($route));
         }
     }
 

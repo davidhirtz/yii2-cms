@@ -10,7 +10,6 @@ use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Events\FileBeforeDeleteEventHandler;
 use Hirtz\Media\Models\File;
 use Hirtz\Skeleton\Modules\Admin\Controllers\DashboardController;
-use Hirtz\Skeleton\Routing\Route;
 use Hirtz\Skeleton\Web\Application;
 use Yii;
 use yii\base\BootstrapInterface;
@@ -49,7 +48,7 @@ class Bootstrap implements BootstrapInterface
             ],
         ]);
 
-        $this->addDefaultRoutes();
+        $this->addDefaultUrlRules();
 
         ModelEvent::on(
             File::class,
@@ -73,28 +72,30 @@ class Bootstrap implements BootstrapInterface
     /**
      * @see Module::$enableUrlRules
      */
-    protected function addDefaultRoutes(): void
+    protected function addDefaultUrlRules(): void
     {
         if (Yii::$app->getModules()['cms']['enableUrlRules'] ?? true) {
-            Yii::$app->addRoutes(...$this->getDefaultRoutes());
+            Yii::$app->addUrlManagerRules($this->getDefaultUrlRules());
         }
     }
 
     /**
-     * @return list<Route>
+     * @return array<array-key, mixed>
      */
-    protected function getDefaultRoutes(): array
+    protected function getDefaultUrlRules(): array
     {
         return [
-            Route::to('{slug}', 'cms/site/view')
-                ->where('slug', Route::PATTERN_PATH)
-                ->withoutParamEncoding()
-                ->position(Route::POSITION_FALLBACK)
-                ->name(Entry::ROUTE_VIEW),
-            Route::to('', 'cms/site/index')
-                ->position(Route::POSITION_FALLBACK + 100)
-                ->name(Entry::ROUTE_INDEX),
+            [
+                'pattern' => '<slug:.+>',
+                'route' => 'cms/site/view',
+                'encodeParams' => false,
+                'position' => 1000,
+            ],
+            [
+                'pattern' => '',
+                'route' => 'cms/site/index',
+                'position' => 1100,
+            ],
         ];
     }
-
 }
