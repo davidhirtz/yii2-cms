@@ -6,11 +6,11 @@ namespace Hirtz\Cms\Models;
 
 use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\datetime\DateTimeValidator;
+use Hirtz\Cms\Models\Actions\SavePermalinks;
+use Hirtz\Cms\Models\Interfaces\PermalinkInterface;
 use Hirtz\Cms\Models\Queries\AssetQuery;
 use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Models\Queries\SectionQuery;
-use Hirtz\Cms\Models\Actions\SavePermalinks;
-use Hirtz\Cms\Models\Interfaces\PermalinkInterface;
 use Hirtz\Cms\Models\Traits\PermalinkTrait;
 use Hirtz\Cms\Models\Traits\SlugAttributeTrait;
 use Hirtz\Cms\Models\Traits\VirtualSlugTrait;
@@ -528,7 +528,9 @@ class Entry extends ActiveRecord implements AssetParentInterface, PermalinkInter
             return ['/cms/site/index'];
         }
 
-        return $this->hasRoute() ? array_filter(['/cms/site/view', 'slug' => $this->getFormattedSlug()]) : false;
+        $slug = $this->hasRoute() ? $this->getFormattedSlug() : null;
+
+        return $slug ? array_filter(['/cms/site/view', 'slug' => $slug]) : false;
     }
 
     /**

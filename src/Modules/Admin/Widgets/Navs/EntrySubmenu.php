@@ -21,7 +21,6 @@ class EntrySubmenu extends Submenu
      * @use ModelTrait<Entry>
      */
     use ModelTrait;
-
     use ModuleTrait;
 
     protected Module $module;

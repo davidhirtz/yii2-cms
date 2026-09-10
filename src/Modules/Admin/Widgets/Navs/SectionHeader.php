@@ -27,8 +27,8 @@ class SectionHeader extends Header
         $this->url ??= $this->model->entry->getAdminRoute();
 
         $this->subtitle ??= Lang::t('skeleton', 'COMMON_MODEL_ID', [
-            'model' => $this->model->getTypeName(),
-            'id' => $this->model->id,
+            'model' => Lang::t('cms', 'COMMON_SECTION'),
+            'id' => $this->model->position,
         ]);
 
         $this->addEntryBreadcrumbs($this->model->entry);
