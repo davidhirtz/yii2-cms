@@ -34,11 +34,44 @@ class PermalinkTest extends TestCase
         self::assertNotNull(Permalink::find()->whereUri('/blog/hello-world/')->one());
     }
 
+    /**
+     * A permalink stored under a specific non-source language is scoped to it: there is no source-language record
+     * for {@see PermalinkQuery::whereUri()} to fall back to, so another language does not resolve it.
+     */
     public function testPermalinkIsNotFoundInAnotherLanguage(): void
     {
-        $this->createPermalink('blog/hello-world', 'hello-world');
+        $permalink = $this->makePermalink('blog/hello-world', 'hello-world');
+        $permalink->language = 'de';
+        self::assertTrue($permalink->insert());
 
-        self::assertNull(Permalink::find()->whereUri('blog/hello-world', 'de')->one());
+        self::assertNull(Permalink::find()->whereUri('blog/hello-world', 'fr')->one());
+    }
+
+    /**
+     * An untranslated slug is stored once, under the source language, and must resolve in every language.
+     */
+    public function testSourceLanguagePermalinkResolvesInAnotherLanguage(): void
+    {
+        $permalink = $this->createPermalink('blog/hello-world', 'hello-world');
+
+        $found = Permalink::find()->whereUri('blog/hello-world', 'de')->one();
+
+        self::assertNotNull($found);
+        self::assertSame($permalink->id, $found->id);
+    }
+
+    /**
+     * When the requested language has its own record, it wins over the source-language fallback.
+     */
+    public function testExactLanguageMatchWinsOverSourceFallback(): void
+    {
+        $this->createPermalink('shared', 'shared', modelId: 1);
+
+        $translated = $this->makePermalink('shared', 'shared', modelId: 2);
+        $translated->language = 'de';
+        self::assertTrue($translated->insert());
+
+        self::assertSame($translated->id, Permalink::find()->whereUri('shared', 'de')->one()?->id);
     }
 
     public function testUriMustBeUniquePerLanguage(): void

@@ -1,5 +1,11 @@
 ## 3.0 (in development)
 
+- A slug that is not an `i18nAttribute` now writes a single `Permalink` under the source language rather than one
+  per configured language, and `PermalinkQuery::whereUri()` resolves it under any language (an exact per-language
+  match still wins over the source-language fallback). This keeps an untranslated URL working after a language is
+  added, while a translated slug keeps one record per language, each scoped to its own. `getFormattedSlug()` reads
+  that record and no longer falls back to `composeFormattedSlug()` — it returns an empty string when there is no
+  permalink, so a getter never fabricates a URL that nothing resolves
 - **Breaking:** `PermalinkInterface::getFormattedSlug()` reads the stored permalink URI instead of composing the
   path from the parent, and the composing version moved to the new `composeFormattedSlug()`, which only the save
   path calls. `getRoute()` runs `getFormattedSlug()` for every row a listing renders, so composing there cost a

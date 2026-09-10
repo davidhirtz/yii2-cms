@@ -1,0 +1,106 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Hirtz\Cms\Tests\Models;
+
+use Hirtz\Cms\Models\Permalink;
+use Hirtz\Cms\Test\Models\TestEntry;
+use Hirtz\Cms\Test\TestCase;
+use Override;
+use Yii;
+
+/**
+ * The two ways a slug can behave across languages:
+ *
+ * - not an `i18nAttribute`: one permalink, stored under the source language, resolvable in every language;
+ * - an `i18nAttribute`: one permalink per language, each resolvable under its own language.
+ */
+class EntryPermalinkLanguageTest extends TestCase
+{
+    #[Override]
+    protected function setUp(): void
+    {
+        parent::setUp();
+        Yii::$app->getI18n()->setLanguages(['en-US', 'de']);
+    }
+
+    public function testUntranslatedSlugWritesASinglePermalink(): void
+    {
+        $entry = $this->createEntry('contact');
+
+        self::assertCount(1, $entry->permalinks);
+        self::assertSame(['en-US'], array_keys($entry->permalinks));
+        self::assertSame('contact', $entry->getPermalink('en-US')->uri);
+    }
+
+    public function testUntranslatedSlugResolvesInEveryLanguage(): void
+    {
+        $entry = $this->createEntry('contact');
+
+        foreach (['en-US', 'de'] as $language) {
+            $permalink = Permalink::find()->whereUri('contact', $language)->one();
+
+            self::assertNotNull($permalink, "'contact' did not resolve under $language.");
+            self::assertSame($entry->id, $permalink->model_id);
+            self::assertSame('contact', $entry->getFormattedSlug($language));
+        }
+    }
+
+    public function testTranslatedSlugWritesAPermalinkPerLanguage(): void
+    {
+        $entry = $this->createTranslatedEntry(['en-US' => 'contact', 'de' => 'kontakt']);
+
+        self::assertCount(2, $entry->permalinks);
+        self::assertSame('contact', $entry->getFormattedSlug('en-US'));
+        self::assertSame('kontakt', $entry->getFormattedSlug('de'));
+    }
+
+    public function testTranslatedSlugResolvesUnderItsOwnLanguage(): void
+    {
+        $entry = $this->createTranslatedEntry(['en-US' => 'contact', 'de' => 'kontakt']);
+
+        self::assertSame($entry->id, Permalink::find()->whereUri('contact', 'en-US')->one()?->model_id);
+        self::assertSame($entry->id, Permalink::find()->whereUri('kontakt', 'de')->one()?->model_id);
+    }
+
+    /**
+     * The German URL has no English record and no source-language record to fall back to, so it must not resolve
+     * under English — otherwise a translated URL would leak across languages.
+     */
+    public function testTranslatedSlugDoesNotResolveUnderTheWrongLanguage(): void
+    {
+        $this->createTranslatedEntry(['en-US' => 'contact', 'de' => 'kontakt']);
+
+        self::assertNull(Permalink::find()->whereUri('kontakt', 'en-US')->one());
+    }
+
+    protected function createEntry(string $slug): TestEntry
+    {
+        $entry = TestEntry::create();
+        $entry->name = ucfirst($slug);
+        $entry->slug = $slug;
+
+        self::assertTrue($entry->save(), implode(' ', $entry->getErrorSummary(true)));
+
+        return $entry;
+    }
+
+    /**
+     * @param array<string, string> $slugs the slug for each language
+     */
+    protected function createTranslatedEntry(array $slugs): TestEntry
+    {
+        $entry = TestEntry::create();
+        $entry->i18nAttributes = ['slug'];
+        $entry->name = 'Contact';
+
+        foreach ($slugs as $language => $slug) {
+            $entry->setAttribute($entry->getI18nAttributeName('slug', $language), $slug);
+        }
+
+        self::assertTrue($entry->save(), implode(' ', $entry->getErrorSummary(true)));
+
+        return $entry;
+    }
+}
