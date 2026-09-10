@@ -8,14 +8,15 @@ use Hirtz\Cms\Migrations\Traits\I18nTablesTrait;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Permalink;
 use Hirtz\Skeleton\Db\Traits\MigrationTrait;
+use Yii;
 use yii\db\Migration;
 
 /**
- * Creates the {@see Permalink} table and backfills it from the entry slug columns. This migration is additive: the
- * `slug` and `parent_slug` columns are dropped by a later migration, once the models write permalinks themselves.
+ * Creates the {@see Permalink} table, backfills it from the entry slug columns and drops those columns.
  *
- * Categories are not backfilled. They have no standalone URL yet, so there is no existing URL to preserve — their
- * records are written once `Category::hasPermalink()` exists.
+ * An untranslated slug is stored once under {@see Permalink::LANGUAGE_ALL}; a translated one gets a record per
+ * language. Categories are not backfilled — they had no standalone URL, so there is nothing to preserve; their
+ * records are written at runtime once `Module::$enableCategoryUrls` is on. The category `slug` column stays.
  *
  * @noinspection PhpUnused
  */
@@ -29,13 +30,14 @@ class M260909100000Permalink extends Migration
         $this->i18nTablesCallback(function (): void {
             $this->createPermalinkTable();
             $this->insertEntryPermalinks();
-            $this->updateEntryParentIds();
+            $this->dropEntrySlugColumns();
         });
     }
 
     public function safeDown(): void
     {
         $this->i18nTablesCallback(function (): void {
+            $this->restoreEntrySlugColumns();
             $this->dropTable(Permalink::tableName());
         });
     }
@@ -49,22 +51,12 @@ class M260909100000Permalink extends Migration
             'slug' => $this->string(100)->notNull(),
             'model' => $this->string()->notNull(),
             'model_id' => $this->integer()->unsigned()->notNull(),
-            'parent_id' => $this->integer()->unsigned()->null(),
             'updated_at' => $this->dateTime(),
             'created_at' => $this->dateTime()->notNull(),
         ], $this->getTableOptions());
 
         $this->createIndex('uri', Permalink::tableName(), ['language', 'uri'], true);
         $this->createIndex('model', Permalink::tableName(), ['model', 'model_id', 'language'], true);
-
-        $this->addForeignKey(
-            $this->getForeignKeyName(Permalink::tableName(), 'parent_id') . '_ibfk',
-            Permalink::tableName(),
-            'parent_id',
-            Permalink::tableName(),
-            'id',
-            'SET NULL'
-        );
     }
 
     protected function insertEntryPermalinks(): void
@@ -74,10 +66,15 @@ class M260909100000Permalink extends Migration
 
         $permalinks = $this->getQuotedTableName(Permalink::tableName());
         $entries = $this->getQuotedTableName($entry::tableName());
-        $model = $db->quoteValue($entry::class);
+        $model = $db->quoteValue($entry->getPermalinkModelClass());
 
-        foreach ($entry->getI18nAttributeNames('slug') as $language => $slug) {
-            $parentSlug = $entry->getI18nAttributeName('parent_slug', $language);
+        foreach ($entry->getPermalinkLanguages() as $language) {
+            [$slug, $parentSlug] = $this->getSlugColumns($entry, $language);
+
+            if (!$this->hasColumn($entry::tableName(), $slug)) {
+                continue;
+            }
+
             $uri = $this->hasColumn($entry::tableName(), $parentSlug)
                 ? "TRIM(BOTH '/' FROM CONCAT_WS('/', NULLIF([[$parentSlug]], ''), [[$slug]]))"
                 : "[[$slug]]";
@@ -91,26 +88,65 @@ class M260909100000Permalink extends Migration
         }
     }
 
-    protected function updateEntryParentIds(): void
+    protected function dropEntrySlugColumns(): void
+    {
+        $entry = Entry::create();
+
+        foreach ($entry->getI18nAttributeNames('slug') as $attributeName) {
+            $this->dropIndexIfExists($attributeName, $entry::tableName());
+        }
+
+        foreach (['slug', 'parent_slug'] as $attribute) {
+            foreach ($entry->getI18nAttributeNames($attribute) as $attributeName) {
+                $this->dropColumnIfExists($entry::tableName(), $attributeName);
+            }
+        }
+    }
+
+    protected function restoreEntrySlugColumns(): void
     {
         $entry = Entry::create();
         $db = $this->getDb();
 
-        $permalinks = $this->getQuotedTableName(Permalink::tableName());
         $entries = $this->getQuotedTableName($entry::tableName());
-        $model = $db->quoteValue($entry::class);
+        $permalinks = $this->getQuotedTableName(Permalink::tableName());
+        $model = $db->quoteValue($entry->getPermalinkModelClass());
 
-        $this->execute("
-            UPDATE $permalinks AS [[child]]
-            INNER JOIN $entries AS [[entry]]
-                ON [[entry]].[[id]] = [[child]].[[model_id]]
-            INNER JOIN $permalinks AS [[parent]]
-                ON [[parent]].[[model]] = $model
-                AND [[parent]].[[model_id]] = [[entry]].[[parent_id]]
-                AND [[parent]].[[language]] = [[child]].[[language]]
-            SET [[child]].[[parent_id]] = [[parent]].[[id]]
-            WHERE [[child]].[[model]] = $model
-        ");
+        foreach ($entry->getPermalinkLanguages() as $language) {
+            [$slug, $parentSlug] = $this->getSlugColumns($entry, $language);
+
+            if (!$this->hasColumn($entry::tableName(), $slug)) {
+                $this->addColumn($entry::tableName(), $slug, (string)$this->string(100)->null());
+                $this->addColumn($entry::tableName(), $parentSlug, (string)$this->string(255)->null());
+            }
+
+            $this->execute("
+                UPDATE $entries AS [[entry]]
+                INNER JOIN $permalinks AS [[permalink]]
+                    ON [[permalink]].[[model_id]] = [[entry]].[[id]]
+                    AND [[permalink]].[[model]] = $model
+                    AND [[permalink]].[[language]] = {$db->quoteValue($language)}
+                SET [[entry]].[[$slug]] = [[permalink]].[[slug]],
+                    [[entry]].[[$parentSlug]] = TRIM(TRAILING '/' FROM SUBSTRING(
+                        [[permalink]].[[uri]], 1, CHAR_LENGTH([[permalink]].[[uri]]) - CHAR_LENGTH([[permalink]].[[slug]])))
+            ");
+        }
+    }
+
+    /**
+     * Maps a permalink storage language to the entry columns it reads: {@see Permalink::LANGUAGE_ALL} resolves to the
+     * source-language columns, a real language to its own.
+     *
+     * @return array{string, string} the `slug` and `parent_slug` column names
+     */
+    protected function getSlugColumns(Entry $entry, string $language): array
+    {
+        $language = $language === Permalink::LANGUAGE_ALL ? Yii::$app->sourceLanguage : $language;
+
+        return [
+            $entry->getI18nAttributeName('slug', $language),
+            $entry->getI18nAttributeName('parent_slug', $language),
+        ];
     }
 
     protected function getQuotedTableName(string $tableName): string

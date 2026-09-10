@@ -9,8 +9,8 @@ use Exception;
 
 /**
  * Only used by the historical migrations that created the entry slug columns. Those columns are dropped again by
- * {@see \Hirtz\Cms\Migrations\M260909170000DropEntrySlug}, so this must not read anything off the current model
- * beyond its I18N attribute names.
+ * {@see \Hirtz\Cms\Migrations\M260909100000Permalink}, so this must not read anything off the current model beyond
+ * its I18N attribute names.
  */
 trait SlugIndexTrait
 {

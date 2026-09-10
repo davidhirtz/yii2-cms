@@ -1,103 +1,28 @@
 ## 3.0 (in development)
 
-- Category permalinks are flat: a category slug is a single, globally-unique segment, so its permalink `uri` is
-  just the slug with no parent path. Renaming or moving a category no longer rewrites descendants, so the
-  `UpdateDescendantPermalinks` action and `Category::isTransactional()` override are gone and `Category::afterSave()`
-  is a plain `savePermalinks()`. (Entry URLs stay nested.)
-- Unified permalink construction: `buildPermalink()` moved to `PermalinkTrait` and is now the single builder used by
-  both validation and `SavePermalinks` (which loses its own `createPermalink()`); `composeFormattedSlug()` has a flat
-  default on the trait that `Entry` overrides to prepend its parent path
-- Dropped the unused `Permalink::$parent_id` self-reference (column, foreign key and the `getParent()` /
-  `populateParentRelation()` accessors; migration `M260910110000DropPermalinkParentId`). A permalink stores its full
-  path in `uri`, so lookups never walk a tree, and subtree rewrites are driven by the owner's tree; nothing read the
-  column and no write kept it current beyond its original backfill
-- A slug that is not an `i18nAttribute` now writes a single language-agnostic `Permalink` (`language` =
-  `Permalink::LANGUAGE_ALL`, `'*'`) rather than one per configured language, letting a project keep one slug and
-  let `i18nUrl` decide the language. `PermalinkQuery::whereUri()` resolves it under any language, while a translated
-  slug keeps one record per language and resolves only under its own — so a translated entry's source-language URL
-  no longer leaks into other languages. A real per-language record wins over the agnostic one when a path exists as
-  both. Migration `M260910100000PermalinkLanguageAll` converts existing untranslated permalinks. `getFormattedSlug()`
-  reads the stored record and no longer falls back to `composeFormattedSlug()` — it returns an empty string when
-  there is no permalink, so a getter never fabricates a URL that nothing resolves
-- **Breaking:** `PermalinkInterface::getFormattedSlug()` reads the stored permalink URI instead of composing the
-  path from the parent, and the composing version moved to the new `composeFormattedSlug()`, which only the save
-  path calls. `getRoute()` runs `getFormattedSlug()` for every row a listing renders, so composing there cost a
-  query per row plus one per level of nesting — three nested entries needed six queries just to build their URLs,
-  and now need none. Callers that want the recomputed path (rather than the stored one) must switch to
-  `composeFormattedSlug()`
-- A renamed entry slug is recorded in the `Trail` again, on the entry's own record rather than on the permalink.
-  The slug is no longer a column, so Yii never reported it as changed and neither the update nor the create trail
-  mentioned it. `PermalinkTrait::addSlugChangedAttributes()` adds it back to the changed attributes. A parent rename
-  still records nothing on its descendants, whose own slug is unchanged — matching how `parent_slug` was excluded
-  from the trail before
-- Fixed `EntryController::redirectToEntry()`, which appended `Entry::getAdminRoute()` instead of spreading it. The
-  route element was then an array and `Url::toRoute()` failed with "Array to string conversion" on every redirect
-  after an entry update
-- Fixed a slug-only entry update reporting no affected rows. Renaming touches no column on the entry itself, so
-  `update()` returned `0` and callers read it as a failure — the admin success flash never appeared
-- Added the `permalink` console controller: `permalink/rebuild` rewrites every entry and category permalink and
-  `permalink/prune` removes orphaned ones. Permalinks are written on save, so anything that changes them outside a
-  save — adding a language, toggling `Module::$enableCategoryUrls` — needs a one-off rebuild. Added
-  `PermalinkInterface::savePermalinks()` and `deletePermalinks()` to the interface
-- **Breaking:** the `entry` table no longer has `slug` / `parent_slug` columns (migration
-  `M260909170000DropEntrySlug`). `Entry::$slug` survives as a virtual attribute backed by `Permalink::$slug`, so
-  `$entry->slug`, the validation rules and the admin form are unchanged, but `Entry::$parent_slug` and
-  `Entry::$slugTargetAttribute` are gone. `PermalinkTrait` appends the slug names to `attributes()` and keeps them
-  out of the INSERT and UPDATE;
-  `EntryQuery::addSelectI18nSlugTargetAttributes()` is replaced by `withPermalinks()`, and `whereSlug()` matches
-  against the permalink table; added `EntryQuery::whereNotSlug()` and `whereId()`. `Entry::hasRoute()` is now
-  `section_count || entry_count`, and `Entry::isSlugRequired()` returns `true` rather than reading a column that no
-  longer exists
-- **Breaking:** `Permalink::$model` stores the canonical base class (`Entry::class`, `Category::class`) via the new
-  `PermalinkInterface::getPermalinkModelClass()`, not the container-resolved one. Migration
-  `M260909180000PermalinkModelClass` normalises existing rows. Storing the runtime class made a record invisible from
-  another load path, because the container resolves `Entry::class` differently per application
-- **Breaking:** `EntryParentIdFieldTrait` and `CategoryParentIdFieldTrait` are now thin wrappers around the shared
-  `ParentIdFieldTrait`; they only differed because entries keyed off `parent_slug` and categories off `parent_id` in
-  the removed `$slugTargetAttribute`. Removed the dead `Web\UrlRule`
-- **Breaking:** `Entry` and `Category` no longer attach `RedirectBehavior`. `SavePermalinks` and
-  `DeletePermalinks` record and remove the `Redirect` records instead, via the new
-  `PermalinkInterface::getPermalinkUrl()`. The behaviour captured the previous URL in `afterFind()`, which
-  would have meant a query per row once the slug lived in a related record; the actions already know both
-  URIs. Descendants rewritten by a parent rename now get redirects explicitly rather than as a side effect
-  of being re-saved. `RedirectBehavior` itself is unchanged and still used by `Hirtz\Media\Models\File`
-- `Category::getRoute()`, `getRouteName()` and `getRouteParams()` return the entry view route when the
-  category has a permalink, and the previous `index` route with a `category` param when it does not
-- `SiteController::actionView()` now resolves its slug against the `Permalink` table and renders either an
-  entry or a category, instead of querying entries by slug. **Breaking:** `findEntry()` takes a `Permalink`
-  rather than a `string`, and the new `renderPermalink()`, `renderEntry()`, `renderCategory()`,
-  `findCategory()`, `findCategoryEntries()`, `validateCategoryResponse()` and `getCategoryQuery()` methods
-  are the extension points; override `renderPermalink()` to resolve further models. Added
-  `EntryQuery::whereId()`, the default `site/category` view, and `AdminLink` support for categories.
-  `validateCategoryResponse()` re-checks `hasPermalink()`, so permalinks left behind after
-  `Module::$enableCategoryUrls` is turned off stop resolving. Added `PermalinkFixture`, which derives its
-  rows from the entry fixture data — fixtures insert rows directly, so no permalink would otherwise exist
-- Added `PermalinkInterface::getPermalinkAttributes()`, extra attributes copied onto a model's `Permalink`
-  records on every save. It exists so `yii2-cms-tenant` can carry `tenant_id` across, which is what
-  scopes the uniqueness of a URL to a single tenant
-- `Category` now implements `PermalinkInterface` via `PermalinkTrait`, behind the new
-  `Module::$enableCategoryUrls` (defaults to `false`, and is forced off when `enableCategories` is).
-  With it enabled a category gets a `Permalink` record whose `uri` is its **full nested path** —
-  category slugs used to be single segments assembled into a path only at URL-generation time, so this
-  is the one genuine behaviour change in the permalink work. Added `Category::hasPermalink()` and
-  `Category::getFormattedSlug()`, and the `UpdateDescendantPermalinks` action, which rewrites a subtree
-  after a rename or a move; categories cannot reuse the entry cascade because re-saving a descendant
-  would run `updateTreeBeforeSave()` and disturb the nested set. `Category::isTransactional()` now also
-  covers a rename that rewrites a subtree, which `NestedTreeTrait` does not. Resolving these URLs
-  arrives with the site controller change; for now the records are only written
-- `Entry` now implements `PermalinkInterface` via `PermalinkTrait` and writes a `Permalink` record per
-  language from `afterSave()`, deleting them again from `afterDelete()`. Added the `SavePermalinks` and
-  `DeletePermalinks` actions and `Entry::hasPermalink()`. The slug columns stay the source of truth for
-  now — permalinks are written alongside them and nothing reads them yet, so URLs are unchanged. The
-  existing descendant cascade in `Entry::afterSave()` carries the rewrite, so a rename or a move
-  updates the whole subtree
-- Added the `Permalink` model, `PermalinkQuery` and migration `M260909100000Permalink`, the first step
-  of moving the entry and category slugs out of the model tables. A permalink holds the full
-  resolvable path in `uri` (unique per `language`) and the editable leaf segment in `slug`, and points
-  at its owner through the polymorphic `model` / `model_id` pair and at its parent through
-  `parent_id`. The migration is additive and backfills entries from `slug` / `parent_slug`; nothing
-  writes permalinks yet. Added the `PERMALINK_PROTECTED_ERROR`, `PERMALINK_SLUG_LABEL` and
-  `PERMALINK_URI_LABEL` messages
+- **Breaking:** entry and category URLs now live in a dedicated `Permalink` record instead of `slug` /
+  `parent_slug` columns. `Hirtz\Cms\Models\Permalink` (with `PermalinkQuery`) stores the full resolvable path in
+  `uri` (unique per `language`), the editable leaf in `slug`, and its owner as a polymorphic `model` / `model_id`;
+  `yii2-cms-tenant` scopes it per tenant. Migration `M260909100000Permalink` creates the table, backfills entries and
+  drops `entry.slug` / `entry.parent_slug`. `Entry` and `Category` implement `PermalinkInterface` via
+  `PermalinkTrait`; `Entry::$slug` becomes a virtual attribute (admin form and validation unchanged), while
+  `Entry::$parent_slug`, `Entry::$slugTargetAttribute`, `EntryQuery::addSelectI18nSlugTargetAttributes()` and the dead
+  `Web\UrlRule` are removed. `Entry::hasRoute()` is now `section_count || entry_count`
+- A project chooses how a slug behaves across languages: leave it a plain attribute and let `i18nUrl` pick the
+  language — one language-agnostic record (`Permalink::LANGUAGE_ALL`) resolving everywhere — or make `slug` an
+  `i18nAttribute` for one record per language, each resolving only under its own. `PermalinkQuery::whereUri()` prefers
+  an exact-language match over the agnostic fallback
+- Category URLs are flat: a category slug is a single, globally-unique segment, so its `uri` is just the slug, behind
+  the new `Module::$enableCategoryUrls` (default off, forced off when `enableCategories` is). Entry URLs stay nested
+  (`parent/child`). Renaming or moving a category rewrites only its own permalink; an entry rename still cascades to
+  its descendants
+- `SiteController::actionView()` resolves its slug against the permalink table and renders an entry or a category —
+  override `renderPermalink()` to resolve further models. `getFormattedSlug()` reads the stored `uri` (no query per
+  listing row); `composeFormattedSlug()` recomputes it for the save path. A renamed slug is recorded in the `Trail`
+  on the owner, and a rename or move writes a `Redirect`, so `Entry` and `Category` no longer attach
+  `RedirectBehavior` (still used by `Hirtz\Media\Models\File`)
+- Added the `permalink/rebuild` and `permalink/prune` console commands, and the `PERMALINK_PROTECTED_ERROR`,
+  `PERMALINK_SLUG_LABEL` and `PERMALINK_URI_LABEL` messages
 - Consolidated the split entry/section asset controllers back into a single `AssetController`; entry
   and section assets are served under `admin/cms/asset/*` again (removed `EntryAssetController` and
   the planned `section-asset` route). Added the thin `AssetHeader` and `AssetSubmenu` dispatcher
