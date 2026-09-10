@@ -367,6 +367,6 @@ class Category extends ActiveRecord implements PermalinkInterface, SitemapInterf
     #[Override]
     public static function tableName(): string
     {
-        return static::getModule()->getTableName('category');
+        return '{{%category}}';
     }
 }

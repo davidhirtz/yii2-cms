@@ -6,7 +6,6 @@ namespace Hirtz\Cms;
 
 use Hirtz\Cms\Models\Collections\CategoryCollection;
 use Hirtz\Skeleton\Filters\PageCache;
-use Hirtz\Skeleton\Modules\ModuleTrait;
 use Override;
 use Yii;
 use yii\caching\CacheInterface;
@@ -14,8 +13,6 @@ use yii\caching\TagDependency;
 
 class Module extends \Hirtz\Skeleton\Base\Module
 {
-    use ModuleTrait;
-
     final public const string AUTH_ROLE_AUTHOR = 'author';
 
     /**

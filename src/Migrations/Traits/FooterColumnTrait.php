@@ -13,35 +13,29 @@ use yii\db\Migration;
  */
 trait FooterColumnTrait
 {
-    use I18nTablesTrait;
-
     protected function addShowInFooterColumn(): void
     {
-        $this->i18nTablesCallback(function (): void {
-            $this->addColumn(Entry::tableName(), 'show_in_footer', (string)$this->boolean()
-                ->notNull()
-                ->defaultValue(false)
-                ->after('publish_date'));
+        $this->addColumn(Entry::tableName(), 'show_in_footer', (string)$this->boolean()
+            ->notNull()
+            ->defaultValue(false)
+            ->after('publish_date'));
 
-            $schema = $this->getDb()->getSchema();
+        $schema = $this->getDb()->getSchema();
 
-            if ($schema->getTableSchema(Entry::tableName())->getColumn('show_in_menu')) {
-                $this->dropIndex('show_in_menu', Entry::tableName());
+        if ($schema->getTableSchema(Entry::tableName())->getColumn('show_in_menu')) {
+            $this->dropIndex('show_in_menu', Entry::tableName());
 
-                $this->createIndex('show_in_menu', Entry::tableName(), [
-                    'show_in_menu',
-                    'show_in_footer',
-                    'status',
-                    'position',
-                ]);
-            }
-        });
+            $this->createIndex('show_in_menu', Entry::tableName(), [
+                'show_in_menu',
+                'show_in_footer',
+                'status',
+                'position',
+            ]);
+        }
     }
 
     protected function dropShowInFooterColumn(): void
     {
-        $this->i18nTablesCallback(function (): void {
-            $this->dropColumn(Entry::tableName(), 'show_in_footer');
-        });
+        $this->dropColumn(Entry::tableName(), 'show_in_footer');
     }
 }

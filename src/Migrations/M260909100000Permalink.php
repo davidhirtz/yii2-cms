@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Migrations;
 
-use Hirtz\Cms\Migrations\Traits\I18nTablesTrait;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Permalink;
 use Hirtz\Skeleton\Db\Traits\MigrationTrait;
@@ -23,23 +22,18 @@ use yii\db\Migration;
 class M260909100000Permalink extends Migration
 {
     use MigrationTrait;
-    use I18nTablesTrait;
 
     public function safeUp(): void
     {
-        $this->i18nTablesCallback(function (): void {
-            $this->createPermalinkTable();
-            $this->insertEntryPermalinks();
-            $this->dropEntrySlugColumns();
-        });
+        $this->createPermalinkTable();
+        $this->insertEntryPermalinks();
+        $this->dropEntrySlugColumns();
     }
 
     public function safeDown(): void
     {
-        $this->i18nTablesCallback(function (): void {
-            $this->restoreEntrySlugColumns();
-            $this->dropTable(Permalink::tableName());
-        });
+        $this->restoreEntrySlugColumns();
+        $this->dropTable(Permalink::tableName());
     }
 
     protected function createPermalinkTable(): void

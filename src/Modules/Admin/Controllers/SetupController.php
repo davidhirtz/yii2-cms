@@ -56,18 +56,13 @@ abstract class SetupController extends Controller
 
     public function actionIndex(): Response
     {
-        foreach ($this->getLanguages() as $language) {
-            Yii::$app->getI18n()->callback($language, function (): void {
-                if ($this->shouldInsertCategories()) {
-                    $this->insertCategories();
-                }
-
-                if ($this->shouldInsertEntries()) {
-                    $this->insertEntries();
-                }
-            });
+        if ($this->shouldInsertCategories()) {
+            $this->insertCategories();
         }
 
+        if ($this->shouldInsertEntries()) {
+            $this->insertEntries();
+        }
 
         $this->ensureDefaultFolder();
 
@@ -166,10 +161,5 @@ abstract class SetupController extends Controller
     protected function shouldInsertEntries(): bool
     {
         return !Entry::find()->count();
-    }
-
-    protected function getLanguages(): array
-    {
-        return static::getModule()->enableI18nTables ? Yii::$app->getI18n()->getLanguages() : [Yii::$app->language];
     }
 }

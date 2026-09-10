@@ -175,6 +175,6 @@ class SectionEntry extends \Hirtz\Skeleton\Db\ActiveRecord
     #[Override]
     public static function tableName(): string
     {
-        return static::getModule()->getTableName('section_entry');
+        return '{{%section_entry}}';
     }
 }

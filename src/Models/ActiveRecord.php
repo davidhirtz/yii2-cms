@@ -74,10 +74,7 @@ abstract class ActiveRecord extends BaseActiveRecord implements
         return [
             ...parent::behaviors(),
             'DateTimeBehavior' => DateTimeBehavior::class,
-            'TrailBehavior' => [
-                'class' => TrailBehavior::class,
-                'modelClass' => static::getModule()->getI18nClassName(static::class),
-            ],
+            'TrailBehavior' => TrailBehavior::class,
         ];
     }
 

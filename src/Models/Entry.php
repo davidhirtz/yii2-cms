@@ -731,6 +731,6 @@ class Entry extends ActiveRecord implements AssetParentInterface, PermalinkInter
     #[Override]
     public static function tableName(): string
     {
-        return static::getModule()->getTableName('entry');
+        return '{{%entry}}';
     }
 }

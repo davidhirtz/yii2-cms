@@ -200,9 +200,7 @@ class Asset extends ActiveRecord implements AssetInterface, DraftStatusAttribute
 
     public function getFileCountAttributeName(): string
     {
-        return static::getModule()->enableI18nTables
-            ? Yii::$app->getI18n()->getAttributeName('cms_asset_count')
-            : 'cms_asset_count';
+        return 'cms_asset_count';
     }
 
     #[Override]
@@ -256,12 +254,7 @@ class Asset extends ActiveRecord implements AssetInterface, DraftStatusAttribute
 
     public function getFileCountAttributeNames(): array
     {
-        $languages = static::getModule()->getLanguages();
-
-        return array_combine($languages, array_map(
-            fn ($lang) => Yii::$app->getI18n()->getAttributeName('cms_asset_count', $lang),
-            $languages
-        ));
+        return [Yii::$app->sourceLanguage => 'cms_asset_count'];
     }
 
     public function getAdminRoute(): false|array
@@ -317,6 +310,6 @@ class Asset extends ActiveRecord implements AssetInterface, DraftStatusAttribute
     #[Override]
     public static function tableName(): string
     {
-        return static::getModule()->getTableName('cms_asset');
+        return '{{%cms_asset}}';
     }
 }

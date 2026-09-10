@@ -373,6 +373,6 @@ class Section extends ActiveRecord implements AssetParentInterface
     #[Override]
     public static function tableName(): string
     {
-        return static::getModule()->getTableName('section');
+        return '{{%section}}';
     }
 }

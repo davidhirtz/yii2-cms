@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Migrations;
 
-use Hirtz\Cms\Migrations\Traits\I18nTablesTrait;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Skeleton\Db\Traits\MigrationTrait;
 use yii\db\Migration;
@@ -18,43 +17,38 @@ use yii\db\Migration;
 class M260907100000Depth extends Migration
 {
     use MigrationTrait;
-    use I18nTablesTrait;
 
     public function safeUp(): void
     {
-        $this->i18nTablesCallback(function (): void {
-            $db = $this->getDb();
-            $schema = $db->getSchema();
+        $db = $this->getDb();
+        $schema = $db->getSchema();
 
-            if ($schema->getTableSchema(Category::tableName(), true)->getColumn('depth')) {
-                return;
-            }
+        if ($schema->getTableSchema(Category::tableName(), true)->getColumn('depth')) {
+            return;
+        }
 
-            $this->addColumn(Category::tableName(), 'depth', (string)$this->integer()
-                ->unsigned()
-                ->notNull()
-                ->defaultValue(0)
-                ->after('rgt'));
+        $this->addColumn(Category::tableName(), 'depth', (string)$this->integer()
+            ->unsigned()
+            ->notNull()
+            ->defaultValue(0)
+            ->after('rgt'));
 
-            $table = $db->quoteTableName($schema->getRawTableName(Category::tableName()));
+        $table = $db->quoteTableName($schema->getRawTableName(Category::tableName()));
 
-            $this->execute("
-                UPDATE $table AS node
-                INNER JOIN (
-                    SELECT n.[[id]] AS [[id]], COUNT(p.[[id]]) AS [[depth]]
-                    FROM $table AS n
-                    LEFT JOIN $table AS p ON p.[[lft]] < n.[[lft]] AND p.[[rgt]] > n.[[rgt]]
-                    GROUP BY n.[[id]]
-                ) AS ancestors ON ancestors.[[id]] = node.[[id]]
-                SET node.[[depth]] = ancestors.[[depth]]
-            ");
-        });
+        $this->execute("
+            UPDATE $table AS node
+            INNER JOIN (
+                SELECT n.[[id]] AS [[id]], COUNT(p.[[id]]) AS [[depth]]
+                FROM $table AS n
+                LEFT JOIN $table AS p ON p.[[lft]] < n.[[lft]] AND p.[[rgt]] > n.[[rgt]]
+                GROUP BY n.[[id]]
+            ) AS ancestors ON ancestors.[[id]] = node.[[id]]
+            SET node.[[depth]] = ancestors.[[depth]]
+        ");
     }
 
     public function safeDown(): void
     {
-        $this->i18nTablesCallback(function (): void {
-            $this->dropColumnIfExists(Category::tableName(), 'depth');
-        });
+        $this->dropColumnIfExists(Category::tableName(), 'depth');
     }
 }

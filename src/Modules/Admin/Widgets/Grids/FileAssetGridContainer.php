@@ -6,20 +6,17 @@ namespace Hirtz\Cms\Modules\Admin\Widgets\Grids;
 
 use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Asset;
-use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Media\Modules\Admin\Widgets\Grids\Interfaces\FileRelationGridContainerInterface;
 use Hirtz\Media\Traits\FilePropertyTrait;
 use Hirtz\Skeleton\Widgets\Grids\GridContainer;
 use Hirtz\Skeleton\Widgets\Grids\Traits\GridTrait;
 use Hirtz\Skeleton\Widgets\Widget;
 use Stringable;
-use Yii;
 
 class FileAssetGridContainer extends Widget implements FileRelationGridContainerInterface
 {
     use FilePropertyTrait;
     use GridTrait;
-    use ModuleTrait;
 
     protected function renderContent(): string|Stringable
     {
@@ -28,7 +25,7 @@ class FileAssetGridContainer extends Widget implements FileRelationGridContainer
         foreach (Asset::instance()->getFileCountAttributeNames() as $language => $attributeName) {
             if ($this->file->$attributeName) {
                 $content .= GridContainer::make()
-                    ->title($this->getTitle($language))
+                    ->title($this->getTitle())
                     ->grid(FileAssetGridView::make()
                         ->file($this->file)
                         ->language($language));
@@ -38,14 +35,8 @@ class FileAssetGridContainer extends Widget implements FileRelationGridContainer
         return $content;
     }
 
-    protected function getTitle(string $language): string
+    protected function getTitle(): string
     {
-        $title = Lang::t('cms', 'COMMON_ENTRIES');
-
-        if ($language !== Yii::$app->language && self::getModule()->enableI18nTables) {
-            $title .= ' (' . strtoupper($language) . ')';
-        }
-
-        return $title;
+        return Lang::t('cms', 'COMMON_ENTRIES');
     }
 }

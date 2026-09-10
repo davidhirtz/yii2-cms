@@ -254,6 +254,6 @@ class EntryCategory extends \Hirtz\Skeleton\Db\ActiveRecord implements TrailMode
     #[Override]
     public static function tableName(): string
     {
-        return static::getModule()->getTableName('entry_category');
+        return '{{%entry_category}}';
     }
 }

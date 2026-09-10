@@ -163,6 +163,6 @@ class Permalink extends ActiveRecord
     #[Override]
     public static function tableName(): string
     {
-        return static::getModule()->getTableName('permalink');
+        return '{{%permalink}}';
     }
 }
