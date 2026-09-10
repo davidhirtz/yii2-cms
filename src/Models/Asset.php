@@ -307,6 +307,11 @@ class Asset extends ActiveRecord implements AssetInterface, DraftStatusAttribute
         return 'Asset';
     }
 
+    public function getTranslationModelClass(): string
+    {
+        return self::class;
+    }
+
     #[Override]
     public static function tableName(): string
     {

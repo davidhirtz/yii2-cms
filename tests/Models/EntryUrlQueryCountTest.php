@@ -90,7 +90,7 @@ class EntryUrlQueryCountTest extends TestCase
     {
         return Entry::find()
             ->selectSiteAttributes()
-            ->replaceI18nAttributes()
+            ->withTranslations()
             ->withPermalinks()
             ->andWhere(['id' => $ids])
             ->all();

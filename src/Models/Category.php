@@ -263,6 +263,7 @@ class Category extends ActiveRecord implements PermalinkInterface, SitemapInterf
     {
         return static::find()
             ->selectSitemapAttributes()
+            ->withTranslations(Yii::$app->getI18n()->getLanguages())
             ->orderBy(['id' => SORT_ASC]);
     }
 
@@ -316,6 +317,11 @@ class Category extends ActiveRecord implements PermalinkInterface, SitemapInterf
     public function hasPermalink(): bool
     {
         return static::getModule()->enableCategoryUrls;
+    }
+
+    public function getTranslationModelClass(): string
+    {
+        return self::class;
     }
 
     public function getPermalinkModelClass(): string

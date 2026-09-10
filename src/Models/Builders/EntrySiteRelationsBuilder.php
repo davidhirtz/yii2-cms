@@ -124,7 +124,7 @@ class EntrySiteRelationsBuilder extends Component
 
         $sections = $this->entry->getSections()
             ->selectSiteAttributes()
-            ->replaceI18nAttributes()
+            ->withTranslations()
             ->whereStatus()
             ->indexBy('id')
             ->all();
@@ -194,7 +194,7 @@ class EntrySiteRelationsBuilder extends Component
     {
         return Entry::find()
             ->selectSiteAttributes()
-            ->replaceI18nAttributes()
+            ->withTranslations()
             ->withPermalinks()
             ->whereStatus()
             ->indexBy('id');
@@ -270,7 +270,7 @@ class EntrySiteRelationsBuilder extends Component
 
         $this->assets = Asset::find()
             ->selectSiteAttributes()
-            ->replaceI18nAttributes()
+            ->withTranslations()
             ->whereStatus()
             ->andWhere(count($condition) > 1 ? ['or', ...$condition] : $condition[0])
             ->orderBy(['position' => SORT_ASC])
@@ -291,7 +291,7 @@ class EntrySiteRelationsBuilder extends Component
         if ($fileIds) {
             $this->files += File::find()
                 ->selectSiteAttributes()
-                ->replaceI18nAttributes()
+                ->withTranslations()
                 ->where(['id' => $fileIds])
                 ->indexBy('id')
                 ->all();

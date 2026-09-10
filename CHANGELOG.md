@@ -1,5 +1,16 @@
 ## 3.0 (in development)
 
+- Translated attributes of `Entry`, `Section`, `Category` and `Asset` moved from their `_xx` columns into the
+  skeleton's `translation` table (`M260910110000Translations`). `Models\ActiveRecord` implements
+  `TranslationInterface`, uses `TranslationTrait` and attaches `TranslationBehavior` before `TrailBehavior`
+- `VirtualSlugTrait` now only adds the permalink-backed slug to the skeleton's virtual attribute mechanism;
+  the `attributes()`, `getColumnAttributes()`, `__get()`, `insertInternal()` and `updateInternal()` overrides
+  moved to `TranslationTrait`. `Entry` excludes `slug` from its translation attributes
+- `Section`'s slug uniqueness uses `Hirtz\Skeleton\Validators\UniqueValidator` and the validator's default
+  `when` check; the hand-written `when` closure was copied verbatim into the per-language rule and checked the
+  source-language attribute
+- `EntryQuery::matching()` and `CategoryQuery::selectSitemapAttributes()` no longer put a translated attribute
+  name into the SQL; `Category::getSitemapQuery()` eager loads every language's translations
 - Entry and category URLs now live in a dedicated `Permalink` record instead of `slug` / `parent_slug` columns. 
   `Hirtz\Cms\Models\Permalink` (with `PermalinkQuery`) stores the full resolvable path in
   `uri` (unique per `language`), the editable leaf in `slug`, and its owner as a polymorphic `model` / `model_id`

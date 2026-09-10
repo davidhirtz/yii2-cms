@@ -686,6 +686,11 @@ class Entry extends ActiveRecord implements AssetParentInterface, PermalinkInter
         return true;
     }
 
+    public function getTranslationModelClass(): string
+    {
+        return self::class;
+    }
+
     public function getPermalinkModelClass(): string
     {
         return self::class;

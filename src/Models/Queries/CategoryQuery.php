@@ -16,7 +16,7 @@ class CategoryQuery extends I18nActiveQuery
 
     public function selectSiteAttributes(): static
     {
-        return $this->addSelect($this->prefixColumns(array_diff($this->getModelInstance()->attributes(), [
+        return $this->addSelect($this->prefixColumns(array_diff($this->getModelInstance()->getColumnAttributes(), [
             'updated_by_user_id',
             'created_at',
         ])))->with('permalinks');
@@ -31,7 +31,7 @@ class CategoryQuery extends I18nActiveQuery
             'parent_id',
             'lft',
             'rgt',
-            ...Category::instance()->getI18nAttributesNames(['slug']),
+            'slug',
             'updated_at',
         ]));
     }

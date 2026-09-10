@@ -15,6 +15,7 @@ use Hirtz\Media\Models\Interfaces\AssetParentInterface;
 use Hirtz\Media\Models\Traits\AssetParentTrait;
 use yii\db\ActiveQuery;
 use Hirtz\Skeleton\Validators\RelationValidator;
+use Hirtz\Skeleton\Validators\UniqueValidator;
 use Override;
 use Yii;
 use yii\helpers\Inflector;
@@ -84,10 +85,9 @@ class Section extends ActiveRecord implements AssetParentInterface
             ],
             [
                 ['slug'],
-                'unique',
+                UniqueValidator::class,
                 'targetAttribute' => $this->slugTargetAttribute,
                 'comboNotUnique' => Yii::t('yii', '{attribute} "{value}" has already been taken.'),
-                'when' => fn () => $this->isAttributeChanged('slug')
             ],
         ])];
     }
@@ -368,6 +368,11 @@ class Section extends ActiveRecord implements AssetParentInterface
     public function formName(): string
     {
         return 'Section';
+    }
+
+    public function getTranslationModelClass(): string
+    {
+        return self::class;
     }
 
     #[Override]

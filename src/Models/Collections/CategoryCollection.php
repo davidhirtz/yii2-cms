@@ -138,7 +138,7 @@ class CategoryCollection
     {
         return Category::find()
             ->selectSiteAttributes()
-            ->replaceI18nAttributes()
+            ->withTranslations()
             ->whereStatus()
             ->indexBy('id')
             ->all();

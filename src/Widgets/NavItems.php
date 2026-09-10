@@ -72,7 +72,7 @@ class NavItems
     {
         return Entry::find()
             ->selectSiteAttributes()
-            ->replaceI18nAttributes()
+            ->withTranslations()
             ->withPermalinks()
             ->where(static::getEntryQueryWhere())
             ->whereStatus()

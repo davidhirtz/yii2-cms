@@ -25,16 +25,6 @@ class EntryQuery extends I18nActiveQuery
 {
     use ModuleTrait;
 
-    /**
-     * The virtual slug is reported by `attributes()` but has no column, so it must not reach the SELECT.
-     */
-    #[Override]
-    public function selectAllColumns(): static
-    {
-        $this->select = $this->prefixColumns($this->getModelInstance()->getColumnAttributes());
-        return $this;
-    }
-
     public function withPermalinks(): static
     {
         return $this->with('permalinks');
@@ -84,7 +74,7 @@ class EntryQuery extends I18nActiveQuery
     public function matching(?string $search): static
     {
         if ($search = $this->sanitizeSearchString($search)) {
-            $this->andWhere(Entry::tableName() . '.[[' . Entry::instance()->getI18nAttributeName('name') . ']] LIKE :search', [':search' => "%$search%"]);
+            $this->andWhere($this->getI18nAttributeName('name', fallback: true) . ' LIKE :search', [':search' => "%$search%"]);
         }
 
         return $this;
@@ -195,7 +185,7 @@ class EntryQuery extends I18nActiveQuery
         return $this->with([
             'assets' => function (AssetQuery $query): void {
                 $query->selectSitemapAttributes()
-                    ->replaceI18nAttributes()
+                    ->withTranslations()
                     ->whereStatus()
                     ->withFiles();
             },

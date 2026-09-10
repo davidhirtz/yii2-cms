@@ -73,6 +73,6 @@ trait SlugAttributeTrait
 
     protected function isUniqueRule(mixed $ruleName): bool
     {
-        return $ruleName === $this->slugUniqueValidator;
+        return $ruleName === $this->slugUniqueValidator || parent::isUniqueRule($ruleName);
     }
 }

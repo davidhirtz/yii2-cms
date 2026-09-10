@@ -107,7 +107,7 @@ class EntryParentIdSelectField extends SelectField
     protected function getEntryQuery(): EntryQuery
     {
         return Entry::find()
-            ->replaceI18nAttributes();
+            ->withTranslations();
     }
 
     protected function getOrderBy(): array

@@ -18,7 +18,7 @@ class AssetQuery extends I18nActiveQuery
      */
     public function selectSiteAttributes(): static
     {
-        return $this->addSelect($this->prefixColumns(array_diff($this->getModelInstance()->attributes(), [
+        return $this->addSelect($this->prefixColumns(array_diff($this->getModelInstance()->getColumnAttributes(), [
             'updated_by_user_id',
             'created_at',
         ])));
@@ -37,7 +37,7 @@ class AssetQuery extends I18nActiveQuery
         return $this->with([
             'file' => function (FileQuery $query): void {
                 $query->selectSiteAttributes()
-                    ->replaceI18nAttributes();
+                    ->withTranslations();
             }
         ]);
     }

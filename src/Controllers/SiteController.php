@@ -179,7 +179,7 @@ class SiteController extends Controller
 
         return Entry::find()
             ->selectSiteAttributes()
-            ->replaceI18nAttributes()
+            ->withTranslations()
             ->withPermalinks()
             ->whereStatus($status)
             ->andWhereParentStatus();
@@ -191,7 +191,7 @@ class SiteController extends Controller
 
         return Category::find()
             ->selectSiteAttributes()
-            ->replaceI18nAttributes()
+            ->withTranslations()
             ->whereStatus($status);
     }
 }

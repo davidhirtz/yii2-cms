@@ -142,10 +142,4 @@ class M260909100000Permalink extends Migration
             $entry->getI18nAttributeName('parent_slug', $language),
         ];
     }
-
-    protected function getQuotedTableName(string $tableName): string
-    {
-        $db = $this->getDb();
-        return $db->quoteTableName($db->getSchema()->getRawTableName($tableName));
-    }
 }
