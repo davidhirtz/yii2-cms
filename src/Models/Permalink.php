@@ -38,6 +38,12 @@ class Permalink extends ActiveRecord
     use ModuleTrait;
 
     /**
+     * The `language` of a permalink that is not translated. It resolves under every language, which is what lets a
+     * project keep a single slug and let `i18nUrl` decide the language, instead of translating the slug per language.
+     */
+    final public const string LANGUAGE_ALL = '*';
+
+    /**
      * @var array<int, string> the attributes a permalink must be unique by, extended by `yii2-cms-tenant`.
      */
     public array $uriTargetAttribute = ['language', 'uri'];

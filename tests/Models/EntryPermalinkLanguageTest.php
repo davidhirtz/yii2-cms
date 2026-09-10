@@ -30,8 +30,9 @@ class EntryPermalinkLanguageTest extends TestCase
         $entry = $this->createEntry('contact');
 
         self::assertCount(1, $entry->permalinks);
-        self::assertSame(['en-US'], array_keys($entry->permalinks));
+        self::assertSame([Permalink::LANGUAGE_ALL], array_keys($entry->permalinks));
         self::assertSame('contact', $entry->getPermalink('en-US')->uri);
+        self::assertSame('contact', $entry->getPermalink('de')->uri);
     }
 
     public function testUntranslatedSlugResolvesInEveryLanguage(): void
@@ -65,14 +66,16 @@ class EntryPermalinkLanguageTest extends TestCase
     }
 
     /**
-     * The German URL has no English record and no source-language record to fall back to, so it must not resolve
-     * under English — otherwise a translated URL would leak across languages.
+     * A translated slug has a real record per language and no language-agnostic one, so each URL resolves only under
+     * its own language — in either direction. The source-language URL leaking into other languages is exactly what
+     * the {@see Permalink::LANGUAGE_ALL} sentinel prevents: only an untranslated slug gets that fallback.
      */
     public function testTranslatedSlugDoesNotResolveUnderTheWrongLanguage(): void
     {
         $this->createTranslatedEntry(['en-US' => 'contact', 'de' => 'kontakt']);
 
         self::assertNull(Permalink::find()->whereUri('kontakt', 'en-US')->one());
+        self::assertNull(Permalink::find()->whereUri('contact', 'de')->one());
     }
 
     protected function createEntry(string $slug): TestEntry

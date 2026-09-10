@@ -173,8 +173,16 @@ class Entry extends ActiveRecord implements AssetParentInterface, PermalinkInter
      */
     protected function validateSlug(): void
     {
-        foreach ($this->getI18nAttributeNames('slug') as $language => $attributeName) {
-            if ($this->hasErrors($attributeName) || !$this->$attributeName || !$this->hasPermalink()) {
+        if (!$this->hasPermalink()) {
+            return;
+        }
+
+        // The permalink storage languages, not the attribute languages: an untranslated slug validates the single
+        // language-agnostic record it will save, so the uniqueness check matches the row that is actually written.
+        foreach ($this->getPermalinkLanguages() as $language) {
+            $attributeName = $this->getI18nAttributeName('slug', $language);
+
+            if ($this->hasErrors($attributeName) || !$this->getAttribute($attributeName)) {
                 continue;
             }
 

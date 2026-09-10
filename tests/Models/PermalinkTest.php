@@ -48,30 +48,37 @@ class PermalinkTest extends TestCase
     }
 
     /**
-     * An untranslated slug is stored once, under the source language, and must resolve in every language.
+     * An untranslated slug is stored once, under {@see Permalink::LANGUAGE_ALL}, and must resolve in every language.
      */
-    public function testSourceLanguagePermalinkResolvesInAnotherLanguage(): void
+    public function testLanguageAgnosticPermalinkResolvesInEveryLanguage(): void
     {
-        $permalink = $this->createPermalink('blog/hello-world', 'hello-world');
+        $permalink = $this->makePermalink('blog/hello-world', 'hello-world');
+        $permalink->language = Permalink::LANGUAGE_ALL;
+        self::assertTrue($permalink->insert(), implode(' ', $permalink->getErrorSummary(true)));
 
-        $found = Permalink::find()->whereUri('blog/hello-world', 'de')->one();
+        foreach (['en-US', 'de', 'fr'] as $language) {
+            $found = Permalink::find()->whereUri('blog/hello-world', $language)->one();
 
-        self::assertNotNull($found);
-        self::assertSame($permalink->id, $found->id);
+            self::assertNotNull($found, "Did not resolve under $language.");
+            self::assertSame($permalink->id, $found->id);
+        }
     }
 
     /**
-     * When the requested language has its own record, it wins over the source-language fallback.
+     * When the requested language has its own record, it wins over the language-agnostic fallback.
      */
-    public function testExactLanguageMatchWinsOverSourceFallback(): void
+    public function testExactLanguageMatchWinsOverLanguageAgnosticFallback(): void
     {
-        $this->createPermalink('shared', 'shared', modelId: 1);
+        $agnostic = $this->makePermalink('shared', 'shared', modelId: 1);
+        $agnostic->language = Permalink::LANGUAGE_ALL;
+        self::assertTrue($agnostic->insert());
 
         $translated = $this->makePermalink('shared', 'shared', modelId: 2);
         $translated->language = 'de';
         self::assertTrue($translated->insert());
 
         self::assertSame($translated->id, Permalink::find()->whereUri('shared', 'de')->one()?->id);
+        self::assertSame($agnostic->id, Permalink::find()->whereUri('shared', 'fr')->one()?->id);
     }
 
     public function testUriMustBeUniquePerLanguage(): void

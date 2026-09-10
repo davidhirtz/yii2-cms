@@ -138,23 +138,30 @@ trait PermalinkTrait
     {
         /** @var array<string, Permalink> $permalinks */
         $permalinks = $this->permalinks;
-        return $permalinks[$language ?? Yii::$app->language] ?? null;
+
+        return $permalinks[$language ?? Yii::$app->language]
+            ?? $permalinks[Permalink::LANGUAGE_ALL]
+            ?? null;
     }
 
     public function getFormattedSlug(?string $language = null): string
     {
-        $permalink = $this->getPermalink($language)
-            ?? $this->permalinks[Yii::$app->sourceLanguage]
-            ?? current($this->permalinks);
+        $permalink = $this->getPermalink($language) ?: current($this->permalinks);
 
         return $permalink instanceof Permalink ? $permalink->uri : '';
     }
 
+    /**
+     * The languages a {@see Permalink} is written for: one per language when the slug is translated, or the single
+     * language-agnostic {@see Permalink::LANGUAGE_ALL} record otherwise.
+     *
+     * @return list<string>
+     */
     public function getPermalinkLanguages(): array
     {
         return $this->isI18nAttribute('slug')
             ? array_keys($this->getI18nAttributeNames('slug'))
-            : [Yii::$app->sourceLanguage];
+            : [Permalink::LANGUAGE_ALL];
     }
 
     /**
@@ -171,8 +178,12 @@ trait PermalinkTrait
 
         $route['slug'] = $uri;
 
+        if ($language === null || $language === Permalink::LANGUAGE_ALL) {
+            $language = Yii::$app->sourceLanguage;
+        }
+
         return Yii::$app->getI18n()->callback(
-            $language ?? Yii::$app->sourceLanguage,
+            $language,
             fn (): string => Yii::$app->getUrlManager()->createUrl($route)
         );
     }

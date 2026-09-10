@@ -17,38 +17,34 @@ use yii\db\Expression;
  */
 class PermalinkQuery extends ActiveQuery
 {
+    /**
+     * Matches permalinks that resolve under the given language: those stored for it, plus the language-agnostic
+     * {@see Permalink::LANGUAGE_ALL} records that resolve under every language.
+     */
     public function whereLanguage(?string $language = null): static
     {
         return $this->andWhere([
-            $this->getTableAlias() . '.[[language]]' => $language ?? Yii::$app->language,
+            $this->getTableAlias() . '.[[language]]' => [$language ?? Yii::$app->language, Permalink::LANGUAGE_ALL],
         ]);
     }
 
     /**
-     * Matches the full path a request resolves to, hitting the unique `(language, uri)` index.
+     * Matches the full path a request resolves to.
      *
-     * A model whose slug is not translated has a single record under the source language rather than one per
-     * language, so the lookup accepts that too — otherwise such a URL would only resolve while the source language
-     * was active. The same fallback covers a language added after the records were written. An exact match still
-     * wins when both exist.
+     * A translated slug has one record per language; an untranslated one has a single {@see Permalink::LANGUAGE_ALL}
+     * record that resolves under every language. The lookup accepts both, and a per-language record wins over the
+     * language-agnostic fallback when the same path exists as both.
      */
     public function whereUri(string $uri, ?string $language = null): static
     {
         $language ??= Yii::$app->language;
         $alias = $this->getTableAlias();
 
-        $languages = array_values(array_unique([$language, Yii::$app->sourceLanguage]));
-
-        $this->andWhere([
-            "$alias.[[uri]]" => trim($uri, '/'),
-            "$alias.[[language]]" => $languages,
-        ]);
-
-        return count($languages) > 1
-            ? $this->addOrderBy(new Expression("$alias.[[language]] = :permalinkLanguage DESC", [
+        return $this->whereLanguage($language)
+            ->andWhere(["$alias.[[uri]]" => trim($uri, '/')])
+            ->addOrderBy(new Expression("$alias.[[language]] = :permalinkLanguage DESC", [
                 ':permalinkLanguage' => $language,
-            ]))
-            : $this;
+            ]));
     }
 
     public function whereModel(PermalinkInterface|string $model, ?int $modelId = null): static
