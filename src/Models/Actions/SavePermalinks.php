@@ -45,9 +45,6 @@ class SavePermalinks
     }
 
     /**
-     * The previous slug of each attribute whose slug changed, keyed by attribute name. The owner records these on its
-     * own trail, so the change is read from the permalink rather than from the virtual attribute.
-     *
      * @return array<string, string|null>
      */
     public function getSlugChanges(): array

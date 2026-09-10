@@ -223,11 +223,8 @@ class Entry extends ActiveRecord implements AssetParentInterface, PermalinkInter
         $permalinks = new SavePermalinks($this);
         $changedLanguages = $permalinks->save();
 
-        // The slug is not a column, so its change is recorded on the entry's own trail from the permalink itself.
         $changedAttributes = [...$changedAttributes, ...$permalinks->getSlugChanges()];
 
-        // Not on insert: a new record always reports a changed permalink and has no children, and priming the
-        // children cache here would leave it empty for the rest of this instance's life.
         if (
             !$insert
             && $this->entry_count
