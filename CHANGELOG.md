@@ -1,28 +1,8 @@
 ## 3.0 (in development)
 
-- **Breaking:** entry and category URLs now live in a dedicated `Permalink` record instead of `slug` /
-  `parent_slug` columns. `Hirtz\Cms\Models\Permalink` (with `PermalinkQuery`) stores the full resolvable path in
-  `uri` (unique per `language`), the editable leaf in `slug`, and its owner as a polymorphic `model` / `model_id`;
-  `yii2-cms-tenant` scopes it per tenant. Migration `M260909100000Permalink` creates the table, backfills entries and
-  drops `entry.slug` / `entry.parent_slug`. `Entry` and `Category` implement `PermalinkInterface` via
-  `PermalinkTrait`; `Entry::$slug` becomes a virtual attribute (admin form and validation unchanged), while
-  `Entry::$parent_slug`, `Entry::$slugTargetAttribute`, `EntryQuery::addSelectI18nSlugTargetAttributes()` and the dead
-  `Web\UrlRule` are removed. `Entry::hasRoute()` is now `section_count || entry_count`
-- A project chooses how a slug behaves across languages: leave it a plain attribute and let `i18nUrl` pick the
-  language — one language-agnostic record (`Permalink::LANGUAGE_ALL`) resolving everywhere — or make `slug` an
-  `i18nAttribute` for one record per language, each resolving only under its own. `PermalinkQuery::whereUri()` prefers
-  an exact-language match over the agnostic fallback
-- Category URLs are flat: a category slug is a single, globally-unique segment, so its `uri` is just the slug, behind
-  the new `Module::$enableCategoryUrls` (default off, forced off when `enableCategories` is). Entry URLs stay nested
-  (`parent/child`). Renaming or moving a category rewrites only its own permalink; an entry rename still cascades to
-  its descendants
-- `SiteController::actionView()` resolves its slug against the permalink table and renders an entry or a category —
-  override `renderPermalink()` to resolve further models. `getFormattedSlug()` reads the stored `uri` (no query per
-  listing row); `composeFormattedSlug()` recomputes it for the save path. A renamed slug is recorded in the `Trail`
-  on the owner, and a rename or move writes a `Redirect`, so `Entry` and `Category` no longer attach
-  `RedirectBehavior` (still used by `Hirtz\Media\Models\File`)
-- Added the `permalink/rebuild` and `permalink/prune` console commands, and the `PERMALINK_PROTECTED_ERROR`,
-  `PERMALINK_SLUG_LABEL` and `PERMALINK_URI_LABEL` messages
+- Entry and category URLs now live in a dedicated `Permalink` record instead of `slug` / `parent_slug` columns. 
+  `Hirtz\Cms\Models\Permalink` (with `PermalinkQuery`) stores the full resolvable path in
+  `uri` (unique per `language`), the editable leaf in `slug`, and its owner as a polymorphic `model` / `model_id`
 - Consolidated the split entry/section asset controllers back into a single `AssetController`; entry
   and section assets are served under `admin/cms/asset/*` again (removed `EntryAssetController` and
   the planned `section-asset` route). Added the thin `AssetHeader` and `AssetSubmenu` dispatcher
@@ -31,10 +11,6 @@
   POST-insert split. Moved the entry-asset views to `resources/views/admin/asset/`
 - Added a `depth` column to the category table (`M260907100000Depth`), backfilled from the existing
   nested set, matching `NestedTreeTrait`'s new depth tracking
-- `actionOrder()` in the entry, section, category, asset, section-entry and entry-category admin
-  controllers now returns a flash fragment (was `void`) and emits a success flash after a reorder;
-  added the `ENTRY_SUCCESS_ORDERED`, `SECTION_SUCCESS_ORDERED`, `CATEGORY_SUCCESS_ORDERED` and
-  `ASSET_SUCCESS_ORDERED` messages
 - Added `CategorySubmenu` and gave `CategoryHeader` a `ModelTrait`; the category update view now shows
   the category name (with frontend link) in the header and a submenu (general / subcategories) like
   entries. Subcategories are browsed through the category index (`parent` param) instead of an inline
