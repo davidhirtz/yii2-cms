@@ -27,11 +27,8 @@ use Yii;
  * @property string $slug
  * @property string $model
  * @property int $model_id
- * @property int|null $parent_id
  * @property DateTime|null $updated_at
  * @property DateTime $created_at
- *
- * @property-read static|null $parent {@see static::getParent()}
  */
 class Permalink extends ActiveRecord
 {
@@ -134,19 +131,6 @@ class Permalink extends ActiveRecord
         ]);
 
         return parent::beforeSave($insert);
-    }
-
-    public function getParent(): PermalinkQuery
-    {
-        /** @var PermalinkQuery $relation */
-        $relation = $this->hasOne(static::class, ['id' => 'parent_id']);
-        return $relation;
-    }
-
-    public function populateParentRelation(?self $parent): void
-    {
-        $this->populateRelation('parent', $parent);
-        $this->parent_id = $parent?->id;
     }
 
     /**

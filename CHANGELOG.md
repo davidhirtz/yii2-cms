@@ -1,5 +1,9 @@
 ## 3.0 (in development)
 
+- Dropped the unused `Permalink::$parent_id` self-reference (column, foreign key and the `getParent()` /
+  `populateParentRelation()` accessors; migration `M260910110000DropPermalinkParentId`). A permalink stores its full
+  path in `uri`, so lookups never walk a tree, and subtree rewrites are driven by the owner's tree; nothing read the
+  column and no write kept it current beyond its original backfill
 - A slug that is not an `i18nAttribute` now writes a single language-agnostic `Permalink` (`language` =
   `Permalink::LANGUAGE_ALL`, `'*'`) rather than one per configured language, letting a project keep one slug and
   let `i18nUrl` decide the language. `PermalinkQuery::whereUri()` resolves it under any language, while a translated

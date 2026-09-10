@@ -122,18 +122,6 @@ class PermalinkTest extends TestCase
         self::assertArrayHasKey('uri', $permalink->getErrors());
     }
 
-    public function testParentRelationIsPopulated(): void
-    {
-        $parent = $this->createPermalink('blog', 'blog', modelId: 1);
-
-        $child = $this->makePermalink('blog/hello-world', 'hello-world', modelId: 2);
-        $child->populateParentRelation($parent);
-
-        self::assertTrue($child->insert());
-        self::assertSame($parent->id, $child->parent_id);
-        self::assertSame($parent->id, Permalink::findOne($child->id)->parent->id);
-    }
-
     public function testIsModelMatchesSubclasses(): void
     {
         $permalink = $this->createPermalink('blog/hello-world', 'hello-world');
