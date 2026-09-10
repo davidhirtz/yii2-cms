@@ -9,9 +9,11 @@ use davidhirtz\yii2\datetime\DateTimeValidator;
 use Hirtz\Cms\Models\Queries\AssetQuery;
 use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Models\Queries\SectionQuery;
+use Hirtz\Cms\Models\Actions\SavePermalinks;
 use Hirtz\Cms\Models\Interfaces\PermalinkInterface;
 use Hirtz\Cms\Models\Traits\PermalinkTrait;
 use Hirtz\Cms\Models\Traits\SlugAttributeTrait;
+use Hirtz\Cms\Models\Traits\VirtualSlugTrait;
 use Hirtz\Cms\Module;
 use Hirtz\Media\Models\Interfaces\AssetParentInterface;
 use Hirtz\Media\Models\Traits\AssetParentTrait;
@@ -55,6 +57,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, PermalinkInter
     use MaterializedTreeTrait;
     use PermalinkTrait;
     use SlugAttributeTrait;
+    use VirtualSlugTrait;
 
     final public const string ROUTE_INDEX = 'cms.entry.index';
     final public const string ROUTE_VIEW = 'cms.entry.view';
@@ -217,8 +220,11 @@ class Entry extends ActiveRecord implements AssetParentInterface, PermalinkInter
     #[Override]
     public function afterSave($insert, $changedAttributes): void
     {
-        $changedAttributes = $this->addSlugChangedAttributes($changedAttributes);
-        $changedLanguages = $this->savePermalinks();
+        $permalinks = new SavePermalinks($this);
+        $changedLanguages = $permalinks->save();
+
+        // The slug is not a column, so its change is recorded on the entry's own trail from the permalink itself.
+        $changedAttributes = [...$changedAttributes, ...$permalinks->getSlugChanges()];
 
         // Not on insert: a new record always reports a changed permalink and has no children, and priming the
         // children cache here would leave it empty for the rest of this instance's life.
@@ -706,11 +712,6 @@ class Entry extends ActiveRecord implements AssetParentInterface, PermalinkInter
     }
 
     public function isSlugRequired(): bool
-    {
-        return true;
-    }
-
-    protected function hasVirtualSlug(): bool
     {
         return true;
     }

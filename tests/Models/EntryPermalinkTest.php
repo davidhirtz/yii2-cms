@@ -229,6 +229,21 @@ class EntryPermalinkTest extends TestCase
         self::assertSame(['before', 'after'], $data['slug'] ?? null);
     }
 
+    /**
+     * The old slug is read from the permalink, not from the virtual attribute, so a rename records the correct
+     * before/after even when the slug was never read (and thus never materialised) before being written.
+     */
+    public function testRenameRecordsTheOldSlugWithoutReadingItFirst(): void
+    {
+        $created = $this->createEntry('before');
+
+        $entry = TestEntry::findOne($created->id);
+        $entry->slug = 'after';
+        self::assertNotFalse($entry->update());
+
+        self::assertSame(['before', 'after'], $this->findTrailData($entry, Trail::TYPE_UPDATE)['slug'] ?? null);
+    }
+
     public function testTrailIsWrittenOnTheEntryNotThePermalink(): void
     {
         $entry = $this->createEntry('before');

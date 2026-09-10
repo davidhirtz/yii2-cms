@@ -17,6 +17,11 @@ class SavePermalinks
      */
     protected array $changedLanguages = [];
 
+    /**
+     * @var array<string, string|null> the previous slug per changed slug attribute, for the owner's trail
+     */
+    protected array $slugChanges = [];
+
     public function __construct(
         protected ActiveRecord&PermalinkInterface $model,
     ) {
@@ -28,6 +33,7 @@ class SavePermalinks
     public function save(): array
     {
         $this->changedLanguages = [];
+        $this->slugChanges = [];
 
         foreach ($this->model->getPermalinkLanguages() as $language) {
             $this->savePermalink($language);
@@ -36,6 +42,17 @@ class SavePermalinks
         $this->model->refreshRelation('permalinks');
 
         return $this->changedLanguages;
+    }
+
+    /**
+     * The previous slug of each attribute whose slug changed, keyed by attribute name. The owner records these on its
+     * own trail, so the change is read from the permalink rather than from the virtual attribute.
+     *
+     * @return array<string, string|null>
+     */
+    public function getSlugChanges(): array
+    {
+        return $this->slugChanges;
     }
 
     protected function savePermalink(string $language): void
@@ -54,9 +71,15 @@ class SavePermalinks
         }
 
         $previousUri = $permalink->getIsNewRecord() ? null : $permalink->getOldAttribute('uri');
+        $previousSlug = $permalink->getIsNewRecord() ? null : $permalink->getOldAttribute('slug');
+        $slugChanged = $permalink->getIsNewRecord() || $permalink->isAttributeChanged('slug', false);
 
         if ($permalink->upsert()) {
             $this->changedLanguages[] = $language;
+
+            if ($slugChanged) {
+                $this->slugChanges[$this->model->getI18nAttributeName('slug', $language)] = $previousSlug;
+            }
 
             if ($previousUri && $previousUri !== $permalink->uri) {
                 $this->insertRedirect($previousUri, $permalink);

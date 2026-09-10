@@ -3,6 +3,11 @@
 - Entry and category URLs now live in a dedicated `Permalink` record instead of `slug` / `parent_slug` columns. 
   `Hirtz\Cms\Models\Permalink` (with `PermalinkQuery`) stores the full resolvable path in
   `uri` (unique per `language`), the editable leaf in `slug`, and its owner as a polymorphic `model` / `model_id`
+- `Entry`'s virtual slug is read from its permalink lazily (on first access) rather than on every `afterFind()`, so
+  loading an entry without touching its slug or route no longer queries the permalink table. The machinery moved from
+  `PermalinkTrait` to a dedicated `VirtualSlugTrait` (used only by `Entry`, which has no slug column), dropping the
+  `hasVirtualSlug()` flag. A renamed slug is recorded on the entry's trail from the permalink's previous value, so it
+  is correct even when the slug was never read before being written
 - Consolidated the split entry/section asset controllers back into a single `AssetController`; entry
   and section assets are served under `admin/cms/asset/*` again (removed `EntryAssetController` and
   the planned `section-asset` route). Added the thin `AssetHeader` and `AssetSubmenu` dispatcher

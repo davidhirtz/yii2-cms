@@ -63,6 +63,27 @@ class EntryUrlQueryCountTest extends TestCase
     }
 
     /**
+     * A slug lives in a permalink record, but loading an entry must not fetch it: the relation stays unloaded until
+     * the slug (or a route derived from it) is actually read.
+     */
+    public function testLoadingAnEntryDoesNotLoadPermalinks(): void
+    {
+        $created = $this->createEntry('test-entry');
+
+        $entry = TestEntry::findOne($created->id);
+
+        self::assertFalse($entry->isRelationPopulated('permalinks'), 'Loading the entry fetched its permalinks.');
+
+        // Touching an unrelated attribute must not trigger it either.
+        self::assertSame('Test-entry', $entry->name);
+        self::assertFalse($entry->isRelationPopulated('permalinks'));
+
+        // Reading the slug materialises it from the permalink.
+        self::assertSame('test-entry', $entry->slug);
+        self::assertTrue($entry->isRelationPopulated('permalinks'));
+    }
+
+    /**
      * @param list<int> $ids
      * @return Entry[]
      */
