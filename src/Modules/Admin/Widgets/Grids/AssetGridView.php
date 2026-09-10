@@ -11,12 +11,10 @@ use Hirtz\Cms\Modules\Admin\Data\AssetArrayDataProvider;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\Columns\AssetThumbnailColumn;
 use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Media\Models\File;
-use Hirtz\Media\Modules\Admin\Widgets\Buttons\FileButtonsTrait;
 use Hirtz\Media\Modules\Admin\Widgets\Grids\Traits\AssetGridViewTrait;
 use Hirtz\Skeleton\Html\A;
 use Hirtz\Skeleton\Html\Div;
 use Hirtz\Skeleton\I18n\Lang;
-use Hirtz\Skeleton\Widgets\Buttons\Button;
 use Hirtz\Skeleton\Widgets\Grids\Columns\ButtonColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\DraggableSortGridButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\ViewGridButton;
@@ -24,6 +22,7 @@ use Hirtz\Skeleton\Widgets\Grids\Columns\Column;
 use Hirtz\Skeleton\Widgets\Grids\Columns\DataColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\StatusIconColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\TypeColumn;
+use Hirtz\Skeleton\Widgets\Grids\GridSummary;
 use Hirtz\Skeleton\Widgets\Grids\GridView;
 use Override;
 use Stringable;
@@ -39,8 +38,6 @@ class AssetGridView extends GridView
 {
     use AssetGridViewTrait;
     use ModuleTrait;
-
-    protected string $layout = '{header}{items}{footer}';
 
     #[Override]
     protected function configure(): void
@@ -60,6 +57,14 @@ class AssetGridView extends GridView
         $this->orderRoute = ['/admin/cms/asset/order', $parent->getParamName() => $parent->id];
 
         parent::configure();
+    }
+
+    #[Override]
+    protected function getSummary(): ?GridSummary
+    {
+        return parent::getSummary()
+            ->message(Lang::t('cms', 'ASSET_GRID_SUMMARY_EMPTY'))
+            ->visible(fn (): bool => $this->provider->getCount() === 0);
     }
 
     protected function getStatusColumn(): ?Column
