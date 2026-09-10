@@ -177,18 +177,15 @@ class Entry extends ActiveRecord implements AssetParentInterface, PermalinkInter
             return;
         }
 
-        // The permalink storage languages, not the attribute languages: an untranslated slug validates the single
-        // language-agnostic record it will save, so the uniqueness check matches the row that is actually written.
         foreach ($this->getPermalinkLanguages() as $language) {
             $attributeName = $this->getI18nAttributeName('slug', $language);
 
-            if ($this->hasErrors($attributeName) || !$this->getAttribute($attributeName)) {
+            if (!$this->getAttribute($attributeName) || $this->hasErrors($attributeName)) {
                 continue;
             }
 
             $permalink = $this->buildPermalink($language);
 
-            // Only the URI rules: on insert there is no id yet for the permalink's own `model_id` to be valid.
             if (!$permalink->validate(['uri', 'slug'])) {
                 foreach ($permalink->getFirstErrors() as $error) {
                     $this->addError($attributeName, $error);

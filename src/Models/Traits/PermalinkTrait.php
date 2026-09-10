@@ -126,17 +126,14 @@ trait PermalinkTrait
 
     public function getPermalinks(): PermalinkQuery
     {
-        /** @var PermalinkQuery<Permalink> $relation */
-        $relation = $this->hasMany(Permalink::class, ['model_id' => 'id'])
+        /** @var PermalinkQuery<Permalink> */
+        return $this->hasMany(Permalink::class, ['model_id' => 'id'])
             ->andOnCondition([Permalink::tableName() . '.[[model]]' => $this->getPermalinkModelClass()])
             ->indexBy('language');
-
-        return $relation;
     }
 
     public function getPermalink(?string $language = null): ?Permalink
     {
-        /** @var array<string, Permalink> $permalinks */
         $permalinks = $this->permalinks;
 
         return $permalinks[$language ?? Yii::$app->language]
@@ -146,15 +143,11 @@ trait PermalinkTrait
 
     public function getFormattedSlug(?string $language = null): string
     {
-        $permalink = $this->getPermalink($language) ?: current($this->permalinks);
-
+        $permalink = $this->getPermalink($language) ?? current($this->permalinks);
         return $permalink instanceof Permalink ? $permalink->uri : '';
     }
 
     /**
-     * The languages a {@see Permalink} is written for: one per language when the slug is translated, or the single
-     * language-agnostic {@see Permalink::LANGUAGE_ALL} record otherwise.
-     *
      * @return list<string>
      */
     public function getPermalinkLanguages(): array
