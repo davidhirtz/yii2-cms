@@ -115,10 +115,6 @@ class Category extends ActiveRecord implements PermalinkInterface, SitemapInterf
     #[Override]
     public function beforeSave($insert): bool
     {
-        if (!$this->slug) {
-            $this->slug = null;
-        }
-
         if (!parent::beforeSave($insert)) {
             return false;
         }
