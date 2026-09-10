@@ -14,10 +14,6 @@ use Yii;
 use yii\db\ActiveRecord;
 
 /**
- * Implements {@see PermalinkInterface}. The owner calls {@see static::savePermalinks()} and
- * {@see static::deletePermalinks()} from its own `afterSave()` and `afterDelete()` rather than the trait attaching
- * hooks, because both owners already define those methods.
- *
  * @mixin ActiveRecord
  */
 trait PermalinkTrait
