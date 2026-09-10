@@ -1,5 +1,12 @@
 ## 3.0 (in development)
 
+- Category permalinks are flat: a category slug is a single, globally-unique segment, so its permalink `uri` is
+  just the slug with no parent path. Renaming or moving a category no longer rewrites descendants, so the
+  `UpdateDescendantPermalinks` action and `Category::isTransactional()` override are gone and `Category::afterSave()`
+  is a plain `savePermalinks()`. (Entry URLs stay nested.)
+- Unified permalink construction: `buildPermalink()` moved to `PermalinkTrait` and is now the single builder used by
+  both validation and `SavePermalinks` (which loses its own `createPermalink()`); `composeFormattedSlug()` has a flat
+  default on the trait that `Entry` overrides to prepend its parent path
 - Dropped the unused `Permalink::$parent_id` self-reference (column, foreign key and the `getParent()` /
   `populateParentRelation()` accessors; migration `M260910110000DropPermalinkParentId`). A permalink stores its full
   path in `uri`, so lookups never walk a tree, and subtree rewrites are driven by the owner's tree; nothing read the

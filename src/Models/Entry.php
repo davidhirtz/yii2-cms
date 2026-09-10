@@ -194,27 +194,6 @@ class Entry extends ActiveRecord implements AssetParentInterface, PermalinkInter
         }
     }
 
-    /**
-     * The permalink this model's current state would be saved as, used for validation and by {@see SavePermalinks}.
-     */
-    public function buildPermalink(?string $language = null): Permalink
-    {
-        $language ??= Yii::$app->language;
-        $permalink = $this->getPermalink($language) ?? Permalink::create();
-
-        if ($permalink->getIsNewRecord()) {
-            $permalink->language = $language;
-            $permalink->model = $this->getPermalinkModelClass();
-            $permalink->model_id = $this->id;
-        }
-
-        $permalink->uri = $this->composeFormattedSlug($language);
-        $permalink->slug = (string)$this->getI18nAttribute('slug', $language);
-        $permalink->setAttributes($this->getPermalinkAttributes(), false);
-
-        return $permalink;
-    }
-
     #[Override]
     public function beforeSave($insert): bool
     {
@@ -238,15 +217,16 @@ class Entry extends ActiveRecord implements AssetParentInterface, PermalinkInter
     #[Override]
     public function afterSave($insert, $changedAttributes): void
     {
-        // Before the old values are reset below, so a rename reaches the trail record.
         $changedAttributes = $this->addSlugChangedAttributes($changedAttributes);
-
-        // Depth first: children derive their prefix from this record, so it has to be written first.
         $changedLanguages = $this->savePermalinks();
 
         // Not on insert: a new record always reports a changed permalink and has no children, and priming the
         // children cache here would leave it empty for the rest of this instance's life.
-        if (!$insert && $this->entry_count && ($changedLanguages || $this->isMaterializedTreeChanged($changedAttributes))) {
+        if (
+            !$insert
+            && $this->entry_count
+            && ($changedLanguages || $this->isMaterializedTreeChanged($changedAttributes))
+        ) {
             Yii::debug('Updating child entries ...', __METHOD__);
 
             foreach ($this->getChildren(true) as $entry) {

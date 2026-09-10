@@ -144,6 +144,39 @@ trait PermalinkTrait
     }
 
     /**
+     * The URI a save would store for this language. Flat by default — just the slug — because a slug is globally
+     * unique; {@see Entry} overrides this to prepend its parent path. Unlike {@see static::getFormattedSlug()}, this
+     * recomputes from the current attributes so the save path and validation see pending changes, and an override
+     * may query the parent, so keep it off listings.
+     */
+    public function composeFormattedSlug(?string $language = null): string
+    {
+        return (string)$this->getI18nAttribute('slug', $language);
+    }
+
+    /**
+     * The {@see Permalink} this model's current state would be saved as, reused by {@see SavePermalinks} and by
+     * validation so both build the record identically.
+     */
+    public function buildPermalink(?string $language = null): Permalink
+    {
+        $language ??= Yii::$app->language;
+        $permalink = $this->getPermalink($language) ?? Permalink::create();
+
+        if ($permalink->getIsNewRecord()) {
+            $permalink->language = $language;
+            $permalink->model = $this->getPermalinkModelClass();
+            $permalink->model_id = $this->id;
+        }
+
+        $permalink->uri = $this->composeFormattedSlug($language);
+        $permalink->slug = (string)$this->getI18nAttribute('slug', $language);
+        $permalink->setAttributes($this->getPermalinkAttributes(), false);
+
+        return $permalink;
+    }
+
+    /**
      * @return list<string>
      */
     public function getPermalinkLanguages(): array

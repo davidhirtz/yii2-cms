@@ -155,14 +155,15 @@ final class SiteControllerFunctionalTest extends TestCase
         self::assertResponseStatusCodeSame(404);
     }
 
-    public function testNestedCategoryResolvesUnderItsFullPath(): void
+    public function testNestedCategoryResolvesUnderItsOwnSlug(): void
     {
         Category::getModule()->enableCategoryUrls = true;
 
         $parent = $this->createCategory('news');
         $child = $this->createCategory('sport', $parent);
 
-        $this->open('/news/sport');
+        // A category slug is a single globally-unique segment, so a child resolves at its own slug, not a path.
+        $this->open('/sport');
 
         self::assertResponseIsSuccessful();
         self::assertPageTitleSame($child->name);

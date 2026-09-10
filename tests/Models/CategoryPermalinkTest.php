@@ -10,8 +10,8 @@ use Hirtz\Cms\Test\TestCase;
 use Override;
 
 /**
- * Categories are the one place where this refactor changes behaviour: their slugs used to be single, globally unique
- * segments assembled into a path at URL-generation time, and are now materialised as a nested path.
+ * A category slug is a single, globally-unique segment: its permalink URI is just the slug, with no parent path, so
+ * renaming or moving a category never changes another category's URL.
  */
 class CategoryPermalinkTest extends TestCase
 {
@@ -43,47 +43,43 @@ class CategoryPermalinkTest extends TestCase
         self::assertSame('news', $this->findPermalinkUri($category));
     }
 
-    public function testNestedCategoryUsesTheFullPath(): void
+    public function testNestedCategoryUsesItsOwnSlug(): void
     {
         $parent = $this->createCategory('news');
         $child = $this->createCategory('sport', $parent);
 
-        self::assertSame('news/sport', $child->getFormattedSlug());
-        self::assertSame('news/sport', $this->findPermalinkUri($child));
+        self::assertSame('sport', $child->getFormattedSlug());
+        self::assertSame('sport', $this->findPermalinkUri($child));
     }
 
-    public function testRenamingACategoryRewritesDescendantPermalinks(): void
+    public function testRenamingACategoryLeavesDescendantsUntouched(): void
     {
         $parent = $this->createCategory('news');
         $child = $this->createCategory('sport', $parent);
-        $grandchild = $this->createCategory('football', $child);
 
         $parent->refresh();
         $parent->slug = 'stories';
         self::assertNotFalse($parent->update());
 
         self::assertSame('stories', $this->findPermalinkUri($parent));
-        self::assertSame('stories/sport', $this->findPermalinkUri($child));
-        self::assertSame('stories/sport/football', $this->findPermalinkUri($grandchild));
+        self::assertSame('sport', $this->findPermalinkUri($child));
     }
 
-    public function testMovingACategoryRewritesDescendantPermalinks(): void
+    public function testMovingACategoryLeavesItsSlugUntouched(): void
     {
         $first = $this->createCategory('first');
         $second = $this->createCategory('second');
         $child = $this->createCategory('child', $first);
-        $grandchild = $this->createCategory('grandchild', $child);
 
         $child->refresh();
         $child->parent_id = $second->id;
         self::assertNotFalse($child->update());
 
-        self::assertSame('second/child', $this->findPermalinkUri($child));
-        self::assertSame('second/child/grandchild', $this->findPermalinkUri($grandchild));
+        self::assertSame('child', $this->findPermalinkUri($child));
     }
 
     /**
-     * The nested set is left intact by the permalink rewrite, which is why it does not re-save descendants.
+     * The nested set is left intact by a rename, which touches only the category's own permalink.
      */
     public function testRenamingDoesNotDisturbTheNestedTree(): void
     {
@@ -114,38 +110,6 @@ class CategoryPermalinkTest extends TestCase
         self::assertSame(0, (int)Permalink::find()
             ->whereModel(Category::class, $id)
             ->count());
-    }
-
-    /**
-     * A rename that rewrites a subtree has to be atomic, so a collision part-way through cannot leave half the tree
-     * pointing at the new path. `NestedTreeTrait::isTransactional()` only covers a changed `parent_id`.
-     */
-    public function testRenameIsTransactionalOnlyWhenItRewritesASubtree(): void
-    {
-        $parent = $this->createCategory('news');
-        $this->createCategory('sport', $parent);
-        $leaf = $this->createCategory('weather');
-
-        $parent->refresh();
-        $parent->slug = 'stories';
-        self::assertTrue($parent->isTransactional($parent::OP_UPDATE));
-
-        $leaf->refresh();
-        $leaf->slug = 'forecast';
-        self::assertFalse($leaf->isTransactional($leaf::OP_UPDATE));
-    }
-
-    public function testRenameIsNotTransactionalWhenCategoryUrlsAreDisabled(): void
-    {
-        $parent = $this->createCategory('news');
-        $this->createCategory('sport', $parent);
-
-        Category::getModule()->enableCategoryUrls = false;
-
-        $parent->refresh();
-        $parent->slug = 'stories';
-
-        self::assertFalse($parent->isTransactional($parent::OP_UPDATE));
     }
 
     protected function findPermalinkUri(Category $category): ?string

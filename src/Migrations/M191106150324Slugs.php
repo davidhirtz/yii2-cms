@@ -32,7 +32,7 @@ class M191106150324Slugs extends Migration
                 } catch (Exception) {
                 }
 
-                $this->createIndex($attributeName, $category::tableName(), $category->slugTargetAttribute ?: $attributeName, true);
+                $this->createIndex($attributeName, $category::tableName(), $attributeName, true);
             }
 
             $this->dropSlugIndex();

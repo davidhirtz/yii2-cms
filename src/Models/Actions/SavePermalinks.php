@@ -40,18 +40,14 @@ class SavePermalinks
 
     protected function savePermalink(string $language): void
     {
-        $permalink = $this->model->getPermalink($language);
         $slug = (string)$this->model->getI18nAttribute('slug', $language);
 
         if (!$slug || !$this->model->hasPermalink()) {
-            $this->deletePermalink($permalink, $language);
+            $this->deletePermalink($this->model->getPermalink($language), $language);
             return;
         }
 
-        $permalink ??= $this->createPermalink($language);
-        $permalink->uri = $this->model->composeFormattedSlug($language);
-        $permalink->slug = $slug;
-        $permalink->setAttributes($this->model->getPermalinkAttributes(), false);
+        $permalink = $this->model->buildPermalink($language);
 
         if (!$permalink->getIsNewRecord() && !$permalink->getDirtyAttributes()) {
             return;
@@ -103,16 +99,6 @@ class SavePermalinks
             $redirect->url = $to;
             $redirect->update();
         }
-    }
-
-    protected function createPermalink(string $language): Permalink
-    {
-        $permalink = Permalink::create();
-        $permalink->language = $language;
-        $permalink->model = $this->model->getPermalinkModelClass();
-        $permalink->model_id = $this->model->id;
-
-        return $permalink;
     }
 
     protected function deletePermalink(?Permalink $permalink, string $language): void

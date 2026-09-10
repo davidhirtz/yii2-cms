@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Models;
 
-use Hirtz\Cms\Models\Actions\UpdateDescendantPermalinks;
 use Hirtz\Cms\Models\Collections\CategoryCollection;
 use Hirtz\Cms\Models\Interfaces\PermalinkInterface;
 use Hirtz\Cms\Models\Queries\CategoryQuery;
@@ -131,9 +130,7 @@ class Category extends ActiveRecord implements PermalinkInterface, SitemapInterf
     #[Override]
     public function afterSave($insert, $changedAttributes): void
     {
-        if ($this->savePermalinks() && $this->getBranchCount()) {
-            (new UpdateDescendantPermalinks($this))->update();
-        }
+        $this->savePermalinks();
 
         if (!$insert && ($this->parent_id && array_key_exists('parent_id', $changedAttributes))) {
             $this->insertEntryCategoryAncestors();
@@ -338,35 +335,6 @@ class Category extends ActiveRecord implements PermalinkInterface, SitemapInterf
     public function getPermalinkModelClass(): string
     {
         return self::class;
-    }
-
-    /**
-     * Unlike {@see Entry}, a category does not materialise its parent path in a column, so the prefix is walked up
-     * the parent relation. {@see UpdateDescendantPermalinks} populates that relation to keep the walk query free.
-     */
-    public function composeFormattedSlug(?string $language = null): string
-    {
-        $slug = (string)$this->getI18nAttribute('slug', $language);
-        $prefix = $this->parent?->getFormattedSlug($language);
-
-        return trim($prefix ? "$prefix/$slug" : $slug, '/');
-    }
-
-    /**
-     * Repeats {@see NestedTreeTrait::isTransactional()}, which this method shadows, and additionally covers a rename
-     * that has to rewrite a subtree of permalinks.
-     */
-    #[Override]
-    public function isTransactional($operation): bool
-    {
-        if ($this->isAttributeChanged('parent_id') || parent::isTransactional($operation)) {
-            return true;
-        }
-
-        return !$this->getIsNewRecord()
-            && $this->hasPermalink()
-            && $this->getBranchCount() > 0
-            && $this->hasChangedAttributes($this->getI18nAttributesNames('slug'));
     }
 
     public function hasDescendantsEnabled(): bool

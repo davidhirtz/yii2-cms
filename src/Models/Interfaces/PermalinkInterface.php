@@ -56,10 +56,15 @@ interface PermalinkInterface extends I18nAttributeInterface
     public function getFormattedSlug(?string $language = null): string;
 
     /**
-     * Recomputes that path from the current attributes and the parent, for the save path to compare against. This
-     * one does walk up the tree, so it belongs nowhere near a listing.
+     * The URI a save would store, recomputed from the current attributes (a nested model like {@see Entry} prepends
+     * its parent path). The save path and validation call this; an implementation may query, so keep it off listings.
      */
     public function composeFormattedSlug(?string $language = null): string;
+
+    /**
+     * Builds the {@see Permalink} this model's current state would save, without saving it.
+     */
+    public function buildPermalink(?string $language = null): Permalink;
 
     public function getPermalinkUrl(string $uri, ?string $language = null): false|string;
 
