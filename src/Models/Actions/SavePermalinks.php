@@ -35,11 +35,13 @@ class SavePermalinks
         $this->changedLanguages = [];
         $this->slugChanges = [];
 
-        foreach ($this->model->getPermalinkLanguages() as $language) {
+        $languages = $this->model->getPermalinkLanguages();
+
+        foreach ($languages as $language) {
             $this->savePermalink($language);
         }
 
-        $this->model->refreshRelation('permalinks');
+        $this->deleteStalePermalinks($languages);
 
         return $this->changedLanguages;
     }
@@ -119,6 +121,27 @@ class SavePermalinks
             $redirect->url = $to;
             $redirect->update();
         }
+    }
+
+    /**
+     * A slug that became translated leaves its {@see Permalink::LANGUAGE_ALL} record behind, one that stopped being
+     * translated leaves its per-language records. Both would keep resolving next to the new ones. The reload doubles
+     * as the relation refresh after the writes above.
+     *
+     * @param list<string> $languages
+     */
+    protected function deleteStalePermalinks(array $languages): void
+    {
+        $permalinks = $this->model->getPermalinks()->all();
+
+        foreach ($permalinks as $key => $permalink) {
+            if (!in_array($permalink->language, $languages, true)) {
+                $this->deletePermalink($permalink, $permalink->language);
+                unset($permalinks[$key]);
+            }
+        }
+
+        $this->model->populateRelation('permalinks', $permalinks);
     }
 
     protected function deletePermalink(?Permalink $permalink, string $language): void

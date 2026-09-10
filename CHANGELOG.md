@@ -1,5 +1,9 @@
 ## 3.0 (in development)
 
+- `PermalinkTrait::buildPermalink()` looks the record up by its exact language, and `SavePermalinks` removes the
+  records of languages the model no longer writes. Before, an entry whose slug became an `i18nAttribute` after it
+  was saved had its language-agnostic permalink rewritten with the translated slug instead of getting one record per
+  language
 - Translated attributes of `Entry`, `Section`, `Category` and `Asset` moved from their `_xx` columns into the
   skeleton's `translation` table (`M260910110000Translations`). `Models\ActiveRecord` implements
   `TranslationInterface`, uses `TranslationTrait` and attaches `TranslationBehavior` before `TrailBehavior`

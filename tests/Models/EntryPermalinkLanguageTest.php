@@ -78,6 +78,38 @@ class EntryPermalinkLanguageTest extends TestCase
         self::assertNull(Permalink::find()->whereUri('contact', 'de')->one());
     }
 
+    /**
+     * An entry saved while its slug was untranslated keeps the language-agnostic record until it is saved again. That
+     * save has to write one record per language and remove the fallback, not rewrite the fallback with one language's
+     * slug — which is what reusing it in {@see \Hirtz\Cms\Models\Traits\PermalinkTrait::buildPermalink()} did.
+     */
+    public function testSlugBecomingTranslatedReplacesTheFallbackRecord(): void
+    {
+        $entry = $this->createEntry('contact');
+        $entry->i18nAttributes = ['slug'];
+        $entry->setAttributes(['slug_de' => 'kontakt'], false);
+
+        self::assertTrue($entry->save(), implode(' ', $entry->getErrorSummary(true)));
+
+        self::assertEqualsCanonicalizing(['en-US', 'de'], array_keys($entry->permalinks));
+        self::assertSame('contact', $entry->getPermalink('en-US')->uri);
+        self::assertSame('kontakt', $entry->getPermalink('de')->uri);
+        self::assertNull(Permalink::find()->whereUri('contact', 'de')->one());
+    }
+
+    public function testSlugBecomingUntranslatedReplacesThePerLanguageRecords(): void
+    {
+        $entry = $this->createTranslatedEntry(['en-US' => 'contact', 'de' => 'kontakt']);
+        $entry->i18nAttributes = [];
+        $entry->slug = 'contact-us';
+
+        self::assertTrue($entry->save(), implode(' ', $entry->getErrorSummary(true)));
+
+        self::assertSame([Permalink::LANGUAGE_ALL], array_keys($entry->permalinks));
+        self::assertSame('contact-us', $entry->getFormattedSlug('de'));
+        self::assertNull(Permalink::find()->whereUri('kontakt', 'de')->one());
+    }
+
     protected function createEntry(string $slug): TestEntry
     {
         $entry = TestEntry::create();

@@ -56,11 +56,15 @@ trait PermalinkTrait
     /**
      * The {@see Permalink} this model's current state would be saved as, reused by {@see SavePermalinks} and by
      * validation so both build the record identically.
+     *
+     * The record is looked up by its exact language: the {@see Permalink::LANGUAGE_ALL} fallback of
+     * {@see static::getPermalink()} is for reading, and reusing that record here would rewrite the language-agnostic
+     * URL with one language's slug once the slug becomes translated.
      */
     public function buildPermalink(?string $language = null): Permalink
     {
         $language ??= Yii::$app->language;
-        $permalink = $this->getPermalink($language) ?? Permalink::create();
+        $permalink = $this->permalinks[$language] ?? Permalink::create();
 
         if ($permalink->getIsNewRecord()) {
             $permalink->language = $language;
