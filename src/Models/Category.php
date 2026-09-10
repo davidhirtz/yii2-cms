@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Models;
 
-use Hirtz\Skeleton\I18n\Lang;
-use Hirtz\Cms\Models\Collections\CategoryCollection;
 use Hirtz\Cms\Models\Actions\UpdateDescendantPermalinks;
+use Hirtz\Cms\Models\Collections\CategoryCollection;
 use Hirtz\Cms\Models\Interfaces\PermalinkInterface;
 use Hirtz\Cms\Models\Queries\CategoryQuery;
 use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Models\Traits\PermalinkTrait;
 use Hirtz\Cms\Models\Traits\SlugAttributeTrait;
+use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Skeleton\Models\Interfaces\SitemapInterface;
 use Hirtz\Skeleton\Models\Trail;
 use Hirtz\Skeleton\Models\Traits\NestedTreeTrait;
@@ -51,7 +51,6 @@ class Category extends ActiveRecord implements PermalinkInterface, SitemapInterf
     final public const string AUTH_CATEGORY_ORDER = 'categoryOrder';
 
     public string|false $contentType = false;
-    public array|string|null $slugTargetAttribute = 'slug';
 
     #[Override]
     public function rules(): array
@@ -76,7 +75,7 @@ class Category extends ActiveRecord implements PermalinkInterface, SitemapInterf
                 [
                     ['slug'],
                     'required',
-                    'when' => $this->isSlugRequired(...)
+                    'when' => $this->isSlugRequired(...),
                 ],
                 [
                     ['name', 'slug', 'title', 'description', 'content'],
@@ -95,9 +94,9 @@ class Category extends ActiveRecord implements PermalinkInterface, SitemapInterf
                 [
                     ['slug'],
                     $this->slugUniqueValidator,
-                    'targetAttribute' => $this->slugTargetAttribute,
+                    'targetAttribute' => ['slug'],
                 ],
-            ])
+            ]),
         ];
     }
 
@@ -136,15 +135,12 @@ class Category extends ActiveRecord implements PermalinkInterface, SitemapInterf
     #[Override]
     public function afterSave($insert, $changedAttributes): void
     {
-        // Unlike entries, categories have no descendant re-save to piggyback on, so the subtree is rewritten here.
         if ($this->savePermalinks() && $this->getBranchCount()) {
-            UpdateDescendantPermalinks::run(['model' => $this]);
+            (new UpdateDescendantPermalinks($this))->update();
         }
 
-        if (!$insert) {
-            if ($this->parent_id && array_key_exists('parent_id', $changedAttributes)) {
-                $this->insertEntryCategoryAncestors();
-            }
+        if (!$insert && ($this->parent_id && array_key_exists('parent_id', $changedAttributes))) {
+            $this->insertEntryCategoryAncestors();
         }
 
         CategoryCollection::invalidateCache();
@@ -171,6 +167,7 @@ class Category extends ActiveRecord implements PermalinkInterface, SitemapInterf
     {
         $this->deletePermalinks();
         $this->updateNestedTreeAfterDelete();
+
         parent::afterDelete();
     }
 
@@ -222,7 +219,7 @@ class Category extends ActiveRecord implements PermalinkInterface, SitemapInterf
                 ->innerJoinWith([
                     'entryCategory' => function (ActiveQuery $query) use ($categoryIds): void {
                         $query->onCondition([EntryCategory::tableName() . '.[[category_id]]' => $categoryIds]);
-                    }
+                    },
                 ])
                 ->all();
 
@@ -407,7 +404,7 @@ class Category extends ActiveRecord implements PermalinkInterface, SitemapInterf
             'title' => Lang::t('cms', 'CATEGORY_TITLE_LABEL'),
             'description' => Lang::t('cms', 'CATEGORY_DESCRIPTION_LABEL'),
             'branchCount' => Lang::t('cms', 'CATEGORY_BRANCHCOUNT_LABEL'),
-            'entry_count' => Lang::t('cms', 'CATEGORY_ENTRY_COUNT_LABEL')
+            'entry_count' => Lang::t('cms', 'CATEGORY_ENTRY_COUNT_LABEL'),
         ];
     }
 
