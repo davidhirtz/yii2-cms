@@ -530,7 +530,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, PermalinkInter
 
         $slug = $this->hasRoute() ? $this->getFormattedSlug() : null;
 
-        return $slug ? array_filter(['/cms/site/view', 'slug' => $slug]) : false;
+        return $slug ? ['/cms/site/view', 'slug' => $slug] : false;
     }
 
     /**
