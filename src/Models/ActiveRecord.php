@@ -14,6 +14,7 @@ use Hirtz\Skeleton\Behaviors\TimestampBehavior;
 use Hirtz\Skeleton\Behaviors\TrailBehavior;
 use Hirtz\Skeleton\Db\ActiveQuery;
 use Hirtz\Skeleton\Db\ActiveRecord as BaseActiveRecord;
+use Hirtz\Skeleton\Models\Interfaces\AdminRouteInterface;
 use Hirtz\Skeleton\Models\Interfaces\CustomAttributeInterface;
 use Hirtz\Skeleton\Models\Interfaces\DraftStatusAttributeInterface;
 use Hirtz\Skeleton\Models\Interfaces\I18nAttributeInterface;
@@ -45,6 +46,7 @@ use Override;
  * @mixin TrailBehavior
  */
 abstract class ActiveRecord extends BaseActiveRecord implements
+    AdminRouteInterface,
     CustomAttributeInterface,
     DraftStatusAttributeInterface,
     I18nAttributeInterface,
@@ -175,13 +177,6 @@ abstract class ActiveRecord extends BaseActiveRecord implements
             'created_at',
         ]);
     }
-
-    public function getTrailModelAdminRoute(): array|false
-    {
-        return $this->getAdminRoute();
-    }
-
-    abstract public function getAdminRoute(): array|false;
 
     abstract public function getRoute(): array|false;
 
