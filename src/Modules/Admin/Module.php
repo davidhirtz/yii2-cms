@@ -29,7 +29,7 @@ class Module extends \Hirtz\Skeleton\Base\Module implements ModuleInterface
     {
         return $dashboard->addItem(DashboardItem::make()
             ->icon('pen')
-            ->label(Lang::t('cms', 'ENTRY_CREATE_HEADLINE'))
+            ->label(Lang::t('cms', 'ENTRY_CREATE_TITLE'))
             ->roles([Entry::AUTH_ENTRY_CREATE])
             ->url(['/admin/cms/entry/create']));
     }

@@ -69,7 +69,7 @@ return [
     'ENTRY_CATEGORY_TRAIL_NAME' => 'Eintrag–Kategorie',
     'ENTRY_CATEGORY_UPDATED_AT_LABEL' => 'Hinzugefügt',
     'ENTRY_CREATE_BUTTON' => 'Eintrag erstellen',
-    'ENTRY_CREATE_HEADLINE' => 'Neuen Eintrag erstellen',
+    'ENTRY_CREATE_TITLE' => 'Neuen Eintrag erstellen',
     'ENTRY_DESCRIPTION_LABEL' => 'Meta Beschreibung',
     'ENTRY_ENTRY_COUNT_LABEL' => 'Untereinträge',
     'ENTRY_PARENT_ID_LABEL' => 'Übergeordneter Eintrag',

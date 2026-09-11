@@ -18,12 +18,11 @@ use Hirtz\Skeleton\Web\View;
 use Hirtz\Skeleton\Widgets\Forms\FormContainer;
 
 echo EntryHeader::make()
-    ->model($section);
+    ->model($section->entry);
 
 echo EntrySubmenu::make()
     ->model($section->entry);
 
 echo FormContainer::make()
-    ->title($this->title)
     ->form(SectionActiveForm::make()
         ->model($section));

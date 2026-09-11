@@ -16,7 +16,7 @@ use Hirtz\Skeleton\Web\View;
 use Hirtz\Skeleton\Widgets\Forms\FormContainer;
 
 echo EntryHeader::make()
-    ->title(Yii::t('cms', 'ENTRY_CREATE_HEADLINE'));
+    ->title(Yii::t('cms', 'ENTRY_CREATE_TITLE'));
 
 echo FormContainer::make()
     ->form(EntryActiveForm::make()

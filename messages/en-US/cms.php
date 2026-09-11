@@ -69,7 +69,7 @@ return [
     'ENTRY_CATEGORY_TRAIL_NAME' => 'Entry–Category',
     'ENTRY_CATEGORY_UPDATED_AT_LABEL' => 'Added',
     'ENTRY_CREATE_BUTTON' => 'Create Entry',
-    'ENTRY_CREATE_HEADLINE' => 'Create New Entry',
+    'ENTRY_CREATE_TITLE' => 'Create New Entry',
     'ENTRY_DESCRIPTION_LABEL' => 'Meta description',
     'ENTRY_ENTRY_COUNT_LABEL' => 'Subentries',
     'ENTRY_PARENT_ID_LABEL' => 'Parent entry',

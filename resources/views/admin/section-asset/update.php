@@ -27,6 +27,5 @@ echo SectionSubmenu::make()
     ->model($asset->model);
 
 echo FormContainer::make()
-    ->title($this->title)
     ->form(AssetActiveForm::make()
         ->model($asset));
