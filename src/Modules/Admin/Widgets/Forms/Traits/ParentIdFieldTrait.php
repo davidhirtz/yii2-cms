@@ -27,17 +27,6 @@ trait ParentIdFieldTrait
 
     protected function getParentIdAttributes(): array
     {
-        $attributes = [];
-
-        if (!$this->model->hasPermalink()) {
-            return $attributes;
-        }
-
-        foreach ($this->model->getI18nAttributeNames('slug') as $language => $attribute) {
-            $attributes['data-form-target'][] = '#' . $this->getSlugId($language);
-            $attributes['promptAttributes']['data-value'][] = $this->getSlugBaseUrl($language);
-        }
-
-        return $attributes;
+        return [];
     }
 }

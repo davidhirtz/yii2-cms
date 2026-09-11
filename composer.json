@@ -14,7 +14,8 @@
   "prefer-stable": true,
   "require": {
     "php": "^8.3",
-    "davidhirtz/yii2-media": "next-dev"
+    "davidhirtz/yii2-media": "next-dev",
+    "davidhirtz/yii2-tenant": "next-dev"
   },
   "require-dev": {
     "phpstan/phpstan": "^2.1",

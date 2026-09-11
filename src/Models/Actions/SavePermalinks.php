@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Models\Actions;
 
-use Hirtz\Cms\Models\ActiveRecord;
-use Hirtz\Cms\Models\Interfaces\PermalinkInterface;
+use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Permalink;
 use Hirtz\Skeleton\Models\Redirect;
 use Yii;
@@ -23,7 +22,7 @@ class SavePermalinks
     protected array $slugChanges = [];
 
     public function __construct(
-        protected ActiveRecord&PermalinkInterface $model,
+        protected Entry $model,
     ) {
     }
 

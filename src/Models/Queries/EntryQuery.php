@@ -14,8 +14,10 @@ use Hirtz\Cms\Models\SectionEntry;
 use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Skeleton\Db\ActiveQuery;
 use Hirtz\Skeleton\Db\I18nActiveQuery;
+use Hirtz\Tenant\Models\Queries\Traits\TenantQueryTrait;
 use Override;
 use Yii;
+use yii\db\Expression;
 use yii\db\Query;
 
 /**
@@ -25,6 +27,7 @@ use yii\db\Query;
 class EntryQuery extends I18nActiveQuery
 {
     use ModuleTrait;
+    use TenantQueryTrait;
 
     public function withPermalinks(): static
     {
@@ -65,11 +68,12 @@ class EntryQuery extends I18nActiveQuery
             'id',
             'status',
             'type',
+            'tenant_id',
             'parent_id',
             'section_count',
             'entry_count',
             'updated_at',
-        ]));
+        ]))->andWhereCurrentTenant();
     }
 
     public function matching(?string $search): static
@@ -83,7 +87,7 @@ class EntryQuery extends I18nActiveQuery
 
     public function whereHasDescendantsEnabled(): static
     {
-        return $this->whereNotSlug(static::getModule()->entryIndexSlug);
+        return $this->whereNotUri(static::getModule()->entryIndexSlug ?: null);
     }
 
     public function whereCategory(array|Category|int $category, bool $eagerLoading = false): static
@@ -137,7 +141,7 @@ class EntryQuery extends I18nActiveQuery
 
     public function whereIndex(): static
     {
-        return $this->whereSlug(static::getModule()->entryIndexSlug);
+        return $this->whereUri((string)static::getModule()->entryIndexSlug);
     }
 
     public function whereId(int $id): static
@@ -146,39 +150,45 @@ class EntryQuery extends I18nActiveQuery
     }
 
     /**
-     * Matches the full path against the {@see Permalink} table. Kept for callers that only have a slug; the site
-     * controller resolves the permalink first and then loads the entry by id.
+     * Matches the full path a request resolves to by joining the {@see Permalink} table.
+     *
+     * A translated slug has one record per language; an untranslated one has a single
+     * {@see Permalink::LANGUAGE_ALL} record that resolves under every language. Both are accepted, and a
+     * per-language record wins over the language-agnostic fallback when the same path exists as both.
      */
-    public function whereSlug(string $slug): static
+    public function whereUri(string $uri, ?string $language = null): static
     {
-        return $this->andWhere([
-            Entry::tableName() . '.[[id]]' => $this->getPermalinkSubQuery()
-                ->andWhere(['uri' => trim($slug, '/')]),
-        ]);
+        $language ??= Yii::$app->language;
+        $alias = Permalink::tableName();
+
+        return $this->innerJoin($alias, "$alias.[[entry_id]] = " . Entry::tableName() . '.[[id]]')
+            ->andWhere([
+                "$alias.[[uri]]" => trim($uri, '/'),
+                "$alias.[[language]]" => [$language, Permalink::LANGUAGE_ALL],
+            ])
+            ->addOrderBy(new Expression("$alias.[[language]] = :permalinkLanguage DESC", [
+                ':permalinkLanguage' => $language,
+            ]))
+            ->andWhereCurrentTenant();
     }
 
-    public function whereNotSlug(?string $slug): static
+    public function whereNotUri(?string $uri): static
     {
-        if (!$slug) {
+        if (!$uri) {
             return $this;
         }
 
         return $this->andWhere([
             'not in',
             Entry::tableName() . '.[[id]]',
-            $this->getPermalinkSubQuery()->andWhere(['uri' => trim($slug, '/')]),
+            (new Query())
+                ->select('entry_id')
+                ->from(Permalink::tableName())
+                ->where([
+                    'uri' => trim($uri, '/'),
+                    'language' => [Yii::$app->language, Permalink::LANGUAGE_ALL],
+                ]),
         ]);
-    }
-
-    protected function getPermalinkSubQuery(): Query
-    {
-        return (new Query())
-            ->select('model_id')
-            ->from(Permalink::tableName())
-            ->where([
-                'model_class' => $this->getModelInstance()->getPermalinkModelClass(),
-                'language' => Yii::$app->language,
-            ]);
     }
 
     public function withSitemapAssets(): static

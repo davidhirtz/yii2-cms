@@ -1,5 +1,35 @@
 ## 3.0 (in development)
 
+- Requires `davidhirtz/yii2-tenant`. `yii2-cms-tenant` is gone; its behaviour lives here and in the tenant
+  bundle, and a project `Entry` extends `Models\Entry` again. See `yii2-skeleton/UPGRADE.md`, "3.0.0 — Tenants"
+- `Models\Entry` has a NOT NULL `tenant_id`: it uses the tenant `TenantRelationTrait`, validates the attribute
+  with the new `Validators\TenantIdValidator` (an empty value resolves to the default tenant), rejects a parent
+  from another tenant, spreads `getTenantRouteParams()` into `getRoute()`, scopes `findSiblings()`, and pushes a
+  changed tenant to its descendants and their permalinks. Added `Models\Actions\UpdateTenantEntryCount`, which
+  owns the `tenant.entry_count` column
+- Added `Models\Events\TenantBeforeDeleteEventHandler` and `TenantAfterSaveEventHandler`, subscribed from
+  `Bootstrap` on the `Tenant` model events. `Bootstrap` also maps the tenant `TenantGridView` to the cms
+  subclass that adds the entry-count column — the one container mapping that survives
+- `Models\Queries\EntryQuery` uses the tenant `TenantQueryTrait`: `whereUri()` and `selectSitemapAttributes()`
+  scope to the current tenant. `Modules\Admin\Data\EntryActiveDataProvider` gained `$tenantId`, resolved from
+  `?tenant=` and then the URL manager; `EntryActiveForm` renders the new `Forms\Fields\TenantIdField` (first
+  row with several tenants, last with one) and `EntryGridView` a tenant filter dropdown (none with one tenant).
+  Added `Assets\TenantDropdownAssetBundle` and the esbuild setup that builds it
+- **Category URLs are removed.** `Module::$enableCategoryUrls`, `Category`'s permalink implementation,
+  `SiteController::renderCategory()` and `resources/views/site/category.php` are gone. `Category::getRoute()`
+  returns the filtered entry index, which was already the shipped default
+- **`permalink` is an entry-only table.** `model_class` / `model_id` are `entry_id` with an `ON DELETE CASCADE`
+  foreign key, and the row carries the entry's `tenant_id`; the unique indexes are `(tenant_id, language, uri)`
+  and `(entry_id, language)`. Removed `Models\Interfaces\PermalinkInterface`, `Models\Actions\DeletePermalinks`
+  and the `permalink/prune` command — the cascade replaces them; the redirect cleanup a deletion still needs
+  moved to `Models\Actions\DeletePermalinkRedirects`. `PermalinkQuery::whereModel()` is gone;
+  `EntryQuery::whereSlug()` / `whereNotSlug()` are `whereUri()` / `whereNotUri()`, which join the table and
+  honour the `LANGUAGE_ALL` fallback the old slug subquery ignored
+- Added the idempotent `Migrations\M260908100000Tenant`: it seeds one tenant from `params['tenantUrl']` or the
+  console `urlManager.hostInfo` (and aborts rather than guessing), makes `entry.tenant_id` NOT NULL and adds
+  `tenant.entry_count`. `M260909100000Permalink` was rewritten in place for the final table shape and
+  `M260912091000PermalinkModelClass` deleted
+
 - `Modules\Admin\Data\CategoryActiveDataProvider::$category` is `$parent`, which is what it holds: the
   category the listed ones are nested under. `EntryActiveDataProvider` keeps both `$category` and `$parent`,
   which are different filters

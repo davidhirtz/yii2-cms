@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Tests\Modules\Controllers;
 
 use Hirtz\Cms\Test\Models\TestEntry;
-use Hirtz\Media\Test\TestCase;
+use Hirtz\Cms\Test\TestCase;
 use Hirtz\Skeleton\Test\Traits\FunctionalTestTrait;
 use Hirtz\Skeleton\Test\Traits\UserFixtureTrait;
 use Yii;

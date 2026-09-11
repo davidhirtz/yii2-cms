@@ -43,7 +43,7 @@ class EntryPermalinkLanguageTest extends TestCase
             $permalink = Permalink::find()->whereUri('contact', $language)->one();
 
             self::assertNotNull($permalink, "'contact' did not resolve under $language.");
-            self::assertSame($entry->id, $permalink->model_id);
+            self::assertSame($entry->id, $permalink->entry_id);
             self::assertSame('contact', $entry->getFormattedSlug($language));
         }
     }
@@ -61,8 +61,8 @@ class EntryPermalinkLanguageTest extends TestCase
     {
         $entry = $this->createTranslatedEntry(['en-US' => 'contact', 'de' => 'kontakt']);
 
-        self::assertSame($entry->id, Permalink::find()->whereUri('contact', 'en-US')->one()?->model_id);
-        self::assertSame($entry->id, Permalink::find()->whereUri('kontakt', 'de')->one()?->model_id);
+        self::assertSame($entry->id, Permalink::find()->whereUri('contact', 'en-US')->one()?->entry_id);
+        self::assertSame($entry->id, Permalink::find()->whereUri('kontakt', 'de')->one()?->entry_id);
     }
 
     /**

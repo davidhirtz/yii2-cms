@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Models;
 
 use Hirtz\Cms\Models\Collections\CategoryCollection;
-use Hirtz\Cms\Models\Interfaces\PermalinkInterface;
 use Hirtz\Cms\Models\Queries\CategoryQuery;
 use Hirtz\Cms\Models\Queries\EntryQuery;
-use Hirtz\Cms\Models\Traits\PermalinkTrait;
 use Hirtz\Cms\Models\Traits\SlugAttributeTrait;
 use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Skeleton\Models\Interfaces\SitemapInterface;
@@ -31,17 +29,15 @@ use yii\db\ActiveQuery;
  * @property int $entry_count
  *
  * @property-read Entry[] $entries {@see static::getEntries()}
- * @property-read Permalink[] $permalinks {@see static::getPermalinks()}
  * @property-read EntryCategory|null $entryCategory {@see static::getEntryCategory()}
  * @property-read EntryCategory[] $entryCategories {@see static::getEntryCategories()}
  * @property-read static|null $parent {@see static::getParent()}
  * @property-read static[] $ancestors {@see static::getAncestors()}
  * @property-read static[] $descendants {@see static::getDescendants()}
  */
-class Category extends ActiveRecord implements PermalinkInterface, SitemapInterface
+class Category extends ActiveRecord implements SitemapInterface
 {
     use NestedTreeTrait;
-    use PermalinkTrait;
     use SlugAttributeTrait;
 
     final public const string AUTH_CATEGORY_CREATE = 'categoryCreate';
@@ -130,8 +126,6 @@ class Category extends ActiveRecord implements PermalinkInterface, SitemapInterf
     #[Override]
     public function afterSave($insert, $changedAttributes): void
     {
-        $this->savePermalinks();
-
         if (!$insert && ($this->parent_id && array_key_exists('parent_id', $changedAttributes))) {
             $this->insertEntryCategoryAncestors();
         }
@@ -158,7 +152,6 @@ class Category extends ActiveRecord implements PermalinkInterface, SitemapInterf
     #[Override]
     public function afterDelete(): void
     {
-        $this->deletePermalinks();
         $this->updateNestedTreeAfterDelete();
 
         parent::afterDelete();
@@ -300,12 +293,8 @@ class Category extends ActiveRecord implements PermalinkInterface, SitemapInterf
         return $this->id ? ['/admin/cms/category/update', 'id' => $this->id] : ['/admin/cms/category/index'];
     }
 
-    public function getRoute(): false|array
+    public function getRoute(): array
     {
-        if ($this->hasPermalink()) {
-            return ['/cms/site/view', 'slug' => $this->getFormattedSlug()];
-        }
-
         return array_filter(['/cms/site/index', 'category' => $this->getI18nAttribute('slug')]);
     }
 
@@ -314,17 +303,7 @@ class Category extends ActiveRecord implements PermalinkInterface, SitemapInterf
         return [EntryCategory::tableName() . '.[[position]]' => SORT_ASC];
     }
 
-    public function hasPermalink(): bool
-    {
-        return static::getModule()->enableCategoryUrls;
-    }
-
     public function getTranslationModelClass(): string
-    {
-        return self::class;
-    }
-
-    public function getPermalinkModelClass(): string
     {
         return self::class;
     }

@@ -4,23 +4,21 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Models\Traits;
 
-use Hirtz\Cms\Models\Actions\DeletePermalinks;
 use Hirtz\Cms\Models\Actions\SavePermalinks;
+use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Permalink;
 use Hirtz\Cms\Models\Queries\PermalinkQuery;
 use Yii;
-use yii\db\ActiveRecord;
 
 /**
- * @mixin ActiveRecord
+ * @mixin Entry
  */
 trait PermalinkTrait
 {
     public function getPermalinks(): PermalinkQuery
     {
         /** @var PermalinkQuery<Permalink> */
-        return $this->hasMany(Permalink::class, ['model_id' => 'id'])
-            ->andOnCondition([Permalink::tableName() . '.[[model_class]]' => $this->getPermalinkModelClass()])
+        return $this->hasMany(Permalink::class, ['entry_id' => 'id'])
             ->indexBy('language');
     }
 
@@ -55,8 +53,6 @@ trait PermalinkTrait
 
         if ($permalink->getIsNewRecord()) {
             $permalink->language = $language;
-            $permalink->model_class = $this->getPermalinkModelClass();
-            $permalink->model_id = $this->id;
         }
 
         $permalink->uri = $this->composeFormattedSlug($language);
@@ -67,7 +63,7 @@ trait PermalinkTrait
     }
 
     /**
-     * @return list<string>
+     * @return list<string> the languages a {@see Permalink} record is written for
      */
     public function getPermalinkLanguages(): array
     {
@@ -88,7 +84,9 @@ trait PermalinkTrait
             return false;
         }
 
+        // A redirect is matched against the request path, so the tenant must not turn this into an absolute URL.
         $route['slug'] = $uri;
+        $route['tenant'] = null;
 
         if ($language === null || $language === Permalink::LANGUAGE_ALL) {
             $language = Yii::$app->sourceLanguage;
@@ -101,11 +99,14 @@ trait PermalinkTrait
     }
 
     /**
-     * @return array<string, mixed>
+     * @return array<string, mixed> the attributes copied onto every {@see Permalink} record of this entry
      */
     public function getPermalinkAttributes(): array
     {
-        return [];
+        return [
+            'entry_id' => $this->id,
+            'tenant_id' => $this->getAttribute('tenant_id'),
+        ];
     }
 
     public function savePermalinks(): SavePermalinks
@@ -114,10 +115,5 @@ trait PermalinkTrait
         $permalinks->save();
 
         return $permalinks;
-    }
-
-    public function deletePermalinks(): void
-    {
-        (new DeletePermalinks($this))->delete();
     }
 }

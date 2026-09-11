@@ -17,6 +17,7 @@ use Hirtz\Media\Models\Asset;
 use Hirtz\Media\Models\File;
 use Hirtz\Media\Test\Fixtures\FileFixture;
 use Hirtz\Skeleton\Test\Fixtures\UserFixture;
+use Hirtz\Tenant\Test\Fixtures\TenantFixture;
 
 trait CmsFixtureTrait
 {
@@ -31,6 +32,7 @@ trait CmsFixtureTrait
             'permalink' => PermalinkFixture::class,
             'section' => SectionFixture::class,
             'section_entry' => SectionEntryFixture::class,
+            'tenant' => TenantFixture::class,
             'user' => UserFixture::class,
         ];
     }

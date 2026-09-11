@@ -11,6 +11,7 @@ return [
     'page-enabled' => [
         'id' => 1,
         'status' => TestEntry::STATUS_ENABLED,
+        'tenant_id' => 1,
         'type' => TestEntry::TYPE_PAGE,
         'name' => 'Test Page – Enabled',
         'position' => 1,
@@ -24,6 +25,7 @@ return [
     'page-draft' => [
         'id' => 2,
         'status' => TestEntry::STATUS_DRAFT,
+        'tenant_id' => 1,
         'type' => TestEntry::TYPE_PAGE,
         'name' => 'Test Page – Draft',
         'position' => 2,
@@ -37,6 +39,7 @@ return [
     'page-disabled' => [
         'id' => 3,
         'status' => TestEntry::STATUS_DISABLED,
+        'tenant_id' => 1,
         'type' => TestEntry::TYPE_PAGE,
         'name' => 'Test Page – Disabled',
         'position' => 3,
@@ -49,6 +52,7 @@ return [
     'post-1' => [
         'id' => 4,
         'status' => TestEntry::STATUS_ENABLED,
+        'tenant_id' => 1,
         'parent_status' => TestEntry::STATUS_ENABLED,
         'type' => TestEntry::TYPE_POST,
         'parent_id' => 1,
@@ -63,6 +67,7 @@ return [
     'post-2' => [
         'id' => 5,
         'status' => TestEntry::STATUS_ENABLED,
+        'tenant_id' => 1,
         'parent_status' => TestEntry::STATUS_ENABLED,
         'type' => TestEntry::TYPE_POST,
         'parent_id' => 1,
@@ -77,6 +82,7 @@ return [
     'post-3' => [
         'id' => 6,
         'status' => TestEntry::STATUS_ENABLED,
+        'tenant_id' => 1,
         'parent_status' => TestEntry::STATUS_DRAFT,
         'type' => TestEntry::TYPE_POST,
         'parent_id' => 2,

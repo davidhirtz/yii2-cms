@@ -12,7 +12,9 @@ use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Models\SectionEntry;
 use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Skeleton\Data\ActiveDataProvider;
+use Hirtz\Tenant\Web\UrlManager;
 use Override;
+use Yii;
 use yii\data\Pagination;
 use yii\data\Sort;
 use yii\helpers\ArrayHelper;
@@ -25,6 +27,7 @@ class EntryActiveDataProvider extends ActiveDataProvider
 {
     use ModuleTrait;
 
+    public ?int $tenantId = null;
     public ?Category $category = null;
     public ?Entry $parent = null;
     public ?Section $section = null;
@@ -39,6 +42,25 @@ class EntryActiveDataProvider extends ActiveDataProvider
     }
 
     #[Override]
+    public function init(): void
+    {
+        $this->tenantId ??= $this->getTenantIdFromRequest();
+        parent::init();
+    }
+
+    protected function getTenantIdFromRequest(): ?int
+    {
+        $tenantId = (int)Yii::$app->getRequest()->get('tenant');
+
+        if ($tenantId) {
+            return $tenantId;
+        }
+
+        $manager = Yii::$app->getUrlManager();
+        return $manager instanceof UrlManager ? $manager->tenant?->id : null;
+    }
+
+    #[Override]
     protected function prepareQuery(): void
     {
         $this->initQuery();
@@ -47,6 +69,10 @@ class EntryActiveDataProvider extends ActiveDataProvider
 
     protected function initQuery(): void
     {
+        if ($this->tenantId) {
+            $this->query->andWhere([Entry::tableName() . '.[[tenant_id]]' => $this->tenantId]);
+        }
+
         if (static::getModule()->defaultEntryOrderBy) {
             $this->query->orderBy(static::getModule()->defaultEntryOrderBy);
         }

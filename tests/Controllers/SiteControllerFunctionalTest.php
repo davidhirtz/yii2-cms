@@ -130,43 +130,16 @@ final class SiteControllerFunctionalTest extends TestCase
     }
 
     /**
-     * The same action resolves an entry or a category, depending only on what the permalink points at.
+     * A category has no URL of its own: its slug is a filter parameter of the entry index.
      */
-    public function testCategoryIsResolvedByTheSameAction(): void
+    public function testCategoryHasNoUrlOfItsOwn(): void
     {
-        Category::getModule()->enableCategoryUrls = true;
-
         $category = $this->createCategory('news');
 
-        $this->open('/news');
-
-        self::assertResponseIsSuccessful();
-        self::assertPageTitleSame($category->name);
-    }
-
-    public function testCategoryIsNotResolvedWhenCategoryUrlsAreDisabled(): void
-    {
-        Category::getModule()->enableCategoryUrls = true;
-        $this->createCategory('news');
-
-        Category::getModule()->enableCategoryUrls = false;
+        self::assertSame(['/cms/site/index', 'category' => 'news'], $category->getRoute());
 
         $this->open('/news');
         self::assertResponseStatusCodeSame(404);
-    }
-
-    public function testNestedCategoryResolvesUnderItsOwnSlug(): void
-    {
-        Category::getModule()->enableCategoryUrls = true;
-
-        $parent = $this->createCategory('news');
-        $child = $this->createCategory('sport', $parent);
-
-        // A category slug is a single globally-unique segment, so a child resolves at its own slug, not a path.
-        $this->open('/sport');
-
-        self::assertResponseIsSuccessful();
-        self::assertPageTitleSame($child->name);
     }
 
     protected function createCategory(string $slug, ?Category $parent = null): Category

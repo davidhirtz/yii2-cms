@@ -74,7 +74,7 @@ trait CategoryGridTrait
                 ->content($this->getCategoryAncestors($category));
         }
 
-        if ($this->showUrl && $category->hasPermalink()) {
+        if ($this->showUrl) {
             $html .= $this->getUrl($category);
         }
 

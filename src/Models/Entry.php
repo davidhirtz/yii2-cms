@@ -6,7 +6,8 @@ namespace Hirtz\Cms\Models;
 
 use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\datetime\DateTimeValidator;
-use Hirtz\Cms\Models\Interfaces\PermalinkInterface;
+use Hirtz\Cms\Models\Actions\DeletePermalinkRedirects;
+use Hirtz\Cms\Models\Actions\UpdateTenantEntryCount;
 use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Models\Queries\SectionQuery;
 use Hirtz\Cms\Models\Traits\PermalinkTrait;
@@ -19,11 +20,16 @@ use Hirtz\Media\Models\Traits\AssetModelTrait;
 use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Skeleton\Models\Interfaces\SitemapInterface;
 use Hirtz\Skeleton\Models\Traits\MaterializedTreeTrait;
+use Hirtz\Cms\Validators\TenantIdValidator;
+use Hirtz\Tenant\Models\Collections\TenantCollection;
+use Hirtz\Tenant\Models\Tenant;
+use Hirtz\Tenant\Models\Traits\TenantRelationTrait;
 use Override;
 use Yii;
 use yii\db\ActiveQuery;
 
 /**
+ * @property int $tenant_id
  * @property int|null $parent_id
  * @property int|null $parent_status
  * @property array|null $path
@@ -50,13 +56,14 @@ use yii\db\ActiveQuery;
  * @method EntryQuery findChildren()
  * @method EntryQuery findDescendants()
  */
-class Entry extends ActiveRecord implements AssetModelInterface, PermalinkInterface, SitemapInterface
+class Entry extends ActiveRecord implements AssetModelInterface, SitemapInterface
 {
     use AssetModelTrait {
         populateAssetRelations as populateOwnAssetRelations;
     }
     use MaterializedTreeTrait;
     use PermalinkTrait;
+    use TenantRelationTrait;
     use SlugAttributeTrait;
     use VirtualSlugTrait;
 
@@ -104,6 +111,10 @@ class Entry extends ActiveRecord implements AssetModelInterface, PermalinkInterf
                     'skipOnEmpty' => false,
                 ],
                 [
+                    ['tenant_id'],
+                    TenantIdValidator::class,
+                ],
+                [
                     ['slug'],
                     'string',
                     'max' => $this->slugMaxLength,
@@ -144,6 +155,16 @@ class Entry extends ActiveRecord implements AssetModelInterface, PermalinkInterf
         return parent::beforeValidate();
     }
 
+    #[Override]
+    public function afterValidate(): void
+    {
+        if ($this->parent && $this->parent->getAttribute('tenant_id') !== $this->getAttribute('tenant_id')) {
+            $this->addInvalidAttributeError('parent_id');
+        }
+
+        parent::afterValidate();
+    }
+
     protected function validateParentId(): void
     {
         $this->parent_id = $this->parent_id && $this->hasParentEnabled() ? (int)$this->parent_id : null;
@@ -169,8 +190,7 @@ class Entry extends ActiveRecord implements AssetModelInterface, PermalinkInterf
 
     /**
      * Validates the {@see Permalink} this slug would produce rather than the slug itself, so uniqueness, length and
-     * the protected-path check all come from one place — and stay correct for `yii2-cms-tenant`, which scopes
-     * uniqueness to a tenant.
+     * the protected-path check all come from one place — including the tenant scope of the unique index.
      */
     protected function validateSlug(): void
     {
@@ -255,6 +275,17 @@ class Entry extends ActiveRecord implements AssetModelInterface, PermalinkInterf
             }
         }
 
+        $previousTenantId = (int)($changedAttributes['tenant_id'] ?? 0);
+
+        if ($previousTenantId) {
+            $this->updateDescendantTenants();
+            (new UpdateTenantEntryCount($previousTenantId))->update();
+        }
+
+        if ($insert || $previousTenantId) {
+            (new UpdateTenantEntryCount($this->tenant_id))->update();
+        }
+
         parent::afterSave($insert, $changedAttributes);
     }
 
@@ -262,6 +293,8 @@ class Entry extends ActiveRecord implements AssetModelInterface, PermalinkInterf
     public function beforeDelete(): bool
     {
         if ($isValid = parent::beforeDelete()) {
+            (new DeletePermalinkRedirects($this))->delete();
+
             if ($this->asset_count) {
                 foreach ($this->assets as $asset) {
                     $asset->setIsBatch($this->getIsBatch());
@@ -318,7 +351,7 @@ class Entry extends ActiveRecord implements AssetModelInterface, PermalinkInterf
     #[Override]
     public function afterDelete(): void
     {
-        $this->deletePermalinks();
+        (new UpdateTenantEntryCount($this->tenant_id))->update();
 
         if (!$this->getIsBatch()) {
             if ($this->parent_id) {
@@ -378,7 +411,39 @@ class Entry extends ActiveRecord implements AssetModelInterface, PermalinkInterf
     #[Override]
     public function findSiblings(): EntryQuery
     {
-        return static::find()->where(['parent_id' => $this->parent_id]);
+        return static::find()->where([
+            'parent_id' => $this->parent_id,
+            'tenant_id' => $this->tenant_id,
+        ]);
+    }
+
+    /**
+     * The permalinks are updated by hand: they carry a denormalized copy of the entry's tenant, and nothing
+     * re-saves a descendant after {@see static::afterSave()} rewrote its URL.
+     */
+    protected function updateDescendantTenants(): void
+    {
+        if (!$this->entry_count) {
+            return;
+        }
+
+        Yii::debug('Updating descendants tenant ...', __METHOD__);
+
+        $descendantIds = $this->findDescendants()
+            ->select('id')
+            ->column();
+
+        if (!$descendantIds) {
+            return;
+        }
+
+        static::updateAll([
+            'tenant_id' => $this->tenant_id,
+            'updated_by_user_id' => $this->updated_by_user_id,
+            'updated_at' => $this->updated_at,
+        ], ['id' => $descendantIds]);
+
+        Permalink::updateAll(['tenant_id' => $this->tenant_id], ['entry_id' => $descendantIds]);
     }
 
     #[Override]
@@ -501,12 +566,20 @@ class Entry extends ActiveRecord implements AssetModelInterface, PermalinkInterf
     public function getRoute(): false|array
     {
         if ($this->isIndex()) {
-            return ['/cms/site/index'];
+            return ['/cms/site/index', ...$this->getTenantRouteParams()];
         }
 
         $slug = $this->hasRoute() ? $this->getFormattedSlug() : null;
 
-        return $slug ? ['/cms/site/view', 'slug' => $slug] : false;
+        return $slug ? ['/cms/site/view', 'slug' => $slug, ...$this->getTenantRouteParams()] : false;
+    }
+
+    /**
+     * @return array<string, Tenant|null>
+     */
+    public function getTenantRouteParams(): array
+    {
+        return ['tenant' => TenantCollection::getAll()[$this->tenant_id] ?? null];
     }
 
     /**
@@ -671,11 +744,6 @@ class Entry extends ActiveRecord implements AssetModelInterface, PermalinkInterf
         return self::class;
     }
 
-    public function getPermalinkModelClass(): string
-    {
-        return self::class;
-    }
-
     public function isSlugRequired(): bool
     {
         return true;
@@ -698,6 +766,7 @@ class Entry extends ActiveRecord implements AssetModelInterface, PermalinkInterf
     {
         return [
             ...parent::attributeLabels(),
+            'tenant_id' => Lang::t('cms', 'ENTRY_TENANT_ID_LABEL'),
             'parent_id' => Lang::t('cms', 'ENTRY_PARENT_ID_LABEL'),
             'parent_status' => Lang::t('cms', 'ENTRY_PARENT_STATUS_LABEL'),
             'slug' => Lang::t('cms', 'ENTRY_SLUG_LABEL'),

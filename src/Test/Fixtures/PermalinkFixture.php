@@ -13,7 +13,7 @@ use Hirtz\Skeleton\Test\Fixtures\ActiveFixture;
 
 /**
  * Fixtures insert rows straight into the table, so no model event fires and no permalink would be written for a
- * fixture-loaded entry. The data file carries only the URI and the leaf; language, model class and timestamps are
+ * fixture-loaded entry. The data file carries the URI, the leaf and the relations; language and timestamps are
  * filled in here so the rows follow whatever language the test runs in.
  */
 class PermalinkFixture extends ActiveFixture
@@ -36,7 +36,6 @@ class PermalinkFixture extends ActiveFixture
                 $data["$key-$language"] = [
                     ...$attributes,
                     'language' => $language,
-                    'model_class' => TestEntry::instance()->getPermalinkModelClass(),
                     'created_at' => $now,
                 ];
             }

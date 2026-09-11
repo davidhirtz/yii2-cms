@@ -31,12 +31,6 @@ class Module extends \Hirtz\Skeleton\Base\Module
     public bool $inheritNestedCategories = true;
 
     /**
-     * @var bool whether categories should be reachable under their own URL. Enabling this writes a
-     * {@see \Hirtz\Cms\Models\Permalink} record per category, turning category paths into nested URLs.
-     */
-    public bool $enableCategoryUrls = false;
-
-    /**
      * @var bool whether entries should be nested
      */
     public bool $enableNestedEntries = false;
@@ -103,7 +97,6 @@ class Module extends \Hirtz\Skeleton\Base\Module
 
         if (!$this->enableCategories) {
             $this->enableNestedCategories = false;
-            $this->enableCategoryUrls = false;
         }
 
         if (!$this->enableNestedCategories) {

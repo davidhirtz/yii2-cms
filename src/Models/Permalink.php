@@ -6,6 +6,7 @@ namespace Hirtz\Cms\Models;
 
 use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\datetime\DateTimeBehavior;
+use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Models\Queries\PermalinkQuery;
 use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Skeleton\Behaviors\TimestampBehavior;
@@ -16,19 +17,21 @@ use Override;
 use Yii;
 
 /**
- * The resolvable URL of an {@see Entry} or {@see Category}, one record per model and language.
+ * The resolvable URL of an {@see Entry}, one record per entry and language.
  *
  * `uri` holds the full path the request is matched against, `slug` only the leaf segment the editor
- * edits on the related model.
+ * edits on the related model. `tenant_id` is denormalized from the entry so the unique index can see it.
  *
  * @property int $id
+ * @property int $tenant_id
+ * @property int $entry_id
  * @property string $language
  * @property string $uri
  * @property string $slug
- * @property string $model_class
- * @property int $model_id
  * @property DateTime|null $updated_at
  * @property DateTime $created_at
+ *
+ * @property-read Entry $entry {@see static::getEntry()}
  */
 class Permalink extends ActiveRecord
 {
@@ -39,7 +42,7 @@ class Permalink extends ActiveRecord
     /**
      * @var array<int, string>
      */
-    public array $uriTargetAttribute = ['language', 'uri'];
+    public array $uriTargetAttribute = ['tenant_id', 'language', 'uri'];
 
     public int $slugMaxLength = 100;
     public int $uriMaxLength = 255;
@@ -59,7 +62,7 @@ class Permalink extends ActiveRecord
         return [
             ...parent::rules(),
             [
-                ['language', 'uri', 'slug', 'model_class', 'model_id'],
+                ['tenant_id', 'entry_id', 'language', 'uri', 'slug'],
                 'required',
             ],
             [
@@ -82,19 +85,14 @@ class Permalink extends ActiveRecord
                 'max' => $this->uriMaxLength,
             ],
             [
-                ['model_class'],
-                'string',
-                'max' => 255,
-            ],
-            [
                 ['uri'],
                 UniqueValidator::class,
                 'targetAttribute' => $this->uriTargetAttribute,
             ],
             [
-                ['model_id'],
+                ['entry_id'],
                 UniqueValidator::class,
-                'targetAttribute' => ['model_class', 'model_id', 'language'],
+                'targetAttribute' => ['entry_id', 'language'],
             ],
             [
                 ['uri'],
@@ -142,12 +140,11 @@ class Permalink extends ActiveRecord
         return Yii::createObject(PermalinkQuery::class, [static::class]);
     }
 
-    /**
-     * @param class-string $class
-     */
-    public function isModel(string $class): bool
+    public function getEntry(): EntryQuery
     {
-        return is_a($this->model_class, $class, true);
+        /** @var EntryQuery $relation */
+        $relation = $this->hasOne(Entry::class, ['id' => 'entry_id']);
+        return $relation;
     }
 
     #[Override]
@@ -155,6 +152,8 @@ class Permalink extends ActiveRecord
     {
         return [
             ...parent::attributeLabels(),
+            'tenant_id' => Lang::t('cms', 'PERMALINK_TENANT_ID_LABEL'),
+            'entry_id' => Lang::t('cms', 'PERMALINK_ENTRY_ID_LABEL'),
             'uri' => Lang::t('cms', 'PERMALINK_URI_LABEL'),
             'slug' => Lang::t('cms', 'PERMALINK_SLUG_LABEL'),
         ];

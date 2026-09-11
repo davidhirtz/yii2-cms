@@ -7,6 +7,7 @@ namespace Hirtz\Cms\Migrations;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Permalink;
 use Hirtz\Skeleton\Db\Traits\MigrationTrait;
+use Hirtz\Tenant\Models\Tenant;
 use Yii;
 use yii\db\Migration;
 
@@ -14,8 +15,8 @@ use yii\db\Migration;
  * Creates the {@see Permalink} table, backfills it from the entry slug columns and drops those columns.
  *
  * An untranslated slug is stored once under {@see Permalink::LANGUAGE_ALL}; a translated one gets a record per
- * language. Categories are not backfilled — they had no standalone URL, so there is nothing to preserve; their
- * records are written at runtime once `Module::$enableCategoryUrls` is on. The category `slug` column stays.
+ * language. `tenant_id` is copied from the entry so the unique index can see it, which is why
+ * {@see M260908100000Tenant} has to have run first.
  *
  * @noinspection PhpUnused
  */
@@ -38,19 +39,41 @@ class M260909100000Permalink extends Migration
 
     protected function createPermalinkTable(): void
     {
+        if ($this->getDb()->getTableSchema(Permalink::tableName(), true)) {
+            return;
+        }
+
         $this->createTable(Permalink::tableName(), [
             'id' => $this->primaryKey()->unsigned(),
+            'tenant_id' => $this->integer()->unsigned()->notNull(),
+            'entry_id' => $this->integer()->unsigned()->notNull(),
             'language' => $this->string(16)->notNull(),
             'uri' => $this->string(255)->notNull(),
             'slug' => $this->string(100)->notNull(),
-            'model' => $this->string()->notNull(),
-            'model_id' => $this->integer()->unsigned()->notNull(),
             'updated_at' => $this->dateTime(),
             'created_at' => $this->dateTime()->notNull(),
         ], $this->getTableOptions());
 
-        $this->createIndex('uri', Permalink::tableName(), ['language', 'uri'], true);
-        $this->createIndex('model', Permalink::tableName(), ['model', 'model_id', 'language'], true);
+        $this->createIndex('uri', Permalink::tableName(), ['tenant_id', 'language', 'uri'], true);
+        $this->createIndex('entry', Permalink::tableName(), ['entry_id', 'language'], true);
+
+        $this->addForeignKey(
+            $this->getForeignKeyName(Permalink::tableName(), 'entry_id') . '_ibfk',
+            Permalink::tableName(),
+            'entry_id',
+            Entry::tableName(),
+            'id',
+            'CASCADE',
+        );
+
+        $this->addForeignKey(
+            $this->getForeignKeyName(Permalink::tableName(), 'tenant_id') . '_ibfk',
+            Permalink::tableName(),
+            'tenant_id',
+            Tenant::tableName(),
+            'id',
+            'CASCADE',
+        );
     }
 
     protected function insertEntryPermalinks(): void
@@ -60,7 +83,6 @@ class M260909100000Permalink extends Migration
 
         $permalinks = $this->getQuotedTableName(Permalink::tableName());
         $entries = $this->getQuotedTableName($entry::tableName());
-        $model = $db->quoteValue($entry->getPermalinkModelClass());
 
         foreach ($entry->getPermalinkLanguages() as $language) {
             [$slug, $parentSlug] = $this->getSlugColumns($entry, $language);
@@ -74,8 +96,8 @@ class M260909100000Permalink extends Migration
                 : "[[$slug]]";
 
             $this->execute("
-                INSERT INTO $permalinks ([[language]], [[uri]], [[slug]], [[model]], [[model_id]], [[created_at]])
-                SELECT {$db->quoteValue($language)}, $uri, [[$slug]], $model, [[id]], UTC_TIMESTAMP()
+                INSERT INTO $permalinks ([[tenant_id]], [[entry_id]], [[language]], [[uri]], [[slug]], [[created_at]])
+                SELECT [[tenant_id]], [[id]], {$db->quoteValue($language)}, $uri, [[$slug]], UTC_TIMESTAMP()
                 FROM $entries
                 WHERE [[$slug]] IS NOT NULL AND [[$slug]] != ''
             ");
@@ -104,7 +126,6 @@ class M260909100000Permalink extends Migration
 
         $entries = $this->getQuotedTableName($entry::tableName());
         $permalinks = $this->getQuotedTableName(Permalink::tableName());
-        $model = $db->quoteValue($entry->getPermalinkModelClass());
 
         foreach ($entry->getPermalinkLanguages() as $language) {
             [$slug, $parentSlug] = $this->getSlugColumns($entry, $language);
@@ -120,8 +141,7 @@ class M260909100000Permalink extends Migration
             $this->execute("
                 UPDATE $entries AS [[entry]]
                 INNER JOIN $permalinks AS [[permalink]]
-                    ON [[permalink]].[[model_id]] = [[entry]].[[id]]
-                    AND [[permalink]].[[model]] = $model
+                    ON [[permalink]].[[entry_id]] = [[entry]].[[id]]
                     AND [[permalink]].[[language]] = {$db->quoteValue($language)}
                 SET [[entry]].[[$slug]] = [[permalink]].[[slug]],
                     [[entry]].[[$parentSlug]] = TRIM(TRAILING '/' FROM SUBSTRING(

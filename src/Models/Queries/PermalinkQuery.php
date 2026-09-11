@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Models\Queries;
 
-use Hirtz\Cms\Models\Interfaces\PermalinkInterface;
 use Hirtz\Cms\Models\Permalink;
 use Hirtz\Skeleton\Db\ActiveQuery;
 use Yii;
-use yii\db\ActiveRecordInterface;
 use yii\db\Expression;
 
 /**
@@ -45,20 +43,5 @@ class PermalinkQuery extends ActiveQuery
             ->addOrderBy(new Expression("$alias.[[language]] = :permalinkLanguage DESC", [
                 ':permalinkLanguage' => $language,
             ]));
-    }
-
-    public function whereModel(PermalinkInterface|string $model, ?int $modelId = null): static
-    {
-        if ($model instanceof PermalinkInterface) {
-            $modelId ??= $model instanceof ActiveRecordInterface ? $model->getPrimaryKey() : null;
-            $model = $model->getPermalinkModelClass();
-        }
-
-        $alias = $this->getTableAlias();
-
-        return $this->andWhere([
-            "$alias.[[model_class]]" => $model,
-            "$alias.[[model_id]]" => $modelId,
-        ]);
     }
 }

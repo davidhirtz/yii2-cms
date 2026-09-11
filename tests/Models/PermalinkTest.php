@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Tests\Models;
 
-use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Permalink;
 use Hirtz\Cms\Test\Models\TestEntry;
 use Hirtz\Cms\Test\TestCase;
@@ -36,7 +35,8 @@ class PermalinkTest extends TestCase
 
     /**
      * A permalink stored under a specific non-source language is scoped to it: there is no source-language record
-     * for {@see PermalinkQuery::whereUri()} to fall back to, so another language does not resolve it.
+     * for {@see \Hirtz\Cms\Models\Queries\PermalinkQuery::whereUri()} to fall back to, so another language does not
+     * resolve it.
      */
     public function testPermalinkIsNotFoundInAnotherLanguage(): void
     {
@@ -69,11 +69,11 @@ class PermalinkTest extends TestCase
      */
     public function testExactLanguageMatchWinsOverLanguageAgnosticFallback(): void
     {
-        $agnostic = $this->makePermalink('shared', 'shared', modelId: 1);
+        $agnostic = $this->makePermalink('shared', 'shared');
         $agnostic->language = Permalink::LANGUAGE_ALL;
         self::assertTrue($agnostic->insert());
 
-        $translated = $this->makePermalink('shared', 'shared', modelId: 2);
+        $translated = $this->makePermalink('shared', 'shared');
         $translated->language = 'de';
         self::assertTrue($translated->insert());
 
@@ -83,9 +83,9 @@ class PermalinkTest extends TestCase
 
     public function testUriMustBeUniquePerLanguage(): void
     {
-        $this->createPermalink('blog/hello-world', 'hello-world', modelId: 1);
+        $this->createPermalink('blog/hello-world', 'hello-world');
 
-        $duplicate = $this->makePermalink('blog/hello-world', 'hello-world', modelId: 2);
+        $duplicate = $this->makePermalink('blog/hello-world', 'hello-world');
 
         self::assertFalse($duplicate->insert());
         self::assertArrayHasKey('uri', $duplicate->getErrors());
@@ -93,22 +93,23 @@ class PermalinkTest extends TestCase
 
     public function testSameUriIsAllowedInAnotherLanguage(): void
     {
-        $this->createPermalink('blog/hello-world', 'hello-world', modelId: 1);
+        $this->createPermalink('blog/hello-world', 'hello-world');
 
-        $permalink = $this->makePermalink('blog/hello-world', 'hello-world', modelId: 1);
+        $permalink = $this->makePermalink('blog/hello-world', 'hello-world');
         $permalink->language = 'de';
 
         self::assertTrue($permalink->insert());
     }
 
-    public function testModelCanOnlyHaveOnePermalinkPerLanguage(): void
+    public function testEntryCanOnlyHaveOnePermalinkPerLanguage(): void
     {
-        $this->createPermalink('blog/hello-world', 'hello-world', modelId: 1);
+        $entry = $this->createEntry();
+        $this->createPermalink('blog/hello-world', 'hello-world', $entry);
 
-        $duplicate = $this->makePermalink('blog/goodbye-world', 'goodbye-world', modelId: 1);
+        $duplicate = $this->makePermalink('blog/goodbye-world', 'goodbye-world', $entry);
 
         self::assertFalse($duplicate->insert());
-        self::assertArrayHasKey('model_id', $duplicate->getErrors());
+        self::assertArrayHasKey('entry_id', $duplicate->getErrors());
     }
 
     public function testUriShadowingAnImmutableRouteParamIsRejected(): void
@@ -122,31 +123,50 @@ class PermalinkTest extends TestCase
         self::assertArrayHasKey('uri', $permalink->getErrors());
     }
 
-    public function testIsModelMatchesSubclasses(): void
+    public function testPermalinkBelongsToItsEntry(): void
     {
-        $permalink = $this->createPermalink('blog/hello-world', 'hello-world');
+        $entry = $this->createEntry();
+        $permalink = $this->createPermalink('blog/hello-world', 'hello-world', $entry);
 
-        self::assertTrue($permalink->isModel(Entry::class));
-        self::assertFalse($permalink->isModel(Permalink::class));
+        self::assertSame($entry->id, $permalink->entry->id);
+        self::assertSame($entry->tenant_id, $permalink->tenant_id);
     }
 
-    protected function makePermalink(string $uri, string $slug, int $modelId = 1): Permalink
+    protected function makePermalink(string $uri, string $slug, ?TestEntry $entry = null): Permalink
     {
+        $entry ??= $this->createEntry();
+
         $permalink = Permalink::create();
         $permalink->language = Yii::$app->language;
         $permalink->uri = $uri;
         $permalink->slug = $slug;
-        $permalink->model_class = Entry::class;
-        $permalink->model_id = $modelId;
+        $permalink->entry_id = $entry->id;
+        $permalink->tenant_id = $entry->tenant_id;
 
         return $permalink;
     }
 
-    protected function createPermalink(string $uri, string $slug, int $modelId = 1): Permalink
+    protected function createPermalink(string $uri, string $slug, ?TestEntry $entry = null): Permalink
     {
-        $permalink = $this->makePermalink($uri, $slug, $modelId);
+        $permalink = $this->makePermalink($uri, $slug, $entry);
         self::assertTrue($permalink->insert(), implode(' ', $permalink->getErrorSummary(true)));
 
         return $permalink;
+    }
+
+    /**
+     * The permalink written on save is removed again, so this class controls every record it asserts on.
+     */
+    protected function createEntry(): TestEntry
+    {
+        $entry = TestEntry::create();
+        $entry->name = 'Entry ' . uniqid();
+
+        self::assertTrue($entry->save(), implode(' ', $entry->getErrorSummary(true)));
+
+        Permalink::deleteAll(['entry_id' => $entry->id]);
+        $entry->populateRelation('permalinks', []);
+
+        return $entry;
     }
 }

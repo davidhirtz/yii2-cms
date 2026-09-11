@@ -30,7 +30,11 @@ use Hirtz\Skeleton\Widgets\Grids\Columns\RelativeTimeColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\StatusIconColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\TypeColumn;
 use Hirtz\Skeleton\Widgets\Grids\GridView;
+use Hirtz\Skeleton\Widgets\Grids\Toolbars\FilterDropdown;
 use Hirtz\Skeleton\Widgets\Grids\Toolbars\TypeFilterDropdown;
+use Hirtz\Tenant\Models\Collections\TenantCollection;
+use Hirtz\Tenant\Models\Tenant;
+use Hirtz\Tenant\Web\UrlManager;
 use Override;
 use Stringable;
 use Traversable;
@@ -44,6 +48,9 @@ use Yii;
 class EntryGridView extends GridView
 {
     use ModuleTrait;
+
+    public ?int $tenantId = null;
+    public string $tenantParamName = 'tenant';
 
     protected bool $showUrl = true;
     protected ?bool $showCategories = null;
@@ -79,6 +86,7 @@ class EntryGridView extends GridView
             : ['order', 'parent' => $this->provider->parent?->id];
 
         $this->header ??= [
+            $this->getTenantDropdown(),
             $this->getTypeDropdown(),
             $this->getCategoryDropdown(),
             $this->getSearchInput(),
@@ -96,6 +104,35 @@ class EntryGridView extends GridView
         ];
 
         parent::configure();
+    }
+
+    /**
+     * A single-tenant project gets no dropdown at all.
+     */
+    protected function getTenantDropdown(): ?Stringable
+    {
+        $items = $this->getTenantDropdownItems();
+
+        if (count($items) < 2) {
+            return null;
+        }
+
+        $manager = Yii::$app->getUrlManager();
+        $tenant = $manager instanceof UrlManager ? $manager->getTenantFromRequest(Yii::$app->getRequest()) : null;
+
+        return FilterDropdown::make()
+            ->default(false)
+            ->label($tenant->name ?? Lang::t('cms', 'ENTRY_TENANT_ID_LABEL'))
+            ->items($items)
+            ->paramName($this->tenantParamName);
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    protected function getTenantDropdownItems(): array
+    {
+        return array_map(fn (Tenant $tenant) => $tenant->name, TenantCollection::getAll());
     }
 
     protected function getTypeDropdown(): ?Stringable

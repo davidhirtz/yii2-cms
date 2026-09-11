@@ -1,0 +1,2 @@
+document.addEventListener("htmx:load",c=>{let s=c.detail.elt,a='[data-id="parent"]';s.querySelectorAll('[data-id="tenant"]').forEach(t=>{let e=t.closest("form").querySelector(a);e&&t.addEventListener("change",()=>{let r=new URL(location.href);r.searchParams.set("tenant",t.value),e.disabled=!0,fetch(r).then(n=>n.text()).then(n=>{let l=new DOMParser().parseFromString(n,"text/html").querySelector(a);e.innerHTML=l?.innerHTML||"",e.disabled=!1,e.closest(".form-row").hidden=e.childElementCount<=1,e.dispatchEvent(new Event("change"))})})})});
+//# sourceMappingURL=dropdown.js.map

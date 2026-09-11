@@ -32,6 +32,7 @@ class EntryParentIdSelectField extends SelectField
     #[Override]
     protected function configure(): void
     {
+        $this->attributes['data-id'] ??= 'parent';
         $this->property ??= 'parent_id';
 
         $this->setItemsFromEntries($this->getEntries());
@@ -44,7 +45,7 @@ class EntryParentIdSelectField extends SelectField
     protected function renderContent(): string|Stringable
     {
         if (!$this->items) {
-            // Always render row (e.g. for `yii2-cms-tenant`) but hide it if no suitable parent entries are found
+            // Always render the row — the tenant dropdown reloads it — but hide it without suitable parents.
             $this->rowAttributes['hidden'] = true;
         }
 
@@ -107,7 +108,8 @@ class EntryParentIdSelectField extends SelectField
     protected function getEntryQuery(): EntryQuery
     {
         return Entry::find()
-            ->withTranslations();
+            ->withTranslations()
+            ->andWhere([Entry::tableName() . '.[[tenant_id]]' => $this->model->tenant_id]);
     }
 
     protected function getOrderBy(): array
