@@ -55,18 +55,18 @@ class EntryAssetController extends Controller
         ];
     }
 
-    public function actionIndex(?int $id = null): Response|string
+    public function actionIndex(?int $entry = null): Response|string
     {
-        return $this->renderIndex($this->findEntryWithAssets($id, Entry::AUTH_ENTRY_ASSET_UPDATE));
+        return $this->renderIndex($this->findEntryWithAssets($entry, Entry::AUTH_ENTRY_ASSET_UPDATE));
     }
 
     public function actionCreate(
-        ?int $id = null,
+        ?int $entry = null,
         ?int $file = null,
         ?int $folder = null,
         ?string $q = null
     ): Response|string {
-        $model = $this->findEntryWithAssets($id, Entry::AUTH_ENTRY_ASSET_CREATE);
+        $model = $this->findEntryWithAssets($entry, Entry::AUTH_ENTRY_ASSET_CREATE);
 
         return $this->createAsset($model, $file, $folder, $q);
     }
@@ -86,19 +86,19 @@ class EntryAssetController extends Controller
         return $this->duplicateAsset($this->findEntryAsset($id, Entry::AUTH_ENTRY_ASSET_CREATE));
     }
 
-    public function actionOrder(?int $id = null): string
+    public function actionOrder(?int $entry = null): string
     {
-        return $this->reorderAssets($this->findEntryWithAssets($id, Entry::AUTH_ENTRY_ASSET_ORDER));
+        return $this->reorderAssets($this->findEntryWithAssets($entry, Entry::AUTH_ENTRY_ASSET_ORDER));
     }
 
-    protected function findEntryWithAssets(?int $id, string $permissionName): Entry
+    protected function findEntryWithAssets(?int $entry, string $permissionName): Entry
     {
-        if (!$id) {
+        if (!$entry) {
             throw new NotFoundHttpException();
         }
 
         /** @var Entry */
-        return $this->findAssetModel($this->findEntry($id, $permissionName));
+        return $this->findAssetModel($this->findEntry($entry, $permissionName));
     }
 
     protected function findEntryAsset(int $id, string $permissionName): EntryAsset

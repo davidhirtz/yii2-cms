@@ -3,7 +3,7 @@
 - `Models\ActiveRecord` implements the skeleton `Models\Interfaces\AdminRouteInterface` instead of declaring
   `getAdminRoute()` abstract, and dropped its `getTrailModelAdminRoute()`
 - `EntryAssetController` and `SectionAssetController` extend the skeleton `Controller` and use the media
-  `AssetControllerTrait`. Their model is addressed as `id`: `/admin/cms/entry-asset/index?id=<entry>`
+  `AssetControllerTrait`, at `/admin/cms/entry-asset/index?entry=<id>` and `/admin/cms/section-asset/index?section=<id>`
 - `Modules\Admin\Controllers\AssetController` split into `EntryAssetController` and `SectionAssetController`,
   at `/admin/cms/entry-asset` and `/admin/cms/section-asset`, each with one model type and one set of
   permissions instead of an `$entry` / `$section` branch in every action. Their views live under

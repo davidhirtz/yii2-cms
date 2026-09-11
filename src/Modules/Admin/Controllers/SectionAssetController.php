@@ -55,18 +55,18 @@ class SectionAssetController extends Controller
         ];
     }
 
-    public function actionIndex(?int $id = null): Response|string
+    public function actionIndex(?int $section = null): Response|string
     {
-        return $this->renderIndex($this->findSectionWithAssets($id, Section::AUTH_SECTION_ASSET_UPDATE));
+        return $this->renderIndex($this->findSectionWithAssets($section, Section::AUTH_SECTION_ASSET_UPDATE));
     }
 
     public function actionCreate(
-        ?int $id = null,
+        ?int $section = null,
         ?int $file = null,
         ?int $folder = null,
         ?string $q = null
     ): Response|string {
-        $model = $this->findSectionWithAssets($id, Section::AUTH_SECTION_ASSET_CREATE);
+        $model = $this->findSectionWithAssets($section, Section::AUTH_SECTION_ASSET_CREATE);
 
         return $this->createAsset($model, $file, $folder, $q);
     }
@@ -86,19 +86,19 @@ class SectionAssetController extends Controller
         return $this->duplicateAsset($this->findSectionAsset($id, Section::AUTH_SECTION_ASSET_CREATE));
     }
 
-    public function actionOrder(?int $id = null): string
+    public function actionOrder(?int $section = null): string
     {
-        return $this->reorderAssets($this->findSectionWithAssets($id, Section::AUTH_SECTION_ASSET_ORDER));
+        return $this->reorderAssets($this->findSectionWithAssets($section, Section::AUTH_SECTION_ASSET_ORDER));
     }
 
-    protected function findSectionWithAssets(?int $id, string $permissionName): Section
+    protected function findSectionWithAssets(?int $section, string $permissionName): Section
     {
-        if (!$id) {
+        if (!$section) {
             throw new NotFoundHttpException();
         }
 
         /** @var Section */
-        return $this->findAssetModel($this->findSection($id, $permissionName));
+        return $this->findAssetModel($this->findSection($section, $permissionName));
     }
 
     protected function findSectionAsset(int $id, string $permissionName): SectionAsset
