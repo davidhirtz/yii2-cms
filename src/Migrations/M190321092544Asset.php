@@ -41,8 +41,6 @@ class M190321092544Asset extends Migration
             'created_at' => $this->dateTime()->notNull(),
         ], $this->getTableOptions());
 
-        $this->addI18nColumns(Asset::tableName(), Asset::instance()->i18nAttributes);
-
         $this->createIndex('entry_id', Asset::tableName(), ['entry_id', 'status', 'position']);
         $this->createIndex('section_id', Asset::tableName(), ['section_id', 'position']);
 

@@ -111,6 +111,9 @@ class M260909100000Permalink extends Migration
 
             if (!$this->hasColumn($entry::tableName(), $slug)) {
                 $this->addColumn($entry::tableName(), $slug, (string)$this->string(100)->null());
+            }
+
+            if (!$this->hasColumn($entry::tableName(), $parentSlug)) {
                 $this->addColumn($entry::tableName(), $parentSlug, (string)$this->string(255)->null());
             }
 

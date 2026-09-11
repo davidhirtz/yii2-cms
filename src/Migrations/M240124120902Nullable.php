@@ -19,22 +19,18 @@ class M240124120902Nullable extends Migration
 
     public function safeUp(): void
     {
-        foreach (Category::instance()->getI18nAttributeNames('title') as $attribute) {
-            $this->alterColumn(Category::instance()->tableName(), $attribute, (string)$this->string(255)
+        $this->alterColumn(Category::tableName(), 'title', (string)$this->string(255)
+            ->null()
+            ->defaultValue(null));
+
+        $this->update(Category::tableName(), ['title' => null], ['title' => '']);
+
+        foreach (['parent_slug', 'title'] as $attribute) {
+            $this->alterColumn(Entry::tableName(), $attribute, (string)$this->string(255)
                 ->null()
                 ->defaultValue(null));
 
-            $this->update(Category::instance()->tableName(), [$attribute => null], [$attribute => '']);
-        }
-
-        foreach (['parent_slug', 'title'] as $name) {
-            foreach (Entry::instance()->getI18nAttributeNames($name) as $attribute) {
-                $this->alterColumn(Entry::instance()->tableName(), $attribute, (string)$this->string(255)
-                    ->null()
-                    ->defaultValue(null));
-
-                $this->update(Entry::instance()->tableName(), [$attribute => null], [$attribute => '']);
-            }
+            $this->update(Entry::tableName(), [$attribute => null], [$attribute => '']);
         }
     }
 }

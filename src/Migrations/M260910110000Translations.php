@@ -38,7 +38,7 @@ class M260910110000Translations extends Migration
 
         foreach ($category->getI18nAttributeNames('slug') as $attributeName) {
             if ($attributeName !== 'slug') {
-                $this->createIndex($attributeName, $category::tableName(), ['parent_id', $attributeName], true);
+                $this->createIndex($attributeName, $category::tableName(), $attributeName, true);
             }
         }
     }

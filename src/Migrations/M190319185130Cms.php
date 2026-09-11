@@ -43,12 +43,7 @@ class M190319185130Cms extends Migration
             'created_at' => $this->dateTime()->notNull(),
         ], $this->getTableOptions());
 
-        $entry = Entry::create();
-        $this->addI18nColumns(Entry::tableName(), $entry->i18nAttributes);
-
-        foreach ($entry->getI18nAttributeNames('slug') as $attributeName) {
-            $this->createIndex($attributeName, Entry::tableName(), $attributeName, true);
-        }
+        $this->createIndex('slug', Entry::tableName(), 'slug', true);
 
         $tableName = $schema->getRawTableName(Entry::tableName());
         $this->addForeignKey($tableName . '_updated_by_ibfk', Entry::tableName(), 'updated_by_user_id', User::tableName(), 'id', 'SET NULL');
@@ -68,9 +63,6 @@ class M190319185130Cms extends Migration
             'updated_at' => $this->dateTime(),
             'created_at' => $this->dateTime()->notNull(),
         ], $this->getTableOptions());
-
-        $section = Section::create();
-        $this->addI18nColumns(Section::tableName(), $section->i18nAttributes);
 
         $this->createIndex('entry_id', Section::tableName(), ['entry_id', 'status', 'position']);
 

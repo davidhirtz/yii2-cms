@@ -21,16 +21,12 @@ class M191106150324Slugs extends Migration
 
     public function safeUp(): void
     {
-        $category = Category::instance();
-
-        foreach ($category->getI18nAttributeNames('slug') as $attributeName) {
-            try {
-                $this->dropIndex($attributeName, $category::tableName());
-            } catch (Exception) {
-            }
-
-            $this->createIndex($attributeName, $category::tableName(), $attributeName, true);
+        try {
+            $this->dropIndex('slug', Category::tableName());
+        } catch (Exception) {
         }
+
+        $this->createIndex('slug', Category::tableName(), 'slug', true);
 
         $this->dropSlugIndex();
         $this->createSlugIndex();

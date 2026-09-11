@@ -9,38 +9,22 @@ use Exception;
 
 /**
  * Only used by the historical migrations that created the entry slug columns. Those columns are dropped again by
- * {@see \Hirtz\Cms\Migrations\M260909100000Permalink}, so this must not read anything off the current model beyond
- * its I18N attribute names.
+ * {@see \Hirtz\Cms\Migrations\M260909100000Permalink}, so this must not read anything off the current model.
  */
 trait SlugIndexTrait
 {
     protected function createSlugIndex(): void
     {
-        $entry = Entry::instance();
-        $schema = $this->getDb()->getSchema()->getTableSchema($entry::tableName());
-        $slugTargetAttribute = ['slug', 'parent_slug'];
+        $schema = $this->getDb()->getSchema()->getTableSchema(Entry::tableName());
+        $attributes = array_filter(['slug', 'parent_slug'], fn (string $attribute) => $schema->getColumn($attribute) !== null);
 
-        foreach ($entry->getI18nAttributeNames('slug') as $language => $indexName) {
-            $attributes = $entry->getI18nAttributesNames($slugTargetAttribute, [$language]);
-            $attributes = array_filter($attributes, fn ($attribute) => $schema->getColumn($attribute) !== null);
-
-            $this->createIndex(
-                $indexName,
-                $entry::tableName(),
-                $attributes,
-                true
-            );
-        }
+        $this->createIndex('slug', Entry::tableName(), array_values($attributes), true);
     }
 
     protected function dropSlugIndex(): void
     {
         try {
-            $entry = Entry::instance();
-
-            foreach ($entry->getI18nAttributeNames('slug') as $attributeName) {
-                $this->dropIndex($attributeName, $entry::tableName());
-            }
+            $this->dropIndex('slug', Entry::tableName());
         } catch (Exception) {
         }
     }

@@ -43,12 +43,7 @@ class M190909152855Category extends Migration
             'created_at' => $this->dateTime()->notNull(),
         ], $this->getTableOptions());
 
-        $category = Category::create();
-        $this->addI18nColumns(Category::tableName(), $category->i18nAttributes);
-
-        foreach ($category->getI18nAttributeNames('slug') as $attributeName) {
-            $this->createIndex($attributeName, Category::tableName(), ['parent_id', $attributeName], true);
-        }
+        $this->createIndex('slug', Category::tableName(), ['parent_id', 'slug'], true);
 
         $this->createIndex('parent_id', Category::tableName(), ['parent_id', 'status']);
 

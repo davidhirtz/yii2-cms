@@ -18,19 +18,13 @@ class M231104201316EmbedUrl extends Migration
 
     public function safeUp(): void
     {
-        $linkAttributes = Asset::instance()->getI18nAttributeNames('link');
-
         $this->addColumn(Asset::tableName(), 'embed_url', (string)$this->text()
             ->null()
-            ->after(array_pop($linkAttributes)));
-
-        if (in_array('embed_url', Asset::instance()->i18nAttributes, true)) {
-            $this->addI18nColumns(Asset::tableName(), ['embed_url']);
-        }
+            ->after('link'));
     }
 
     public function safeDown(): void
     {
-        $this->dropI18nColumns(Asset::tableName(), ['embed_url']);
+        $this->dropColumn(Asset::tableName(), 'embed_url');
     }
 }

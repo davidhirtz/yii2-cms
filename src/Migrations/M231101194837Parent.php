@@ -63,12 +63,6 @@ class M231101194837Parent extends Migration
                 ->null()
                 ->after('slug'));
 
-            $entry = Entry::create();
-
-            if ($entry->isI18nAttribute('parent_slug')) {
-                $this->addI18nColumns(Entry::tableName(), ['parent_slug']);
-            }
-
             $this->dropSlugIndex();
             $this->createSlugIndex();
         }
@@ -77,24 +71,14 @@ class M231101194837Parent extends Migration
     public function safeDown(): void
     {
         $schema = $this->getDb()->getSchema();
-        $entry = Entry::instance();
 
         try {
             $this->dropSlugIndex();
-
-            foreach ($entry->getI18nAttributeNames('slug') as $attributeName) {
-                $this->createIndex(
-                    $attributeName,
-                    Entry::tableName(),
-                    $attributeName
-                );
-            }
+            $this->createIndex('slug', Entry::tableName(), 'slug');
         } catch (Exception) {
         }
 
-        foreach ($entry->getI18nAttributeNames('parent_slug') as $attributeName) {
-            $this->dropColumn(Entry::tableName(), $attributeName);
-        }
+        $this->dropColumn(Entry::tableName(), 'parent_slug');
 
         $this->dropForeignKey($schema->getRawTableName(Entry::tableName()) . '_parent_id', Entry::tableName());
 
