@@ -12,9 +12,6 @@ use Yii;
 use yii\db\ActiveRecord;
 
 /**
- * Shared {@see Permalink} behaviour for a model reachable under its own URL. A model whose slug lives in permalink
- * records rather than a column additionally uses {@see VirtualSlugTrait}.
- *
  * @mixin ActiveRecord
  */
 trait PermalinkTrait
@@ -42,21 +39,14 @@ trait PermalinkTrait
         return $permalink instanceof Permalink ? $permalink->uri : '';
     }
 
-    /**
-     * The URI a save would store for this language. Flat by default — just the slug — because a slug is globally
-     * unique; {@see \Hirtz\Cms\Models\Entry} overrides this to prepend its parent path. Unlike
-     * {@see static::getFormattedSlug()}, this recomputes from the current attributes so the save path and validation
-     * see pending changes, and an override may query the parent, so keep it off listings.
-     */
     public function composeFormattedSlug(?string $language = null): string
     {
         return (string)$this->getI18nAttribute('slug', $language);
     }
 
     /**
-     * The {@see Permalink} this model's current state would be saved as, reused by {@see SavePermalinks} and by
-     * validation so both build the record identically. Looked up by exact language: the {@see Permalink::LANGUAGE_ALL}
-     * fallback of {@see static::getPermalink()} is for reading only.
+     * Looked up by exact language: the {@see Permalink::LANGUAGE_ALL} fallback of {@see static::getPermalink()} is
+     * for reading only.
      */
     public function buildPermalink(?string $language = null): Permalink
     {
@@ -87,8 +77,8 @@ trait PermalinkTrait
     }
 
     /**
-     * The public URL a permalink URI resolves to. Used to record a {@see \Hirtz\Skeleton\Models\Redirect} for a
-     * URI this model no longer has, which is why it takes the URI rather than reading the current one.
+     * Takes the URI rather than reading the current one, so a {@see \Hirtz\Skeleton\Models\Redirect} can be
+     * recorded for a URI this model no longer has.
      */
     public function getPermalinkUrl(string $uri, ?string $language = null): false|string
     {
@@ -118,12 +108,12 @@ trait PermalinkTrait
         return [];
     }
 
-    /**
-     * @return list<string> the languages whose URL changed
-     */
-    public function savePermalinks(): array
+    public function savePermalinks(): SavePermalinks
     {
-        return (new SavePermalinks($this))->save();
+        $permalinks = new SavePermalinks($this);
+        $permalinks->save();
+
+        return $permalinks;
     }
 
     public function deletePermalinks(): void

@@ -13,7 +13,6 @@ use davidhirtz\yii2\datetime\DateTimeBehavior;
 use Hirtz\Skeleton\Behaviors\BlameableBehavior;
 use Hirtz\Skeleton\Behaviors\TimestampBehavior;
 use Hirtz\Skeleton\Behaviors\TrailBehavior;
-use Hirtz\Skeleton\Behaviors\TranslationBehavior;
 use Hirtz\Skeleton\Db\ActiveQuery;
 use Hirtz\Skeleton\Db\ActiveRecord as BaseActiveRecord;
 use Hirtz\Skeleton\Models\Interfaces\DraftStatusAttributeInterface;
@@ -30,7 +29,6 @@ use Hirtz\Skeleton\Models\Traits\UpdatedByUserTrait;
 use Hirtz\Skeleton\Validators\DynamicRangeValidator;
 use Hirtz\Skeleton\Validators\HtmlValidator;
 use Override;
-use Yii;
 
 /**
  * @property int $id
@@ -79,7 +77,6 @@ abstract class ActiveRecord extends BaseActiveRecord implements
         return [
             ...parent::behaviors(),
             'DateTimeBehavior' => DateTimeBehavior::class,
-            'TranslationBehavior' => TranslationBehavior::class,
             'TrailBehavior' => TrailBehavior::class,
         ];
     }

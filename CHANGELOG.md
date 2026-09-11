@@ -6,7 +6,12 @@
   language
 - Translated attributes of `Entry`, `Section`, `Category` and `Asset` moved from their `_xx` columns into the
   skeleton's `translation` table (`M260910110000Translations`). `Models\ActiveRecord` implements
-  `TranslationInterface`, uses `TranslationTrait` and attaches `TranslationBehavior` before `TrailBehavior`
+  `TranslationInterface` and uses `TranslationTrait`
+- `PermalinkTrait::savePermalinks()` returns the `SavePermalinks` action instead of the changed languages, so a
+  caller can read both `getChangedLanguages()` and `getSlugChanges()`; `SavePermalinks::save()` returns `void`.
+  `Entry` uses it rather than building the action itself
+- `VirtualSlugTrait::updateOldSlugAttributes()` was removed. The skeleton's `updateOldVirtualAttributes()`
+  covers the slug attributes, which the trait already adds to `getVirtualAttributes()`
 - `VirtualSlugTrait` now only adds the permalink-backed slug to the skeleton's virtual attribute mechanism;
   the `attributes()`, `getColumnAttributes()`, `__get()`, `insertInternal()` and `updateInternal()` overrides
   moved to `TranslationTrait`. `Entry` excludes `slug` from its translation attributes

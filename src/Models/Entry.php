@@ -6,7 +6,6 @@ namespace Hirtz\Cms\Models;
 
 use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\datetime\DateTimeValidator;
-use Hirtz\Cms\Models\Actions\SavePermalinks;
 use Hirtz\Cms\Models\Interfaces\PermalinkInterface;
 use Hirtz\Cms\Models\Queries\AssetQuery;
 use Hirtz\Cms\Models\Queries\EntryQuery;
@@ -217,15 +216,13 @@ class Entry extends ActiveRecord implements AssetParentInterface, PermalinkInter
     #[Override]
     public function afterSave($insert, $changedAttributes): void
     {
-        $permalinks = new SavePermalinks($this);
-        $changedLanguages = $permalinks->save();
-
+        $permalinks = $this->savePermalinks();
         $changedAttributes = [...$changedAttributes, ...$permalinks->getSlugChanges()];
 
         if (
             !$insert
             && $this->entry_count
-            && ($changedLanguages || $this->isMaterializedTreeChanged($changedAttributes))
+            && ($permalinks->getChangedLanguages() || $this->isMaterializedTreeChanged($changedAttributes))
         ) {
             Yii::debug('Updating child entries ...', __METHOD__);
 
@@ -236,8 +233,6 @@ class Entry extends ActiveRecord implements AssetParentInterface, PermalinkInter
                 $entry->update();
             }
         }
-
-        $this->updateOldSlugAttributes();
 
         if ($this->shouldUpdateParentAfterSave && array_key_exists('parent_id', $changedAttributes)) {
             $allRelatedAncestorIds = array_unique(array_filter([

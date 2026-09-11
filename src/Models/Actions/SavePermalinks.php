@@ -27,10 +27,7 @@ class SavePermalinks
     ) {
     }
 
-    /**
-     * @return list<string>
-     */
-    public function save(): array
+    public function save(): void
     {
         $this->changedLanguages = [];
         $this->slugChanges = [];
@@ -42,7 +39,13 @@ class SavePermalinks
         }
 
         $this->deleteStalePermalinks($languages);
+    }
 
+    /**
+     * @return list<string> the languages whose URL changed
+     */
+    public function getChangedLanguages(): array
+    {
         return $this->changedLanguages;
     }
 

@@ -9,8 +9,9 @@ use Override;
 use yii\db\ActiveRecord;
 
 /**
- * Adds the permalink-backed slug to the virtual attributes of {@see TranslationTrait}. Used with {@see PermalinkTrait}
- * on a model without a slug column ({@see \Hirtz\Cms\Models\Entry}).
+ * Adds the permalink-backed slug to the virtual attributes of {@see TranslationTrait}, for a model used with
+ * {@see PermalinkTrait} that has no slug column. Must be used in a subclass of the class using `TranslationTrait`,
+ * as the `parent::` calls below resolve to it.
  *
  * @mixin ActiveRecord
  */
@@ -72,8 +73,7 @@ trait VirtualSlugTrait
     }
 
     /**
-     * Reads each unset slug attribute from its permalink, setting the old value too so an unchanged slug is not
-     * dirty. Attributes that already hold a written value are skipped, so this never clobbers a pending change.
+     * Skips an attribute that already holds a written value, so a pending change is never clobbered.
      */
     protected function populateSlugAttributes(): void
     {
@@ -86,13 +86,6 @@ trait VirtualSlugTrait
 
             $this->setAttribute($attribute, $slug);
             $this->setOldAttribute($attribute, $slug);
-        }
-    }
-
-    protected function updateOldSlugAttributes(): void
-    {
-        foreach ($this->getVirtualSlugAttributes() as $attribute) {
-            $this->setOldAttribute($attribute, $this->getAttribute($attribute));
         }
     }
 }
