@@ -9,7 +9,7 @@ use Hirtz\Cms\Test\Models\TestEntry;
 use Override;
 use Yii;
 use yii\db\Expression;
-use yii\test\ActiveFixture;
+use Hirtz\Skeleton\Test\Fixtures\ActiveFixture;
 
 /**
  * Fixtures insert rows straight into the table, so no model event fires and no permalink would be written for a

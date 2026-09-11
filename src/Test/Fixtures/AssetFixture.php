@@ -9,7 +9,7 @@ use Hirtz\Media\Models\File;
 use Hirtz\Media\Test\Fixtures\FileFixture;
 use Override;
 use Yii;
-use yii\test\ActiveFixture;
+use Hirtz\Skeleton\Test\Fixtures\ActiveFixture;
 
 /**
  * The rows carry their own `model_class`, so the fixture is loaded through the base model.
