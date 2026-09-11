@@ -4,16 +4,14 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms;
 
-use Hirtz\Cms\Models\Asset;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
-use Hirtz\Cms\Models\Events\FileBeforeDeleteEventHandler;
-use Hirtz\Media\Models\File;
+use Hirtz\Cms\Models\EntryAsset;
+use Hirtz\Cms\Models\SectionAsset;
 use Hirtz\Skeleton\Modules\Admin\Controllers\DashboardController;
 use Hirtz\Skeleton\Web\Application;
 use Yii;
 use yii\base\BootstrapInterface;
-use yii\base\ModelEvent;
 use yii\i18n\PhpMessageSource;
 
 class Bootstrap implements BootstrapInterface
@@ -44,20 +42,14 @@ class Bootstrap implements BootstrapInterface
             ],
             'media' => [
                 'class' => \Hirtz\Media\Module::class,
-                'fileRelations' => [Asset::class],
+                'assets' => [
+                    EntryAsset::class,
+                    SectionAsset::class,
+                ],
             ],
         ]);
 
         $this->addDefaultUrlRules();
-
-        ModelEvent::on(
-            File::class,
-            File::EVENT_BEFORE_DELETE,
-            fn (ModelEvent $event) => Yii::createObject(FileBeforeDeleteEventHandler::class, [
-                $event,
-                $event->sender,
-            ])
-        );
 
         DashboardController::addRoles([
             Entry::AUTH_ENTRY_UPDATE,

@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Models\Actions;
 
-use Hirtz\Cms\Models\Actions\Traits\DuplicateAssetsTrait;
-use Hirtz\Cms\Models\Asset;
+use Hirtz\Media\Models\Actions\Traits\DuplicateAssetsTrait;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\EntryCategory;
@@ -128,15 +127,5 @@ class DuplicateEntry extends DuplicateActiveRecord
                 ],
             ]);
         }
-    }
-
-    /**
-     * @return Asset[]
-     */
-    protected function getAssets(): array
-    {
-        return $this->model->getAssets()
-            ->withoutSections()
-            ->all();
     }
 }

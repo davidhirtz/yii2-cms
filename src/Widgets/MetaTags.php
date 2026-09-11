@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Widgets;
 
-use Hirtz\Cms\Models\Asset;
+use Hirtz\Media\Models\Asset;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Modules\ModuleTrait;
@@ -145,7 +145,7 @@ class MetaTags extends Widget
     protected function registerImageMetaTags(): void
     {
         foreach ($this->model->assets as $asset) {
-            if ($asset->isSectionAsset() || ($this->assetType && $this->assetType !== $asset->type)) {
+            if ($this->assetType && $this->assetType !== $asset->type) {
                 continue;
             }
 

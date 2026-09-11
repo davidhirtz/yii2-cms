@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Tests\Controllers;
 
-use Hirtz\Cms\Models\Asset;
+use Hirtz\Media\Models\Asset;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;

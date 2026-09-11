@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Widgets;
 
 use Closure;
-use Hirtz\Cms\Models\Asset;
+use Hirtz\Media\Models\Asset;
+use Hirtz\Skeleton\Models\CustomAttributes\HtmlCustomAttribute;
 use Hirtz\Media\Helpers\Html;
 use Hirtz\Media\Widgets\Media;
 use Hirtz\Skeleton\Html\A;
@@ -180,7 +181,7 @@ class Artwork extends Widget
         $content = $this->asset->getVisibleAttribute('content') ?: null;
 
         if ($content) {
-            if ($this->asset->contentType !== 'html') {
+            if (!$this->asset->getCustomAttribute('content') instanceof HtmlCustomAttribute) {
                 $content = Html::encode($content);
             }
 

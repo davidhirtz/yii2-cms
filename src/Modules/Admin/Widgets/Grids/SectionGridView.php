@@ -7,7 +7,7 @@ namespace Hirtz\Cms\Modules\Admin\Widgets\Grids;
 use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Data\SectionActiveDataProvider;
-use Hirtz\Cms\Modules\Admin\Widgets\Grids\Columns\AssetCountColumn;
+use Hirtz\Media\Modules\Admin\Widgets\Grids\Columns\AssetCountColumn;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\Columns\SectionEntryCountColumn;
 use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Media\Modules\Admin\Widgets\Grids\Columns\Thumbnail;

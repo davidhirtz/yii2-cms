@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Widgets;
 
-use Hirtz\Cms\Models\Asset;
+use Hirtz\Media\Models\Asset;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
@@ -61,11 +61,7 @@ class AdminLink extends Widget
             return $webuser->can(Category::AUTH_CATEGORY_UPDATE, ['category' => $this->model]);
         }
 
-        $permissionName = $this->model->isEntryAsset()
-            ? Entry::AUTH_ENTRY_ASSET_UPDATE
-            : Section::AUTH_SECTION_ASSET_UPDATE;
-
-        return $webuser->can($permissionName, ['asset' => $this->model]);
+        return $webuser->can($this->model->getPermissionName('update'), ['asset' => $this->model]);
     }
 
     public static function tag(Asset|Category|Entry|Section $model): string

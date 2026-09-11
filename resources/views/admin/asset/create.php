@@ -6,8 +6,8 @@ declare(strict_types=1);
  * @see AssetController::actionCreate()
  *
  * @var View $this
+ * @var Entry|Section $model
  * @var FileActiveDataProvider $provider
- * @var Entry|Section $parent
  */
 
 use Hirtz\Cms\Models\Entry;
@@ -21,12 +21,12 @@ use Hirtz\Skeleton\Web\View;
 use Hirtz\Skeleton\Widgets\Grids\GridContainer;
 
 echo AssetHeader::make()
-    ->model($parent);
+    ->model($model);
 
 echo AssetSubmenu::make()
-    ->model($parent);
+    ->model($model);
 
 echo GridContainer::make()
     ->grid(FileGridView::make()
         ->provider($provider)
-        ->parent($parent));
+        ->model($model));

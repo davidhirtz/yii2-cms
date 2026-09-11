@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Models\Builders;
 
-use Hirtz\Cms\Models\Asset;
+use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Events\EntrySiteRelationsBuilderEvent;
 use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Models\SectionEntry;
 use Hirtz\Cms\Modules\ModuleTrait;
+use Hirtz\Media\Models\Asset;
 use Hirtz\Media\Models\Collections\FolderCollection;
 use Hirtz\Media\Models\File;
 use Hirtz\Skeleton\Helpers\ArrayHelper;
@@ -61,9 +62,9 @@ class EntrySiteRelationsBuilder extends Component
     protected array $relatedEntryIds = [];
 
     /**
-     * @var int[]
+     * @var Section[]
      */
-    protected array $sectionIdsWithAssets = [];
+    protected array $sectionsWithAssets = [];
 
     /**
      * @var int[]
@@ -131,7 +132,7 @@ class EntrySiteRelationsBuilder extends Component
 
         foreach ($sections as $section) {
             if ($section->hasAssetsEnabled() && $section->asset_count) {
-                $this->sectionIdsWithAssets[] = $section->id;
+                $this->sectionsWithAssets[] = $section;
             }
 
             if ($section->hasEntriesEnabled() && $section->entry_count) {
@@ -249,20 +250,10 @@ class EntrySiteRelationsBuilder extends Component
 
     protected function loadAssets(): void
     {
-        $entryIds = array_map(fn (Entry $entry) => $entry->asset_count ? $entry->id : null, $this->entries);
-        $entryIds = array_unique(array_filter($entryIds));
+        $entries = array_filter($this->entries, fn (Entry $entry): bool => (bool)$entry->asset_count);
+        $models = [...array_values($entries), ...$this->sectionsWithAssets];
 
-        $condition = [];
-
-        if ($entryIds) {
-            $condition[] = ['entry_id' => $entryIds, 'section_id' => null];
-        }
-
-        if ($this->sectionIdsWithAssets) {
-            $condition[] = ['section_id' => $this->sectionIdsWithAssets];
-        }
-
-        if (!$condition) {
+        if (!$models) {
             return;
         }
 
@@ -270,9 +261,8 @@ class EntrySiteRelationsBuilder extends Component
 
         $this->assets = Asset::find()
             ->selectSiteAttributes()
-            ->withTranslations()
             ->whereStatus()
-            ->andWhere(count($condition) > 1 ? ['or', ...$condition] : $condition[0])
+            ->whereModels($models)
             ->orderBy(['position' => SORT_ASC])
             ->all();
 
@@ -310,6 +300,7 @@ class EntrySiteRelationsBuilder extends Component
             $asset->populateFileRelation($this->files[$asset->file_id] ?? null);
         }
 
+        // The entry populates its sections' assets too, so the sections need no pass of their own.
         foreach ($this->entries as $entry) {
             $entry->populateAssetRelations($this->assets);
         }

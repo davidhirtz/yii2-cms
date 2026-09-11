@@ -1,5 +1,25 @@
 ## 3.0 (in development)
 
+- `Models\Asset` is gone. `Models\EntryAsset` and `Models\SectionAsset` are subclasses of the media
+  `Hirtz\Media\Models\Asset` and share its `asset` table; `Models\Entry` and `Models\Section` implement
+  `AssetModelInterface`. `$asset->parent` is `$asset->model`, `isEntryAsset()` is `instanceof EntryAsset`, and
+  `entry_id` / `section_id` are `model_class` / `model_id`. See `yii2-media/UPGRADE.md`
+- `M260912110000Assets` copies `cms_asset` into `asset` with the ids unchanged, moves the text columns and their
+  translations into the JSON, rewrites the trail rows to the two subclasses and folds `file.cms_asset_count` into
+  `asset_count`. It asserts its own result and rolls back on a mismatch; `safeDown()` returns `false`, because the
+  trail rewrite is not cleanly reversible. `cms_asset` is kept as the validation reference and dropped by a later
+  migration
+- `Models\Traits\MetaImageTrait` moved here from `yii2-media`; its type is visible on an `EntryAsset` only.
+  `Models\Traits\VisibleAttributeTrait` moved to `yii2-skeleton`
+- Removed `Models\Queries\AssetQuery`, `Models\Actions\DuplicateAsset`, `ReorderAssets`, `DuplicateAssetsTrait`,
+  `Models\Events\FileBeforeDeleteEventHandler`, `Modules\Admin\Data\AssetArrayDataProvider`,
+  `Widgets\Forms\AssetActiveForm`, `Widgets\Grids\AssetGridView`, `FileAssetGridView`, `FileAssetGridContainer`,
+  `Columns\AssetThumbnailColumn`, `AssetCountColumn`, `Navs\AssetActionDropdown`, `AssetParentActionDropdown` and
+  `Controllers\Traits\AssetControllerTrait` — the media equivalents replace them.
+  `Modules\Admin\Controllers\AssetController` extends the media `AbstractAssetController` and keeps its views
+- `Section::beforeDelete()` deletes its assets unconditionally: an entry deletion no longer sweeps them through a
+  shared `entry_id`. `Section::updateRelatedAssets()` is gone, and `Entry::getVisibleAssets()` no longer filters by
+  `section_id`
 - `Models\Traits\VisibleAttributeTrait` moved to `Hirtz\Skeleton\Models\Traits`; it depends on nothing in this
   bundle and models outside it need it
 - `permalink` names its owner in `model_class` instead of `model` (`M260912091000PermalinkModelClass`), following the

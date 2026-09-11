@@ -11,9 +11,9 @@ use Hirtz\Cms\Test\Fixtures\EntryFixture;
 use Hirtz\Cms\Test\Fixtures\PermalinkFixture;
 use Hirtz\Cms\Test\Fixtures\SectionEntryFixture;
 use Hirtz\Cms\Test\Fixtures\SectionFixture;
-use Hirtz\Cms\Test\Models\TestAsset;
 use Hirtz\Cms\Test\Models\TestEntry;
 use Hirtz\Cms\Test\Models\TestSection;
+use Hirtz\Media\Models\Asset;
 use Hirtz\Media\Models\File;
 use Hirtz\Media\Test\Fixtures\FileFixture;
 use Hirtz\Skeleton\Test\Fixtures\UserFixture;
@@ -47,9 +47,9 @@ trait CmsFixtureTrait
         return $this->getAssetFixture()->data[$key];
     }
 
-    protected function getAssetFromFixture(string $key): TestAsset
+    protected function getAssetFromFixture(string $key): Asset
     {
-        return TestAsset::findOne($this->getAssetFixtureData($key)['id']);
+        return Asset::findOne($this->getAssetFixtureData($key)['id']);
     }
 
     protected function getEntryFixture(): EntryFixture

@@ -9,22 +9,22 @@ declare(strict_types=1);
  * @var Asset $asset
  */
 
-use Hirtz\Cms\Models\Asset;
 use Hirtz\Cms\Modules\Admin\Controllers\AssetController;
-use Hirtz\Cms\Modules\Admin\Widgets\Forms\AssetActiveForm;
-use Hirtz\Cms\Modules\Admin\Widgets\Navs\AssetActionDropdown;
 use Hirtz\Cms\Modules\Admin\Widgets\Navs\AssetHeader;
 use Hirtz\Cms\Modules\Admin\Widgets\Navs\AssetSubmenu;
+use Hirtz\Media\Models\Asset;
+use Hirtz\Media\Modules\Admin\Widgets\Forms\AssetActiveForm;
+use Hirtz\Media\Modules\Admin\Widgets\Navs\AssetActionDropdown;
 use Hirtz\Skeleton\Web\View;
 use Hirtz\Skeleton\Widgets\Forms\FormContainer;
 
 echo AssetHeader::make()
-    ->model($asset->parent)
+    ->model($asset->model)
     ->content(AssetActionDropdown::make()
         ->model($asset));
 
 echo AssetSubmenu::make()
-    ->model($asset->parent);
+    ->model($asset->model);
 
 echo FormContainer::make()
     ->title($this->title)

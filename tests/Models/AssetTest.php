@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Tests\Models;
 
+use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Models\EntryAsset;
+use Hirtz\Cms\Models\SectionAsset;
 use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
-use Hirtz\Cms\Test\Models\TestAsset;
+use Hirtz\Cms\Test\Models\TestEntryAsset;
 use Hirtz\Cms\Test\TestCase;
 
 class AssetTest extends TestCase
@@ -17,15 +20,14 @@ class AssetTest extends TestCase
         $entry = $this->getEntryFromFixture('page-enabled');
         $file = $this->getFileFromFixture('file-5');
 
-        $asset = TestAsset::create();
-        $asset->populateParentRelation($entry);
+        $asset = TestEntryAsset::create();
+        $asset->populateModelRelation($entry);
         $asset->populateFileRelation($file);
 
-        self::assertTrue($asset->save());
-        self::assertEquals(3, $asset->position);
-        self::assertEquals(3, $asset->entry->asset_count);
-        self::assertNull($asset->section_id);
-        self::assertTrue($asset->isEntryAsset());
+        self::assertTrue($asset->save(), implode(' ', $asset->getErrorSummary(true)));
+        self::assertSame(3, $asset->position);
+        self::assertSame(3, $asset->model->asset_count);
+        self::assertTrue($asset->isModel(Entry::class));
     }
 
     public function testCreateSectionAsset(): void
@@ -33,40 +35,34 @@ class AssetTest extends TestCase
         $section = $this->getSectionFromFixture('section-headline');
         $file = $this->getFileFromFixture('file-5');
 
-        $asset = TestAsset::create();
-        $asset->populateParentRelation($section);
+        $asset = SectionAsset::create();
+        $asset->populateModelRelation($section);
         $asset->populateFileRelation($file);
 
-        self::assertTrue($asset->save());
-        self::assertEquals(5, $asset->position);
-        self::assertEquals(5, $asset->section->asset_count);
-        self::assertEquals(2, $asset->entry->asset_count);
-        self::assertEquals($section->entry_id, $asset->entry_id);
-        self::assertTrue($asset->isSectionAsset());
+        self::assertTrue($asset->save(), implode(' ', $asset->getErrorSummary(true)));
+        self::assertSame(5, $asset->position);
+        self::assertSame(5, $asset->model->asset_count);
+    }
+
+    public function testTheLoadedAssetIsItsSubclass(): void
+    {
+        self::assertInstanceOf(EntryAsset::class, $this->getAssetFromFixture('entry-asset'));
+        self::assertInstanceOf(SectionAsset::class, $this->getAssetFromFixture('section-image-1'));
     }
 
     public function testCreateAssetWithInvalidAttributes(): void
     {
-        $asset = TestAsset::create();
+        $asset = TestEntryAsset::create();
 
         self::assertFalse($asset->save());
-
-        self::assertArrayHasKey('entry_id', $asset->getErrors());
         self::assertArrayHasKey('file_id', $asset->getErrors());
+        self::assertArrayHasKey('model_id', $asset->getErrors());
 
-        $asset->entry_id = 100;
+        $asset->model_id = 100;
         $asset->file_id = 100;
 
         self::assertFalse($asset->save());
-
-        self::assertArrayHasKey('entry_id', $asset->getErrors());
         self::assertArrayHasKey('file_id', $asset->getErrors());
-
-        $asset->section_id = 100;
-
-        self::assertFalse($asset->save());
-
-        self::assertArrayHasKey('entry_id', $asset->getErrors());
     }
 
     public function testUpdateAsset(): void
@@ -74,42 +70,33 @@ class AssetTest extends TestCase
         $asset = $this->getAssetFromFixture('entry-asset');
         $asset->content = '<p>Updated content</p>';
 
-        $updatedAsset = $asset->entry->updated_at;
+        $updatedAt = $asset->model->updated_at;
 
-        self::assertTrue(!!$asset->update());
-        self::assertEquals('<p>Updated content</p>', $asset->content);
-        self::assertTrue($asset->entry->updated_at > $updatedAsset);
+        self::assertSame(1, $asset->update());
+        self::assertSame('<p>Updated content</p>', $asset->content);
+        self::assertTrue($asset->model->updated_at > $updatedAt);
 
         $asset->populateFileRelation($this->getFileFromFixture('file-5'));
-        self::assertTrue(!!$asset->update());
+        self::assertSame(1, $asset->update());
 
-        self::assertEquals(3, $asset->file->getAttribute('cms_asset_count'));
-
-        $file = $this->getFileFromFixture('file-1');
-        self::assertEquals(0, $file->getAttribute('cms_asset_count'));
+        self::assertSame(3, $asset->file->asset_count);
+        self::assertSame(0, $this->getFileFromFixture('file-1')->asset_count);
     }
 
-    public function testUpdateAssetWithInvalidAttributes(): void
+    public function testTheModelIsImmutable(): void
     {
         $asset = $this->getAssetFromFixture('entry-asset');
-        $asset->populateEntryRelation($this->getEntryFromFixture('post-1'));
+        $asset->model_id = $this->getEntryFromFixture('post-1')->id;
 
         self::assertFalse($asset->update());
-
-        self::assertArrayHasKey('entry_id', $asset->getErrors());
-
-        $asset->populateSectionRelation($this->getSectionFromFixture('section-headline'));
-        self::assertFalse($asset->update());
-
-        self::assertArrayHasKey('section_id', $asset->getErrors());
+        self::assertArrayHasKey('model_id', $asset->getErrors());
     }
 
     public function testDeleteAsset(): void
     {
         $asset = $this->getAssetFromFixture('entry-asset');
-        self::assertTrue($asset->delete() === 1);
+        self::assertSame(1, $asset->delete());
 
-        $file = $this->getFileFromFixture('file-1');
-        self::assertEquals(0, $file->getAttribute('cms_asset_count'));
+        self::assertSame(0, $this->getFileFromFixture('file-1')->asset_count);
     }
 }

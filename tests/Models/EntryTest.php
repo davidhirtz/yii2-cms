@@ -91,10 +91,8 @@ class EntryTest extends TestCase
     {
         $entry = $this->getEntryFromFixture('page-enabled');
 
-        self::assertCount(6, $entry->assets);
-        self::assertCount(1, $entry->getVisibleAssets());
-
-        $entry->populateAssetRelations();
+        // The section assets belong to their sections now, not to the entry.
         self::assertCount(2, $entry->assets);
+        self::assertCount(1, $entry->getVisibleAssets());
     }
 }

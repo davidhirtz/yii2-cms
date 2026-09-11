@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Modules\Admin\Widgets\Navs;
 
 use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Models\EntryAsset;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Module;
 use Hirtz\Cms\Modules\ModuleTrait;
@@ -79,7 +80,7 @@ class EntrySubmenu extends Submenu
                     ...$this->additionalActiveRoutes['assets'] ?? [],
                 ]
             )
-            ->url(['/admin/cms/asset/index', 'entry' => $this->model->id]);
+            ->url(EntryAsset::getAdminIndexRoute($this->model));
     }
 
     public function getSubentriesItem(): ?NavItem

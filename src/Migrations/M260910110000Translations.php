@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Migrations;
 
-use Hirtz\Cms\Models\Asset;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
@@ -14,6 +13,9 @@ use yii\db\Migration;
 
 /**
  * Moves the translated attributes of the CMS models from their `_xx` columns into {@see Translation} records.
+ *
+ * The asset is not among them: its model is gone and `M260912110000Assets` reads whichever of the two shapes it
+ * finds on `cms_asset`.
  *
  * @noinspection PhpUnused
  */
@@ -44,7 +46,7 @@ class M260910110000Translations extends Migration
     }
 
     /**
-     * @return list<Asset|Category|Entry|Section>
+     * @return list<Category|Entry|Section>
      */
     protected function getModels(): array
     {
@@ -52,7 +54,6 @@ class M260910110000Translations extends Migration
             Entry::create(),
             Section::create(),
             Category::create(),
-            Asset::create(),
         ];
     }
 }

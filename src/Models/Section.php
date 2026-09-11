@@ -6,13 +6,12 @@ namespace Hirtz\Cms\Models;
 
 use Hirtz\Skeleton\I18n\Lang;
 use Closure;
-use Hirtz\Cms\Models\Queries\AssetQuery;
 use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Models\Queries\SectionQuery;
 use Hirtz\Cms\Models\Traits\EntryRelationTrait;
 use Hirtz\Cms\Models\Traits\SlugAttributeTrait;
-use Hirtz\Media\Models\Interfaces\AssetParentInterface;
-use Hirtz\Media\Models\Traits\AssetParentTrait;
+use Hirtz\Media\Models\Interfaces\AssetModelInterface;
+use Hirtz\Media\Models\Traits\AssetModelTrait;
 use yii\db\ActiveQuery;
 use Hirtz\Skeleton\Validators\RelationValidator;
 use Hirtz\Skeleton\Validators\UniqueValidator;
@@ -29,14 +28,14 @@ use yii\helpers\Inflector;
  * @property int $asset_count
  * @property int $entry_count
  *
- * @property-read Asset[] $assets {@see static::getAssets()}
+ * @property-read SectionAsset[] $assets {@see static::getAssets()}
  * @property-read Entry[] $entries {@see static::getEntries()}
  * @property-read SectionEntry $sectionEntry {@see static::getSectionEntry()}
  * @property-read SectionEntry[] $sectionEntries {@see static::getSectionEntries()}
  */
-class Section extends ActiveRecord implements AssetParentInterface
+class Section extends ActiveRecord implements AssetModelInterface
 {
-    use AssetParentTrait;
+    use AssetModelTrait;
     use EntryRelationTrait;
     use SlugAttributeTrait;
 
@@ -135,7 +134,6 @@ class Section extends ActiveRecord implements AssetParentInterface
         if ($this->shouldUpdateEntryAfterSave) {
             if (array_key_exists('entry_id', $changedAttributes)) {
                 $this->updateOldEntryRelation($changedAttributes['entry_id'] ?? null);
-                $this->updateRelatedAssets();
 
                 $this->entry->recalculateSectionCount();
             }
@@ -157,12 +155,11 @@ class Section extends ActiveRecord implements AssetParentInterface
             return false;
         }
 
-        if (!$this->entry->isDeleted()) {
-            if ($this->asset_count) {
-                foreach ($this->assets as $asset) {
-                    $asset->setIsBatch($this->getIsBatch());
-                    $asset->delete();
-                }
+        // Unconditional: an entry deletion no longer sweeps the section assets through a shared column.
+        if ($this->asset_count) {
+            foreach ($this->assets as $asset) {
+                $asset->setIsBatch($this->getIsBatch());
+                $asset->delete();
             }
         }
 
@@ -177,17 +174,6 @@ class Section extends ActiveRecord implements AssetParentInterface
         }
 
         parent::afterDelete();
-    }
-
-    public function getAssets(): AssetQuery
-    {
-        /** @var AssetQuery $relation */
-        $relation = $this->hasMany(Asset::class, ['section_id' => 'id'])
-            ->orderBy(['position' => SORT_ASC])
-            ->indexBy('id')
-            ->inverseOf('section');
-
-        return $relation;
     }
 
     public function getEntries(): EntryQuery
@@ -228,25 +214,6 @@ class Section extends ActiveRecord implements AssetParentInterface
         return Yii::createObject(SectionQuery::class, [static::class]);
     }
 
-    /**
-     * @param Asset[] $assets
-     */
-    public function populateAssetRelations(?array $assets): void
-    {
-        $relations = [];
-
-        if ($assets) {
-            foreach ($assets as $asset) {
-                if ($asset->section_id === $this->id) {
-                    $asset->populateParentRelation($this);
-                    $relations[$asset->id] = $asset;
-                }
-            }
-        }
-
-        $this->populateRelation('assets', $relations);
-    }
-
     public function recalculateEntryCount(): static
     {
         $this->entry_count = $this->getSectionEntries()->count();
@@ -264,13 +231,6 @@ class Section extends ActiveRecord implements AssetParentInterface
         if ($entry) {
             $entry->recalculateSectionCount()->update();
             $this->_trailParents = [$entry, $this->entry];
-        }
-    }
-
-    protected function updateRelatedAssets(): void
-    {
-        if ($this->asset_count) {
-            Asset::updateAll(['entry_id' => $this->entry_id], ['section_id' => $this->id]);
         }
     }
 
@@ -340,6 +300,11 @@ class Section extends ActiveRecord implements AssetParentInterface
     public function getVisibleAssets(): array
     {
         return $this->hasAssetsEnabled() && $this->isAttributeVisible('#assets') ? $this->assets : [];
+    }
+
+    public function getAssetClass(): string
+    {
+        return SectionAsset::class;
     }
 
     public function hasAssetsEnabled(): bool

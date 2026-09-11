@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Widgets;
 
 use Closure;
-use Hirtz\Cms\Models\Asset;
+use Hirtz\Media\Models\Asset;
 use Hirtz\Skeleton\Html\Div;
 use Hirtz\Skeleton\Html\Traits\TagAttributesTrait;
 use Hirtz\Skeleton\Widgets\Widget;

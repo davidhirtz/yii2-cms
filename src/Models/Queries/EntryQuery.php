@@ -8,6 +8,7 @@ use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\EntryCategory;
 use Hirtz\Cms\Models\Permalink;
+use Hirtz\Media\Models\Queries\AssetQuery;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Models\SectionEntry;
 use Hirtz\Cms\Modules\ModuleTrait;
@@ -185,7 +186,6 @@ class EntryQuery extends I18nActiveQuery
         return $this->with([
             'assets' => function (AssetQuery $query): void {
                 $query->selectSitemapAttributes()
-                    ->withTranslations()
                     ->whereStatus()
                     ->withFiles();
             },

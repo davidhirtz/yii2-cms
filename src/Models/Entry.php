@@ -7,15 +7,15 @@ namespace Hirtz\Cms\Models;
 use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\datetime\DateTimeValidator;
 use Hirtz\Cms\Models\Interfaces\PermalinkInterface;
-use Hirtz\Cms\Models\Queries\AssetQuery;
 use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Models\Queries\SectionQuery;
 use Hirtz\Cms\Models\Traits\PermalinkTrait;
 use Hirtz\Cms\Models\Traits\SlugAttributeTrait;
 use Hirtz\Cms\Models\Traits\VirtualSlugTrait;
 use Hirtz\Cms\Module;
-use Hirtz\Media\Models\Interfaces\AssetParentInterface;
-use Hirtz\Media\Models\Traits\AssetParentTrait;
+use Hirtz\Media\Models\Asset;
+use Hirtz\Media\Models\Interfaces\AssetModelInterface;
+use Hirtz\Media\Models\Traits\AssetModelTrait;
 use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Skeleton\Models\Interfaces\SitemapInterface;
 use Hirtz\Skeleton\Models\Traits\MaterializedTreeTrait;
@@ -39,7 +39,7 @@ use yii\db\ActiveQuery;
  * @property int $section_count
  * @property int $asset_count
  *
- * @property-read Asset[] $assets {@see static::getAssets()}
+ * @property-read EntryAsset[] $assets {@see static::getAssets()}
  * @property-read Permalink[] $permalinks {@see static::getPermalinks()}
  * @property-read EntryCategory $entryCategory {@see static::getEntryCategory()}
  * @property-read EntryCategory[] $entryCategories {@see static::getEntryCategories()}
@@ -50,9 +50,11 @@ use yii\db\ActiveQuery;
  * @method EntryQuery findChildren()
  * @method EntryQuery findDescendants()
  */
-class Entry extends ActiveRecord implements AssetParentInterface, PermalinkInterface, SitemapInterface
+class Entry extends ActiveRecord implements AssetModelInterface, PermalinkInterface, SitemapInterface
 {
-    use AssetParentTrait;
+    use AssetModelTrait {
+        populateAssetRelations as populateOwnAssetRelations;
+    }
     use MaterializedTreeTrait;
     use PermalinkTrait;
     use SlugAttributeTrait;
@@ -260,7 +262,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, PermalinkInter
     public function beforeDelete(): bool
     {
         if ($isValid = parent::beforeDelete()) {
-            if ($this->asset_count || $this->section_count) {
+            if ($this->asset_count) {
                 foreach ($this->assets as $asset) {
                     $asset->setIsBatch($this->getIsBatch());
                     $asset->delete();
@@ -327,17 +329,6 @@ class Entry extends ActiveRecord implements AssetParentInterface, PermalinkInter
         }
 
         parent::afterDelete();
-    }
-
-    public function getAssets(): AssetQuery
-    {
-        /** @var AssetQuery $relation */
-        $relation = $this->hasMany(Asset::class, ['entry_id' => 'id'])
-            ->orderBy(['position' => SORT_ASC])
-            ->indexBy('id')
-            ->inverseOf('entry');
-
-        return $relation;
     }
 
     /**
@@ -427,18 +418,8 @@ class Entry extends ActiveRecord implements AssetParentInterface, PermalinkInter
     public function populateAssetRelations(?array $assets = null): void
     {
         $assets ??= $this->assets;
-        $relations = [];
 
-        if ($assets) {
-            foreach ($assets as $asset) {
-                if ($asset->entry_id === $this->id && !$asset->section_id) {
-                    $asset->populateRelation('entry', $this);
-                    $relations[$asset->id] = $asset;
-                }
-            }
-        }
-
-        $this->populateRelation('assets', $relations);
+        $this->populateOwnAssetRelations($assets);
 
         if ($this->hasSectionsEnabled() && $this->isRelationPopulated('sections')) {
             foreach ($this->sections as $section) {
@@ -537,8 +518,7 @@ class Entry extends ActiveRecord implements AssetParentInterface, PermalinkInter
             return [];
         }
 
-        return array_filter($this->assets, fn (Asset $asset): bool => $asset->section_id === null
-            && $asset->type !== $asset::TYPE_META_IMAGE);
+        return array_filter($this->assets, fn (Asset $asset): bool => $asset->type !== $asset::TYPE_META_IMAGE);
     }
 
     /**
@@ -642,6 +622,11 @@ class Entry extends ActiveRecord implements AssetParentInterface, PermalinkInter
     {
         return parent::isTransactional($operation)
             || (($this->entry_count > 0 || $this->isMaterializedTreeChanged()) && !static::getDb()->getTransaction());
+    }
+
+    public function getAssetClass(): string
+    {
+        return EntryAsset::class;
     }
 
     public function hasAssetsEnabled(): bool

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Modules\Admin\Widgets\Navs;
 
 use Hirtz\Cms\Models\Section;
+use Hirtz\Cms\Models\SectionAsset;
 use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Skeleton\Widgets\Navs\NavItem;
@@ -66,6 +67,6 @@ class SectionSubmenu extends Submenu
                     ...$this->additionalActiveRoutes['assets'] ?? [],
                 ]
             )
-            ->url(['/admin/cms/asset/index', 'section' => $this->model->id]);
+            ->url(SectionAsset::getAdminIndexRoute($this->model));
     }
 }

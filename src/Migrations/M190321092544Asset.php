@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Migrations;
 
-use Hirtz\Cms\Models\Asset;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Media\Models\File;
@@ -20,14 +19,17 @@ class M190321092544Asset extends Migration
 {
     use MigrationTrait;
 
+    private const string LEGACY_TABLE = '{{%cms_asset}}';
+    private const string FILE_COUNT_COLUMN = 'cms_asset_count';
+
     public function safeUp(): void
     {
         $schema = $this->getDb()->getSchema();
 
-        $this->createTable(Asset::tableName(), [
+        $this->createTable(self::LEGACY_TABLE, [
             'id' => $this->primaryKey()->unsigned(),
-            'status' => $this->tinyInteger(1)->unsigned()->notNull()->defaultValue(Asset::STATUS_ENABLED),
-            'type' => $this->smallInteger()->notNull()->defaultValue(Asset::TYPE_DEFAULT),
+            'status' => $this->tinyInteger(1)->unsigned()->notNull()->defaultValue(3),
+            'type' => $this->smallInteger()->notNull()->defaultValue(1),
             'entry_id' => $this->integer()->unsigned()->notNull(),
             'section_id' => $this->integer()->unsigned()->null(),
             'file_id' => $this->integer()->unsigned()->notNull(),
@@ -41,14 +43,14 @@ class M190321092544Asset extends Migration
             'created_at' => $this->dateTime()->notNull(),
         ], $this->getTableOptions());
 
-        $this->createIndex('entry_id', Asset::tableName(), ['entry_id', 'status', 'position']);
-        $this->createIndex('section_id', Asset::tableName(), ['section_id', 'position']);
+        $this->createIndex('entry_id', self::LEGACY_TABLE, ['entry_id', 'status', 'position']);
+        $this->createIndex('section_id', self::LEGACY_TABLE, ['section_id', 'position']);
 
-        $tableName = $schema->getRawTableName(Asset::tableName());
+        $tableName = $schema->getRawTableName(self::LEGACY_TABLE);
 
         $this->addForeignKey(
             "{$tableName}_entry_id_ibfk",
-            Asset::tableName(),
+            self::LEGACY_TABLE,
             'entry_id',
             Entry::tableName(),
             'id',
@@ -57,7 +59,7 @@ class M190321092544Asset extends Migration
 
         $this->addForeignKey(
             "{$tableName}_section_id_ibfk",
-            Asset::tableName(),
+            self::LEGACY_TABLE,
             'section_id',
             Section::tableName(),
             'id',
@@ -66,7 +68,7 @@ class M190321092544Asset extends Migration
 
         $this->addForeignKey(
             "{$tableName}_file_id_ibfk",
-            Asset::tableName(),
+            self::LEGACY_TABLE,
             'file_id',
             File::tableName(),
             'id',
@@ -75,31 +77,23 @@ class M190321092544Asset extends Migration
 
         $this->addForeignKey(
             "{$tableName}_updated_by_ibfk",
-            Asset::tableName(),
+            self::LEGACY_TABLE,
             'updated_by_user_id',
             User::tableName(),
             'id',
             'SET NULL'
         );
 
-        $after = 'transformation_count';
-
-        foreach (Asset::instance()->getFileCountAttributeNames() as $attributeName) {
-            $this->addColumn(File::tableName(), $attributeName, (string)$this->smallInteger()
-                ->notNull()
-                ->defaultValue(0)
-                ->after($after));
-
-            $after = $attributeName;
-        }
+        $this->addColumn(File::tableName(), self::FILE_COUNT_COLUMN, (string)$this->smallInteger()
+            ->notNull()
+            ->defaultValue(0)
+            ->after('transformation_count'));
     }
 
     public function safeDown(): void
     {
-        foreach (Asset::instance()->getFileCountAttributeNames() as $attributeName) {
-            $this->dropColumn(File::tableName(), $attributeName);
-        }
+        $this->dropColumn(File::tableName(), self::FILE_COUNT_COLUMN);
 
-        $this->dropTable(Asset::tableName());
+        $this->dropTable(self::LEGACY_TABLE);
     }
 }
