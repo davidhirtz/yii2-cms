@@ -1,5 +1,7 @@
 ## 3.0 (in development)
 
+- `Modules\Admin\Controllers\AssetController` declares its own access rules and permission checks against the
+  `AUTH_ENTRY_ASSET_*` and `AUTH_SECTION_ASSET_*` constants, and calls the media action bodies
 - Added `Tests\Migrations\AssetMigrationTest`, which replays `M260912110000Assets` against the kept `cms_asset`
   table: the subclass dispatch, the text columns and translations landing in the JSON, the trail rewrite and the
   fallback for an asset deleted before the migration
