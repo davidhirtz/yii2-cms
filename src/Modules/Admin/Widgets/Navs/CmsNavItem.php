@@ -43,7 +43,8 @@ class CmsNavItem extends NavItem
             $this->routes([
                 'admin/cms/entry',
                 'admin/cms/section',
-                'admin/cms/asset',
+                'admin/cms/entry-asset',
+                'admin/cms/section-asset',
             ]);
         }
 

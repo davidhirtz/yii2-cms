@@ -3,27 +3,26 @@
 declare(strict_types=1);
 
 /**
- * @see AssetController::actionCreate()
+ * @see EntryAssetController::actionCreate()
  *
  * @var View $this
- * @var Entry|Section $model
+ * @var Entry $model
  * @var FileActiveDataProvider $provider
  */
 
 use Hirtz\Cms\Models\Entry;
-use Hirtz\Cms\Models\Section;
-use Hirtz\Cms\Modules\Admin\Controllers\AssetController;
-use Hirtz\Cms\Modules\Admin\Widgets\Navs\AssetHeader;
-use Hirtz\Cms\Modules\Admin\Widgets\Navs\AssetSubmenu;
+use Hirtz\Cms\Modules\Admin\Controllers\EntryAssetController;
+use Hirtz\Cms\Modules\Admin\Widgets\Navs\EntryHeader;
+use Hirtz\Cms\Modules\Admin\Widgets\Navs\EntrySubmenu;
 use Hirtz\Media\Modules\Admin\Data\FileActiveDataProvider;
 use Hirtz\Media\Modules\Admin\Widgets\Grids\FileGridView;
 use Hirtz\Skeleton\Web\View;
 use Hirtz\Skeleton\Widgets\Grids\GridContainer;
 
-echo AssetHeader::make()
+echo EntryHeader::make()
     ->model($model);
 
-echo AssetSubmenu::make()
+echo EntrySubmenu::make()
     ->model($model);
 
 echo GridContainer::make()

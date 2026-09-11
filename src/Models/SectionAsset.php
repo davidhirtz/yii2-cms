@@ -22,7 +22,7 @@ class SectionAsset extends Asset
     #[Override]
     public static function getAdminControllerRoute(): string
     {
-        return '/admin/cms/asset';
+        return '/admin/cms/section-asset';
     }
 
     #[Override]

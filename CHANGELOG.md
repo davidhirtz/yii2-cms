@@ -1,5 +1,11 @@
 ## 3.0 (in development)
 
+- `Modules\Admin\Controllers\AssetController` split into `EntryAssetController` and `SectionAssetController`,
+  at `/admin/cms/entry-asset` and `/admin/cms/section-asset`, each with one model type and one set of
+  permissions instead of an `$entry` / `$section` branch in every action. Their views live under
+  `resources/views/admin/entry-asset/` and `section-asset/`, so `Widgets\Navs\AssetHeader` and `AssetSubmenu`
+  — which existed only to dispatch between the two — are gone. `Widgets\Navs\EntrySubmenu` and
+  `SectionSubmenu` gained `additionalActiveRoutes()`
 - `Modules\Admin\Controllers\AssetController` declares its own access rules and permission checks against the
   `AUTH_ENTRY_ASSET_*` and `AUTH_SECTION_ASSET_*` constants, and calls the media action bodies
 - Added `Tests\Migrations\AssetMigrationTest`, which replays `M260912110000Assets` against the kept `cms_asset`

@@ -25,7 +25,7 @@ class EntryAsset extends Asset
     #[Override]
     public static function getAdminControllerRoute(): string
     {
-        return '/admin/cms/asset';
+        return '/admin/cms/entry-asset';
     }
 
     #[Override]

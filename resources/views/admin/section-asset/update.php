@@ -3,27 +3,27 @@
 declare(strict_types=1);
 
 /**
- * @see AssetController::actionUpdate()
+ * @see SectionAssetController::actionUpdate()
  *
  * @var View $this
- * @var Asset $asset
+ * @var SectionAsset $asset
  */
 
-use Hirtz\Cms\Modules\Admin\Controllers\AssetController;
-use Hirtz\Cms\Modules\Admin\Widgets\Navs\AssetHeader;
-use Hirtz\Cms\Modules\Admin\Widgets\Navs\AssetSubmenu;
-use Hirtz\Media\Models\Asset;
+use Hirtz\Cms\Models\SectionAsset;
+use Hirtz\Cms\Modules\Admin\Controllers\SectionAssetController;
+use Hirtz\Cms\Modules\Admin\Widgets\Navs\SectionHeader;
+use Hirtz\Cms\Modules\Admin\Widgets\Navs\SectionSubmenu;
 use Hirtz\Media\Modules\Admin\Widgets\Forms\AssetActiveForm;
 use Hirtz\Media\Modules\Admin\Widgets\Navs\AssetActionDropdown;
 use Hirtz\Skeleton\Web\View;
 use Hirtz\Skeleton\Widgets\Forms\FormContainer;
 
-echo AssetHeader::make()
+echo SectionHeader::make()
     ->model($asset->model)
     ->content(AssetActionDropdown::make()
         ->model($asset));
 
-echo AssetSubmenu::make()
+echo SectionSubmenu::make()
     ->model($asset->model);
 
 echo FormContainer::make()

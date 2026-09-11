@@ -24,6 +24,15 @@ class SectionSubmenu extends Submenu
 
     protected array $additionalActiveRoutes = [];
 
+    /**
+     * @param array<string, list<string>> $additionalActiveRoutes keyed by the item the routes belong to
+     */
+    public function additionalActiveRoutes(array $additionalActiveRoutes): static
+    {
+        $this->additionalActiveRoutes = $additionalActiveRoutes;
+        return $this;
+    }
+
     #[Override]
     protected function configure(): void
     {
@@ -63,7 +72,7 @@ class SectionSubmenu extends Submenu
             ->label($this->model->getAttributeLabel('asset_count'))
             ->routes(
                 [
-                    'admin/cms/asset/' => ['section'],
+                    'admin/cms/section-asset',
                     ...$this->additionalActiveRoutes['assets'] ?? [],
                 ]
             )
