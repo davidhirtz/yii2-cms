@@ -1,5 +1,14 @@
 ## 3.0 (in development)
 
+- `Models\ActiveRecord` implements `CustomAttributeInterface`, so `Entry`, `Section`, `Asset`, `Category` and every
+  model extending it can declare typed custom attributes through the `customAttributes` key of their type options.
+  Added the `custom_attributes` column to `entry`, `section`, `cms_asset` and `category`; it is excluded from the trail
+- The admin forms render the custom attribute fields of the model's current type, and the type select reloads the form
+  through htmx when the types render different fields. `EntryController`, `SectionController`, `AssetController` and
+  `CategoryController` guard their save with `Request::isFormReload()`
+- `Test\Models\TestSection` gained `TYPE_LINK_LIST` with a repeatable `links` group and a translatable `subtitle` on
+  `TYPE_HEADLINE`
+
 - `PermalinkTrait::buildPermalink()` looks the record up by its exact language, and `SavePermalinks` removes the
   records of languages the model no longer writes. Before, an entry whose slug became an `i18nAttribute` after it
   was saved had its language-agnostic permalink rewritten with the translated slug instead of getting one record per

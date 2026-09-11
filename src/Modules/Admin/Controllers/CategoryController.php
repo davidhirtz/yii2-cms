@@ -85,7 +85,7 @@ class CategoryController extends AbstractController
             throw new ForbiddenHttpException();
         }
 
-        if ($category->load(Yii::$app->getRequest()->post()) && $category->insert()) {
+        if ($category->load(Yii::$app->getRequest()->post()) && !$this->request->isFormReload() && $category->insert()) {
             $this->success(Lang::t('cms', 'CATEGORY_SUCCESS_CREATED'));
             return $this->redirect(['index', 'parent' => $category->parent_id]);
         }
@@ -99,7 +99,7 @@ class CategoryController extends AbstractController
     {
         $category = $this->findCategory($id, Category::AUTH_CATEGORY_UPDATE);
 
-        if ($category->load(Yii::$app->getRequest()->post())) {
+        if ($category->load(Yii::$app->getRequest()->post()) && !$this->request->isFormReload()) {
             if ($category->update()) {
                 $this->success(Lang::t('cms', 'CATEGORY_SUCCESS_UPDATED'));
             }

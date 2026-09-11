@@ -5,13 +5,23 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Test\Models;
 
 use Hirtz\Cms\Models\Section;
+use Hirtz\Skeleton\Models\CustomAttributes\GroupCustomAttribute;
+use Hirtz\Skeleton\Models\CustomAttributes\IconCustomAttribute;
+use Hirtz\Skeleton\Models\CustomAttributes\TextCustomAttribute;
+use Hirtz\Skeleton\Models\CustomAttributes\UrlCustomAttribute;
 
+/**
+ * @property string|null $subtitle
+ * @property string|null $subtitle_de
+ * @property list<array>|null $links
+ */
 class TestSection extends Section
 {
     public const int TYPE_HEADLINE = 1;
     public const int TYPE_TEXT_COLUMN = 2;
     public const int TYPE_GALLERY = 3;
     public const int TYPE_BLOG = 4;
+    public const int TYPE_LINK_LIST = 5;
 
     #[\Override]
     public static function getTypes(): array
@@ -20,6 +30,10 @@ class TestSection extends Section
             self::TYPE_HEADLINE => [
                 'name' => 'Headline',
                 'hiddenFields' => ['content', '#entries'],
+                'customAttributes' => fn (): array => [
+                    TextCustomAttribute::make('subtitle')
+                        ->translatable(),
+                ],
             ],
             self::TYPE_TEXT_COLUMN => [
                 'name' => 'Column',
@@ -33,6 +47,22 @@ class TestSection extends Section
                 'name' => 'Blog',
                 'entriesOrderBy' => ['position' => SORT_ASC],
                 'hiddenFields' => ['name', 'content', '#assets'],
+            ],
+            self::TYPE_LINK_LIST => [
+                'name' => 'Link list',
+                'hiddenFields' => ['content', '#assets', '#entries'],
+                'customAttributes' => fn (): array => [
+                    GroupCustomAttribute::make('links')
+                        ->multiple()
+                        ->maxCount(5)
+                        ->attributes([
+                            TextCustomAttribute::make('label')
+                                ->translatable(),
+                            UrlCustomAttribute::make('url')
+                                ->required(),
+                            IconCustomAttribute::make('icon'),
+                        ]),
+                ],
             ],
         ];
     }

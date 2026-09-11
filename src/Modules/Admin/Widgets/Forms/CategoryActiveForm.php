@@ -10,6 +10,7 @@ use Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits\CategoryParentIdFieldTrait;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits\MetaFieldsTrait;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits\SlugFieldTrait;
 use Hirtz\Skeleton\Widgets\Forms\ActiveForm;
+use Hirtz\Skeleton\Widgets\Forms\Traits\CustomAttributeFieldsTrait;
 use Override;
 use Yii;
 
@@ -20,6 +21,7 @@ class CategoryActiveForm extends ActiveForm
 {
     use ActiveFormFieldsTrait;
     use CategoryParentIdFieldTrait;
+    use CustomAttributeFieldsTrait;
     use MetaFieldsTrait;
     use SlugFieldTrait;
 
@@ -33,6 +35,7 @@ class CategoryActiveForm extends ActiveForm
                 $this->getTypeField(),
                 $this->getNameField(),
                 $this->getContentField(),
+                ...$this->getCustomAttributeFields(),
             ],
             [
                 $this->getTitleField(),

@@ -14,6 +14,7 @@ use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Skeleton\Widgets\Forms\ActiveForm;
 use Hirtz\Skeleton\Widgets\Forms\Fields\DateTimeField;
 use Hirtz\Skeleton\Widgets\Forms\Fields\SelectField;
+use Hirtz\Skeleton\Widgets\Forms\Traits\CustomAttributeFieldsTrait;
 use Override;
 use Stringable;
 use Yii;
@@ -24,6 +25,7 @@ use Yii;
 class EntryActiveForm extends ActiveForm
 {
     use ActiveFormFieldsTrait;
+    use CustomAttributeFieldsTrait;
     use MetaFieldsTrait;
     use ModuleTrait;
     use ParentIdFieldTrait;
@@ -40,6 +42,7 @@ class EntryActiveForm extends ActiveForm
                 $this->getNameField(),
                 $this->getContentField(),
                 $this->getPublishDateField(),
+                ...$this->getCustomAttributeFields(),
             ],
             [
                 $this->getTitleField(),

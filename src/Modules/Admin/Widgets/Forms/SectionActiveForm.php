@@ -9,6 +9,7 @@ use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits\ActiveFormFieldsTrait;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits\SlugFieldTrait;
 use Hirtz\Skeleton\Widgets\Forms\ActiveForm;
+use Hirtz\Skeleton\Widgets\Forms\Traits\CustomAttributeFieldsTrait;
 use Override;
 use Yii;
 use yii\helpers\Html;
@@ -19,6 +20,7 @@ use yii\helpers\Html;
 class SectionActiveForm extends ActiveForm
 {
     use ActiveFormFieldsTrait;
+    use CustomAttributeFieldsTrait;
     use SlugFieldTrait;
 
     public int|false $maxBaseUrlLength = 70;
@@ -32,6 +34,7 @@ class SectionActiveForm extends ActiveForm
             $this->getNameField(),
             $this->getContentField(),
             $this->getSlugField(),
+            ...$this->getCustomAttributeFields(),
         ];
 
         parent::configure();

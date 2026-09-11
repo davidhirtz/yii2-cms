@@ -94,7 +94,7 @@ class SectionController extends AbstractController
         $section->populateEntryRelation($entry);
         $section->loadDefaultValues();
 
-        if (($this->autoCreateSection || $section->load(Yii::$app->getRequest()->post())) && $section->insert()) {
+        if (($this->autoCreateSection || ($section->load(Yii::$app->getRequest()->post()) && !$this->request->isFormReload())) && $section->insert()) {
             $this->success(Lang::t('cms', 'SECTION_SUCCESS_CREATED'));
             return $this->redirect(['update', 'id' => $section->id]);
         }
@@ -108,7 +108,7 @@ class SectionController extends AbstractController
     {
         $section = $this->findSection($id, Section::AUTH_SECTION_UPDATE);
 
-        if ($section->load(Yii::$app->getRequest()->post())) {
+        if ($section->load(Yii::$app->getRequest()->post()) && !$this->request->isFormReload()) {
             if ($section->update()) {
                 $this->success(Lang::t('cms', 'SECTION_SUCCESS_UPDATED'));
             }

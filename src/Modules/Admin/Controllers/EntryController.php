@@ -101,7 +101,7 @@ class EntryController extends AbstractController
             throw new ForbiddenHttpException();
         }
 
-        if ($entry->load($this->request->post()) && $entry->insert()) {
+        if ($entry->load($this->request->post()) && !$this->request->isFormReload() && $entry->insert()) {
             $this->success(Lang::t('cms', 'ENTRY_SUCCESS_CREATED'));
             return $this->redirectToEntry($entry);
         }
@@ -115,7 +115,7 @@ class EntryController extends AbstractController
     {
         $entry = $this->findEntry($id, Entry::AUTH_ENTRY_UPDATE);
 
-        if ($entry->load($this->request->post())) {
+        if ($entry->load($this->request->post()) && !$this->request->isFormReload()) {
             if ($entry->update()) {
                 $this->success(Lang::t('cms', 'ENTRY_SUCCESS_UPDATED'));
             }

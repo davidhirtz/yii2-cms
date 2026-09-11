@@ -15,11 +15,13 @@ use Hirtz\Skeleton\Behaviors\TimestampBehavior;
 use Hirtz\Skeleton\Behaviors\TrailBehavior;
 use Hirtz\Skeleton\Db\ActiveQuery;
 use Hirtz\Skeleton\Db\ActiveRecord as BaseActiveRecord;
+use Hirtz\Skeleton\Models\Interfaces\CustomAttributeInterface;
 use Hirtz\Skeleton\Models\Interfaces\DraftStatusAttributeInterface;
 use Hirtz\Skeleton\Models\Interfaces\I18nAttributeInterface;
 use Hirtz\Skeleton\Models\Interfaces\TrailModelInterface;
 use Hirtz\Skeleton\Models\Interfaces\TranslationInterface;
 use Hirtz\Skeleton\Models\Interfaces\TypeAttributeInterface;
+use Hirtz\Skeleton\Models\Traits\CustomAttributesTrait;
 use Hirtz\Skeleton\Models\Traits\DraftStatusAttributeTrait;
 use Hirtz\Skeleton\Models\Traits\I18nAttributesTrait;
 use Hirtz\Skeleton\Models\Traits\TrailModelTrait;
@@ -43,12 +45,14 @@ use Override;
  * @mixin TrailBehavior
  */
 abstract class ActiveRecord extends BaseActiveRecord implements
+    CustomAttributeInterface,
     DraftStatusAttributeInterface,
     I18nAttributeInterface,
     TrailModelInterface,
     TranslationInterface,
     TypeAttributeInterface
 {
+    use CustomAttributesTrait;
     use DraftStatusAttributeTrait;
     use I18nAttributesTrait;
     use ModuleTrait;
@@ -162,6 +166,7 @@ abstract class ActiveRecord extends BaseActiveRecord implements
     public function getTrailAttributes(): array
     {
         return array_diff($this->attributes(), [
+            $this->getCustomAttributesColumn(),
             'position',
             'asset_count',
             'entry_count',

@@ -151,7 +151,7 @@ class AssetController extends AbstractController
     {
         $asset = $this->findAsset($id, Asset::AUTH_ASSET_UPDATE);
 
-        if ($asset->load($this->request->post())) {
+        if ($asset->load($this->request->post()) && !$this->request->isFormReload()) {
             if ($asset->update()) {
                 $this->success(Lang::t('cms', 'ASSET_SUCCESS_UPDATED'));
             }
