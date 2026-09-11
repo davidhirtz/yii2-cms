@@ -19,9 +19,9 @@ use Hirtz\Skeleton\Widgets\Grids\GridContainer;
 echo CategoryHeader::make()
     ->provider($provider);
 
-if ($provider->category) {
+if ($provider->parent) {
     echo CategorySubmenu::make()
-        ->model($provider->category);
+        ->model($provider->parent);
 }
 
 echo GridContainer::make()

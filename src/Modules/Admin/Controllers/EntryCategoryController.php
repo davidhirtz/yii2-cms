@@ -62,7 +62,7 @@ class EntryCategoryController extends AbstractController
 
         $provider = Yii::$container->get(CategoryActiveDataProvider::class, config: [
             'entry' => $entry,
-            'category' => Category::findOne($category),
+            'parent' => Category::findOne($category),
             'searchString' => $q,
         ]);
 

@@ -24,8 +24,8 @@ class CategoryActiveDataProvider extends ActiveDataProvider
 {
     use ModuleTrait;
 
-    public ?Category $category = null;
     public ?Entry $entry = null;
+    public ?Category $parent = null;
     public ?string $searchString = null;
     public bool $showNestedCategories = true;
     public ?int $type = null;
@@ -51,11 +51,11 @@ class CategoryActiveDataProvider extends ActiveDataProvider
 
         if ($this->searchString) {
             $this->query->matching($this->searchString);
-            $this->category = null;
+            $this->parent = null;
         } elseif ($this->entry) {
             if ($this->showNestedCategories) {
-                if ($this->category) {
-                    $this->query->andWhere(['parent_id' => $this->category->id]);
+                if ($this->parent) {
+                    $this->query->andWhere(['parent_id' => $this->parent->id]);
                 } else {
                     $this->query->andWhere([
                         'or',
@@ -65,7 +65,7 @@ class CategoryActiveDataProvider extends ActiveDataProvider
                 }
             }
         } else {
-            $this->query->andWhere(['parent_id' => $this->category?->id]);
+            $this->query->andWhere(['parent_id' => $this->parent?->id]);
         }
 
         if ($this->type) {

@@ -1,5 +1,8 @@
 ## 3.0 (in development)
 
+- `Modules\Admin\Data\CategoryActiveDataProvider::$category` is `$parent`, which is what it holds: the
+  category the listed ones are nested under. `EntryActiveDataProvider` keeps both `$category` and `$parent`,
+  which are different filters
 - `Models\ActiveRecord` implements the skeleton `Models\Interfaces\AdminRouteInterface` instead of declaring
   `getAdminRoute()` abstract, and dropped its `getTrailModelAdminRoute()`
 - `EntryAssetController` and `SectionAssetController` extend the skeleton `Controller` and use the media

@@ -34,7 +34,7 @@ class CategoryHeader extends Header
     #[Override]
     protected function configure(): void
     {
-        $this->model ??= $this->provider?->category;
+        $this->model ??= $this->provider?->parent;
 
         $this->addEntriesBreadcrumb();
 
@@ -95,7 +95,7 @@ class CategoryHeader extends Header
         return CreateButton::make()
             ->label(Lang::t('cms', 'CATEGORY_CREATE_BUTTON'))
             ->icon('plus')
-            ->url(['/admin/cms/category/create', 'parent' => $this->provider?->category?->id]);
+            ->url(['/admin/cms/category/create', 'parent' => $this->provider?->parent?->id]);
     }
 
     protected function getCategoryActionDropdown(): ?Stringable

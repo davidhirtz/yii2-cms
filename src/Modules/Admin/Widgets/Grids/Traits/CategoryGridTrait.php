@@ -83,7 +83,7 @@ trait CategoryGridTrait
 
     protected function getBranchCountColumn(): ?Column
     {
-        if (!($this->provider->category?->hasDescendantsEnabled()
+        if (!($this->provider->parent?->hasDescendantsEnabled()
             ?? static::getModule()->enableNestedCategories)) {
             return null;
         }

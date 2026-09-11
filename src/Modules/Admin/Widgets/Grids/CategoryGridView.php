@@ -37,7 +37,7 @@ class CategoryGridView extends GridView
         $this->attributes['id'] ??= 'category-grid-view';
 
         /** @see CategoryController::actionOrder() */
-        $this->orderRoute = ['order', 'id' => $this->provider->category->id ?? null];
+        $this->orderRoute = ['order', 'id' => $this->provider->parent->id ?? null];
 
         $this->header ??= [
             $this->getSearchInput(),
