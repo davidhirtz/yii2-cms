@@ -1,5 +1,8 @@
 ## 3.0 (in development)
 
+- Added `Tests\Migrations\AssetMigrationTest`, which replays `M260912110000Assets` against the kept `cms_asset`
+  table: the subclass dispatch, the text columns and translations landing in the JSON, the trail rewrite and the
+  fallback for an asset deleted before the migration
 - `Models\Asset` is gone. `Models\EntryAsset` and `Models\SectionAsset` are subclasses of the media
   `Hirtz\Media\Models\Asset` and share its `asset` table; `Models\Entry` and `Models\Section` implement
   `AssetModelInterface`. `$asset->parent` is `$asset->model`, `isEntryAsset()` is `instanceof EntryAsset`, and
