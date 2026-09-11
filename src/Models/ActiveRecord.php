@@ -6,7 +6,6 @@ namespace Hirtz\Cms\Models;
 
 use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Traits\SitemapTrait;
-use Hirtz\Cms\Models\Traits\VisibleAttributeTrait;
 use Hirtz\Cms\Modules\ModuleTrait;
 use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\datetime\DateTimeBehavior;
@@ -28,6 +27,7 @@ use Hirtz\Skeleton\Models\Traits\TrailModelTrait;
 use Hirtz\Skeleton\Models\Traits\TranslationTrait;
 use Hirtz\Skeleton\Models\Traits\TypeAttributeTrait;
 use Hirtz\Skeleton\Models\Traits\UpdatedByUserTrait;
+use Hirtz\Skeleton\Models\Traits\VisibleAttributeTrait;
 use Hirtz\Skeleton\Validators\DynamicRangeValidator;
 use Hirtz\Skeleton\Validators\HtmlValidator;
 use Override;

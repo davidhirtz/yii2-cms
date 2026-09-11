@@ -1,5 +1,7 @@
 ## 3.0 (in development)
 
+- `Models\Traits\VisibleAttributeTrait` moved to `Hirtz\Skeleton\Models\Traits`; it depends on nothing in this
+  bundle and models outside it need it
 - `permalink` names its owner in `model_class` instead of `model` (`M260912091000PermalinkModelClass`), following the
   skeleton's polymorphic tables. `Models\Permalink::$model` is `$model_class`; `isModel()` is unchanged
 - `Models\ActiveRecord` implements `CustomAttributeInterface`, so `Entry`, `Section`, `Asset`, `Category` and every
