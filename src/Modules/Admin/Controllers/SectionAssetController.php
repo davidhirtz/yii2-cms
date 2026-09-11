@@ -7,7 +7,8 @@ namespace Hirtz\Cms\Modules\Admin\Controllers;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Models\SectionAsset;
 use Hirtz\Cms\Modules\Admin\Controllers\Traits\SectionControllerTrait;
-use Hirtz\Media\Modules\Admin\Controllers\AbstractAssetController;
+use Hirtz\Media\Modules\Admin\Controllers\Traits\AssetControllerTrait;
+use Hirtz\Skeleton\Web\Controller;
 use Override;
 use Yii;
 use yii\filters\AccessControl;
@@ -15,8 +16,9 @@ use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
-class SectionAssetController extends AbstractAssetController
+class SectionAssetController extends Controller
 {
+    use AssetControllerTrait;
     use SectionControllerTrait;
 
     #[Override]
@@ -24,6 +26,7 @@ class SectionAssetController extends AbstractAssetController
     {
         return [
             ...parent::behaviors(),
+            'verbs' => $this->getAssetVerbs(),
             'access' => [
                 'class' => AccessControl::class,
                 'rules' => [
@@ -52,46 +55,40 @@ class SectionAssetController extends AbstractAssetController
         ];
     }
 
-    #[Override]
-    public function actionIndex(?int $section = null): Response|string
+    public function actionIndex(?int $id = null): Response|string
     {
-        return $this->renderIndex($this->findSectionWithAssets($section, Section::AUTH_SECTION_ASSET_UPDATE));
+        return $this->renderIndex($this->findSectionWithAssets($id, Section::AUTH_SECTION_ASSET_UPDATE));
     }
 
-    #[Override]
     public function actionCreate(
-        ?int $section = null,
+        ?int $id = null,
         ?int $file = null,
         ?int $folder = null,
         ?string $q = null
     ): Response|string {
-        $model = $this->findSectionWithAssets($section, Section::AUTH_SECTION_ASSET_CREATE);
+        $model = $this->findSectionWithAssets($id, Section::AUTH_SECTION_ASSET_CREATE);
 
         return $this->createAsset($model, $file, $folder, $q);
     }
 
-    #[Override]
     public function actionUpdate(int $id): Response|string
     {
         return $this->updateAsset($this->findSectionAsset($id, Section::AUTH_SECTION_ASSET_UPDATE));
     }
 
-    #[Override]
     public function actionDelete(int $id): Response|string
     {
         return $this->deleteAsset($this->findSectionAsset($id, Section::AUTH_SECTION_ASSET_DELETE));
     }
 
-    #[Override]
     public function actionDuplicate(int $id): Response|string
     {
         return $this->duplicateAsset($this->findSectionAsset($id, Section::AUTH_SECTION_ASSET_CREATE));
     }
 
-    #[Override]
-    public function actionOrder(?int $section = null): string
+    public function actionOrder(?int $id = null): string
     {
-        return $this->reorderAssets($this->findSectionWithAssets($section, Section::AUTH_SECTION_ASSET_ORDER));
+        return $this->reorderAssets($this->findSectionWithAssets($id, Section::AUTH_SECTION_ASSET_ORDER));
     }
 
     protected function findSectionWithAssets(?int $id, string $permissionName): Section
