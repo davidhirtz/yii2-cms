@@ -33,7 +33,7 @@ class EntryPermalinkTest extends TestCase
         $entry = $this->createEntry('test-entry');
         $permalink = $entry->getPermalink();
 
-        self::assertSame(Entry::class, $permalink->model);
+        self::assertSame(Entry::class, $permalink->model_class);
         self::assertSame($entry->id, $permalink->model_id);
         self::assertTrue($permalink->isModel(Entry::class));
     }
@@ -252,7 +252,7 @@ class EntryPermalinkTest extends TestCase
         self::assertNotFalse($entry->update());
 
         self::assertSame(0, (int)Trail::find()
-            ->where(['model' => Permalink::class])
+            ->where(['model_class' => Permalink::class])
             ->count());
     }
 
@@ -288,7 +288,7 @@ class EntryPermalinkTest extends TestCase
     {
         $trail = Trail::find()
             ->where([
-                'model' => $entry->getTrailBehavior()->modelClass,
+                'model_class' => $entry->getTrailBehavior()->modelClass,
                 'model_id' => $entry->id,
                 'type' => $type,
             ])

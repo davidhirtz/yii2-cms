@@ -136,7 +136,7 @@ class PermalinkTest extends TestCase
         $permalink->language = Yii::$app->language;
         $permalink->uri = $uri;
         $permalink->slug = $slug;
-        $permalink->model = Entry::class;
+        $permalink->model_class = Entry::class;
         $permalink->model_id = $modelId;
 
         return $permalink;

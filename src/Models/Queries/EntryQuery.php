@@ -175,7 +175,7 @@ class EntryQuery extends I18nActiveQuery
             ->select('model_id')
             ->from(Permalink::tableName())
             ->where([
-                'model' => $this->getModelInstance()->getPermalinkModelClass(),
+                'model_class' => $this->getModelInstance()->getPermalinkModelClass(),
                 'language' => Yii::$app->language,
             ]);
     }

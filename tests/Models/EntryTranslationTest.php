@@ -72,7 +72,7 @@ class EntryTranslationTest extends TestCase
 
         $data = (array)Trail::find()
             ->where([
-                'model' => $entry->getTrailBehavior()->modelClass,
+                'model_class' => $entry->getTrailBehavior()->modelClass,
                 'model_id' => $entry->id,
             ])
             ->orderBy(['id' => SORT_DESC])

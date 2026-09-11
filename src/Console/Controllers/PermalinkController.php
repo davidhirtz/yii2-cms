@@ -71,7 +71,7 @@ class PermalinkController extends Controller
                 ->column();
 
             $permalinks = Permalink::find()
-                ->andWhere(['model' => $class])
+                ->andWhere(['model_class' => $class])
                 ->andWhere(['not in', 'model_id', $ids])
                 ->all();
 

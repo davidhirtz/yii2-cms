@@ -20,7 +20,7 @@ trait PermalinkTrait
     {
         /** @var PermalinkQuery<Permalink> */
         return $this->hasMany(Permalink::class, ['model_id' => 'id'])
-            ->andOnCondition([Permalink::tableName() . '.[[model]]' => $this->getPermalinkModelClass()])
+            ->andOnCondition([Permalink::tableName() . '.[[model_class]]' => $this->getPermalinkModelClass()])
             ->indexBy('language');
     }
 
@@ -55,7 +55,7 @@ trait PermalinkTrait
 
         if ($permalink->getIsNewRecord()) {
             $permalink->language = $language;
-            $permalink->model = $this->getPermalinkModelClass();
+            $permalink->model_class = $this->getPermalinkModelClass();
             $permalink->model_id = $this->id;
         }
 

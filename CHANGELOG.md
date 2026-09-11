@@ -1,5 +1,7 @@
 ## 3.0 (in development)
 
+- `permalink` names its owner in `model_class` instead of `model` (`M260912091000PermalinkModelClass`), following the
+  skeleton's polymorphic tables. `Models\Permalink::$model` is `$model_class`; `isModel()` is unchanged
 - `Models\ActiveRecord` implements `CustomAttributeInterface`, so `Entry`, `Section`, `Asset`, `Category` and every
   model extending it can declare typed custom attributes through the `customAttributes` key of their type options.
   Added the `custom_attributes` column to `entry`, `section`, `cms_asset` and `category`; it is excluded from the trail

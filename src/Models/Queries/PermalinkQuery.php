@@ -57,7 +57,7 @@ class PermalinkQuery extends ActiveQuery
         $alias = $this->getTableAlias();
 
         return $this->andWhere([
-            "$alias.[[model]]" => $model,
+            "$alias.[[model_class]]" => $model,
             "$alias.[[model_id]]" => $modelId,
         ]);
     }

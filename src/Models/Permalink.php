@@ -25,7 +25,7 @@ use Yii;
  * @property string $language
  * @property string $uri
  * @property string $slug
- * @property string $model
+ * @property string $model_class
  * @property int $model_id
  * @property DateTime|null $updated_at
  * @property DateTime $created_at
@@ -59,7 +59,7 @@ class Permalink extends ActiveRecord
         return [
             ...parent::rules(),
             [
-                ['language', 'uri', 'slug', 'model', 'model_id'],
+                ['language', 'uri', 'slug', 'model_class', 'model_id'],
                 'required',
             ],
             [
@@ -82,7 +82,7 @@ class Permalink extends ActiveRecord
                 'max' => $this->uriMaxLength,
             ],
             [
-                ['model'],
+                ['model_class'],
                 'string',
                 'max' => 255,
             ],
@@ -94,7 +94,7 @@ class Permalink extends ActiveRecord
             [
                 ['model_id'],
                 UniqueValidator::class,
-                'targetAttribute' => ['model', 'model_id', 'language'],
+                'targetAttribute' => ['model_class', 'model_id', 'language'],
             ],
             [
                 ['uri'],
@@ -147,7 +147,7 @@ class Permalink extends ActiveRecord
      */
     public function isModel(string $class): bool
     {
-        return is_a($this->model, $class, true);
+        return is_a($this->model_class, $class, true);
     }
 
     #[Override]

@@ -45,7 +45,7 @@ class ReorderEntriesTest extends TestCase
             ->orderBy(['id' => SORT_DESC])
             ->one();
 
-        self::assertEquals($entry::class, $trail->model);
+        self::assertEquals($entry::class, $trail->model_class);
         self::assertEquals(1, $trail->model_id);
         self::assertEquals(Yii::t('cms', 'Entry order changed'), $trail->message);
     }

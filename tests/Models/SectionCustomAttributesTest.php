@@ -124,7 +124,7 @@ class SectionCustomAttributesTest extends TestCase
 
         $trail = Trail::find()
             ->where([
-                'model' => TestSection::class,
+                'model_class' => TestSection::class,
                 'model_id' => $section->id,
             ])
             ->orderBy(['id' => SORT_DESC])
