@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Cms;
 
 use Hirtz\Cms\Models\Category;
+use Hirtz\Cms\Models\Collections\CategoryCollection;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\EntryAsset;
 use Hirtz\Cms\Models\Events\TenantAfterSaveEventHandler;
@@ -28,6 +29,7 @@ class Bootstrap implements BootstrapInterface
     public function bootstrap($app): void
     {
         Yii::setAlias('@cms', __DIR__);
+        CategoryCollection::reset();
 
         $app->getI18n()->translations['cms'] ??= [
             'class' => PhpMessageSource::class,

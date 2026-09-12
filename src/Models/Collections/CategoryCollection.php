@@ -19,23 +19,23 @@ class CategoryCollection
 
     public const string CACHE_KEY = 'category-collection';
 
-    protected static ?array $_categories = null;
+    protected static ?array $categories = null;
 
     /**
      * @return array<int, T>
      */
     public static function getAll(bool $refresh = false): array
     {
-        if (null === static::$_categories || $refresh) {
+        if (null === static::$categories || $refresh) {
             $dependency = new TagDependency(['tags' => static::CACHE_KEY]);
             $duration = static::getModule()->categoryCachedQueryDuration;
 
-            static::$_categories = $duration !== false
+            static::$categories = $duration !== false
                 ? Yii::$app->getDb()->cache(static::findAll(...), $duration, $dependency)
                 : static::findAll();
         }
 
-        return static::$_categories;
+        return static::$categories;
     }
 
     /**
@@ -154,5 +154,16 @@ class CategoryCollection
         if (static::getModule()->categoryCachedQueryDuration !== false) {
             TagDependency::invalidate(Yii::$app->getCache(), static::CACHE_KEY);
         }
+
+        self::reset();
+    }
+
+    /**
+     * The static outlives the application; `Bootstrap` resets it, so a test's application does not start with the
+     * categories of the one before.
+     */
+    public static function reset(): void
+    {
+        self::$categories = null;
     }
 }

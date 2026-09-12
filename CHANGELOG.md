@@ -1,5 +1,8 @@
 ## 3.0 (in development)
 
+- `CategoryCollection::invalidateCache()` also drops the static list, which it left in place before, so a saved category
+  is seen by the next `getAll()` in the same process; `reset()` drops the static alone and `Bootstrap` calls it, so
+  an application starts without the categories of the one before it. `$_categories` is `$categories`
 - `EntryQuery::whereSection()` lost its `$eagerLoading` parameter and takes the join type second: the section entry
   is read off the joined row (`ActiveQuery::selectWith()`) rather than queried again. `whereCategory()` does the
   same for a single eager-loaded category; `whereCategories()` keeps Yii's `joinWith()`, one relation cannot be
