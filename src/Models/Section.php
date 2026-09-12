@@ -13,6 +13,7 @@ use Hirtz\Media\Models\Interfaces\AssetModelInterface;
 use Hirtz\Media\Models\Traits\AssetModelTrait;
 use Hirtz\Skeleton\Models\Interfaces\SearchableInterface;
 use Hirtz\Skeleton\Models\Traits\SearchableTrait;
+use Hirtz\Skeleton\Search\SearchText;
 use yii\db\ActiveQuery;
 use Hirtz\Skeleton\Validators\RelationValidator;
 use Hirtz\Skeleton\Validators\UniqueValidator;
@@ -287,6 +288,28 @@ class Section extends ActiveRecord implements AssetModelInterface, SearchableInt
     public function getSearchTenantId(): ?int
     {
         return $this->entry?->tenant_id;
+    }
+
+    /**
+     * @return SectionQuery<static>
+     */
+    public static function findSearchable(): SectionQuery
+    {
+        return static::find()->with('entry');
+    }
+
+    /**
+     * Not the entry's name: with the title boost, that would rank every section of an entry beside the entry itself.
+     */
+    public function getSearchTitle(?string $language = null): string
+    {
+        $name = (string)$this->getSearchAttributeValue('name', $language);
+        return mb_substr(SearchText::normalize($name !== '' ? $name : $this->getTypeName()), 0, 255);
+    }
+
+    protected function getSearchResultTitle(): string
+    {
+        return implode(' › ', array_filter([$this->entry?->getSearchTitle(), $this->getSearchTitle()]));
     }
 
     protected function isSearchResultVisible(): bool
