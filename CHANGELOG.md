@@ -1,5 +1,9 @@
 ## 3.0 (in development)
 
+- `Modules\Admin\Widgets\Grids\Buttons\Traits\FrontendUrlTrait::configureDefaultUrl()` is no longer called
+  automatically — the skeleton's `#[Configure]` attribute is gone. `FrontendLinkButton` and
+  `Modules\Admin\Widgets\Navs\FrontendLink` call it from their own `configure()`, and so must any other class
+  using the trait
 - `esbuild.js` uses the skeleton's shared `esbuild.config.js`. The entry point moved to
   `resources/assets/src/js/dropdown.ts` and its output to `resources/assets/dist/js/dropdown.js`, which is the layout
   every other bundle already used; `Assets\TenantDropdownAssetBundle::$js` follows
