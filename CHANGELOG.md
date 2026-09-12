@@ -1,5 +1,7 @@
 ## 3.0 (in development)
 
+- `Widgets\NavItems::$_entries` is `$entries`, dropping the underscore prefix a private or protected property
+  no longer carries
 - `Models\ActiveRecord::rules()` and `attributeLabels()` no longer call the skeleton's removed
   `ModelTrait::getTraitRules()` / `getTraitAttributeLabels()`, which discovered trait hooks by reflection.
   `Models\Traits\MenuAttributeTrait` and `Models\Traits\FooterAttributeTrait` renamed theirs to

@@ -50,7 +50,7 @@ class Section extends ActiveRecord implements AssetModelInterface
     public array|string|null $slugTargetAttribute = ['entry_id', 'slug'];
     public bool|null $shouldUpdateEntryAfterSave = null;
 
-    private ?array $_trailParents = null;
+    private ?array $trailParents = null;
 
     #[Override]
     public function rules(): array
@@ -229,13 +229,13 @@ class Section extends ActiveRecord implements AssetModelInterface
 
         if ($entry) {
             $entry->recalculateSectionCount()->update();
-            $this->_trailParents = [$entry, $this->entry];
+            $this->trailParents = [$entry, $this->entry];
         }
     }
 
     public function getTrailParents(): array
     {
-        return $this->_trailParents ?? [$this->entry];
+        return $this->trailParents ?? [$this->entry];
     }
 
     #[\Override]

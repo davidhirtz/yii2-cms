@@ -13,7 +13,7 @@ use Yii;
  */
 class NavItems
 {
-    protected static ?array $_entries = null;
+    protected static ?array $entries = null;
 
     /**
      * @return array<int, T>
@@ -55,8 +55,8 @@ class NavItems
      */
     public static function getEntries(): array
     {
-        static::$_entries ??= static::findEntries();
-        return static::$_entries;
+        static::$entries ??= static::findEntries();
+        return static::$entries;
     }
 
     /**
