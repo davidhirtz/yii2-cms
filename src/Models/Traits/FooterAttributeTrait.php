@@ -13,7 +13,7 @@ use Yii;
  */
 trait FooterAttributeTrait
 {
-    public function getFooterAttributeTraitRules(): array
+    public function getFooterAttributeRules(): array
     {
         return [
             [
@@ -23,7 +23,7 @@ trait FooterAttributeTrait
         ];
     }
 
-    public function getFooterAttributeTraitAttributeLabels(): array
+    public function getFooterAttributeLabels(): array
     {
         return [
             'show_in_footer' => Yii::t('cms', 'FOOTER_ATTRIBUTE_SHOW_IN_FOOTER'),

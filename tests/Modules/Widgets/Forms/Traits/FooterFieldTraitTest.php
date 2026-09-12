@@ -43,4 +43,22 @@ class TestFooterEntry extends TestEntry
     use FooterAttributeTrait;
 
     public bool $show_in_footer = true;
+
+    #[Override]
+    public function rules(): array
+    {
+        return [
+            ...parent::rules(),
+            ...$this->getFooterAttributeRules(),
+        ];
+    }
+
+    #[Override]
+    public function attributeLabels(): array
+    {
+        return [
+            ...parent::attributeLabels(),
+            ...$this->getFooterAttributeLabels(),
+        ];
+    }
 }

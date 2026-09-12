@@ -7,6 +7,7 @@ namespace Hirtz\Cms\Tests\Models\Traits;
 use Hirtz\Cms\Models\Traits\FooterAttributeTrait;
 use Hirtz\Cms\Test\Models\TestEntry;
 use Hirtz\Cms\Test\TestCase;
+use Override;
 
 class FooterAttributeTraitTest extends TestCase
 {
@@ -26,4 +27,22 @@ class FooterAttributeTraitTest extends TestCase
 class TestFooterEntry extends TestEntry
 {
     use FooterAttributeTrait;
+
+    #[Override]
+    public function rules(): array
+    {
+        return [
+            ...parent::rules(),
+            ...$this->getFooterAttributeRules(),
+        ];
+    }
+
+    #[Override]
+    public function attributeLabels(): array
+    {
+        return [
+            ...parent::attributeLabels(),
+            ...$this->getFooterAttributeLabels(),
+        ];
+    }
 }

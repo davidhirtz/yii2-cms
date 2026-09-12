@@ -92,7 +92,6 @@ abstract class ActiveRecord extends BaseActiveRecord implements
     {
         return [
             ...parent::rules(),
-            ...$this->getTraitRules(),
             [
                 ['status', 'type'],
                 DynamicRangeValidator::class,
@@ -193,7 +192,6 @@ abstract class ActiveRecord extends BaseActiveRecord implements
     {
         return [
             ...parent::attributeLabels(),
-            ...$this->getTraitAttributeLabels(),
             'entry_id' => Yii::t('cms', 'MODEL_ENTRY_ID_LABEL'),
             'name' => Yii::t('cms', 'MODEL_NAME_LABEL'),
             'content' => Yii::t('cms', 'MODEL_CONTENT_LABEL'),

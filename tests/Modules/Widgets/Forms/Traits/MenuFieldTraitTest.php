@@ -43,4 +43,22 @@ class TestMenuEntry extends TestEntry
     use MenuAttributeTrait;
 
     public bool $show_in_menu = true;
+
+    #[Override]
+    public function rules(): array
+    {
+        return [
+            ...parent::rules(),
+            ...$this->getMenuAttributeRules(),
+        ];
+    }
+
+    #[Override]
+    public function attributeLabels(): array
+    {
+        return [
+            ...parent::attributeLabels(),
+            ...$this->getMenuAttributeLabels(),
+        ];
+    }
 }

@@ -1,5 +1,13 @@
 ## 3.0 (in development)
 
+- `Models\ActiveRecord::rules()` and `attributeLabels()` no longer call the skeleton's removed
+  `ModelTrait::getTraitRules()` / `getTraitAttributeLabels()`, which discovered trait hooks by reflection.
+  `Models\Traits\MenuAttributeTrait` and `Models\Traits\FooterAttributeTrait` renamed theirs to
+  `getMenuAttributeRules()` / `getMenuAttributeLabels()` and `getFooterAttributeRules()` /
+  `getFooterAttributeLabels()`, and a model using either trait must spread them in its own `rules()` and
+  `attributeLabels()` — the same change the `#[Configure]` removal made to the widget traits. A model that does
+  not is left with an attribute that is neither safe nor validated, and `Widgets\Forms\Fields\Field` renders
+  nothing for it, so the checkbox silently disappears from the form. See `UPGRADE.md`
 - `Modules\Admin\Widgets\Grids\Buttons\Traits\FrontendUrlTrait::configureDefaultUrl()` is no longer called
   automatically — the skeleton's `#[Configure]` attribute is gone. `FrontendLinkButton` and
   `Modules\Admin\Widgets\Navs\FrontendLink` call it from their own `configure()`, and so must any other class

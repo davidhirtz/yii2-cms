@@ -13,7 +13,7 @@ use Yii;
  */
 trait MenuAttributeTrait
 {
-    public function getMenuAttributeTraitRules(): array
+    public function getMenuAttributeRules(): array
     {
         return [
             [
@@ -23,7 +23,7 @@ trait MenuAttributeTrait
         ];
     }
 
-    public function getMenuAttributeTraitAttributeLabels(): array
+    public function getMenuAttributeLabels(): array
     {
         return [
             'show_in_menu' => Yii::t('cms', 'MENU_ATTRIBUTE_SHOW_IN_MENU'),

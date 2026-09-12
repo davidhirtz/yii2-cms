@@ -7,6 +7,7 @@ namespace Hirtz\Cms\Tests\Models\Traits;
 use Hirtz\Cms\Models\Traits\MenuAttributeTrait;
 use Hirtz\Cms\Test\Models\TestEntry;
 use Hirtz\Cms\Test\TestCase;
+use Override;
 
 class MenuAttributeTraitTest extends TestCase
 {
@@ -26,4 +27,22 @@ class MenuAttributeTraitTest extends TestCase
 class TestMenuEntry extends TestEntry
 {
     use MenuAttributeTrait;
+
+    #[Override]
+    public function rules(): array
+    {
+        return [
+            ...parent::rules(),
+            ...$this->getMenuAttributeRules(),
+        ];
+    }
+
+    #[Override]
+    public function attributeLabels(): array
+    {
+        return [
+            ...parent::attributeLabels(),
+            ...$this->getMenuAttributeLabels(),
+        ];
+    }
 }
