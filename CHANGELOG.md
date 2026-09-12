@@ -19,6 +19,10 @@
   relation is not loaded, and anything needing the full set still loads it. `whereUri()` on a query without a
   select now selects the entry's columns — before, `SELECT *` over the join let the permalink's `id` overwrite
   the entry's
+- `VirtualSlugTrait` populates one slug attribute at a time: reading the current language's slug no longer
+  materialises every other language, which loaded the permalink relation the URI lookup had already answered —
+  a second permalink query on every site request of a translated slug. `populateSlugAttributes()` is
+  `populateSlugAttribute(string $name)`, and `$_slugsPopulated` is the keyed `$populatedSlugs`
 - `Entry::afterSave()` writes the permalinks without validating them again: `validateSlug()` already did, so a
   rename runs one uniqueness check instead of two. `PermalinkTrait::savePermalinks()` and `SavePermalinks`
   take `bool $runValidation` (default `true`, the console rebuild keeps validating). `SavePermalinks` also stops

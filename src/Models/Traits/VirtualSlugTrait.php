@@ -17,7 +17,10 @@ use yii\db\ActiveRecord;
  */
 trait VirtualSlugTrait
 {
-    private bool $_slugsPopulated = false;
+    /**
+     * @var array<string, true> the slug attributes already read off a permalink, keyed by attribute name
+     */
+    private array $populatedSlugs = [];
 
     /**
      * @return list<string>
@@ -49,7 +52,7 @@ trait VirtualSlugTrait
     protected function isVirtualAttributeLoaded(string $name): bool
     {
         return in_array($name, $this->getVirtualSlugAttributes(), true)
-            ? $this->_slugsPopulated
+            ? isset($this->populatedSlugs[$name])
             : parent::isVirtualAttributeLoaded($name);
     }
 
@@ -61,31 +64,33 @@ trait VirtualSlugTrait
             return;
         }
 
-        $this->populateSlugAttributes();
-        $this->_slugsPopulated = true;
+        $this->populateSlugAttribute($name);
     }
 
     #[Override]
     public function afterRefresh(): void
     {
-        $this->_slugsPopulated = false;
+        $this->populatedSlugs = [];
         parent::afterRefresh();
     }
 
     /**
-     * Skips an attribute that already holds a written value, so a pending change is never clobbered.
+     * One language at a time: reading the current language's slug must not load the permalink relation for the
+     * others, when the record a URI lookup matched already answers it. Skips an attribute that already holds a
+     * written value, so a pending change is never clobbered.
      */
-    protected function populateSlugAttributes(): void
+    protected function populateSlugAttribute(string $name): void
     {
-        foreach ($this->getI18nAttributeNames('slug') as $language => $attribute) {
-            if ($this->getAttribute($attribute) !== null) {
-                continue;
-            }
+        $this->populatedSlugs[$name] = true;
 
-            $slug = $this->getPermalink($language)?->slug;
-
-            $this->setAttribute($attribute, $slug);
-            $this->setOldAttribute($attribute, $slug);
+        if ($this->getAttribute($name) !== null) {
+            return;
         }
+
+        $language = array_search($name, $this->getI18nAttributeNames('slug'), true);
+        $slug = $language === false ? null : $this->getPermalink($language)?->slug;
+
+        $this->setAttribute($name, $slug);
+        $this->setOldAttribute($name, $slug);
     }
 }
