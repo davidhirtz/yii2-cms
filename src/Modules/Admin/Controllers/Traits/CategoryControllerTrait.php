@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Modules\Admin\Controllers\Traits;
 
 use Hirtz\Cms\Models\Category;
-use Yii;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 
@@ -17,7 +16,7 @@ trait CategoryControllerTrait
             throw new NotFoundHttpException();
         }
 
-        if ($permissionName && !Yii::$app->getUser()->can($permissionName, ['category' => $category])) {
+        if ($permissionName && !$this->webuser->can($permissionName, ['category' => $category])) {
             throw new ForbiddenHttpException();
         }
 

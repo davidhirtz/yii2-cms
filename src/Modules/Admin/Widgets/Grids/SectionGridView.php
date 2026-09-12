@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Widgets\Grids;
 
-use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Data\SectionActiveDataProvider;
 use Hirtz\Media\Modules\Admin\Widgets\Grids\Columns\AssetCountColumn;
@@ -24,6 +23,7 @@ use Hirtz\Skeleton\Widgets\Grids\Columns\TypeColumn;
 use Hirtz\Skeleton\Widgets\Grids\GridView;
 use Override;
 use Stringable;
+use Yii;
 use yii\helpers\StringHelper;
 
 /**
@@ -99,7 +99,7 @@ class SectionGridView extends GridView
         }
 
         if (!$html) {
-            $html = Lang::t('cms', 'COMMON_NO_TITLE');
+            $html = Yii::t('cms', 'COMMON_NO_TITLE');
             $cssClass = 'text-muted';
         }
 

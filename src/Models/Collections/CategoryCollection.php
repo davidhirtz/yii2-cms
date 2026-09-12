@@ -31,7 +31,7 @@ class CategoryCollection
             $duration = static::getModule()->categoryCachedQueryDuration;
 
             static::$categories = $duration !== false
-                ? Yii::$app->getDb()->cache(static::findAll(...), $duration, $dependency)
+                ? Category::getDb()->cache(static::findAll(...), $duration, $dependency)
                 : static::findAll();
         }
 

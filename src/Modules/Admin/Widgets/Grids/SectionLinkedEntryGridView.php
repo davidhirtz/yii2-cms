@@ -8,11 +8,11 @@ use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Controllers\SectionEntryController;
 use Hirtz\Cms\Modules\Admin\Data\EntryActiveDataProvider;
-use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\DeleteGridButton;
 use Override;
 use Stringable;
 use Traversable;
+use Yii;
 use yii\helpers\Inflector;
 
 /**
@@ -72,6 +72,6 @@ class SectionLinkedEntryGridView extends EntryGridView
     {
         return DeleteGridButton::make()
             ->url(['section-entry/delete', 'section' => $this->provider->section->id, 'entry' => $entry->id])
-            ->title(Lang::t('cms', 'SECTION_ENTRY_REMOVE_TITLE'));
+            ->title(Yii::t('cms', 'SECTION_ENTRY_REMOVE_TITLE'));
     }
 }

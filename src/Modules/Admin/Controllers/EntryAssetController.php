@@ -10,7 +10,6 @@ use Hirtz\Cms\Modules\Admin\Controllers\Traits\EntryControllerTrait;
 use Hirtz\Media\Modules\Admin\Controllers\Traits\AssetControllerTrait;
 use Hirtz\Skeleton\Web\Controller;
 use Override;
-use Yii;
 use yii\filters\AccessControl;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
@@ -106,7 +105,7 @@ class EntryAssetController extends Controller
         /** @var EntryAsset $asset */
         $asset = $this->findAsset($id, EntryAsset::class);
 
-        if (!Yii::$app->getUser()->can($permissionName, ['asset' => $asset, 'entry' => $asset->model])) {
+        if (!$this->webuser->can($permissionName, ['asset' => $asset, 'entry' => $asset->model])) {
             throw new ForbiddenHttpException();
         }
 

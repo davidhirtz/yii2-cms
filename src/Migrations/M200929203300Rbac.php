@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Migrations;
 
-use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
@@ -30,27 +29,27 @@ class M200929203300Rbac extends Migration
 
         // Category
         $categoryUpdate = $auth->createPermission(Category::AUTH_CATEGORY_UPDATE);
-        $categoryUpdate->description = Lang::t('cms', 'AUTH_CATEGORY_UPDATE_DESCRIPTION', [], $sourceLanguage);
+        $categoryUpdate->description = Yii::t('cms', 'AUTH_CATEGORY_UPDATE_DESCRIPTION', [], $sourceLanguage);
         $auth->add($categoryUpdate);
 
         $auth->addChild($author, $categoryUpdate);
 
         $categoryCreate = $auth->createPermission(Category::AUTH_CATEGORY_CREATE);
-        $categoryCreate->description = Lang::t('cms', 'AUTH_CATEGORY_CREATE_DESCRIPTION', [], $sourceLanguage);
+        $categoryCreate->description = Yii::t('cms', 'AUTH_CATEGORY_CREATE_DESCRIPTION', [], $sourceLanguage);
         $auth->add($categoryCreate);
 
         $auth->addChild($categoryCreate, $categoryUpdate);
         $auth->addChild($author, $categoryCreate);
 
         $categoryDelete = $auth->createPermission(Category::AUTH_CATEGORY_DELETE);
-        $categoryDelete->description = Lang::t('cms', 'AUTH_CATEGORY_DELETE_DESCRIPTION', [], $sourceLanguage);
+        $categoryDelete->description = Yii::t('cms', 'AUTH_CATEGORY_DELETE_DESCRIPTION', [], $sourceLanguage);
         $auth->add($categoryDelete);
 
         $auth->addChild($categoryDelete, $categoryUpdate);
         $auth->addChild($author, $categoryDelete);
 
         $categoryOrder = $auth->createPermission(Category::AUTH_CATEGORY_ORDER);
-        $categoryOrder->description = Lang::t('cms', 'AUTH_CATEGORY_ORDER_DESCRIPTION', [], $sourceLanguage);
+        $categoryOrder->description = Yii::t('cms', 'AUTH_CATEGORY_ORDER_DESCRIPTION', [], $sourceLanguage);
         $auth->add($categoryOrder);
 
         $auth->addChild($categoryOrder, $categoryUpdate);
@@ -58,27 +57,27 @@ class M200929203300Rbac extends Migration
 
         // Entry
         $entryUpdate = $auth->createPermission(Entry::AUTH_ENTRY_UPDATE);
-        $entryUpdate->description = Lang::t('cms', 'AUTH_ENTRY_UPDATE_DESCRIPTION', [], $sourceLanguage);
+        $entryUpdate->description = Yii::t('cms', 'AUTH_ENTRY_UPDATE_DESCRIPTION', [], $sourceLanguage);
         $auth->add($entryUpdate);
 
         $auth->addChild($author, $entryUpdate);
 
         $entryCreate = $auth->createPermission(Entry::AUTH_ENTRY_CREATE);
-        $entryCreate->description = Lang::t('cms', 'AUTH_ENTRY_CREATE_DESCRIPTION', [], $sourceLanguage);
+        $entryCreate->description = Yii::t('cms', 'AUTH_ENTRY_CREATE_DESCRIPTION', [], $sourceLanguage);
         $auth->add($entryCreate);
 
         $auth->addChild($entryCreate, $entryUpdate);
         $auth->addChild($author, $entryCreate);
 
         $entryDelete = $auth->createPermission(Entry::AUTH_ENTRY_DELETE);
-        $entryDelete->description = Lang::t('cms', 'AUTH_ENTRY_DELETE_DESCRIPTION', [], $sourceLanguage);
+        $entryDelete->description = Yii::t('cms', 'AUTH_ENTRY_DELETE_DESCRIPTION', [], $sourceLanguage);
         $auth->add($entryDelete);
 
         $auth->addChild($entryDelete, $entryUpdate);
         $auth->addChild($author, $entryDelete);
 
         $entryOrder = $auth->createPermission(Entry::AUTH_ENTRY_ORDER);
-        $entryOrder->description = Lang::t('cms', 'AUTH_ENTRY_ORDER_DESCRIPTION', [], $sourceLanguage);
+        $entryOrder->description = Yii::t('cms', 'AUTH_ENTRY_ORDER_DESCRIPTION', [], $sourceLanguage);
         $auth->add($entryOrder);
 
         $auth->addChild($entryOrder, $entryUpdate);
@@ -86,7 +85,7 @@ class M200929203300Rbac extends Migration
 
         // EntryCategory
         $entryCategoryUpdate = $auth->createPermission(Entry::AUTH_ENTRY_CATEGORY_UPDATE);
-        $entryCategoryUpdate->description = Lang::t('cms', 'AUTH_ENTRY_CATEGORY_UPDATE_DESCRIPTION', [], $sourceLanguage);
+        $entryCategoryUpdate->description = Yii::t('cms', 'AUTH_ENTRY_CATEGORY_UPDATE_DESCRIPTION', [], $sourceLanguage);
         $auth->add($entryCategoryUpdate);
 
         $auth->addChild($entryCategoryUpdate, $entryUpdate);
@@ -94,14 +93,14 @@ class M200929203300Rbac extends Migration
 
         // Section
         $sectionUpdate = $auth->createPermission(Section::AUTH_SECTION_UPDATE);
-        $sectionUpdate->description = Lang::t('cms', 'AUTH_SECTION_UPDATE_DESCRIPTION', [], $sourceLanguage);
+        $sectionUpdate->description = Yii::t('cms', 'AUTH_SECTION_UPDATE_DESCRIPTION', [], $sourceLanguage);
         $auth->add($sectionUpdate);
 
         $auth->addChild($sectionUpdate, $entryUpdate);
         $auth->addChild($author, $sectionUpdate);
 
         $sectionCreate = $auth->createPermission(Section::AUTH_SECTION_CREATE);
-        $sectionCreate->description = Lang::t('cms', 'AUTH_SECTION_CREATE_DESCRIPTION', [], $sourceLanguage);
+        $sectionCreate->description = Yii::t('cms', 'AUTH_SECTION_CREATE_DESCRIPTION', [], $sourceLanguage);
         $auth->add($sectionCreate);
 
         $auth->addChild($sectionCreate, $entryUpdate);
@@ -109,7 +108,7 @@ class M200929203300Rbac extends Migration
         $auth->addChild($author, $sectionCreate);
 
         $sectionDelete = $auth->createPermission(Section::AUTH_SECTION_DELETE);
-        $sectionDelete->description = Lang::t('cms', 'AUTH_SECTION_DELETE_DESCRIPTION', [], $sourceLanguage);
+        $sectionDelete->description = Yii::t('cms', 'AUTH_SECTION_DELETE_DESCRIPTION', [], $sourceLanguage);
         $auth->add($sectionDelete);
 
         $auth->addChild($sectionDelete, $entryUpdate);
@@ -117,7 +116,7 @@ class M200929203300Rbac extends Migration
         $auth->addChild($author, $sectionDelete);
 
         $sectionOrder = $auth->createPermission(Section::AUTH_SECTION_ORDER);
-        $sectionOrder->description = Lang::t('cms', 'AUTH_SECTION_ORDER_DESCRIPTION', [], $sourceLanguage);
+        $sectionOrder->description = Yii::t('cms', 'AUTH_SECTION_ORDER_DESCRIPTION', [], $sourceLanguage);
         $auth->add($sectionOrder);
 
         $auth->addChild($sectionOrder, $entryUpdate);
@@ -126,14 +125,14 @@ class M200929203300Rbac extends Migration
 
         // EntryAsset
         $entryAssetUpdate = $auth->createPermission(Entry::AUTH_ENTRY_ASSET_UPDATE);
-        $entryAssetUpdate->description = Lang::t('cms', 'AUTH_ENTRY_ASSET_UPDATE_DESCRIPTION', [], $sourceLanguage);
+        $entryAssetUpdate->description = Yii::t('cms', 'AUTH_ENTRY_ASSET_UPDATE_DESCRIPTION', [], $sourceLanguage);
         $auth->add($entryAssetUpdate);
 
         $auth->addChild($entryAssetUpdate, $entryUpdate);
         $auth->addChild($author, $entryAssetUpdate);
 
         $entryAssetCreate = $auth->createPermission(Entry::AUTH_ENTRY_ASSET_CREATE);
-        $entryAssetCreate->description = Lang::t('cms', 'AUTH_ENTRY_ASSET_CREATE_DESCRIPTION', [], $sourceLanguage);
+        $entryAssetCreate->description = Yii::t('cms', 'AUTH_ENTRY_ASSET_CREATE_DESCRIPTION', [], $sourceLanguage);
         $auth->add($entryAssetCreate);
 
         $auth->addChild($entryAssetCreate, $entryUpdate);
@@ -141,7 +140,7 @@ class M200929203300Rbac extends Migration
         $auth->addChild($author, $entryAssetCreate);
 
         $entryAssetDelete = $auth->createPermission(Entry::AUTH_ENTRY_ASSET_DELETE);
-        $entryAssetDelete->description = Lang::t('cms', 'AUTH_ENTRY_ASSET_DELETE_DESCRIPTION', [], $sourceLanguage);
+        $entryAssetDelete->description = Yii::t('cms', 'AUTH_ENTRY_ASSET_DELETE_DESCRIPTION', [], $sourceLanguage);
         $auth->add($entryAssetDelete);
 
         $auth->addChild($entryAssetDelete, $entryUpdate);
@@ -149,7 +148,7 @@ class M200929203300Rbac extends Migration
         $auth->addChild($author, $entryAssetDelete);
 
         $entryAssetOrder = $auth->createPermission('entryAssetOrder');
-        $entryAssetOrder->description = Lang::t('cms', 'AUTH_ENTRY_ASSET_ORDER_DESCRIPTION', [], $sourceLanguage);
+        $entryAssetOrder->description = Yii::t('cms', 'AUTH_ENTRY_ASSET_ORDER_DESCRIPTION', [], $sourceLanguage);
         $auth->add($entryAssetOrder);
 
         $auth->addChild($entryAssetOrder, $entryUpdate);
@@ -158,14 +157,14 @@ class M200929203300Rbac extends Migration
 
         // SectionAsset
         $sectionAssetUpdate = $auth->createPermission(Section::AUTH_SECTION_ASSET_UPDATE);
-        $sectionAssetUpdate->description = Lang::t('cms', 'AUTH_SECTION_ASSET_UPDATE_DESCRIPTION', [], $sourceLanguage);
+        $sectionAssetUpdate->description = Yii::t('cms', 'AUTH_SECTION_ASSET_UPDATE_DESCRIPTION', [], $sourceLanguage);
         $auth->add($sectionAssetUpdate);
 
         $auth->addChild($sectionAssetUpdate, $sectionUpdate);
         $auth->addChild($author, $sectionAssetUpdate);
 
         $sectionAssetCreate = $auth->createPermission(Section::AUTH_SECTION_ASSET_CREATE);
-        $sectionAssetCreate->description = Lang::t('cms', 'AUTH_SECTION_ASSET_CREATE_DESCRIPTION', [], $sourceLanguage);
+        $sectionAssetCreate->description = Yii::t('cms', 'AUTH_SECTION_ASSET_CREATE_DESCRIPTION', [], $sourceLanguage);
         $auth->add($sectionAssetCreate);
 
         $auth->addChild($sectionAssetCreate, $sectionUpdate);
@@ -173,7 +172,7 @@ class M200929203300Rbac extends Migration
         $auth->addChild($author, $sectionAssetCreate);
 
         $sectionAssetDelete = $auth->createPermission(Section::AUTH_SECTION_ASSET_DELETE);
-        $sectionAssetDelete->description = Lang::t('cms', 'AUTH_SECTION_ASSET_DELETE_DESCRIPTION', [], $sourceLanguage);
+        $sectionAssetDelete->description = Yii::t('cms', 'AUTH_SECTION_ASSET_DELETE_DESCRIPTION', [], $sourceLanguage);
         $auth->add($sectionAssetDelete);
 
         $auth->addChild($sectionAssetDelete, $sectionUpdate);
@@ -181,7 +180,7 @@ class M200929203300Rbac extends Migration
         $auth->addChild($author, $sectionAssetDelete);
 
         $sectionAssetOrder = $auth->createPermission(Section::AUTH_SECTION_ASSET_ORDER);
-        $sectionAssetOrder->description = Lang::t('cms', 'AUTH_SECTION_ASSET_ORDER_DESCRIPTION', [], $sourceLanguage);
+        $sectionAssetOrder->description = Yii::t('cms', 'AUTH_SECTION_ASSET_ORDER_DESCRIPTION', [], $sourceLanguage);
         $auth->add($sectionAssetOrder);
 
         $auth->addChild($sectionAssetOrder, $sectionUpdate);

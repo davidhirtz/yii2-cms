@@ -17,7 +17,6 @@ use Hirtz\Cms\Module;
 use Hirtz\Media\Models\Asset;
 use Hirtz\Media\Models\Interfaces\AssetModelInterface;
 use Hirtz\Media\Models\Traits\AssetModelTrait;
-use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Skeleton\Models\Interfaces\SitemapInterface;
 use Hirtz\Skeleton\Models\Traits\MaterializedTreeTrait;
 use Hirtz\Cms\Validators\TenantIdValidator;
@@ -637,7 +636,7 @@ class Entry extends ActiveRecord implements AssetModelInterface, SitemapInterfac
     public function getTrailModelName(): string
     {
         if ($this->id) {
-            return $this->getI18nAttribute('name') ?: Lang::t('skeleton', 'COMMON_MODEL_ID', [
+            return $this->getI18nAttribute('name') ?: Yii::t('skeleton', 'COMMON_MODEL_ID', [
                 'model' => $this->getTrailModelType(),
                 'id' => $this->id,
             ]);
@@ -648,7 +647,7 @@ class Entry extends ActiveRecord implements AssetModelInterface, SitemapInterfac
 
     public function getTrailModelType(): string
     {
-        return $this->getTypeName() ?: Lang::t('cms', 'COMMON_ENTRY');
+        return $this->getTypeName() ?: Yii::t('cms', 'COMMON_ENTRY');
     }
 
     public function getViewFile(): ?string
@@ -749,15 +748,15 @@ class Entry extends ActiveRecord implements AssetModelInterface, SitemapInterfac
     {
         return [
             ...parent::attributeLabels(),
-            'tenant_id' => Lang::t('cms', 'ENTRY_TENANT_ID_LABEL'),
-            'parent_id' => Lang::t('cms', 'ENTRY_PARENT_ID_LABEL'),
-            'parent_status' => Lang::t('cms', 'ENTRY_PARENT_STATUS_LABEL'),
-            'slug' => Lang::t('cms', 'ENTRY_SLUG_LABEL'),
-            'title' => Lang::t('cms', 'ENTRY_TITLE_LABEL'),
-            'description' => Lang::t('cms', 'ENTRY_DESCRIPTION_LABEL'),
-            'publish_date' => Lang::t('cms', 'ENTRY_PUBLISH_DATE_LABEL'),
-            'entry_count' => Lang::t('cms', 'ENTRY_ENTRY_COUNT_LABEL'),
-            'section_count' => Lang::t('cms', 'ENTRY_SECTION_COUNT_LABEL'),
+            'tenant_id' => Yii::t('cms', 'ENTRY_TENANT_ID_LABEL'),
+            'parent_id' => Yii::t('cms', 'ENTRY_PARENT_ID_LABEL'),
+            'parent_status' => Yii::t('cms', 'ENTRY_PARENT_STATUS_LABEL'),
+            'slug' => Yii::t('cms', 'ENTRY_SLUG_LABEL'),
+            'title' => Yii::t('cms', 'ENTRY_TITLE_LABEL'),
+            'description' => Yii::t('cms', 'ENTRY_DESCRIPTION_LABEL'),
+            'publish_date' => Yii::t('cms', 'ENTRY_PUBLISH_DATE_LABEL'),
+            'entry_count' => Yii::t('cms', 'ENTRY_ENTRY_COUNT_LABEL'),
+            'section_count' => Yii::t('cms', 'ENTRY_SECTION_COUNT_LABEL'),
         ];
     }
 

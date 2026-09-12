@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Validators;
 
 use Hirtz\Cms\Models\Entry;
-use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Tenant\Models\Collections\TenantCollection;
 use Override;
+use Yii;
 use yii\base\NotSupportedException;
 use yii\validators\Validator;
 
@@ -37,7 +37,7 @@ class TenantIdValidator extends Validator
             if ($tenantId) {
                 $model->addInvalidAttributeError($attribute);
             } else {
-                $model->addError($attribute, Lang::t('cms', 'ENTRY_TENANT_ID_ERROR'));
+                $model->addError($attribute, Yii::t('cms', 'ENTRY_TENANT_ID_ERROR'));
             }
 
             return;

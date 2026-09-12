@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Controllers;
 
-use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Skeleton\Widgets\Flashes;
 use Hirtz\Cms\Models\Actions\DuplicateSection;
 use Hirtz\Cms\Models\Actions\ReorderSections;
@@ -94,8 +93,8 @@ class SectionController extends AbstractController
         $section->populateEntryRelation($entry);
         $section->loadDefaultValues();
 
-        if (($this->autoCreateSection || ($section->load(Yii::$app->getRequest()->post()) && !$this->request->isFormReload())) && $section->insert()) {
-            $this->success(Lang::t('cms', 'SECTION_SUCCESS_CREATED'));
+        if (($this->autoCreateSection || ($section->load($this->request->post()) && !$this->request->isFormReload())) && $section->insert()) {
+            $this->success(Yii::t('cms', 'SECTION_SUCCESS_CREATED'));
             return $this->redirect(['update', 'id' => $section->id]);
         }
 
@@ -108,9 +107,9 @@ class SectionController extends AbstractController
     {
         $section = $this->findSection($id, Section::AUTH_SECTION_UPDATE);
 
-        if ($section->load(Yii::$app->getRequest()->post()) && !$this->request->isFormReload()) {
+        if ($section->load($this->request->post()) && !$this->request->isFormReload()) {
             if ($section->update()) {
-                $this->success(Lang::t('cms', 'SECTION_SUCCESS_UPDATED'));
+                $this->success(Yii::t('cms', 'SECTION_SUCCESS_UPDATED'));
             }
 
             if (!$section->hasErrors()) {
@@ -125,15 +124,13 @@ class SectionController extends AbstractController
 
     public function actionUpdateAll(): Response|string
     {
-        $request = Yii::$app->getRequest();
-
-        if ($sectionIds = array_map(intval(...), $request->post('selection', []))) {
+        if ($sectionIds = array_map(intval(...), $this->request->post('selection', []))) {
             $sections = Section::findAll(['id' => $sectionIds]);
             $isUpdated = false;
 
             foreach ($sections as $section) {
-                if (Yii::$app->getUser()->can(Section::AUTH_SECTION_UPDATE, ['section' => $section])) {
-                    if ($section->load($request->post())) {
+                if ($this->webuser->can(Section::AUTH_SECTION_UPDATE, ['section' => $section])) {
+                    if ($section->load($this->request->post())) {
                         if ($section->update()) {
                             $isUpdated = true;
                         }
@@ -146,11 +143,11 @@ class SectionController extends AbstractController
             }
 
             if ($isUpdated) {
-                $this->success(Lang::t('cms', 'SECTION_SUCCESS_SELECTED_UPDATED'));
+                $this->success(Yii::t('cms', 'SECTION_SUCCESS_SELECTED_UPDATED'));
             }
         }
 
-        return $this->redirect([...$request->get(), 'index']);
+        return $this->redirect([...$this->request->get(), 'index']);
     }
 
 
@@ -162,7 +159,7 @@ class SectionController extends AbstractController
         $section->populateEntryRelation($entry);
 
         if ($section->update()) {
-            $this->success(Lang::t('cms', 'SECTION_SUCCESS_MOVED'));
+            $this->success(Yii::t('cms', 'SECTION_SUCCESS_MOVED'));
         }
 
         if ($errors = $section->getFirstErrors()) {
@@ -187,7 +184,7 @@ class SectionController extends AbstractController
             return $this->redirect(['index', 'entry' => $section->entry_id]);
         }
 
-        $this->success(Lang::t('cms', 'SECTION_SUCCESS_DUPLICATED'));
+        $this->success(Yii::t('cms', 'SECTION_SUCCESS_DUPLICATED'));
         return $this->redirect(['update', 'id' => $duplicate->id]);
     }
 
@@ -196,11 +193,11 @@ class SectionController extends AbstractController
         $section = $this->findSection($id, Section::AUTH_SECTION_DELETE);
 
         if ($section->delete()) {
-            if (Yii::$app->getRequest()->getIsAjax()) {
+            if ($this->request->getIsAjax()) {
                 return '';
             }
 
-            $this->success(Lang::t('cms', 'SECTION_SUCCESS_DELETED'));
+            $this->success(Yii::t('cms', 'SECTION_SUCCESS_DELETED'));
         }
 
         if ($errors = $section->getFirstErrors()) {
@@ -217,7 +214,7 @@ class SectionController extends AbstractController
         ]);
 
         if ($success) {
-            $this->success(Lang::t('cms', 'SECTION_SUCCESS_ORDERED'));
+            $this->success(Yii::t('cms', 'SECTION_SUCCESS_ORDERED'));
         }
 
         return (string) Flashes::make();

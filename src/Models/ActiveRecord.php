@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Models;
 
-use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Traits\SitemapTrait;
 use Hirtz\Cms\Modules\ModuleTrait;
 use davidhirtz\yii2\datetime\DateTime;
@@ -32,6 +31,7 @@ use Hirtz\Skeleton\Models\Traits\VisibleAttributeTrait;
 use Hirtz\Skeleton\Validators\DynamicRangeValidator;
 use Hirtz\Skeleton\Validators\HtmlValidator;
 use Override;
+use Yii;
 
 /**
  * @property int $id
@@ -194,10 +194,10 @@ abstract class ActiveRecord extends BaseActiveRecord implements
         return [
             ...parent::attributeLabels(),
             ...$this->getTraitAttributeLabels(),
-            'entry_id' => Lang::t('cms', 'MODEL_ENTRY_ID_LABEL'),
-            'name' => Lang::t('cms', 'MODEL_NAME_LABEL'),
-            'content' => Lang::t('cms', 'MODEL_CONTENT_LABEL'),
-            'asset_count' => Lang::t('media', 'MODEL_ASSET_COUNT_LABEL'),
+            'entry_id' => Yii::t('cms', 'MODEL_ENTRY_ID_LABEL'),
+            'name' => Yii::t('cms', 'MODEL_NAME_LABEL'),
+            'content' => Yii::t('cms', 'MODEL_CONTENT_LABEL'),
+            'asset_count' => Yii::t('media', 'MODEL_ASSET_COUNT_LABEL'),
         ];
     }
 }

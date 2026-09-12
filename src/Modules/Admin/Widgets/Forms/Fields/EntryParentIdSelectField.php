@@ -10,10 +10,10 @@ use Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits\ParentIdSelectFieldTrait;
 use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Skeleton\Helpers\ArrayHelper;
 use Hirtz\Skeleton\Helpers\Html;
-use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Skeleton\Widgets\Forms\Fields\SelectField;
 use Override;
 use Stringable;
+use Yii;
 
 /**
  * @template T of Entry
@@ -62,7 +62,7 @@ class EntryParentIdSelectField extends SelectField
                 continue;
             }
 
-            $name = Html::encode($entry->getI18nAttribute('name') ?: Lang::t('cms', 'COMMON_NO_TITLE'));
+            $name = Html::encode($entry->getI18nAttribute('name') ?: Yii::t('cms', 'COMMON_NO_TITLE'));
             $count = count($entry->getAncestorIds());
             $indent = ($count ? (str_repeat($this->indent, $count) . ' ') : '');
 

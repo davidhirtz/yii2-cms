@@ -8,7 +8,6 @@ use Hirtz\Media\Models\Asset;
 use Hirtz\Media\Models\File;
 use Hirtz\Media\Test\Fixtures\FileFixture;
 use Override;
-use Yii;
 use Hirtz\Skeleton\Test\Fixtures\ActiveFixture;
 
 /**
@@ -30,7 +29,7 @@ class AssetFixture extends ActiveFixture
     #[Override]
     public function afterLoad(): void
     {
-        Yii::$app->getDb()->createCommand('
+        $this->db->createCommand('
             UPDATE ' . File::tableName() . ' AS [[file]]
             SET [[file]].[[asset_count]] = (
                 SELECT COUNT(*) FROM ' . Asset::tableName() . ' AS [[asset]]

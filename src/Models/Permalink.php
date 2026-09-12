@@ -11,7 +11,6 @@ use Hirtz\Cms\Models\Queries\PermalinkQuery;
 use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Skeleton\Behaviors\TimestampBehavior;
 use Hirtz\Skeleton\Db\ActiveRecord;
-use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Skeleton\Validators\UniqueValidator;
 use Override;
 use Yii;
@@ -115,7 +114,7 @@ class Permalink extends ActiveRecord
             || is_dir($path)
             || is_file($path)
         ) {
-            $this->addError('uri', Lang::t('cms', 'PERMALINK_PROTECTED_ERROR', [
+            $this->addError('uri', Yii::t('cms', 'PERMALINK_PROTECTED_ERROR', [
                 'uri' => $this->uri,
             ]));
         }
@@ -152,10 +151,10 @@ class Permalink extends ActiveRecord
     {
         return [
             ...parent::attributeLabels(),
-            'tenant_id' => Lang::t('cms', 'PERMALINK_TENANT_ID_LABEL'),
-            'entry_id' => Lang::t('cms', 'PERMALINK_ENTRY_ID_LABEL'),
-            'uri' => Lang::t('cms', 'PERMALINK_URI_LABEL'),
-            'slug' => Lang::t('cms', 'PERMALINK_SLUG_LABEL'),
+            'tenant_id' => Yii::t('cms', 'PERMALINK_TENANT_ID_LABEL'),
+            'entry_id' => Yii::t('cms', 'PERMALINK_ENTRY_ID_LABEL'),
+            'uri' => Yii::t('cms', 'PERMALINK_URI_LABEL'),
+            'slug' => Yii::t('cms', 'PERMALINK_SLUG_LABEL'),
         ];
     }
 

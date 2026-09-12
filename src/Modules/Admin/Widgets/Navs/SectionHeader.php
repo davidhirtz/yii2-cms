@@ -6,10 +6,10 @@ namespace Hirtz\Cms\Modules\Admin\Widgets\Navs;
 
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Widgets\Navs\Traits\EntryHeaderTrait;
-use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Skeleton\Widgets\Navs\Header;
 use Hirtz\Skeleton\Widgets\Traits\ModelTrait;
 use Override;
+use Yii;
 
 class SectionHeader extends Header
 {
@@ -26,8 +26,8 @@ class SectionHeader extends Header
         $this->subheading ??= FrontendLink::make()->model($this->model)->addClass('hidden-sticky');
         $this->url ??= $this->model->entry->getAdminRoute();
 
-        $this->subtitle ??= Lang::t('skeleton', 'COMMON_MODEL_ID', [
-            'model' => Lang::t('cms', 'COMMON_SECTION'),
+        $this->subtitle ??= Yii::t('skeleton', 'COMMON_MODEL_ID', [
+            'model' => Yii::t('cms', 'COMMON_SECTION'),
             'id' => $this->model->position,
         ]);
 
@@ -44,7 +44,7 @@ class SectionHeader extends Header
             $this->model->entry->getAdminRoute(),
         );
 
-        $this->addBreadcrumb(Lang::t('cms', 'COMMON_SECTIONS'), [
+        $this->addBreadcrumb(Yii::t('cms', 'COMMON_SECTIONS'), [
             '/admin/cms/section/index',
             'entry' => $this->model->entry_id,
         ]);

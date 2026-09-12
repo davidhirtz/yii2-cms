@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Models\Actions;
 
-use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Models\SectionEntry;
 use Hirtz\Skeleton\Models\Trail;
@@ -31,7 +30,7 @@ class ReorderSectionEntries extends ReorderActiveRecords
     #[\Override]
     protected function afterReorder(): void
     {
-        Trail::createOrderTrail($this->section, Lang::t('cms', 'REORDER_SECTION_ENTRIES_LINKED'));
+        Trail::createOrderTrail($this->section, Yii::t('cms', 'REORDER_SECTION_ENTRIES_LINKED'));
         parent::afterReorder();
     }
 }

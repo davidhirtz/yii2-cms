@@ -9,7 +9,6 @@ use Hirtz\Cms\Models\EntryAsset;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Module;
 use Hirtz\Cms\Modules\ModuleTrait;
-use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Skeleton\Widgets\Navs\NavItem;
 use Hirtz\Skeleton\Widgets\Navs\Submenu;
 use Hirtz\Skeleton\Widgets\Traits\ModelTrait;
@@ -72,7 +71,7 @@ class EntrySubmenu extends Submenu
     {
         return NavItem::make()
             ->icon('cog')
-            ->label(Lang::t('skeleton', 'COMMON_GENERAL'))
+            ->label(Yii::t('skeleton', 'COMMON_GENERAL'))
             ->routes(['admin/cms/entry/update', ...$this->additionalActiveRoutes['entry'] ?? []])
             ->url($this->model->getAdminRoute());
     }
@@ -97,7 +96,7 @@ class EntrySubmenu extends Submenu
         return NavItem::make()
             ->badge($this->model->entry_count)
             ->icon('book')
-            ->label(Lang::t('cms', 'COMMON_SUBENTRIES'))
+            ->label(Yii::t('cms', 'COMMON_SUBENTRIES'))
             ->routes(['admin/cms/entry/index', ...$this->additionalActiveRoutes['subentries'] ?? []])
             ->url(['/admin/cms/entry/index', 'parent' => $this->model->id])
             ->visible($this->model->hasDescendantsEnabled());
@@ -108,7 +107,7 @@ class EntrySubmenu extends Submenu
         return NavItem::make()
             ->badge($this->model->getCategoryCount())
             ->icon('folder-open')
-            ->label(Lang::t('cms', 'COMMON_CATEGORIES'))
+            ->label(Yii::t('cms', 'COMMON_CATEGORIES'))
             ->routes(['admin/cms/entry-category/'])
             ->url(['/admin/cms/entry-category/index', 'entry' => $this->model->id])
             ->visible($this->showEntryCategories);
@@ -118,7 +117,7 @@ class EntrySubmenu extends Submenu
     protected function getEntrySectionsItem(): ?NavItem
     {
         return NavItem::make()
-            ->label(Lang::t('cms', 'COMMON_SECTIONS'))
+            ->label(Yii::t('cms', 'COMMON_SECTIONS'))
             ->url(['/admin/cms/section/index', 'entry' => $this->model->id])
             ->icon('th-list')
             ->badge($this->model->section_count)

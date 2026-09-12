@@ -9,12 +9,12 @@ use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Data\EntryActiveDataProvider;
 use Hirtz\Cms\Modules\Admin\Widgets\Buttons\EntryCreateButton;
 use Hirtz\Cms\Modules\Admin\Widgets\Navs\Traits\EntryHeaderTrait;
-use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Skeleton\Widgets\Navs\Header;
 use Hirtz\Skeleton\Widgets\Traits\ModelTrait;
 use Hirtz\Skeleton\Widgets\Traits\ProviderTrait;
 use Override;
 use Stringable;
+use Yii;
 
 class EntryHeader extends Header
 {
@@ -46,7 +46,7 @@ class EntryHeader extends Header
             $typeOptions = $this->provider->type ? Entry::instance()::getTypes()[$this->provider->type] ?? null : null;
 
             $this->subtitle ??= $this->getPaginationSubtitle($this->provider);
-            $this->title ??= $typeOptions['plural'] ?? $typeOptions['name'] ?? Lang::t('cms', 'COMMON_ENTRIES');
+            $this->title ??= $typeOptions['plural'] ?? $typeOptions['name'] ?? Yii::t('cms', 'COMMON_ENTRIES');
             $this->url ??= ['/admin/cms/entry/index', 'type' => $this->provider->type];
 
             $this->addContent($this->getCreateEntryButton());

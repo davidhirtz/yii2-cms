@@ -10,7 +10,6 @@ use Hirtz\Cms\Modules\Admin\Controllers\Traits\SectionControllerTrait;
 use Hirtz\Media\Modules\Admin\Controllers\Traits\AssetControllerTrait;
 use Hirtz\Skeleton\Web\Controller;
 use Override;
-use Yii;
 use yii\filters\AccessControl;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
@@ -106,7 +105,7 @@ class SectionAssetController extends Controller
         /** @var SectionAsset $asset */
         $asset = $this->findAsset($id, SectionAsset::class);
 
-        if (!Yii::$app->getUser()->can($permissionName, ['asset' => $asset, 'section' => $asset->model])) {
+        if (!$this->webuser->can($permissionName, ['asset' => $asset, 'section' => $asset->model])) {
             throw new ForbiddenHttpException();
         }
 

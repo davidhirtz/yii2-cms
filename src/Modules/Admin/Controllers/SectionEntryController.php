@@ -13,7 +13,6 @@ use Hirtz\Cms\Modules\Admin\Controllers\Traits\EntryControllerTrait;
 use Hirtz\Cms\Modules\Admin\Controllers\Traits\SectionControllerTrait;
 use Hirtz\Cms\Modules\Admin\Data\EntryActiveDataProvider;
 use Hirtz\Skeleton\Helpers\Url;
-use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Skeleton\Widgets\Flashes;
 use Override;
 use Yii;
@@ -114,13 +113,13 @@ class SectionEntryController extends AbstractController
             'entry_id' => $entry,
         ]);
 
-        if (!Yii::$app->getUser()->can(Section::AUTH_SECTION_UPDATE, ['section' => $section])) {
+        if (!$this->webuser->can(Section::AUTH_SECTION_UPDATE, ['section' => $section])) {
             throw new ForbiddenHttpException();
         }
 
         $sectionEntry->delete();
 
-        $this->errorOrSuccess($sectionEntry, Lang::t('cms', 'SECTION_ENTRY_SUCCESS_REMOVED'));
+        $this->errorOrSuccess($sectionEntry, Yii::t('cms', 'SECTION_ENTRY_SUCCESS_REMOVED'));
         return $this->redirect(['index', 'section' => $section->id]);
     }
 
@@ -131,7 +130,7 @@ class SectionEntryController extends AbstractController
         ]);
 
         if ($success) {
-            $this->success(Lang::t('cms', 'ENTRY_SUCCESS_ORDERED'));
+            $this->success(Yii::t('cms', 'ENTRY_SUCCESS_ORDERED'));
         }
 
         return (string)Flashes::make();

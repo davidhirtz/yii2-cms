@@ -6,7 +6,6 @@ namespace Hirtz\Cms\Modules\Admin\Widgets\Buttons;
 
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
-use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Skeleton\Widgets\Buttons\CreateButton;
 use Hirtz\Skeleton\Widgets\Traits\ModelTrait;
 use Override;
@@ -21,7 +20,7 @@ class SectionEntryCreateButton extends CreateButton
 
     public function __construct(array $config = [])
     {
-        $this->label ??= Lang::t('cms', 'SECTION_ENTRY_CREATE_BUTTON');
+        $this->label ??= Yii::t('cms', 'SECTION_ENTRY_CREATE_BUTTON');
         $this->roles ??= [Entry::AUTH_ENTRY_UPDATE];
 
         parent::__construct($config);

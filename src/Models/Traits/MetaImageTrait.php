@@ -6,7 +6,7 @@ namespace Hirtz\Cms\Models\Traits;
 
 use Hirtz\Cms\Models\EntryAsset;
 use Hirtz\Media\Models\Asset;
-use Hirtz\Skeleton\I18n\Lang;
+use Yii;
 
 trait MetaImageTrait
 {
@@ -22,7 +22,7 @@ trait MetaImageTrait
 
         return [
             static::TYPE_META_IMAGE => [
-                'name' => Lang::t('cms', 'META_IMAGE_META_IMAGE'),
+                'name' => Yii::t('cms', 'META_IMAGE_META_IMAGE'),
                 'hiddenFields' => $hiddenFields,
                 'visible' => fn (Asset $asset): bool => $asset instanceof EntryAsset,
             ],

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Widgets\Grids;
 
-use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Skeleton\Widgets\Buttons\Button;
@@ -12,6 +11,7 @@ use Hirtz\Skeleton\Widgets\Grids\Toolbars\TypeFilterDropdown;
 use Override;
 use Stringable;
 use Traversable;
+use Yii;
 
 class SectionEntryGridView extends EntryGridView
 {
@@ -68,7 +68,7 @@ class SectionEntryGridView extends EntryGridView
             yield Button::make()
                 ->primary()
                 ->icon('star')
-                ->tooltip(Lang::t('cms', 'SECTION_ENTRY_ADD_TO_SECTION'))
+                ->tooltip(Yii::t('cms', 'SECTION_ENTRY_ADD_TO_SECTION'))
                 ->post(['section-entry/create', 'section' => $this->provider->section->id, 'entry' => $entry->id]);
         }
     }

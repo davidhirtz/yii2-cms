@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Modules\Admin\Widgets\Navs;
 
 use Hirtz\Cms\Models\Category;
-use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Skeleton\Widgets\Navs\NavItem;
 use Hirtz\Skeleton\Widgets\Navs\Submenu;
 use Hirtz\Skeleton\Widgets\Traits\ModelTrait;
 use Override;
+use Yii;
 
 class CategorySubmenu extends Submenu
 {
@@ -35,7 +35,7 @@ class CategorySubmenu extends Submenu
     {
         return NavItem::make()
             ->icon('cog')
-            ->label(Lang::t('skeleton', 'COMMON_GENERAL'))
+            ->label(Yii::t('skeleton', 'COMMON_GENERAL'))
             ->routes(['admin/cms/category/update', ...$this->additionalActiveRoutes['category'] ?? []])
             ->url(['/admin/cms/category/update', 'id' => $this->model->id]);
     }
@@ -45,7 +45,7 @@ class CategorySubmenu extends Submenu
         return NavItem::make()
             ->badge($this->model->getBranchCount())
             ->icon('folder-open')
-            ->label(Lang::t('cms', 'COMMON_SUBCATEGORIES'))
+            ->label(Yii::t('cms', 'COMMON_SUBCATEGORIES'))
             ->routes(['admin/cms/category/index', ...$this->additionalActiveRoutes['subcategories'] ?? []])
             ->url(['/admin/cms/category/index', 'parent' => $this->model->id]);
     }

@@ -13,13 +13,13 @@ use Hirtz\Skeleton\Helpers\Html;
 use Hirtz\Skeleton\Helpers\Url;
 use Hirtz\Skeleton\Html\A;
 use Hirtz\Skeleton\Html\Div;
-use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Skeleton\Widgets\Grids\Columns\BadgeColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Column;
 use Hirtz\Skeleton\Widgets\Grids\Columns\DataColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\StatusIconColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\TypeColumn;
 use Stringable;
+use Yii;
 
 /**
  * @property CategoryActiveDataProvider $dataProvider
@@ -61,7 +61,7 @@ trait CategoryGridTrait
 
         $html = $name
             ? $this->search->markKeywords($name)
-            : Lang::t('cms', 'COMMON_NO_TITLE');
+            : Yii::t('cms', 'COMMON_NO_TITLE');
 
         $html = A::make()
             ->class($name ? 'strong' : 'strong text-muted')

@@ -12,7 +12,6 @@ use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Modules\Admin\Controllers\Traits\EntryControllerTrait;
 use Hirtz\Cms\Modules\Admin\Data\EntryActiveDataProvider;
 use Hirtz\Skeleton\Helpers\Url;
-use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Skeleton\Widgets\Flashes;
 use Override;
 use Yii;
@@ -97,12 +96,12 @@ class EntryController extends AbstractController
         $entry->populateParentRelation(Entry::findOne($parent));
         $entry->type = $type ?: static::getModule()->defaultEntryType;
 
-        if (!Yii::$app->getUser()->can(Entry::AUTH_ENTRY_CREATE, ['entry' => $entry])) {
+        if (!$this->webuser->can(Entry::AUTH_ENTRY_CREATE, ['entry' => $entry])) {
             throw new ForbiddenHttpException();
         }
 
         if ($entry->load($this->request->post()) && !$this->request->isFormReload() && $entry->insert()) {
-            $this->success(Lang::t('cms', 'ENTRY_SUCCESS_CREATED'));
+            $this->success(Yii::t('cms', 'ENTRY_SUCCESS_CREATED'));
             return $this->redirectToEntry($entry);
         }
 
@@ -117,7 +116,7 @@ class EntryController extends AbstractController
 
         if ($entry->load($this->request->post()) && !$this->request->isFormReload()) {
             if ($entry->update()) {
-                $this->success(Lang::t('cms', 'ENTRY_SUCCESS_UPDATED'));
+                $this->success(Yii::t('cms', 'ENTRY_SUCCESS_UPDATED'));
             }
 
             if (!$entry->hasErrors()) {
@@ -137,7 +136,7 @@ class EntryController extends AbstractController
             $isUpdated = false;
 
             foreach ($entries as $entry) {
-                if (Yii::$app->getUser()->can(Entry::AUTH_ENTRY_UPDATE, ['entry' => $entry])) {
+                if ($this->webuser->can(Entry::AUTH_ENTRY_UPDATE, ['entry' => $entry])) {
                     if ($entry->load($this->request->post())) {
                         if ($entry->update()) {
                             $isUpdated = true;
@@ -151,7 +150,7 @@ class EntryController extends AbstractController
             }
 
             if ($isUpdated) {
-                $this->success(Lang::t('cms', 'ENTRY_SUCCESS_SELECTED_UPDATED'));
+                $this->success(Yii::t('cms', 'ENTRY_SUCCESS_SELECTED_UPDATED'));
             }
         }
 
@@ -169,7 +168,7 @@ class EntryController extends AbstractController
         if ($errors = $duplicate->getFirstErrors()) {
             $this->error($errors);
         } else {
-            $this->success(Lang::t('cms', 'ENTRY_SUCCESS_DUPLICATED'));
+            $this->success(Yii::t('cms', 'ENTRY_SUCCESS_DUPLICATED'));
         }
 
         return $this->redirect(['update', 'id' => $duplicate->id ?? $entry->id]);
@@ -182,7 +181,7 @@ class EntryController extends AbstractController
         $entry = $this->findEntry($id, $permissionName);
         $index = Entry::find()->whereIndex()->one();
 
-        if ($index && !Yii::$app->getUser()->can($permissionName, ['entry' => $index])) {
+        if ($index && !$this->webuser->can($permissionName, ['entry' => $index])) {
             throw new ForbiddenHttpException();
         }
 
@@ -192,7 +191,7 @@ class EntryController extends AbstractController
         ]);
 
         if ($entry->isIndex()) {
-            $this->success(Lang::t('cms', 'ENTRY_SUCCESS_UPDATED'));
+            $this->success(Yii::t('cms', 'ENTRY_SUCCESS_UPDATED'));
         }
 
         $this->error($entry);
@@ -204,7 +203,7 @@ class EntryController extends AbstractController
         $entry = $this->findEntry($id, Entry::AUTH_ENTRY_DELETE);
 
         if ($entry->delete()) {
-            $this->success(Lang::t('cms', 'ENTRY_SUCCESS_DELETED'));
+            $this->success(Yii::t('cms', 'ENTRY_SUCCESS_DELETED'));
         } elseif ($errors = $entry->getFirstErrors()) {
             $this->error($errors);
         }
@@ -219,7 +218,7 @@ class EntryController extends AbstractController
         ]);
 
         if ($success) {
-            $this->success(Lang::t('cms', 'ENTRY_SUCCESS_ORDERED'));
+            $this->success(Yii::t('cms', 'ENTRY_SUCCESS_ORDERED'));
         }
 
         return (string)Flashes::make();

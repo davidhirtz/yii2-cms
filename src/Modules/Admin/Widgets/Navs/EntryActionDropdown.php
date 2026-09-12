@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Widgets\Navs;
 
-use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\Buttons\EntryDeleteButton;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\Buttons\FrontendLinkButton;
@@ -45,23 +44,23 @@ class EntryActionDropdown extends ActionDropdown
     {
         if ($this->model->entry_count > 1) {
             $modal = Modal::make()
-                ->title(Lang::t('cms', 'ENTRY_ACTION_DROPDOWN_DUPLICATE_TITLE', [
+                ->title(Yii::t('cms', 'ENTRY_ACTION_DROPDOWN_DUPLICATE_TITLE', [
                     'n' => Yii::$app->getFormatter()->asInteger($this->model->entry_count),
                 ]))
                 ->footer(Button::make()
                     ->primary()
-                    ->text(Lang::t('media', 'ENTRY_ACTION_DROPDOWN_DUPLICATE'))
+                    ->text(Yii::t('media', 'ENTRY_ACTION_DROPDOWN_DUPLICATE'))
                     ->post(['duplicate', 'id' => $this->model->id], true));
 
             return Button::make()
                 ->primary()
-                ->text(Lang::t('cms', 'ENTRY_ACTION_DROPDOWN_DUPLICATE'))
+                ->text(Yii::t('cms', 'ENTRY_ACTION_DROPDOWN_DUPLICATE'))
                 ->icon('copy')
                 ->modal($modal);
         }
 
         return DuplicateButton::make()
-            ->label(Lang::t('cms', 'ENTRY_ACTION_DROPDOWN_DUPLICATE'))
+            ->label(Yii::t('cms', 'ENTRY_ACTION_DROPDOWN_DUPLICATE'))
             ->model($this->model);
     }
 
@@ -71,7 +70,7 @@ class EntryActionDropdown extends ActionDropdown
             ->primary()
             ->model($this->model)
             ->icon('external-link-alt')
-            ->text(Lang::t('cms', 'COMMON_OPEN_WEBSITE'))
+            ->text(Yii::t('cms', 'COMMON_OPEN_WEBSITE'))
             ->target('_blank');
     }
 
@@ -85,16 +84,16 @@ class EntryActionDropdown extends ActionDropdown
         }
 
         $modal = Modal::make()
-            ->title(Lang::t('cms', 'ENTRY_ACTION_DROPDOWN_MAKE_HOMEPAGE'))
-            ->content(Lang::t('cms', 'ENTRY_ACTION_DROPDOWN_MAKE_TITLE'))
+            ->title(Yii::t('cms', 'ENTRY_ACTION_DROPDOWN_MAKE_HOMEPAGE'))
+            ->content(Yii::t('cms', 'ENTRY_ACTION_DROPDOWN_MAKE_TITLE'))
             ->footer(Button::make()
                 ->danger()
                 ->post(['replace-index', 'id' => $this->model->id], true)
-                ->text(Lang::t('cms', 'ENTRY_ACTION_DROPDOWN_MAKE_HOMEPAGE')));
+                ->text(Yii::t('cms', 'ENTRY_ACTION_DROPDOWN_MAKE_HOMEPAGE')));
 
         return Button::make()
             ->primary()
-            ->text(Lang::t('cms', 'ENTRY_ACTION_DROPDOWN_MAKE_HOMEPAGE'))
+            ->text(Yii::t('cms', 'ENTRY_ACTION_DROPDOWN_MAKE_HOMEPAGE'))
             ->icon('home')
             ->modal($modal);
     }

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin;
 
-use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Modules\Admin\Widgets\Navs\CmsNavItem;
 use Hirtz\Skeleton\Modules\Admin\ModuleInterface;
@@ -29,7 +28,7 @@ class Module extends \Hirtz\Skeleton\Base\Module implements ModuleInterface
     {
         return $dashboard->addItem(DashboardItem::make()
             ->icon('pen')
-            ->label(Lang::t('cms', 'ENTRY_CREATE_TITLE'))
+            ->label(Yii::t('cms', 'ENTRY_CREATE_TITLE'))
             ->roles([Entry::AUTH_ENTRY_CREATE])
             ->url(['/admin/cms/entry/create']));
     }

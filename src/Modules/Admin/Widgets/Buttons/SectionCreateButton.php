@@ -7,7 +7,6 @@ namespace Hirtz\Cms\Modules\Admin\Widgets\Buttons;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Controllers\SectionController;
-use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Skeleton\Widgets\Buttons\CreateButton;
 use Hirtz\Skeleton\Widgets\Traits\ModelTrait;
 use Override;
@@ -22,7 +21,7 @@ class SectionCreateButton extends CreateButton
 
     public function __construct(array $config = [])
     {
-        $this->label ??= Lang::t('cms', 'SECTION_NEW_SECTION');
+        $this->label ??= Yii::t('cms', 'SECTION_NEW_SECTION');
         $this->roles ??= [Section::AUTH_SECTION_CREATE];
 
         parent::__construct($config);

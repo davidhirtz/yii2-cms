@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Controllers;
 
-use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Skeleton\Widgets\Flashes;
 use Hirtz\Cms\Models\Actions\ReorderCategories;
 use Hirtz\Cms\Models\Category;
@@ -81,12 +80,12 @@ class CategoryController extends AbstractController
         $category->loadDefaultValues();
         $category->parent_id = $parent;
 
-        if (!Yii::$app->getUser()->can(Category::AUTH_CATEGORY_CREATE, ['category' => $category])) {
+        if (!$this->webuser->can(Category::AUTH_CATEGORY_CREATE, ['category' => $category])) {
             throw new ForbiddenHttpException();
         }
 
-        if ($category->load(Yii::$app->getRequest()->post()) && !$this->request->isFormReload() && $category->insert()) {
-            $this->success(Lang::t('cms', 'CATEGORY_SUCCESS_CREATED'));
+        if ($category->load($this->request->post()) && !$this->request->isFormReload() && $category->insert()) {
+            $this->success(Yii::t('cms', 'CATEGORY_SUCCESS_CREATED'));
             return $this->redirect(['index', 'parent' => $category->parent_id]);
         }
 
@@ -99,9 +98,9 @@ class CategoryController extends AbstractController
     {
         $category = $this->findCategory($id, Category::AUTH_CATEGORY_UPDATE);
 
-        if ($category->load(Yii::$app->getRequest()->post()) && !$this->request->isFormReload()) {
+        if ($category->load($this->request->post()) && !$this->request->isFormReload()) {
             if ($category->update()) {
-                $this->success(Lang::t('cms', 'CATEGORY_SUCCESS_UPDATED'));
+                $this->success(Yii::t('cms', 'CATEGORY_SUCCESS_UPDATED'));
             }
 
             if (!$category->hasErrors()) {
@@ -119,7 +118,7 @@ class CategoryController extends AbstractController
         $category = $this->findCategory($id, Category::AUTH_CATEGORY_DELETE);
 
         if ($category->delete()) {
-            $this->success(Lang::t('cms', 'CATEGORY_SUCCESS_DELETED'));
+            $this->success(Yii::t('cms', 'CATEGORY_SUCCESS_DELETED'));
             return $this->redirect(['index', 'parent' => $category->parent_id]);
         }
 
@@ -134,7 +133,7 @@ class CategoryController extends AbstractController
         ]);
 
         if ($success) {
-            $this->success(Lang::t('cms', 'CATEGORY_SUCCESS_ORDERED'));
+            $this->success(Yii::t('cms', 'CATEGORY_SUCCESS_ORDERED'));
         }
 
         return (string) Flashes::make();

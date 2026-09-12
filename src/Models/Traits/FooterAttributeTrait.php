@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Models\Traits;
 
-use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Entry;
 use Yii;
 
@@ -27,7 +26,7 @@ trait FooterAttributeTrait
     public function getFooterAttributeTraitAttributeLabels(): array
     {
         return [
-            'show_in_footer' => Lang::t('cms', 'FOOTER_ATTRIBUTE_SHOW_IN_FOOTER'),
+            'show_in_footer' => Yii::t('cms', 'FOOTER_ATTRIBUTE_SHOW_IN_FOOTER'),
         ];
     }
 

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Models\Actions;
 
-use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\EntryCategory;
 use Hirtz\Skeleton\Models\Trail;
@@ -31,7 +30,7 @@ class ReorderEntryCategories extends ReorderActiveRecords
     #[\Override]
     protected function afterReorder(): void
     {
-        Trail::createOrderTrail($this->category, Lang::t('cms', 'COMMON_ENTRY_ORDER_CHANGED'));
+        Trail::createOrderTrail($this->category, Yii::t('cms', 'COMMON_ENTRY_ORDER_CHANGED'));
         parent::afterReorder();
     }
 }

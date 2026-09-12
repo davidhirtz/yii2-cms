@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Models;
 
-use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Traits\EntryRelationTrait;
 use Hirtz\Cms\Models\Traits\SectionRelationTrait;
 use Hirtz\Cms\Modules\ModuleTrait;
@@ -152,18 +151,18 @@ class SectionEntry extends \Hirtz\Skeleton\Db\ActiveRecord
 
     public function getTrailModelName(): string
     {
-        return Lang::t('cms', 'SECTION_ENTRY_SECTION_ENTRY');
+        return Yii::t('cms', 'SECTION_ENTRY_SECTION_ENTRY');
     }
 
     public function getTrailModelType(): string
     {
-        return Lang::t('skeleton', 'COMMON_RELATION');
+        return Yii::t('skeleton', 'COMMON_RELATION');
     }
 
     #[Override]
     public function attributeLabels(): array
     {
-        return [...parent::attributeLabels(), 'section_id' => Lang::t('cms', 'SECTION_ENTRY_SECTION_ID_LABEL'), 'entry_id' => Lang::t('cms', 'SECTION_ENTRY_ENTRY_ID_LABEL'), 'updated_at' => Lang::t('cms', 'SECTION_ENTRY_UPDATED_AT_LABEL')];
+        return [...parent::attributeLabels(), 'section_id' => Yii::t('cms', 'SECTION_ENTRY_SECTION_ID_LABEL'), 'entry_id' => Yii::t('cms', 'SECTION_ENTRY_ENTRY_ID_LABEL'), 'updated_at' => Yii::t('cms', 'SECTION_ENTRY_UPDATED_AT_LABEL')];
     }
 
     #[Override]

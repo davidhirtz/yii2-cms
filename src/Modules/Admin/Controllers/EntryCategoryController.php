@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Controllers;
 
-use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Skeleton\Widgets\Flashes;
 use Hirtz\Cms\Models\Actions\ReorderEntryCategories;
 use Hirtz\Cms\Models\Category;
@@ -77,12 +76,12 @@ class EntryCategoryController extends AbstractController
         $entryCategory->entry_id = $entry;
         $entryCategory->category_id = $category;
 
-        if (!Yii::$app->getUser()->can(Entry::AUTH_ENTRY_CATEGORY_UPDATE, ['entryCategory' => $entryCategory])) {
+        if (!$this->webuser->can(Entry::AUTH_ENTRY_CATEGORY_UPDATE, ['entryCategory' => $entryCategory])) {
             throw new ForbiddenHttpException();
         }
 
         $entryCategory->insert();
-        $this->errorOrSuccess($entryCategory, Lang::t('cms', 'ENTRY_CATEGORY_SUCCESS_LINKED'));
+        $this->errorOrSuccess($entryCategory, Yii::t('cms', 'ENTRY_CATEGORY_SUCCESS_LINKED'));
 
         return $this->redirectToIndex($entryCategory);
     }
@@ -94,12 +93,12 @@ class EntryCategoryController extends AbstractController
             'category_id' => $category,
         ]);
 
-        if (!Yii::$app->getUser()->can(Entry::AUTH_ENTRY_CATEGORY_UPDATE, ['entryCategory' => $entryCategory])) {
+        if (!$this->webuser->can(Entry::AUTH_ENTRY_CATEGORY_UPDATE, ['entryCategory' => $entryCategory])) {
             throw new ForbiddenHttpException();
         }
 
         $entryCategory->delete();
-        $this->errorOrSuccess($entryCategory, Lang::t('cms', 'ENTRY_CATEGORY_SUCCESS_REMOVED'));
+        $this->errorOrSuccess($entryCategory, Yii::t('cms', 'ENTRY_CATEGORY_SUCCESS_REMOVED'));
 
         return $this->redirectToIndex($entryCategory);
     }
@@ -108,7 +107,7 @@ class EntryCategoryController extends AbstractController
     {
         return $this->redirect([
             'index',
-            ...Yii::$app->getRequest()->getQueryParams(),
+            ...$this->request->getQueryParams(),
             'entry' => $entryCategory->entry_id,
             'category' => null,
         ]);
@@ -121,7 +120,7 @@ class EntryCategoryController extends AbstractController
         ]);
 
         if ($success) {
-            $this->success(Lang::t('cms', 'ENTRY_SUCCESS_ORDERED'));
+            $this->success(Yii::t('cms', 'ENTRY_SUCCESS_ORDERED'));
         }
 
         return (string) Flashes::make();

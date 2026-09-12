@@ -6,10 +6,10 @@ namespace Hirtz\Cms\Modules\Admin\Widgets\Forms\Fields;
 
 use Hirtz\Cms\Assets\TenantDropdownAssetBundle;
 use Hirtz\Cms\Models\Entry;
-use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Skeleton\Widgets\Forms\Fields\SelectField;
 use Hirtz\Tenant\Models\Collections\TenantCollection;
 use Override;
+use Yii;
 
 /**
  * @template T of Entry
@@ -23,7 +23,7 @@ class TenantIdField extends SelectField
         $this->attributes['data-id'] ??= 'tenant';
         $this->attributes['required'] ??= true;
 
-        $this->label ??= Lang::t('cms', 'ENTRY_TENANT_ID_LABEL');
+        $this->label ??= Yii::t('cms', 'ENTRY_TENANT_ID_LABEL');
         $this->property ??= 'tenant_id';
 
         if (!$this->items) {

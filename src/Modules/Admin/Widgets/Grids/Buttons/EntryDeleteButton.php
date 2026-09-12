@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Widgets\Grids\Buttons;
 
-use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Skeleton\Widgets\Buttons\DeleteButton;
 use Override;
@@ -28,8 +27,8 @@ class EntryDeleteButton extends DeleteButton
     protected function configure(): void
     {
         if ($this->model->isIndex()) {
-            $this->label ??= Lang::t('cms', 'COMMON_DELETE_HOMEPAGE');
-            $this->title ??= Lang::t('cms', 'COMMON_DELETE_TITLE');
+            $this->label ??= Yii::t('cms', 'COMMON_DELETE_HOMEPAGE');
+            $this->title ??= Yii::t('cms', 'COMMON_DELETE_TITLE');
         }
 
         $this->url ??= ['/admin/cms/entry/delete', 'id' => $this->model->id];

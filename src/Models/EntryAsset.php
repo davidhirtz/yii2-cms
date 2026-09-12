@@ -6,8 +6,8 @@ namespace Hirtz\Cms\Models;
 
 use Hirtz\Cms\Models\Traits\MetaImageTrait;
 use Hirtz\Media\Models\Asset;
-use Hirtz\Skeleton\I18n\Lang;
 use Override;
+use Yii;
 
 /**
  * @property-read Entry $model {@see static::getModel()}
@@ -49,6 +49,6 @@ class EntryAsset extends Asset
     #[Override]
     public function getTrailModelType(): string
     {
-        return Lang::t('media', 'ASSET_ENTRY_ASSET');
+        return Yii::t('media', 'ASSET_ENTRY_ASSET');
     }
 }

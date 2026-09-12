@@ -8,13 +8,13 @@ use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Widgets\Buttons\SectionCreateButton;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\Buttons\SectionDeleteButton;
 use Hirtz\Cms\Modules\Admin\Widgets\Panels\Traits\LinkButtonTrait;
-use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Skeleton\Widgets\Buttons\Button;
 use Hirtz\Skeleton\Widgets\Buttons\DuplicateButton;
 use Hirtz\Skeleton\Widgets\Navs\ActionDropdown;
 use Hirtz\Skeleton\Widgets\Traits\ModelTrait;
 use Override;
 use Stringable;
+use Yii;
 
 class SectionActionDropdown extends ActionDropdown
 {
@@ -44,7 +44,7 @@ class SectionActionDropdown extends ActionDropdown
     {
         return Button::make()
             ->primary()
-            ->text(Lang::t('cms', 'SECTION_MOVE_COPY'))
+            ->text(Yii::t('cms', 'SECTION_MOVE_COPY'))
             ->icon('copy')
             ->url(['entries', 'id' => $this->model->id]);
     }

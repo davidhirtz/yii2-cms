@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Models;
 
 use Hirtz\Media\Models\Asset;
-use Hirtz\Skeleton\I18n\Lang;
 use Override;
+use Yii;
 
 /**
  * @property-read Section $model {@see static::getModel()}
@@ -46,6 +46,6 @@ class SectionAsset extends Asset
     #[Override]
     public function getTrailModelType(): string
     {
-        return Lang::t('media', 'ASSET_SECTION_ASSET');
+        return Yii::t('media', 'ASSET_SECTION_ASSET');
     }
 }

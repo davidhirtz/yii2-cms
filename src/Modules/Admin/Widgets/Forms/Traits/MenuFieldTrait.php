@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits;
 
-use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Traits\MenuAttributeTrait;
 use Hirtz\Skeleton\Widgets\Forms\Fields\CheckboxField;
@@ -29,7 +28,7 @@ trait MenuFieldTrait
             foreach ($this->model->ancestors as $ancestor) {
                 if (!$ancestor->isMenuItem()) {
                     return $field->addClass('text-invalid')
-                        ->tooltip(Lang::t('cms', 'MENU_FIELD_PARENT_ENTRY', [
+                        ->tooltip(Yii::t('cms', 'MENU_FIELD_PARENT_ENTRY', [
                             'entry' => $ancestor->getI18nAttribute('name'),
                         ]));
                 }

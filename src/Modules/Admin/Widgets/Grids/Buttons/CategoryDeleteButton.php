@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Widgets\Grids\Buttons;
 
-use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Skeleton\Widgets\Buttons\DeleteButton;
 use Override;
+use Yii;
 
 /**
  * @see CategoryController::actionDelete()
@@ -27,8 +27,8 @@ class CategoryDeleteButton extends DeleteButton
     protected function configure(): void
     {
         if ($this->model->getBranchCount()) {
-            $this->title ??= Lang::t('cms', 'CATEGORY_DELETE_TITLE');
-            $this->message ??= Lang::t('cms', 'CATEGORY_DELETE_WARNING');
+            $this->title ??= Yii::t('cms', 'CATEGORY_DELETE_TITLE');
+            $this->message ??= Yii::t('cms', 'CATEGORY_DELETE_WARNING');
         }
 
         $this->url ??= ['/admin/cms/category/delete', 'id' => $this->model->id];

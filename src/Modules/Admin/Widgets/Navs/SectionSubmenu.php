@@ -7,11 +7,11 @@ namespace Hirtz\Cms\Modules\Admin\Widgets\Navs;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Models\SectionAsset;
 use Hirtz\Cms\Modules\ModuleTrait;
-use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Skeleton\Widgets\Navs\NavItem;
 use Hirtz\Skeleton\Widgets\Navs\Submenu;
 use Hirtz\Skeleton\Widgets\Traits\ModelTrait;
 use Override;
+use Yii;
 
 class SectionSubmenu extends Submenu
 {
@@ -51,7 +51,7 @@ class SectionSubmenu extends Submenu
         return NavItem::make()
             ->icon('angle-double-left')
             ->badge($this->model->entry->section_count)
-            ->label(Lang::t('cms', 'COMMON_SECTIONS'))
+            ->label(Yii::t('cms', 'COMMON_SECTIONS'))
             ->url(['/admin/cms/section/index', 'entry' => $this->model->entry_id]);
     }
 
@@ -59,7 +59,7 @@ class SectionSubmenu extends Submenu
     {
         return NavItem::make()
             ->icon('cog')
-            ->label(Lang::t('skeleton', 'COMMON_GENERAL'))
+            ->label(Yii::t('skeleton', 'COMMON_GENERAL'))
             ->routes(['admin/cms/section/update', ...$this->additionalActiveRoutes['section'] ?? []])
             ->url($this->model->getAdminRoute());
     }
@@ -70,7 +70,7 @@ class SectionSubmenu extends Submenu
             ->attribute('id', 'entries')
             ->badge($this->model->entry_count)
             ->icon('chain')
-            ->label(Lang::t('cms', 'COMMON_SECTION_ENTRIES'))
+            ->label(Yii::t('cms', 'COMMON_SECTION_ENTRIES'))
             ->routes(
                 [
                     'admin/cms/section-entry',

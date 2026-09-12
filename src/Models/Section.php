@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Models;
 
-use Hirtz\Skeleton\I18n\Lang;
 use Closure;
 use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Models\Queries\SectionQuery;
@@ -243,7 +242,7 @@ class Section extends ActiveRecord implements AssetModelInterface
     public function getTrailModelName(): string
     {
         if ($this->id) {
-            return Lang::t('skeleton', 'COMMON_MODEL_ID', [
+            return Yii::t('skeleton', 'COMMON_MODEL_ID', [
                 'model' => $this->getTypeName() ?: $this->getTrailModelType(),
                 'id' => $this->id,
             ]);
@@ -254,7 +253,7 @@ class Section extends ActiveRecord implements AssetModelInterface
 
     public function getTrailModelType(): string
     {
-        return Lang::t('cms', 'COMMON_SECTION');
+        return Yii::t('cms', 'COMMON_SECTION');
     }
 
     public function getNameColumnContent(): ?string
@@ -322,10 +321,10 @@ class Section extends ActiveRecord implements AssetModelInterface
     {
         return [
             ...parent::attributeLabels(),
-            'entry_id' => Lang::t('cms', 'SECTION_ENTRY_ID_LABEL'),
-            'entry_count' => Lang::t('cms', 'SECTION_ENTRY_COUNT_LABEL'),
-            'slug' => Lang::t('cms', 'SECTION_SLUG_LABEL'),
-            'section_count' => Lang::t('cms', 'SECTION_SECTION_COUNT_LABEL')
+            'entry_id' => Yii::t('cms', 'SECTION_ENTRY_ID_LABEL'),
+            'entry_count' => Yii::t('cms', 'SECTION_ENTRY_COUNT_LABEL'),
+            'slug' => Yii::t('cms', 'SECTION_SLUG_LABEL'),
+            'section_count' => Yii::t('cms', 'SECTION_SECTION_COUNT_LABEL')
         ];
     }
 
