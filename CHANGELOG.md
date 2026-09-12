@@ -1,5 +1,8 @@
 ## 3.0 (in development)
 
+- `Modules\Admin\Widgets\Navs\EntrySubmenu` and `SectionSubmenu` build their assets item from the media
+  `Modules\Admin\Widgets\Navs\AssetSubmenuItem`. The entry submenu's item had no id, so a file upload could not
+  refresh its counter out of band
 - `Widgets\NavItems::$_entries` is `$entries`, dropping the underscore prefix a private or protected property
   no longer carries
 - `Models\ActiveRecord::rules()` and `attributeLabels()` no longer call the skeleton's removed

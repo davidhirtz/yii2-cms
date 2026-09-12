@@ -9,6 +9,7 @@ use Hirtz\Cms\Models\EntryAsset;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Module;
 use Hirtz\Cms\Modules\ModuleTrait;
+use Hirtz\Media\Modules\Admin\Widgets\Navs\AssetSubmenuItem;
 use Hirtz\Skeleton\Widgets\Navs\NavItem;
 use Hirtz\Skeleton\Widgets\Navs\Submenu;
 use Hirtz\Skeleton\Widgets\Traits\ModelTrait;
@@ -78,9 +79,8 @@ class EntrySubmenu extends Submenu
 
     protected function getAssetsItem(): ?NavItem
     {
-        return NavItem::make()
+        return AssetSubmenuItem::make()
             ->badge($this->model->asset_count)
-            ->icon('photo-film')
             ->label($this->model->getAttributeLabel('asset_count'))
             ->routes(
                 [
