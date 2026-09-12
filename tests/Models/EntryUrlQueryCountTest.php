@@ -153,8 +153,8 @@ class EntryUrlQueryCountTest extends TestCase
             $entry->update();
         });
 
-        // Load, update, trail.
-        self::assertSame(3, $count);
+        // Load, update, trail, and the two the search index costs: one delete and one insert of its documents.
+        self::assertSame(5, $count);
     }
 
     /**

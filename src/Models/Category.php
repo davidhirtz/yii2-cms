@@ -8,9 +8,11 @@ use Hirtz\Cms\Models\Collections\CategoryCollection;
 use Hirtz\Cms\Models\Queries\CategoryQuery;
 use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Models\Traits\SlugAttributeTrait;
+use Hirtz\Skeleton\Models\Interfaces\SearchableInterface;
 use Hirtz\Skeleton\Models\Interfaces\SitemapInterface;
 use Hirtz\Skeleton\Models\Trail;
 use Hirtz\Skeleton\Models\Traits\NestedTreeTrait;
+use Hirtz\Skeleton\Models\Traits\SearchableTrait;
 use Override;
 use Yii;
 use yii\db\ActiveQuery;
@@ -34,9 +36,10 @@ use yii\db\ActiveQuery;
  * @property-read static[] $ancestors {@see static::getAncestors()}
  * @property-read static[] $descendants {@see static::getDescendants()}
  */
-class Category extends ActiveRecord implements SitemapInterface
+class Category extends ActiveRecord implements SearchableInterface, SitemapInterface
 {
     use NestedTreeTrait;
+    use SearchableTrait;
     use SlugAttributeTrait;
 
     final public const string AUTH_CATEGORY_CREATE = 'categoryCreate';
@@ -290,6 +293,21 @@ class Category extends ActiveRecord implements SitemapInterface
     public function getAdminRoute(): array
     {
         return $this->id ? ['/admin/cms/category/update', 'id' => $this->id] : ['/admin/cms/category/index'];
+    }
+
+    public function getSearchAttributes(): array
+    {
+        return ['name', 'title', 'description', 'content'];
+    }
+
+    public function getSearchWeight(): float
+    {
+        return 0.8;
+    }
+
+    protected function isSearchResultVisible(): bool
+    {
+        return Yii::$app->has('user') && Yii::$app->getUser()->can(static::AUTH_CATEGORY_UPDATE);
     }
 
     public function getRoute(): array|false

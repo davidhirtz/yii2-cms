@@ -17,8 +17,10 @@ use Hirtz\Cms\Module;
 use Hirtz\Media\Models\Asset;
 use Hirtz\Media\Models\Interfaces\AssetModelInterface;
 use Hirtz\Media\Models\Traits\AssetModelTrait;
+use Hirtz\Skeleton\Models\Interfaces\SearchableInterface;
 use Hirtz\Skeleton\Models\Interfaces\SitemapInterface;
 use Hirtz\Skeleton\Models\Traits\MaterializedTreeTrait;
+use Hirtz\Skeleton\Models\Traits\SearchableTrait;
 use Hirtz\Cms\Validators\TenantIdValidator;
 use Hirtz\Tenant\Models\Collections\TenantCollection;
 use Hirtz\Tenant\Models\Tenant;
@@ -55,10 +57,11 @@ use yii\db\ActiveQuery;
  * @method EntryQuery findChildren()
  * @method EntryQuery findDescendants()
  */
-class Entry extends ActiveRecord implements AssetModelInterface, SitemapInterface
+class Entry extends ActiveRecord implements AssetModelInterface, SearchableInterface, SitemapInterface
 {
     use AssetModelTrait;
     use MaterializedTreeTrait;
+    use SearchableTrait;
     use PermalinkTrait;
     use TenantRelationTrait;
     use SlugAttributeTrait;
@@ -516,6 +519,16 @@ class Entry extends ActiveRecord implements AssetModelInterface, SitemapInterfac
     public function getAdminRoute(): false|array
     {
         return $this->id ? ['/admin/cms/entry/update', 'id' => $this->id] : false;
+    }
+
+    public function getSearchAttributes(): array
+    {
+        return ['name', 'title', 'description', 'content'];
+    }
+
+    protected function isSearchResultVisible(): bool
+    {
+        return Yii::$app->has('user') && Yii::$app->getUser()->can(static::AUTH_ENTRY_UPDATE);
     }
 
     /**

@@ -1,5 +1,8 @@
 ## 3.0 (in development)
 
+- `Models\Entry`, `Section` and `Category` are searchable: they implement the skeleton's
+  `Models\Interfaces\SearchableInterface`, declare their indexed attributes and gate their hit on
+  `entryUpdate`, `sectionUpdate` and `categoryUpdate`. `Bootstrap` registers them on the `search` component
 - `Modules\Admin\Widgets\Navs\EntrySubmenu` and `SectionSubmenu` build their assets item from the media
   `Modules\Admin\Widgets\Navs\AssetSubmenuItem`. The entry submenu's item had no id, so a file upload could not
   refresh its counter out of band

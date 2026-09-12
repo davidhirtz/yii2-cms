@@ -11,6 +11,8 @@ use Hirtz\Cms\Models\Traits\EntryRelationTrait;
 use Hirtz\Cms\Models\Traits\SlugAttributeTrait;
 use Hirtz\Media\Models\Interfaces\AssetModelInterface;
 use Hirtz\Media\Models\Traits\AssetModelTrait;
+use Hirtz\Skeleton\Models\Interfaces\SearchableInterface;
+use Hirtz\Skeleton\Models\Traits\SearchableTrait;
 use yii\db\ActiveQuery;
 use Hirtz\Skeleton\Validators\RelationValidator;
 use Hirtz\Skeleton\Validators\UniqueValidator;
@@ -32,10 +34,11 @@ use yii\helpers\Inflector;
  * @property-read SectionEntry $sectionEntry {@see static::getSectionEntry()}
  * @property-read SectionEntry[] $sectionEntries {@see static::getSectionEntries()}
  */
-class Section extends ActiveRecord implements AssetModelInterface
+class Section extends ActiveRecord implements AssetModelInterface, SearchableInterface
 {
     use AssetModelTrait;
     use EntryRelationTrait;
+    use SearchableTrait;
     use SlugAttributeTrait;
 
     final public const string AUTH_SECTION_CREATE = 'sectionCreate';
@@ -269,6 +272,21 @@ class Section extends ActiveRecord implements AssetModelInterface
     public function getAdminRoute(): array|false
     {
         return $this->id ? ['/admin/cms/section/update', 'id' => $this->id] : false;
+    }
+
+    public function getSearchAttributes(): array
+    {
+        return ['name', 'content'];
+    }
+
+    public function getSearchWeight(): float
+    {
+        return 0.7;
+    }
+
+    protected function isSearchResultVisible(): bool
+    {
+        return Yii::$app->has('user') && Yii::$app->getUser()->can(static::AUTH_SECTION_UPDATE);
     }
 
     public function getEntriesOrderBy(): ?array

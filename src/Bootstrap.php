@@ -10,6 +10,7 @@ use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\EntryAsset;
 use Hirtz\Cms\Models\Events\TenantAfterSaveEventHandler;
 use Hirtz\Cms\Models\Events\TenantBeforeDeleteEventHandler;
+use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Models\SectionAsset;
 use Hirtz\Skeleton\Modules\Admin\Controllers\DashboardController;
 use Hirtz\Skeleton\Web\Application;
@@ -36,6 +37,14 @@ class Bootstrap implements BootstrapInterface
             'basePath' => '@cms/../messages',
             'forceTranslation' => true,
         ];
+
+        $app->extendComponent('search', [
+            'models' => [
+                Category::class,
+                Entry::class,
+                Section::class,
+            ],
+        ]);
 
         $app->extendModules([
             'admin' => [
