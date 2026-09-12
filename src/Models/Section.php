@@ -284,6 +284,11 @@ class Section extends ActiveRecord implements AssetModelInterface, SearchableInt
         return 0.7;
     }
 
+    public function getSearchTenantId(): ?int
+    {
+        return $this->entry?->tenant_id;
+    }
+
     protected function isSearchResultVisible(): bool
     {
         return Yii::$app->has('user') && Yii::$app->getUser()->can(static::AUTH_SECTION_UPDATE);
