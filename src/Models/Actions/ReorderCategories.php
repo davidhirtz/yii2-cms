@@ -7,6 +7,7 @@ namespace Hirtz\Cms\Models\Actions;
 use Hirtz\Cms\Models\Category;
 use davidhirtz\yii2\datetime\DateTime;
 use Hirtz\Skeleton\Models\Trail;
+use Override;
 use Yii;
 
 class ReorderCategories extends ReorderActiveRecords
@@ -16,13 +17,13 @@ class ReorderCategories extends ReorderActiveRecords
         parent::__construct([], array_flip($categoryIds));
     }
 
-    #[\Override]
+    #[Override]
     protected function reorderActiveRecordsInternal(): int
     {
         return Category::rebuildNestedTree($this->parent, $this->order);
     }
 
-    #[\Override]
+    #[Override]
     protected function afterReorder(): void
     {
         Trail::createOrderTrail($this->parent, Yii::t('cms', 'REORDER_CATEGORIES_CATEGORY_ORDER_CHANGED'));
