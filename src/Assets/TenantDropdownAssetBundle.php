@@ -8,6 +8,6 @@ use yii\web\AssetBundle;
 
 class TenantDropdownAssetBundle extends AssetBundle
 {
-    public $js = ['dropdown.js'];
+    public $js = ['js/dropdown.js'];
     public $sourcePath = __DIR__ . '/../../resources/assets/dist';
 }

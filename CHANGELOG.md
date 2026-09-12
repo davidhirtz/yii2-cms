@@ -1,5 +1,8 @@
 ## 3.0 (in development)
 
+- `esbuild.js` uses the skeleton's shared `esbuild.config.js`. The entry point moved to
+  `resources/assets/src/js/dropdown.ts` and its output to `resources/assets/dist/js/dropdown.js`, which is the layout
+  every other bundle already used; `Assets\TenantDropdownAssetBundle::$js` follows
 - `CategoryCollection::invalidateCache()` also drops the static list, which it left in place before, so a saved category
   is seen by the next `getAll()` in the same process; `reset()` drops the static alone and `Bootstrap` calls it, so
   an application starts without the categories of the one before it. `$_categories` is `$categories`
