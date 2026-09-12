@@ -315,7 +315,7 @@ class Entry extends ActiveRecord implements AssetModelInterface, SitemapInterfac
             }
 
             if ($this->entry_count) {
-                foreach ($this->children as $entry) {
+                foreach ($this->getChildren() as $entry) {
                     $entry->setIsBatch($this->getIsBatch());
                     $entry->delete();
                 }
@@ -353,7 +353,7 @@ class Entry extends ActiveRecord implements AssetModelInterface, SitemapInterfac
 
         if (!$this->getIsBatch()) {
             if ($this->parent_id) {
-                foreach ($this->ancestors as $ancestor) {
+                foreach ($this->getAncestors() as $ancestor) {
                     $ancestor->recalculateEntryCount()->update();
                 }
             }

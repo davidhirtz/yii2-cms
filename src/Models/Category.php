@@ -197,7 +197,7 @@ class Category extends ActiveRecord implements SitemapInterface
     protected function insertEntryCategoryAncestors(): void
     {
         // If the category doesn't have `inheritNestedCategories` enabled, descendant categories need to be used.
-        $categoryIds = $this->inheritNestedCategories() ? $this->id : array_keys(array_filter($this->descendants, fn (self $category): bool => $category->inheritNestedCategories()));
+        $categoryIds = $this->inheritNestedCategories() ? $this->id : array_keys(array_filter($this->getDescendants(), fn (self $category): bool => $category->inheritNestedCategories()));
 
         if ($categoryIds) {
             $entries = Entry::find()
