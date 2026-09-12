@@ -123,6 +123,22 @@ final class SiteControllerFunctionalTest extends TestCase
         self::assertCurrentUrlEquals($urlManager->createUrl($entry->getRoute()));
     }
 
+    /**
+     * The request arrives on a host that is not a tenant, so the URL manager falls back to the default tenant and
+     * its canonical host is what the 404 handler matches the host-qualified redirect against.
+     */
+    public function testRenamedEntryRedirectsFromItsOldUrl(): void
+    {
+        $entry = $this->getEntryFromFixture('page-enabled');
+        $entry->slug = 'renamed';
+        self::assertNotFalse($entry->update());
+
+        $this->open('/test-1');
+
+        self::assertCurrentUrlEquals('https://www.domain.localhost/renamed');
+        self::assertResponseIsSuccessful();
+    }
+
     public function testUnknownSlug(): void
     {
         $this->open('/there-is-no-such-page');

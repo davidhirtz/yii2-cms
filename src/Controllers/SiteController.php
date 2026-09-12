@@ -92,7 +92,6 @@ class SiteController extends Controller
         return Entry::find()
             ->selectSiteAttributes()
             ->withTranslations()
-            ->withPermalinks()
             ->whereStatus($status)
             ->andWhereParentStatus();
     }

@@ -83,6 +83,81 @@ class EntryUrlQueryCountTest extends TestCase
     }
 
     /**
+     * The lookup joins the permalink, so the record it matched comes back in the same row rather than through a
+     * second query for the relation.
+     */
+    public function testFindingAnEntryByUriReadsThePermalinkInTheSameQuery(): void
+    {
+        $created = $this->createEntry('test-entry');
+        $entry = null;
+        $slug = null;
+
+        $count = $this->countQueries(function () use (&$entry, &$slug): void {
+            $entry = Entry::find()->whereUri('test-entry')->one();
+            $slug = $entry?->getFormattedSlug();
+        });
+
+        self::assertSame(1, $count);
+        self::assertSame('test-entry', $slug);
+        self::assertSame($created->id, $entry->id);
+        self::assertFalse($entry->isRelationPopulated('permalinks'), 'The matched record must not stand in for the relation.');
+
+        // The language-agnostic record resolves under every language without touching the relation.
+        self::assertSame($entry->getPermalink(), $entry->getPermalink('de'));
+        self::assertFalse($entry->isRelationPopulated('permalinks'));
+
+        // Anything that needs the full set still loads it.
+        self::assertCount(1, $entry->permalinks);
+        self::assertTrue($entry->isRelationPopulated('permalinks'));
+    }
+
+    /**
+     * The joined table has an `id` too; without a select of its own the query would read the permalink's.
+     */
+    public function testFindingAnEntryByUriReturnsTheEntryId(): void
+    {
+        $created = $this->createEntry('test-entry');
+        $permalink = $created->getPermalink();
+
+        self::assertNotSame($created->id, $permalink->id, 'The ids coincide, so the test cannot tell them apart.');
+
+        $entry = Entry::find()->whereUri('test-entry')->one();
+
+        self::assertSame($created->id, $entry->id);
+        self::assertSame($permalink->id, $entry->getPermalink()->id);
+    }
+
+    /**
+     * The entry validates the permalink itself, so writing it must not check uniqueness again, and the relation
+     * it loaded for that must serve the save too: load, check, write, trail.
+     */
+    public function testRenameRunsOneUniquenessCheck(): void
+    {
+        $entry = TestEntry::findOne($this->createEntry('test-entry')->id);
+
+        $count = $this->countQueries(function () use ($entry): void {
+            $entry->slug = 'renamed';
+            $entry->update();
+        });
+
+        self::assertSame(4, $count);
+        self::assertSame('renamed', TestEntry::findOne($entry->id)->slug);
+    }
+
+    public function testUpdateWithoutSlugChangeLoadsThePermalinksOnce(): void
+    {
+        $entry = TestEntry::findOne($this->createEntry('test-entry')->id);
+
+        $count = $this->countQueries(function () use ($entry): void {
+            $entry->name = 'Renamed';
+            $entry->update();
+        });
+
+        // Load, update, trail.
+        self::assertSame(3, $count);
+    }
+
+    /**
      * @param list<int> $ids
      * @return Entry[]
      */

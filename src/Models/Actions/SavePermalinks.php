@@ -21,8 +21,23 @@ class SavePermalinks
      */
     protected array $slugChanges = [];
 
+    /**
+     * @var array<string, Permalink> the records written, keyed by language
+     */
+    protected array $savedPermalinks = [];
+
+    /**
+     * @var list<string> the languages whose record was deleted
+     */
+    protected array $deletedLanguages = [];
+
+    /**
+     * @param bool $runValidation `false` when the entry validated the records itself through `validateSlug()`,
+     * which is every validated save; a save that skipped validation then relies on the unique index
+     */
     public function __construct(
         protected Entry $model,
+        protected bool $runValidation = true,
     ) {
     }
 
@@ -30,6 +45,8 @@ class SavePermalinks
     {
         $this->changedLanguages = [];
         $this->slugChanges = [];
+        $this->savedPermalinks = [];
+        $this->deletedLanguages = [];
 
         $languages = $this->model->getPermalinkLanguages();
 
@@ -75,8 +92,9 @@ class SavePermalinks
         $previousSlug = $permalink->getIsNewRecord() ? null : $permalink->getOldAttribute('slug');
         $slugChanged = $permalink->getIsNewRecord() || $permalink->isAttributeChanged('slug', false);
 
-        if ($permalink->upsert()) {
+        if ($permalink->upsert($this->runValidation)) {
             $this->changedLanguages[] = $language;
+            $this->savedPermalinks[$language] = $permalink;
 
             if ($slugChanged) {
                 $this->slugChanges[$this->model->getI18nAttributeName('slug', $language)] = $previousSlug;
@@ -90,26 +108,32 @@ class SavePermalinks
         }
 
         $model = $this->model::class;
-        $errors = implode(' ', $permalink->getErrorSummary(true));
-
-        Yii::warning("Permalink for $model {$this->model->id} could not be saved: $errors", __METHOD__);
+        $this->warn("Permalink for $model {$this->model->id} could not be saved", $permalink);
     }
 
+    /**
+     * The request side is host-qualified so the 404 handler matches it on the entry's tenant only; the target is
+     * a URL, relative on that host and absolute elsewhere.
+     */
     protected function insertRedirect(string $previousUri, Permalink $permalink): void
     {
-        $from = Redirect::sanitizeUrl($this->model->getPermalinkUrl($previousUri, $permalink->language));
-        $to = Redirect::sanitizeUrl($this->model->getPermalinkUrl($permalink->uri, $permalink->language));
+        $requestUri = Redirect::sanitizeUrl($this->model->getPermalinkRequestUri($previousUri, $permalink->language));
+        $previousUrl = Redirect::sanitizeUrl($this->model->getPermalinkUrl($previousUri, $permalink->language));
+        $url = Redirect::sanitizeUrl($this->model->getPermalinkUrl($permalink->uri, $permalink->language));
 
-        if (!$from || !$to || $from === $to) {
+        if (!$requestUri || !$url || $previousUrl === $url) {
             return;
         }
 
-        $this->updatePreviousRedirects($from, $to);
+        $this->updatePreviousRedirects($previousUrl, $url);
 
         $redirect = Redirect::create();
-        $redirect->request_uri = $from;
-        $redirect->url = $to;
-        $redirect->insert();
+        $redirect->request_uri = $requestUri;
+        $redirect->url = $url;
+
+        if (!$redirect->insert()) {
+            $this->warn("Redirect from $requestUri could not be saved", $redirect);
+        }
     }
 
     protected function updatePreviousRedirects(string $from, string $to): void
@@ -127,13 +151,13 @@ class SavePermalinks
 
     /**
      * Removes the records of languages no longer written, e.g. the {@see Permalink::LANGUAGE_ALL} one once the slug
-     * became translated. The reload doubles as the relation refresh.
+     * became translated, and hands the entry the relation as it is now, without reading it back.
      *
      * @param list<string> $languages
      */
     protected function deleteStalePermalinks(array $languages): void
     {
-        $permalinks = $this->model->getPermalinks()->all();
+        $permalinks = $this->model->permalinks;
 
         foreach ($permalinks as $key => $permalink) {
             if (!in_array($permalink->language, $languages, true)) {
@@ -142,7 +166,11 @@ class SavePermalinks
             }
         }
 
-        $this->model->populateRelation('permalinks', $permalinks);
+        foreach ($this->deletedLanguages as $language) {
+            unset($permalinks[$language]);
+        }
+
+        $this->model->populatePermalinks([...$permalinks, ...$this->savedPermalinks]);
     }
 
     protected function deletePermalink(?Permalink $permalink, string $language): void
@@ -150,6 +178,12 @@ class SavePermalinks
         if ($permalink) {
             $permalink->delete();
             $this->changedLanguages[] = $language;
+            $this->deletedLanguages[] = $language;
         }
+    }
+
+    protected function warn(string $message, Permalink|Redirect $record): void
+    {
+        Yii::warning("$message: " . implode(' ', $record->getErrorSummary(true)), __METHOD__);
     }
 }

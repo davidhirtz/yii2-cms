@@ -238,7 +238,8 @@ class Entry extends ActiveRecord implements AssetModelInterface, SitemapInterfac
     #[Override]
     public function afterSave($insert, $changedAttributes): void
     {
-        $permalinks = $this->savePermalinks();
+        // Validated by `validateSlug()`, so the records are written without a second validation round.
+        $permalinks = $this->savePermalinks(false);
         $changedAttributes = [...$changedAttributes, ...$permalinks->getSlugChanges()];
 
         if (

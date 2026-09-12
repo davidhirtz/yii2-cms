@@ -1,5 +1,21 @@
 ## 3.0 (in development)
 
+- An entry's redirects are recorded host-qualified: `request_uri` is the tenant's host plus the path
+  (`www.example.com/de/old`), so a renamed slug only redirects on its own tenant and the same slug can be renamed
+  on two tenants. `PermalinkTrait::getPermalinkRequestUri()` builds that form; `getPermalinkUrl()` keeps the
+  tenant in the route again (relative on the entry's host, absolute elsewhere) and is the redirect target
+- `EntryQuery::whereUri()` selects the joined permalink's columns and `populate()` hands the matched record to the
+  entry (`PermalinkTrait::populatePermalink()`), so a site request resolves the entry and its URL in one query;
+  `SiteController::getQuery()` no longer eager loads `permalinks`. `getPermalink()` reads that record when the
+  relation is not loaded, and anything needing the full set still loads it. `whereUri()` on a query without a
+  select now selects the entry's columns — before, `SELECT *` over the join let the permalink's `id` overwrite
+  the entry's
+- `Entry::afterSave()` writes the permalinks without validating them again: `validateSlug()` already did, so a
+  rename runs one uniqueness check instead of two. `PermalinkTrait::savePermalinks()` and `SavePermalinks`
+  take `bool $runValidation` (default `true`, the console rebuild keeps validating). `SavePermalinks` also stops
+  re-querying the relation after the write and hands the entry the records it wrote through
+  `PermalinkTrait::populatePermalinks()`; `buildPermalink()` keeps one unsaved record per language so validation
+  and save work on the same object; a redirect that fails validation is logged like a failed permalink
 - Requires `davidhirtz/yii2-tenant`. `yii2-cms-tenant` is gone; its behaviour lives here and in the tenant
   bundle, and a project `Entry` extends `Models\Entry` again. See `yii2-skeleton/UPGRADE.md`, "3.0.0 — Tenants"
 - `Models\Entry` has a NOT NULL `tenant_id`: it uses the tenant `TenantRelationTrait`, validates the attribute

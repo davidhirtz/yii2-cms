@@ -8,6 +8,7 @@ use Hirtz\Cms\Models\Actions\SavePermalinks;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Permalink;
 use Hirtz\Cms\Models\Queries\PermalinkQuery;
+use Hirtz\Tenant\Models\Collections\TenantCollection;
 use Yii;
 
 /**
@@ -15,6 +16,17 @@ use Yii;
  */
 trait PermalinkTrait
 {
+    /**
+     * @var array<string, Permalink> the records a query matched by URI, keyed by language, so a request that found
+     * the entry through its permalink does not load the relation to read that same record back
+     */
+    private array $_matchedPermalinks = [];
+
+    /**
+     * @var array<string, Permalink> the unsaved records per language, shared between validation and save
+     */
+    private array $_newPermalinks = [];
+
     public function getPermalinks(): PermalinkQuery
     {
         /** @var PermalinkQuery<Permalink> */
@@ -24,11 +36,38 @@ trait PermalinkTrait
 
     public function getPermalink(?string $language = null): ?Permalink
     {
+        $language ??= Yii::$app->language;
+
+        if ($this->_matchedPermalinks && !$this->isRelationPopulated('permalinks')) {
+            $permalink = $this->_matchedPermalinks[$language]
+                ?? $this->_matchedPermalinks[Permalink::LANGUAGE_ALL]
+                ?? null;
+
+            if ($permalink) {
+                return $permalink;
+            }
+        }
+
         $permalinks = $this->permalinks;
 
-        return $permalinks[$language ?? Yii::$app->language]
+        return $permalinks[$language]
             ?? $permalinks[Permalink::LANGUAGE_ALL]
             ?? null;
+    }
+
+    public function populatePermalink(Permalink $permalink): void
+    {
+        $this->_matchedPermalinks[$permalink->language] = $permalink;
+    }
+
+    /**
+     * @param array<string, Permalink> $permalinks keyed by language
+     */
+    public function populatePermalinks(array $permalinks): void
+    {
+        $this->populateRelation('permalinks', $permalinks);
+        $this->_matchedPermalinks = [];
+        $this->_newPermalinks = [];
     }
 
     public function getFormattedSlug(?string $language = null): string
@@ -44,12 +83,12 @@ trait PermalinkTrait
 
     /**
      * Looked up by exact language: the {@see Permalink::LANGUAGE_ALL} fallback of {@see static::getPermalink()} is
-     * for reading only.
+     * for reading only. An unsaved record is kept per language so validation and save work on the same object.
      */
     public function buildPermalink(?string $language = null): Permalink
     {
         $language ??= Yii::$app->language;
-        $permalink = $this->permalinks[$language] ?? Permalink::create();
+        $permalink = $this->permalinks[$language] ?? ($this->_newPermalinks[$language] ??= Permalink::create());
 
         if ($permalink->getIsNewRecord()) {
             $permalink->language = $language;
@@ -74,7 +113,7 @@ trait PermalinkTrait
 
     /**
      * Takes the URI rather than reading the current one, so a {@see \Hirtz\Skeleton\Models\Redirect} can be
-     * recorded for a URI this model no longer has.
+     * recorded for a URI this model no longer has. Relative on the entry's own host, absolute on another.
      */
     public function getPermalinkUrl(string $uri, ?string $language = null): false|string
     {
@@ -84,9 +123,7 @@ trait PermalinkTrait
             return false;
         }
 
-        // A redirect is matched against the request path, so the tenant must not turn this into an absolute URL.
         $route['slug'] = $uri;
-        $route['tenant'] = null;
 
         if ($language === null || $language === Permalink::LANGUAGE_ALL) {
             $language = Yii::$app->sourceLanguage;
@@ -96,6 +133,28 @@ trait PermalinkTrait
             $language,
             fn (): string => Yii::$app->getUrlManager()->createUrl($route)
         );
+    }
+
+    /**
+     * The path a request for this URI carries, qualified by the tenant's host and without a scheme
+     * (`www.example.com/de/old`): the form the 404 handler matches a redirect's `request_uri` against.
+     */
+    public function getPermalinkRequestUri(string $uri, ?string $language = null): false|string
+    {
+        $url = $this->getPermalinkUrl($uri, $language);
+
+        if ($url === false) {
+            return false;
+        }
+
+        if (str_contains($url, '://')) {
+            return trim(substr($url, strpos($url, '://') + 3), '/');
+        }
+
+        $tenant = TenantCollection::getAll()[$this->tenant_id] ?? null;
+        $host = $tenant ? parse_url($tenant->getHostInfo(), PHP_URL_HOST) : null;
+
+        return $host ? "$host/" . trim($url, '/') : trim($url, '/');
     }
 
     /**
@@ -109,9 +168,9 @@ trait PermalinkTrait
         ];
     }
 
-    public function savePermalinks(): SavePermalinks
+    public function savePermalinks(bool $runValidation = true): SavePermalinks
     {
-        $permalinks = new SavePermalinks($this);
+        $permalinks = new SavePermalinks($this, $runValidation);
         $permalinks->save();
 
         return $permalinks;

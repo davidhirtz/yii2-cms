@@ -10,7 +10,10 @@ use Hirtz\Cms\Test\Models\TestSection;
 use Hirtz\Cms\Test\TestCase;
 use Hirtz\Skeleton\Models\Redirect;
 use Hirtz\Skeleton\Models\Trail;
+use Hirtz\Tenant\Models\Collections\TenantCollection;
+use Hirtz\Tenant\Web\UrlManager;
 use Override;
+use Yii;
 
 /**
  * While the slug columns are still the source of truth, a permalink must always agree with
@@ -162,6 +165,21 @@ class EntryPermalinkTest extends TestCase
     }
 
     /**
+     * The request side names the tenant's host, so the 404 handler matches it on that host only; a bare path would
+     * fire on every host and collide with another tenant's entry of the same slug.
+     */
+    public function testRedirectRequestUriIsQualifiedByTheTenantHost(): void
+    {
+        $entry = $this->createEntryWithSection('test-entry');
+
+        $entry->slug = 'renamed';
+        self::assertNotFalse($entry->update());
+
+        self::assertTrue(Redirect::find()->where(['request_uri' => 'www.domain.localhost/test-entry'])->exists());
+        self::assertFalse(Redirect::find()->where(['request_uri' => 'test-entry'])->exists());
+    }
+
+    /**
      * `RedirectBehavior` only produced these because every descendant happened to be re-saved. Recording them from
      * the permalink action makes it explicit.
      */
@@ -297,10 +315,13 @@ class EntryPermalinkTest extends TestCase
         return $trail instanceof Trail ? (array)$trail->data : [];
     }
 
+    /**
+     * @param string $requestUri the path on the default tenant, whose host the stored request URI carries
+     */
     protected function findRedirectTarget(string $requestUri): ?string
     {
         $redirect = Redirect::find()
-            ->where(['request_uri' => $requestUri])
+            ->where(['request_uri' => "www.domain.localhost/$requestUri"])
             ->limit(1)
             ->one();
 
@@ -356,10 +377,20 @@ class EntryPermalinkTest extends TestCase
         return $entry;
     }
 
+    /**
+     * The URL manager resolves the default tenant as a request on its host would, so a redirect target on that
+     * tenant is relative, as it is in the admin.
+     */
     #[Override]
     protected function setUp(): void
     {
         parent::setUp();
         TestEntry::getModule()->enableNestedEntries = true;
+
+        $manager = Yii::$app->getUrlManager();
+
+        if ($manager instanceof UrlManager && ($tenant = TenantCollection::getDefault())) {
+            $manager->setTenant($tenant);
+        }
     }
 }
