@@ -16,7 +16,6 @@ class FrontendLinkButton extends Button
     protected function configure(): void
     {
         $this->configureDefaultUrl();
-
         parent::configure();
     }
 }

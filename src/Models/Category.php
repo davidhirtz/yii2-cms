@@ -292,7 +292,7 @@ class Category extends ActiveRecord implements SitemapInterface
         return $this->id ? ['/admin/cms/category/update', 'id' => $this->id] : ['/admin/cms/category/index'];
     }
 
-    public function getRoute(): array
+    public function getRoute(): array|false
     {
         return array_filter(['/cms/site/index', 'category' => $this->getI18nAttribute('slug')]);
     }
