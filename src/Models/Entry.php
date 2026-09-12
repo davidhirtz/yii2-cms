@@ -58,9 +58,7 @@ use yii\db\ActiveQuery;
  */
 class Entry extends ActiveRecord implements AssetModelInterface, SitemapInterface
 {
-    use AssetModelTrait {
-        populateAssetRelations as populateOwnAssetRelations;
-    }
+    use AssetModelTrait;
     use MaterializedTreeTrait;
     use PermalinkTrait;
     use TenantRelationTrait;
@@ -474,22 +472,6 @@ class Entry extends ActiveRecord implements AssetModelInterface, SitemapInterfac
                 if (!$this->$i18nAttributeName) {
                     $this->$i18nAttributeName = $this->$attribute;
                 }
-            }
-        }
-    }
-
-    /**
-     * @param Asset[]|null $assets
-     */
-    public function populateAssetRelations(?array $assets = null): void
-    {
-        $assets ??= $this->assets;
-
-        $this->populateOwnAssetRelations($assets);
-
-        if ($this->hasSectionsEnabled() && $this->isRelationPopulated('sections')) {
-            foreach ($this->sections as $section) {
-                $section->populateAssetRelations($assets);
             }
         }
     }

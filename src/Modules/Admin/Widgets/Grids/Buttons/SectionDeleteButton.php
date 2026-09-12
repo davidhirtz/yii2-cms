@@ -15,7 +15,7 @@ use Override;
  */
 class SectionDeleteButton extends DeleteButton
 {
-    #[\Override]
+    #[Override]
     public function isVisible(): bool
     {
         return parent::isVisible()

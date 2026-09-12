@@ -14,6 +14,7 @@ use Hirtz\Media\Models\Asset;
 use Hirtz\Media\Models\Collections\FolderCollection;
 use Hirtz\Media\Models\File;
 use Hirtz\Skeleton\Helpers\ArrayHelper;
+use Override;
 use Yii;
 use yii\base\Component;
 use yii\base\Event;
@@ -109,7 +110,7 @@ class EntrySiteRelationsBuilder extends Component
         $this->populateAssetRelations();
     }
 
-    #[\Override]
+    #[Override]
     public function trigger($name, ?Event $event = null): void
     {
         parent::trigger($name, $event ?? new EntrySiteRelationsBuilderEvent());
@@ -300,9 +301,12 @@ class EntrySiteRelationsBuilder extends Component
             $asset->populateFileRelation($this->files[$asset->file_id] ?? null);
         }
 
-        // The entry populates its sections' assets too, so the sections need no pass of their own.
         foreach ($this->entries as $entry) {
             $entry->populateAssetRelations($this->assets);
+        }
+
+        foreach ($this->entry->sections as $section) {
+            $section->populateAssetRelations($this->assets);
         }
     }
 }

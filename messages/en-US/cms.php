@@ -118,7 +118,7 @@ return [
     'SECTION_ENTRY_SUCCESS_ADDED' => 'Entry added to section.',
     'SECTION_ENTRY_SUCCESS_REMOVED' => 'Entry removed from section.',
     'SECTION_ENTRY_UPDATED_AT_LABEL' => 'Added',
-    'SECTION_LINKED_ENTRY_LINK_ENTRIES' => 'Link entries',
+    'SECTION_ENTRY_CREATE_BUTTON' => 'Link entries',
     'SECTION_MOVE_COPY' => 'Move / Copy',
     'SECTION_NEW_SECTION' => 'New Section',
     'SECTION_PARENT_ENTRY_COPY_SECTION' => 'Copy Section',

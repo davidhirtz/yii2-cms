@@ -39,6 +39,7 @@ class SectionSubmenu extends Submenu
         $this->addItem(
             $this->getSectionsItem(),
             $this->getSectionUpdateItem(),
+            $this->getEntriesItem(),
             $this->getAssetsItem(),
         );
 
@@ -63,10 +64,26 @@ class SectionSubmenu extends Submenu
             ->url($this->model->getAdminRoute());
     }
 
+    protected function getEntriesItem(): ?NavItem
+    {
+        return NavItem::make()
+            ->attribute('id', 'entries')
+            ->badge($this->model->entry_count)
+            ->icon('chain')
+            ->label(Lang::t('cms', 'COMMON_SECTION_ENTRIES'))
+            ->routes(
+                [
+                    'admin/cms/section-entry',
+                    ...$this->additionalActiveRoutes['entries'] ?? [],
+                ]
+            )
+            ->url(['/admin/cms/section-entry/index', 'section' => $this->model->id]);
+    }
 
     protected function getAssetsItem(): ?NavItem
     {
         return NavItem::make()
+            ->attribute('id', 'assets')
             ->badge($this->model->asset_count)
             ->icon('photo-film')
             ->label($this->model->getAttributeLabel('asset_count'))

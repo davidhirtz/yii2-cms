@@ -49,7 +49,6 @@ class EntryGridView extends GridView
 {
     use ModuleTrait;
 
-    public ?int $tenantId = null;
     public string $tenantParamName = 'tenant';
 
     protected bool $showUrl = true;

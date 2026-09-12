@@ -118,7 +118,7 @@ return [
     'SECTION_ENTRY_SUCCESS_ADDED' => 'Eintrag zur Sektion hinzugefügt',
     'SECTION_ENTRY_SUCCESS_REMOVED' => 'Eintrag von Sektion entfernt',
     'SECTION_ENTRY_UPDATED_AT_LABEL' => 'Hinzugefügt',
-    'SECTION_LINKED_ENTRY_LINK_ENTRIES' => 'Einträge verknüpfen',
+    'SECTION_ENTRY_CREATE_BUTTON' => 'Einträge verknüpfen',
     'SECTION_MOVE_COPY' => 'Verschieben / Kopieren',
     'SECTION_NEW_SECTION' => 'Neue Sektion',
     'SECTION_PARENT_ENTRY_COPY_SECTION' => 'Sektion kopieren',

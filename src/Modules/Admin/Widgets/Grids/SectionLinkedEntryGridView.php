@@ -4,19 +4,15 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Widgets\Grids;
 
-use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Controllers\SectionEntryController;
 use Hirtz\Cms\Modules\Admin\Data\EntryActiveDataProvider;
-use Hirtz\Cms\Modules\Admin\Widgets\Grids\Buttons\SectionEntryDeleteButton;
-use Hirtz\Skeleton\Widgets\Buttons\ButtonGroup;
-use Hirtz\Skeleton\Widgets\Buttons\CreateButton;
-use Hirtz\Skeleton\Widgets\Grids\Toolbars\GridToolbarItem;
+use Hirtz\Skeleton\I18n\Lang;
+use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\DeleteGridButton;
 use Override;
 use Stringable;
 use Traversable;
-use Yii;
 use yii\helpers\Inflector;
 
 /**
@@ -24,13 +20,8 @@ use yii\helpers\Inflector;
  */
 class SectionLinkedEntryGridView extends EntryGridView
 {
-    protected Section $section;
-
-    public function section(Section $section): static
-    {
-        $this->section = $section;
-        return $this;
-    }
+    #[Override]
+    protected string $layout = '{items}{footer}';
 
     #[Override]
     protected function configure(): void
@@ -51,53 +42,36 @@ class SectionLinkedEntryGridView extends EntryGridView
             ];
         };
 
-        $this->provider ??= Yii::$container->get(EntryActiveDataProvider::class, config: [
-            'section' => $this->section,
-            'pagination' => false,
-        ]);
-
-        $this->layout = $this->section->entry_count ? '{items}{footer}' : '{footer}';
+        $this->layout = $this->provider->section->entry_count ? '{items}{footer}' : '{footer}';
 
         /** @see SectionEntryController::actionOrder() */
-        $this->orderRoute = ['section-entry/order', 'section' => $this->provider->section->id];
-
-
-        $this->footer ??= [
-            GridToolbarItem::make()
-                ->class('form-row')
-                ->content(ButtonGroup::make()
-                    ->class('form-content')
-                    ->content($this->getSelectEntriesButton())),
-        ];
+        $this->orderRoute = ['order', 'section' => $this->provider->section->id];
 
         parent::configure();
-    }
-
-    protected function getSelectEntriesButton(): string|Stringable
-    {
-        $entryTypes = $this->provider->section->getEntriesTypes();
-
-        return CreateButton::make()
-            ->label(Lang::t('cms', 'SECTION_LINKED_ENTRY_LINK_ENTRIES'))
-            ->icon('link')
-            ->url([
-                'section-entry/index',
-                'section' => $this->provider->section->id,
-                'type' => $entryTypes ? current($entryTypes) : null,
-            ]);
     }
 
     #[Override]
     protected function getButtonColumnContent(Entry $entry): Traversable
     {
         if (!$this->webuser->can(Section::AUTH_SECTION_UPDATE, ['entry' => $entry])) {
-            yield;
+            return;
         }
 
         if ($this->isSortable() && $this->provider->getCount() > 1) {
             yield $this->getSortableButton();
         }
 
-        yield Yii::createObject(SectionEntryDeleteButton::class, [$entry, $this->provider->section]);
+        yield $this->getDeleteButton($entry);
+    }
+
+    /**
+     * @see SectionEntryController::actionDelete()
+     */
+    #[Override]
+    protected function getDeleteButton(Entry $entry): Stringable
+    {
+        return DeleteGridButton::make()
+            ->url(['section-entry/delete', 'section' => $this->provider->section->id, 'entry' => $entry->id])
+            ->title(Lang::t('cms', 'SECTION_ENTRY_REMOVE_TITLE'));
     }
 }

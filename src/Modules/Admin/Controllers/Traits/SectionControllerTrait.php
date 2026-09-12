@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Modules\Admin\Controllers\Traits;
 
 use Hirtz\Cms\Models\Section;
-use Yii;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 
@@ -17,7 +16,7 @@ trait SectionControllerTrait
             throw new NotFoundHttpException();
         }
 
-        if ($permissionName && !Yii::$app->getUser()->can($permissionName, ['section' => $section])) {
+        if ($permissionName && !$this->webuser->can($permissionName, ['section' => $section])) {
             throw new ForbiddenHttpException();
         }
 

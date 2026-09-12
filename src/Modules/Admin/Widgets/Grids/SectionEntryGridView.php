@@ -7,13 +7,11 @@ namespace Hirtz\Cms\Modules\Admin\Widgets\Grids;
 use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
-use Hirtz\Cms\Modules\Admin\Widgets\Grids\Buttons\SectionEntryDeleteButton;
 use Hirtz\Skeleton\Widgets\Buttons\Button;
 use Hirtz\Skeleton\Widgets\Grids\Toolbars\TypeFilterDropdown;
 use Override;
 use Stringable;
 use Traversable;
-use Yii;
 
 class SectionEntryGridView extends EntryGridView
 {
@@ -29,7 +27,7 @@ class SectionEntryGridView extends EntryGridView
         parent::configure();
     }
 
-    #[\Override]
+    #[Override]
     protected function getTypeDropdown(): ?Stringable
     {
         return TypeFilterDropdown::make()
@@ -52,21 +50,16 @@ class SectionEntryGridView extends EntryGridView
 
     /**
      * @see SectionEntryController::actionCreate()
-     * @see SectionEntryController::actionDelete()
      */
     #[Override]
     protected function getButtonColumnContent(Entry $entry): Traversable
     {
-        $canUpdate = Yii::$app->getUser()->can(Section::AUTH_SECTION_UPDATE, [
+        $canUpdate = $this->webuser->can(Section::AUTH_SECTION_UPDATE, [
             'section' => $this->provider->section,
         ]);
 
-        if (!$canUpdate) {
-            yield;
-        }
-
-        if ($entry->sectionEntry) {
-            yield SectionEntryDeleteButton::make($entry, $this->provider->section);
+        if (!$canUpdate || $entry->sectionEntry) {
+            return;
         }
 
         $allowedTypes = $this->provider->section->getEntriesTypes();

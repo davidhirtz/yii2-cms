@@ -4,26 +4,27 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Controllers;
 
-use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Cms\Models\Actions\ReorderSectionEntries;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Models\SectionEntry;
+use Hirtz\Cms\Modules\Admin\Controllers\Traits\EntryControllerTrait;
 use Hirtz\Cms\Modules\Admin\Controllers\Traits\SectionControllerTrait;
 use Hirtz\Cms\Modules\Admin\Data\EntryActiveDataProvider;
 use Hirtz\Skeleton\Helpers\Url;
+use Hirtz\Skeleton\I18n\Lang;
 use Hirtz\Skeleton\Widgets\Flashes;
 use Override;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
-use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
 class SectionEntryController extends AbstractController
 {
+    use EntryControllerTrait;
     use SectionControllerTrait;
 
     #[Override]
@@ -46,32 +47,18 @@ class SectionEntryController extends AbstractController
                 'actions' => [
                     'delete' => ['post'],
                     'order' => ['post'],
-                    'create' => ['post'],
                 ],
             ],
         ];
     }
 
-    public function actionIndex(
-        int $section,
-        ?int $category = null,
-        ?int $parent = null,
-        ?string $q = null,
-        ?int $type = null
-    ): Response|string {
-        if (!$type && static::getModule()->defaultEntryType) {
-            $this->redirect(Url::current(['type' => static::getModule()->defaultEntryType]));
-        }
-
+    public function actionIndex(int $section): Response|string
+    {
         $section = $this->findSection($section, Section::AUTH_SECTION_UPDATE);
 
-        $provider = Yii::$container->get(EntryActiveDataProvider::class, [], [
+        $provider = Yii::$container->get(EntryActiveDataProvider::class, config: [
             'section' => $section,
-            'innerJoinSection' => false,
-            'category' => $category ? Category::findOne($category) : null,
-            'parent' => $parent ? Entry::findOne($parent) : null,
-            'searchString' => $q,
-            'type' => $type,
+            'pagination' => false,
         ]);
 
         return $this->render('index', [
@@ -79,20 +66,43 @@ class SectionEntryController extends AbstractController
         ]);
     }
 
-    public function actionCreate(int $section, int $entry): Response|string
-    {
+    public function actionCreate(
+        int $section,
+        ?int $entry = null,
+        ?int $category = null,
+        ?int $parent = null,
+        ?string $q = null,
+        ?int $type = null
+    ): Response|string {
         $section = $this->findSection($section, Section::AUTH_SECTION_UPDATE);
 
-        $sectionEntry = SectionEntry::create();
-        $sectionEntry->populateSectionRelation($section);
-        $sectionEntry->entry_id = $entry;
+        if ($this->request->getIsPost()) {
+            $entry = $this->findEntry($entry);
 
-        if (!$sectionEntry->insert()) {
-            throw new BadRequestHttpException(current($sectionEntry->getFirstErrors()));
+            $sectionEntry = SectionEntry::create();
+            $sectionEntry->populateSectionRelation($section);
+            $sectionEntry->populateEntryRelation($entry);
+            $sectionEntry->insert();
+
+            $this->errorOrSuccess($sectionEntry, Yii::t('cms', 'SECTION_ENTRY_SUCCESS_ADDED'));
         }
 
-        $this->success(Lang::t('cms', 'SECTION_ENTRY_SUCCESS_ADDED'));
-        return $this->redirect($section->getAdminRoute() + ['#' => 'entries']);
+        if (!$type && static::getModule()->defaultEntryType) {
+            $this->redirect(Url::current(['type' => static::getModule()->defaultEntryType]));
+        }
+
+        $provider = Yii::$container->get(EntryActiveDataProvider::class, [], [
+            'section' => $section,
+            'innerJoinSection' => false,
+            'category' => Category::findOne($category),
+            'parent' => Entry::findOne($parent),
+            'searchString' => $q,
+            'type' => $type,
+        ]);
+
+        return $this->render('create', [
+            'provider' => $provider,
+        ]);
     }
 
     public function actionDelete(int $section, int $entry): Response|string
@@ -104,21 +114,19 @@ class SectionEntryController extends AbstractController
             'entry_id' => $entry,
         ]);
 
-        if (!Yii::$app->getUser()->can(Section::AUTH_SECTION_UPDATE, ['sectionEntry' => $sectionEntry])) {
+        if (!Yii::$app->getUser()->can(Section::AUTH_SECTION_UPDATE, ['section' => $section])) {
             throw new ForbiddenHttpException();
         }
 
-        if (!$sectionEntry->delete()) {
-            throw new BadRequestHttpException(current($sectionEntry->getFirstErrors()));
-        }
+        $sectionEntry->delete();
 
-        $this->success(Lang::t('cms', 'SECTION_ENTRY_SUCCESS_REMOVED'));
-        return $this->redirect($section->getAdminRoute() + ['#' => 'entries']);
+        $this->errorOrSuccess($sectionEntry, Lang::t('cms', 'SECTION_ENTRY_SUCCESS_REMOVED'));
+        return $this->redirect(['index', 'section' => $section->id]);
     }
 
     public function actionOrder(int $section): string
     {
-        $success = ReorderSectionEntries::runWithBodyParam('entry', [
+        $success = ReorderSectionEntries::runWithBodyParam('section-entry', [
             'section' => $this->findSection($section, Section::AUTH_SECTION_UPDATE),
         ]);
 
@@ -126,6 +134,6 @@ class SectionEntryController extends AbstractController
             $this->success(Lang::t('cms', 'ENTRY_SUCCESS_ORDERED'));
         }
 
-        return (string) Flashes::make();
+        return (string)Flashes::make();
     }
 }

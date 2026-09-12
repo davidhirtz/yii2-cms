@@ -31,7 +31,7 @@ class SectionParentEntryGridView extends EntryGridView
     protected function getButtonColumnContent(Entry $entry): Traversable
     {
         if (!$this->webuser->can(Section::AUTH_SECTION_UPDATE, ['entry' => $entry])) {
-            yield;
+            return;
         }
 
         if ($this->webuser->can(Section::AUTH_SECTION_UPDATE, ['section' => $this->section])) {
