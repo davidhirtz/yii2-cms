@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 use Hirtz\Media\Models\Asset;
 use Hirtz\Cms\Widgets\Gallery;
-use Hirtz\Media\widgets\Media;
+use Hirtz\Media\Widgets\Media;
 
 foreach ($assets as $asset) {
     echo Media::make()
