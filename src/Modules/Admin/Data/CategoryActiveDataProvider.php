@@ -42,11 +42,11 @@ class CategoryActiveDataProvider extends ActiveDataProvider
     protected function initQuery(): void
     {
         if ($this->entry) {
-            $this->query->joinWith([
-                'entryCategory' => function (ActiveQuery $query): void {
-                    $query->onCondition(['entry_id' => $this->entry->id]);
-                }
-            ]);
+            $this->query->selectWith(
+                'entryCategory',
+                'LEFT JOIN',
+                fn (ActiveQuery $query) => $query->onCondition([EntryCategory::tableName() . '.[[entry_id]]' => $this->entry->id]),
+            );
         }
 
         if ($this->searchString) {

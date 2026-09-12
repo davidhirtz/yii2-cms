@@ -202,11 +202,11 @@ class Category extends ActiveRecord implements SitemapInterface
 
         if ($categoryIds) {
             $entries = Entry::find()
-                ->innerJoinWith([
-                    'entryCategory' => function (ActiveQuery $query) use ($categoryIds): void {
-                        $query->onCondition([EntryCategory::tableName() . '.[[category_id]]' => $categoryIds]);
-                    },
-                ])
+                ->selectWith(
+                    'entryCategory',
+                    'INNER JOIN',
+                    fn (ActiveQuery $query) => $query->onCondition([EntryCategory::tableName() . '.[[category_id]]' => $categoryIds]),
+                )
                 ->all();
 
             if ($entries) {

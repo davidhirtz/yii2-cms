@@ -146,9 +146,7 @@ class EntryActiveDataProvider extends ActiveDataProvider
     protected function whereSection(): void
     {
         if ($this->section) {
-            $this->query->whereSection($this->section, true, $this->innerJoinSection
-                ? 'INNER JOIN'
-                : 'LEFT JOIN');
+            $this->query->whereSection($this->section, $this->innerJoinSection ? 'INNER JOIN' : 'LEFT JOIN');
         }
     }
 

@@ -20,12 +20,12 @@ trait PermalinkTrait
      * @var array<string, Permalink> the records a query matched by URI, keyed by language, so a request that found
      * the entry through its permalink does not load the relation to read that same record back
      */
-    private array $_matchedPermalinks = [];
+    private array $matchedPermalinks = [];
 
     /**
      * @var array<string, Permalink> the unsaved records per language, shared between validation and save
      */
-    private array $_newPermalinks = [];
+    private array $newPermalinks = [];
 
     public function getPermalinks(): PermalinkQuery
     {
@@ -38,9 +38,9 @@ trait PermalinkTrait
     {
         $language ??= Yii::$app->language;
 
-        if ($this->_matchedPermalinks && !$this->isRelationPopulated('permalinks')) {
-            $permalink = $this->_matchedPermalinks[$language]
-                ?? $this->_matchedPermalinks[Permalink::LANGUAGE_ALL]
+        if ($this->matchedPermalinks && !$this->isRelationPopulated('permalinks')) {
+            $permalink = $this->matchedPermalinks[$language]
+                ?? $this->matchedPermalinks[Permalink::LANGUAGE_ALL]
                 ?? null;
 
             if ($permalink) {
@@ -57,7 +57,7 @@ trait PermalinkTrait
 
     public function populatePermalink(Permalink $permalink): void
     {
-        $this->_matchedPermalinks[$permalink->language] = $permalink;
+        $this->matchedPermalinks[$permalink->language] = $permalink;
     }
 
     /**
@@ -66,8 +66,8 @@ trait PermalinkTrait
     public function populatePermalinks(array $permalinks): void
     {
         $this->populateRelation('permalinks', $permalinks);
-        $this->_matchedPermalinks = [];
-        $this->_newPermalinks = [];
+        $this->matchedPermalinks = [];
+        $this->newPermalinks = [];
     }
 
     public function getFormattedSlug(?string $language = null): string
@@ -88,7 +88,7 @@ trait PermalinkTrait
     public function buildPermalink(?string $language = null): Permalink
     {
         $language ??= Yii::$app->language;
-        $permalink = $this->permalinks[$language] ?? ($this->_newPermalinks[$language] ??= Permalink::create());
+        $permalink = $this->permalinks[$language] ?? ($this->newPermalinks[$language] ??= Permalink::create());
 
         if ($permalink->getIsNewRecord()) {
             $permalink->language = $language;

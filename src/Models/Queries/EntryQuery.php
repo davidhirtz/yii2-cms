@@ -36,7 +36,7 @@ class EntryQuery extends I18nActiveQuery
 
     public function andWhereParentStatus(): static
     {
-        return $this->andWhere(['>=', Entry::tableName() . '.[[parent_status]]', self::$_status]);
+        return $this->andWhere(['>=', Entry::tableName() . '.[[parent_status]]', self::$status]);
     }
 
     #[Override]
@@ -115,28 +115,36 @@ class EntryQuery extends I18nActiveQuery
 
     /**
      * Prepends alias to inner join to allow multiple categories. Keeps original table name for single joins to use of
-     * {@see Category::getEntriesOrderBy()} order.
+     * {@see Category::getEntriesOrderBy()} order; a single eager-loaded join reads the record off the row.
      */
     protected function innerJoinWithEntryCategory(int $categoryId, bool $eagerLoading = false, bool $useAlias = false): static
     {
+        $onCondition = function (ActiveQuery $query) use ($categoryId, $useAlias): void {
+            $query->onCondition([($useAlias ? "[[entryCategory$categoryId]]" : EntryCategory::tableName()) . '.[[category_id]]' => $categoryId]);
+        };
+
+        if ($eagerLoading && !$useAlias) {
+            return $this->selectWith('entryCategory', 'INNER JOIN', $onCondition);
+        }
+
         return $this->innerJoinWith([
-            ($useAlias ? "entryCategory entryCategory$categoryId" : 'entryCategory') => function (ActiveQuery $query) use ($categoryId, $useAlias): void {
-                $query->onCondition([($useAlias ? "[[entryCategory$categoryId]]" : EntryCategory::tableName()) . '.[[category_id]]' => $categoryId]);
-            }
+            ($useAlias ? "entryCategory entryCategory$categoryId" : 'entryCategory') => $onCondition,
         ], $eagerLoading);
     }
 
-    public function whereSection(Section $section, bool $eagerLoading = true, string $joinType = 'INNER JOIN'): static
+    public function whereSection(Section $section, string $joinType = 'INNER JOIN'): static
     {
         $tableName = SectionEntry::tableName();
-        $onCondition = fn (ActiveQuery $query) => $query->onCondition(["$tableName.[[section_id]]" => $section->id]);
 
-        if ($eagerLoading && $joinType === 'INNER JOIN') {
-            $orderBy = $section->getEntriesOrderBy() ?? [SectionEntry::tableName() . '.[[position]]' => SORT_ASC];
-            $this->orderBy($orderBy);
+        if ($joinType === 'INNER JOIN') {
+            $this->orderBy($section->getEntriesOrderBy() ?? ["$tableName.[[position]]" => SORT_ASC]);
         }
 
-        return $this->joinWith(['sectionEntry' => $onCondition], $eagerLoading, $joinType);
+        return $this->selectWith(
+            'sectionEntry',
+            $joinType,
+            fn (ActiveQuery $query) => $query->onCondition(["$tableName.[[section_id]]" => $section->id]),
+        );
     }
 
     public function whereIndex(): static

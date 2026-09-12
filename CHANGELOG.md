@@ -1,5 +1,10 @@
 ## 3.0 (in development)
 
+- `EntryQuery::whereSection()` lost its `$eagerLoading` parameter and takes the join type second: the section entry
+  is read off the joined row (`ActiveQuery::selectWith()`) rather than queried again. `whereCategory()` does the
+  same for a single eager-loaded category; `whereCategories()` keeps Yii's `joinWith()`, one relation cannot be
+  read off two joins. The admin category list and `Category::insertEntryCategoryAncestors()` read the entry
+  category off the join as well
 - An entry's redirects are recorded host-qualified: `request_uri` is the tenant's host plus the path
   (`www.example.com/de/old`), so a renamed slug only redirects on its own tenant and the same slug can be renamed
   on two tenants. `PermalinkTrait::getPermalinkRequestUri()` builds that form; `getPermalinkUrl()` keeps the
