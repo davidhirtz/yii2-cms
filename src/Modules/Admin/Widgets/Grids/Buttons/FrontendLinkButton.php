@@ -6,8 +6,17 @@ namespace Hirtz\Cms\Modules\Admin\Widgets\Grids\Buttons;
 
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\Buttons\Traits\FrontendUrlTrait;
 use Hirtz\Skeleton\Widgets\Buttons\Button;
+use Override;
 
 class FrontendLinkButton extends Button
 {
     use FrontendUrlTrait;
+
+    #[Override]
+    protected function configure(): void
+    {
+        $this->configureDefaultUrl();
+
+        parent::configure();
+    }
 }

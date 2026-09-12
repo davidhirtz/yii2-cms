@@ -7,7 +7,6 @@ namespace Hirtz\Cms\Modules\Admin\Widgets\Grids\Buttons\Traits;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
-use Hirtz\Skeleton\Widgets\Attributes\Configure;
 use Hirtz\Skeleton\Widgets\Traits\ModelTrait;
 use Yii;
 
@@ -18,7 +17,6 @@ trait FrontendUrlTrait
      */
     use ModelTrait;
 
-    #[Configure]
     protected function configureDefaultUrl(): void
     {
         if ($this->url !== null) {
