@@ -29,10 +29,6 @@ class EntryQuery extends I18nActiveQuery
     use ModuleTrait;
     use TenantQueryTrait;
 
-    private const string PERMALINK_COLUMN_PREFIX = 'permalink__';
-
-    private bool $populateMatchedPermalink = false;
-
     public function withPermalinks(): static
     {
         return $this->with('permalinks');
@@ -154,28 +150,20 @@ class EntryQuery extends I18nActiveQuery
     }
 
     /**
-     * A per-language record wins over the {@see Permalink::LANGUAGE_ALL} one for the same path. The matched record
-     * is handed to the entry, so the relation is not loaded to read it back; a query without a select of its own
-     * gets the entry's columns, or the joined `id` would overwrite the entry's.
+     * A per-language record wins over the {@see Permalink::LANGUAGE_ALL} one for the same path. The matched record is
+     * handed to the entry, so the relation is not loaded to read it back.
      */
     public function whereUri(string $uri, ?string $language = null): static
     {
         $language ??= Yii::$app->language;
         $alias = Permalink::tableName();
-        $columns = [];
-
-        if (empty($this->select)) {
-            $this->select(Entry::tableName() . '.*');
-        }
-
-        foreach (Permalink::getTableSchema()->getColumnNames() as $name) {
-            $columns[self::PERMALINK_COLUMN_PREFIX . $name] = "$alias.[[$name]]";
-        }
-
-        $this->populateMatchedPermalink = true;
 
         return $this->innerJoin($alias, "$alias.[[entry_id]] = " . Entry::tableName() . '.[[id]]')
-            ->addSelect($columns)
+            ->selectJoinedRecord('permalink', Permalink::find(), $alias, function (Entry $entry, ?Permalink $permalink): void {
+                if ($permalink) {
+                    $entry->populatePermalink($permalink);
+                }
+            })
             ->andWhere([
                 "$alias.[[uri]]" => trim($uri, '/'),
                 "$alias.[[language]]" => [$language, Permalink::LANGUAGE_ALL],
@@ -184,40 +172,6 @@ class EntryQuery extends I18nActiveQuery
                 ':permalinkLanguage' => $language,
             ]))
             ->andWhereCurrentTenant();
-    }
-
-    #[Override]
-    public function populate($rows): array
-    {
-        $models = parent::populate($rows);
-
-        if (!$this->populateMatchedPermalink || $this->asArray || count($models) !== count($rows)) {
-            return $models;
-        }
-
-        $prefix = self::PERMALINK_COLUMN_PREFIX;
-
-        foreach (array_values($models) as $index => $model) {
-            $attributes = [];
-
-            foreach (array_values($rows)[$index] as $name => $value) {
-                if (str_starts_with((string)$name, $prefix)) {
-                    $attributes[substr((string)$name, strlen($prefix))] = $value;
-                }
-            }
-
-            if (!$model instanceof Entry || !isset($attributes['id'])) {
-                continue;
-            }
-
-            $permalink = Permalink::instantiate($attributes);
-            Permalink::populateRecord($permalink, $attributes);
-            $permalink->afterFind();
-
-            $model->populatePermalink($permalink);
-        }
-
-        return $models;
     }
 
     public function whereNotUri(?string $uri): static

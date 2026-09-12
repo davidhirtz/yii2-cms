@@ -4,8 +4,9 @@
   (`www.example.com/de/old`), so a renamed slug only redirects on its own tenant and the same slug can be renamed
   on two tenants. `PermalinkTrait::getPermalinkRequestUri()` builds that form; `getPermalinkUrl()` keeps the
   tenant in the route again (relative on the entry's host, absolute elsewhere) and is the redirect target
-- `EntryQuery::whereUri()` selects the joined permalink's columns and `populate()` hands the matched record to the
-  entry (`PermalinkTrait::populatePermalink()`), so a site request resolves the entry and its URL in one query;
+- `EntryQuery::whereUri()` reads the matched permalink off the joined row (`ActiveQuery::selectJoinedRecord()`) and
+  hands it to the entry (`PermalinkTrait::populatePermalink()`), so a site request resolves the entry and its URL in
+  one query;
   `SiteController::getQuery()` no longer eager loads `permalinks`. `getPermalink()` reads that record when the
   relation is not loaded, and anything needing the full set still loads it. `whereUri()` on a query without a
   select now selects the entry's columns — before, `SELECT *` over the join let the permalink's `id` overwrite
