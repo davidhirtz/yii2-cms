@@ -214,6 +214,51 @@ class EntryPermalinkTest extends TestCase
         self::assertSame('third', $this->findRedirectTarget('second'));
     }
 
+    /**
+     * Renaming an entry back to a slug it already had leaves one redirect onto the current URL. The redirect the
+     * first rename recorded now points at where the entry is again, so it is a no-op and is removed — left in
+     * place, it turned the second redirect into `first` → `first` through {@see Redirect::validateUrl()}'s chain
+     * flattening, and the 404 handler then redirected that URL to itself forever.
+     */
+    public function testRenamingAnEntryBackDoesNotLeaveARedirectLoop(): void
+    {
+        $entry = $this->createEntryWithSection('first');
+
+        $entry->slug = 'second';
+        self::assertNotFalse($entry->update());
+
+        $entry->refresh();
+        $entry->slug = 'first';
+        self::assertNotFalse($entry->update());
+
+        self::assertNull($this->findRedirectTarget('first'));
+        self::assertSame('first', $this->findRedirectTarget('second'));
+        self::assertSame(1, Redirect::find()->count());
+    }
+
+    /**
+     * The same cycle one level down: the descendant redirects a parent rename records must not loop either.
+     */
+    public function testRenamingAParentBackDoesNotLeaveARedirectLoopForDescendants(): void
+    {
+        $parent = $this->createEntryWithSection('parent');
+        $this->createEntryWithSection('child', $parent);
+
+        $parent->refresh();
+        $parent->slug = 'renamed';
+        self::assertNotFalse($parent->update());
+
+        $parent->refresh();
+        $parent->slug = 'parent';
+        self::assertNotFalse($parent->update());
+
+        self::assertNull($this->findRedirectTarget('parent'));
+        self::assertNull($this->findRedirectTarget('parent/child'));
+
+        self::assertSame('parent', $this->findRedirectTarget('renamed'));
+        self::assertSame('parent/child', $this->findRedirectTarget('renamed/child'));
+    }
+
     public function testDeletingAnEntryRemovesRedirectsPointingAtIt(): void
     {
         $entry = $this->createEntryWithSection('first');

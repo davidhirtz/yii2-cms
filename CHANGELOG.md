@@ -1,5 +1,12 @@
 ## 3.0 (in development)
 
+- **Renaming an entry back to an earlier slug no longer builds a redirect loop.**
+  `Models\Actions\SavePermalinks::updatePreviousRedirects()` repointed every redirect aimed at the old URL and
+  ignored the result, so the one whose `request_uri` is where the entry now lives was left pointing at a URI the
+  entry no longer has, redirecting that URL to itself; it is deleted instead, and a genuinely failed update is
+  reported. It needs the host-qualified form of the new URI to recognise that row — `request_uri` and `url` are
+  never comparable as strings — which `insertRedirect()` now resolves and passes in, so the skeleton's
+  `Redirect::validateUrl()` is not what protects this path
 - `Widgets\Sections` is replaced by `Widgets\SectionStack` and `Widgets\SectionGroup`. The stack owns the
   ordered list and runs the filter, collect, group and wrap stages; a group is a widget of its own, renders one
   run of sections through its view and is that view's `$context` again — the port had dropped the third argument

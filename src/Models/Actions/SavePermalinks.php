@@ -113,30 +113,42 @@ class SavePermalinks
 
     /**
      * The request side is host-qualified so the 404 handler matches it on the entry's tenant only; the target is
-     * a URL, relative on that host and absolute elsewhere.
+     * a URL, relative on that host and absolute elsewhere. The two are therefore never comparable as strings,
+     * which is why both forms of the new URI are resolved here — `Redirect::validateUrl()` cannot see a loop
+     * between columns of different shapes.
      */
     protected function insertRedirect(string $previousUri, Permalink $permalink): void
     {
-        $requestUri = Redirect::sanitizeUrl($this->model->getPermalinkRequestUri($previousUri, $permalink->language));
-        $previousUrl = Redirect::sanitizeUrl($this->model->getPermalinkUrl($previousUri, $permalink->language));
-        $url = Redirect::sanitizeUrl($this->model->getPermalinkUrl($permalink->uri, $permalink->language));
+        $language = $permalink->language;
 
-        if (!$requestUri || !$url || $previousUrl === $url) {
+        $previousRequestUri = Redirect::sanitizeUrl($this->model->getPermalinkRequestUri($previousUri, $language));
+        $previousUrl = Redirect::sanitizeUrl($this->model->getPermalinkUrl($previousUri, $language));
+
+        $requestUri = Redirect::sanitizeUrl($this->model->getPermalinkRequestUri($permalink->uri, $language));
+        $url = Redirect::sanitizeUrl($this->model->getPermalinkUrl($permalink->uri, $language));
+
+        if (!$previousRequestUri || !$url || $previousUrl === $url) {
             return;
         }
 
-        $this->updatePreviousRedirects($previousUrl, $url);
+        $this->updatePreviousRedirects($previousUrl, $url, $requestUri);
 
         $redirect = Redirect::create();
-        $redirect->request_uri = $requestUri;
+        $redirect->request_uri = $previousRequestUri;
         $redirect->url = $url;
 
         if (!$redirect->insert()) {
-            $this->warn("Redirect from $requestUri could not be saved", $redirect);
+            $this->warn("Redirect from $previousRequestUri could not be saved", $redirect);
         }
     }
 
-    protected function updatePreviousRedirects(string $from, string $to): void
+    /**
+     * A redirect the entry has just moved back onto is a no-op and is deleted rather than updated: left in
+     * place it points at a URI the entry no longer has, and it redirects its own request URI to itself.
+     *
+     * @param string $toRequestUri the host-qualified form of `$to`, the shape `request_uri` is stored in
+     */
+    protected function updatePreviousRedirects(string $from, string $to, string $toRequestUri): void
     {
         /** @var Redirect[] $redirects */
         $redirects = Redirect::find()
@@ -144,8 +156,16 @@ class SavePermalinks
             ->all();
 
         foreach ($redirects as $redirect) {
+            if ($redirect->request_uri === $toRequestUri) {
+                $redirect->delete();
+                continue;
+            }
+
             $redirect->url = $to;
-            $redirect->update();
+
+            if (!$redirect->update()) {
+                $this->warn("Redirect from $redirect->request_uri could not be updated", $redirect);
+            }
         }
     }
 
