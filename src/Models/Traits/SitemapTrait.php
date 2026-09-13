@@ -25,18 +25,25 @@ trait SitemapTrait
             $query->limit($limit)->offset($offset * $limit);
         }
 
-        /** @var self $record */
-        foreach ($query->each() as $record) {
-            foreach ($languages as $language) {
-                if ($language) {
-                    // Temporarily set location for I18n attributes to work
-                    Yii::$app->language = $language;
-                }
+        // the language is switched per record so the translated attributes resolve, and whatever renders the
+        // sitemap runs in the request's own language again
+        $previousLanguage = Yii::$app->language;
 
-                if ($url = $record->getSitemapUrl($language)) {
-                    $urls [] = $url;
+        try {
+            /** @var self $record */
+            foreach ($query->each() as $record) {
+                foreach ($languages as $language) {
+                    if ($language) {
+                        Yii::$app->language = $language;
+                    }
+
+                    if ($url = $record->getSitemapUrl($language)) {
+                        $urls[] = $url;
+                    }
                 }
             }
+        } finally {
+            Yii::$app->language = $previousLanguage;
         }
 
         return $urls;
