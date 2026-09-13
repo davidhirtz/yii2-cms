@@ -9,7 +9,7 @@ use Override;
 use Yii;
 
 /**
- * @property-read Section $model {@see static::getModel()}
+ * @extends Asset<Section>
  */
 class SectionAsset extends Asset
 {
@@ -29,13 +29,6 @@ class SectionAsset extends Asset
     public function getPermissionName(): string
     {
         return Entry::AUTH_ENTRY;
-    }
-
-    #[Override]
-    public function getModel(): Section
-    {
-        /** @var Section */
-        return parent::getModel();
     }
 
     #[Override]

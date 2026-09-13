@@ -10,7 +10,7 @@ use Override;
 use Yii;
 
 /**
- * @property-read Entry $model {@see static::getModel()}
+ * @extends Asset<Entry>
  */
 class EntryAsset extends Asset
 {
@@ -32,13 +32,6 @@ class EntryAsset extends Asset
     public function getPermissionName(): string
     {
         return Entry::AUTH_ENTRY;
-    }
-
-    #[Override]
-    public function getModel(): Entry
-    {
-        /** @var Entry */
-        return parent::getModel();
     }
 
     #[Override]

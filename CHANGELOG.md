@@ -1,5 +1,7 @@
 ## 3.0 (in development)
 
+- `Models\EntryAsset` and `SectionAsset` declare `@extends Asset<Entry>` / `@extends Asset<Section>` in place of
+  their narrowed `getModel()` overrides, see `yii2-media`
 - `Modules\Admin\Widgets\Navs\Traits\EntryHeaderTrait` and the entry category index translate through
   `COMMON_ENTRIES` and `COMMON_CATEGORIES`; the former used `Yii::t('app', 'Entries')`, which is the host
   application's category. `COMMON_SECTION_ENTRIES` and `CATEGORY_CREATE_TITLE` had no English text
