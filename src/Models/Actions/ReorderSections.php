@@ -7,8 +7,8 @@ namespace Hirtz\Cms\Models\Actions;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use davidhirtz\yii2\datetime\DateTime;
+use Hirtz\Skeleton\I18n\Message;
 use Hirtz\Skeleton\Models\Trail;
-use Yii;
 
 /**
  * @template T of Section
@@ -32,7 +32,7 @@ class ReorderSections extends ReorderActiveRecords
     #[\Override]
     protected function afterReorder(): void
     {
-        Trail::createOrderTrail($this->entry, Yii::t('cms', 'REORDER_SECTIONS_SECTION_ORDER_CHANGED'));
+        Trail::createOrderTrail($this->entry, Message::make('cms', 'REORDER_SECTIONS_SECTION_ORDER_CHANGED'));
 
         $this->entry->updated_at = new DateTime();
         $this->entry->update();

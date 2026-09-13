@@ -13,7 +13,7 @@ class EntryCreateButton extends CreateButton
     public function __construct(array $config = [])
     {
         $this->label ??= Yii::t('cms', 'ENTRY_CREATE_BUTTON');
-        $this->roles ??= [Entry::AUTH_ENTRY_CREATE];
+        $this->roles ??= [Entry::AUTH_ENTRY];
 
         $this->url ??= [
             '/admin/cms/entry/create',

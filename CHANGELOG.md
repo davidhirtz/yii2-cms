@@ -1,5 +1,16 @@
 ## 3.0 (in development)
 
+- **One permission per admin-managed model.** `Models\Entry::AUTH_ENTRY` (`entry`) replaces the 17 permissions of
+  entries, entry assets, entry categories, sections and section assets; `Models\Category::AUTH_CATEGORY`
+  (`category`) replaces the four category ones. `Models\Section` declares no permission of its own — a section is
+  only ever edited through its entry — and `Models\EntryAsset::getPermissionName()` / `SectionAsset` return
+  `Entry::AUTH_ENTRY` and lost their `$action` parameter. `Migrations\M260914110000AuthItems` grants the new item
+  to every parent and assignee of any old one, so an account that held `entryUpdate` alone now manages entries
+  outright. `findEntry()`, `findSection()` and `findCategory()` lost their permission argument, and no `can()` call
+  takes a record any more
+- `Models\Actions\ReorderEntries`, `ReorderEntryCategories`, `ReorderCategories`, `ReorderSections` and
+  `ReorderSectionEntries` pass a skeleton `I18n\Message` to `Trail::createOrderTrail()`, so the trail reads in the
+  language of whoever looks at it rather than the one the editor happened to use
 - `Models\Entry`, `Section`, `Category`, `EntryCategory` and `SectionEntry` implement the skeleton's
   `Models\Interfaces\AdminModelInterface` through `TrailModelInterface`: `getTrailModelName()` and
   `getTrailModelType()` are `getAdminName()` and `getAdminType()`, and the boilerplate name is

@@ -29,17 +29,15 @@ class SectionParentEntryGridView extends EntryGridView
     #[Override]
     protected function getButtonColumnContent(Entry $entry): Traversable
     {
-        if (!$this->webuser->can(Section::AUTH_SECTION_UPDATE, ['entry' => $entry])) {
+        if (!$this->webuser->can(Entry::AUTH_ENTRY)) {
             return;
         }
 
-        if ($this->webuser->can(Section::AUTH_SECTION_UPDATE, ['section' => $this->section])) {
-            yield Button::make()
-                ->primary()
-                ->icon('copy')
-                ->tooltip(Yii::t('cms', 'SECTION_PARENT_ENTRY_MOVE_SECTION'))
-                ->post(['move', 'id' => $this->section->id, 'entry' => $entry->id], true);
-        }
+        yield Button::make()
+            ->primary()
+            ->icon('copy')
+            ->tooltip(Yii::t('cms', 'SECTION_PARENT_ENTRY_MOVE_SECTION'))
+            ->post(['move', 'id' => $this->section->id, 'entry' => $entry->id], true);
 
         yield Button::make()
             ->primary()

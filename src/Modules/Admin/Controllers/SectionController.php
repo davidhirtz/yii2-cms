@@ -40,23 +40,18 @@ class SectionController extends AbstractController
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['entries', 'index', 'update', 'update-all'],
-                        'roles' => [Section::AUTH_SECTION_UPDATE],
-                    ],
-                    [
-                        'allow' => true,
-                        'actions' => ['create', 'duplicate', 'move'],
-                        'roles' => [Section::AUTH_SECTION_CREATE],
-                    ],
-                    [
-                        'allow' => true,
-                        'actions' => ['delete'],
-                        'roles' => [Section::AUTH_SECTION_DELETE],
-                    ],
-                    [
-                        'allow' => true,
-                        'actions' => ['order'],
-                        'roles' => [Section::AUTH_SECTION_ORDER],
+                        'actions' => [
+                            'create',
+                            'delete',
+                            'duplicate',
+                            'entries',
+                            'index',
+                            'move',
+                            'order',
+                            'update',
+                            'update-all',
+                        ],
+                        'roles' => [Entry::AUTH_ENTRY],
                     ],
                 ],
             ],
@@ -74,7 +69,7 @@ class SectionController extends AbstractController
 
     public function actionIndex(int $entry): Response|string
     {
-        $entry = $this->findEntry($entry, Entry::AUTH_ENTRY_UPDATE);
+        $entry = $this->findEntry($entry);
 
         $provider = Yii::$container->get(SectionActiveDataProvider::class, [], [
             'entry' => $entry,
@@ -87,7 +82,7 @@ class SectionController extends AbstractController
 
     public function actionCreate(int $entry): Response|string
     {
-        $entry = $this->findEntry($entry, Section::AUTH_SECTION_CREATE);
+        $entry = $this->findEntry($entry);
         $section = Section::create();
 
         $section->populateEntryRelation($entry);
@@ -105,7 +100,7 @@ class SectionController extends AbstractController
 
     public function actionUpdate(int $id): Response|string
     {
-        $section = $this->findSection($id, Section::AUTH_SECTION_UPDATE);
+        $section = $this->findSection($id);
 
         if ($section->load($this->request->post()) && !$this->request->isFormReload()) {
             if ($section->update()) {
@@ -129,7 +124,7 @@ class SectionController extends AbstractController
             $isUpdated = false;
 
             foreach ($sections as $section) {
-                if ($this->webuser->can(Section::AUTH_SECTION_UPDATE, ['section' => $section])) {
+                if ($this->webuser->can(Entry::AUTH_ENTRY)) {
                     if ($section->load($this->request->post())) {
                         if ($section->update()) {
                             $isUpdated = true;
@@ -153,8 +148,8 @@ class SectionController extends AbstractController
 
     public function actionMove(int $id, int $entry): Response|string
     {
-        $section = $this->findSection($id, Section::AUTH_SECTION_UPDATE);
-        $entry = $this->findEntry($entry, Section::AUTH_SECTION_UPDATE);
+        $section = $this->findSection($id);
+        $entry = $this->findEntry($entry);
 
         $section->populateEntryRelation($entry);
 
@@ -171,8 +166,8 @@ class SectionController extends AbstractController
 
     public function actionDuplicate(int $id, ?int $entry = null): Response|string
     {
-        $section = $this->findSection($id, Section::AUTH_SECTION_UPDATE);
-        $entry = $entry ? $this->findEntry($entry, Section::AUTH_SECTION_UPDATE) : null;
+        $section = $this->findSection($id);
+        $entry = $entry ? $this->findEntry($entry) : null;
 
         $duplicate = DuplicateSection::create([
             'section' => $section,
@@ -190,7 +185,7 @@ class SectionController extends AbstractController
 
     public function actionDelete(int $id): Response|string
     {
-        $section = $this->findSection($id, Section::AUTH_SECTION_DELETE);
+        $section = $this->findSection($id);
 
         if ($section->delete()) {
             if ($this->request->getIsAjax()) {
@@ -210,7 +205,7 @@ class SectionController extends AbstractController
     public function actionOrder(int $entry): string
     {
         $success = ReorderSections::runWithBodyParam('section', [
-            'entry' => $this->findEntry($entry, Section::AUTH_SECTION_ORDER),
+            'entry' => $this->findEntry($entry),
         ]);
 
         if ($success) {
@@ -227,7 +222,7 @@ class SectionController extends AbstractController
         ?int $type = null,
         ?string $q = null
     ): Response|string {
-        $section = $this->findSection($id, Section::AUTH_SECTION_UPDATE);
+        $section = $this->findSection($id);
 
         $provider = Yii::$container->get(EntryActiveDataProvider::class, config:[
             'category' => Category::findOne($category),

@@ -239,15 +239,15 @@ class EntryGridView extends GridView
 
     protected function getButtonColumnContent(Entry $entry): Traversable
     {
-        if ($this->isSortable() && $this->webuser->can(Entry::AUTH_ENTRY_ORDER)) {
+        if ($this->isSortable() && $this->webuser->can(Entry::AUTH_ENTRY)) {
             yield $this->getSortableButton();
         }
 
-        if ($this->webuser->can(Entry::AUTH_ENTRY_UPDATE, ['entry' => $entry])) {
+        if ($this->webuser->can(Entry::AUTH_ENTRY)) {
             yield $this->getUpdateButton($entry);
         }
 
-        if ($this->showDeleteButton && $this->webuser->can(Entry::AUTH_ENTRY_DELETE, ['entry' => $entry])) {
+        if ($this->showDeleteButton && $this->webuser->can(Entry::AUTH_ENTRY)) {
             yield $this->getDeleteButton($entry);
         }
     }

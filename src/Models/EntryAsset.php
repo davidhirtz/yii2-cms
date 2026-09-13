@@ -29,14 +29,9 @@ class EntryAsset extends Asset
     }
 
     #[Override]
-    public function getPermissionName(string $action): string
+    public function getPermissionName(): string
     {
-        return match ($action) {
-            'create' => Entry::AUTH_ENTRY_ASSET_CREATE,
-            'delete' => Entry::AUTH_ENTRY_ASSET_DELETE,
-            'order' => Entry::AUTH_ENTRY_ASSET_ORDER,
-            'update' => Entry::AUTH_ENTRY_ASSET_UPDATE,
-        };
+        return Entry::AUTH_ENTRY;
     }
 
     #[Override]

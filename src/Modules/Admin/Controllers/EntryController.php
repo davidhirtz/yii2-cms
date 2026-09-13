@@ -34,23 +34,17 @@ class EntryController extends AbstractController
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['index', 'replace-index', 'update', 'update-all'],
-                        'roles' => [Entry::AUTH_ENTRY_UPDATE],
-                    ],
-                    [
-                        'allow' => true,
-                        'actions' => ['duplicate', 'create'],
-                        'roles' => [Entry::AUTH_ENTRY_CREATE],
-                    ],
-                    [
-                        'allow' => true,
-                        'actions' => ['delete'],
-                        'roles' => [Entry::AUTH_ENTRY_DELETE],
-                    ],
-                    [
-                        'allow' => true,
-                        'actions' => ['order'],
-                        'roles' => [Entry::AUTH_ENTRY_ORDER],
+                        'actions' => [
+                            'create',
+                            'delete',
+                            'duplicate',
+                            'index',
+                            'order',
+                            'replace-index',
+                            'update',
+                            'update-all',
+                        ],
+                        'roles' => [Entry::AUTH_ENTRY],
                     ],
                 ],
             ],
@@ -96,7 +90,7 @@ class EntryController extends AbstractController
         $entry->populateParentRelation(Entry::findOne($parent));
         $entry->type = $type ?: static::getModule()->defaultEntryType;
 
-        if (!$this->webuser->can(Entry::AUTH_ENTRY_CREATE, ['entry' => $entry])) {
+        if (!$this->webuser->can(Entry::AUTH_ENTRY)) {
             throw new ForbiddenHttpException();
         }
 
@@ -112,7 +106,7 @@ class EntryController extends AbstractController
 
     public function actionUpdate(int $id): Response|string
     {
-        $entry = $this->findEntry($id, Entry::AUTH_ENTRY_UPDATE);
+        $entry = $this->findEntry($id);
 
         if ($entry->load($this->request->post()) && !$this->request->isFormReload()) {
             if ($entry->update()) {
@@ -136,7 +130,7 @@ class EntryController extends AbstractController
             $isUpdated = false;
 
             foreach ($entries as $entry) {
-                if ($this->webuser->can(Entry::AUTH_ENTRY_UPDATE, ['entry' => $entry])) {
+                if ($this->webuser->can(Entry::AUTH_ENTRY)) {
                     if ($entry->load($this->request->post())) {
                         if ($entry->update()) {
                             $isUpdated = true;
@@ -159,7 +153,7 @@ class EntryController extends AbstractController
 
     public function actionDuplicate(int $id): Response|string
     {
-        $entry = $this->findEntry($id, Entry::AUTH_ENTRY_UPDATE);
+        $entry = $this->findEntry($id);
 
         $duplicate = DuplicateEntry::create([
             'entry' => $entry,
@@ -176,14 +170,8 @@ class EntryController extends AbstractController
 
     public function actionReplaceIndex(int $id): Response|string
     {
-        $permissionName = Entry::AUTH_ENTRY_UPDATE;
-
-        $entry = $this->findEntry($id, $permissionName);
+        $entry = $this->findEntry($id);
         $index = Entry::find()->whereIndex()->one();
-
-        if ($index && !$this->webuser->can($permissionName, ['entry' => $index])) {
-            throw new ForbiddenHttpException();
-        }
 
         ReplaceIndexEntry::run([
             'entry' => $entry,
@@ -200,7 +188,7 @@ class EntryController extends AbstractController
 
     public function actionDelete(int $id): Response|string
     {
-        $entry = $this->findEntry($id, Entry::AUTH_ENTRY_DELETE);
+        $entry = $this->findEntry($id);
 
         if ($entry->delete()) {
             $this->success(Yii::t('cms', 'ENTRY_SUCCESS_DELETED'));
@@ -214,7 +202,7 @@ class EntryController extends AbstractController
     public function actionOrder(?int $parent = null): string
     {
         $success = ReorderEntries::runWithBodyParam('entry', [
-            'parent' => $parent ? $this->findEntry($parent, Entry::AUTH_ENTRY_UPDATE) : null,
+            'parent' => $parent ? $this->findEntry($parent) : null,
         ]);
 
         if ($success) {

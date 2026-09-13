@@ -47,7 +47,7 @@ class ReorderEntriesTest extends TestCase
 
         self::assertEquals($entry::class, $trail->model_class);
         self::assertEquals(1, $trail->model_id);
-        self::assertEquals(Yii::t('cms', 'Entry order changed'), $trail->message);
+        self::assertEquals(Yii::t('cms', 'COMMON_ENTRY_ORDER_CHANGED'), $trail->getMessage());
     }
 
     private function getRootEntryIds(): array

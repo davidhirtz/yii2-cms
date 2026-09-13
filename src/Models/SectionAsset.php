@@ -26,14 +26,9 @@ class SectionAsset extends Asset
     }
 
     #[Override]
-    public function getPermissionName(string $action): string
+    public function getPermissionName(): string
     {
-        return match ($action) {
-            'create' => Section::AUTH_SECTION_ASSET_CREATE,
-            'delete' => Section::AUTH_SECTION_ASSET_DELETE,
-            'order' => Section::AUTH_SECTION_ASSET_ORDER,
-            'update' => Section::AUTH_SECTION_ASSET_UPDATE,
-        };
+        return Entry::AUTH_ENTRY;
     }
 
     #[Override]

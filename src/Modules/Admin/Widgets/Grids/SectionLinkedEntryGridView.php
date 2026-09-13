@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Modules\Admin\Widgets\Grids;
 
 use Hirtz\Cms\Models\Entry;
-use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Controllers\SectionEntryController;
 use Hirtz\Cms\Modules\Admin\Data\EntryActiveDataProvider;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\DeleteGridButton;
@@ -53,7 +52,7 @@ class SectionLinkedEntryGridView extends EntryGridView
     #[Override]
     protected function getButtonColumnContent(Entry $entry): Traversable
     {
-        if (!$this->webuser->can(Section::AUTH_SECTION_UPDATE, ['entry' => $entry])) {
+        if (!$this->webuser->can(Entry::AUTH_ENTRY)) {
             return;
         }
 

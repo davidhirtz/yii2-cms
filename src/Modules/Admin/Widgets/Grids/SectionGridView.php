@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Widgets\Grids;
 
+use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Data\SectionActiveDataProvider;
 use Hirtz\Media\Modules\Admin\Widgets\Grids\Columns\AssetCountColumn;
@@ -132,17 +133,17 @@ class SectionGridView extends GridView
         if (
             $this->isSortable()
             && $this->provider->getCount() > 1
-            && $this->webuser->can(Section::AUTH_SECTION_ORDER)
+            && $this->webuser->can(Entry::AUTH_ENTRY)
         ) {
             $buttons[] = DraggableSortGridButton::make();
         }
 
-        if ($this->webuser->can(Section::AUTH_SECTION_UPDATE, ['section' => $section])) {
+        if ($this->webuser->can(Entry::AUTH_ENTRY)) {
             $buttons[] = ViewGridButton::make()
                 ->model($section);
         }
 
-        if ($this->showDeleteButton && $this->webuser->can(Section::AUTH_SECTION_DELETE, ['section' => $section])) {
+        if ($this->showDeleteButton && $this->webuser->can(Entry::AUTH_ENTRY)) {
             $buttons[] = DeleteGridButton::make()
                 ->model($section);
         }

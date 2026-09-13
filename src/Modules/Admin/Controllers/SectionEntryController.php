@@ -7,7 +7,6 @@ namespace Hirtz\Cms\Modules\Admin\Controllers;
 use Hirtz\Cms\Models\Actions\ReorderSectionEntries;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
-use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Models\SectionEntry;
 use Hirtz\Cms\Modules\Admin\Controllers\Traits\EntryControllerTrait;
 use Hirtz\Cms\Modules\Admin\Controllers\Traits\SectionControllerTrait;
@@ -36,8 +35,8 @@ class SectionEntryController extends AbstractController
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['index', 'create', 'delete', 'order'],
-                        'roles' => [Section::AUTH_SECTION_UPDATE],
+                        'actions' => ['create', 'delete', 'index', 'order'],
+                        'roles' => [Entry::AUTH_ENTRY],
                     ],
                 ],
             ],
@@ -53,7 +52,7 @@ class SectionEntryController extends AbstractController
 
     public function actionIndex(int $section): Response|string
     {
-        $section = $this->findSection($section, Section::AUTH_SECTION_UPDATE);
+        $section = $this->findSection($section);
 
         $provider = Yii::$container->get(EntryActiveDataProvider::class, config: [
             'section' => $section,
@@ -73,7 +72,7 @@ class SectionEntryController extends AbstractController
         ?string $q = null,
         ?int $type = null
     ): Response|string {
-        $section = $this->findSection($section, Section::AUTH_SECTION_UPDATE);
+        $section = $this->findSection($section);
 
         if ($this->request->getIsPost()) {
             $entry = $this->findEntry($entry);
@@ -106,14 +105,14 @@ class SectionEntryController extends AbstractController
 
     public function actionDelete(int $section, int $entry): Response|string
     {
-        $section = $this->findSection($section, Section::AUTH_SECTION_UPDATE);
+        $section = $this->findSection($section);
 
         $sectionEntry = SectionEntry::findOne([
             'section_id' => $section->id,
             'entry_id' => $entry,
         ]);
 
-        if (!$this->webuser->can(Section::AUTH_SECTION_UPDATE, ['section' => $section])) {
+        if (!$this->webuser->can(Entry::AUTH_ENTRY)) {
             throw new ForbiddenHttpException();
         }
 
@@ -126,7 +125,7 @@ class SectionEntryController extends AbstractController
     public function actionOrder(int $section): string
     {
         $success = ReorderSectionEntries::runWithBodyParam('section-entry', [
-            'section' => $this->findSection($section, Section::AUTH_SECTION_UPDATE),
+            'section' => $this->findSection($section),
         ]);
 
         if ($success) {

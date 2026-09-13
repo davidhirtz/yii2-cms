@@ -20,7 +20,7 @@ class CategoryDeleteButton extends DeleteButton
     public function isVisible(): bool
     {
         return parent::isVisible()
-            && $this->webuser->can(Category::AUTH_CATEGORY_DELETE, ['category' => $this->model]);
+            && $this->webuser->can(Category::AUTH_CATEGORY);
     }
 
     #[Override]

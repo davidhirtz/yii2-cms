@@ -48,18 +48,18 @@ class AdminLink extends Widget
     protected function canUpdateModel(): bool
     {
         if ($this->model instanceof Entry) {
-            return $this->webuser->can(Entry::AUTH_ENTRY_UPDATE, ['entry' => $this->model]);
+            return $this->webuser->can(Entry::AUTH_ENTRY);
         }
 
         if ($this->model instanceof Section) {
-            return $this->webuser->can(Section::AUTH_SECTION_UPDATE, ['section' => $this->model]);
+            return $this->webuser->can(Entry::AUTH_ENTRY);
         }
 
         if ($this->model instanceof Category) {
-            return $this->webuser->can(Category::AUTH_CATEGORY_UPDATE, ['category' => $this->model]);
+            return $this->webuser->can(Category::AUTH_CATEGORY);
         }
 
-        return $this->webuser->can($this->model->getPermissionName('update'), ['asset' => $this->model]);
+        return $this->webuser->can($this->model->getPermissionName());
     }
 
     public static function tag(Asset|Category|Entry|Section $model): string

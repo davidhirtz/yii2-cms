@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Controllers;
 
+use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Models\SectionAsset;
 use Hirtz\Cms\Modules\Admin\Controllers\Traits\SectionControllerTrait;
@@ -11,7 +12,6 @@ use Hirtz\Media\Modules\Admin\Controllers\Traits\AssetControllerTrait;
 use Hirtz\Skeleton\Web\Controller;
 use Override;
 use yii\filters\AccessControl;
-use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -31,23 +31,8 @@ class SectionAssetController extends Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['index', 'update'],
-                        'roles' => [Section::AUTH_SECTION_ASSET_UPDATE],
-                    ],
-                    [
-                        'allow' => true,
-                        'actions' => ['create', 'duplicate'],
-                        'roles' => [Section::AUTH_SECTION_ASSET_CREATE],
-                    ],
-                    [
-                        'allow' => true,
-                        'actions' => ['delete'],
-                        'roles' => [Section::AUTH_SECTION_ASSET_DELETE],
-                    ],
-                    [
-                        'allow' => true,
-                        'actions' => ['order'],
-                        'roles' => [Section::AUTH_SECTION_ASSET_ORDER],
+                        'actions' => ['create', 'delete', 'duplicate', 'index', 'order', 'update'],
+                        'roles' => [Entry::AUTH_ENTRY],
                     ],
                 ],
             ],
@@ -56,7 +41,7 @@ class SectionAssetController extends Controller
 
     public function actionIndex(?int $section = null): Response|string
     {
-        return $this->renderIndex($this->findSectionWithAssets($section, Section::AUTH_SECTION_ASSET_UPDATE));
+        return $this->renderIndex($this->findSectionWithAssets($section));
     }
 
     public function actionCreate(
@@ -65,50 +50,44 @@ class SectionAssetController extends Controller
         ?int $folder = null,
         ?string $q = null
     ): Response|string {
-        $model = $this->findSectionWithAssets($section, Section::AUTH_SECTION_ASSET_CREATE);
+        $model = $this->findSectionWithAssets($section);
 
         return $this->createAsset($model, $file, $folder, $q);
     }
 
     public function actionUpdate(int $id): Response|string
     {
-        return $this->updateAsset($this->findSectionAsset($id, Section::AUTH_SECTION_ASSET_UPDATE));
+        return $this->updateAsset($this->findSectionAsset($id));
     }
 
     public function actionDelete(int $id): Response|string
     {
-        return $this->deleteAsset($this->findSectionAsset($id, Section::AUTH_SECTION_ASSET_DELETE));
+        return $this->deleteAsset($this->findSectionAsset($id));
     }
 
     public function actionDuplicate(int $id): Response|string
     {
-        return $this->duplicateAsset($this->findSectionAsset($id, Section::AUTH_SECTION_ASSET_CREATE));
+        return $this->duplicateAsset($this->findSectionAsset($id));
     }
 
     public function actionOrder(?int $section = null): string
     {
-        return $this->reorderAssets($this->findSectionWithAssets($section, Section::AUTH_SECTION_ASSET_ORDER));
+        return $this->reorderAssets($this->findSectionWithAssets($section));
     }
 
-    protected function findSectionWithAssets(?int $section, string $permissionName): Section
+    protected function findSectionWithAssets(?int $section): Section
     {
         if (!$section) {
             throw new NotFoundHttpException();
         }
 
         /** @var Section */
-        return $this->findAssetModel($this->findSection($section, $permissionName));
+        return $this->findAssetModel($this->findSection($section));
     }
 
-    protected function findSectionAsset(int $id, string $permissionName): SectionAsset
+    protected function findSectionAsset(int $id): SectionAsset
     {
-        /** @var SectionAsset $asset */
-        $asset = $this->findAsset($id, SectionAsset::class);
-
-        if (!$this->webuser->can($permissionName, ['asset' => $asset, 'section' => $asset->model])) {
-            throw new ForbiddenHttpException();
-        }
-
-        return $asset;
+        /** @var SectionAsset */
+        return $this->findAsset($id, SectionAsset::class);
     }
 }

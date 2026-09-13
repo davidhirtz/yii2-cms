@@ -11,7 +11,6 @@ use Hirtz\Media\Modules\Admin\Controllers\Traits\AssetControllerTrait;
 use Hirtz\Skeleton\Web\Controller;
 use Override;
 use yii\filters\AccessControl;
-use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -31,23 +30,8 @@ class EntryAssetController extends Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['index', 'update'],
-                        'roles' => [Entry::AUTH_ENTRY_ASSET_UPDATE],
-                    ],
-                    [
-                        'allow' => true,
-                        'actions' => ['create', 'duplicate'],
-                        'roles' => [Entry::AUTH_ENTRY_ASSET_CREATE],
-                    ],
-                    [
-                        'allow' => true,
-                        'actions' => ['delete'],
-                        'roles' => [Entry::AUTH_ENTRY_ASSET_DELETE],
-                    ],
-                    [
-                        'allow' => true,
-                        'actions' => ['order'],
-                        'roles' => [Entry::AUTH_ENTRY_ASSET_ORDER],
+                        'actions' => ['create', 'delete', 'duplicate', 'index', 'order', 'update'],
+                        'roles' => [Entry::AUTH_ENTRY],
                     ],
                 ],
             ],
@@ -56,7 +40,7 @@ class EntryAssetController extends Controller
 
     public function actionIndex(?int $entry = null): Response|string
     {
-        return $this->renderIndex($this->findEntryWithAssets($entry, Entry::AUTH_ENTRY_ASSET_UPDATE));
+        return $this->renderIndex($this->findEntryWithAssets($entry));
     }
 
     public function actionCreate(
@@ -65,50 +49,44 @@ class EntryAssetController extends Controller
         ?int $folder = null,
         ?string $q = null
     ): Response|string {
-        $model = $this->findEntryWithAssets($entry, Entry::AUTH_ENTRY_ASSET_CREATE);
+        $model = $this->findEntryWithAssets($entry);
 
         return $this->createAsset($model, $file, $folder, $q);
     }
 
     public function actionUpdate(int $id): Response|string
     {
-        return $this->updateAsset($this->findEntryAsset($id, Entry::AUTH_ENTRY_ASSET_UPDATE));
+        return $this->updateAsset($this->findEntryAsset($id));
     }
 
     public function actionDelete(int $id): Response|string
     {
-        return $this->deleteAsset($this->findEntryAsset($id, Entry::AUTH_ENTRY_ASSET_DELETE));
+        return $this->deleteAsset($this->findEntryAsset($id));
     }
 
     public function actionDuplicate(int $id): Response|string
     {
-        return $this->duplicateAsset($this->findEntryAsset($id, Entry::AUTH_ENTRY_ASSET_CREATE));
+        return $this->duplicateAsset($this->findEntryAsset($id));
     }
 
     public function actionOrder(?int $entry = null): string
     {
-        return $this->reorderAssets($this->findEntryWithAssets($entry, Entry::AUTH_ENTRY_ASSET_ORDER));
+        return $this->reorderAssets($this->findEntryWithAssets($entry));
     }
 
-    protected function findEntryWithAssets(?int $entry, string $permissionName): Entry
+    protected function findEntryWithAssets(?int $entry): Entry
     {
         if (!$entry) {
             throw new NotFoundHttpException();
         }
 
         /** @var Entry */
-        return $this->findAssetModel($this->findEntry($entry, $permissionName));
+        return $this->findAssetModel($this->findEntry($entry));
     }
 
-    protected function findEntryAsset(int $id, string $permissionName): EntryAsset
+    protected function findEntryAsset(int $id): EntryAsset
     {
-        /** @var EntryAsset $asset */
-        $asset = $this->findAsset($id, EntryAsset::class);
-
-        if (!$this->webuser->can($permissionName, ['asset' => $asset, 'entry' => $asset->model])) {
-            throw new ForbiddenHttpException();
-        }
-
-        return $asset;
+        /** @var EntryAsset */
+        return $this->findAsset($id, EntryAsset::class);
     }
 }

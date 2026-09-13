@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Modules\Admin\Widgets\Grids;
 
 use Hirtz\Cms\Models\Entry;
-use Hirtz\Cms\Models\Section;
 use Hirtz\Skeleton\Widgets\Buttons\Button;
 use Hirtz\Skeleton\Widgets\Grids\Toolbars\TypeFilterDropdown;
 use Override;
@@ -54,9 +53,7 @@ class SectionEntryGridView extends EntryGridView
     #[Override]
     protected function getButtonColumnContent(Entry $entry): Traversable
     {
-        $canUpdate = $this->webuser->can(Section::AUTH_SECTION_UPDATE, [
-            'section' => $this->provider->section,
-        ]);
+        $canUpdate = $this->webuser->can(Entry::AUTH_ENTRY);
 
         if (!$canUpdate || $entry->sectionEntry) {
             return;

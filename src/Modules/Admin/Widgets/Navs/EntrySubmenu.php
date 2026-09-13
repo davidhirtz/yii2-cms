@@ -6,7 +6,6 @@ namespace Hirtz\Cms\Modules\Admin\Widgets\Navs;
 
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\EntryAsset;
-use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Module;
 use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Media\Modules\Admin\Widgets\Navs\AssetSubmenuItem;
@@ -48,12 +47,12 @@ class EntrySubmenu extends Submenu
 
         if ($this->showEntryCategories) {
             $this->showEntryCategories = $this->model->hasCategoriesEnabled()
-                && $this->webuser->can(Entry::AUTH_ENTRY_CATEGORY_UPDATE, ['entry' => $this->model]);
+                && $this->webuser->can(Entry::AUTH_ENTRY);
         }
 
         if ($this->showEntrySections) {
             $this->showEntrySections = $this->model->hasSectionsEnabled()
-                && $this->webuser->can(Section::AUTH_SECTION_UPDATE, ['entry' => $this->model]);
+                && $this->webuser->can(Entry::AUTH_ENTRY);
         }
 
         $this->addItem(

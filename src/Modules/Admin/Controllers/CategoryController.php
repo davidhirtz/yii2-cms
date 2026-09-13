@@ -31,23 +31,8 @@ class CategoryController extends AbstractController
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['index', 'update'],
-                        'roles' => [Category::AUTH_CATEGORY_UPDATE],
-                    ],
-                    [
-                        'allow' => true,
-                        'actions' => ['create'],
-                        'roles' => [Category::AUTH_CATEGORY_CREATE],
-                    ],
-                    [
-                        'allow' => true,
-                        'actions' => ['delete'],
-                        'roles' => [Category::AUTH_CATEGORY_DELETE],
-                    ],
-                    [
-                        'allow' => true,
-                        'actions' => ['order'],
-                        'roles' => [Category::AUTH_CATEGORY_ORDER],
+                        'actions' => ['create', 'delete', 'index', 'order', 'update'],
+                        'roles' => [Category::AUTH_CATEGORY],
                     ],
                 ],
             ],
@@ -80,7 +65,7 @@ class CategoryController extends AbstractController
         $category->loadDefaultValues();
         $category->parent_id = $parent;
 
-        if (!$this->webuser->can(Category::AUTH_CATEGORY_CREATE, ['category' => $category])) {
+        if (!$this->webuser->can(Category::AUTH_CATEGORY)) {
             throw new ForbiddenHttpException();
         }
 
@@ -96,7 +81,7 @@ class CategoryController extends AbstractController
 
     public function actionUpdate(int $id): Response|string
     {
-        $category = $this->findCategory($id, Category::AUTH_CATEGORY_UPDATE);
+        $category = $this->findCategory($id);
 
         if ($category->load($this->request->post()) && !$this->request->isFormReload()) {
             if ($category->update()) {
@@ -115,7 +100,7 @@ class CategoryController extends AbstractController
 
     public function actionDelete(int $id): Response|string
     {
-        $category = $this->findCategory($id, Category::AUTH_CATEGORY_DELETE);
+        $category = $this->findCategory($id);
 
         if ($category->delete()) {
             $this->success(Yii::t('cms', 'CATEGORY_SUCCESS_DELETED'));
@@ -129,7 +114,7 @@ class CategoryController extends AbstractController
     public function actionOrder(?int $id = null): string
     {
         $success = ReorderCategories::runWithBodyParam('category', [
-            'parent' => $id ? $this->findCategory($id, Category::AUTH_CATEGORY_ORDER) : null,
+            'parent' => $id ? $this->findCategory($id) : null,
         ]);
 
         if ($success) {

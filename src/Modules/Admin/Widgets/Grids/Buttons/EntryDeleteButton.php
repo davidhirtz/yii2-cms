@@ -20,7 +20,7 @@ class EntryDeleteButton extends DeleteButton
     public function isVisible(): bool
     {
         return parent::isVisible()
-            && $this->webuser->can(Entry::AUTH_ENTRY_DELETE, ['entry' => $this->model]);
+            && $this->webuser->can(Entry::AUTH_ENTRY);
     }
 
     #[Override]

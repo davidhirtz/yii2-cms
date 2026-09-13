@@ -34,13 +34,8 @@ class EntryCategoryController extends AbstractController
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['index', 'create', 'delete'],
-                        'roles' => [Entry::AUTH_ENTRY_CATEGORY_UPDATE],
-                    ],
-                    [
-                        'allow' => true,
-                        'actions' => ['order'],
-                        'roles' => [Entry::AUTH_ENTRY_ORDER],
+                        'actions' => ['create', 'delete', 'index', 'order'],
+                        'roles' => [Entry::AUTH_ENTRY],
                     ],
                 ],
             ],
@@ -57,7 +52,7 @@ class EntryCategoryController extends AbstractController
 
     public function actionIndex(int $entry, ?int $category = null, ?string $q = null): string
     {
-        $entry = $this->findEntry($entry, Entry::AUTH_ENTRY_UPDATE);
+        $entry = $this->findEntry($entry);
 
         $provider = Yii::$container->get(CategoryActiveDataProvider::class, config: [
             'entry' => $entry,
@@ -76,7 +71,7 @@ class EntryCategoryController extends AbstractController
         $entryCategory->entry_id = $entry;
         $entryCategory->category_id = $category;
 
-        if (!$this->webuser->can(Entry::AUTH_ENTRY_CATEGORY_UPDATE, ['entryCategory' => $entryCategory])) {
+        if (!$this->webuser->can(Entry::AUTH_ENTRY)) {
             throw new ForbiddenHttpException();
         }
 
@@ -93,7 +88,7 @@ class EntryCategoryController extends AbstractController
             'category_id' => $category,
         ]);
 
-        if (!$this->webuser->can(Entry::AUTH_ENTRY_CATEGORY_UPDATE, ['entryCategory' => $entryCategory])) {
+        if (!$this->webuser->can(Entry::AUTH_ENTRY)) {
             throw new ForbiddenHttpException();
         }
 
@@ -116,7 +111,7 @@ class EntryCategoryController extends AbstractController
     public function actionOrder(int $category): string
     {
         $success = ReorderEntryCategories::runWithBodyParam('entry', [
-            'category' => $this->findCategory($category, Entry::AUTH_ENTRY_ORDER),
+            'category' => $this->findCategory($category),
         ]);
 
         if ($success) {

@@ -74,8 +74,8 @@ class Bootstrap implements BootstrapInterface
         }
 
         DashboardController::addRoles([
-            Entry::AUTH_ENTRY_UPDATE,
-            Category::AUTH_CATEGORY_UPDATE,
+            Entry::AUTH_ENTRY,
+            Category::AUTH_CATEGORY,
         ]);
 
         $app->setMigrationNamespace('Hirtz\Cms\Migrations');

@@ -42,10 +42,7 @@ class Category extends ActiveRecord implements SearchableInterface, SitemapInter
     use SearchableTrait;
     use SlugAttributeTrait;
 
-    final public const string AUTH_CATEGORY_CREATE = 'categoryCreate';
-    final public const string AUTH_CATEGORY_DELETE = 'categoryDelete';
-    final public const string AUTH_CATEGORY_UPDATE = 'categoryUpdate';
-    final public const string AUTH_CATEGORY_ORDER = 'categoryOrder';
+    final public const string AUTH_CATEGORY = 'category';
 
     public string|false $contentType = false;
 
@@ -294,7 +291,7 @@ class Category extends ActiveRecord implements SearchableInterface, SitemapInter
 
     protected function isSearchResultVisible(): bool
     {
-        return Yii::$app->has('user') && Yii::$app->getUser()->can(static::AUTH_CATEGORY_UPDATE);
+        return Yii::$app->has('user') && Yii::$app->getUser()->can(static::AUTH_CATEGORY);
     }
 
     public function getRoute(): array|false
