@@ -1,5 +1,16 @@
 ## 3.0 (in development)
 
+- `Widgets\Sections` is replaced by `Widgets\SectionStack` and `Widgets\SectionGroup`. The stack owns the
+  ordered list and runs the filter, collect, group and wrap stages; a group is a widget of its own, renders one
+  run of sections through its view and is that view's `$context` again — the port had dropped the third argument
+  of `View::render()`, which made `Sections::renderAdjacentSectionsByType()` and its two siblings unreachable.
+  A section's render behaviour is declared in its type options: `viewFile`, `visible`, `group`, `wrapper` and
+  `collect`, which is what replaces the `hasSameViewFile()`, `getSectionViewFile()` and `renderSectionsInternal()`
+  overrides. `SectionStack::visible()` is the widget's own visibility, as on every other widget — it used to
+  double as the per-section default, which was a `TypeError` under `strict_types` — and sections are filtered
+  with `filter()`. `$section->position` is still renumbered over the visible sections; the neighbours the issue
+  asked for are `SectionStack::getPrevious()` / `getNext()` and `SectionGroup::getPrevious()` / `getNext()`,
+  and nothing is written onto the model. See `UPGRADE.md`
 - `Modules\Admin\Widgets\Grids\EntryGridView::getNameColumnContent()` returns `string|Stringable`, as
   `CategoryGridTrait` and `SectionGridView` already did. It declared `string` while composing the link from
   `Html\A`, so a grid rendering neither the frontend URL nor the category buttons was a `TypeError`

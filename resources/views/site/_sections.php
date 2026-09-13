@@ -4,11 +4,13 @@ declare(strict_types=1);
 /**
  * @var View $this
  * @var Section[] $sections
+ * @var SectionGroup $group
  */
 
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Widgets\AdminLink;
 use Hirtz\Cms\Widgets\Gallery;
+use Hirtz\Cms\Widgets\SectionGroup;
 use Hirtz\Skeleton\Web\View;
 
 foreach ($sections as $section) {

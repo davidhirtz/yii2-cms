@@ -34,7 +34,7 @@ final class SiteControllerFunctionalTest extends TestCase
         //            SiteController::class => [
         //                'layout' => '@tests/data/views/layouts/main',
         //            ],
-        //            Sections::class => [
+        //            SectionStack::class => [
         //                'viewFile' => '@tests/data/views/site/_sections',
         //            ],
         //        ]);
