@@ -272,20 +272,7 @@ class Category extends ActiveRecord implements SearchableInterface, SitemapInter
         ]);
     }
 
-    #[\Override]
-    public function getTrailModelName(): string
-    {
-        if ($this->id) {
-            return $this->getI18nAttribute('name') ?: Yii::t('skeleton', 'COMMON_MODEL_ID', [
-                'model' => $this->getTrailModelType(),
-                'id' => $this->id,
-            ]);
-        }
-
-        return $this->getTrailModelType();
-    }
-
-    public function getTrailModelType(): string
+    public function getAdminType(): string
     {
         return $this->getTypeName() ?: Yii::t('cms', 'COMMON_CATEGORY');
     }

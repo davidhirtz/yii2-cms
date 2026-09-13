@@ -11,6 +11,7 @@ use davidhirtz\yii2\datetime\DateTime;
 use Hirtz\Skeleton\Behaviors\BlameableBehavior;
 use Hirtz\Skeleton\Behaviors\TimestampBehavior;
 use Hirtz\Skeleton\Behaviors\TrailBehavior;
+use Hirtz\Skeleton\Models\Traits\AdminModelTrait;
 use Hirtz\Skeleton\Models\Traits\UpdatedByUserTrait;
 use Hirtz\Skeleton\Validators\RelationValidator;
 use Override;
@@ -28,6 +29,7 @@ use Yii;
  */
 class SectionEntry extends \Hirtz\Skeleton\Db\ActiveRecord
 {
+    use AdminModelTrait;
     use EntryRelationTrait;
     use ModuleTrait;
     use SectionRelationTrait;
@@ -149,12 +151,17 @@ class SectionEntry extends \Hirtz\Skeleton\Db\ActiveRecord
         return [$this->entry, $this->section];
     }
 
-    public function getTrailModelName(): string
+    public function getAdminRoute(): array|false
+    {
+        return false;
+    }
+
+    public function getAdminName(): string
     {
         return Yii::t('cms', 'SECTION_ENTRY_SECTION_ENTRY');
     }
 
-    public function getTrailModelType(): string
+    public function getAdminType(): string
     {
         return Yii::t('skeleton', 'COMMON_RELATION');
     }

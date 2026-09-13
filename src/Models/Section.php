@@ -242,20 +242,7 @@ class Section extends ActiveRecord implements AssetModelInterface, SearchableInt
         return $this->trailParents ?? [$this->entry];
     }
 
-    #[\Override]
-    public function getTrailModelName(): string
-    {
-        if ($this->id) {
-            return Yii::t('skeleton', 'COMMON_MODEL_ID', [
-                'model' => $this->getTypeName() ?: $this->getTrailModelType(),
-                'id' => $this->id,
-            ]);
-        }
-
-        return $this->getTrailModelType();
-    }
-
-    public function getTrailModelType(): string
+    public function getAdminType(): string
     {
         return Yii::t('cms', 'COMMON_SECTION');
     }

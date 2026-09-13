@@ -13,6 +13,7 @@ use Hirtz\Skeleton\Behaviors\TimestampBehavior;
 use Hirtz\Skeleton\Behaviors\TrailBehavior;
 use Hirtz\Skeleton\Log\ActiveRecordErrorLogger;
 use Hirtz\Skeleton\Models\Interfaces\TrailModelInterface;
+use Hirtz\Skeleton\Models\Traits\AdminModelTrait;
 use Hirtz\Skeleton\Models\Traits\TrailModelTrait;
 use Hirtz\Skeleton\Models\Traits\UpdatedByUserTrait;
 use Hirtz\Skeleton\Validators\RelationValidator;
@@ -32,6 +33,7 @@ use Yii;
  */
 class EntryCategory extends \Hirtz\Skeleton\Db\ActiveRecord implements TrailModelInterface
 {
+    use AdminModelTrait;
     use CategoryRelationTrait;
     use EntryRelationTrait;
     use ModuleTrait;
@@ -223,13 +225,18 @@ class EntryCategory extends \Hirtz\Skeleton\Db\ActiveRecord implements TrailMode
     }
 
     #[Override]
-    public function getTrailModelName(): string
+    public function getAdminRoute(): array|false
+    {
+        return false;
+    }
+
+    public function getAdminName(): string
     {
         return Yii::t('cms', 'ENTRY_CATEGORY_TRAIL_NAME');
     }
 
     #[Override]
-    public function getTrailModelType(): string
+    public function getAdminType(): string
     {
         return Yii::t('skeleton', 'COMMON_RELATION');
     }

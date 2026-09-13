@@ -1,5 +1,9 @@
 ## 3.0 (in development)
 
+- `Models\Entry`, `Section`, `Category`, `EntryCategory` and `SectionEntry` implement the skeleton's
+  `Models\Interfaces\AdminModelInterface` through `TrailModelInterface`: `getTrailModelName()` and
+  `getTrailModelType()` are `getAdminName()` and `getAdminType()`, and the boilerplate name is
+  `Models\Traits\AdminModelTrait`'s. A section is now named by its `name` in the trail when it has one
 - `Models\Entry`, `Section` and `Category` are searchable: they implement the skeleton's
   `Models\Interfaces\SearchableInterface`, declare their indexed attributes and gate their hit on
   `entryUpdate`, `sectionUpdate` and `categoryUpdate`. `Bootstrap` registers them on the `search` component

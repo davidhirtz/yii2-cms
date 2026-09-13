@@ -645,20 +645,7 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
         ]);
     }
 
-    #[Override]
-    public function getTrailModelName(): string
-    {
-        if ($this->id) {
-            return $this->getI18nAttribute('name') ?: Yii::t('skeleton', 'COMMON_MODEL_ID', [
-                'model' => $this->getTrailModelType(),
-                'id' => $this->id,
-            ]);
-        }
-
-        return $this->getTrailModelType();
-    }
-
-    public function getTrailModelType(): string
+    public function getAdminType(): string
     {
         return $this->getTypeName() ?: Yii::t('cms', 'COMMON_ENTRY');
     }

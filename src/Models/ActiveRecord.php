@@ -13,13 +13,13 @@ use Hirtz\Skeleton\Behaviors\TimestampBehavior;
 use Hirtz\Skeleton\Behaviors\TrailBehavior;
 use Hirtz\Skeleton\Db\ActiveQuery;
 use Hirtz\Skeleton\Db\ActiveRecord as BaseActiveRecord;
-use Hirtz\Skeleton\Models\Interfaces\AdminRouteInterface;
 use Hirtz\Skeleton\Models\Interfaces\CustomAttributeInterface;
 use Hirtz\Skeleton\Models\Interfaces\DraftStatusAttributeInterface;
 use Hirtz\Skeleton\Models\Interfaces\I18nAttributeInterface;
 use Hirtz\Skeleton\Models\Interfaces\TrailModelInterface;
 use Hirtz\Skeleton\Models\Interfaces\TranslationInterface;
 use Hirtz\Skeleton\Models\Interfaces\TypeAttributeInterface;
+use Hirtz\Skeleton\Models\Traits\AdminModelTrait;
 use Hirtz\Skeleton\Models\Traits\CustomAttributesTrait;
 use Hirtz\Skeleton\Models\Traits\DraftStatusAttributeTrait;
 use Hirtz\Skeleton\Models\Traits\I18nAttributesTrait;
@@ -46,7 +46,6 @@ use Yii;
  * @mixin TrailBehavior
  */
 abstract class ActiveRecord extends BaseActiveRecord implements
-    AdminRouteInterface,
     CustomAttributeInterface,
     DraftStatusAttributeInterface,
     I18nAttributeInterface,
@@ -54,6 +53,7 @@ abstract class ActiveRecord extends BaseActiveRecord implements
     TranslationInterface,
     TypeAttributeInterface
 {
+    use AdminModelTrait;
     use CustomAttributesTrait;
     use DraftStatusAttributeTrait;
     use I18nAttributesTrait;
