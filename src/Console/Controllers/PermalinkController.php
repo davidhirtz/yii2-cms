@@ -12,10 +12,11 @@ use yii\console\Controller;
 use yii\helpers\Console;
 
 /**
- * Rebuilds {@see Permalink} records.
+ * Rebuilds permalink records.
  *
- * Permalinks are written when an entry is saved, so anything that changes them outside a save leaves them stale —
- * adding a language, for instance. Those are one-off jobs, not runtime cascades, which is what this command is for.
+ * A {@see Permalink} is written when an entry is saved, so anything that changes one outside a save leaves it
+ * stale — adding a language, for instance. Those are one-off jobs, not runtime cascades, which is what this
+ * command is for.
  */
 class PermalinkController extends Controller
 {
