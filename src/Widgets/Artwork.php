@@ -40,6 +40,12 @@ class Artwork extends Widget
 
     private static int $counter = 0;
 
+    public function asset(Asset $asset): static
+    {
+        $this->asset = $asset;
+        return $this;
+    }
+
     public function adminLink(bool $adminLink): self
     {
         $this->adminLink = $adminLink;
@@ -76,7 +82,7 @@ class Artwork extends Widget
         return $this;
     }
 
-    public function lazyLoadingPosition(int $position): static
+    public function lazyLoadingPosition(int|false $position): static
     {
         $this->lazyLoadingPosition = $position;
         return $this;
@@ -108,8 +114,16 @@ class Artwork extends Widget
 
     public function resetCounter(): static
     {
-        self::$counter = 0;
+        self::reset();
         return $this;
+    }
+
+    /**
+     * The counter decides which artworks load eagerly, so it belongs to the request: the cms `Bootstrap` resets it.
+     */
+    public static function reset(): void
+    {
+        self::$counter = 0;
     }
 
     /**
@@ -176,7 +190,7 @@ class Artwork extends Widget
         return $this->figure ? ($this->figure)($figure) : $figure;
     }
 
-    protected function renderCaption(): ?Stringable
+    protected function renderCaption(): string|Stringable|null
     {
         $content = $this->asset->getVisibleAttribute('content') ?: null;
 
@@ -188,7 +202,8 @@ class Artwork extends Widget
             $content = Figcaption::make()->content($content);
         }
 
-        return $this->caption ? ($this->caption)($content) : $content;
+        // the callback drops the caption with `false`, which is no caption rather than a rendered one
+        return ($this->caption ? ($this->caption)($content) : $content) ?: null;
     }
 
     protected function renderMedia(): ?Stringable
