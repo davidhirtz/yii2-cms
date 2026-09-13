@@ -18,7 +18,7 @@ class ReorderCategories extends ReorderActiveRecords
     }
 
     #[Override]
-    protected function reorderActiveRecordsInternal(): int
+    protected function reorderActiveRecords(): int
     {
         return Category::rebuildNestedTree($this->parent, $this->order);
     }
