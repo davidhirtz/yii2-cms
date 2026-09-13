@@ -206,7 +206,9 @@ class EntryCategory extends \Hirtz\Skeleton\Db\ActiveRecord implements TrailMode
                 if ($category->inheritNestedCategories()) {
                     $junction->populateCategoryRelation($category);
                     $junction->populateEntryRelation($this->entry);
-                    $this->setIsBatch(true);
+
+                    // the cascade already covers the whole branch, so the junction must not start one of its own
+                    $junction->setIsBatch(true);
                     $junction->delete();
                 }
             }

@@ -17,6 +17,7 @@ use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\ForbiddenHttpException;
+use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 class EntryCategoryController extends AbstractController
@@ -87,6 +88,10 @@ class EntryCategoryController extends AbstractController
             'entry_id' => $entry,
             'category_id' => $category,
         ]);
+
+        if (!$entryCategory) {
+            throw new NotFoundHttpException();
+        }
 
         if (!$this->webuser->can(Entry::AUTH_ENTRY)) {
             throw new ForbiddenHttpException();

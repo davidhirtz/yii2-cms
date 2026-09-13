@@ -13,6 +13,7 @@ use Hirtz\Cms\Test\Fixtures\SectionEntryFixture;
 use Hirtz\Cms\Test\Fixtures\SectionFixture;
 use Hirtz\Cms\Test\Models\TestEntry;
 use Hirtz\Cms\Test\Models\TestSection;
+use Hirtz\Cms\Models\Category;
 use Hirtz\Media\Models\Asset;
 use Hirtz\Media\Models\File;
 use Hirtz\Media\Test\Fixtures\FileFixture;
@@ -52,6 +53,23 @@ trait CmsFixtureTrait
     protected function getAssetFromFixture(string $key): Asset
     {
         return Asset::findOne($this->getAssetFixtureData($key)['id']);
+    }
+
+    protected function getCategoryFixture(): CategoryFixture
+    {
+        /** @var CategoryFixture $fixture */
+        $fixture = $this->getFixture('category');
+        return $fixture;
+    }
+
+    protected function getCategoryFixtureData(string $key): array
+    {
+        return $this->getCategoryFixture()->data[$key];
+    }
+
+    protected function getCategoryFromFixture(string $key): Category
+    {
+        return Category::findOne($this->getCategoryFixtureData($key)['id']);
     }
 
     protected function getEntryFixture(): EntryFixture
@@ -104,4 +122,5 @@ trait CmsFixtureTrait
     {
         return TestSection::findOne($this->getSectionFixtureData($key)['id']);
     }
+
 }
