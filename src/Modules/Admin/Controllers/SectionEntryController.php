@@ -18,6 +18,7 @@ use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\ForbiddenHttpException;
+use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 class SectionEntryController extends AbstractController
@@ -86,7 +87,7 @@ class SectionEntryController extends AbstractController
         }
 
         if (!$type && static::getModule()->defaultEntryType) {
-            $this->redirect(Url::current(['type' => static::getModule()->defaultEntryType]));
+            return $this->redirect(Url::current(['type' => static::getModule()->defaultEntryType]));
         }
 
         $provider = Yii::$container->get(EntryActiveDataProvider::class, [], [
@@ -111,6 +112,10 @@ class SectionEntryController extends AbstractController
             'section_id' => $section->id,
             'entry_id' => $entry,
         ]);
+
+        if (!$sectionEntry) {
+            throw new NotFoundHttpException();
+        }
 
         if (!$this->webuser->can(Entry::AUTH_ENTRY)) {
             throw new ForbiddenHttpException();

@@ -11,6 +11,7 @@ use davidhirtz\yii2\datetime\DateTime;
 use Hirtz\Skeleton\Behaviors\BlameableBehavior;
 use Hirtz\Skeleton\Behaviors\TimestampBehavior;
 use Hirtz\Skeleton\Behaviors\TrailBehavior;
+use Hirtz\Skeleton\Log\ActiveRecordErrorLogger;
 use Hirtz\Skeleton\Models\Traits\AdminModelTrait;
 use Hirtz\Skeleton\Models\Traits\UpdatedByUserTrait;
 use Hirtz\Skeleton\Validators\RelationValidator;
@@ -119,9 +120,16 @@ class SectionEntry extends \Hirtz\Skeleton\Db\ActiveRecord
         parent::afterDelete();
     }
 
-    protected function updateSectionEntryCount(): bool|int
+    public function updateSectionEntryCount(): bool|int
     {
-        return $this->section->recalculateEntryCount()->update();
+        $this->section->recalculateEntryCount();
+
+        if (!$this->section->update()) {
+            ActiveRecordErrorLogger::log($this->section);
+            return false;
+        }
+
+        return true;
     }
 
     public function getMaxPosition(): int
