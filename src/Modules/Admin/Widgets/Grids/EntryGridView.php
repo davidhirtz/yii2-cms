@@ -172,7 +172,7 @@ class EntryGridView extends GridView
             ->content($this->getNameColumnContent(...));
     }
 
-    protected function getNameColumnContent(Entry $entry): string
+    protected function getNameColumnContent(Entry $entry): string|Stringable
     {
         $name = $entry->getI18nAttribute('name');
 

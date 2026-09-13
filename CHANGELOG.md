@@ -1,5 +1,8 @@
 ## 3.0 (in development)
 
+- `Modules\Admin\Widgets\Grids\EntryGridView::getNameColumnContent()` returns `string|Stringable`, as
+  `CategoryGridTrait` and `SectionGridView` already did. It declared `string` while composing the link from
+  `Html\A`, so a grid rendering neither the frontend URL nor the category buttons was a `TypeError`
 - `Models\EntryAsset` and `SectionAsset` declare `@extends Asset<Entry>` / `@extends Asset<Section>` in place of
   their narrowed `getModel()` overrides, see `yii2-media`
 - `Modules\Admin\Widgets\Navs\Traits\EntryHeaderTrait` and the entry category index translate through
