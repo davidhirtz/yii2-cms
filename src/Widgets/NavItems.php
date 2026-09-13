@@ -60,6 +60,14 @@ class NavItems
     }
 
     /**
+     * The entries are loaded once per request, so the cms `Bootstrap` clears them for the next one.
+     */
+    public static function reset(): void
+    {
+        static::$entries = null;
+    }
+
+    /**
      * @return array<int, T>
      */
     protected static function findEntries(): array
@@ -81,6 +89,10 @@ class NavItems
             ->indexBy('id');
     }
 
+    /**
+     * An `Entry` that declares neither attribute has no condition to add — the filters below answer `false` for
+     * every record anyway, and `$where[0]` on an empty array was a `TypeError` on every page with a menu.
+     */
     protected static function getEntryQueryWhere(): array
     {
         $where = [];
@@ -92,7 +104,11 @@ class NavItems
             }
         }
 
-        return count($where) > 1 ? ['or', ...$where] : $where[0];
+        return match (count($where)) {
+            0 => [],
+            1 => $where[0],
+            default => ['or', ...$where],
+        };
     }
 
     /**

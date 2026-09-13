@@ -34,9 +34,14 @@ class EntryQuery extends I18nActiveQuery
         return $this->with('permalinks');
     }
 
+    /**
+     * Filtered like its counterpart `whereStatus()`: an unset status is no filter, where `andWhere()` would compare
+     * against `NULL` and leave nothing behind — an empty menu on any page whose controller had not scoped a query
+     * by status first.
+     */
     public function andWhereParentStatus(): static
     {
-        return $this->andWhere(['>=', Entry::tableName() . '.[[parent_status]]', self::$status]);
+        return $this->andFilterWhere(['>=', Entry::tableName() . '.[[parent_status]]', self::$status]);
     }
 
     #[Override]
