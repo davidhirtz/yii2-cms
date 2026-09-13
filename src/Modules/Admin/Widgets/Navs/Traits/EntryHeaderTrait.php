@@ -16,7 +16,7 @@ trait EntryHeaderTrait
 
     protected function addEntryBreadcrumbs(Entry $entry): void
     {
-        $this->addBreadcrumb(Yii::t('app', 'Entries'), [
+        $this->addBreadcrumb(Yii::t('cms', 'COMMON_ENTRIES'), [
             '/admin/cms/entry/index',
             'type' => static::getModule()->defaultEntryType,
         ]);

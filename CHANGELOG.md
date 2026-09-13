@@ -1,5 +1,8 @@
 ## 3.0 (in development)
 
+- `Modules\Admin\Widgets\Navs\Traits\EntryHeaderTrait` and the entry category index translate through
+  `COMMON_ENTRIES` and `COMMON_CATEGORIES`; the former used `Yii::t('app', 'Entries')`, which is the host
+  application's category. `COMMON_SECTION_ENTRIES` and `CATEGORY_CREATE_TITLE` had no English text
 - **One permission per admin-managed model.** `Models\Entry::AUTH_ENTRY` (`entry`) replaces the 17 permissions of
   entries, entry assets, entry categories, sections and section assets; `Models\Category::AUTH_CATEGORY`
   (`category`) replaces the four category ones. `Models\Section` declares no permission of its own — a section is

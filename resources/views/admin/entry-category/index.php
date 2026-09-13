@@ -16,7 +16,7 @@ use Hirtz\Cms\Modules\Admin\Widgets\Navs\EntrySubmenu;
 use Hirtz\Skeleton\Web\View;
 use Hirtz\Skeleton\Widgets\Grids\GridContainer;
 
-$this->title(Yii::t('cms', 'Categories'));
+$this->title(Yii::t('cms', 'COMMON_CATEGORIES'));
 
 echo EntryHeader::make()
     ->model($provider->entry);
