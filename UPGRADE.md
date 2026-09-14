@@ -1,5 +1,16 @@
 # Upgrade Guide
 
+## 3.0.0 — The category's meta title and description are custom attributes
+
+`Migrations\M260915120000CategoryMeta` drops `category.title` and `category.description` into the
+`custom_attributes` column, translation rows included, the same way the free text moved. `Category` declares both
+itself, so a project configures nothing — unless it translated them, in which case they move from
+`Category::$i18nAttributes` to `translatableAttributes` (see the guide below for why). Neither can be a query
+condition or a sort any more.
+
+**`entry.title` and `entry.description` are unchanged.** An entry has a URL of its own and its meta pair is read
+on every page it renders; only the category's moved.
+
 ## 3.0.0 — The free text of the cms models is a custom attribute
 
 `Migrations\M260915100000CustomAttributes` drops `entry.content`, `category.content` and `section.name`,

@@ -9,10 +9,13 @@ use Hirtz\Cms\Models\Types\CategoryType;
 use Hirtz\Cms\Models\Queries\CategoryQuery;
 use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Models\Traits\SlugAttributeTrait;
+use Hirtz\Skeleton\Models\CustomAttributes\CustomAttribute;
+use Hirtz\Skeleton\Models\CustomAttributes\TextCustomAttribute;
 use Hirtz\Skeleton\Models\Interfaces\SearchableInterface;
 use Hirtz\Skeleton\Models\Trail;
 use Hirtz\Skeleton\Models\Traits\NestedTreeTrait;
 use Hirtz\Skeleton\Models\Traits\SearchableTrait;
+use Hirtz\Skeleton\Models\Traits\TranslatableAttributesTrait;
 use Override;
 use Yii;
 use yii\db\ActiveQuery;
@@ -26,7 +29,6 @@ use yii\db\ActiveQuery;
  * @property string|null $slug
  * @property string|null $title
  * @property string|null $description
- * @property string|null $content
  * @property int $entry_count
  *
  * @property-read Entry[] $entries {@see static::getEntries()}
@@ -41,6 +43,7 @@ class Category extends ActiveRecord implements SearchableInterface
     use NestedTreeTrait;
     use SearchableTrait;
     use SlugAttributeTrait;
+    use TranslatableAttributesTrait;
 
     final public const string AUTH_CATEGORY = 'category';
 
@@ -70,11 +73,11 @@ class Category extends ActiveRecord implements SearchableInterface
                     'when' => $this->isSlugRequired(...),
                 ],
                 [
-                    ['name', 'slug', 'title', 'description'],
+                    ['name', 'slug'],
                     'trim',
                 ],
                 [
-                    ['name', 'title', 'description'],
+                    ['name'],
                     'string',
                     'max' => 255,
                 ],
@@ -89,6 +92,36 @@ class Category extends ActiveRecord implements SearchableInterface
                     'targetAttribute' => ['slug'],
                 ],
             ]),
+        ];
+    }
+
+    /**
+     * @return list<CustomAttribute>
+     */
+    #[Override]
+    public function getCustomAttributes(): array
+    {
+        return [
+            ...$this->getDefaultCustomAttributes(),
+            ...parent::getCustomAttributes(),
+        ];
+    }
+
+    /**
+     * Resolved for every loaded record, with no relation populated, so nothing here may read one.
+     *
+     * @return list<CustomAttribute>
+     */
+    protected function getDefaultCustomAttributes(): array
+    {
+        return [
+            TextCustomAttribute::make('title')
+                ->label(Yii::t('cms', 'CATEGORY_TITLE_LABEL'))
+                ->translatable($this->isTranslatableAttribute('title')),
+            TextCustomAttribute::make('description')
+                ->multiline()
+                ->label(Yii::t('cms', 'CATEGORY_DESCRIPTION_LABEL'))
+                ->translatable($this->isTranslatableAttribute('description')),
         ];
     }
 
@@ -329,8 +362,6 @@ class Category extends ActiveRecord implements SearchableInterface
             'name' => Yii::t('cms', 'CATEGORY_NAME_LABEL'),
             'parent_id' => Yii::t('cms', 'CATEGORY_PARENT_ID_LABEL'),
             'slug' => Yii::t('cms', 'CATEGORY_SLUG_LABEL'),
-            'title' => Yii::t('cms', 'CATEGORY_TITLE_LABEL'),
-            'description' => Yii::t('cms', 'CATEGORY_DESCRIPTION_LABEL'),
             'branchCount' => Yii::t('cms', 'CATEGORY_BRANCHCOUNT_LABEL'),
             'entry_count' => Yii::t('cms', 'CATEGORY_ENTRY_COUNT_LABEL'),
         ];

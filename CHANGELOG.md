@@ -1,5 +1,12 @@
 ## 3.0 (in development)
 
+- **`category.title` and `category.description` are custom attributes**, moved by
+  `Migrations\M260915120000CategoryMeta`. A category has no URL of its own, so its meta pair is read where the
+  category is rendered rather than queried; the entry keeps both as columns. `Category` declares them as default
+  definitions, so nothing has to be configured — but a project that translated them moves them from
+  `i18nAttributes` to `translatableAttributes`, and `CategoryActiveForm` keeps rendering them itself through
+  `getCustomAttributeFields(except: ['title', 'description'])`, so the description stays the taller textarea.
+
 - **The free text of the cms models left the schema.** `entry.content`, `category.content` and `section.name`,
   `section.slug` and `section.content` are custom attributes in the `custom_attributes` column now, moved by
   `Migrations\M260915100000CustomAttributes`. `Models\ActiveRecord::$contentType` and `$htmlValidator` are gone
