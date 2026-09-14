@@ -78,7 +78,7 @@ class Bootstrap implements BootstrapInterface
             Yii::$container->set(TenantGridView::class, Modules\Admin\Widgets\Grids\TenantGridView::class);
         }
 
-        DashboardController::addRoles([
+        DashboardController::addRoles(static fn (): array => [
             Entry::AUTH_ENTRY,
             Category::AUTH_CATEGORY,
         ]);
