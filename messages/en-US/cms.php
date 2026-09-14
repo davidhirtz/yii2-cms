@@ -103,6 +103,8 @@ return [
     'SECTION_PARENT_ENTRY_COPY_SECTION' => 'Copy Section',
     'SECTION_PARENT_ENTRY_MOVE_SECTION' => 'Move Section',
     'SECTION_SECTION_COUNT_LABEL' => 'Sections',
+    'SECTION_SET_BUTTON' => 'Add Section Set',
+    'SECTION_SET_LABEL' => 'Section Set',
     'SECTION_SLUG_LABEL' => 'Url',
     'SECTION_SUCCESS_CREATED' => 'The section was created.',
     'SECTION_SUCCESS_DELETED' => 'The section was deleted.',
@@ -110,5 +112,6 @@ return [
     'SECTION_SUCCESS_MOVED' => 'The section was moved.',
     'SECTION_SUCCESS_ORDERED' => 'The section order was changed.',
     'SECTION_SUCCESS_SELECTED_UPDATED' => 'The selected sections were updated.',
+    'SECTION_SUCCESS_SET_CREATED' => '{count,plural,one{# section was} other{# sections were}} created from “{name}”.',
     'SECTION_SUCCESS_UPDATED' => 'The section was updated.',
 ];

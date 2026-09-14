@@ -1,5 +1,32 @@
 ## 3.0 (in development)
 
+- **A project can declare section sets**, groups of sections an entry is given in one go. A set is
+  `Models\Sets\SectionSet`, a skeleton `Models\Definitions\Definition` like a type, holding
+  `Models\Sets\SectionTemplate` objects — a section type plus the attribute values it starts out with. They are
+  declared by `Models\Section::getSectionSets()`, so a project either overrides that or configures the container:
+
+  ```php
+  Section::class => [
+      'sectionSets' => fn (): array => [
+          SectionSet::make(1)
+              ->name(Yii::t('app', 'Landing page'))
+              ->sections(
+                  SectionTemplate::make(Section::TYPE_DEFAULT)->attribute('name', 'Intro'),
+                  SectionTemplate::make(Section::TYPE_DEFAULT),
+              ),
+      ],
+  ],
+  ```
+
+  The value must be a closure, for the same reason a type declaration takes one. A set naming an undeclared
+  section type, or declaring no sections at all, throws at resolution. `Models\Actions\CreateSectionSet` inserts
+  them as a batch and `Modules\Admin\Controllers\SectionController::actionCreateSet()` is the endpoint.
+
+- **The section index header is a `Widgets\Navs\SectionActionDropdown`**, not a
+  `Widgets\Buttons\SectionCreateButton`. The dropdown takes either a model — the section actions, unchanged — or
+  the index page's `SectionActiveDataProvider`, in which case it offers the create button and, where a project
+  declared sets, the new `Widgets\Buttons\SectionSetButton` and its modal.
+
 - **`Models\EntryAsset` and `Models\SectionAsset` are registered with the `search` component**, so an asset's
   caption and alt text are findable. Run `./yii search/rebuild` once to index the rows that already exist.
 

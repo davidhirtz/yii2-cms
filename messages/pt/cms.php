@@ -103,6 +103,8 @@ return [
     'SECTION_PARENT_ENTRY_COPY_SECTION' => 'Copiar secção',
     'SECTION_PARENT_ENTRY_MOVE_SECTION' => 'Mover secção',
     'SECTION_SECTION_COUNT_LABEL' => 'Secções',
+    'SECTION_SET_BUTTON' => 'Adicionar conjunto de secções',
+    'SECTION_SET_LABEL' => 'Conjunto de secções',
     'SECTION_SLUG_LABEL' => 'Url',
     'SECTION_SUCCESS_CREATED' => 'A secção foi criada.',
     'SECTION_SUCCESS_DELETED' => 'A secção foi eliminada.',
@@ -110,5 +112,6 @@ return [
     'SECTION_SUCCESS_MOVED' => 'A secção foi movida.',
     'SECTION_SUCCESS_ORDERED' => 'A ordem das secções foi alterada.',
     'SECTION_SUCCESS_SELECTED_UPDATED' => 'As secções selecionadas foram atualizadas.',
+    'SECTION_SUCCESS_SET_CREATED' => '{count,plural,one{# secção foi criada} other{# secções foram criadas}} a partir de “{name}”.',
     'SECTION_SUCCESS_UPDATED' => 'A secção foi atualizada.',
 ];

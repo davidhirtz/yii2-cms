@@ -6,8 +6,11 @@ namespace Hirtz\Cms\Tests\Modules\Controllers;
 
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
+use Hirtz\Cms\Models\Sets\SectionSet;
+use Hirtz\Cms\Models\Sets\SectionTemplate;
 use Hirtz\Cms\Modules\Admin\Controllers\SectionController;
 use Hirtz\Cms\Test\TestCase;
+use Hirtz\Skeleton\Models\Definitions\DefinitionRegistry;
 use Hirtz\Skeleton\Models\User;
 use Hirtz\Skeleton\Test\Traits\UserFixtureTrait;
 use Override;
@@ -33,6 +36,15 @@ class SectionControllerTest extends TestCase
         parent::setUp();
 
         $this->entry = $this->createEntry('Page', 'page');
+    }
+
+    #[Override]
+    protected function tearDown(): void
+    {
+        Yii::$container->clear(Section::class);
+        Section::instance(true);
+
+        parent::tearDown();
     }
 
     public function testIndexListsTheSectionsOfTheEntry(): void
@@ -92,6 +104,43 @@ class SectionControllerTest extends TestCase
 
         self::assertIsString($html);
         self::assertSame(0, (int)Section::find()->where(['entry_id' => $this->entry->id])->count());
+    }
+
+    public function testCreateSetInsertsTheDeclaredSections(): void
+    {
+        $this->login();
+        $this->setSectionSets();
+
+        $response = $this->post('admin/cms/section/create-set', ['entry' => $this->entry->id], ['set' => '1']);
+
+        self::assertInstanceOf(Response::class, $response);
+        self::assertNotEmpty(Yii::$app->getSession()->getFlash('success'));
+
+        $sections = Section::find()
+            ->where(['entry_id' => $this->entry->id])
+            ->orderBy(['position' => SORT_ASC])
+            ->all();
+
+        self::assertSame(['Hero', 'Text'], array_map(fn (Section $section): string => (string)$section->name, $sections));
+        self::assertSame(2, Entry::findOne($this->entry->id)->section_count);
+    }
+
+    public function testCreateSetWithAnUnknownSetIsNotFound(): void
+    {
+        $this->login();
+        $this->setSectionSets();
+
+        $this->expectException(NotFoundHttpException::class);
+        $this->post('admin/cms/section/create-set', ['entry' => $this->entry->id], ['set' => '99']);
+    }
+
+    public function testCreateSetRefusesAGetRequest(): void
+    {
+        $this->login();
+        $this->setSectionSets();
+
+        $this->expectException(MethodNotAllowedHttpException::class);
+        Yii::$app->runAction('admin/cms/section/create-set', ['entry' => $this->entry->id]);
     }
 
     public function testUpdateSavesTheSection(): void
@@ -278,6 +327,22 @@ class SectionControllerTest extends TestCase
         self::assertTrue($section->insert(), print_r($section->getErrors(), true));
 
         return $section;
+    }
+
+    private function setSectionSets(): void
+    {
+        Yii::$container->set(Section::class, [
+            'sectionSets' => fn (): array => [
+                SectionSet::make(1)
+                    ->name('Landing page')
+                    ->sections(
+                        SectionTemplate::make(Section::TYPE_DEFAULT)->attribute('name', 'Hero'),
+                        SectionTemplate::make(Section::TYPE_DEFAULT)->attribute('name', 'Text'),
+                    ),
+            ],
+        ]);
+
+        DefinitionRegistry::resetClass(Section::class);
     }
 
     private function setAutoCreateSection(bool $value): void

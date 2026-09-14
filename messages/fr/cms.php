@@ -103,6 +103,8 @@ return [
     'SECTION_PARENT_ENTRY_COPY_SECTION' => 'Copier la section',
     'SECTION_PARENT_ENTRY_MOVE_SECTION' => 'Déplacer la section',
     'SECTION_SECTION_COUNT_LABEL' => 'Sections',
+    'SECTION_SET_BUTTON' => 'Ajouter un jeu de sections',
+    'SECTION_SET_LABEL' => 'Jeu de sections',
     'SECTION_SLUG_LABEL' => 'Url',
     'SECTION_SUCCESS_CREATED' => 'La section a été créée.',
     'SECTION_SUCCESS_DELETED' => 'La section a été supprimée.',
@@ -110,5 +112,6 @@ return [
     'SECTION_SUCCESS_MOVED' => 'La section a été déplacée.',
     'SECTION_SUCCESS_ORDERED' => 'L’ordre des sections a été modifié.',
     'SECTION_SUCCESS_SELECTED_UPDATED' => 'Les sections sélectionnées ont été mises à jour.',
+    'SECTION_SUCCESS_SET_CREATED' => '{count,plural,one{# section a été créée} other{# sections ont été créées}} à partir de « {name} ».',
     'SECTION_SUCCESS_UPDATED' => 'La section a été mise à jour.',
 ];

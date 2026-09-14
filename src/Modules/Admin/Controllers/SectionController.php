@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Modules\Admin\Controllers;
 
 use Hirtz\Skeleton\Widgets\Flashes;
+use Hirtz\Cms\Models\Actions\CreateSectionSet;
 use Hirtz\Cms\Models\Actions\DuplicateSection;
 use Hirtz\Cms\Models\Actions\ReorderSections;
 use Hirtz\Cms\Models\Category;
@@ -14,10 +15,12 @@ use Hirtz\Cms\Modules\Admin\Controllers\Traits\EntryControllerTrait;
 use Hirtz\Cms\Modules\Admin\Controllers\Traits\SectionControllerTrait;
 use Hirtz\Cms\Modules\Admin\Data\EntryActiveDataProvider;
 use Hirtz\Cms\Modules\Admin\Data\SectionActiveDataProvider;
+use Hirtz\Cms\Modules\Admin\Widgets\Buttons\SectionSetButton;
 use Override;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
+use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 class SectionController extends AbstractController
@@ -42,6 +45,7 @@ class SectionController extends AbstractController
                         'allow' => true,
                         'actions' => [
                             'create',
+                            'create-set',
                             'delete',
                             'duplicate',
                             'entries',
@@ -58,6 +62,7 @@ class SectionController extends AbstractController
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
+                    'create-set' => ['post'],
                     'delete' => ['post'],
                     'duplicate' => ['post'],
                     'order' => ['post'],
@@ -96,6 +101,34 @@ class SectionController extends AbstractController
         return $this->render('create', [
             'section' => $section,
         ]);
+    }
+
+    /**
+     * @see SectionSetButton
+     */
+    public function actionCreateSet(int $entry): Response
+    {
+        $entry = $this->findEntry($entry);
+        $set = Section::instance()::findSectionSet((int)$this->request->post('set'));
+
+        if (!$set) {
+            throw new NotFoundHttpException();
+        }
+
+        $action = CreateSectionSet::create($entry, $set);
+
+        if ($sections = $action->getSections()) {
+            $this->success(Yii::t('cms', 'SECTION_SUCCESS_SET_CREATED', [
+                'count' => count($sections),
+                'name' => $set->getName(),
+            ]));
+        }
+
+        foreach ($action->getFailed() as $section) {
+            $this->error($section);
+        }
+
+        return $this->redirect(['index', 'entry' => $entry->id]);
     }
 
     public function actionUpdate(int $id): Response|string

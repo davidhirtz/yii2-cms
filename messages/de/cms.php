@@ -103,6 +103,8 @@ return [
     'SECTION_PARENT_ENTRY_COPY_SECTION' => 'Sektion kopieren',
     'SECTION_PARENT_ENTRY_MOVE_SECTION' => 'Sektion verschieben',
     'SECTION_SECTION_COUNT_LABEL' => 'Sektionen',
+    'SECTION_SET_BUTTON' => 'Sektionsset hinzufügen',
+    'SECTION_SET_LABEL' => 'Sektionsset',
     'SECTION_SLUG_LABEL' => 'Url',
     'SECTION_SUCCESS_CREATED' => 'Die Sektion wurde erstellt.',
     'SECTION_SUCCESS_DELETED' => 'Die Sektion wurde gelöscht.',
@@ -110,5 +112,6 @@ return [
     'SECTION_SUCCESS_MOVED' => 'Die Sektion wurde verschoben',
     'SECTION_SUCCESS_ORDERED' => 'Die Reihenfolge der Sektionen wurde geändert.',
     'SECTION_SUCCESS_SELECTED_UPDATED' => 'Die ausgewählten Sektionen wurden aktualisiert.',
+    'SECTION_SUCCESS_SET_CREATED' => '{count,plural,one{# Sektion wurde} other{# Sektionen wurden}} aus „{name}“ erstellt.',
     'SECTION_SUCCESS_UPDATED' => 'Die Sektion wurde aktualisiert.',
 ];
