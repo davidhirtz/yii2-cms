@@ -48,11 +48,12 @@ class SectionAssetController extends Controller
         ?int $section = null,
         ?int $file = null,
         ?int $folder = null,
-        ?string $q = null
+        ?string $q = null,
+        ?int $asset = null,
     ): Response|string {
         $model = $this->findSectionWithAssets($section);
 
-        return $this->createAsset($model, $file, $folder, $q);
+        return $this->createAsset($model, $file, $folder, $q, $asset ? $this->findSectionAsset($asset) : null);
     }
 
     public function actionUpdate(int $id): Response|string

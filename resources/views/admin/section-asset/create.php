@@ -8,9 +8,11 @@ declare(strict_types=1);
  * @var View $this
  * @var Section $model
  * @var FileActiveDataProvider $provider
+ * @var SectionAsset|null $asset
  */
 
 use Hirtz\Cms\Models\Section;
+use Hirtz\Cms\Models\SectionAsset;
 use Hirtz\Cms\Modules\Admin\Controllers\SectionAssetController;
 use Hirtz\Cms\Modules\Admin\Widgets\Navs\SectionHeader;
 use Hirtz\Cms\Modules\Admin\Widgets\Navs\SectionSubmenu;
@@ -28,4 +30,5 @@ echo SectionSubmenu::make()
 echo GridContainer::make()
     ->grid(FileGridView::make()
         ->provider($provider)
-        ->model($model));
+        ->model($model)
+        ->asset($asset));

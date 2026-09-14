@@ -47,11 +47,12 @@ class EntryAssetController extends Controller
         ?int $entry = null,
         ?int $file = null,
         ?int $folder = null,
-        ?string $q = null
+        ?string $q = null,
+        ?int $asset = null,
     ): Response|string {
         $model = $this->findEntryWithAssets($entry);
 
-        return $this->createAsset($model, $file, $folder, $q);
+        return $this->createAsset($model, $file, $folder, $q, $asset ? $this->findEntryAsset($asset) : null);
     }
 
     public function actionUpdate(int $id): Response|string

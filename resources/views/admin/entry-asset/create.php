@@ -8,9 +8,11 @@ declare(strict_types=1);
  * @var View $this
  * @var Entry $model
  * @var FileActiveDataProvider $provider
+ * @var EntryAsset|null $asset
  */
 
 use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Models\EntryAsset;
 use Hirtz\Cms\Modules\Admin\Controllers\EntryAssetController;
 use Hirtz\Cms\Modules\Admin\Widgets\Navs\EntryHeader;
 use Hirtz\Cms\Modules\Admin\Widgets\Navs\EntrySubmenu;
@@ -28,4 +30,5 @@ echo EntrySubmenu::make()
 echo GridContainer::make()
     ->grid(FileGridView::make()
         ->provider($provider)
-        ->model($model));
+        ->model($model)
+        ->asset($asset));

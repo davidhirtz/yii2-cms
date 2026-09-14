@@ -9,6 +9,7 @@ use Hirtz\Cms\Models\EntryAsset;
 use Hirtz\Cms\Models\SectionAsset;
 use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
 use Hirtz\Cms\Test\TestCase;
+use Hirtz\Media\Models\File;
 use Hirtz\Skeleton\Models\User;
 use Hirtz\Skeleton\Test\Fixtures\UserFixture;
 use Yii;
@@ -79,6 +80,63 @@ class AssetControllerTest extends TestCase
 
         self::assertSame($count + 1, (int)EntryAsset::find()->andWhere(['model_id' => 1])->count());
         self::assertSame($count + 1, Entry::findOne(1)->asset_count);
+    }
+
+    public function testCreateWithAnAssetReplacesItsFileAndKeepsEverythingElse(): void
+    {
+        $this->login();
+
+        $asset = EntryAsset::findOne(1);
+        self::assertNotNull($asset);
+
+        $asset->name = 'Test';
+        $asset->update();
+
+        $file = $this->getFileFromFixture('file-3');
+        self::assertNotSame($file->id, $asset->file_id);
+
+        $previousFileId = $asset->file_id;
+        $previousAssetCount = $asset->file->asset_count;
+        $assetCount = $file->asset_count;
+        $count = (int)EntryAsset::find()->andWhere(['model_id' => 1])->count();
+
+        $this->post('admin/cms/entry-asset/create', [
+            'entry' => 1,
+            'file' => $file->id,
+            'asset' => $asset->id,
+        ]);
+
+        $asset = EntryAsset::findOne($asset->id);
+        self::assertNotNull($asset);
+
+        self::assertSame($count, (int)EntryAsset::find()->andWhere(['model_id' => 1])->count());
+        self::assertSame($file->id, $asset->file_id);
+        self::assertSame('Test', $asset->name);
+
+        self::assertSame($assetCount + 1, File::findOne($file->id)?->asset_count);
+        self::assertSame($previousAssetCount - 1, File::findOne($previousFileId)?->asset_count);
+    }
+
+    public function testTheFilePickerPostsToTheAssetWhenReplacingItsFile(): void
+    {
+        $this->login();
+
+        $html = Yii::$app->runAction('admin/cms/entry-asset/create', ['entry' => 1, 'asset' => 1]);
+
+        self::assertIsString($html);
+        self::assertStringContainsString('asset=1', $html);
+        self::assertStringContainsString('fa-exchange-alt', $html);
+    }
+
+    public function testReplacingASectionAssetThroughTheEntryControllerIsNotFound(): void
+    {
+        $this->login();
+
+        $sectionAsset = SectionAsset::find()->one();
+        self::assertNotNull($sectionAsset);
+
+        $this->expectException(NotFoundHttpException::class);
+        Yii::$app->runAction('admin/cms/entry-asset/create', ['entry' => 1, 'asset' => $sectionAsset->id]);
     }
 
     public function testUpdateRendersTheAsset(): void
