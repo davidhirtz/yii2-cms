@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Models\Sets;
 
+use BackedEnum;
 use Hirtz\Skeleton\Base\Traits\ContainerConfigurationTrait;
+use Hirtz\Skeleton\Base\Traits\IntBackedEnumTrait;
 
 /**
  * One section of a {@see SectionSet}: the type it is created with, and the attribute values it starts out with.
@@ -12,14 +14,18 @@ use Hirtz\Skeleton\Base\Traits\ContainerConfigurationTrait;
 class SectionTemplate
 {
     use ContainerConfigurationTrait;
+    use IntBackedEnumTrait;
 
     /**
      * @var array<string, mixed>
      */
     protected array $attributes = [];
 
-    public function __construct(public readonly int $type)
+    public readonly int $type;
+
+    public function __construct(int|BackedEnum $type)
     {
+        $this->type = static::getIntValue($type);
     }
 
     /**

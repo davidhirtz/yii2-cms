@@ -1,5 +1,9 @@
 ## 3.0 (in development)
 
+- **`Models\Sets\SectionTemplate` takes an int backed enum**, like the skeleton `Models\Definitions\Definition`
+  it is declared beside, so a project naming its section types in an enum writes
+  `SectionTemplate::make(SectionType::Text)` rather than repeating the `->value`.
+
 - **Sections are deleted in bulk.** `Modules\Admin\Widgets\Grids\SectionGridView` renders a `CheckboxColumn`
   and a footer offering `Modules\Admin\Controllers\SectionController::actionDeleteAll()`, which hands the
   selection to the new `Models\Actions\DeleteSections`. The column only appears where the action makes sense —

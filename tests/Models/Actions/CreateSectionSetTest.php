@@ -12,6 +12,7 @@ use Hirtz\Cms\Models\Sets\SectionTemplate;
 use Hirtz\Cms\Test\TestCase;
 use Hirtz\Skeleton\Test\Traits\UserFixtureTrait;
 use Override;
+use yii\base\InvalidConfigException;
 
 class CreateSectionSetTest extends TestCase
 {
@@ -93,6 +94,22 @@ class CreateSectionSetTest extends TestCase
         self::assertSame(1, Entry::findOne($this->entry->id)->section_count);
     }
 
+    public function testASectionTypeMayBeAnIntBackedEnum(): void
+    {
+        $action = CreateSectionSet::create($this->entry, $this->createSet(
+            SectionTemplate::make(SectionTemplateTestEnum::Default)->attribute('name', 'Hero'),
+        ));
+
+        self::assertSame([], $action->getFailed());
+        self::assertSame(Section::TYPE_DEFAULT, $action->getSections()[0]->type);
+    }
+
+    public function testAStringBackedEnumIsInvalid(): void
+    {
+        $this->expectException(InvalidConfigException::class);
+        SectionTemplate::make(SectionTemplateTestStringEnum::Default);
+    }
+
     private function createSet(SectionTemplate ...$sections): SectionSet
     {
         return SectionSet::make(1)
@@ -127,4 +144,14 @@ class CreateSectionSetTest extends TestCase
 
         return $section;
     }
+}
+
+enum SectionTemplateTestEnum: int
+{
+    case Default = Section::TYPE_DEFAULT;
+}
+
+enum SectionTemplateTestStringEnum: string
+{
+    case Default = 'default';
 }
