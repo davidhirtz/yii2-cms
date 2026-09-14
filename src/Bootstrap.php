@@ -14,13 +14,13 @@ use Hirtz\Cms\Models\Events\TenantAfterSaveEventHandler;
 use Hirtz\Cms\Models\Events\TenantBeforeDeleteEventHandler;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Models\SectionAsset;
+use Hirtz\Skeleton\Helpers\EventHelper;
 use Hirtz\Skeleton\Modules\Admin\Controllers\DashboardController;
 use Hirtz\Skeleton\Web\Application;
 use Hirtz\Tenant\Models\Tenant;
 use Hirtz\Tenant\Modules\Admin\Widgets\Grids\TenantGridView;
 use Yii;
 use yii\base\BootstrapInterface;
-use yii\base\Event;
 use yii\base\ModelEvent;
 use yii\db\BaseActiveRecord;
 use yii\i18n\PhpMessageSource;
@@ -92,17 +92,17 @@ class Bootstrap implements BootstrapInterface
 
     protected function addTenantEventHandlers(): void
     {
-        Event::on(
+        EventHelper::on(
             Tenant::class,
             BaseActiveRecord::EVENT_BEFORE_DELETE,
-            fn (ModelEvent $event) => Yii::createObject(TenantBeforeDeleteEventHandler::class, [
+            fn (Tenant $tenant, ModelEvent $event) => Yii::createObject(TenantBeforeDeleteEventHandler::class, [
                 $event,
-                $event->sender,
+                $tenant,
             ])
         );
 
         foreach ([BaseActiveRecord::EVENT_AFTER_INSERT, BaseActiveRecord::EVENT_AFTER_UPDATE] as $name) {
-            Event::on(
+            EventHelper::on(
                 Tenant::class,
                 $name,
                 fn () => Yii::createObject(TenantAfterSaveEventHandler::class)
