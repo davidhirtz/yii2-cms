@@ -22,6 +22,7 @@ use Yii;
 use yii\base\BootstrapInterface;
 use yii\base\Event;
 use yii\base\ModelEvent;
+use yii\db\BaseActiveRecord;
 use yii\i18n\PhpMessageSource;
 
 class Bootstrap implements BootstrapInterface
@@ -91,14 +92,14 @@ class Bootstrap implements BootstrapInterface
     {
         Event::on(
             Tenant::class,
-            Tenant::EVENT_BEFORE_DELETE,
+            BaseActiveRecord::EVENT_BEFORE_DELETE,
             fn (ModelEvent $event) => Yii::createObject(TenantBeforeDeleteEventHandler::class, [
                 $event,
                 $event->sender,
             ])
         );
 
-        foreach ([Tenant::EVENT_AFTER_INSERT, Tenant::EVENT_AFTER_UPDATE] as $name) {
+        foreach ([BaseActiveRecord::EVENT_AFTER_INSERT, BaseActiveRecord::EVENT_AFTER_UPDATE] as $name) {
             Event::on(
                 Tenant::class,
                 $name,
