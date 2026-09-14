@@ -70,11 +70,7 @@ class CreateSectionSet
 
     protected function updateEntry(): void
     {
-        $section = $this->sections[array_key_last($this->sections)];
-
-        $this->entry->recalculateSectionCount();
-        $this->entry->updated_at = $section->updated_at;
-        $this->entry->update();
+        $this->entry->recalculateSectionCount()->update();
     }
 
     /**

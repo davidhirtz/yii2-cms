@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Models\Sets;
 
+use Closure;
+use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
+use Hirtz\Cms\Modules\Admin\Controllers\SectionController;
 use Hirtz\Skeleton\Base\Traits\ContainerConfigurationTrait;
 use yii\base\InvalidConfigException;
 
@@ -18,6 +21,7 @@ class SectionSet
 
     protected ?string $name = null;
     protected ?string $icon = null;
+    protected Closure|bool $available = true;
 
     /**
      * @var list<SectionTemplate>
@@ -37,6 +41,18 @@ class SectionSet
     public function icon(?string $icon): static
     {
         $this->icon = $icon;
+        return $this;
+    }
+
+    /**
+     * Whether the set is offered for an entry, and enforced by
+     * {@see SectionController::actionCreateSet()} rather than only filtering the admin's select.
+     *
+     * @param Closure(Entry): bool|bool $available
+     */
+    public function available(Closure|bool $available = true): static
+    {
+        $this->available = $available;
         return $this;
     }
 
@@ -62,6 +78,11 @@ class SectionSet
     public function getSections(): array
     {
         return $this->sections;
+    }
+
+    public function isAvailable(Entry $entry): bool
+    {
+        return $this->available instanceof Closure ? (bool)($this->available)($entry) : $this->available;
     }
 
     public function validate(): void

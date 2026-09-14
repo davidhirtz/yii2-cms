@@ -124,6 +124,28 @@ class SectionControllerTest extends TestCase
         $this->post('admin/cms/section/create-set', ['entry' => $this->entry->id], ['set' => '99']);
     }
 
+    /**
+     * A set the entry is not offered must be refused by the action, not only left out of the modal's select.
+     */
+    public function testCreateSetRefusesASetTheEntryIsNotOffered(): void
+    {
+        $this->login();
+
+        Section::getModule()->setSectionSets(fn (): array => [
+            SectionSet::make(1)
+                ->name('Landing page')
+                ->available(false)
+                ->sections(SectionTemplate::make(Section::TYPE_DEFAULT)),
+        ]);
+
+        try {
+            $this->post('admin/cms/section/create-set', ['entry' => $this->entry->id], ['set' => '1']);
+            self::fail('The action accepted a set the entry is not offered.');
+        } catch (NotFoundHttpException) {
+            self::assertSame(0, (int)Section::find()->where(['entry_id' => $this->entry->id])->count());
+        }
+    }
+
     public function testCreateSetRefusesAGetRequest(): void
     {
         $this->login();

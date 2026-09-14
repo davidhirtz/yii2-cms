@@ -26,6 +26,20 @@
   another or naming an undeclared section type throws there. `Models\Actions\CreateSectionSet` inserts them as a
   batch and `Modules\Admin\Controllers\SectionController::actionCreateSet()` is the endpoint.
 
+  `SectionSet::available()` scopes a set to the entries it makes sense for — by type, by tenant, by anything the
+  entry knows — the way `Models\Types\Type::available()` scopes a type:
+
+  ```php
+  SectionSet::make(2)
+      ->name(Yii::t('app', 'Article layout'))
+      ->available(fn (Entry $entry): bool => $entry->type === Entry::TYPE_ARTICLE)
+      ->sections(...),
+  ```
+
+  It is read off the **entry**, never off the request: the admin edits entries of any tenant, so the request's
+  tenant is not the entry's. `actionCreateSet()` enforces it as well as the modal's select, and answers an
+  unavailable set with the same 404 as an unknown one rather than confirming that it exists.
+
 - **The section index header is a `Widgets\Navs\SectionActionDropdown`**, not a
   `Widgets\Buttons\SectionCreateButton`. The dropdown takes either a model — the section actions, unchanged — or
   the index page's `SectionActiveDataProvider`, in which case it offers the create button and, where a project

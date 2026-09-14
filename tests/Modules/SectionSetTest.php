@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Tests\Modules;
 
 use Closure;
+use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Models\Sets\SectionSet;
 use Hirtz\Cms\Models\Sets\SectionTemplate;
@@ -80,6 +81,38 @@ class SectionSetTest extends TestCase
         self::assertSame(1, $calls);
     }
 
+    public function testASetIsAvailableByDefault(): void
+    {
+        $set = SectionSet::make(1)
+            ->name('Landing page')
+            ->sections(SectionTemplate::make(Section::TYPE_DEFAULT));
+
+        self::assertTrue($set->isAvailable($this->createEntry(Entry::TYPE_DEFAULT)));
+    }
+
+    /**
+     * A set is scoped by the record it is offered for, never by the request — the admin edits entries of any
+     * tenant, so the request's tenant is not the entry's.
+     */
+    public function testAvailabilityIsDecidedPerEntry(): void
+    {
+        $set = SectionSet::make(1)
+            ->name('Landing page')
+            ->available(fn (Entry $entry): bool => $entry->type === 2)
+            ->sections(SectionTemplate::make(Section::TYPE_DEFAULT));
+
+        self::assertTrue($set->isAvailable($this->createEntry(2)));
+        self::assertFalse($set->isAvailable($this->createEntry(Entry::TYPE_DEFAULT)));
+    }
+
+    public function testAvailabilityTakesAPlainBool(): void
+    {
+        $entry = $this->createEntry(Entry::TYPE_DEFAULT);
+
+        self::assertFalse(SectionSet::make(1)->available(false)->isAvailable($entry));
+        self::assertTrue(SectionSet::make(1)->available()->isAvailable($entry));
+    }
+
     public function testASetWithoutANameIsRefused(): void
     {
         $this->setSectionSets(fn (): array => [
@@ -151,6 +184,14 @@ class SectionSetTest extends TestCase
     private function setSectionSets(Closure $sectionSets): void
     {
         $this->getModule()->setSectionSets($sectionSets);
+    }
+
+    private function createEntry(int $type): Entry
+    {
+        $entry = Entry::create();
+        $entry->type = $type;
+
+        return $entry;
     }
 
     private function getModule(): Module

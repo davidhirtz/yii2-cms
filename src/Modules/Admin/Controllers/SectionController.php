@@ -111,7 +111,8 @@ class SectionController extends AbstractController
         $entry = $this->findEntry($entry);
         $set = static::getModule()->findSectionSet((int)$this->request->post('set'));
 
-        if (!$set) {
+        // A set the entry is not offered is a 404 like an unknown one, rather than a hint that it exists.
+        if (!$set?->isAvailable($entry)) {
             throw new NotFoundHttpException();
         }
 

@@ -108,6 +108,9 @@ class SectionSetButton extends Widget
      */
     protected function getSets(): array
     {
-        return static::getModule()->getSectionSets();
+        return array_filter(
+            static::getModule()->getSectionSets(),
+            fn (SectionSet $set): bool => $set->isAvailable($this->model),
+        );
     }
 }

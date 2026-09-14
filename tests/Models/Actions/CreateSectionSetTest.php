@@ -56,7 +56,7 @@ class CreateSectionSetTest extends TestCase
     }
 
     /**
-     * The sections are inserted as a batch, so the entry is touched once after the last of them.
+     * Each section is told not to touch the entry, which the action then does once for all of them.
      */
     public function testTheEntryCountIsUpdatedOnce(): void
     {
@@ -67,14 +67,11 @@ class CreateSectionSetTest extends TestCase
             SectionTemplate::make(Section::TYPE_DEFAULT),
         ));
 
-        $sections = $action->getSections();
-        $entry = Entry::findOne($this->entry->id);
+        foreach ($action->getSections() as $section) {
+            self::assertFalse($section->shouldUpdateEntryAfterSave, 'The section updated the entry itself.');
+        }
 
-        self::assertSame(3, $entry->section_count);
-        self::assertSame(
-            $sections[1]->updated_at->getTimestamp(),
-            $entry->updated_at->getTimestamp()
-        );
+        self::assertSame(3, Entry::findOne($this->entry->id)->section_count);
     }
 
     /**

@@ -51,6 +51,39 @@ class SectionActionDropdownTest extends TestCase
         self::assertStringContainsString('create-set', $html);
     }
 
+    public function testOnlyTheSetsAvailableToTheEntryAreOffered(): void
+    {
+        Section::getModule()->setSectionSets(fn (): array => [
+            SectionSet::make(1)
+                ->name('Landing page')
+                ->sections(SectionTemplate::make(Section::TYPE_DEFAULT)),
+            SectionSet::make(2)
+                ->name('Article layout')
+                ->available(fn (Entry $entry): bool => $entry->type === 99)
+                ->sections(SectionTemplate::make(Section::TYPE_DEFAULT)),
+        ]);
+
+        $html = $this->render();
+
+        self::assertStringContainsString('<option value="1">Landing page</option>', $html);
+        self::assertStringNotContainsString('Article layout', $html);
+    }
+
+    public function testTheSetButtonIsHiddenWhenNoSetIsAvailable(): void
+    {
+        Section::getModule()->setSectionSets(fn (): array => [
+            SectionSet::make(1)
+                ->name('Landing page')
+                ->available(false)
+                ->sections(SectionTemplate::make(Section::TYPE_DEFAULT)),
+        ]);
+
+        $html = $this->render();
+
+        self::assertStringContainsString('New Section', $html);
+        self::assertStringNotContainsString('Add Section Set', $html);
+    }
+
     public function testTheSetButtonIsHiddenWithoutDeclaredSets(): void
     {
         $html = $this->render();
