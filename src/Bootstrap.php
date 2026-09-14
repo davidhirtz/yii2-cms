@@ -47,7 +47,9 @@ class Bootstrap implements BootstrapInterface
             'models' => [
                 Category::class,
                 Entry::class,
+                EntryAsset::class,
                 Section::class,
+                SectionAsset::class,
             ],
         ]);
 

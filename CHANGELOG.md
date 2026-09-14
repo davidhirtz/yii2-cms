@@ -1,5 +1,8 @@
 ## 3.0 (in development)
 
+- **`Models\EntryAsset` and `Models\SectionAsset` are registered with the `search` component**, so an asset's
+  caption and alt text are findable. Run `./yii search/rebuild` once to index the rows that already exist.
+
 - **Linking or removing a nested category reports the whole branch.** `inheritNestedCategories` links a category's
   ancestors and removes its descendants along with it, which the flash claimed was one category;
   `Models\EntryCategory::$inheritedEntryCategories` collects what the cascade touched and
