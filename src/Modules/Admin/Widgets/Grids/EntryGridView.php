@@ -68,11 +68,11 @@ class EntryGridView extends GridView
             $this->showCategoryDropdown = $enableCategories;
         }
 
-        $types = Entry::instance()::getTypes();
+        $type = $enableCategories ? Entry::instance()::findType($this->provider->type) : null;
 
-        if ($enableCategories && $this->provider->type) {
-            $this->showCategories = $types[$this->provider->type]['showCategories'] ?? $this->showCategories;
-            $this->showCategoryDropdown = $types[$this->provider->type]['showCategoryDropdown'] ?? $this->showCategoryDropdown;
+        if ($type) {
+            $this->showCategories = $type->showsCategories() ?? $this->showCategories;
+            $this->showCategoryDropdown = $type->showsCategoryDropdown() ?? $this->showCategoryDropdown;
         }
 
         /**
@@ -162,7 +162,7 @@ class EntryGridView extends GridView
 
     protected function hasVisibleTypes(): bool
     {
-        return count(Entry::instance()::getTypes()) > 1;
+        return count(Entry::instance()::getTypeDefinitions()) > 1;
     }
 
     protected function getNameColumn(): ?Column

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Models;
 
 use Hirtz\Cms\Models\Traits\SitemapTrait;
+use Hirtz\Cms\Models\Types\Type;
 use Hirtz\Cms\Modules\ModuleTrait;
 use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\datetime\DateTimeBehavior;
@@ -159,9 +160,22 @@ abstract class ActiveRecord extends BaseActiveRecord implements
         return (int)$this->findSiblings()->max('[[position]]');
     }
 
+    #[Override]
+    public static function getTypeClass(): string
+    {
+        return Type::class;
+    }
+
+    #[Override]
+    public function getType(): ?Type
+    {
+        /** @var Type|null */
+        return static::findType($this->type ?? null);
+    }
+
     public function getCssClass(): string
     {
-        return $this->getTypeOptions()['cssClass'] ?? '';
+        return $this->getType()?->getCssClass() ?? '';
     }
 
     public function getTrailAttributes(): array

@@ -249,7 +249,7 @@ class SectionStack extends Widget
         $position = 1;
 
         foreach ($sections as $section) {
-            $visible = $this->getTypeOption($section, 'visible');
+            $visible = $section->getType()?->getVisible();
 
             $isVisible = $visible === null
                 ? ($this->filter === null || ($this->filter)($section))
@@ -280,7 +280,7 @@ class SectionStack extends Widget
                 continue;
             }
 
-            $collect = $this->getTypeOption($section, 'collect');
+            $collect = $section->getType()?->getCollect();
             $collected = [];
 
             if ($collect instanceof Closure) {
@@ -386,7 +386,7 @@ class SectionStack extends Widget
     {
         return $this->sectionViewFile
             ? ($this->sectionViewFile)($section)
-            : ($this->getTypeOption($section, 'viewFile') ?: $this->viewFile);
+            : ($section->getType()?->getViewFile() ?: $this->viewFile);
     }
 
     /**
@@ -394,7 +394,7 @@ class SectionStack extends Widget
      */
     protected function getGroupKey(Section $section): string
     {
-        $key = $this->getTypeOption($section, 'group');
+        $key = $section->getType()?->getGroup();
         $key = $key instanceof Closure ? $key($section) : $key;
 
         $key ??= $this->groupKey
@@ -409,20 +409,12 @@ class SectionStack extends Widget
      */
     protected function getWrapperKey(Section $section): ?string
     {
-        $key = $this->getTypeOption($section, 'wrapper');
+        $key = $section->getType()?->getWrapper();
         $key = $key instanceof Closure ? $key($section) : $key;
 
         $key ??= $this->wrapperKey ? ($this->wrapperKey)($section) : null;
 
         return $key === '' ? null : $key;
-    }
-
-    /**
-     * @param T $section
-     */
-    protected function getTypeOption(Section $section, string $key): mixed
-    {
-        return $section->getTypeOptions()[$key] ?? null;
     }
 
     private function setRenderOrder(): void

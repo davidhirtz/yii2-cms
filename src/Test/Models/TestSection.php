@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Test\Models;
 
 use Hirtz\Cms\Models\Section;
+use Hirtz\Cms\Models\Types\SectionType;
 use Hirtz\Skeleton\Models\CustomAttributes\GroupCustomAttribute;
 use Hirtz\Skeleton\Models\CustomAttributes\IconCustomAttribute;
 use Hirtz\Skeleton\Models\CustomAttributes\TextCustomAttribute;
@@ -27,31 +28,27 @@ class TestSection extends Section
     public static function getTypes(): array
     {
         return [
-            self::TYPE_HEADLINE => [
-                'name' => 'Headline',
-                'hiddenFields' => ['content', '#entries'],
-                'customAttributes' => fn (): array => [
+            SectionType::make(self::TYPE_HEADLINE)
+                ->name('Headline')
+                ->hiddenFields('content', self::FIELD_ENTRIES)
+                ->customAttributes(fn (): array => [
                     TextCustomAttribute::make('subtitle')
                         ->translatable(),
-                ],
-            ],
-            self::TYPE_TEXT_COLUMN => [
-                'name' => 'Column',
-                'hiddenFields' => ['name', '#assets', '#entries'],
-            ],
-            self::TYPE_GALLERY => [
-                'name' => 'Gallery',
-                'hiddenFields' => ['name', 'content', '#entries'],
-            ],
-            self::TYPE_BLOG => [
-                'name' => 'Blog',
-                'entriesOrderBy' => ['position' => SORT_ASC],
-                'hiddenFields' => ['name', 'content', '#assets'],
-            ],
-            self::TYPE_LINK_LIST => [
-                'name' => 'Link list',
-                'hiddenFields' => ['content', '#assets', '#entries'],
-                'customAttributes' => fn (): array => [
+                ]),
+            SectionType::make(self::TYPE_TEXT_COLUMN)
+                ->name('Column')
+                ->hiddenFields('name', self::FIELD_ASSETS, self::FIELD_ENTRIES),
+            SectionType::make(self::TYPE_GALLERY)
+                ->name('Gallery')
+                ->hiddenFields('name', 'content', self::FIELD_ENTRIES),
+            SectionType::make(self::TYPE_BLOG)
+                ->name('Blog')
+                ->entriesOrderBy(['position' => SORT_ASC])
+                ->hiddenFields('name', 'content', self::FIELD_ASSETS),
+            SectionType::make(self::TYPE_LINK_LIST)
+                ->name('Link list')
+                ->hiddenFields('content', self::FIELD_ASSETS, self::FIELD_ENTRIES)
+                ->customAttributes(fn (): array => [
                     GroupCustomAttribute::make('links')
                         ->multiple()
                         ->maxCount(5)
@@ -62,8 +59,7 @@ class TestSection extends Section
                                 ->required(),
                             IconCustomAttribute::make('icon'),
                         ]),
-                ],
-            ],
+                ]),
         ];
     }
 }

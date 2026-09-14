@@ -44,7 +44,7 @@ trait CategoryGridTrait
 
     protected function hasVisibleTypes(): bool
     {
-        return count(Category::instance()::getTypes()) > 1;
+        return count(Category::instance()::getTypeDefinitions()) > 1;
     }
 
     protected function getNameColumn(): ?Column

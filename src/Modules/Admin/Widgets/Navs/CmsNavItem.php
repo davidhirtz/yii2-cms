@@ -57,13 +57,13 @@ class CmsNavItem extends NavItem
 
     protected function addEntrySubnavItems(): void
     {
-        $typeOptions = Entry::instance()::getTypes();
-        $currentType = $this->view->params['entryType'] ?? key($typeOptions);
+        $types = Entry::instance()::getTypeDefinitions();
+        $currentType = $this->view->params['entryType'] ?? key($types);
 
-        foreach ($typeOptions as $type => $attributes) {
+        foreach ($types as $type => $definition) {
             $this->addItem(NavItem::make()
                 ->active($currentType === $type))
-                ->label($attributes['label'] ?? $attributes['plural'] ?? $attributes['name'])
+                ->label($definition->getPlural())
                 ->url(['/admin/cms/entry/index', 'type' => $type])
                 ->roles([Entry::AUTH_ENTRY]);
         }

@@ -43,10 +43,10 @@ class EntryHeader extends Header
         }
 
         if ($this->provider) {
-            $typeOptions = $this->provider->type ? Entry::instance()::getTypes()[$this->provider->type] ?? null : null;
+            $type = Entry::instance()::findType($this->provider->type);
 
             $this->subtitle ??= $this->getPaginationSubtitle($this->provider);
-            $this->title ??= $typeOptions['plural'] ?? $typeOptions['name'] ?? Yii::t('cms', 'COMMON_ENTRIES');
+            $this->title ??= $type?->getPlural() ?: Yii::t('cms', 'COMMON_ENTRIES');
             $this->url ??= ['/admin/cms/entry/index', 'type' => $this->provider->type];
 
             $this->addContent($this->getCreateEntryButton());

@@ -1,5 +1,54 @@
 # Upgrade Guide
 
+## 3.0.0 — The entry, section and category types
+
+Read the skeleton's guide on typed type definitions first, and the media one for `sizes` and `transformations`.
+
+`Models\Types\Type` is the cms base and carries what `Models\ActiveRecord` reads for every cms model:
+
+| Setter                | Getter            | Read by                                      |
+|-----------------------|-------------------|----------------------------------------------|
+| `viewFile(?string)`   | `getViewFile()`   | `Entry::getViewFile()`, `Section::getViewFile()`, `Widgets\SectionStack` |
+| `cssClass(?string)`   | `getCssClass()`   | `Models\ActiveRecord::getCssClass()`         |
+
+`Models\Types\EntryType`, on top of that and of the media `sizes()` / `transformations()`:
+
+| Setter                        | Getter                      | Read by                                |
+|-------------------------------|-----------------------------|----------------------------------------|
+| `orderBy(?array)`             | `getOrderBy()`              | `Modules\Admin\Data\EntryActiveDataProvider` |
+| `sort(?array)`                | `getSort()`                 | the same                               |
+| `showCategories(?bool)`       | `showsCategories()`         | `Modules\Admin\Widgets\Grids\EntryGridView` |
+| `showCategoryDropdown(?bool)` | `showsCategoryDropdown()`   | the same                               |
+| `showInMenu(bool)`            | `hasShowInMenuEnabled()`    | `Models\Traits\MenuAttributeTrait`    |
+| `showInFooter(bool)`          | `hasShowInFooterEnabled()`  | `Models\Traits\FooterAttributeTrait`  |
+
+`Models\Types\SectionType`, likewise:
+
+| Setter                                 | Getter                | Read by                             |
+|----------------------------------------|-----------------------|-------------------------------------|
+| `visible(Closure\|bool)`               | `getVisible()`        | `Widgets\SectionStack`, stage 1     |
+| `collect(?Closure)`                    | `getCollect()`        | stage 2                             |
+| `group(Closure\|string\|null)`         | `getGroup()`          | stage 3                             |
+| `wrapper(Closure\|string\|null)`       | `getWrapper()`        | stage 4                             |
+| `entriesOrderBy(?array)`               | `getEntriesOrderBy()` | `Section::getEntriesOrderBy()`      |
+| `entriesTypes(int ...)`                | `getEntriesTypes()`   | `Section::getEntriesTypes()`, `Modules\Admin\Widgets\Grids\SectionEntryGridView` |
+| `nameColumn(Closure\|string\|null)`    | `getNameColumn()`     | `Section::getNameColumnContent()`   |
+
+`visible()` keeps the meaning the section stack gave it — whether the section is *rendered on the site*. Whether
+a type is offered in the admin is the base class's `available()`.
+
+`entriesTypes()` is validated against `Entry`'s own declarations now, so a type that names one the entry model
+does not declare throws instead of filtering the dropdown down to nothing.
+
+Two magic strings among the hidden fields became constants: `Models\Section::FIELD_ENTRIES` and the media
+`Models\Interfaces\AssetModelInterface::FIELD_ASSETS`.
+
+`Models\Traits\MetaImageTrait::getMetaImageTypeOptions()` is `getMetaImageTypes()` and returns a list, so
+`getTypes()` composes with the spread operator rather than `+`, which discarded a colliding key without a word.
+Its `visible` key — which nothing in v3 read — is `available()`, and `Widgets\Forms\Fields\TypeSelectField`
+honours it again.
+
+
 ## 3.0.0 — Sections
 
 `Widgets\Sections` is gone. `Widgets\SectionStack` renders an entry's sections and `Widgets\SectionGroup`

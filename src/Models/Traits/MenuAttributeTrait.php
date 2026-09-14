@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Models\Traits;
 
 use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Models\Types\EntryType;
 use Yii;
 
 /**
@@ -32,7 +33,8 @@ trait MenuAttributeTrait
 
     public function hasShowInMenuEnabled(): bool
     {
-        return $this->getTypeOptions()['hasShowInMenuEnabled'] ?? true;
+        $type = $this->getType();
+        return !$type instanceof EntryType || $type->hasShowInMenuEnabled();
     }
 
     public function isMenuItem(): bool

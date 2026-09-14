@@ -7,6 +7,7 @@ namespace Hirtz\Cms\Tests\Widgets;
 use Closure;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
+use Hirtz\Cms\Models\Types\SectionType;
 use Hirtz\Cms\Test\TestCase;
 use Hirtz\Cms\Widgets\SectionGroup;
 use Hirtz\Cms\Widgets\SectionStack;
@@ -438,87 +439,67 @@ class TestSection extends Section
     public static function getTypes(): array
     {
         return [
-            self::TYPE_TEXT => [
-                'name' => 'Text',
-            ],
-            self::TYPE_ALT => [
-                'name' => 'Alt',
-                'viewFile' => '@cmsTestViews/site/_alt',
-            ],
-            self::TYPE_INVISIBLE => [
-                'name' => 'Invisible',
-                'visible' => false,
-            ],
-            self::TYPE_VISIBLE_UNLESS_HIDDEN => [
-                'name' => 'Visible unless hidden',
-                'visible' => fn (Section $section): bool => $section->name !== 'hidden',
-            ],
-            self::TYPE_GROUP_A => [
-                'name' => 'Group A',
-                'group' => 'a',
-            ],
-            self::TYPE_GROUP_B => [
-                'name' => 'Group B',
-                'group' => 'b',
-            ],
-            self::TYPE_GROUP_A_ALT => [
-                'name' => 'Group A, other view',
-                'group' => 'a',
-                'viewFile' => '@cmsTestViews/site/_alt',
-            ],
-            self::TYPE_DARK => [
-                'name' => 'Dark',
-                'wrapper' => 'dark',
-            ],
-            self::TYPE_DARK_ALT => [
-                'name' => 'Dark, other view',
-                'wrapper' => fn (Section $section): string => 'dark',
-                'viewFile' => '@cmsTestViews/site/_alt',
-            ],
-            self::TYPE_DARK_TABS => [
-                'name' => 'Dark, third view',
-                'wrapper' => 'dark',
-                'viewFile' => '@cmsTestViews/site/_tabs',
-            ],
-            self::TYPE_LIGHT => [
-                'name' => 'Light',
-                'wrapper' => 'light',
-            ],
-            self::TYPE_COLLECT_ALL => [
-                'name' => 'Collects all of its type',
-                'collect' => SectionStack::collectAll(),
-            ],
-            self::TYPE_COLLECT_ADJACENT => [
-                'name' => 'Collects the adjacent ones of its type',
-                'collect' => SectionStack::collectAdjacent(),
-            ],
-            self::TYPE_COLLECT_NOTHING => [
-                'name' => 'Collects nothing',
-                'collect' => fn (Section $head, array $rest): array => [],
-            ],
-            self::TYPE_HEAD => [
-                'name' => 'Head',
-                'collect' => self::collectItems(),
-            ],
-            self::TYPE_ITEM => [
-                'name' => 'Item',
-            ],
-            self::TYPE_POPS_A => [
-                'name' => 'Popped, first type',
-                'viewFile' => '@cmsTestViews/site/_pops',
-            ],
-            self::TYPE_POPS_B => [
-                'name' => 'Popped, second type',
-                'viewFile' => '@cmsTestViews/site/_pops',
-            ],
-            self::TYPE_WHERE => [
-                'name' => 'Popped by callback',
-                'viewFile' => '@cmsTestViews/site/_where',
-            ],
-            self::TYPE_CONTEXT => [
-                'name' => 'Context',
-                'viewFile' => '@cmsTestViews/site/_context',
-            ],
+            SectionType::make(self::TYPE_TEXT)
+                ->name('Text'),
+            SectionType::make(self::TYPE_ALT)
+                ->name('Alt')
+                ->viewFile('@cmsTestViews/site/_alt'),
+            SectionType::make(self::TYPE_INVISIBLE)
+                ->name('Invisible')
+                ->visible(false),
+            SectionType::make(self::TYPE_VISIBLE_UNLESS_HIDDEN)
+                ->name('Visible unless hidden')
+                ->visible(fn (Section $section): bool => $section->name !== 'hidden'),
+            SectionType::make(self::TYPE_GROUP_A)
+                ->name('Group A')
+                ->group('a'),
+            SectionType::make(self::TYPE_GROUP_B)
+                ->name('Group B')
+                ->group('b'),
+            SectionType::make(self::TYPE_GROUP_A_ALT)
+                ->name('Group A, other view')
+                ->group('a')
+                ->viewFile('@cmsTestViews/site/_alt'),
+            SectionType::make(self::TYPE_DARK)
+                ->name('Dark')
+                ->wrapper('dark'),
+            SectionType::make(self::TYPE_DARK_ALT)
+                ->name('Dark, other view')
+                ->wrapper(fn (Section $section): string => 'dark')
+                ->viewFile('@cmsTestViews/site/_alt'),
+            SectionType::make(self::TYPE_DARK_TABS)
+                ->name('Dark, third view')
+                ->wrapper('dark')
+                ->viewFile('@cmsTestViews/site/_tabs'),
+            SectionType::make(self::TYPE_LIGHT)
+                ->name('Light')
+                ->wrapper('light'),
+            SectionType::make(self::TYPE_COLLECT_ALL)
+                ->name('Collects all of its type')
+                ->collect(SectionStack::collectAll()),
+            SectionType::make(self::TYPE_COLLECT_ADJACENT)
+                ->name('Collects the adjacent ones of its type')
+                ->collect(SectionStack::collectAdjacent()),
+            SectionType::make(self::TYPE_COLLECT_NOTHING)
+                ->name('Collects nothing')
+                ->collect(fn (Section $head, array $rest): array => []),
+            SectionType::make(self::TYPE_HEAD)
+                ->name('Head')
+                ->collect(self::collectItems()),
+            SectionType::make(self::TYPE_ITEM)
+                ->name('Item'),
+            SectionType::make(self::TYPE_POPS_A)
+                ->name('Popped, first type')
+                ->viewFile('@cmsTestViews/site/_pops'),
+            SectionType::make(self::TYPE_POPS_B)
+                ->name('Popped, second type')
+                ->viewFile('@cmsTestViews/site/_pops'),
+            SectionType::make(self::TYPE_WHERE)
+                ->name('Popped by callback')
+                ->viewFile('@cmsTestViews/site/_where'),
+            SectionType::make(self::TYPE_CONTEXT)
+                ->name('Context')
+                ->viewFile('@cmsTestViews/site/_context'),
         ];
     }
 

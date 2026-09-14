@@ -1,5 +1,17 @@
 ## 3.0 (in development)
 
+- **The cms types are classes.** `Models\Types\Type` carries the two options every cms model reads (`viewFile()`,
+  `cssClass()`); `Models\Types\EntryType` adds `orderBy()`, `sort()`, `showCategories()`,
+  `showCategoryDropdown()`, `showInMenu()` and `showInFooter()`; `Models\Types\SectionType` adds the four
+  `Widgets\SectionStack` stages — `visible()`, `group()`, `wrapper()`, `collect()` — plus `entriesOrderBy()`,
+  `entriesTypes()` and `nameColumn()`; `Models\Types\CategoryType` adds nothing. `EntryType` and `SectionType`
+  also carry the media `sizes()` and `transformations()`. `SectionType::entriesTypes()` is validated against the
+  entry's own declarations, which the array never was. `Models\Section::FIELD_ENTRIES` replaces the magic
+  `'#entries'` string, and `Models\Traits\MetaImageTrait::getMetaImageTypeOptions()` is `getMetaImageTypes()`,
+  composing with the spread operator instead of `+` — which silently discarded a colliding key — and declaring
+  the meta image's admin visibility through `available()` rather than the `visible` key nothing read in v3. See
+  UPGRADE.md
+
 - **Renaming an entry back to an earlier slug no longer builds a redirect loop.**
   `Models\Actions\SavePermalinks::updatePreviousRedirects()` repointed every redirect aimed at the old URL and
   ignored the result, so the one whose `request_uri` is where the entry now lives was left pointing at a URI the

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Models;
 
 use Closure;
+use Hirtz\Cms\Models\Types\SectionType;
 use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Models\Queries\SectionQuery;
 use Hirtz\Cms\Models\Traits\EntryRelationTrait;
@@ -42,6 +43,10 @@ class Section extends ActiveRecord implements AssetModelInterface, SearchableInt
     use SearchableTrait;
     use SlugAttributeTrait;
 
+    /**
+     * The marker that hides the linked entries panel, listed among a type's hidden fields.
+     */
+    final public const string FIELD_ENTRIES = '#entries';
 
     public array|string|null $slugTargetAttribute = ['entry_id', 'slug'];
     public bool|null $shouldUpdateEntryAfterSave = null;
@@ -241,12 +246,8 @@ class Section extends ActiveRecord implements AssetModelInterface, SearchableInt
 
     public function getNameColumnContent(): ?string
     {
-        if (isset(static::getTypes()[$this->type]['nameColumn'])) {
-            $nameColumn = static::getTypes()[$this->type]['nameColumn'];
-            return $nameColumn instanceof Closure ? ($nameColumn)($this) : $nameColumn;
-        }
-
-        return null;
+        $nameColumn = $this->getType()?->getNameColumn();
+        return $nameColumn instanceof Closure ? $nameColumn($this) : $nameColumn;
     }
 
     public function getAdminRoute(): array|false
@@ -298,12 +299,15 @@ class Section extends ActiveRecord implements AssetModelInterface, SearchableInt
 
     public function getEntriesOrderBy(): ?array
     {
-        return $this->getTypeOptions()['entriesOrderBy'] ?? null;
+        return $this->getType()?->getEntriesOrderBy();
     }
 
+    /**
+     * @return list<int>|null
+     */
     public function getEntriesTypes(): ?array
     {
-        return $this->getTypeOptions()['entriesTypes'] ?? null;
+        return $this->getType()?->getEntriesTypes();
     }
 
     public function getHtmlId(): ?string
@@ -316,14 +320,27 @@ class Section extends ActiveRecord implements AssetModelInterface, SearchableInt
         return ($route = $this->entry->getRoute()) ? [...$route, '#' => $this->getHtmlId()] : false;
     }
 
+    #[Override]
+    public static function getTypeClass(): string
+    {
+        return SectionType::class;
+    }
+
+    #[Override]
+    public function getType(): ?SectionType
+    {
+        /** @var SectionType|null */
+        return static::findType($this->type ?? null);
+    }
+
     public function getViewFile(): ?string
     {
-        return $this->getTypeOptions()['viewFile'] ?? null;
+        return $this->getType()?->getViewFile();
     }
 
     public function getVisibleAssets(): array
     {
-        return $this->hasAssetsEnabled() && $this->isAttributeVisible('#assets') ? $this->assets : [];
+        return $this->hasAssetsEnabled() && $this->isAttributeVisible(self::FIELD_ASSETS) ? $this->assets : [];
     }
 
     public function getAssetClass(): string

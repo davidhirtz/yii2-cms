@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Models;
 
 use Hirtz\Cms\Models\Collections\CategoryCollection;
+use Hirtz\Cms\Models\Types\CategoryType;
 use Hirtz\Cms\Models\Queries\CategoryQuery;
 use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Models\Traits\SlugAttributeTrait;
@@ -348,6 +349,19 @@ class Category extends ActiveRecord implements SearchableInterface, SitemapInter
     public function formName(): string
     {
         return 'Category';
+    }
+
+    #[Override]
+    public static function getTypeClass(): string
+    {
+        return CategoryType::class;
+    }
+
+    #[Override]
+    public function getType(): ?CategoryType
+    {
+        /** @var CategoryType|null */
+        return static::findType($this->type ?? null);
     }
 
     #[Override]

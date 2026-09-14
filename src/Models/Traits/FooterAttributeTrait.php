@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Models\Traits;
 
 use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Models\Types\EntryType;
 use Yii;
 
 /**
@@ -32,7 +33,8 @@ trait FooterAttributeTrait
 
     public function hasShowInFooterEnabled(): bool
     {
-        return $this->getTypeOptions()['hasShowInFooterEnabled'] ?? true;
+        $type = $this->getType();
+        return !$type instanceof EntryType || $type->hasShowInFooterEnabled();
     }
 
     public function isFooterItem(): bool

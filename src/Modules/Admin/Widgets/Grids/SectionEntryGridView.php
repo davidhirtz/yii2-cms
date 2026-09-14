@@ -37,7 +37,7 @@ class SectionEntryGridView extends EntryGridView
 
     protected function getTypeDropdownItems(): array
     {
-        $items = Entry::instance()::getTypes();
+        $items = Entry::instance()::getTypeDefinitions();
         $entryTypes = $this->provider->section->getEntriesTypes();
 
         if ($entryTypes !== null) {

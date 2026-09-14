@@ -10,6 +10,7 @@ use Hirtz\Cms\Models\Actions\DeletePermalinkRedirects;
 use Hirtz\Cms\Models\Actions\UpdateTenantEntryCount;
 use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Models\Queries\SectionQuery;
+use Hirtz\Cms\Models\Types\EntryType;
 use Hirtz\Cms\Models\Traits\PermalinkTrait;
 use Hirtz\Cms\Models\Traits\SlugAttributeTrait;
 use Hirtz\Cms\Models\Traits\VirtualSlugTrait;
@@ -574,7 +575,7 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
      */
     public function getVisibleAssets(): array
     {
-        if (!$this->hasAssetsEnabled() || !$this->isAttributeVisible('#assets')) {
+        if (!$this->hasAssetsEnabled() || !$this->isAttributeVisible(self::FIELD_ASSETS)) {
             return [];
         }
 
@@ -616,7 +617,7 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
         $status = parent::getStatusName();
 
         if ($this->hasInvalidParentStatus()) {
-            $parentStatus = static::getStatuses()[$this->parent_status]['name'] ?? '';
+            $parentStatus = static::findStatus($this->parent_status)?->getName() ?? '';
             $status .= ' (' . $this->getAttributeLabel('parent_status') . ": $parentStatus)";
         }
 
@@ -642,9 +643,28 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
         return $this->getTypeName() ?: Yii::t('cms', 'COMMON_ENTRY');
     }
 
+    #[Override]
+    public static function getTypeClass(): string
+    {
+        return EntryType::class;
+    }
+
+    #[Override]
+    public static function findType(int|string|null $type): ?EntryType
+    {
+        /** @var EntryType|null */
+        return parent::findType($type);
+    }
+
+    #[Override]
+    public function getType(): ?EntryType
+    {
+        return static::findType($this->type ?? null);
+    }
+
     public function getViewFile(): ?string
     {
-        return $this->getTypeOptions()['viewFile'] ?? null;
+        return $this->getType()?->getViewFile();
     }
 
     protected function isMaterializedTreeChanged(?array $changedAttributes = null): bool

@@ -100,15 +100,15 @@ class EntryActiveDataProvider extends ActiveDataProvider
 
     protected function whereType(): void
     {
-        $typeOptions = Entry::instance()::getTypes()[$this->type ?? ''] ?? false;
+        $type = Entry::instance()::findType($this->type);
 
-        if ($typeOptions) {
-            if (isset($typeOptions['orderBy'])) {
-                $this->query->orderBy($typeOptions['orderBy']);
+        if ($type) {
+            if ($orderBy = $type->getOrderBy()) {
+                $this->query->orderBy($orderBy);
             }
 
-            if (isset($typeOptions['sort'])) {
-                $this->setSort($typeOptions['sort']);
+            if ($sort = $type->getSort()) {
+                $this->setSort($sort);
             }
 
             $this->query->andWhere([Entry::tableName() . '.[[type]]' => $this->type]);
