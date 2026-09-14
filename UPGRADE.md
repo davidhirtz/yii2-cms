@@ -47,6 +47,15 @@ Section::class => ['translatableAttributes' => ['name', 'slug', 'content']],
 `i18nAttributes` names columns; a translatable custom attribute keeps its `_de` value inside the JSON. The
 migration writes the values where the new configuration reads them either way.
 
+**The collision is reported from the media file index, not from a section form.**
+`Media\Module::ensureTypeTransformations()` resolves the type definitions of every registered asset class *and
+of each one's model class*, so the first media thumbnail any admin page renders builds an `Entry` and a
+`Section` through the container. The misconfiguration is also latent until something forces `attributes()` while
+the model is constructed: a definition carrying nothing but `i18nAttributes` builds cleanly, while one that also
+sets `types` throws, since `Yii::configure()` assigns that through `__set()`, which asks `hasAttribute()` first.
+So check the configuration of every model that has assets, rather than trusting that the section pages still
+open.
+
 A section's slug is its HTML id, so it is only checked against the sections of the same entry now, by
 `Section::validateSlug()` rather than by `UniqueValidator`. `Models\Traits\SlugAttributeTrait` is off `Section`
 with it: `$slugTargetAttribute`, `$slugUniqueValidator`, `$slugMaxLength`, `$customSlugBehavior`, `ensureSlug()`
