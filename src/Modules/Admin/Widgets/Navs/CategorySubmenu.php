@@ -35,7 +35,7 @@ class CategorySubmenu extends Submenu
     {
         return NavItem::make()
             ->icon('cog')
-            ->label(Yii::t('skeleton', 'COMMON_GENERAL'))
+            ->label($this->model->getAdminType())
             ->routes(['admin/cms/category/update', ...$this->additionalActiveRoutes['category'] ?? []])
             ->url(['/admin/cms/category/update', 'id' => $this->model->id]);
     }

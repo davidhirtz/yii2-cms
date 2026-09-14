@@ -71,7 +71,7 @@ class EntrySubmenu extends Submenu
     {
         return NavItem::make()
             ->icon('cog')
-            ->label(Yii::t('skeleton', 'COMMON_GENERAL'))
+            ->label($this->model->getAdminType())
             ->routes(['admin/cms/entry/update', ...$this->additionalActiveRoutes['entry'] ?? []])
             ->url($this->model->getAdminRoute());
     }

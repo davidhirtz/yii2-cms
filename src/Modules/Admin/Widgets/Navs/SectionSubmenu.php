@@ -60,7 +60,7 @@ class SectionSubmenu extends Submenu
     {
         return NavItem::make()
             ->icon('cog')
-            ->label(Yii::t('skeleton', 'COMMON_GENERAL'))
+            ->label($this->model->getAdminType())
             ->routes(['admin/cms/section/update', ...$this->additionalActiveRoutes['section'] ?? []])
             ->url($this->model->getAdminRoute());
     }
