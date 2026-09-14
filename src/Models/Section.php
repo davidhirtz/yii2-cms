@@ -91,8 +91,6 @@ class Section extends ActiveRecord implements AssetModelInterface, SearchableInt
     }
 
     /**
-     * Resolved for every loaded record, with no relation populated, so nothing here may read one.
-     *
      * @return list<CustomAttribute>
      */
     protected function getDefaultCustomAttributes(): array
