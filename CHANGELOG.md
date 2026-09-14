@@ -1,8 +1,9 @@
 ## 3.0 (in development)
 
 - **A project can declare section sets**, groups of sections an entry is given in one go. A set is
-  `Models\Sets\SectionSet` — a value, a name, an icon and a list of `Models\Sets\SectionTemplate` objects, each a
-  section type plus the attribute values the new section starts out with. They are declared on the module, beside
+  `Models\Sets\SectionSet`, a skeleton `Models\Definitions\Definition` — a value, a name and an icon — holding a
+  list of `Models\Sets\SectionTemplate` objects, each a section type plus the attribute values the new section
+  starts out with. They are declared on the module, beside
   the feature flags, rather than on the model: a set is a project-level catalogue, not per-record state.
 
   ```php

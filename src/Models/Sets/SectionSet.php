@@ -8,41 +8,21 @@ use Closure;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Controllers\SectionController;
-use Hirtz\Skeleton\Base\Traits\ContainerConfigurationTrait;
+use Hirtz\Skeleton\Models\Definitions\Definition;
 use yii\base\InvalidConfigException;
 
 /**
- * A set of sections an entry can be given in one go, declared by `Module::$sectionSets`. It is born with its value
- * and must never be mutated afterwards: the module caches it and every use shares the instance.
+ * A set of sections an entry can be given in one go, declared by `Module::$sectionSets`. It is a plain
+ * `Definition` rather than a `ModelDefinition`: no model declares it and none is validated against.
  */
-class SectionSet
+class SectionSet extends Definition
 {
-    use ContainerConfigurationTrait;
-
-    protected ?string $name = null;
-    protected ?string $icon = null;
     protected Closure|bool $available = true;
 
     /**
      * @var list<SectionTemplate>
      */
     protected array $sections = [];
-
-    public function __construct(public readonly int $value)
-    {
-    }
-
-    public function name(?string $name): static
-    {
-        $this->name = $name;
-        return $this;
-    }
-
-    public function icon(?string $icon): static
-    {
-        $this->icon = $icon;
-        return $this;
-    }
 
     /**
      * Whether the set is offered for an entry, and enforced by
@@ -60,16 +40,6 @@ class SectionSet
     {
         $this->sections = array_values($sections);
         return $this;
-    }
-
-    public function getName(): string
-    {
-        return $this->name ?? '';
-    }
-
-    public function getIcon(): string
-    {
-        return $this->icon ?? '';
     }
 
     /**
@@ -102,10 +72,5 @@ class SectionSet
                 throw new InvalidConfigException("{$this->getDisplayValue()} names the undeclared section type $section->type.");
             }
         }
-    }
-
-    protected function getDisplayValue(): string
-    {
-        return static::class . ' "' . $this->value . '"';
     }
 }
