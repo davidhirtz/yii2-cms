@@ -165,14 +165,18 @@ class NavItemsTest extends TestCase
         );
     }
 
-    public function testTheEntriesDoNotOutliveTheRequest(): void
+    /**
+     * The records a request loaded must never reach the next one, so `Bootstrap` drops them — a reset that only
+     * ran in the tests would leave a resident application serving them forever.
+     */
+    public function testTheEntriesDoNotOutliveTheApplication(): void
     {
         $this->useNavEntry();
         $this->createEntry('Shown', 'shown', attributes: ['show_in_menu' => true]);
 
         self::assertCount(1, NavItems::getMenuItems());
 
-        NavItems::reset();
+        $this->reloadApplication();
         $this->createEntry('Second', 'second', attributes: ['show_in_menu' => true]);
 
         self::assertCount(2, NavItems::getMenuItems());

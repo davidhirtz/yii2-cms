@@ -34,6 +34,22 @@ class CategoryCollectionTest extends TestCase
         parent::tearDown();
     }
 
+    /**
+     * The records a request loaded must never reach the next one, so `Bootstrap` drops them — a reset that only
+     * ran in the tests would leave a resident application serving them forever.
+     */
+    public function testTheCategoriesDoNotOutliveTheApplication(): void
+    {
+        $categories = CategoryCollection::getAll();
+        $category = reset($categories);
+        self::assertInstanceOf(Category::class, $category);
+
+        $this->reloadApplication();
+
+        $reloaded = CategoryCollection::getAll();
+        self::assertNotSame($category, reset($reloaded));
+    }
+
     public function testEveryCategoryIsLoadedOnce(): void
     {
         self::assertEqualsCanonicalizing([1, 2, 3], array_keys(CategoryCollection::getAll()));

@@ -79,6 +79,10 @@ class ArtworkTest extends TestCase
         self::assertStringContainsString('loading="lazy"', (string)$this->createArtwork($asset)->lazyLoadingPosition(2));
     }
 
+    /**
+     * The counter belongs to the request, so `Bootstrap` drops it — a reset that only ran in the tests would
+     * leave a resident application rendering every artwork after the first page lazily.
+     */
     public function testTheCounterStartsAtZeroForEveryApplication(): void
     {
         $asset = $this->getAssetFromFixture('entry-asset');
@@ -87,8 +91,7 @@ class ArtworkTest extends TestCase
             $this->createArtwork($asset)->lazyLoadingPosition(2)->__toString();
         }
 
-        // a widget that outlives the request would keep counting into the next one
-        Artwork::reset();
+        $this->reloadApplication();
 
         self::assertStringNotContainsString(
             'loading="lazy"',
