@@ -109,7 +109,7 @@ class SectionController extends AbstractController
     public function actionCreateSet(int $entry): Response
     {
         $entry = $this->findEntry($entry);
-        $set = Section::instance()::findSectionSet((int)$this->request->post('set'));
+        $set = static::getModule()->findSectionSet((int)$this->request->post('set'));
 
         if (!$set) {
             throw new NotFoundHttpException();

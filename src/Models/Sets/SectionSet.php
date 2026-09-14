@@ -5,24 +5,55 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Models\Sets;
 
 use Hirtz\Cms\Models\Section;
-use Hirtz\Skeleton\Models\Definitions\Definition;
-use Override;
+use Hirtz\Skeleton\Base\Traits\ContainerConfigurationTrait;
 use yii\base\InvalidConfigException;
 
 /**
- * A set of sections an entry can be given in one go, declared by {@see Section::getSectionSets()}.
+ * A set of sections an entry can be given in one go, declared by `Module::$sectionSets`. It is born with its value
+ * and must never be mutated afterwards: the module caches it and every use shares the instance.
  */
-class SectionSet extends Definition
+class SectionSet
 {
+    use ContainerConfigurationTrait;
+
+    protected ?string $name = null;
+    protected ?string $icon = null;
+
     /**
      * @var list<SectionTemplate>
      */
     protected array $sections = [];
 
+    public function __construct(public readonly int $value)
+    {
+    }
+
+    public function name(?string $name): static
+    {
+        $this->name = $name;
+        return $this;
+    }
+
+    public function icon(?string $icon): static
+    {
+        $this->icon = $icon;
+        return $this;
+    }
+
     public function sections(SectionTemplate ...$sections): static
     {
         $this->sections = array_values($sections);
         return $this;
+    }
+
+    public function getName(): string
+    {
+        return $this->name ?? '';
+    }
+
+    public function getIcon(): string
+    {
+        return $this->icon ?? '';
     }
 
     /**
@@ -33,25 +64,27 @@ class SectionSet extends Definition
         return $this->sections;
     }
 
-    #[Override]
-    public function validate(string $modelClass): void
+    public function validate(): void
     {
-        parent::validate($modelClass);
-
-        if (!is_a($modelClass, Section::class, true)) {
-            throw new InvalidConfigException("{$this->getDisplayValue()} is declared by $modelClass, which is not a " . Section::class . '.');
+        if ($this->getName() === '') {
+            throw new InvalidConfigException("{$this->getDisplayValue()} has no name.");
         }
 
         if (!$this->sections) {
-            throw new InvalidConfigException("{$this->getDisplayValue()} of $modelClass declares no sections.");
+            throw new InvalidConfigException("{$this->getDisplayValue()} declares no sections.");
         }
 
-        $types = $modelClass::getTypeDefinitions();
+        $types = Section::instance()::getTypeDefinitions();
 
         foreach ($this->sections as $section) {
             if (!isset($types[$section->type])) {
-                throw new InvalidConfigException("{$this->getDisplayValue()} of $modelClass names the undeclared section type $section->type.");
+                throw new InvalidConfigException("{$this->getDisplayValue()} names the undeclared section type $section->type.");
             }
         }
+    }
+
+    protected function getDisplayValue(): string
+    {
+        return static::class . ' "' . $this->value . '"';
     }
 }

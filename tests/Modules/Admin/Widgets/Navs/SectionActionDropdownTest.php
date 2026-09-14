@@ -12,7 +12,6 @@ use Hirtz\Cms\Modules\Admin\Controllers\SectionController;
 use Hirtz\Cms\Modules\Admin\Data\SectionActiveDataProvider;
 use Hirtz\Cms\Modules\Admin\Widgets\Navs\SectionActionDropdown;
 use Hirtz\Cms\Test\TestCase;
-use Hirtz\Skeleton\Models\Definitions\DefinitionRegistry;
 use Hirtz\Skeleton\Test\Traits\UserFixtureTrait;
 use Override;
 use Yii;
@@ -38,15 +37,6 @@ class SectionActionDropdownTest extends TestCase
         Yii::$app->getUser()->setIdentity($user);
 
         $this->entry = $this->createEntry();
-    }
-
-    #[Override]
-    protected function tearDown(): void
-    {
-        Yii::$container->clear(Section::class);
-        Section::instance(true);
-
-        parent::tearDown();
     }
 
     public function testTheProviderOffersTheCreateButtonAndTheDeclaredSets(): void
@@ -103,15 +93,11 @@ class SectionActionDropdownTest extends TestCase
 
     private function setSectionSets(): void
     {
-        Yii::$container->set(Section::class, [
-            'sectionSets' => fn (): array => [
-                SectionSet::make(1)
-                    ->name('Landing page')
-                    ->sections(SectionTemplate::make(Section::TYPE_DEFAULT)),
-            ],
+        Section::getModule()->setSectionSets(fn (): array => [
+            SectionSet::make(1)
+                ->name('Landing page')
+                ->sections(SectionTemplate::make(Section::TYPE_DEFAULT)),
         ]);
-
-        DefinitionRegistry::resetClass(Section::class);
     }
 
     private function createEntry(): Entry

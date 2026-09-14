@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Modules\Admin\Widgets\Buttons;
 
 use Hirtz\Cms\Models\Entry;
-use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Models\Sets\SectionSet;
 use Hirtz\Cms\Modules\Admin\Controllers\SectionController;
+use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Skeleton\Html\Label;
 use Hirtz\Skeleton\Html\Option;
 use Hirtz\Skeleton\Html\Select;
@@ -29,6 +29,7 @@ class SectionSetButton extends Widget
 {
     use IconTrait;
     use LabelTrait;
+    use ModuleTrait;
 
     /**
      * @use ModelTrait<Entry>
@@ -107,6 +108,6 @@ class SectionSetButton extends Widget
      */
     protected function getSets(): array
     {
-        return Section::instance()::getSectionSetDefinitions();
+        return static::getModule()->getSectionSets();
     }
 }

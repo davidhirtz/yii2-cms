@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms;
 
+use Closure;
 use Hirtz\Cms\Models\Collections\CategoryCollection;
+use Hirtz\Cms\Models\Sets\SectionSet;
 use Hirtz\Skeleton\Filters\PageCache;
 use Override;
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\caching\CacheInterface;
 use yii\caching\TagDependency;
 
@@ -83,6 +86,16 @@ class Module extends \Hirtz\Skeleton\Base\Module
      */
     public string|false $entryIndexSlug = 'home';
 
+    /**
+     * @var Closure(): array<mixed>|array<mixed> the declaration, which is unvalidated by definition
+     */
+    private Closure|array $configuredSectionSets = [];
+
+    /**
+     * @var array<int, SectionSet>|null
+     */
+    private ?array $sectionSets = null;
+
     #[Override]
     public function init(): void
     {
@@ -99,6 +112,55 @@ class Module extends \Hirtz\Skeleton\Base\Module
         }
 
         parent::init();
+    }
+
+    /**
+     * A closure, because a set's name is a {@see Yii::t()} result and a configuration file is read before the
+     * application has an `i18n` component. A plain list is accepted for a declaration that needs no translation.
+     *
+     * @param Closure(): array<mixed>|array<mixed> $sectionSets
+     */
+    public function setSectionSets(Closure|array $sectionSets): void
+    {
+        $this->configuredSectionSets = $sectionSets;
+        $this->sectionSets = null;
+    }
+
+    /**
+     * @return array<int, SectionSet>
+     */
+    public function getSectionSets(): array
+    {
+        if ($this->sectionSets !== null) {
+            return $this->sectionSets;
+        }
+
+        $declared = $this->configuredSectionSets instanceof Closure
+            ? ($this->configuredSectionSets)()
+            : $this->configuredSectionSets;
+
+        $sectionSets = [];
+
+        foreach ($declared as $set) {
+            if (!$set instanceof SectionSet) {
+                $given = get_debug_type($set);
+                throw new InvalidConfigException(static::class . '::$sectionSets must be a list of ' . SectionSet::class . ", got $given.");
+            }
+
+            if (isset($sectionSets[$set->value])) {
+                throw new InvalidConfigException(static::class . "::\$sectionSets declares \"$set->value\" twice.");
+            }
+
+            $set->validate();
+            $sectionSets[$set->value] = $set;
+        }
+
+        return $this->sectionSets = $sectionSets;
+    }
+
+    public function findSectionSet(?int $value): ?SectionSet
+    {
+        return $value === null ? null : ($this->getSectionSets()[$value] ?? null);
     }
 
     public function invalidatePageCache(): void

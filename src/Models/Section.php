@@ -6,7 +6,6 @@ namespace Hirtz\Cms\Models;
 
 use Closure;
 use Hirtz\Cms\Models\CustomAttributes\SlugCustomAttribute;
-use Hirtz\Cms\Models\Sets\SectionSet;
 use Hirtz\Cms\Models\Types\SectionType;
 use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Models\Queries\SectionQuery;
@@ -16,11 +15,9 @@ use Hirtz\Media\Models\Traits\AssetModelTrait;
 use Hirtz\Skeleton\Models\CustomAttributes\CustomAttribute;
 use Hirtz\Skeleton\Models\CustomAttributes\HtmlCustomAttribute;
 use Hirtz\Skeleton\Models\CustomAttributes\TextCustomAttribute;
-use Hirtz\Skeleton\Models\Definitions\DefinitionRegistry;
 use Hirtz\Skeleton\Models\Interfaces\SearchableInterface;
 use Hirtz\Skeleton\Models\Traits\SearchableTrait;
 use Hirtz\Skeleton\Models\Traits\TranslatableAttributesTrait;
-use Hirtz\Skeleton\Models\Traits\TypeAttributeTrait;
 use Hirtz\Skeleton\Search\SearchText;
 use yii\db\ActiveQuery;
 use Hirtz\Skeleton\Validators\RelationValidator;
@@ -58,12 +55,6 @@ class Section extends ActiveRecord implements AssetModelInterface, SearchableInt
     public bool|null $shouldUpdateEntryAfterSave = null;
 
     private ?array $trailParents = null;
-
-    /**
-     * @var Closure(): list<SectionSet>|list<SectionSet>|null what the container configured, see
-     * {@see static::setSectionSets()}
-     */
-    private Closure|array|null $configuredSectionSets = null;
 
     #[Override]
     public function rules(): array
@@ -394,53 +385,6 @@ class Section extends ActiveRecord implements AssetModelInterface, SearchableInt
     {
         /** @var SectionType|null */
         return static::findType(static::normalizeTypeValue($this->type ?? null));
-    }
-
-    /**
-     * A closure for the same reason {@see TypeAttributeTrait::setTypes()} takes one: a set's name is a
-     * {@see Yii::t()} result, and a literal in a configuration file resolves before the application has an `i18n`
-     * component.
-     *
-     * @param Closure(): list<SectionSet>|list<SectionSet> $sectionSets
-     */
-    public function setSectionSets(Closure|array $sectionSets): void
-    {
-        $this->configuredSectionSets = $sectionSets;
-    }
-
-    /**
-     * Override this method to declare section sets — an override owns them, and the configured list is ignored.
-     *
-     * @return list<SectionSet>
-     */
-    public function getSectionSets(): array
-    {
-        if ($this->configuredSectionSets instanceof Closure) {
-            return ($this->configuredSectionSets)();
-        }
-
-        return $this->configuredSectionSets ?? [];
-    }
-
-    /**
-     * @return class-string<SectionSet>
-     */
-    public static function getSectionSetClass(): string
-    {
-        return SectionSet::class;
-    }
-
-    /**
-     * @return array<int, SectionSet>
-     */
-    public static function getSectionSetDefinitions(): array
-    {
-        return DefinitionRegistry::get(static::class, 'getSectionSets', static::getSectionSetClass());
-    }
-
-    public static function findSectionSet(?int $value): ?SectionSet
-    {
-        return $value === null ? null : (static::getSectionSetDefinitions()[$value] ?? null);
     }
 
     public function getViewFile(): ?string

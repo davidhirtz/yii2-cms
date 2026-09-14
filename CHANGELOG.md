@@ -1,26 +1,30 @@
 ## 3.0 (in development)
 
 - **A project can declare section sets**, groups of sections an entry is given in one go. A set is
-  `Models\Sets\SectionSet`, a skeleton `Models\Definitions\Definition` like a type, holding
-  `Models\Sets\SectionTemplate` objects — a section type plus the attribute values it starts out with. They are
-  declared by `Models\Section::getSectionSets()`, so a project either overrides that or configures the container:
+  `Models\Sets\SectionSet` — a value, a name, an icon and a list of `Models\Sets\SectionTemplate` objects, each a
+  section type plus the attribute values the new section starts out with. They are declared on the module, beside
+  the feature flags, rather than on the model: a set is a project-level catalogue, not per-record state.
 
   ```php
-  Section::class => [
-      'sectionSets' => fn (): array => [
-          SectionSet::make(1)
-              ->name(Yii::t('app', 'Landing page'))
-              ->sections(
-                  SectionTemplate::make(Section::TYPE_DEFAULT)->attribute('name', 'Intro'),
-                  SectionTemplate::make(Section::TYPE_DEFAULT),
-              ),
+  'modules' => [
+      'cms' => [
+          'sectionSets' => fn (): array => [
+              SectionSet::make(1)
+                  ->name(Yii::t('app', 'Landing page'))
+                  ->sections(
+                      SectionTemplate::make(Section::TYPE_DEFAULT)->attribute('name', 'Intro'),
+                      SectionTemplate::make(Section::TYPE_DEFAULT),
+                  ),
+          ],
       ],
   ],
   ```
 
-  The value must be a closure, for the same reason a type declaration takes one. A set naming an undeclared
-  section type, or declaring no sections at all, throws at resolution. `Models\Actions\CreateSectionSet` inserts
-  them as a batch and `Modules\Admin\Controllers\SectionController::actionCreateSet()` is the endpoint.
+  The value must be a closure, because a set's name is a `Yii::t()` result and a configuration file is read before
+  the application has an `i18n` component. `Module::getSectionSets()` resolves, validates and caches the
+  declaration, and `findSectionSet()` looks one up; a set without a name, without sections, sharing a value with
+  another or naming an undeclared section type throws there. `Models\Actions\CreateSectionSet` inserts them as a
+  batch and `Modules\Admin\Controllers\SectionController::actionCreateSet()` is the endpoint.
 
 - **The section index header is a `Widgets\Navs\SectionActionDropdown`**, not a
   `Widgets\Buttons\SectionCreateButton`. The dropdown takes either a model — the section actions, unchanged — or
