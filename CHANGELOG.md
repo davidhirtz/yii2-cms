@@ -1,5 +1,8 @@
 ## 3.0 (in development)
 
+- `Migrations\M260915150000CustomAttributesColumn` moves `entry.custom_attributes` after `description` and
+  `category.custom_attributes` after `slug` — cosmetic column order only.
+
 - **`category.title` and `category.description` are custom attributes**, moved by
   `Migrations\M260915120000CategoryMeta`. A category has no URL of its own, so its meta pair is read where the
   category is rendered rather than queried; the entry keeps both as columns. `Category` declares them as default
