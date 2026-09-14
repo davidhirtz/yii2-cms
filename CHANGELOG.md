@@ -1,5 +1,13 @@
 ## 3.0 (in development)
 
+- **The sitemap logic left the models.** `Sitemap\EntrySitemap` and `Sitemap\CategorySitemap` — both
+  `Sitemap\RecordSitemap`, which builds a URL from `getRoute()` and `updated_at` — replace
+  `Models\Traits\SitemapTrait`, `Entry::getSitemapQuery()`, `Entry::getSitemapUrl()`,
+  `Category::getSitemapQuery()` and `ActiveRecord::includeInSitemap()`, and neither model implements a sitemap
+  interface any more. `Module::$enableImageSitemaps` became `EntrySitemap::$enableImages`, since it is an option
+  of the sitemap rather than of the module. `CategorySitemap` filters by status in the query, where the model
+  filtered in PHP after the index had already counted the record. See UPGRADE.md
+
 - **The cms types are classes.** `Models\Types\Type` carries the two options every cms model reads (`viewFile()`,
   `cssClass()`); `Models\Types\EntryType` adds `orderBy()`, `sort()`, `showCategories()`,
   `showCategoryDropdown()`, `showInMenu()` and `showInFooter()`; `Models\Types\SectionType` adds the four

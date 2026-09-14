@@ -57,11 +57,6 @@ class Module extends \Hirtz\Skeleton\Base\Module
     public bool $enableSectionEntries = false;
 
     /**
-     * @var bool whether image assets should be added to CML sitemap URLs
-     */
-    public bool $enableImageSitemaps = false;
-
-    /**
      * @var bool whether the default url rules should be loaded automatically, defaults to true
      */
     public bool $enableUrlRules = true;

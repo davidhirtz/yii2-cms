@@ -10,7 +10,6 @@ use Hirtz\Cms\Models\Queries\CategoryQuery;
 use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Models\Traits\SlugAttributeTrait;
 use Hirtz\Skeleton\Models\Interfaces\SearchableInterface;
-use Hirtz\Skeleton\Models\Interfaces\SitemapInterface;
 use Hirtz\Skeleton\Models\Trail;
 use Hirtz\Skeleton\Models\Traits\NestedTreeTrait;
 use Hirtz\Skeleton\Models\Traits\SearchableTrait;
@@ -37,7 +36,7 @@ use yii\db\ActiveQuery;
  * @property-read static[] $ancestors {@see static::getAncestors()}
  * @property-read static[] $descendants {@see static::getDescendants()}
  */
-class Category extends ActiveRecord implements SearchableInterface, SitemapInterface
+class Category extends ActiveRecord implements SearchableInterface
 {
     use NestedTreeTrait;
     use SearchableTrait;
@@ -249,15 +248,6 @@ class Category extends ActiveRecord implements SearchableInterface, SitemapInter
     public function findSiblings(): CategoryQuery
     {
         return static::find()->where(['parent_id' => $this->parent_id]);
-    }
-
-    #[\Override]
-    public function getSitemapQuery(): CategoryQuery
-    {
-        return static::find()
-            ->selectSitemapAttributes()
-            ->withTranslations(Yii::$app->getI18n()->getLanguages())
-            ->orderBy(['id' => SORT_ASC]);
     }
 
     #[Override]

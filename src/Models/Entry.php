@@ -19,7 +19,6 @@ use Hirtz\Media\Models\Asset;
 use Hirtz\Media\Models\Interfaces\AssetModelInterface;
 use Hirtz\Media\Models\Traits\AssetModelTrait;
 use Hirtz\Skeleton\Models\Interfaces\SearchableInterface;
-use Hirtz\Skeleton\Models\Interfaces\SitemapInterface;
 use Hirtz\Skeleton\Models\Traits\MaterializedTreeTrait;
 use Hirtz\Skeleton\Models\Traits\SearchableTrait;
 use Hirtz\Cms\Validators\TenantIdValidator;
@@ -58,7 +57,7 @@ use yii\db\ActiveQuery;
  * @method EntryQuery findChildren()
  * @method EntryQuery findDescendants()
  */
-class Entry extends ActiveRecord implements AssetModelInterface, SearchableInterface, SitemapInterface
+class Entry extends ActiveRecord implements AssetModelInterface, SearchableInterface
 {
     use AssetModelTrait;
     use MaterializedTreeTrait;
@@ -440,22 +439,6 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
         Permalink::updateAll(['tenant_id' => $this->tenant_id], ['entry_id' => $descendantIds]);
     }
 
-    #[Override]
-    public function getSitemapQuery(): EntryQuery
-    {
-        $query = static::find()
-            ->selectSitemapAttributes()
-            ->enabled()
-            ->withPermalinks()
-            ->orderBy(['id' => SORT_ASC]);
-
-        if (static::getModule()->enableImageSitemaps) {
-            $query->withSitemapAssets();
-        }
-
-        return $query;
-    }
-
     protected function ensureRequiredI18nAttributes(): void
     {
         foreach ($this->i18nAttributes as $attribute) {
@@ -580,27 +563,6 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
         }
 
         return array_filter($this->assets, fn (Asset $asset): bool => $asset->type !== $asset::TYPE_META_IMAGE);
-    }
-
-    /**
-     * Extends the default XML sitemap url by image URLs if related assets were found. This is automatically the
-     * case if {@see Module::$enableImageSitemaps} is set to `true`.
-     */
-    #[Override]
-    public function getSitemapUrl(?string $language = null): array|false
-    {
-        if ($url = parent::getSitemapUrl($language)) {
-            /** @var Asset[] $assets */
-            $assets = $this->getRelatedRecords()['assets'] ?? [];
-
-            foreach ($assets as $asset) {
-                if ($imageUrl = $asset->getSitemapUrl($language)) {
-                    $url['images'][] = $imageUrl;
-                }
-            }
-        }
-
-        return $url;
     }
 
     public function getStatusIcon(): string

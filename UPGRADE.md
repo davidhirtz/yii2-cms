@@ -1,5 +1,24 @@
 # Upgrade Guide
 
+## 3.0.0 — The sitemap moved out of the models
+
+Read the skeleton's sitemap guide first. `Models\Traits\SitemapTrait` is gone, and with it
+`Entry::getSitemapQuery()`, `Entry::getSitemapUrl()`, `Category::getSitemapQuery()` and
+`ActiveRecord::includeInSitemap()`. The entry and category sitemaps are `Sitemap\EntrySitemap` and
+`Sitemap\CategorySitemap`, registered on the component:
+
+```php
+'sitemap' => [
+    'sitemaps' => [
+        'entries' => ['class' => EntrySitemap::class, 'enableImages' => true],
+        'categories' => CategorySitemap::class,
+    ],
+],
+```
+
+`Module::$enableImageSitemaps` is `EntrySitemap::$enableImages`. A project that customised a model's sitemap
+overrides `getQuery()` or `getRecordUrl()` on its own subclass of `Sitemap\RecordSitemap` instead of the model.
+
 ## 3.0.0 — The entry, section and category types
 
 Read the skeleton's guide on typed type definitions first, and the media one for `sizes` and `transformations`.

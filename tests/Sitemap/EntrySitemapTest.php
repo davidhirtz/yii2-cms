@@ -2,16 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\Tests\Models\Traits;
+namespace Hirtz\Cms\Tests\Sitemap;
 
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
+use Hirtz\Cms\Sitemap\EntrySitemap;
 use Hirtz\Cms\Test\TestCase;
-use Hirtz\Skeleton\Web\Sitemap;
+use Hirtz\Skeleton\Sitemap\Sitemap;
 use Override;
 use Yii;
 
-class SitemapTraitTest extends TestCase
+class EntrySitemapTest extends TestCase
 {
     #[Override]
     protected function setUp(): void
@@ -37,7 +38,7 @@ class SitemapTraitTest extends TestCase
         $this->createEntry('Second', 'second');
         $this->createEntry('Hidden', 'hidden', Entry::STATUS_DISABLED);
 
-        $urls = Entry::instance()->generateSitemapUrls();
+        $urls = $this->createSitemap()->generateUrls();
 
         self::assertCount(2, $urls);
         self::assertSame('/cms/site/view', $urls[0]['loc'][0]);
@@ -46,12 +47,15 @@ class SitemapTraitTest extends TestCase
         self::assertNotEmpty($urls[0]['lastmod']);
     }
 
-    public function testTheCountMatchesWhatIsGenerated(): void
+    public function testThePageCountMatchesWhatIsGenerated(): void
     {
         $this->createEntry('First', 'first');
         $this->createEntry('Second', 'second');
 
-        self::assertSame(2, Entry::instance()->getSitemapUrlCount());
+        $sitemap = $this->createSitemap();
+
+        self::assertSame(2, $sitemap->getRecordCount());
+        self::assertSame(1, $sitemap->getPageCount());
     }
 
     public function testEveryLanguageGetsItsOwnUrl(): void
@@ -59,12 +63,13 @@ class SitemapTraitTest extends TestCase
         $this->setUpI18nUrls();
         $this->createEntry('First', 'first');
 
-        $urls = Entry::instance()->generateSitemapUrls();
+        $sitemap = $this->createSitemap();
+        $urls = $sitemap->generateUrls();
 
         self::assertCount(2, $urls);
         self::assertSame(['en-US', 'de'], array_column(array_column($urls, 'loc'), 'language'));
 
-        self::assertSame(2, Entry::instance()->getSitemapUrlCount());
+        self::assertSame(1, $sitemap->getRecordCount());
     }
 
     /**
@@ -76,28 +81,24 @@ class SitemapTraitTest extends TestCase
         $this->setUpI18nUrls();
         $this->createEntry('First', 'first');
 
-        Entry::instance()->generateSitemapUrls();
+        $this->createSitemap()->generateUrls();
 
         self::assertSame('en-US', Yii::$app->language);
     }
 
     public function testAnIndexEntryPointsAtTheSiteRoot(): void
     {
-        $entry = $this->createEntry('Home', 'home');
+        $this->createEntry('Home', 'home');
 
-        self::assertSame('/cms/site/index', $entry->getSitemapUrl()['loc'][0]);
-        self::assertArrayNotHasKey('slug', $entry->getSitemapUrl()['loc']);
-    }
+        $url = $this->createSitemap()->generateUrls()[0];
 
-    public function testARecordThatIsNotPublishedIsLeftOut(): void
-    {
-        $entry = $this->createEntry('Hidden', 'hidden', Entry::STATUS_DISABLED);
-
-        self::assertFalse($entry->getSitemapUrl());
+        self::assertSame('/cms/site/index', $url['loc'][0]);
+        self::assertArrayNotHasKey('slug', $url['loc']);
     }
 
     /**
-     * With an index the records are paged, and the page size is shared between the languages.
+     * With an index the records are paged, and the page size is shared between the languages: a record produces one
+     * URL per language, so a page holds half the records once two languages are configured.
      */
     public function testTheSitemapIndexPagesTheRecords(): void
     {
@@ -108,13 +109,48 @@ class SitemapTraitTest extends TestCase
         Yii::$app->sitemap->useSitemapIndex = true;
         Yii::$app->sitemap->maxUrlCount = 2;
 
-        self::assertCount(2, Entry::instance()->generateSitemapUrls());
-        self::assertCount(1, Entry::instance()->generateSitemapUrls(1));
+        $sitemap = $this->createSitemap();
+
+        self::assertSame(2, $sitemap->getRecordsPerPage());
+        self::assertSame(2, $sitemap->getPageCount());
+        self::assertCount(2, $sitemap->generateUrls(0));
+        self::assertCount(1, $sitemap->generateUrls(1));
     }
 
     /**
-     * `getSitemapLanguages()` asks the shared `instance()` for its `i18nAttributes`, so those have to be configured
-     * through the container rather than set on a record.
+     * An odd number of URLs per page is what broke the paging: the records per page were a float, which the query
+     * builder drops, and every page then held every record.
+     */
+    public function testThePageSizeStaysAnIntegerAcrossLanguages(): void
+    {
+        $this->setUpI18nUrls();
+
+        $this->createEntry('First', 'first');
+        $this->createEntry('Second', 'second');
+        $this->createEntry('Third', 'third');
+
+        Yii::$app->sitemap->useSitemapIndex = true;
+        Yii::$app->sitemap->maxUrlCount = 3;
+
+        $sitemap = $this->createSitemap();
+
+        self::assertSame(1, $sitemap->getRecordsPerPage());
+        self::assertSame(3, $sitemap->getPageCount());
+
+        self::assertCount(2, $sitemap->generateUrls(0));
+        self::assertCount(2, $sitemap->generateUrls(2));
+    }
+
+    private function createSitemap(): EntrySitemap
+    {
+        /** @var EntrySitemap $sitemap */
+        $sitemap = Yii::createObject(EntrySitemap::class);
+        return $sitemap;
+    }
+
+    /**
+     * `ModelSitemap::getLanguages()` asks the shared `instance()` for its `i18nAttributes`, so those have to be
+     * configured through the container rather than set on a record.
      */
     private function setUpI18nUrls(): void
     {

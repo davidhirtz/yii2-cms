@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Models;
 
-use Hirtz\Cms\Models\Traits\SitemapTrait;
 use Hirtz\Cms\Models\Types\Type;
 use Hirtz\Cms\Modules\ModuleTrait;
 use davidhirtz\yii2\datetime\DateTime;
@@ -59,7 +58,6 @@ abstract class ActiveRecord extends BaseActiveRecord implements
     use DraftStatusAttributeTrait;
     use I18nAttributesTrait;
     use ModuleTrait;
-    use SitemapTrait;
     use TrailModelTrait;
     use TranslationTrait;
     use TypeAttributeTrait;
@@ -192,14 +190,6 @@ abstract class ActiveRecord extends BaseActiveRecord implements
     }
 
     abstract public function getRoute(): array|false;
-
-    /**
-     * @noinspection PhpUnusedParameterInspection
-     */
-    public function includeInSitemap(?string $language = null): bool
-    {
-        return $this->isEnabled();
-    }
 
     #[Override]
     public function attributeLabels(): array
