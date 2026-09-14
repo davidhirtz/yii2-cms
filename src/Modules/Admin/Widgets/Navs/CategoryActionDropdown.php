@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Modules\Admin\Widgets\Navs;
 
 use Hirtz\Cms\Models\Category;
+use Hirtz\Cms\Modules\Admin\Widgets\Buttons\Traits\LinkButtonTrait;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\Buttons\CategoryDeleteButton;
-use Hirtz\Cms\Modules\Admin\Widgets\Panels\Traits\LinkButtonTrait;
 use Hirtz\Skeleton\Widgets\Buttons\Button;
 use Hirtz\Skeleton\Widgets\Navs\ActionDropdown;
 use Hirtz\Skeleton\Widgets\Traits\ModelTrait;

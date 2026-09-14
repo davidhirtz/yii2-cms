@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\Modules\Admin\Widgets\Panels\Traits;
+namespace Hirtz\Cms\Modules\Admin\Widgets\Buttons\Traits;
 
 use Hirtz\Skeleton\Widgets\Buttons\Button;
 use Stringable;
