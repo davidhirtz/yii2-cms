@@ -29,7 +29,6 @@ use Hirtz\Skeleton\Models\Traits\TypeAttributeTrait;
 use Hirtz\Skeleton\Models\Traits\UpdatedByUserTrait;
 use Hirtz\Skeleton\Models\Traits\VisibleAttributeTrait;
 use Hirtz\Skeleton\Validators\DynamicRangeValidator;
-use Hirtz\Skeleton\Validators\HtmlValidator;
 use Override;
 use Yii;
 
@@ -37,7 +36,6 @@ use Yii;
  * @property int $id
  * @property int $status
  * @property int $type
- * @property string|null $content
  * @property int|false|null $position
  * @property int|null $updated_by_user_id
  * @property DateTime|null $updated_at
@@ -64,18 +62,6 @@ abstract class ActiveRecord extends BaseActiveRecord implements
     use UpdatedByUserTrait;
     use VisibleAttributeTrait;
 
-    /**
-     * @var string|false the content type, "html" enables HTML validators and WYSIWYG editor
-     */
-    public string|false $contentType = 'html';
-
-    /**
-     * @var array|string|null used when `$contentType` is set to "html". Use an array with the first value containing a
-     * validator class, following keys can be used to configure the validator, string containing the class name or null
-     * for disabling the validation.
-     */
-    public array|string|null $htmlValidator = HtmlValidator::class;
-
     #[Override]
     public function behaviors(): array
     {
@@ -95,15 +81,6 @@ abstract class ActiveRecord extends BaseActiveRecord implements
                 ['status', 'type'],
                 DynamicRangeValidator::class,
                 'skipOnEmpty' => false,
-            ],
-            [
-                $this->getI18nAttributesNames(['content']),
-                ...(array)($this->contentType === 'html' && $this->htmlValidator ? $this->htmlValidator : 'safe'),
-            ],
-            [
-                $this->getI18nAttributesNames(['content']),
-                'string',
-                'max' => 65535,
             ],
         ];
     }
@@ -197,8 +174,6 @@ abstract class ActiveRecord extends BaseActiveRecord implements
         return [
             ...parent::attributeLabels(),
             'entry_id' => Yii::t('cms', 'MODEL_ENTRY_ID_LABEL'),
-            'name' => Yii::t('cms', 'MODEL_NAME_LABEL'),
-            'content' => Yii::t('cms', 'MODEL_CONTENT_LABEL'),
             'asset_count' => Yii::t('media', 'MODEL_ASSET_COUNT_LABEL'),
         ];
     }

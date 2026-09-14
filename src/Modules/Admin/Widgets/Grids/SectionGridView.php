@@ -13,6 +13,7 @@ use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Media\Modules\Admin\Widgets\Grids\Columns\Thumbnail;
 use Hirtz\Skeleton\Html\A;
 use Hirtz\Skeleton\Html\Div;
+use Hirtz\Skeleton\Models\CustomAttributes\HtmlCustomAttribute;
 use Hirtz\Skeleton\Widgets\Grids\Columns\ButtonColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\DeleteGridButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\DraggableSortGridButton;
@@ -94,8 +95,10 @@ class SectionGridView extends GridView
         }
 
         if (!$html) {
-            $html = $section->getI18nAttribute('content') ?? '';
-            $html = 'html' === $section->contentType ? strip_tags((string)$html) : $html;
+            $html = (string)($section->getI18nAttribute('content') ?? '');
+            $html = $section->getCustomAttribute('content') instanceof HtmlCustomAttribute
+                ? strip_tags($html)
+                : $html;
             $html = StringHelper::truncate($html, 100);
         }
 

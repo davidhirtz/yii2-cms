@@ -1,5 +1,68 @@
 # Upgrade Guide
 
+## 3.0.0 — The free text of the cms models is a custom attribute
+
+`Migrations\M260915100000CustomAttributes` drops `entry.content`, `category.content` and `section.name`,
+`section.slug` and `section.content`, moving each value into the `custom_attributes` column under its own name,
+and every `translation` row of those attributes under its suffixed one (`content_de`). A `content_de` column a
+project still had is read the same way.
+
+`Models\ActiveRecord::$contentType` and `$htmlValidator` are gone. `$contentType = false` — the default for an
+entry and a category — meant "no content field", and that is now simply an attribute nobody declares, so a
+project that used the entry or category content declares it:
+
+```php
+'container' => ['definitions' => [
+    Entry::class => [
+        'customAttributes' => [
+            HtmlCustomAttribute::make('content')
+                ->translatable(),
+        ],
+    ],
+]],
+```
+
+`Models\Entry::getSearchAttributes()` still names `content`, so a declared one is indexed; an undeclared one is
+skipped rather than failing.
+
+A section declares `name`, `content` and `slug` itself, so nothing has to be configured for it — but **a project
+that had them among `Section::$i18nAttributes` has to move them to `translatableAttributes`**, or the model
+throws `Custom attribute "name" collides with a translated attribute`:
+
+```php
+Section::class => ['translatableAttributes' => ['name', 'slug', 'content']],
+```
+
+`i18nAttributes` names columns; a translatable custom attribute keeps its `_de` value inside the JSON. The
+migration writes the values where the new configuration reads them either way.
+
+A section's slug is its HTML id, so it is only checked against the sections of the same entry now, by
+`Section::validateSlug()` rather than by `UniqueValidator`. `Models\Traits\SlugAttributeTrait` is off `Section`
+with it: `$slugTargetAttribute`, `$slugUniqueValidator`, `$slugMaxLength`, `$customSlugBehavior`, `ensureSlug()`
+and `isSlugRequired()` are gone there (`Entry` and `Category` keep all of them), `Section::SLUG_MAX_LENGTH`
+replaces `$slugMaxLength`, and `generateUniqueSlug()` is the section's own — it no longer runs a full validation
+per attempt. The inflection moved into `Models\CustomAttributes\SlugCustomAttribute::normalize()`, which runs
+as the definition's filter rule and therefore normalizes a translated slug too, where `beforeValidate()` only
+ever normalized the source language.
+
+`Modules\Admin\Widgets\Forms\Traits\ActiveFormFieldsTrait::getContentField()` and `getLinkField()` are gone;
+a form renders the definitions with `getCustomAttributeFields()`. `SectionActiveForm` keeps its own slug field —
+the one with the URL in front of it — and excludes the definition from that list:
+
+```php
+$this->rows ??= [
+    $this->getStatusField(),
+    $this->getTypeField(),
+    ...$this->getCustomAttributeFields(except: ['slug']),
+    $this->getSlugField(),
+];
+```
+
+A type's `hiddenFields()` is unchanged and still hides `name` or `content`.
+
+**`section.name` is no longer a column**, so it cannot be a query condition, an `orderBy` or a grid sort. Read it
+off the record.
+
 ## 3.0.0 — `author` is a role to assign, not one `admin` holds
 
 `Migrations\M260914210000AuthorRole` removes `author` from `admin`, which lists the permissions themselves now

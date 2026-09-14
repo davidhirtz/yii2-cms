@@ -31,10 +31,8 @@ class SectionActiveForm extends ActiveForm
         $this->rows ??= [
             $this->getStatusField(),
             $this->getTypeField(),
-            $this->getNameField(),
-            $this->getContentField(),
+            ...$this->getCustomAttributeFields(except: ['slug']),
             $this->getSlugField(),
-            ...$this->getCustomAttributeFields(),
         ];
 
         parent::configure();

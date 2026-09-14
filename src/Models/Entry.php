@@ -69,7 +69,6 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
 
     final public const string AUTH_ENTRY = 'entry';
 
-    public string|false $contentType = false;
     public array|string $dateTimeValidator = DateTimeValidator::class;
     public bool|null $shouldUpdateParentAfterSave = null;
 
@@ -89,7 +88,7 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
                     'when' => $this->isSlugRequired(...),
                 ],
                 [
-                    ['name', 'slug', 'title', 'description', 'content'],
+                    ['name', 'slug', 'title', 'description'],
                     'trim',
                 ],
                 [
@@ -497,6 +496,9 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
         return $this->id ? ['/admin/cms/entry/update', 'id' => $this->id] : false;
     }
 
+    /**
+     * `content` has no column of its own: it is indexed only where the project declares it as a custom attribute.
+     */
     public function getSearchAttributes(): array
     {
         return ['name', 'title', 'description', 'content'];
@@ -722,6 +724,7 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
     {
         return [
             ...parent::attributeLabels(),
+            'name' => Yii::t('cms', 'MODEL_NAME_LABEL'),
             'tenant_id' => Yii::t('cms', 'ENTRY_TENANT_ID_LABEL'),
             'parent_id' => Yii::t('cms', 'ENTRY_PARENT_ID_LABEL'),
             'parent_status' => Yii::t('cms', 'ENTRY_PARENT_STATUS_LABEL'),

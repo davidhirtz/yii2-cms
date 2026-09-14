@@ -5,29 +5,31 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Models;
 
 use Closure;
+use Hirtz\Cms\Models\CustomAttributes\SlugCustomAttribute;
 use Hirtz\Cms\Models\Types\SectionType;
 use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Models\Queries\SectionQuery;
 use Hirtz\Cms\Models\Traits\EntryRelationTrait;
-use Hirtz\Cms\Models\Traits\SlugAttributeTrait;
 use Hirtz\Media\Models\Interfaces\AssetModelInterface;
 use Hirtz\Media\Models\Traits\AssetModelTrait;
+use Hirtz\Skeleton\Models\CustomAttributes\CustomAttribute;
+use Hirtz\Skeleton\Models\CustomAttributes\HtmlCustomAttribute;
+use Hirtz\Skeleton\Models\CustomAttributes\TextCustomAttribute;
 use Hirtz\Skeleton\Models\Interfaces\SearchableInterface;
 use Hirtz\Skeleton\Models\Traits\SearchableTrait;
+use Hirtz\Skeleton\Models\Traits\TranslatableAttributesTrait;
 use Hirtz\Skeleton\Search\SearchText;
 use yii\db\ActiveQuery;
 use Hirtz\Skeleton\Validators\RelationValidator;
-use Hirtz\Skeleton\Validators\UniqueValidator;
 use Override;
 use Yii;
-use yii\helpers\Inflector;
 
 /**
  * @property int $entry_id
  * @property int $position
- * @property string $name
+ * @property string|null $name
  * @property string|null $slug
- * @property string $content
+ * @property string|null $content
  * @property int $asset_count
  * @property int $entry_count
  *
@@ -41,14 +43,15 @@ class Section extends ActiveRecord implements AssetModelInterface, SearchableInt
     use AssetModelTrait;
     use EntryRelationTrait;
     use SearchableTrait;
-    use SlugAttributeTrait;
+    use TranslatableAttributesTrait;
 
     /**
      * The marker that hides the linked entries panel, listed among a type's hidden fields.
      */
     final public const string FIELD_ENTRIES = '#entries';
 
-    public array|string|null $slugTargetAttribute = ['entry_id', 'slug'];
+    final public const int SLUG_MAX_LENGTH = 100;
+
     public bool|null $shouldUpdateEntryAfterSave = null;
 
     private ?array $trailParents = null;
@@ -69,32 +72,96 @@ class Section extends ActiveRecord implements AssetModelInterface, SearchableInt
                 $this->validateEntryId(...),
             ],
             [
-                ['name', 'slug', 'content'],
-                'trim',
-            ],
-            [
-                ['name'],
-                'string',
-                'max' => 255,
-            ],
-            [
                 ['slug'],
-                'string',
-                'max' => $this->slugMaxLength,
-            ],
-            [
-                ['slug'],
-                UniqueValidator::class,
-                'targetAttribute' => $this->slugTargetAttribute,
-                'comboNotUnique' => Yii::t('yii', '{attribute} "{value}" has already been taken.'),
+                $this->validateSlug(...),
             ],
         ])];
+    }
+
+    /**
+     * @return list<CustomAttribute>
+     */
+    #[Override]
+    public function getCustomAttributes(): array
+    {
+        return [
+            ...$this->getDefaultCustomAttributes(),
+            ...parent::getCustomAttributes(),
+        ];
+    }
+
+    /**
+     * Resolved for every loaded record, with no relation populated, so nothing here may read one.
+     *
+     * @return list<CustomAttribute>
+     */
+    protected function getDefaultCustomAttributes(): array
+    {
+        return [
+            TextCustomAttribute::make('name')
+                ->label(Yii::t('cms', 'MODEL_NAME_LABEL'))
+                ->translatable($this->isTranslatableAttribute('name')),
+            HtmlCustomAttribute::make('content')
+                ->label(Yii::t('cms', 'MODEL_CONTENT_LABEL'))
+                ->translatable($this->isTranslatableAttribute('content')),
+            SlugCustomAttribute::make('slug')
+                ->max(self::SLUG_MAX_LENGTH)
+                ->label(Yii::t('cms', 'SECTION_SLUG_LABEL'))
+                ->translatable($this->isTranslatableAttribute('slug')),
+        ];
     }
 
     #[Override]
     public function safeAttributes(): array
     {
         return array_diff(parent::safeAttributes(), ['entry_id']);
+    }
+
+    /**
+     * The slug is the section's HTML id, so it only has to be unique among the sections of its entry.
+     */
+    protected function validateSlug(string $attribute): void
+    {
+        if ($this->$attribute && in_array($this->$attribute, $this->findSiblingSlugs($attribute), true)) {
+            $this->addError($attribute, Yii::t('yii', '{attribute} "{value}" has already been taken.', [
+                'attribute' => $this->getAttributeLabel($attribute),
+                'value' => $this->$attribute,
+            ]));
+        }
+    }
+
+    public function generateUniqueSlug(): void
+    {
+        foreach ($this->getI18nAttributeNames('slug') as $name) {
+            $slug = $this->getAttribute($name);
+
+            if (!$slug) {
+                continue;
+            }
+
+            $slugs = $this->findSiblingSlugs($name);
+
+            for ($i = 1; $i < 100 && in_array($this->getAttribute($name), $slugs, true); $i++) {
+                $length = self::SLUG_MAX_LENGTH - 1 - (int)ceil($i / 10);
+                $this->setAttribute($name, mb_substr((string)$slug, 0, $length) . '-' . $i);
+            }
+        }
+    }
+
+    /**
+     * @return list<string>
+     */
+    protected function findSiblingSlugs(string $attribute): array
+    {
+        $slugs = [];
+
+        foreach ($this->findSiblings()->all() as $section) {
+            if ($section->id !== $this->id && ($slug = $section->getAttribute($attribute))) {
+                $slugs[] = (string)$slug;
+            }
+        }
+
+        return $slugs;
     }
 
     public function validateEntryId(): void
@@ -105,19 +172,8 @@ class Section extends ActiveRecord implements AssetModelInterface, SearchableInt
     }
 
     #[Override]
-    public function beforeValidate(): bool
-    {
-        if ($this->slug && !$this->customSlugBehavior) {
-            $this->slug = Inflector::slug($this->slug);
-        }
-
-        return parent::beforeValidate();
-    }
-
-    #[Override]
     public function beforeSave($insert): bool
     {
-        $this->slug = $this->slug ?: null;
         $this->shouldUpdateEntryAfterSave ??= !$this->getIsBatch();
 
         // Handle section move / clone, inserts will be handled by parent implementation
@@ -365,7 +421,6 @@ class Section extends ActiveRecord implements AssetModelInterface, SearchableInt
             ...parent::attributeLabels(),
             'entry_id' => Yii::t('cms', 'SECTION_ENTRY_ID_LABEL'),
             'entry_count' => Yii::t('cms', 'SECTION_ENTRY_COUNT_LABEL'),
-            'slug' => Yii::t('cms', 'SECTION_SLUG_LABEL'),
             'section_count' => Yii::t('cms', 'SECTION_SECTION_COUNT_LABEL')
         ];
     }

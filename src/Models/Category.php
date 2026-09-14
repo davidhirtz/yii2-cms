@@ -44,8 +44,6 @@ class Category extends ActiveRecord implements SearchableInterface
 
     final public const string AUTH_CATEGORY = 'category';
 
-    public string|false $contentType = false;
-
     #[Override]
     public function rules(): array
     {
@@ -72,7 +70,7 @@ class Category extends ActiveRecord implements SearchableInterface
                     'when' => $this->isSlugRequired(...),
                 ],
                 [
-                    ['name', 'slug', 'title', 'description', 'content'],
+                    ['name', 'slug', 'title', 'description'],
                     'trim',
                 ],
                 [
@@ -270,6 +268,9 @@ class Category extends ActiveRecord implements SearchableInterface
         return $this->id ? ['/admin/cms/category/update', 'id' => $this->id] : ['/admin/cms/category/index'];
     }
 
+    /**
+     * `content` has no column of its own: it is indexed only where the project declares it as a custom attribute.
+     */
     public function getSearchAttributes(): array
     {
         return ['name', 'title', 'description', 'content'];

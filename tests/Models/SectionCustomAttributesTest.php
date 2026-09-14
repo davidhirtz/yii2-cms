@@ -28,8 +28,8 @@ class SectionCustomAttributesTest extends TestCase
         Yii::$app->getI18n()->setLanguages(['en-US', 'de']);
 
         Yii::$container->setDefinitions([
-            Section::class => ['class' => TestSection::class, 'i18nAttributes' => ['name', 'slug']],
-            TestSection::class => ['i18nAttributes' => ['name', 'slug']],
+            Section::class => ['class' => TestSection::class, 'translatableAttributes' => ['name', 'slug']],
+            TestSection::class => ['translatableAttributes' => ['name', 'slug']],
         ]);
 
         Section::instance(true);
@@ -52,17 +52,19 @@ class SectionCustomAttributesTest extends TestCase
     {
         $section = $this->getSectionFromFixture('section-headline');
 
-        self::assertSame(['subtitle'], array_keys($section->getCustomAttributeDefinitions()));
+        $defaults = ['name', 'content', 'slug'];
+
+        self::assertSame([...$defaults, 'subtitle'], array_keys($section->getCustomAttributeDefinitions()));
         self::assertInstanceOf(TextCustomAttribute::class, $section->getCustomAttribute('subtitle'));
 
         $section->type = TestSection::TYPE_LINK_LIST;
 
-        self::assertSame(['links'], array_keys($section->getCustomAttributeDefinitions()));
+        self::assertSame([...$defaults, 'links'], array_keys($section->getCustomAttributeDefinitions()));
         self::assertInstanceOf(GroupCustomAttribute::class, $section->getCustomAttribute('links'));
 
         $section->type = TestSection::TYPE_GALLERY;
 
-        self::assertSame([], $section->getCustomAttributeDefinitions());
+        self::assertSame($defaults, array_keys($section->getCustomAttributeDefinitions()));
     }
 
     public function testTranslatedValueRoundTripsThroughTheJsonColumn(): void

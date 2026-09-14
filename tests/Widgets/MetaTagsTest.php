@@ -6,8 +6,10 @@ namespace Hirtz\Cms\Tests\Widgets;
 
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
+use Hirtz\Cms\Test\Models\TestEntry;
 use Hirtz\Cms\Test\TestCase;
 use Hirtz\Cms\Widgets\MetaTags;
+use Hirtz\Skeleton\Models\CustomAttributes\HtmlCustomAttribute;
 use Override;
 use Yii;
 
@@ -20,6 +22,22 @@ class MetaTagsTest extends TestCase
     {
         parent::setUp();
         Yii::$app->getUrlManager()->i18nUrl = false;
+
+        // An entry has no content of its own; the fallback only applies where a project declares one.
+        Yii::$container->set(TestEntry::class, [
+            'customAttributes' => [HtmlCustomAttribute::make('content')],
+        ]);
+
+        TestEntry::instance(true);
+    }
+
+    #[Override]
+    protected function tearDown(): void
+    {
+        Yii::$container->clear(TestEntry::class);
+        TestEntry::instance(true);
+
+        parent::tearDown();
     }
 
     public function testTheDocumentTitleFallsBackToTheName(): void

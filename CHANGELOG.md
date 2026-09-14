@@ -1,5 +1,18 @@
 ## 3.0 (in development)
 
+- **The free text of the cms models left the schema.** `entry.content`, `category.content` and `section.name`,
+  `section.slug` and `section.content` are custom attributes in the `custom_attributes` column now, moved by
+  `Migrations\M260915100000CustomAttributes`. `Models\ActiveRecord::$contentType` and `$htmlValidator` are gone
+  with them: a section declares `content` as an `HtmlCustomAttribute` itself, and an entry or a category that
+  needs one declares it, which is what `$contentType = false` used to say. `Section` carries `name`, `content`
+  and `slug` as default definitions, has a `translatableAttributes` property in place of `i18nAttributes` (a
+  translated value lives under its suffixed key in the JSON, not in the `translation` table) and validates the
+  slug against the sections of its own entry rather than through `UniqueValidator` — it is the section's HTML id,
+  so that is as far as uniqueness has to reach. `Models\Traits\SlugAttributeTrait` therefore left `Section`,
+  which keeps `generateUniqueSlug()` of its own, and `Models\CustomAttributes\SlugCustomAttribute` inflects the
+  slug in every language. `Modules\Admin\Widgets\Forms\Traits\ActiveFormFieldsTrait::getContentField()` and
+  `getLinkField()` are gone; the fields come from the definitions. See UPGRADE.md
+
 - **`Models\Traits\MetaImageTrait::getTypes()` is an instance method**, with every other type declaration —
   drop `static` from your own overrides, see the skeleton's `UPGRADE.md`.
 

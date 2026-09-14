@@ -46,7 +46,6 @@ class EntryActiveForm extends ActiveForm
                 $this->getTypeField(),
                 $this->getParentIdField(),
                 $this->getNameField(),
-                $this->getContentField(),
                 $this->getPublishDateField(),
                 ...$this->getCustomAttributeFields(),
             ],

@@ -99,7 +99,8 @@ class MetaTags extends Widget
 
     protected function setMetaDescription(): void
     {
-        $content = $this->model->getI18nAttribute('description') ?? $this->model->getI18nAttribute('content');
+        $content = $this->model->getI18nAttribute('description')
+            ?? ($this->model->canGetProperty('content') ? $this->model->getI18nAttribute('content') : null);
 
         if ($content) {
             $this->view->description($content);
