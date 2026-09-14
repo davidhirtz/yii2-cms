@@ -1,5 +1,10 @@
 ## 3.0 (in development)
 
+- **`author` is detached from `admin`, and gains the media permissions.**
+  `Migrations\M260914210000AuthorRole` removes it from `admin`, which lists the permissions themselves now, and
+  adds `File::AUTH_FILE` and `Folder::AUTH_FOLDER` to it, since `yii2-media` dropped the `media` role that used to
+  carry them. `author` is an editor's role to assign, not something another role holds.
+
 - **The sitemap logic left the models.** `Sitemap\EntrySitemap` and `Sitemap\CategorySitemap` — both
   `Sitemap\RecordSitemap`, which builds a URL from `getRoute()` and `updated_at` — replace
   `Models\Traits\SitemapTrait`, `Entry::getSitemapQuery()`, `Entry::getSitemapUrl()`,

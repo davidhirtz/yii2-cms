@@ -1,5 +1,13 @@
 # Upgrade Guide
 
+## 3.0.0 — `author` is a role to assign, not one `admin` holds
+
+`Migrations\M260914210000AuthorRole` removes `author` from `admin`, which lists the permissions themselves now
+(see the skeleton's upgrade guide), and gives it `File::AUTH_FILE` and `Folder::AUTH_FOLDER` — the two permissions
+the `media` role carried before `yii2-media` dropped it — so an author can still use the media library. An
+`AccessRule` or a nav item that named `author` to mean "an editor or an administrator" has to name both.
+
+
 ## 3.0.0 — The sitemap moved out of the models
 
 Read the skeleton's sitemap guide first. `Models\Traits\SitemapTrait` is gone, and with it
