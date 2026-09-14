@@ -650,7 +650,7 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
     }
 
     #[Override]
-    public static function findType(int|string|null $type): ?EntryType
+    public static function findType(?int $type): ?EntryType
     {
         /** @var EntryType|null */
         return parent::findType($type);
@@ -659,7 +659,7 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
     #[Override]
     public function getType(): ?EntryType
     {
-        return static::findType($this->type ?? null);
+        return static::findType(static::normalizeTypeValue($this->type ?? null));
     }
 
     public function getViewFile(): ?string

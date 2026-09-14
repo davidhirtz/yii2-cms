@@ -361,7 +361,7 @@ class Category extends ActiveRecord implements SearchableInterface, SitemapInter
     public function getType(): ?CategoryType
     {
         /** @var CategoryType|null */
-        return static::findType($this->type ?? null);
+        return static::findType(static::normalizeTypeValue($this->type ?? null));
     }
 
     #[Override]

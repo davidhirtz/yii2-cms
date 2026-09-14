@@ -330,7 +330,7 @@ class Section extends ActiveRecord implements AssetModelInterface, SearchableInt
     public function getType(): ?SectionType
     {
         /** @var SectionType|null */
-        return static::findType($this->type ?? null);
+        return static::findType(static::normalizeTypeValue($this->type ?? null));
     }
 
     public function getViewFile(): ?string

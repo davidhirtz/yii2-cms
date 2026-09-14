@@ -170,7 +170,7 @@ abstract class ActiveRecord extends BaseActiveRecord implements
     public function getType(): ?Type
     {
         /** @var Type|null */
-        return static::findType($this->type ?? null);
+        return static::findType(static::normalizeTypeValue($this->type ?? null));
     }
 
     public function getCssClass(): string
