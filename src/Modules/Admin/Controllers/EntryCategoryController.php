@@ -77,7 +77,10 @@ class EntryCategoryController extends AbstractController
         }
 
         $entryCategory->insert();
-        $this->errorOrSuccess($entryCategory, Yii::t('cms', 'ENTRY_CATEGORY_SUCCESS_LINKED'));
+
+        $this->errorOrSuccess($entryCategory, Yii::t('cms', 'ENTRY_CATEGORY_SUCCESS_LINKED', [
+            'count' => $entryCategory->getAffectedCategoryCount(),
+        ]));
 
         return $this->redirectToIndex($entryCategory);
     }
@@ -98,7 +101,10 @@ class EntryCategoryController extends AbstractController
         }
 
         $entryCategory->delete();
-        $this->errorOrSuccess($entryCategory, Yii::t('cms', 'ENTRY_CATEGORY_SUCCESS_REMOVED'));
+
+        $this->errorOrSuccess($entryCategory, Yii::t('cms', 'ENTRY_CATEGORY_SUCCESS_REMOVED', [
+            'count' => $entryCategory->getAffectedCategoryCount(),
+        ]));
 
         return $this->redirectToIndex($entryCategory);
     }

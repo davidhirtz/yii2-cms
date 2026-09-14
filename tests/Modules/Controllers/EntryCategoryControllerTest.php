@@ -69,7 +69,29 @@ class EntryCategoryControllerTest extends TestCase
 
         self::assertInstanceOf(Response::class, $response);
         self::assertNotNull(EntryCategory::findOne(['entry_id' => 2, 'category_id' => 2]));
-        self::assertNotEmpty(Yii::$app->getSession()->getFlash('success'));
+
+        self::assertSame(
+            ['Category linked to entry.'],
+            Yii::$app->getSession()->getFlash('success')
+        );
+    }
+
+    /**
+     * Linking a nested category links its ancestors too, which the flash has to say.
+     */
+    public function testCreateCountsTheInheritedAncestors(): void
+    {
+        $this->login();
+
+        $this->post('admin/cms/entry-category/create', ['entry' => 3, 'category' => 3]);
+
+        self::assertNotNull(EntryCategory::findOne(['entry_id' => 3, 'category_id' => 3]));
+        self::assertNotNull(EntryCategory::findOne(['entry_id' => 3, 'category_id' => 1]));
+
+        self::assertSame(
+            ['2 categories linked to entry.'],
+            Yii::$app->getSession()->getFlash('success')
+        );
     }
 
     public function testCreateReportsALinkThatIsAlreadyThere(): void
@@ -100,7 +122,29 @@ class EntryCategoryControllerTest extends TestCase
 
         self::assertInstanceOf(Response::class, $response);
         self::assertNull(EntryCategory::findOne(['entry_id' => 2, 'category_id' => 1]));
-        self::assertNotEmpty(Yii::$app->getSession()->getFlash('success'));
+
+        self::assertSame(
+            ['Category removed from entry.'],
+            Yii::$app->getSession()->getFlash('success')
+        );
+    }
+
+    /**
+     * Removing a category removes the branch below it, which the flash has to say.
+     */
+    public function testDeleteCountsTheInheritedDescendants(): void
+    {
+        $this->login();
+
+        $this->post('admin/cms/entry-category/delete', ['entry' => 1, 'category' => 1]);
+
+        self::assertNull(EntryCategory::findOne(['entry_id' => 1, 'category_id' => 1]));
+        self::assertNull(EntryCategory::findOne(['entry_id' => 1, 'category_id' => 3]));
+
+        self::assertSame(
+            ['2 categories removed from entry.'],
+            Yii::$app->getSession()->getFlash('success')
+        );
     }
 
     /**

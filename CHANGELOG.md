@@ -1,5 +1,11 @@
 ## 3.0 (in development)
 
+- **Linking or removing a nested category reports the whole branch.** `inheritNestedCategories` links a category's
+  ancestors and removes its descendants along with it, which the flash claimed was one category;
+  `Models\EntryCategory::$inheritedEntryCategories` collects what the cascade touched and
+  `getAffectedCategoryCount()` counts it, so `ENTRY_CATEGORY_SUCCESS_LINKED` and `ENTRY_CATEGORY_SUCCESS_REMOVED`
+  take a `count` parameter and are plural messages in all four languages.
+
 - `Migrations\M260915150000CustomAttributesColumn` moves `entry.custom_attributes` after `description` and
   `category.custom_attributes` after `slug`, and `Migrations\M260915180000SectionCustomAttributesColumn` moves
   `section.custom_attributes` after `position` — cosmetic column order only.

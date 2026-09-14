@@ -42,6 +42,11 @@ class EntryCategory extends \Hirtz\Skeleton\Db\ActiveRecord implements TrailMode
 
     public bool|null $shouldUpdateEntryAfterInsert = null;
 
+    /**
+     * @var list<static> the junctions the nested-category cascade inserted or deleted beside this one
+     */
+    public array $inheritedEntryCategories = [];
+
     #[Override]
     public function behaviors(): array
     {
@@ -178,7 +183,9 @@ class EntryCategory extends \Hirtz\Skeleton\Db\ActiveRecord implements TrailMode
                     $junction = static::create();
                     $junction->populateInheritedRelation($this, $category);
 
-                    if (!$junction->insert()) {
+                    if ($junction->insert()) {
+                        $this->inheritedEntryCategories[] = $junction;
+                    } else {
                         ActiveRecordErrorLogger::log($junction);
                     }
                 }
@@ -209,10 +216,18 @@ class EntryCategory extends \Hirtz\Skeleton\Db\ActiveRecord implements TrailMode
 
                     // the cascade already covers the whole branch, so the junction must not start one of its own
                     $junction->setIsBatch(true);
-                    $junction->delete();
+
+                    if ($junction->delete()) {
+                        $this->inheritedEntryCategories[] = $junction;
+                    }
                 }
             }
         }
+    }
+
+    public function getAffectedCategoryCount(): int
+    {
+        return count($this->inheritedEntryCategories) + 1;
     }
 
     public function getMaxPosition(): int
