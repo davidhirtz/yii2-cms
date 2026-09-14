@@ -84,14 +84,29 @@ trait CategoryGridTrait
     }
 
     /**
-     * Where the row's own links lead. A picker grid answers `null` rather than the category's page, which would
-     * navigate away from the very list the user is picking from.
+     * Whether the grid is a list to pick a category *from* rather than to navigate. A picker must not lead away
+     * from itself — that cancels the flow the user is in — so its rows drill into the subcategories instead, its
+     * entry count badge carries no link, and the category's own page is an external link button.
+     */
+    protected function isPicker(): bool
+    {
+        return false;
+    }
+
+    /**
+     * Where the row's own links lead: the name, the type icon and the ancestors.
      *
      * @return array<array-key, mixed>|string|null
      */
     protected function getRecordUrl(Category $category): array|string|null
     {
-        return $category->getAdminRoute();
+        if (!$this->isPicker()) {
+            return $category->getAdminRoute();
+        }
+
+        return $this->hasBranchesEnabled() && $category->getBranchCount()
+            ? $this->getBranchUrl($category)
+            : null;
     }
 
     protected function getBranchCountColumn(): ?Column
@@ -127,7 +142,7 @@ trait CategoryGridTrait
     {
         return BadgeColumn::make()
             ->property('entry_count')
-            ->url(fn (Category $category) => ['entry/index', 'category' => $category->id])
+            ->url($this->isPicker() ? null : fn (Category $category) => ['entry/index', 'category' => $category->id])
             ->value(fn (Category $category) => $category->hasEntriesEnabled() ? $category->entry_count : null);
     }
 

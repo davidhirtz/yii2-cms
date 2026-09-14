@@ -22,6 +22,12 @@ class SectionParentEntryGridView extends EntryGridView
         return $this;
     }
 
+    #[Override]
+    protected function isPicker(): bool
+    {
+        return true;
+    }
+
     /**
      * @see SectionController::actionDuplicate()
      * @see SectionController::actionMove()
@@ -29,6 +35,8 @@ class SectionParentEntryGridView extends EntryGridView
     #[Override]
     protected function getButtonColumnContent(Entry $entry): Traversable
     {
+        yield $this->getAdminLinkButton($entry);
+
         if (!$this->webuser->can(Entry::AUTH_ENTRY)) {
             return;
         }

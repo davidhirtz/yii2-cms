@@ -14,9 +14,9 @@ use Override;
 use Yii;
 
 /**
- * A picker lists records to choose from, so nothing in a row may lead to the record's own page in the same tab —
- * that cancels the very flow the user is in. The file picker is pinned here too: the cms asset controller is the
- * only place the media grid renders with a model.
+ * A picker lists records to choose from, so nothing in a row may lead out of it — neither the record's own page,
+ * which is an external link button opening in a new tab, nor the related lists the count badges carry. The file
+ * picker is pinned here too: the cms asset controller is the only place the media grid renders with a model.
  */
 class PickerGridViewTest extends TestCase
 {
@@ -49,6 +49,30 @@ class PickerGridViewTest extends TestCase
         self::assertStringContainsString('<div class="strong">Test Page – Disabled</div>', $html);
 
         $this->assertRecordLinksOpenInANewTab($html, '/admin/cms/entry/update');
+
+        // The subentry badge still drills into the picker; the section and asset counts lead out of it.
+        self::assertStringContainsString('<a class="badge" href="/admin/cms/section-entry/create?parent=1">2</a>', $html);
+        self::assertStringContainsString('<div class="badge">5</div>', $html);
+        self::assertStringContainsString('<div class="badge">2</div>', $html);
+    }
+
+    /**
+     * The grid that picks the entry a section is moved or copied to.
+     */
+    public function testTheSectionParentEntryPickerDrillsIntoTheSubentries(): void
+    {
+        $this->login();
+        $html = Yii::$app->runAction('admin/cms/section/entries', ['id' => 3]);
+
+        self::assertIsString($html);
+        self::assertStringContainsString(
+            '<a class="strong" href="/admin/cms/section/entries?parent=1">Test Page – Enabled</a>',
+            $html,
+        );
+        self::assertStringContainsString('<div class="strong">Test Page – Disabled</div>', $html);
+        self::assertStringContainsString('<div class="badge">5</div>', $html);
+
+        $this->assertRecordLinksOpenInANewTab($html, '/admin/cms/entry/update');
     }
 
     public function testTheCategoryPickerDrillsIntoTheSubcategories(): void
@@ -66,6 +90,10 @@ class PickerGridViewTest extends TestCase
         self::assertStringContainsString('<div class="strong">Root category 2</div>', $html);
 
         $this->assertRecordLinksOpenInANewTab($html, '/admin/cms/category/update');
+
+        // The branch badge still drills into the picker; the entry count leads out of it.
+        self::assertStringContainsString('<a class="badge" href="/admin/cms/entry-category/index?category=1">1</a>', $html);
+        self::assertStringContainsString('<div class="badge">2</div>', $html);
     }
 
     public function testTheFilePickerLinksToTheFileOnlyThroughItsButton(): void
@@ -78,6 +106,7 @@ class PickerGridViewTest extends TestCase
         // Neither the thumbnail nor the name nor the alt text check leads to the file any more.
         self::assertStringContainsString('<div class="strong">Test 1</div>', $html);
         self::assertStringContainsString('<span class="text-success fas fa-check"></span>', $html);
+        self::assertStringContainsString('<div class="badge">1</div>', $html);
 
         $this->assertRecordLinksOpenInANewTab($html, '/admin/media/file/update');
     }
@@ -92,6 +121,7 @@ class PickerGridViewTest extends TestCase
 
         self::assertIsString($html);
         self::assertStringContainsString('<a class="strong" href="/admin/cms/entry/update?id=1">', $html);
+        self::assertStringContainsString('<a class="badge" href="/admin/cms/section/index?entry=1">5</a>', $html);
     }
 
     /**

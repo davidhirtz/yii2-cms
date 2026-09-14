@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Modules\Admin\Widgets\Grids;
 
 use Hirtz\Cms\Models\Entry;
-use Hirtz\Skeleton\Helpers\Url;
 use Hirtz\Skeleton\Widgets\Buttons\Button;
 use Hirtz\Skeleton\Widgets\Grids\Toolbars\TypeFilterDropdown;
 use Override;
@@ -48,16 +47,10 @@ class SectionEntryGridView extends EntryGridView
         return $items;
     }
 
-    /**
-     * The picker must not navigate away from itself, which is what a link to the entry did: the name drills into
-     * the subentries the way the entry count badge does, and leads nowhere when there are none.
-     */
     #[Override]
-    protected function getRecordUrl(Entry $entry): array|string|null
+    protected function isPicker(): bool
     {
-        return $entry->hasDescendantsEnabled() && $entry->entry_count
-            ? Url::current(['category' => null, 'parent' => $entry->id, 'q' => null, 'type' => null])
-            : null;
+        return true;
     }
 
     /**
@@ -85,16 +78,4 @@ class SectionEntryGridView extends EntryGridView
         }
     }
 
-    /**
-     * The entry's own page, which the name no longer leads to — in a new tab, so the picker survives the detour.
-     */
-    protected function getAdminLinkButton(Entry $entry): Stringable
-    {
-        return Button::make()
-            ->secondary()
-            ->icon('external-link-alt')
-            ->tooltip(Yii::t('cms', 'COMMON_OPEN_ADMIN'))
-            ->url($entry->getAdminRoute() ?: null)
-            ->target('_blank');
-    }
 }

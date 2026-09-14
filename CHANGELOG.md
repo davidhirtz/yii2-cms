@@ -1,13 +1,20 @@
 ## 3.0 (in development)
 
-- **A picker grid no longer leads to the record it lists.** Clicking the name in `Grids\SectionEntryGridView` or
-  `Grids\EntryCategoryGridView` opened the entry or category and cancelled the very flow the user was in. The name
-  now drills into the subentries or subcategories — the same URL the count badge carries — and is plain text when
-  there are none; the record's own page moved into an external link button that opens it in a new tab. The type
-  icon and the category ancestors follow the same rule through the new `getRecordUrl()` hook on
-  `Grids\EntryGridView` and `Grids\Traits\CategoryGridTrait`, which a subclass overrides in one place.
-  `CategoryGridTrait` also gained `hasBranchesEnabled()` and `getBranchUrl()`, which `getBranchCountColumn()` and
-  the hook share.
+- **A picker grid no longer leads out of itself.** Clicking the name in `Grids\SectionEntryGridView`,
+  `Grids\SectionParentEntryGridView` or `Grids\EntryCategoryGridView` opened the entry or category and cancelled
+  the very flow the user was in, and the count badges led to the record's sections, assets or entries. A grid now
+  says what it is through `isPicker()` on `Grids\EntryGridView` and `Grids\Traits\CategoryGridTrait`, and a
+  picker:
+
+  - drills into the subentries or subcategories from the name and the type icon — the same URL the child count
+    badge carries — and renders plain text when there are none, through the new `getRecordUrl()` hook, which the
+    category ancestors follow too;
+  - renders every *other* count badge unlinked (still a `.badge`, just a `div`), the child count excepted since
+    it drills further into the picker;
+  - offers the record's own page as an external link button that opens in a new tab (`getAdminLinkButton()`).
+
+  `EntryGridView` also gained `getDescendantUrl()`, and `CategoryGridTrait` `hasBranchesEnabled()` and
+  `getBranchUrl()`, which `getBranchCountColumn()` and the hook share.
 
 - **`author` is detached from `admin`, and gains the media permissions.**
   `Migrations\M260914210000AuthorRole` removes it from `admin`, which lists the permissions themselves now, and

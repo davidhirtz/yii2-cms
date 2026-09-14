@@ -15,6 +15,7 @@ use Hirtz\Cms\Modules\Admin\Widgets\Grids\Columns\EntryEntryCountColumn;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\Columns\SectionCountColumn;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\Toolbars\CategoryFilterDropdown;
 use Hirtz\Cms\Modules\ModuleTrait;
+use Hirtz\Skeleton\Helpers\Url;
 use Hirtz\Skeleton\Html\A;
 use Hirtz\Skeleton\Html\Div;
 use Hirtz\Skeleton\Widgets\Buttons\Button;
@@ -199,14 +200,58 @@ class EntryGridView extends GridView
     }
 
     /**
-     * Where the row's own links lead. A picker grid answers `null` rather than the entry's page, which would
-     * navigate away from the very list the user is picking from.
+     * Whether the grid is a list to pick an entry *from* rather than to navigate. A picker must not lead away
+     * from itself — that cancels the flow the user is in — so its rows drill into the subentries instead, its
+     * count badges carry no link, and the entry's own page is an external link button.
+     */
+    protected function isPicker(): bool
+    {
+        return false;
+    }
+
+    /**
+     * Where the row's own links lead: the name and the type icon.
      *
      * @return array<array-key, mixed>|string|null
      */
     protected function getRecordUrl(Entry $entry): array|string|null
     {
-        return $entry->getAdminRoute() ?: null;
+        if (!$this->isPicker()) {
+            return $entry->getAdminRoute() ?: null;
+        }
+
+        return $entry->hasDescendantsEnabled() && $entry->entry_count
+            ? $this->getDescendantUrl($entry)
+            : null;
+    }
+
+    /**
+     * The subentries, which is also what {@see EntryEntryCountColumn} carries.
+     *
+     * @return array<array-key, mixed>|string
+     */
+    protected function getDescendantUrl(Entry $entry): array|string
+    {
+        return Url::current([
+            'category' => null,
+            'parent' => $entry->id,
+            'q' => null,
+            'type' => null,
+        ]);
+    }
+
+    /**
+     * The entry's own page, which a picker's name no longer leads to — in a new tab, so the picker survives the
+     * detour.
+     */
+    protected function getAdminLinkButton(Entry $entry): Stringable
+    {
+        return Button::make()
+            ->secondary()
+            ->icon('external-link-alt')
+            ->tooltip(Yii::t('cms', 'COMMON_OPEN_ADMIN'))
+            ->url($entry->getAdminRoute() ?: null)
+            ->target('_blank');
     }
 
     protected function getEntryCountColumn(): ?Column
@@ -216,12 +261,14 @@ class EntryGridView extends GridView
 
     protected function getSectionCountColumn(): ?Column
     {
-        return SectionCountColumn::make();
+        $column = SectionCountColumn::make();
+        return $this->isPicker() ? $column->url(null) : $column;
     }
 
     protected function getAssetCountColumn(): ?Column
     {
-        return AssetCountColumn::make();
+        $column = AssetCountColumn::make();
+        return $this->isPicker() ? $column->url(null) : $column;
     }
 
     protected function getDateColumn(): ?Column

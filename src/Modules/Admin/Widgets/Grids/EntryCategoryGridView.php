@@ -65,15 +65,9 @@ class EntryCategoryGridView extends GridView
             ->content($this->getButtonColumnContent(...));
     }
 
-    /**
-     * The picker must not navigate away from itself, which is what a link to the category did: the name drills
-     * into the subcategories the way the branch count badge does, and leads nowhere when there are none.
-     */
-    protected function getRecordUrl(Category $category): array|string|null
+    protected function isPicker(): bool
     {
-        return $this->hasBranchesEnabled() && $category->getBranchCount()
-            ? $this->getBranchUrl($category)
-            : null;
+        return true;
     }
 
     protected function getButtonColumnContent(Category $category): array
