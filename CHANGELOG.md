@@ -1,5 +1,16 @@
 ## 3.0 (in development)
 
+- **Sections are deleted in bulk.** `Modules\Admin\Widgets\Grids\SectionGridView` renders a `CheckboxColumn`
+  and a footer offering `Modules\Admin\Controllers\SectionController::actionDeleteAll()`, which hands the
+  selection to the new `Models\Actions\DeleteSections`. The column only appears where the action makes sense —
+  more than one section and `Entry::AUTH_ENTRY` — which `SectionGridView::$showSelection` also turns off in one
+  place.
+
+  `Models\Section::afterDelete()` honours `getIsBatch()` now, as its `afterSave()` already did, so the action
+  recounts each entry the selection spans once instead of once per section. **A caller deleting a section with
+  `setIsBatch(true)` owns `entry.section_count`** and has to call `recalculateSectionCount()` itself; nothing in
+  the bundle did so before.
+
 - **A project can declare section sets**, groups of sections an entry is given in one go. A set is
   `Models\Sets\SectionSet`, a skeleton `Models\Definitions\Definition` — a value, a name and an icon — holding a
   list of `Models\Sets\SectionTemplate` objects, each a section type plus the attribute values the new section

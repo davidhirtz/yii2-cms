@@ -223,7 +223,7 @@ class Section extends ActiveRecord implements AssetModelInterface, SearchableInt
     #[Override]
     public function afterDelete(): void
     {
-        if (!$this->entry->isDeleted()) {
+        if (!$this->getIsBatch() && !$this->entry->isDeleted()) {
             $this->entry->recalculateSectionCount()->update();
         }
 

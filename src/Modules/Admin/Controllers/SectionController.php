@@ -6,6 +6,7 @@ namespace Hirtz\Cms\Modules\Admin\Controllers;
 
 use Hirtz\Skeleton\Widgets\Flashes;
 use Hirtz\Cms\Models\Actions\CreateSectionSet;
+use Hirtz\Cms\Models\Actions\DeleteSections;
 use Hirtz\Cms\Models\Actions\DuplicateSection;
 use Hirtz\Cms\Models\Actions\ReorderSections;
 use Hirtz\Cms\Models\Category;
@@ -16,6 +17,7 @@ use Hirtz\Cms\Modules\Admin\Controllers\Traits\SectionControllerTrait;
 use Hirtz\Cms\Modules\Admin\Data\EntryActiveDataProvider;
 use Hirtz\Cms\Modules\Admin\Data\SectionActiveDataProvider;
 use Hirtz\Cms\Modules\Admin\Widgets\Buttons\SectionSetButton;
+use Hirtz\Cms\Modules\Admin\Widgets\Grids\SectionGridView;
 use Override;
 use Yii;
 use yii\filters\AccessControl;
@@ -47,6 +49,7 @@ class SectionController extends AbstractController
                             'create',
                             'create-set',
                             'delete',
+                            'delete-all',
                             'duplicate',
                             'entries',
                             'index',
@@ -64,6 +67,7 @@ class SectionController extends AbstractController
                 'actions' => [
                     'create-set' => ['post'],
                     'delete' => ['post'],
+                    'delete-all' => ['post'],
                     'duplicate' => ['post'],
                     'order' => ['post'],
                     'move' => ['post'],
@@ -234,6 +238,32 @@ class SectionController extends AbstractController
         }
 
         return $this->redirect(['index', 'entry' => $section->entry_id]);
+    }
+
+    /**
+     * @see SectionGridView::getSelectionButton()
+     */
+    public function actionDeleteAll(): Response
+    {
+        $sectionIds = array_map(intval(...), $this->request->post('selection', []));
+        $sections = $sectionIds ? Section::findAll(['id' => $sectionIds]) : [];
+
+        if (!$sections) {
+            return $this->redirect(['/admin/cms/entry/index']);
+        }
+
+        $action = DeleteSections::create($sections);
+
+        if ($count = count($action->getDeleted())) {
+            $this->success(Yii::t('cms', 'SECTION_SUCCESS_SELECTED_DELETED', ['count' => $count]));
+        }
+
+        foreach ($action->getFailed() as $section) {
+            $this->error($section);
+        }
+
+        // The grid is scoped to one entry, so the first section names the page the selection was made on.
+        return $this->redirect(['index', 'entry' => $sections[0]->entry_id]);
     }
 
     public function actionOrder(int $entry): string

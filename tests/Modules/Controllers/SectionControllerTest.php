@@ -275,6 +275,47 @@ class SectionControllerTest extends TestCase
         self::assertNull(Section::findOne($section->id));
     }
 
+    public function testDeleteAllRemovesTheSelectedSectionsAndFixesTheCountOnce(): void
+    {
+        $this->login();
+
+        $first = $this->createSection('First');
+        $second = $this->createSection('Second');
+        $third = $this->createSection('Third');
+
+        $response = $this->post('admin/cms/section/delete-all', [], [
+            'selection' => [(string)$first->id, (string)$second->id],
+        ]);
+
+        self::assertInstanceOf(Response::class, $response);
+
+        self::assertNull(Section::findOne($first->id));
+        self::assertNull(Section::findOne($second->id));
+        self::assertNotNull(Section::findOne($third->id));
+
+        self::assertSame(1, Entry::findOne($this->entry->id)->section_count);
+        self::assertNotEmpty(Yii::$app->getSession()->getFlash('success'));
+    }
+
+    public function testDeleteAllWithoutASelectionDeletesNothing(): void
+    {
+        $this->login();
+        $section = $this->createSection('Kept');
+
+        $this->post('admin/cms/section/delete-all');
+
+        self::assertNotNull(Section::findOne($section->id));
+        self::assertEmpty(Yii::$app->getSession()->getFlash('success'));
+    }
+
+    public function testDeleteAllRefusesAGetRequest(): void
+    {
+        $this->login();
+
+        $this->expectException(MethodNotAllowedHttpException::class);
+        Yii::$app->runAction('admin/cms/section/delete-all');
+    }
+
     public function testDeleteRefusesAGetRequest(): void
     {
         $this->login();
