@@ -146,6 +146,10 @@ class SavePermalinks
      * A redirect the entry has just moved back onto is a no-op and is deleted rather than updated: left in
      * place it points at a URI the entry no longer has, and it redirects its own request URI to itself.
      *
+     * That deletion comes first, and the ordering is load-bearing: {@see Redirect::validateUrl()} resolves the
+     * chain its new target starts, so while the no-op row is still there every other row updated in this pass
+     * follows it back to the URL they are all being moved off.
+     *
      * @param string $toRequestUri the host-qualified form of `$to`, the shape `request_uri` is stored in
      */
     protected function updatePreviousRedirects(string $from, string $to, string $toRequestUri): void
@@ -155,12 +159,14 @@ class SavePermalinks
             ->where(['url' => $from])
             ->all();
 
-        foreach ($redirects as $redirect) {
+        foreach ($redirects as $key => $redirect) {
             if ($redirect->request_uri === $toRequestUri) {
                 $redirect->delete();
-                continue;
+                unset($redirects[$key]);
             }
+        }
 
+        foreach ($redirects as $redirect) {
             $redirect->url = $to;
 
             if (!$redirect->update()) {
