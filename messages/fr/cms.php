@@ -33,6 +33,7 @@ return [
     'COMMON_ENTRY' => 'Entrée',
     'COMMON_ENTRY_ORDER_CHANGED' => 'Ordre des entrées modifié',
     'COMMON_NO_TITLE' => '[ Sans titre ]',
+    'COMMON_OPEN_ADMIN' => 'Ouvrir dans un nouvel onglet',
     'COMMON_OPEN_WEBSITE' => 'Ouvrir le site',
     'COMMON_SECTION' => 'Section',
     'COMMON_SECTIONS' => 'Sections',

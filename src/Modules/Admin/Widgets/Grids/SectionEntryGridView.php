@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Modules\Admin\Widgets\Grids;
 
 use Hirtz\Cms\Models\Entry;
+use Hirtz\Skeleton\Helpers\Url;
 use Hirtz\Skeleton\Widgets\Buttons\Button;
 use Hirtz\Skeleton\Widgets\Grids\Toolbars\TypeFilterDropdown;
 use Override;
@@ -48,11 +49,25 @@ class SectionEntryGridView extends EntryGridView
     }
 
     /**
+     * The picker must not navigate away from itself, which is what a link to the entry did: the name drills into
+     * the subentries the way the entry count badge does, and leads nowhere when there are none.
+     */
+    #[Override]
+    protected function getRecordUrl(Entry $entry): array|string|null
+    {
+        return $entry->hasDescendantsEnabled() && $entry->entry_count
+            ? Url::current(['category' => null, 'parent' => $entry->id, 'q' => null, 'type' => null])
+            : null;
+    }
+
+    /**
      * @see SectionEntryController::actionCreate()
      */
     #[Override]
     protected function getButtonColumnContent(Entry $entry): Traversable
     {
+        yield $this->getAdminLinkButton($entry);
+
         $canUpdate = $this->webuser->can(Entry::AUTH_ENTRY);
 
         if (!$canUpdate || $entry->sectionEntry) {
@@ -68,5 +83,18 @@ class SectionEntryGridView extends EntryGridView
                 ->tooltip(Yii::t('cms', 'SECTION_ENTRY_ADD_TO_SECTION'))
                 ->post(['section-entry/create', 'section' => $this->provider->section->id, 'entry' => $entry->id]);
         }
+    }
+
+    /**
+     * The entry's own page, which the name no longer leads to — in a new tab, so the picker survives the detour.
+     */
+    protected function getAdminLinkButton(Entry $entry): Stringable
+    {
+        return Button::make()
+            ->secondary()
+            ->icon('external-link-alt')
+            ->tooltip(Yii::t('cms', 'COMMON_OPEN_ADMIN'))
+            ->url($entry->getAdminRoute() ?: null)
+            ->target('_blank');
     }
 }

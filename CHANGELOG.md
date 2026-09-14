@@ -1,5 +1,14 @@
 ## 3.0 (in development)
 
+- **A picker grid no longer leads to the record it lists.** Clicking the name in `Grids\SectionEntryGridView` or
+  `Grids\EntryCategoryGridView` opened the entry or category and cancelled the very flow the user was in. The name
+  now drills into the subentries or subcategories — the same URL the count badge carries — and is plain text when
+  there are none; the record's own page moved into an external link button that opens it in a new tab. The type
+  icon and the category ancestors follow the same rule through the new `getRecordUrl()` hook on
+  `Grids\EntryGridView` and `Grids\Traits\CategoryGridTrait`, which a subclass overrides in one place.
+  `CategoryGridTrait` also gained `hasBranchesEnabled()` and `getBranchUrl()`, which `getBranchCountColumn()` and
+  the hook share.
+
 - **`author` is detached from `admin`, and gains the media permissions.**
   `Migrations\M260914210000AuthorRole` removes it from `admin`, which lists the permissions themselves now, and
   adds `File::AUTH_FILE` and `Folder::AUTH_FOLDER` to it, since `yii2-media` dropped the `media` role that used to

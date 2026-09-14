@@ -37,7 +37,7 @@ trait CategoryGridTrait
     {
         return $this->provider->type === null
             ? TypeColumn::make()
-                ->url(fn (Category $model) => $model->getAdminRoute())
+                ->url($this->getRecordUrl(...))
                 ->visible($this->hasVisibleTypes())
             : null;
     }
@@ -63,10 +63,12 @@ trait CategoryGridTrait
             ? $this->search->markKeywords($name)
             : Yii::t('cms', 'COMMON_NO_TITLE');
 
-        $html = A::make()
-            ->class($name ? 'strong' : 'strong text-muted')
-            ->content($html)
-            ->href($category->getAdminRoute());
+        $url = $this->getRecordUrl($category);
+        $class = $name ? 'strong' : 'strong text-muted';
+
+        $html = $url
+            ? A::make()->class($class)->content($html)->href($url)
+            : Div::make()->class($class)->content($html);
 
         if ($this->showCategoryAncestors($category)) {
             $html .= Div::make()
@@ -81,20 +83,44 @@ trait CategoryGridTrait
         return $html;
     }
 
+    /**
+     * Where the row's own links lead. A picker grid answers `null` rather than the category's page, which would
+     * navigate away from the very list the user is picking from.
+     *
+     * @return array<array-key, mixed>|string|null
+     */
+    protected function getRecordUrl(Category $category): array|string|null
+    {
+        return $category->getAdminRoute();
+    }
+
     protected function getBranchCountColumn(): ?Column
     {
-        if (!($this->provider->parent?->hasDescendantsEnabled()
-            ?? static::getModule()->enableNestedCategories)) {
+        if (!$this->hasBranchesEnabled()) {
             return null;
         }
 
         return BadgeColumn::make()
             ->property('branchCount')
-            ->url(fn (Category $category) => Url::current([
-                $this->categoryParamName => $category->id,
-                'page' => null,
-                'q' => null,
-            ]));
+            ->url($this->getBranchUrl(...));
+    }
+
+    protected function hasBranchesEnabled(): bool
+    {
+        return $this->provider->parent?->hasDescendantsEnabled()
+            ?? static::getModule()->enableNestedCategories;
+    }
+
+    /**
+     * @return array<array-key, mixed>|string
+     */
+    protected function getBranchUrl(Category $category): array|string
+    {
+        return Url::current([
+            $this->categoryParamName => $category->id,
+            'page' => null,
+            'q' => null,
+        ]);
     }
 
     protected function getEntryCountColumn(): ?Column
@@ -120,9 +146,11 @@ trait CategoryGridTrait
         $parents = [];
 
         foreach ($category->getAncestors() as $parent) {
-            $parents[] = A::make()
-                ->text($parent->name)
-                ->href($parent->getAdminRoute());
+            $url = $this->getRecordUrl($parent);
+
+            $parents[] = $url
+                ? A::make()->text($parent->name)->href($url)
+                : Html::encode($parent->name);
         }
 
         return implode(' / ', $parents);

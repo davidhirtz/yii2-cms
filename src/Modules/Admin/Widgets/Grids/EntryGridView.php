@@ -155,7 +155,7 @@ class EntryGridView extends GridView
     {
         return $this->provider->type === null
             ? TypeColumn::make()
-                ->url(fn (Entry $model) => $model->getAdminRoute())
+                ->url($this->getRecordUrl(...))
                 ->visible($this->hasVisibleTypes())
             : null;
     }
@@ -176,14 +176,16 @@ class EntryGridView extends GridView
     {
         $name = $entry->getI18nAttribute('name');
 
-        $html = $name
+        $content = $name
             ? $this->search->markKeywords($name)
             : Yii::t('cms', 'COMMON_NO_TITLE');
 
-        $html = A::make()
-            ->content($html)
-            ->href($entry->getAdminRoute())
-            ->class($name ? 'strong' : 'strong text-muted');
+        $url = $this->getRecordUrl($entry);
+        $class = $name ? 'strong' : 'strong text-muted';
+
+        $html = $url
+            ? A::make()->content($content)->href($url)->class($class)
+            : Div::make()->content($content)->class($class);
 
         if ($this->showUrl) {
             $html .= $this->getUrl($entry);
@@ -194,6 +196,17 @@ class EntryGridView extends GridView
         }
 
         return $html;
+    }
+
+    /**
+     * Where the row's own links lead. A picker grid answers `null` rather than the entry's page, which would
+     * navigate away from the very list the user is picking from.
+     *
+     * @return array<array-key, mixed>|string|null
+     */
+    protected function getRecordUrl(Entry $entry): array|string|null
+    {
+        return $entry->getAdminRoute() ?: null;
     }
 
     protected function getEntryCountColumn(): ?Column

@@ -14,6 +14,8 @@ use Hirtz\Skeleton\Widgets\Grids\Columns\Column;
 use Hirtz\Skeleton\Widgets\Grids\Columns\RelativeTimeColumn;
 use Hirtz\Skeleton\Widgets\Grids\GridView;
 use Override;
+use Stringable;
+use Yii;
 
 /**
  * @template T of Category
@@ -63,22 +65,46 @@ class EntryCategoryGridView extends GridView
             ->content($this->getButtonColumnContent(...));
     }
 
+    /**
+     * The picker must not navigate away from itself, which is what a link to the category did: the name drills
+     * into the subcategories the way the branch count badge does, and leads nowhere when there are none.
+     */
+    protected function getRecordUrl(Category $category): array|string|null
+    {
+        return $this->hasBranchesEnabled() && $category->getBranchCount()
+            ? $this->getBranchUrl($category)
+            : null;
+    }
+
     protected function getButtonColumnContent(Category $category): array
     {
-        // Categories can always be removed even, if they were not supposed to have entries enabled
-        if (!$category->hasEntriesEnabled() && !$category->entryCategory) {
-            return [];
-        }
+        $buttons = [$this->getAdminLinkButton($category)];
 
-        return [
-            Button::make()
+        // Categories can always be removed even, if they were not supposed to have entries enabled
+        if ($category->hasEntriesEnabled() || $category->entryCategory) {
+            $buttons[] = Button::make()
                 ->primary()
                 ->icon($category->entryCategory ? 'ban' : 'star')
                 ->post([
                     $category->entryCategory ? 'delete' : 'create',
                     'entry' => $this->provider->entry->id,
                     'category' => $category->id,
-                ]),
-        ];
+                ]);
+        }
+
+        return $buttons;
+    }
+
+    /**
+     * The category's own page, which the name no longer leads to — in a new tab, so the picker survives the detour.
+     */
+    protected function getAdminLinkButton(Category $category): Stringable
+    {
+        return Button::make()
+            ->secondary()
+            ->icon('external-link-alt')
+            ->tooltip(Yii::t('cms', 'COMMON_OPEN_ADMIN'))
+            ->url($category->getAdminRoute())
+            ->target('_blank');
     }
 }
