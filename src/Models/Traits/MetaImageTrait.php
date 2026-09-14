@@ -32,7 +32,7 @@ trait MetaImageTrait
     /**
      * @return list<AssetType>
      */
-    public static function getTypes(): array
+    public function getTypes(): array
     {
         return [...static::getViewportTypes(), ...static::getMetaImageTypes()];
     }

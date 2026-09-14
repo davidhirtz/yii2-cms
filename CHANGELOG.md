@@ -1,5 +1,8 @@
 ## 3.0 (in development)
 
+- **`Models\Traits\MetaImageTrait::getTypes()` is an instance method**, with every other type declaration —
+  drop `static` from your own overrides, see the skeleton's `UPGRADE.md`.
+
 - **A picker grid no longer leads out of itself.** Clicking the name in `Grids\SectionEntryGridView`,
   `Grids\SectionParentEntryGridView` or `Grids\EntryCategoryGridView` opened the entry or category and cancelled
   the very flow the user was in, and the count badges led to the record's sections, assets or entries. A grid now

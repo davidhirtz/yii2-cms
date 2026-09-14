@@ -13,7 +13,7 @@ class TestEntry extends Entry
     public const int TYPE_POST = 2;
 
     #[\Override]
-    public static function getTypes(): array
+    public function getTypes(): array
     {
         return [
             EntryType::make(self::TYPE_PAGE)

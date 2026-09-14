@@ -436,7 +436,7 @@ class TestSection extends Section
     public const int TYPE_CONTEXT = 20;
 
     #[Override]
-    public static function getTypes(): array
+    public function getTypes(): array
     {
         return [
             SectionType::make(self::TYPE_TEXT)
