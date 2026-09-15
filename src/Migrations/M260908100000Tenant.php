@@ -54,7 +54,7 @@ class M260908100000Tenant extends Migration
 
         $this->insert(Tenant::tableName(), [
             'status' => StatusAttributeInterface::STATUS_ENABLED,
-            'name' => parse_url($url, PHP_URL_HOST) ?: $url,
+            'name' => ($url ? parse_url($url, PHP_URL_HOST) : null) ?: Yii::$app->name,
             'url' => $url,
             'language' => null,
             'position' => 1,
@@ -63,19 +63,15 @@ class M260908100000Tenant extends Migration
     }
 
     /**
-     * The canonical host of the site, per environment. Never guessed: it becomes the URL manager's `hostInfo` on
-     * every request.
+     * The canonical host of the site, per environment: it becomes the URL manager's `hostInfo` on every request.
+     * Never guessed — an installation that names none gets a tenant without a URL, which pins no host at all and
+     * so follows the request, which is what a site that never wanted tenants runs on.
      */
-    protected function getDefaultTenantUrl(): string
+    protected function getDefaultTenantUrl(): ?string
     {
         $url = $this->getHostInfo() ?: (Yii::$app->params['tenantUrl'] ?? null);
 
-        if (!is_string($url) || !$url) {
-            throw new InvalidConfigException('The tenant seed needs the canonical URL of this environment. Set'
-                . ' `params[\'tenantUrl\']` or the console `urlManager.hostInfo` and run the migration again.');
-        }
-
-        return rtrim($url, '/');
+        return is_string($url) && $url ? rtrim($url, '/') : null;
     }
 
     protected function getHostInfo(): ?string

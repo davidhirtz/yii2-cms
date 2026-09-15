@@ -1,5 +1,12 @@
 ## 3.0 (in development)
 
+- **`Migrations\M260908100000Tenant` no longer refuses to run without a canonical URL.** It still seeds the
+  tenant from the console `urlManager.hostInfo` or `params['tenantUrl']` where one is configured; where neither
+  is, the tenant is seeded without a URL and named after the application rather than the migration throwing.
+  Such a tenant names no host, so `Models\Traits\PermalinkTrait::getPermalinkRequestUri()` records its
+  redirects relative — which is all a single-tenant installation needs, and two of those could not tell their
+  slugs apart anyway
+
 - **`Widgets\MetaTags::registerImageMetaTags()` was a fatal on two counts**, both found by PHPStan level 7: it
   read `$model->assets` for a `Category`, which has none, and indexed `Media\Models\File::getTransformations()`
   — the relation to the generated derivatives — as if it were the module's preset array, which it stopped being

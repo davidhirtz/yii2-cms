@@ -100,6 +100,21 @@ class EntryTenantPermalinkTest extends TestCase
         self::assertSame('https://www.second-domain.localhost/moved', $this->findRedirect('www.second-domain.localhost/shared')?->url);
     }
 
+    /**
+     * A tenant without a URL names no host, so its redirects are relative — an installation that never wanted
+     * tenants runs on whichever host the request came in on.
+     */
+    public function testRenameOnATenantWithoutAUrlRecordsARelativeRedirect(): void
+    {
+        $tenant = $this->createTenant(null);
+        $entry = $this->createEntryWithSection('old', $tenant);
+
+        $entry->slug = 'new';
+        self::assertNotFalse($entry->update());
+
+        self::assertSame('new', $this->findRedirect('old')?->url);
+    }
+
     #[Override]
     protected function setUp(): void
     {
@@ -127,7 +142,7 @@ class EntryTenantPermalinkTest extends TestCase
             ->one();
     }
 
-    protected function createTenant(string $url = 'https://www.second-domain.localhost'): Tenant
+    protected function createTenant(?string $url = 'https://www.second-domain.localhost'): Tenant
     {
         $tenant = Tenant::create();
         $tenant->loadDefaultValues();
