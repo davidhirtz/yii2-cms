@@ -12,6 +12,7 @@ use Hirtz\Media\Models\Folder;
 use Hirtz\Skeleton\Models\User;
 use Hirtz\Skeleton\Modules\Admin\Module as AdminModule;
 use Hirtz\Skeleton\Test\TestCase;
+use Hirtz\Tenant\Models\Tenant;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Yii;
 use yii\rbac\Item;
@@ -53,16 +54,21 @@ class AuthItemTest extends TestCase
         ];
     }
 
-    public function testAnAdministratorHoldsEveryPermissionAndAManagerAllButTheSystemOne(): void
+    /**
+     * The installation-level permissions are the administrator's alone: inspecting the server and its error
+     * logs, and the tenants the whole installation is cut into.
+     */
+    public function testAnAdministratorHoldsEveryPermissionAndAManagerAllButTheInstallationLevelOnes(): void
     {
         $auth = Yii::$app->getAuthManager();
         $permissions = $this->getSortedNames($auth->getPermissions());
+        $adminOnly = [AdminModule::AUTH_SYSTEM, Tenant::AUTH_TENANT];
 
-        self::assertContains(AdminModule::AUTH_SYSTEM, $permissions);
+        self::assertEmpty(array_diff($adminOnly, $permissions));
         self::assertSame($permissions, $this->getSortedNames($auth->getPermissionsByRole(User::AUTH_ROLE_ADMIN)));
 
         self::assertSame(
-            array_values(array_diff($permissions, [AdminModule::AUTH_SYSTEM])),
+            array_values(array_diff($permissions, $adminOnly)),
             $this->getSortedNames($auth->getPermissionsByRole(User::AUTH_ROLE_MANAGER)),
         );
     }
