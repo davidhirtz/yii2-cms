@@ -19,7 +19,6 @@ use yii\helpers\Inflector;
  */
 class SectionLinkedEntryGridView extends EntryGridView
 {
-    #[Override]
     protected string $layout = '{items}{footer}';
 
     #[Override]
