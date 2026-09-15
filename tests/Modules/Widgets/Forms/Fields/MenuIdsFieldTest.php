@@ -53,9 +53,8 @@ class MenuIdsFieldTest extends TestCase
     }
 
     /**
-     * `Widgets\Forms\Fieldset` asks a field whether it is visible before the field configures itself, so a
-     * field that decides on what its own `configure()` resolved is dropped from the form without a trace —
-     * rendering it standalone would never notice.
+     * The field decides its visibility on the items its own `configure()` resolved, which only holds while
+     * `Widgets\Forms\Fieldset` renders it before asking — rendering it standalone would not notice a regression.
      */
     public function testTheFieldReachesTheEntryForm(): void
     {

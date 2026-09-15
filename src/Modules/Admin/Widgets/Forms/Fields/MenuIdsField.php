@@ -15,36 +15,25 @@ use Yii;
  */
 class MenuIdsField extends CheckboxListField
 {
-    /**
-     * `Widgets\Forms\Fieldset::configure()` asks a field whether it is visible before the field configures
-     * itself, so the menus have to be resolved here rather than in {@see static::configure()}.
-     */
+    public ?string $property = 'menu_ids';
+
     #[Override]
     public function isVisible(): bool
     {
-        $this->ensureItems();
         return parent::isVisible() && $this->items !== [];
     }
 
     #[Override]
     protected function configure(): void
     {
-        $this->property ??= 'menu_ids';
-        $this->ensureItems();
+        if (!$this->items && $this->model instanceof Entry) {
+            foreach ($this->model->getAvailableMenus() as $menu) {
+                $this->items[$menu->value] = $menu->getName();
+                $this->addAncestorWarning($menu);
+            }
+        }
 
         parent::configure();
-    }
-
-    protected function ensureItems(): void
-    {
-        if ($this->items || !$this->model instanceof Entry) {
-            return;
-        }
-
-        foreach ($this->model->getAvailableMenus() as $menu) {
-            $this->items[$menu->value] = $menu->getName();
-            $this->addAncestorWarning($menu);
-        }
     }
 
     /**

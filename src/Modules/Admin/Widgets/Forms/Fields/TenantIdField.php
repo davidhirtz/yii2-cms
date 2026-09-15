@@ -17,6 +17,8 @@ use Yii;
  */
 class TenantIdField extends SelectField
 {
+    public ?string $property = 'tenant_id';
+
     #[Override]
     protected function configure(): void
     {
@@ -24,7 +26,6 @@ class TenantIdField extends SelectField
         $this->attributes['required'] ??= true;
 
         $this->label ??= Yii::t('cms', 'ENTRY_TENANT_ID_LABEL');
-        $this->property ??= 'tenant_id';
 
         if (!$this->items) {
             foreach (TenantCollection::getAll() as $tenant) {

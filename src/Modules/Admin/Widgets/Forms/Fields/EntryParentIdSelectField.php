@@ -23,6 +23,8 @@ class EntryParentIdSelectField extends SelectField
     use ModuleTrait;
     use ParentIdSelectFieldTrait;
 
+    public ?string $property = 'parent_id';
+
     /**
      * @var Entry[]
      */
@@ -32,8 +34,6 @@ class EntryParentIdSelectField extends SelectField
     protected function configure(): void
     {
         $this->attributes['data-id'] ??= 'parent';
-        $this->property ??= 'parent_id';
-
         $this->setItemsFromEntries($this->getEntries());
         $this->promptAttributes = ArrayHelper::remove($this->attributes, 'promptAttributes', []);
 
