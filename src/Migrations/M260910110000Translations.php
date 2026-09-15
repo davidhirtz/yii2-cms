@@ -25,35 +25,33 @@ class M260910110000Translations extends Migration
 
     public function safeUp(): void
     {
-        foreach ($this->getModels() as $model) {
-            $this->moveI18nColumnsToTranslations($model);
+        foreach ($this->getTables() as $table => $modelClass) {
+            $this->moveI18nColumnsToTranslations($table, $modelClass);
         }
     }
 
     public function safeDown(): void
     {
-        foreach ($this->getModels() as $model) {
-            $this->restoreI18nColumnsFromTranslations($model);
+        foreach ($this->getTables() as $table => $modelClass) {
+            $this->restoreI18nColumnsFromTranslations($table, $modelClass);
         }
 
-        $category = Category::create();
-
-        foreach ($category->getI18nAttributeNames('slug') as $attributeName) {
-            if ($attributeName !== 'slug') {
-                $this->createIndex($attributeName, $category::tableName(), $attributeName, true);
+        foreach ($this->getI18nColumns(Category::tableName()) as $column => [$attribute]) {
+            if ($attribute === 'slug') {
+                $this->createIndex($column, Category::tableName(), $column, true);
             }
         }
     }
 
     /**
-     * @return list<Category|Entry|Section>
+     * @return array<string, class-string>
      */
-    protected function getModels(): array
+    protected function getTables(): array
     {
         return [
-            Entry::create(),
-            Section::create(),
-            Category::create(),
+            Entry::tableName() => Entry::class,
+            Section::tableName() => Section::class,
+            Category::tableName() => Category::class,
         ];
     }
 }
