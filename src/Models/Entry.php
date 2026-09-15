@@ -6,6 +6,7 @@ namespace Hirtz\Cms\Models;
 
 use Hirtz\Cms\Models\Actions\DeletePermalinkRedirects;
 use Hirtz\Cms\Models\Actions\UpdateTenantEntryCount;
+use Hirtz\Cms\Models\Menus\Menu;
 use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Models\Queries\SectionQuery;
 use Hirtz\Cms\Models\Traits\PermalinkTrait;
@@ -13,6 +14,7 @@ use Hirtz\Cms\Models\Traits\SlugAttributeTrait;
 use Hirtz\Cms\Models\Traits\VirtualSlugTrait;
 use Hirtz\Cms\Models\Types\EntryType;
 use Hirtz\Cms\Module;
+use Hirtz\Cms\Validators\MenuIdsValidator;
 use Hirtz\Cms\Validators\TenantIdValidator;
 use Hirtz\Media\Models\Asset;
 use Hirtz\Media\Models\Interfaces\AssetModelInterface;
@@ -24,6 +26,7 @@ use Hirtz\Skeleton\Web\User as WebUser;
 use Hirtz\Tenant\Models\Collections\TenantCollection;
 use Hirtz\Tenant\Models\Tenant;
 use Hirtz\Tenant\Models\Traits\TenantRelationTrait;
+use BackedEnum;
 use Override;
 use Yii;
 use davidhirtz\yii2\datetime\DateTime;
@@ -43,6 +46,7 @@ use yii\db\ActiveQuery;
  * @property string $content
  * @property DateTime|null $publish_date
  * @property list<int>|null $category_ids
+ * @property list<int>|null $menu_ids
  * @property int $entry_count
  * @property int $section_count
  * @property int $asset_count
@@ -121,6 +125,10 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
                 [
                     ['publish_date'],
                     ...(array)$this->dateTimeValidator,
+                ],
+                [
+                    ['menu_ids'],
+                    MenuIdsValidator::class,
                 ],
             ]),
         ];
@@ -539,6 +547,77 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
     }
 
     /**
+     * @return list<int>
+     */
+    public function getMenuIds(): array
+    {
+        return array_map(intval(...), $this->menu_ids ?? []);
+    }
+
+    /**
+     * The menus the record was loaded with, which is what keeps a menu that has stopped being available valid
+     * for the entries already in it.
+     *
+     * @return list<int>
+     */
+    public function getOldMenuIds(): array
+    {
+        $menuIds = $this->getIsNewRecord() ? null : $this->getOldAttribute('menu_ids');
+        return is_array($menuIds) ? array_values(array_map(intval(...), $menuIds)) : [];
+    }
+
+    /**
+     * @return array<int, Menu>
+     */
+    public function getMenus(): array
+    {
+        $menuIds = $this->getMenuIds();
+        return array_filter(static::getModule()->getMenus(), fn (Menu $menu) => in_array($menu->value, $menuIds, true));
+    }
+
+    /**
+     * The menus the admin offers for this entry: every declared one it is available for, plus the ones it is
+     * already in.
+     *
+     * @return array<int, Menu>
+     */
+    public function getAvailableMenus(): array
+    {
+        return array_filter(static::getModule()->getMenus(), fn (Menu $menu) => $menu->isAvailableOrStored($this));
+    }
+
+    /**
+     * A list of ids is `print_r()`ed by the fallback formatter, which is not a diff anyone can read.
+     */
+    #[Override]
+    public function formatTrailAttributeValue(string $attribute, mixed $value): mixed
+    {
+        if ($attribute !== 'menu_ids') {
+            return parent::formatTrailAttributeValue($attribute, $value);
+        }
+
+        $menus = static::getModule()->getMenus();
+        $names = [];
+
+        foreach ((array)$value as $menuId) {
+            $names[] = ($menus[(int)$menuId] ?? null)?->getName();
+        }
+
+        return implode(', ', array_filter($names));
+    }
+
+    public function isMenuItem(int|BackedEnum|null $menu = null): bool
+    {
+        $menuIds = $this->getMenuIds();
+
+        if ($menu === null) {
+            return $menuIds !== [];
+        }
+
+        return in_array(Menu::getValue($menu), $menuIds, true);
+    }
+
+    /**
      * @return array<string, int>
      */
     public function getDescendantsOrderBy(): array
@@ -760,6 +839,7 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
             'title' => Yii::t('cms', 'ENTRY_TITLE_LABEL'),
             'description' => Yii::t('cms', 'ENTRY_DESCRIPTION_LABEL'),
             'publish_date' => Yii::t('cms', 'ENTRY_PUBLISH_DATE_LABEL'),
+            'menu_ids' => Yii::t('cms', 'ENTRY_MENU_IDS_LABEL'),
             'entry_count' => Yii::t('cms', 'ENTRY_ENTRY_COUNT_LABEL'),
             'section_count' => Yii::t('cms', 'ENTRY_SECTION_COUNT_LABEL'),
         ];

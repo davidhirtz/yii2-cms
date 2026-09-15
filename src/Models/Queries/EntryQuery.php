@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Models\Queries;
 
+use BackedEnum;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\EntryCategory;
+use Hirtz\Cms\Models\Menus\Menu;
 use Hirtz\Cms\Models\Permalink;
 use Hirtz\Media\Models\Queries\AssetQuery;
 use Hirtz\Cms\Models\Section;
@@ -32,6 +34,33 @@ class EntryQuery extends I18nActiveQuery
     public function withPermalinks(): static
     {
         return $this->with('permalinks');
+    }
+
+    /**
+     * `menu_ids` is a JSON list and neither MySQL nor MariaDB can index one usefully, so the condition is a
+     * comparison per menu — and the common case, "every declared menu", is the cheap `IS NOT NULL` instead.
+     */
+    public function andWhereMenu(int|BackedEnum ...$menus): static
+    {
+        $menuIds = array_values(array_unique(array_map(Menu::getValue(...), $menus)));
+
+        if (!$menuIds) {
+            return $this->andWhere('0=1');
+        }
+
+        $column = Entry::tableName() . '.[[menu_ids]]';
+
+        if (!array_diff(array_keys(static::getModule()->getMenus()), $menuIds)) {
+            return $this->andWhere(['not', [$column => null]]);
+        }
+
+        $conditions = ['or'];
+
+        foreach ($menuIds as $key => $menuId) {
+            $conditions[] = new Expression("JSON_CONTAINS($column, :menu$key)", [":menu$key" => (string)$menuId]);
+        }
+
+        return $this->andWhere($conditions);
     }
 
     /**

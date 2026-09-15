@@ -1,5 +1,34 @@
 ## 3.0 (in development)
 
+- **Entry menus replace `Entry::$show_in_menu` and `$show_in_footer`.** A project needing a third navigation — a
+  copyright row, the two halves of a header — had to add a column of its own, and the two that shipped cost two
+  columns where one does the job. `entry.menu_ids` is a JSON list of the menus an entry is in, added by
+  `Migrations\M260915200000MenuIds`, which moves a v2 installation's `show_in_menu` into menu `1` and its
+  `show_in_footer` into menu `2` before dropping both columns and their index.
+
+  The menus themselves are `Models\Menus\Menu` definitions declared on `Module::$menus`, the way `$sectionSets`
+  already are — a closure, since a menu's name is a `Yii::t()` result. Nothing is declared by default.
+  `Menu::available(Closure|bool)` replaces `Models\Types\EntryType::showInMenu()` / `showInFooter()` and is
+  decided per entry, and a menu an entry is already in stays offered and stays valid once it is unavailable.
+  `Menu::autoload(false)` keeps a menu out of the one query a layout pays for.
+
+  Gone with them: `Migrations\Traits\MenuColumnTrait`, `Migrations\Traits\FooterColumnTrait`,
+  `Models\Traits\MenuAttributeTrait`, `Models\Traits\FooterAttributeTrait`,
+  `Modules\Admin\Widgets\Forms\Traits\MenuFieldTrait` and `FooterFieldTrait` — and with them the `rules()`
+  spread each needed, which made the checkbox vanish from the form without an error when it was forgotten.
+  `Modules\Admin\Widgets\Forms\Fields\MenuIdsField` is in the entry form by default and renders nothing
+  while no menu is declared
+
+- **`Widgets\NavItems` is `Models\Collections\MenuCollection`.** It was a static class under `Widgets\` that was
+  never a widget, and it only knew the two flags. `getItems($menu)`, `getRootItems($menu)` and
+  `getSubmenuItems($parent, $menu)` replace `getMenuItems()`, `getMainMenuItems()`, `getSubmenuItems($parent)`
+  and `getFooterItems()`; `getIsMenuItem()` and `getIsFooterItem()` are `Entry::isMenuItem($menu)`. Every
+  autoloaded menu is still one query
+
+- `Models\Queries\EntryQuery::andWhereMenu(int|BackedEnum ...)` filters by menu. Neither MySQL nor MariaDB can
+  index a JSON list usefully, so a subset of the declared menus is a `JSON_CONTAINS()` per menu while all of
+  them — what `MenuCollection` asks for — is the cheap `menu_ids IS NOT NULL`
+
 - **`Migrations\M260908100000Tenant` no longer refuses to run without a canonical URL.** It still seeds the
   tenant from the console `urlManager.hostInfo` or `params['tenantUrl']` where one is configured; where neither
   is, the tenant is seeded without a URL and named after the application rather than the migration throwing.

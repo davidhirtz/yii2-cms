@@ -6,6 +6,7 @@ namespace Hirtz\Cms\Modules\Admin\Widgets\Forms;
 
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\Fields\EntryParentIdSelectField;
+use Hirtz\Cms\Modules\Admin\Widgets\Forms\Fields\MenuIdsField;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits\ActiveFormFieldsTrait;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits\MetaFieldsTrait;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits\ParentIdFieldTrait;
@@ -47,6 +48,7 @@ class EntryActiveForm extends ActiveForm
                 $this->getParentIdField(),
                 $this->getNameField(),
                 $this->getPublishDateField(),
+                $this->getMenuIdsField(),
                 ...$this->getCustomAttributeFields(),
             ],
             [
@@ -104,6 +106,11 @@ class EntryActiveForm extends ActiveForm
     {
         return DateTimeField::make()
             ->property('publish_date');
+    }
+
+    protected function getMenuIdsField(): ?Stringable
+    {
+        return MenuIdsField::make();
     }
 
     #[Override]

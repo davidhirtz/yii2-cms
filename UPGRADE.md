@@ -1,5 +1,92 @@
 # Upgrade Guide
 
+## 3.0.0 — Entry menus replace `show_in_menu` and `show_in_footer`
+
+Two checkboxes could never answer the question a real project asks. Every installation that needed a third
+navigation — a copyright row, the left and the right half of a header — had to add a column of its own, and the
+two that shipped cost two columns where one does the job.
+
+`entry.menu_ids` is that one column: a JSON list of the menus an entry is in, added by
+`Migrations\M260915200000MenuIds`, which also **upgrades a v2 installation in place**. Where the project had
+`show_in_menu`, its entries land in menu `1`; where it had `show_in_footer`, in menu `2`; and both columns, with
+the index over them, are dropped. Neither is rebuilt on the way down — they were a project's own columns, added
+by migration traits the bundle no longer ships.
+
+So the upgrade is one declaration, and the two values are what keeps the migrated data where it was:
+
+```php
+'modules' => [
+    'cms' => [
+        'menus' => fn (): array => [
+            Menu::make(1)->name(Yii::t('app', 'Main menu')),
+            Menu::make(2)->name(Yii::t('app', 'Footer')),
+        ],
+    ],
+],
+```
+
+A closure, for the same reason `sectionSets` takes one: a menu's name is a `Yii::t()` result and a configuration
+file is read before the application has an `i18n` component. A menu declaring no name is refused, as are two
+menus sharing a value. Nothing is declared by default, so an installation that never used the checkboxes
+configures nothing and renders no menu field.
+
+`Models\Menus\Menu` takes an int backed enum as well, which is what a project addressing its menus by name
+wants — `Menu::make(SiteMenu::Main)`, then `MenuCollection::getItems(SiteMenu::Main)`.
+
+### What is gone
+
+| removed                                                | replacement                                            |
+|--------------------------------------------------------|--------------------------------------------------------|
+| `Migrations\Traits\MenuColumnTrait`                    | `Migrations\M260915200000MenuIds`, which ships with the bundle |
+| `Migrations\Traits\FooterColumnTrait`                  | the same                                               |
+| `Models\Traits\MenuAttributeTrait`                     | `Entry::$menu_ids` and `Entry::isMenuItem()`, which every entry has |
+| `Models\Traits\FooterAttributeTrait`                   | the same                                               |
+| `Modules\Admin\Widgets\Forms\Traits\MenuFieldTrait`   | `Modules\Admin\Widgets\Forms\Fields\MenuIdsField`, in the entry form by default |
+| `Modules\Admin\Widgets\Forms\Traits\FooterFieldTrait` | the same                                               |
+| `Widgets\NavItems`                                      | `Models\Collections\MenuCollection`                    |
+| `Models\Types\EntryType::showInMenu()` / `showInFooter()` | `Menu::available(Closure\|bool)`                       |
+
+An entry's menus are ordinary attributes now, so the `rules()` and `attributeLabels()` spreads those traits
+needed are gone with them — and with them the trap of forgetting one, which made the checkbox vanish from the
+form without an error.
+
+`EntryType::showInMenu(false)` said "this type is never in a menu", and it said it once for both menus. The menu
+answers now, per entry, and `Modules\Admin\Widgets\Grids\Columns\MenuColumn` is unchanged in name only —
+its tooltip names every menu the entry is in rather than reading a label:
+
+```php
+Menu::make(1)
+    ->name(Yii::t('app', 'Main menu'))
+    ->available(fn (Entry $entry): bool => $entry->type !== Entry::TYPE_ARTICLE),
+```
+
+A menu an entry is **already in** stays offered and stays valid even once it is unavailable, so a rule that stops
+matching records cannot lock them out of every later save — the same rule `Models\Types\Type::isAvailableOrStored()`
+follows. An id no menu declares is dropped by `Validators\MenuIdsValidator` rather than reported: the declaration
+is project configuration a record cannot answer for.
+
+### Reading the menus
+
+`Models\Collections\MenuCollection` replaces `Widgets\NavItems`, which was a static class under `Widgets\` that
+was never a widget. It resets from `Bootstrap` like the other collections, and loads **every autoloaded menu in
+one query**, so a layout rendering a header and a footer pays for one:
+
+| removed                             | replacement                                    |
+|-------------------------------------|------------------------------------------------|
+| `NavItems::getMenuItems()`          | `MenuCollection::getItems($menu)`              |
+| `NavItems::getMainMenuItems()`      | `MenuCollection::getRootItems($menu)`          |
+| `NavItems::getSubmenuItems($parent)`| `MenuCollection::getSubmenuItems($parent, $menu)` |
+| `NavItems::getFooterItems()`        | `MenuCollection::getItems($menu)`              |
+| `NavItems::getIsMenuItem($entry)`   | `$entry->isMenuItem($menu)`                    |
+| `NavItems::getIsFooterItem($entry)` | the same                                       |
+
+A menu declaring `autoload(false)` is kept out of that query and loaded on its own, on first use — for one that
+is rarely rendered, or holds far more entries than a navigation does.
+
+`Models\Queries\EntryQuery::andWhereMenu(int|BackedEnum ...)` is the condition behind both. Neither MySQL nor
+MariaDB can index a JSON list usefully, so asking for a *subset* of the declared menus is a `JSON_CONTAINS()` per
+menu, while asking for all of them — what the collection does — is the cheap `menu_ids IS NOT NULL`.
+
 ## 3.0.0 — The category's meta title and description are custom attributes
 
 `Migrations\M260915120000CategoryMeta` drops `category.title` and `category.description` into the

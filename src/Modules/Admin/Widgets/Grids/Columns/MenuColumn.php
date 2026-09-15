@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Modules\Admin\Widgets\Grids\Columns;
 
 use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Models\Menus\Menu;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\EntryGridView;
-use Hirtz\Cms\Widgets\NavItems;
 use Hirtz\Skeleton\Widgets\Grids\Columns\LinkColumn;
 use Hirtz\Skeleton\Widgets\Icon;
 use Override;
@@ -36,7 +36,7 @@ class MenuColumn extends LinkColumn
     {
         if (parent::isVisible()) {
             foreach ($this->grid->provider->getModels() as $model) {
-                if ($this->getIsMenuItem($model)) {
+                if ($model->isMenuItem()) {
                     return true;
                 }
             }
@@ -47,20 +47,19 @@ class MenuColumn extends LinkColumn
 
     protected function getContent(Entry $entry): ?Stringable
     {
-        return $this->getIsMenuItem($entry)
-            ? $this->getMenuIcon($entry)
-            : null;
+        $menus = $entry->getMenus();
+        return $menus ? $this->getMenuIcon($menus) : null;
     }
 
-    protected function getMenuIcon(Entry $entry): Stringable
+    /**
+     * @param array<int, Menu> $menus
+     */
+    protected function getMenuIcon(array $menus): Stringable
     {
+        $names = array_map(fn (Menu $menu) => $menu->getName(), $menus);
+
         return Icon::make()
             ->name('stream')
-            ->tooltip($entry->getAttributeLabel('show_in_menu'));
-    }
-
-    protected function getIsMenuItem(Entry $entry): bool
-    {
-        return NavItems::getIsMenuItem($entry);
+            ->tooltip(implode(', ', $names));
     }
 }

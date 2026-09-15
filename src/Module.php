@@ -6,6 +6,7 @@ namespace Hirtz\Cms;
 
 use Closure;
 use Hirtz\Cms\Models\Collections\CategoryCollection;
+use Hirtz\Cms\Models\Menus\Menu;
 use Hirtz\Cms\Models\Sets\SectionSet;
 use Hirtz\Skeleton\Filters\PageCache;
 use Override;
@@ -96,6 +97,16 @@ class Module extends \Hirtz\Skeleton\Base\Module
      */
     private ?array $sectionSets = null;
 
+    /**
+     * @var Closure(): array<mixed>|array<mixed> the declaration, which is unvalidated by definition
+     */
+    private Closure|array $configuredMenus = [];
+
+    /**
+     * @var array<int, Menu>|null
+     */
+    private ?array $menus = null;
+
     #[Override]
     public function init(): void
     {
@@ -161,6 +172,55 @@ class Module extends \Hirtz\Skeleton\Base\Module
     public function findSectionSet(?int $value): ?SectionSet
     {
         return $value === null ? null : ($this->getSectionSets()[$value] ?? null);
+    }
+
+    /**
+     * A closure, because a menu's name is a {@see Yii::t()} result and a configuration file is read before the
+     * application has an `i18n` component. A plain list is accepted for a declaration that needs no translation.
+     *
+     * @param Closure(): array<mixed>|array<mixed> $menus
+     */
+    public function setMenus(Closure|array $menus): void
+    {
+        $this->configuredMenus = $menus;
+        $this->menus = null;
+    }
+
+    /**
+     * @return array<int, Menu>
+     */
+    public function getMenus(): array
+    {
+        if ($this->menus !== null) {
+            return $this->menus;
+        }
+
+        $declared = $this->configuredMenus instanceof Closure
+            ? ($this->configuredMenus)()
+            : $this->configuredMenus;
+
+        $menus = [];
+
+        foreach ($declared as $menu) {
+            if (!$menu instanceof Menu) {
+                $given = get_debug_type($menu);
+                throw new InvalidConfigException(static::class . '::$menus must be a list of ' . Menu::class . ", got $given.");
+            }
+
+            if (isset($menus[$menu->value])) {
+                throw new InvalidConfigException(static::class . "::\$menus declares \"$menu->value\" twice.");
+            }
+
+            $menu->validate();
+            $menus[$menu->value] = $menu;
+        }
+
+        return $this->menus = $menus;
+    }
+
+    public function findMenu(?int $value): ?Menu
+    {
+        return $value === null ? null : ($this->getMenus()[$value] ?? null);
     }
 
     public function invalidatePageCache(): void

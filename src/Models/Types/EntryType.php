@@ -4,16 +4,9 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Models\Types;
 
-use Hirtz\Cms\Models\Traits\FooterAttributeTrait;
-use Hirtz\Cms\Models\Traits\MenuAttributeTrait;
 use Hirtz\Media\Models\Interfaces\AssetModelTypeInterface;
 use Hirtz\Media\Models\Types\Traits\AssetModelTypeTrait;
 
-/**
- * `showInMenu` and `showInFooter` are read by {@see MenuAttributeTrait} and {@see FooterAttributeTrait}, which an
- * entry opts into: an option a model does not consult is inert, and a type trait per model trait is more classes
- * than options.
- */
 class EntryType extends Type implements AssetModelTypeInterface
 {
     use AssetModelTypeTrait;
@@ -29,8 +22,6 @@ class EntryType extends Type implements AssetModelTypeInterface
     protected ?array $sort = null;
     protected ?bool $showCategories = null;
     protected ?bool $showCategoryDropdown = null;
-    protected bool $showInMenu = true;
-    protected bool $showInFooter = true;
 
     /**
      * @param array<string, int>|null $orderBy the entry index order, which also disables manual ordering
@@ -62,18 +53,6 @@ class EntryType extends Type implements AssetModelTypeInterface
         return $this;
     }
 
-    public function showInMenu(bool $showInMenu = true): static
-    {
-        $this->showInMenu = $showInMenu;
-        return $this;
-    }
-
-    public function showInFooter(bool $showInFooter = true): static
-    {
-        $this->showInFooter = $showInFooter;
-        return $this;
-    }
-
     /**
      * @return array<string, int>|null
      */
@@ -98,15 +77,5 @@ class EntryType extends Type implements AssetModelTypeInterface
     public function showsCategoryDropdown(): ?bool
     {
         return $this->showCategoryDropdown;
-    }
-
-    public function hasShowInMenuEnabled(): bool
-    {
-        return $this->showInMenu;
-    }
-
-    public function hasShowInFooterEnabled(): bool
-    {
-        return $this->showInFooter;
     }
 }

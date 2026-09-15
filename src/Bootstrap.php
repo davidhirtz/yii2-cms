@@ -6,8 +6,8 @@ namespace Hirtz\Cms;
 
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Collections\CategoryCollection;
+use Hirtz\Cms\Models\Collections\MenuCollection;
 use Hirtz\Cms\Widgets\Artwork;
-use Hirtz\Cms\Widgets\NavItems;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\EntryAsset;
 use Hirtz\Cms\Models\Events\TenantAfterSaveEventHandler;
@@ -37,7 +37,7 @@ class Bootstrap implements BootstrapInterface
         Yii::setAlias('@cms', __DIR__);
         Artwork::reset();
         CategoryCollection::reset();
-        NavItems::reset();
+        MenuCollection::reset();
 
         $app->getI18n()->translations['cms'] ??= [
             'class' => PhpMessageSource::class,
