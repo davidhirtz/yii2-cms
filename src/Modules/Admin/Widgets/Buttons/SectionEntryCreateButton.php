@@ -6,6 +6,7 @@ namespace Hirtz\Cms\Modules\Admin\Widgets\Buttons;
 
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
+use Hirtz\Skeleton\Web\Application;
 use Hirtz\Skeleton\Widgets\Buttons\CreateButton;
 use Hirtz\Skeleton\Widgets\Traits\ModelTrait;
 use Override;
@@ -36,7 +37,7 @@ class SectionEntryCreateButton extends CreateButton
 
         $this->url = [
             '/admin/cms/section-entry/create',
-            ...Yii::$app->getRequest()->getQueryParams(),
+            ...Application::current()->getRequest()->getQueryParams(),
             'section' => $this->model->id,
             'type' => $entryTypes ? current($entryTypes) : null,
         ];

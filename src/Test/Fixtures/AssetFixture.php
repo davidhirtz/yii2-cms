@@ -33,7 +33,7 @@ class AssetFixture extends ActiveFixture
     #[Override]
     public function afterLoad(): void
     {
-        $this->db->createCommand('
+        $this->getDb()->createCommand('
             UPDATE ' . File::tableName() . ' AS [[file]]
             SET [[file]].[[asset_count]] = (
                 SELECT COUNT(*) FROM ' . Asset::tableName() . ' AS [[asset]]

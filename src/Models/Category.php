@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Models;
 
 use Hirtz\Cms\Models\Collections\CategoryCollection;
-use Hirtz\Cms\Models\Types\CategoryType;
 use Hirtz\Cms\Models\Queries\CategoryQuery;
 use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Models\Traits\SlugAttributeTrait;
+use Hirtz\Cms\Models\Types\CategoryType;
 use Hirtz\Skeleton\Models\CustomAttributes\CustomAttribute;
 use Hirtz\Skeleton\Models\CustomAttributes\TextCustomAttribute;
 use Hirtz\Skeleton\Models\Interfaces\SearchableInterface;
@@ -16,6 +16,7 @@ use Hirtz\Skeleton\Models\Trail;
 use Hirtz\Skeleton\Models\Traits\NestedTreeTrait;
 use Hirtz\Skeleton\Models\Traits\SearchableTrait;
 use Hirtz\Skeleton\Models\Traits\TranslatableAttributesTrait;
+use Hirtz\Skeleton\Web\User as WebUser;
 use Override;
 use Yii;
 use yii\db\ActiveQuery;
@@ -324,7 +325,7 @@ class Category extends ActiveRecord implements SearchableInterface
 
     protected function isSearchResultVisible(): bool
     {
-        return Yii::$app->has('user') && Yii::$app->getUser()->can(static::AUTH_CATEGORY);
+        return WebUser::current()?->can(static::AUTH_CATEGORY) ?? false;
     }
 
     /**

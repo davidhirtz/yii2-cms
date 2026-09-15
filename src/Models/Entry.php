@@ -4,29 +4,30 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Models;
 
-use davidhirtz\yii2\datetime\DateTime;
-use davidhirtz\yii2\datetime\DateTimeValidator;
 use Hirtz\Cms\Models\Actions\DeletePermalinkRedirects;
 use Hirtz\Cms\Models\Actions\UpdateTenantEntryCount;
 use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Models\Queries\SectionQuery;
-use Hirtz\Cms\Models\Types\EntryType;
 use Hirtz\Cms\Models\Traits\PermalinkTrait;
 use Hirtz\Cms\Models\Traits\SlugAttributeTrait;
 use Hirtz\Cms\Models\Traits\VirtualSlugTrait;
+use Hirtz\Cms\Models\Types\EntryType;
 use Hirtz\Cms\Module;
+use Hirtz\Cms\Validators\TenantIdValidator;
 use Hirtz\Media\Models\Asset;
 use Hirtz\Media\Models\Interfaces\AssetModelInterface;
 use Hirtz\Media\Models\Traits\AssetModelTrait;
 use Hirtz\Skeleton\Models\Interfaces\SearchableInterface;
 use Hirtz\Skeleton\Models\Traits\MaterializedTreeTrait;
 use Hirtz\Skeleton\Models\Traits\SearchableTrait;
-use Hirtz\Cms\Validators\TenantIdValidator;
+use Hirtz\Skeleton\Web\User as WebUser;
 use Hirtz\Tenant\Models\Collections\TenantCollection;
 use Hirtz\Tenant\Models\Tenant;
 use Hirtz\Tenant\Models\Traits\TenantRelationTrait;
 use Override;
 use Yii;
+use davidhirtz\yii2\datetime\DateTime;
+use davidhirtz\yii2\datetime\DateTimeValidator;
 use yii\db\ActiveQuery;
 
 /**
@@ -521,7 +522,7 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
 
     protected function isSearchResultVisible(): bool
     {
-        return Yii::$app->has('user') && Yii::$app->getUser()->can(static::AUTH_ENTRY);
+        return WebUser::current()?->can(static::AUTH_ENTRY) ?? false;
     }
 
     /**

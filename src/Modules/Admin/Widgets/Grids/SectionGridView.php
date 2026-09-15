@@ -158,7 +158,7 @@ class SectionGridView extends GridView
 
         return A::make()
             ->content($html)
-            ->href($section->getAdminRoute())
+            ->href($section->getAdminRoute() ?: null)
             ->class($cssClass);
     }
 

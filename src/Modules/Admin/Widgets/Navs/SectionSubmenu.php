@@ -65,7 +65,7 @@ class SectionSubmenu extends Submenu
             ->icon('cog')
             ->label($this->model->getAdminType())
             ->routes(['admin/cms/section/update', ...$this->additionalActiveRoutes['section'] ?? []])
-            ->url($this->model->getAdminRoute());
+            ->url($this->model->getAdminRoute() ?: null);
     }
 
     protected function getEntriesItem(): ?NavItem

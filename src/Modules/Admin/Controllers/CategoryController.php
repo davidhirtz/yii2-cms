@@ -108,7 +108,7 @@ class CategoryController extends AbstractController
         }
 
         $errors = $category->getFirstErrors();
-        throw new ServerErrorHttpException(reset($errors));
+        throw new ServerErrorHttpException(reset($errors) ?: null);
     }
 
     public function actionOrder(?int $id = null): string

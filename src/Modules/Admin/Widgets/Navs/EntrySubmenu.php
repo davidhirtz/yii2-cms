@@ -76,7 +76,7 @@ class EntrySubmenu extends Submenu
             ->icon('cog')
             ->label($this->model->getAdminType())
             ->routes(['admin/cms/entry/update', ...$this->additionalActiveRoutes['entry'] ?? []])
-            ->url($this->model->getAdminRoute());
+            ->url($this->model->getAdminRoute() ?: null);
     }
 
     protected function getAssetsItem(): ?NavItem

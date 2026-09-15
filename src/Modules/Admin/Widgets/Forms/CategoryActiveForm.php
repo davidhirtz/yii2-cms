@@ -49,12 +49,14 @@ class CategoryActiveForm extends ActiveForm
     #[Override]
     protected function getSlugBaseUrl(?string $language = null): string
     {
-        if (!$this->model->getRoute()) {
+        $modelRoute = $this->model->getRoute();
+
+        if (!$modelRoute) {
             return '';
         }
 
-        return Yii::$app->getI18n()->callback($language, function (): string {
-            $route = [...$this->model->getRoute(), 'category' => ''];
+        return Yii::$app->getI18n()->callback($language, function () use ($modelRoute): string {
+            $route = [...$modelRoute, 'category' => ''];
             $url = Yii::$app->getUrlManager()->createAbsoluteUrl($route);
             $url = rtrim($url, '/');
 

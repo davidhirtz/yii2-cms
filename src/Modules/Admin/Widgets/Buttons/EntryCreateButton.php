@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Modules\Admin\Widgets\Buttons;
 
 use Hirtz\Cms\Models\Entry;
+use Hirtz\Skeleton\Web\Application;
 use Hirtz\Skeleton\Widgets\Buttons\CreateButton;
 use Yii;
 
@@ -20,7 +21,7 @@ class EntryCreateButton extends CreateButton
 
         $this->url ??= [
             '/admin/cms/entry/create',
-            ...Yii::$app->getRequest()->getQueryParams(),
+            ...Application::current()->getRequest()->getQueryParams(),
             'type' => $this->view->params['entryType'] ?? null,
         ];
 

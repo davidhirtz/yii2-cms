@@ -6,24 +6,25 @@ namespace Hirtz\Cms\Models;
 
 use Closure;
 use Hirtz\Cms\Models\CustomAttributes\SlugCustomAttribute;
-use Hirtz\Cms\Models\Types\SectionType;
 use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Models\Queries\SectionQuery;
 use Hirtz\Cms\Models\Traits\EntryRelationTrait;
+use Hirtz\Cms\Models\Types\SectionType;
 use Hirtz\Media\Models\Interfaces\AssetModelInterface;
 use Hirtz\Media\Models\Traits\AssetModelTrait;
 use Hirtz\Skeleton\Models\CustomAttributes\CustomAttribute;
 use Hirtz\Skeleton\Models\CustomAttributes\HtmlCustomAttribute;
 use Hirtz\Skeleton\Models\CustomAttributes\TextCustomAttribute;
 use Hirtz\Skeleton\Models\Interfaces\SearchableInterface;
+use Hirtz\Skeleton\Models\Interfaces\TrailModelInterface;
 use Hirtz\Skeleton\Models\Traits\SearchableTrait;
 use Hirtz\Skeleton\Models\Traits\TranslatableAttributesTrait;
 use Hirtz\Skeleton\Search\SearchText;
-use yii\db\ActiveQuery;
 use Hirtz\Skeleton\Validators\RelationValidator;
+use Hirtz\Skeleton\Web\User as WebUser;
 use Override;
 use Yii;
-use Hirtz\Skeleton\Models\Interfaces\TrailModelInterface;
+use yii\db\ActiveQuery;
 
 /**
  * @property int $entry_id
@@ -367,7 +368,7 @@ class Section extends ActiveRecord implements AssetModelInterface, SearchableInt
 
     protected function isSearchResultVisible(): bool
     {
-        return Yii::$app->has('user') && Yii::$app->getUser()->can(Entry::AUTH_ENTRY);
+        return WebUser::current()?->can(Entry::AUTH_ENTRY) ?? false;
     }
 
     /**

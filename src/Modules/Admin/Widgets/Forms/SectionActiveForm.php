@@ -41,10 +41,16 @@ class SectionActiveForm extends ActiveForm
     #[Override]
     public function getSlugBaseUrl(?string $language = null): string
     {
+        $entryRoute = $this->model->entry->getRoute();
+
+        if (!$entryRoute) {
+            return '';
+        }
+
         $manager = Yii::$app->getUrlManager();
 
         $route = [
-            ...$this->model->entry->getRoute(),
+            ...$entryRoute,
             'language' => $manager->i18nUrl ? $language : null,
             '#' => '',
         ];

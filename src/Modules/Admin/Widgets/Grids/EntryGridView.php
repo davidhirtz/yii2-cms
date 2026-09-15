@@ -9,15 +9,16 @@ use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Modules\Admin\Controllers\EntryCategoryController;
 use Hirtz\Cms\Modules\Admin\Controllers\EntryController;
 use Hirtz\Cms\Modules\Admin\Data\EntryActiveDataProvider;
-use Hirtz\Cms\Modules\Admin\Widgets\Navs\FrontendLink;
-use Hirtz\Media\Modules\Admin\Widgets\Grids\Columns\AssetCountColumn;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\Columns\EntryEntryCountColumn;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\Columns\SectionCountColumn;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\Toolbars\CategoryFilterDropdown;
+use Hirtz\Cms\Modules\Admin\Widgets\Navs\FrontendLink;
 use Hirtz\Cms\Modules\ModuleTrait;
+use Hirtz\Media\Modules\Admin\Widgets\Grids\Columns\AssetCountColumn;
 use Hirtz\Skeleton\Helpers\Url;
 use Hirtz\Skeleton\Html\A;
 use Hirtz\Skeleton\Html\Div;
+use Hirtz\Skeleton\Web\Application;
 use Hirtz\Skeleton\Widgets\Buttons\Button;
 use Hirtz\Skeleton\Widgets\Buttons\ButtonGroup;
 use Hirtz\Skeleton\Widgets\Grids\Columns\ButtonColumn;
@@ -120,7 +121,7 @@ class EntryGridView extends GridView
         }
 
         $manager = Yii::$app->getUrlManager();
-        $tenant = $manager instanceof UrlManager ? $manager->getTenantFromRequest(Yii::$app->getRequest()) : null;
+        $tenant = $manager instanceof UrlManager ? $manager->getTenantFromRequest(Application::current()->getRequest()) : null;
 
         return FilterDropdown::make()
             ->default(false)

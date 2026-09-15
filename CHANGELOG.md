@@ -1,5 +1,9 @@
 ## 3.0 (in development)
 
+
+- `Models\Traits\SlugAttributeTrait::$slugMaxLength` is an `int`, as `Models\Permalink` already declared its own:
+  the `false` it also accepted reached `mb_substr()`, which rejects it
+
 - **`Models\Sets\SectionTemplate` takes an int backed enum**, like the skeleton `Models\Definitions\Definition`
   it is declared beside, so a project naming its section types in an enum writes
   `SectionTemplate::make(SectionType::Text)` rather than repeating the `->value`.

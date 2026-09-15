@@ -12,7 +12,7 @@ trait SlugAttributeTrait
 {
     public bool $customSlugBehavior = false;
     public bool $slugLowercase = true;
-    public int|false $slugMaxLength = 100;
+    public int $slugMaxLength = 100;
     public string $slugReplacement = '-';
     /**
      * @var array<string, mixed>|string

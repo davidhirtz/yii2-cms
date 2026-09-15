@@ -24,7 +24,7 @@ class SectionHeader extends Header
     {
         $this->title ??= $this->model->entry->getI18nAttribute('name');
         $this->subheading ??= FrontendLink::make()->model($this->model)->addClass('hidden-sticky');
-        $this->url ??= $this->model->entry->getAdminRoute();
+        $this->url ??= $this->model->entry->getAdminRoute() ?: null;
 
         $this->subtitle ??= Yii::t('skeleton', 'COMMON_MODEL_ID', [
             'model' => Yii::t('cms', 'COMMON_SECTION'),
@@ -41,7 +41,7 @@ class SectionHeader extends Header
     {
         $this->addBreadcrumb(
             $this->model->entry->getI18nAttribute('name'),
-            $this->model->entry->getAdminRoute(),
+            $this->model->entry->getAdminRoute() ?: null,
         );
 
         $this->addBreadcrumb(Yii::t('cms', 'COMMON_SECTIONS'), [

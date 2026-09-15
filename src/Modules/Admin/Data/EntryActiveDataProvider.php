@@ -12,6 +12,7 @@ use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Models\SectionEntry;
 use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Skeleton\Data\ActiveDataProvider;
+use Hirtz\Skeleton\Web\Application;
 use Hirtz\Tenant\Web\UrlManager;
 use Override;
 use Yii;
@@ -50,7 +51,7 @@ class EntryActiveDataProvider extends ActiveDataProvider
 
     protected function getTenantIdFromRequest(): ?int
     {
-        $tenantId = (int)Yii::$app->getRequest()->get('tenant');
+        $tenantId = (int)Application::current()->getRequest()->get('tenant');
 
         if ($tenantId) {
             return $tenantId;
@@ -178,7 +179,9 @@ class EntryActiveDataProvider extends ActiveDataProvider
     #[Override]
     public function getSort(): Sort|false
     {
-        return !$this->isOrderedByPosition() ? parent::getSort() : false;
+        $sort = parent::getSort();
+
+        return !$this->isOrderedByPosition() && $sort instanceof Sort ? $sort : false;
     }
 
     /**

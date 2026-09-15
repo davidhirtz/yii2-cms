@@ -33,7 +33,7 @@ trait EntryHeaderTrait
                 if (--$count < $this->maxParentBreadcrumbCount) {
                     $this->addBreadcrumb($ancestor->getI18nAttribute('name'), $isIndex
                         ? ['index', 'parent' => $ancestor->id]
-                        : $ancestor->getAdminRoute());
+                        : ($ancestor->getAdminRoute() ?: null));
                 }
             }
         }

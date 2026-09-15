@@ -37,7 +37,7 @@ class EntryHeader extends Header
         if ($this->model) {
             $this->title ??= $this->model->getOldAttribute($this->model->getI18nAttributeName('name'));
             $this->subheading ??= FrontendLink::make()->model($this->model)->addClass('hidden-sticky');
-            $this->url ??= $this->model->getAdminRoute();
+            $this->url ??= $this->model->getAdminRoute() ?: null;
 
             $this->addEntryBreadcrumbs($this->model);
         }
