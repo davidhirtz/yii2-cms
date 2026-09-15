@@ -10,6 +10,9 @@ use Hirtz\Skeleton\Widgets\Widget;
 use Override;
 use Stringable;
 
+/**
+ * @template T of Section = Section
+ */
 class SectionGroup extends Widget
 {
     /**
@@ -18,7 +21,7 @@ class SectionGroup extends Widget
     protected SectionStack $stack;
 
     /**
-     * @var Section[]
+     * @var T[]
      */
     protected array $sections = [];
 
@@ -41,7 +44,7 @@ class SectionGroup extends Widget
     protected ?SectionGroup $next = null;
 
     /**
-     * @var Section[]
+     * @var T[]
      */
     private array $remaining = [];
 
@@ -55,7 +58,7 @@ class SectionGroup extends Widget
     }
 
     /**
-     * @param Section[] $sections
+     * @param T[] $sections
      */
     public function sections(array $sections): static
     {
@@ -178,7 +181,7 @@ class SectionGroup extends Widget
     }
 
     /**
-     * @return Section[]
+     * @return T[]
      */
     public function getSections(): array
     {
@@ -225,7 +228,7 @@ class SectionGroup extends Widget
     }
 
     /**
-     * @param Section[] $sections
+     * @param T[] $sections
      */
     protected function renderSections(array $sections, ?string $viewFile = null): string
     {

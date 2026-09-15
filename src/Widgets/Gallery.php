@@ -12,12 +12,15 @@ use Hirtz\Skeleton\Widgets\Widget;
 use Override;
 use Stringable;
 
+/**
+ * @template T of Asset
+ */
 class Gallery extends Widget
 {
     use TagAttributesTrait;
 
     /**
-     * @var Asset[]
+     * @var T[]
      */
     protected ?array $assets = null;
 
@@ -45,7 +48,7 @@ class Gallery extends Widget
     private array $sharedViewports = [];
 
     /**
-     * @param list<Asset> $assets
+     * @param list<T> $assets
      */
     public function assets(array $assets): static
     {
@@ -125,7 +128,7 @@ class Gallery extends Widget
     }
 
     /**
-     * @param Asset[] $assets
+     * @param T[] $assets
      */
     protected function renderAssetsInternal(array $assets): string
     {
@@ -139,7 +142,7 @@ class Gallery extends Widget
     }
 
     /**
-     * @return Asset[][]
+     * @return T[][]
      */
     protected function getAssetsByViewports(): array
     {
