@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Test\Fixtures\Traits;
 
+use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Test\Fixtures\AssetFixture;
 use Hirtz\Cms\Test\Fixtures\CategoryFixture;
 use Hirtz\Cms\Test\Fixtures\EntryCategoryFixture;
@@ -13,12 +14,12 @@ use Hirtz\Cms\Test\Fixtures\SectionEntryFixture;
 use Hirtz\Cms\Test\Fixtures\SectionFixture;
 use Hirtz\Cms\Test\Models\TestEntry;
 use Hirtz\Cms\Test\Models\TestSection;
-use Hirtz\Cms\Models\Category;
 use Hirtz\Media\Models\Asset;
 use Hirtz\Media\Models\File;
 use Hirtz\Media\Test\Fixtures\FileFixture;
 use Hirtz\Skeleton\Test\Fixtures\UserFixture;
 use Hirtz\Tenant\Test\Fixtures\TenantFixture;
+use RuntimeException;
 
 trait CmsFixtureTrait
 {
@@ -58,7 +59,8 @@ trait CmsFixtureTrait
 
     protected function getAssetFromFixture(string $key): Asset
     {
-        return Asset::findOne($this->getAssetFixtureData($key)['id']);
+        return Asset::findOne($this->getAssetFixtureData($key)['id'])
+            ?? throw new RuntimeException("Asset fixture \"$key\" was not loaded.");
     }
 
     protected function getCategoryFixture(): CategoryFixture
@@ -78,7 +80,8 @@ trait CmsFixtureTrait
 
     protected function getCategoryFromFixture(string $key): Category
     {
-        return Category::findOne($this->getCategoryFixtureData($key)['id']);
+        return Category::findOne($this->getCategoryFixtureData($key)['id'])
+            ?? throw new RuntimeException("Category fixture \"$key\" was not loaded.");
     }
 
     protected function getEntryFixture(): EntryFixture
@@ -98,7 +101,8 @@ trait CmsFixtureTrait
 
     protected function getEntryFromFixture(string $key): TestEntry
     {
-        return TestEntry::findOne($this->getEntryFixtureData($key)['id']);
+        return TestEntry::findOne($this->getEntryFixtureData($key)['id'])
+            ?? throw new RuntimeException("Entry fixture \"$key\" was not loaded.");
     }
 
     protected function getFileFixture(): FileFixture
@@ -118,7 +122,8 @@ trait CmsFixtureTrait
 
     protected function getFileFromFixture(string $key): File
     {
-        return File::findOne($this->getFileFixtureData($key)['id']);
+        return File::findOne($this->getFileFixtureData($key)['id'])
+            ?? throw new RuntimeException("File fixture \"$key\" was not loaded.");
     }
 
     protected function getSectionFixture(): SectionFixture
@@ -138,7 +143,8 @@ trait CmsFixtureTrait
 
     protected function getSectionFromFixture(string $key): TestSection
     {
-        return TestSection::findOne($this->getSectionFixtureData($key)['id']);
+        return TestSection::findOne($this->getSectionFixtureData($key)['id'])
+            ?? throw new RuntimeException("Section fixture \"$key\" was not loaded.");
     }
 
 }
