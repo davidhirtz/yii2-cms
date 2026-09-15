@@ -93,7 +93,7 @@ class MenuIdsFieldTest extends TestCase
         $content = $this->render($child);
 
         self::assertStringContainsString(
-            '<div class="text-invalid form-checkbox" title="Parent entry &quot;Parent&quot; is not in this menu" data-tooltip="">',
+            '<label class="text-invalid label" title="Parent entry &quot;Parent&quot; is not in this menu" data-tooltip="" for="entry-menu-ids-1">',
             $content
         );
 
