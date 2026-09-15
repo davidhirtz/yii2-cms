@@ -287,7 +287,7 @@ class Section extends ActiveRecord implements AssetModelInterface, SearchableInt
 
     public function recalculateEntryCount(): static
     {
-        $this->entry_count = $this->getSectionEntries()->count();
+        $this->entry_count = (int)$this->getSectionEntries()->count();
         return $this;
     }
 

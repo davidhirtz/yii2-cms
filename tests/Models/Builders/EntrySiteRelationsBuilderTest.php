@@ -38,18 +38,21 @@ class EntrySiteRelationsBuilderTest extends TestCase
         self::assertCount(2, $entry->assets);
 
         $asset = current($entry->assets);
+        self::assertNotFalse($asset);
 
         self::assertTrue($asset->isRelationPopulated('model'));
         self::assertTrue($asset->isRelationPopulated('file'));
         self::assertSame($entry->id, $asset->model->id);
 
         $section = current($entry->sections);
+        self::assertNotFalse($section);
 
         self::assertTrue($section->isRelationPopulated('entry'));
         self::assertTrue($section->isRelationPopulated('assets'));
         self::assertCount(2, $section->assets);
 
         $asset = current($section->assets);
+        self::assertNotFalse($asset);
 
         self::assertTrue($asset->isRelationPopulated('model'));
         self::assertTrue($asset->isRelationPopulated('file'));
@@ -72,6 +75,7 @@ class EntrySiteRelationsBuilderTest extends TestCase
         self::assertCount(2, $entry->assets);
 
         $section = current($entry->sections);
+        self::assertNotFalse($section);
 
         self::assertCount(3, $section->assets);
 
@@ -87,6 +91,7 @@ class EntrySiteRelationsBuilderTest extends TestCase
 
         $fixture = $this->getEntryFromFixture('post-3');
         $post = current($blog->entries);
+        self::assertNotFalse($post);
 
         self::assertEquals($fixture->id, $post->id);
         self::assertTrue($post->isRelationPopulated('assets'));

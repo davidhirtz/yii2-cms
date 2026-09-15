@@ -212,7 +212,7 @@ class SectionStack extends Widget
     }
 
     /**
-     * @return Closure(Section, Section[]): Section[]
+     * @return Closure(Section, list<Section>): list<Section>
      */
     public static function collectAdjacent(): Closure
     {
@@ -232,7 +232,7 @@ class SectionStack extends Widget
     }
 
     /**
-     * @return Closure(Section, Section[]): Section[]
+     * @return Closure(Section, list<Section>): list<Section>
      */
     public static function collectAll(): Closure
     {

@@ -18,7 +18,7 @@ class MenuColumnTraitTest extends TestCase
 
         ob_start();
         $migration->addColumns();
-        $content = ob_get_clean();
+        $content = ob_get_clean() ?: '';
 
         self::assertStringContainsString('> add column show_in_menu boolean NOT NULL DEFAULT FALSE AFTER `publish_date` to table {{%entry}} ... done', $content);
 
@@ -27,7 +27,7 @@ class MenuColumnTraitTest extends TestCase
 
         ob_start();
         $migration->dropColumns();
-        $content = ob_get_clean();
+        $content = ob_get_clean() ?: '';
 
         self::assertStringContainsString('> drop column show_in_menu from table {{%entry}} ... done', $content);
 

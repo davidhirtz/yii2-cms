@@ -44,7 +44,7 @@ final class SiteControllerFunctionalTest extends TestCase
     {
         $entry = Entry::create();
         $entry->name = 'Homepage';
-        $entry->slug = $entry::getModule()->entryIndexSlug;
+        $entry->slug = $entry::getModule()->entryIndexSlug ?: null;
         $entry->insert();
 
         $this->open('/');
@@ -58,7 +58,7 @@ final class SiteControllerFunctionalTest extends TestCase
         $entry = $this->getEntryFromFixture('page-enabled');
         $urlManager = Yii::$app->getUrlManager();
 
-        $this->open($urlManager->createUrl($entry->getRoute()));
+        $this->open($urlManager->createUrl($entry->getRoute() ?: []));
 
         self::assertResponseIsSuccessful();
         self::assertResponseNotHasHeader('x-robots-tag');
@@ -86,6 +86,7 @@ final class SiteControllerFunctionalTest extends TestCase
 
         /** @var Asset $asset */
         $asset = current(array_filter($entry->assets, fn (Asset $asset) => $asset->type === Asset::TYPE_META_IMAGE));
+        self::assertNotFalse($asset);
         $url = $urlManager->createAbsoluteUrl($asset->file->getUrl());
 
         self::assertStringContainsString('<link href="' . $url . '" rel="image_src">', $html);
@@ -96,10 +97,10 @@ final class SiteControllerFunctionalTest extends TestCase
         $entry = $this->getEntryFromFixture('page-draft');
         $urlManager = Yii::$app->getUrlManager();
 
-        $this->open($urlManager->createUrl($entry->getRoute()));
+        $this->open($urlManager->createUrl($entry->getRoute() ?: []));
         self::assertResponseStatusCodeSame(404);
 
-        $this->open($urlManager->createDraftUrl($entry->getRoute()));
+        $this->open($urlManager->createDraftUrl($entry->getRoute() ?: []));
         self::assertResponseIsSuccessful();
         self::assertPageTitleSame($entry->name);
         self::assertResponseHeaderSame('x-robots-tag', 'none');
@@ -119,8 +120,8 @@ final class SiteControllerFunctionalTest extends TestCase
         $entry = $this->getEntryFromFixture('page-enabled');
         $urlManager = Yii::$app->getUrlManager();
 
-        $this->open($urlManager->createUrl($entry->getRoute()) . '/');
-        self::assertCurrentUrlEquals($urlManager->createUrl($entry->getRoute()));
+        $this->open($urlManager->createUrl($entry->getRoute() ?: []) . '/');
+        self::assertCurrentUrlEquals($urlManager->createUrl($entry->getRoute() ?: []));
     }
 
     /**

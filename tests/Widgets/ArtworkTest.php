@@ -130,7 +130,7 @@ class ArtworkTest extends TestCase
 
         $html = (string)$this->createArtwork($asset)
             ->wrapper(fn (Div $div) => $div->addClass('outer'))
-            ->figure(fn (Figure $figure) => $figure->addClass('inner'))
+            ->figure(fn (?Figure $figure) => $figure?->addClass('inner'))
             ->caption(fn (?Figcaption $caption) => $caption?->addClass('note'));
 
         self::assertStringContainsString('outer', $html);

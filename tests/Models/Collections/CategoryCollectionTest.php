@@ -42,6 +42,7 @@ class CategoryCollectionTest extends TestCase
     {
         $categories = CategoryCollection::getAll();
         $category = reset($categories);
+        self::assertNotFalse($category);
         self::assertInstanceOf(Category::class, $category);
 
         $this->reloadApplication();

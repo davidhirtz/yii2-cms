@@ -117,7 +117,8 @@ class EntryQuery extends I18nActiveQuery
     public function whereCategories(array $categories, bool $eagerLoading = false): static
     {
         foreach ($categories as $category) {
-            $this->innerJoinWithEntryCategory((int)($category->id ?? $category), $eagerLoading, true);
+            $categoryId = $category instanceof Category ? $category->id : $category;
+            $this->innerJoinWithEntryCategory((int)$categoryId, $eagerLoading, true);
         }
 
         return $this;

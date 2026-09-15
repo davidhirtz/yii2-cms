@@ -41,6 +41,8 @@ class EntrySitemapTest extends TestCase
         $urls = $this->createSitemap()->generateUrls();
 
         self::assertCount(2, $urls);
+
+        self::assertIsArray($urls[0]);
         self::assertSame('/cms/site/view', $urls[0]['loc'][0]);
         self::assertSame('first', $urls[0]['loc']['slug']);
         self::assertNull($urls[0]['loc']['language']);
@@ -67,6 +69,8 @@ class EntrySitemapTest extends TestCase
         $urls = $sitemap->generateUrls();
 
         self::assertCount(2, $urls);
+
+        self::assertIsArray($urls[0]);
         self::assertSame(['en-US', 'de'], array_column(array_column($urls, 'loc'), 'language'));
 
         self::assertSame(1, $sitemap->getRecordCount());
@@ -91,6 +95,7 @@ class EntrySitemapTest extends TestCase
         $this->createEntry('Home', 'home');
 
         $url = $this->createSitemap()->generateUrls()[0];
+        self::assertIsArray($url);
 
         self::assertSame('/cms/site/index', $url['loc'][0]);
         self::assertArrayNotHasKey('slug', $url['loc']);

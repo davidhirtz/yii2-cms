@@ -1,5 +1,19 @@
 ## 3.0 (in development)
 
+- **`Widgets\MetaTags::registerImageMetaTags()` was a fatal on two counts**, both found by PHPStan level 7: it
+  read `$model->assets` for a `Category`, which has none, and indexed `Media\Models\File::getTransformations()`
+  — the relation to the generated derivatives — as if it were the module's preset array, which it stopped being
+  when the presets became `Transformation` objects
+
+- **The templates of `Widgets\Gallery`, `Widgets\SectionStack`, `Widgets\SectionGroup`, `Widgets\NavItems`,
+  `Models\Collections\CategoryCollection`, `Models\Builders\EntrySiteRelationsBuilder`, the three
+  `Models\Actions\Reorder*` classes and `Modules\Admin\Widgets\Forms\Fields\EntryParentIdSelectField` are
+  gone.** Each was generic over its own model and nothing ever specialised it, so every `@return array<int, T>`
+  was a promise the body could not keep — a project that wrote `Gallery<MyAsset>` drops the argument
+
+- `Models\Queries\EntryQuery::whereCategory()` takes a `Category` or an id, not a list: the list was in the
+  docblock only, and `whereCategories()` is what takes several
+
 
 - `Models\Traits\SlugAttributeTrait::$slugMaxLength` is an `int`, as `Models\Permalink` already declared its own:
   the `false` it also accepted reached `mb_substr()`, which rejects it

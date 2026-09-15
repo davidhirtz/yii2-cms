@@ -27,6 +27,7 @@ class EntryImageSitemapTest extends TestCase
     public function testTheImagesAreOmittedByDefault(): void
     {
         foreach ($this->createSitemap()->generateUrls() as $url) {
+            self::assertIsArray($url);
             self::assertArrayNotHasKey('images', $url);
         }
     }

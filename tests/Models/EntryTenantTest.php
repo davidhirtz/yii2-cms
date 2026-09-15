@@ -20,7 +20,7 @@ class EntryTenantTest extends TestCase
 
         $entry = TestEntry::create();
         $entry->name = 'Home';
-        $entry->slug = $entry::getModule()->entryIndexSlug;
+        $entry->slug = $entry::getModule()->entryIndexSlug ?: null;
         $entry->populateTenantRelation($tenant);
 
         self::assertTrue($entry->save());
@@ -83,7 +83,7 @@ class EntryTenantTest extends TestCase
 
         self::assertTrue($section->insert());
 
-        self::assertEquals('https://www.domain.localhost/test', Url::toRoute($entry->getRoute()));
+        self::assertEquals('https://www.domain.localhost/test', Url::toRoute($entry->getRoute() ?: []));
 
         $tenant->refresh();
         self::assertEquals(1, $tenant->getAttribute('entry_count'));
@@ -94,7 +94,7 @@ class EntryTenantTest extends TestCase
 
         self::assertTrue($entry->save());
         self::assertEquals($newTenant->id, $entry->tenant_id);
-        self::assertEquals('https://www.new-domain.localhost/test', Url::toRoute($entry->getRoute()));
+        self::assertEquals('https://www.new-domain.localhost/test', Url::toRoute($entry->getRoute() ?: []));
 
         $tenant->refresh();
         self::assertEquals(0, $tenant->getAttribute('entry_count'));

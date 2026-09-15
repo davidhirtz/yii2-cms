@@ -27,7 +27,7 @@ class EntryTest extends TestCase
     {
         $entry = TestEntry::create();
         $entry->name = 'Home';
-        $entry->slug = $entry::getModule()->entryIndexSlug;
+        $entry->slug = $entry::getModule()->entryIndexSlug ?: null;
 
         self::assertTrue($entry->save());
         self::assertTrue($entry->isIndex());

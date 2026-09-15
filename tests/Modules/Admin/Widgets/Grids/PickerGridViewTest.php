@@ -131,7 +131,7 @@ class PickerGridViewTest extends TestCase
     {
         self::assertSame(1, preg_match('~<tbody.*?</tbody>~s', $html, $rows));
 
-        preg_match_all('~<a\b[^>]*>~', $rows[0], $matches);
+        preg_match_all('~<a\b[^>]*>~', $rows[0] ?? '', $matches);
         $links = array_filter($matches[0], static fn (string $link): bool => str_contains($link, $route));
 
         self::assertNotEmpty($links);

@@ -170,7 +170,7 @@ class TestSetupController extends SetupController
     #[Override]
     public function getEntryAttributes(): array
     {
-        return self::$entryAttributes ?? [
+        return array_values(self::$entryAttributes ?? [
             [
                 'status' => Entry::STATUS_ENABLED,
                 'type' => Entry::TYPE_DEFAULT,
@@ -196,6 +196,6 @@ class TestSetupController extends SetupController
                     ],
                 ],
             ],
-        ];
+        ]);
     }
 }

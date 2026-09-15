@@ -178,11 +178,11 @@ class EntryTranslationTest extends TestCase
      */
     protected function findIds(string $search): array
     {
-        return array_map(intval(...), Entry::find()
+        return array_values(array_map(intval(...), Entry::find()
             ->select(Entry::tableName() . '.[[id]]')
             ->matching($search)
             ->orderBy(['id' => SORT_ASC])
-            ->column());
+            ->column()));
     }
 
     /**

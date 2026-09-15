@@ -69,7 +69,8 @@ class ReplaceIndexEntryTest extends TestCase
             ->all();
 
         self::assertCount(1, $index);
-        self::assertSame($entry->id, reset($index)->id);
+        self::assertNotFalse($first = reset($index));
+        self::assertSame($entry->id, $first->id);
     }
 
     public function testThePreviousIndexCanKeepItsStatus(): void

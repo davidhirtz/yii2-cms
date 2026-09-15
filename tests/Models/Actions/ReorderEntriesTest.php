@@ -55,11 +55,11 @@ class ReorderEntriesTest extends TestCase
      */
     private function getRootEntryIds(): array
     {
-        return TestEntry::find()
+        return array_values(TestEntry::find()
             ->select(['id'])
             ->where(['type' => TestEntry::TYPE_PAGE])
             ->orderBy(['position' => SORT_ASC])
-            ->column();
+            ->column());
     }
 
     /**
@@ -67,11 +67,11 @@ class ReorderEntriesTest extends TestCase
      */
     private function getPostIds(): array
     {
-        return $this->getPageEntry()
+        return array_values($this->getPageEntry()
             ->findChildren()
             ->select(['id'])
             ->orderBy(['position' => SORT_ASC])
-            ->column();
+            ->column());
     }
 
     private function getPageEntry(): Entry
