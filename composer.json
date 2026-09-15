@@ -10,8 +10,6 @@
       "homepage": "https://www.davidhirtz.com/"
     }
   ],
-  "minimum-stability": "dev",
-  "prefer-stable": true,
   "require": {
     "php": "^8.3",
     "davidhirtz/yii2-media": "main-dev",
@@ -23,6 +21,8 @@
     "symfony/browser-kit": "^7.4",
     "symfony/css-selector": "^7.4"
   },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
   "autoload": {
     "psr-4": {
       "Hirtz\\Cms\\": "src"
@@ -33,19 +33,12 @@
       "Hirtz\\Cms\\Tests\\": "tests"
     }
   },
-  "repositories": [
-    {
-      "type": "composer",
-      "url": "https://asset-packagist.org"
-    }
-  ],
   "extra": {
     "bootstrap": "Hirtz\\Cms\\Bootstrap"
   },
   "config": {
     "allow-plugins": {
-      "yiisoft/yii2-composer": true,
-      "phpro/grumphp-shim": true
+      "yiisoft/yii2-composer": true
     }
   },
   "scripts": {
