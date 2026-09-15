@@ -6,6 +6,7 @@ namespace Hirtz\Cms\Models\Actions;
 
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Permalink;
+use Hirtz\Skeleton\Helpers\Url;
 use Hirtz\Skeleton\Models\Redirect;
 
 /**
@@ -28,7 +29,7 @@ class DeletePermalinkRedirects
 
     protected function deleteRedirects(Permalink $permalink): void
     {
-        $url = Redirect::sanitizeUrl($this->entry->getPermalinkUrl($permalink->uri, $permalink->language));
+        $url = Url::sanitize($this->entry->getPermalinkUrl($permalink->uri, $permalink->language));
 
         if (!$url) {
             return;

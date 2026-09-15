@@ -6,6 +6,7 @@ namespace Hirtz\Cms\Models\Actions;
 
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Permalink;
+use Hirtz\Skeleton\Helpers\Url;
 use Hirtz\Skeleton\Models\Redirect;
 use Yii;
 
@@ -121,11 +122,11 @@ class SavePermalinks
     {
         $language = $permalink->language;
 
-        $previousRequestUri = Redirect::sanitizeUrl($this->model->getPermalinkRequestUri($previousUri, $language));
-        $previousUrl = Redirect::sanitizeUrl($this->model->getPermalinkUrl($previousUri, $language));
+        $previousRequestUri = Url::sanitize($this->model->getPermalinkRequestUri($previousUri, $language));
+        $previousUrl = Url::sanitize($this->model->getPermalinkUrl($previousUri, $language));
 
-        $requestUri = Redirect::sanitizeUrl($this->model->getPermalinkRequestUri($permalink->uri, $language));
-        $url = Redirect::sanitizeUrl($this->model->getPermalinkUrl($permalink->uri, $language));
+        $requestUri = Url::sanitize($this->model->getPermalinkRequestUri($permalink->uri, $language));
+        $url = Url::sanitize($this->model->getPermalinkUrl($permalink->uri, $language));
 
         if (!$previousRequestUri || !$url || $previousUrl === $url) {
             return;
