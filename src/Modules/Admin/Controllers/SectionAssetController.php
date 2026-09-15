@@ -9,12 +9,16 @@ use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Models\SectionAsset;
 use Hirtz\Cms\Modules\Admin\Controllers\Traits\SectionControllerTrait;
 use Hirtz\Media\Modules\Admin\Controllers\Traits\AssetControllerTrait;
+use Hirtz\Cms\Modules\Admin\Module;
 use Hirtz\Skeleton\Web\Controller;
 use Override;
 use yii\filters\AccessControl;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
+/**
+ * @extends Controller<Module>
+ */
 class SectionAssetController extends Controller
 {
     use AssetControllerTrait;

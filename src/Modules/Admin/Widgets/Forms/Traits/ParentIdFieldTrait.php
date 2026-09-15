@@ -25,6 +25,9 @@ trait ParentIdFieldTrait
 
     abstract protected function hasParentIdField(): bool;
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function getParentIdAttributes(): array
     {
         return [];

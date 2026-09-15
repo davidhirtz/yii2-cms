@@ -22,6 +22,9 @@ class EntrySitemap extends RecordSitemap
 
     public string $modelClass = Entry::class;
 
+    /**
+     * @return EntryQuery<Entry>
+     */
     #[Override]
     protected function getQuery(): EntryQuery
     {

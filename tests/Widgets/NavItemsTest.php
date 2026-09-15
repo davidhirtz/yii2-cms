@@ -199,6 +199,9 @@ class NavItemsTest extends TestCase
         Entry::instance(true);
     }
 
+    /**
+     * @param array<string, mixed> $attributes
+     */
     private function createEntry(string $name, string $slug, ?Entry $parent = null, array $attributes = []): Entry
     {
         $entry = Entry::create();

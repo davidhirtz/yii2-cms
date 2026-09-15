@@ -223,7 +223,7 @@ class EntryQueryTest extends TestCase
     }
 
     /**
-     * @param EntryQuery<Entry> $query
+     * @param EntryQuery<covariant Entry> $query
      * @return list<string>
      */
     private function getNames(EntryQuery $query): array

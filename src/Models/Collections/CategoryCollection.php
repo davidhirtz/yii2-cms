@@ -19,6 +19,9 @@ class CategoryCollection
 
     public const string CACHE_KEY = 'category-collection';
 
+    /**
+     * @var array<int, Category>|null
+     */
     protected static ?array $categories = null;
 
     /**

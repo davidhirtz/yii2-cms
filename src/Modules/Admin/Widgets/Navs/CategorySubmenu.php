@@ -18,6 +18,9 @@ class CategorySubmenu extends Submenu
      */
     use ModelTrait;
 
+    /**
+     * @var array<string, list<string>>
+     */
     protected array $additionalActiveRoutes = [];
 
     #[Override]

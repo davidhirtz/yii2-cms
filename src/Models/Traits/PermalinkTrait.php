@@ -27,6 +27,9 @@ trait PermalinkTrait
      */
     private array $newPermalinks = [];
 
+    /**
+     * @return PermalinkQuery<Permalink>
+     */
     public function getPermalinks(): PermalinkQuery
     {
         /** @var PermalinkQuery<Permalink> */

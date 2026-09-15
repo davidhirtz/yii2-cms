@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Modules\Admin\Widgets\Grids;
 
 use Hirtz\Cms\Models\Entry;
+use Hirtz\Skeleton\Models\Types\Type;
 use Hirtz\Skeleton\Widgets\Buttons\Button;
 use Hirtz\Skeleton\Widgets\Grids\Toolbars\TypeFilterDropdown;
 use Override;
@@ -12,6 +13,9 @@ use Stringable;
 use Traversable;
 use Yii;
 
+/**
+ * @extends EntryGridView<Entry>
+ */
 class SectionEntryGridView extends EntryGridView
 {
     protected string $layout = '{header}{summary}{items}{pager}';
@@ -35,6 +39,9 @@ class SectionEntryGridView extends EntryGridView
             ->visible($this->showTypeDropdown);
     }
 
+    /**
+     * @return array<int, Type>
+     */
     protected function getTypeDropdownItems(): array
     {
         $items = Entry::instance()::getTypeDefinitions();
@@ -55,6 +62,7 @@ class SectionEntryGridView extends EntryGridView
 
     /**
      * @see SectionEntryController::actionCreate()
+     * @return Traversable<int, Stringable>
      */
     #[Override]
     protected function getButtonColumnContent(Entry $entry): Traversable

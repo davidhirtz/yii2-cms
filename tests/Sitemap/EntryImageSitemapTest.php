@@ -40,10 +40,11 @@ class EntryImageSitemapTest extends TestCase
         self::assertContains('Alt Text 1', array_column($images, 'title'));
     }
 
+    /**
+     * @param array<string, mixed> $config
+     */
     private function createSitemap(array $config = []): EntrySitemap
     {
-        /** @var EntrySitemap $sitemap */
-        $sitemap = Yii::createObject([...$config, 'class' => EntrySitemap::class]);
-        return $sitemap;
+        return Yii::$container->get(EntrySitemap::class, [], $config);
     }
 }

@@ -56,6 +56,9 @@ class EntryGridView extends GridView
     protected bool $showCategoryDropdown = true;
     protected bool $showTypeDropdown = true;
     protected bool $showDeleteButton = false;
+    /**
+     * @var array<int|string, mixed>|null
+     */
     protected ?array $orderRoute = null;
 
     #[Override]
@@ -297,6 +300,9 @@ class EntryGridView extends GridView
             ->content($this->getButtonColumnContent(...));
     }
 
+    /**
+     * @return Traversable<int, Stringable>
+     */
     protected function getButtonColumnContent(Entry $entry): Traversable
     {
         if ($this->isSortable() && $this->webuser->can(Entry::AUTH_ENTRY)) {

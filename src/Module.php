@@ -65,7 +65,7 @@ class Module extends \Hirtz\Skeleton\Base\Module
     public bool $enableUrlRules = true;
 
     /**
-     * @var array|null the default sort order when neither type nor category previously applied an order
+     * @var array<string, int>|null the default sort order when neither type nor category previously applied an order
      */
     public ?array $defaultEntryOrderBy = ['position' => SORT_ASC];
 

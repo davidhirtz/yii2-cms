@@ -22,6 +22,9 @@ class MetaTags extends Widget
 
     protected Category|Entry $model;
 
+    /**
+     * @var list<string>|null
+     */
     protected ?array $languages = null;
     protected bool $enableHrefLangLinks = true;
     protected bool $enableCanonicalUrl = false;
@@ -33,6 +36,9 @@ class MetaTags extends Widget
 
     private UrlManager $urlManager;
 
+    /**
+     * @param array<string, mixed> $config
+     */
     public function __construct(array $config = [])
     {
         $this->urlManager = Yii::$app->getUrlManager();

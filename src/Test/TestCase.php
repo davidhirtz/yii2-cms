@@ -12,6 +12,8 @@ class TestCase extends \Hirtz\Skeleton\Test\TestCase
 {
     /**
      * Every entry needs a tenant, so the fixture is loaded even for a test case that declares none of its own.
+     *
+     * @return array<string, mixed>
      */
     #[Override]
     public function globalFixtures(): array

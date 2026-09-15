@@ -11,7 +11,11 @@ use Hirtz\Skeleton\Widgets\Buttons\Button;
 use Override;
 use Traversable;
 use Yii;
+use Stringable;
 
+/**
+ * @extends EntryGridView<Entry>
+ */
 class SectionParentEntryGridView extends EntryGridView
 {
     protected Section $section;
@@ -31,6 +35,7 @@ class SectionParentEntryGridView extends EntryGridView
     /**
      * @see SectionController::actionDuplicate()
      * @see SectionController::actionMove()
+     * @return Traversable<int, Stringable>
      */
     #[Override]
     protected function getButtonColumnContent(Entry $entry): Traversable

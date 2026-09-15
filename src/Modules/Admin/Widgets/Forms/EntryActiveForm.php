@@ -142,6 +142,9 @@ class EntryActiveForm extends ActiveForm
         return $this->model->getTenantRouteParams();
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function getParentIdAttributes(): array
     {
         $attributes = [];

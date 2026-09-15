@@ -17,6 +17,7 @@ use Hirtz\Skeleton\Models\Traits\UpdatedByUserTrait;
 use Hirtz\Skeleton\Validators\RelationValidator;
 use Override;
 use Yii;
+use Hirtz\Skeleton\Models\Interfaces\TrailModelInterface;
 
 /**
  * Represents a relation between a section and an entry.
@@ -95,6 +96,9 @@ class SectionEntry extends \Hirtz\Skeleton\Db\ActiveRecord
         return parent::beforeSave($insert);
     }
 
+    /**
+     * @param array<string, mixed> $changedAttributes
+     */
     #[Override]
     public function afterSave($insert, $changedAttributes): void
     {
@@ -139,6 +143,7 @@ class SectionEntry extends \Hirtz\Skeleton\Db\ActiveRecord
 
     /**
      * @noinspection PhpUnused
+     * @return list<string>
      */
     public function getTrailAttributes(): array
     {
@@ -153,12 +158,16 @@ class SectionEntry extends \Hirtz\Skeleton\Db\ActiveRecord
 
     /**
      * @noinspection PhpUnused
+     * @return list<TrailModelInterface>
      */
     public function getTrailParents(): ?array
     {
         return [$this->entry, $this->section];
     }
 
+    /**
+     * @return array<int|string, mixed>|false
+     */
     public function getAdminRoute(): array|false
     {
         return false;

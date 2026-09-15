@@ -17,6 +17,9 @@ use yii\helpers\Inflector;
 /**
  * @property EntryActiveDataProvider|null $provider
  */
+/**
+ * @extends EntryGridView<Entry>
+ */
 class SectionLinkedEntryGridView extends EntryGridView
 {
     protected string $layout = '{items}{footer}';
@@ -48,6 +51,9 @@ class SectionLinkedEntryGridView extends EntryGridView
         parent::configure();
     }
 
+    /**
+     * @return Traversable<int, Stringable>
+     */
     #[Override]
     protected function getButtonColumnContent(Entry $entry): Traversable
     {

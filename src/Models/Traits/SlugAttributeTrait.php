@@ -14,6 +14,9 @@ trait SlugAttributeTrait
     public bool $slugLowercase = true;
     public int|false $slugMaxLength = 100;
     public string $slugReplacement = '-';
+    /**
+     * @var array<string, mixed>|string
+     */
     public array|string $slugUniqueValidator = UniqueValidator::class;
 
     private ?bool $isSlugRequired = null;

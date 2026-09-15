@@ -149,6 +149,9 @@ class TestSetupController extends SetupController
      */
     public static ?array $entryAttributes = null;
 
+    /**
+     * @return list<array<string, mixed>>
+     */
     #[Override]
     public function getCategoryAttributes(): array
     {
@@ -161,6 +164,9 @@ class TestSetupController extends SetupController
         ];
     }
 
+    /**
+     * @return list<array<string, mixed>>
+     */
     #[Override]
     public function getEntryAttributes(): array
     {

@@ -10,8 +10,14 @@ use Hirtz\Skeleton\I18n\Message;
 use Hirtz\Skeleton\Models\Trail;
 use Override;
 
+/**
+ * @extends ReorderActiveRecords<Category>
+ */
 class ReorderCategories extends ReorderActiveRecords
 {
+    /**
+     * @param list<int> $categoryIds
+     */
     public function __construct(protected ?Category $parent, array $categoryIds)
     {
         parent::__construct([], array_flip($categoryIds));

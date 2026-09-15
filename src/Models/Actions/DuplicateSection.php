@@ -17,6 +17,9 @@ class DuplicateSection extends DuplicateActiveRecord
 {
     use DuplicateAssetsTrait;
 
+    /**
+     * @param array<string, mixed> $attributes
+     */
     public function __construct(
         Section $section,
         protected ?Entry $entry = null,

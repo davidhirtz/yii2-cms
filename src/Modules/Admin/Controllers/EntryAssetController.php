@@ -8,12 +8,16 @@ use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\EntryAsset;
 use Hirtz\Cms\Modules\Admin\Controllers\Traits\EntryControllerTrait;
 use Hirtz\Media\Modules\Admin\Controllers\Traits\AssetControllerTrait;
+use Hirtz\Cms\Modules\Admin\Module;
 use Hirtz\Skeleton\Web\Controller;
 use Override;
 use yii\filters\AccessControl;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
+/**
+ * @extends Controller<Module>
+ */
 class EntryAssetController extends Controller
 {
     use AssetControllerTrait;

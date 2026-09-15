@@ -17,6 +17,9 @@ class DuplicateEntry extends DuplicateActiveRecord
 {
     use DuplicateAssetsTrait;
 
+    /**
+     * @param array<string, mixed> $attributes
+     */
     public function __construct(
         Entry $entry,
         protected ?Entry $parent = null,

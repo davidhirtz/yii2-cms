@@ -14,6 +14,9 @@ use Yii;
  */
 trait MenuAttributeTrait
 {
+    /**
+     * @return list<array<mixed>>
+     */
     public function getMenuAttributeRules(): array
     {
         return [
@@ -24,6 +27,9 @@ trait MenuAttributeTrait
         ];
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function getMenuAttributeLabels(): array
     {
         return [

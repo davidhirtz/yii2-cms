@@ -25,6 +25,9 @@ class EntrySubmenu extends Submenu
 
     protected Module $module;
 
+    /**
+     * @var array<string, list<string>>
+     */
     protected array $additionalActiveRoutes = [];
 
     /**

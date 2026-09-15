@@ -95,6 +95,9 @@ class EntryQuery extends I18nActiveQuery
         return $this->whereNotUri(static::getModule()->entryIndexSlug ?: null);
     }
 
+    /**
+     * @param list<int>|Category|int $category
+     */
     public function whereCategory(array|Category|int $category, bool $eagerLoading = false): static
     {
         if ($category instanceof Category) {
@@ -108,6 +111,7 @@ class EntryQuery extends I18nActiveQuery
 
     /**
      * @noinspection PhpUnused
+     * @param list<Category|int|string> $categories
      */
     public function whereCategories(array $categories, bool $eagerLoading = false): static
     {

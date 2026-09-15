@@ -13,6 +13,9 @@ use Yii;
  */
 class NavItems
 {
+    /**
+     * @var array<int, T>|null
+     */
     protected static ?array $entries = null;
 
     /**
@@ -76,6 +79,9 @@ class NavItems
         return static::getEntryQuery()->all();
     }
 
+    /**
+     * @return EntryQuery<Entry>
+     */
     protected static function getEntryQuery(): EntryQuery
     {
         return Entry::find()
@@ -92,6 +98,8 @@ class NavItems
     /**
      * An `Entry` that declares neither attribute has no condition to add — the filters below answer `false` for
      * every record anyway, and `$where[0]` on an empty array was a `TypeError` on every page with a menu.
+     *
+     * @return array<string, mixed>
      */
     protected static function getEntryQueryWhere(): array
     {

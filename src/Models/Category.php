@@ -152,6 +152,8 @@ class Category extends ActiveRecord implements SearchableInterface
      * On parent id change all related entries (linked to this category as well as to the child categories)
      * need to be added to the new parent categories, if {@see \Hirtz\Cms\Module::$inheritNestedCategories}
      * is true. Previous parent {@see EntryCategory} relations will not be deleted.
+     *
+     * @param array<string, mixed> $changedAttributes
      */
     #[Override]
     public function afterSave($insert, $changedAttributes): void
@@ -196,9 +198,12 @@ class Category extends ActiveRecord implements SearchableInterface
             ->inverseOf('category');
     }
 
+    /**
+     * @return EntryQuery<Entry>
+     */
     public function getEntries(): EntryQuery
     {
-        /** @var EntryQuery $relation */
+        /** @var EntryQuery<Entry> $relation */
         $relation = $this->hasMany(Entry::class, ['id' => 'entry_id'])
             ->via('entryCategories');
 
@@ -281,6 +286,9 @@ class Category extends ActiveRecord implements SearchableInterface
         return static::find()->where(['parent_id' => $this->parent_id]);
     }
 
+    /**
+     * @return list<string>
+     */
     #[Override]
     public function getTrailAttributes(): array
     {
@@ -319,11 +327,17 @@ class Category extends ActiveRecord implements SearchableInterface
         return Yii::$app->has('user') && Yii::$app->getUser()->can(static::AUTH_CATEGORY);
     }
 
+    /**
+     * @return array<int|string, mixed>|false
+     */
     public function getRoute(): array|false
     {
         return array_filter(['/cms/site/index', 'category' => $this->getI18nAttribute('slug')]);
     }
 
+    /**
+     * @return array<string, int>
+     */
     public function getEntriesOrderBy(): bool|array
     {
         return [EntryCategory::tableName() . '.[[position]]' => SORT_ASC];

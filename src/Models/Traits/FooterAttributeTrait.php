@@ -14,6 +14,9 @@ use Yii;
  */
 trait FooterAttributeTrait
 {
+    /**
+     * @return list<array<mixed>>
+     */
     public function getFooterAttributeRules(): array
     {
         return [
@@ -24,6 +27,9 @@ trait FooterAttributeTrait
         ];
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function getFooterAttributeLabels(): array
     {
         return [

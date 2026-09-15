@@ -13,7 +13,7 @@ use Stringable;
 use yii\base\Model;
 
 /**
- * @property EntryGridView $grid
+ * @property EntryGridView<Entry> $grid
  */
 class SectionCountColumn extends BadgeColumn
 {
@@ -43,6 +43,9 @@ class SectionCountColumn extends BadgeColumn
         return false;
     }
 
+    /**
+     * @param array<string, mixed>|Model $model
+     */
     #[Override]
     protected function getBody(array|Model $model, string|int $key, int $index): string|Stringable
     {

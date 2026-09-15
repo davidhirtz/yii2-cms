@@ -70,6 +70,9 @@ class EntryGridViewTest extends TestCase
     }
 }
 
+/**
+ * @extends EntryGridView<Entry>
+ */
 class GridViewWithoutUrl extends EntryGridView
 {
     protected bool $showUrl = false;

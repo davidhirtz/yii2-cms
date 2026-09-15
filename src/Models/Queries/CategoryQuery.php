@@ -12,6 +12,9 @@ use Hirtz\Skeleton\Db\I18nActiveQuery;
  */
 class CategoryQuery extends I18nActiveQuery
 {
+    /**
+     * @var array<string, int>
+     */
     public $orderBy = ['lft' => SORT_ASC];
 
     public function selectSiteAttributes(): static

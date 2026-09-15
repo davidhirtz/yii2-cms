@@ -14,6 +14,9 @@ use Hirtz\Skeleton\Models\Trail;
  */
 class ReorderEntryCategories extends ReorderActiveRecords
 {
+    /**
+     * @param list<int> $entryIds
+     */
     public function __construct(protected Category $category, array $entryIds)
     {
         /** @var EntryCategory[] $entryCategories */

@@ -19,6 +19,9 @@ class SectionStack extends Widget
 {
     protected Entry $entry;
     protected string $viewFile = '_sections';
+    /**
+     * @var array<string, mixed>
+     */
     protected array $viewParams = [];
 
     /**
@@ -68,6 +71,9 @@ class SectionStack extends Widget
         return $this;
     }
 
+    /**
+     * @param array<string, mixed> $viewParams
+     */
     public function viewParams(array $viewParams): static
     {
         $this->viewParams = $viewParams;

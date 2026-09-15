@@ -16,7 +16,7 @@ use yii\base\Model;
 ;
 
 /**
- * @property EntryGridView $grid
+ * @property EntryGridView<Entry> $grid
  */
 class EntryEntryCountColumn extends BadgeColumn
 {
@@ -52,6 +52,9 @@ class EntryEntryCountColumn extends BadgeColumn
         return false;
     }
 
+    /**
+     * @param array<string, mixed>|Model $model
+     */
     #[Override]
     protected function getBody(array|Model $model, string|int $key, int $index): string|Stringable
     {

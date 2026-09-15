@@ -20,7 +20,7 @@ use yii\data\Sort;
 use yii\helpers\ArrayHelper;
 
 /**
- * @property EntryQuery $query
+ * @property EntryQuery<Entry> $query
  * @extends ActiveDataProvider<Entry>
  */
 class EntryActiveDataProvider extends ActiveDataProvider
@@ -150,6 +150,9 @@ class EntryActiveDataProvider extends ActiveDataProvider
         }
     }
 
+    /**
+     * @return list<Entry>
+     */
     #[Override]
     protected function prepareModels(): array
     {
@@ -178,6 +181,9 @@ class EntryActiveDataProvider extends ActiveDataProvider
         return !$this->isOrderedByPosition() ? parent::getSort() : false;
     }
 
+    /**
+     * @param array<string, mixed>|Sort|bool $value
+     */
     #[Override]
     public function setSort($value): void
     {

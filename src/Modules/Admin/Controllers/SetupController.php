@@ -50,8 +50,14 @@ abstract class SetupController extends Controller
         ];
     }
 
+    /**
+     * @return list<array<string, mixed>>
+     */
     abstract public function getCategoryAttributes(): array;
 
+    /**
+     * @return list<array<string, mixed>>
+     */
     abstract public function getEntryAttributes(): array;
 
     public function actionIndex(): Response
@@ -105,6 +111,9 @@ abstract class SetupController extends Controller
         }
     }
 
+    /**
+     * @param array<string, mixed> $attributes
+     */
     protected function insertEntry(array $attributes, ?Entry $parent = null): void
     {
         $subentries = ArrayHelper::remove($attributes, 'entries', []);

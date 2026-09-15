@@ -33,7 +33,7 @@ use yii\db\ActiveQuery;
  * @property int $tenant_id
  * @property int|null $parent_id
  * @property int|null $parent_status
- * @property array|null $path
+ * @property list<int>|null $path
  * @property int|null|false $position
  * @property string $name
  * @property string|null $slug virtual, backed by {@see Permalink::$slug}
@@ -41,7 +41,7 @@ use yii\db\ActiveQuery;
  * @property string|null $description
  * @property string $content
  * @property DateTime|null $publish_date
- * @property array|null $category_ids
+ * @property list<int>|null $category_ids
  * @property int $entry_count
  * @property int $section_count
  * @property int $asset_count
@@ -53,9 +53,9 @@ use yii\db\ActiveQuery;
  * @property-read SectionEntry|null $sectionEntry {@see static::getSectionEntry()}
  * @property-read Section[] $sections {@see static::getSections()}
  *
- * @method EntryQuery findAncestors()
- * @method EntryQuery findChildren()
- * @method EntryQuery findDescendants()
+ * @method EntryQuery<static> findAncestors()
+ * @method EntryQuery<static> findChildren()
+ * @method EntryQuery<static> findDescendants()
  */
 class Entry extends ActiveRecord implements AssetModelInterface, SearchableInterface
 {
@@ -69,6 +69,9 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
 
     final public const string AUTH_ENTRY = 'entry';
 
+    /**
+     * @var array<string, mixed>|string
+     */
     public array|string $dateTimeValidator = DateTimeValidator::class;
     public bool|null $shouldUpdateParentAfterSave = null;
 
@@ -226,6 +229,9 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
         return parent::beforeSave($insert);
     }
 
+    /**
+     * @param array<string, mixed> $changedAttributes
+     */
     #[Override]
     public function afterSave($insert, $changedAttributes): void
     {
@@ -383,9 +389,12 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
             ->inverseOf('entry');
     }
 
+    /**
+     * @return SectionQuery<Section>
+     */
     public function getSections(): SectionQuery
     {
-        /** @var SectionQuery $relation */
+        /** @var SectionQuery<Section> $relation */
         $relation = $this->hasMany(Section::class, ['entry_id' => 'id'])
             ->orderBy(['position' => SORT_ASC])
             ->indexBy('id')
@@ -394,12 +403,18 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
         return $relation;
     }
 
+    /**
+     * @return EntryQuery<static>
+     */
     #[Override]
     public static function find(): EntryQuery
     {
         return Yii::createObject(EntryQuery::class, [static::class]);
     }
 
+    /**
+     * @return EntryQuery<static>
+     */
     #[Override]
     public function findSiblings(): EntryQuery
     {
@@ -522,6 +537,9 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
         return $this->category_ids ? count($this->category_ids) : 0;
     }
 
+    /**
+     * @return array<string, int>
+     */
     public function getDescendantsOrderBy(): array
     {
         return ['position' => SORT_ASC];
@@ -535,6 +553,9 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
         return substr(trim($slug, '/'), 0, 255);
     }
 
+    /**
+     * @return array<int|string, mixed>|false
+     */
     #[Override]
     public function getRoute(): false|array
     {
@@ -588,6 +609,9 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
         return $status;
     }
 
+    /**
+     * @return list<string>
+     */
     #[Override]
     public function getTrailAttributes(): array
     {
@@ -631,6 +655,9 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
         return $this->getType()?->getViewFile();
     }
 
+    /**
+     * @param array<string, mixed> $changedAttributes
+     */
     protected function isMaterializedTreeChanged(?array $changedAttributes = null): bool
     {
         if (!$this->entry_count) {

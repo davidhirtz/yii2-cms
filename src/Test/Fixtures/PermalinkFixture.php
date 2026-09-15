@@ -10,6 +10,7 @@ use Override;
 use Yii;
 use yii\db\Expression;
 use Hirtz\Skeleton\Test\Fixtures\ActiveFixture;
+use yii\test\Fixture;
 
 /**
  * Fixtures insert rows straight into the table, so no model event fires and no permalink would be written for a
@@ -20,6 +21,9 @@ class PermalinkFixture extends ActiveFixture
 {
     public $modelClass = Permalink::class;
 
+    /**
+     * @var list<class-string<Fixture>>
+     */
     public $depends = [
         EntryFixture::class,
     ];

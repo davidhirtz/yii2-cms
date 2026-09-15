@@ -28,6 +28,9 @@ class SectionType extends Type implements AssetModelTypeInterface
     protected Closure|string|null $group = null;
     protected Closure|string|null $wrapper = null;
     protected ?Closure $collect = null;
+    /**
+     * @var array<string, int>|null
+     */
     protected ?array $entriesOrderBy = null;
 
     /**
@@ -74,6 +77,9 @@ class SectionType extends Type implements AssetModelTypeInterface
         return $this;
     }
 
+    /**
+     * @param array<string, int>|null $entriesOrderBy
+     */
     public function entriesOrderBy(?array $entriesOrderBy): static
     {
         $this->entriesOrderBy = $entriesOrderBy;
@@ -115,6 +121,9 @@ class SectionType extends Type implements AssetModelTypeInterface
         return $this->collect;
     }
 
+    /**
+     * @return array<string, int>
+     */
     public function getEntriesOrderBy(): ?array
     {
         return $this->entriesOrderBy;

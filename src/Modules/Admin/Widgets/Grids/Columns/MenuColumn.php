@@ -16,10 +16,13 @@ use Stringable;
  * @template T of Entry
  * @extends LinkColumn<T>
  *
- * @property EntryGridView $grid
+ * @property EntryGridView<Entry> $grid
  */
 class MenuColumn extends LinkColumn
 {
+    /**
+     * @param array<string, mixed> $config
+     */
     public function __construct(array $config = [])
     {
         $this->url ??= fn (Entry $model) => $model->getAdminRoute();

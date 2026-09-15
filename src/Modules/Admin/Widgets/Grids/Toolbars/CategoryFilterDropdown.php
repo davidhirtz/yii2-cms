@@ -23,6 +23,9 @@ class CategoryFilterDropdown extends FilterDropdown
         parent::configure();
     }
 
+    /**
+     * @return array<int, string>
+     */
     protected function getNestedCategoryNames(): array
     {
         return Category::indentNestedTree(
@@ -31,6 +34,9 @@ class CategoryFilterDropdown extends FilterDropdown
         );
     }
 
+    /**
+     * @return array<int, Category>
+     */
     protected function getCategories(): array
     {
         return CategoryCollection::getAll();

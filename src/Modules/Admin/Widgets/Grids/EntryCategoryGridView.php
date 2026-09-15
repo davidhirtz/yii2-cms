@@ -70,6 +70,9 @@ class EntryCategoryGridView extends GridView
         return true;
     }
 
+    /**
+     * @return list<Stringable>
+     */
     protected function getButtonColumnContent(Category $category): array
     {
         $buttons = [$this->getAdminLinkButton($category)];

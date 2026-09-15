@@ -18,6 +18,9 @@ class CmsNavItem extends NavItem
     protected bool $showEntryTypes = false;
     protected bool $showCategories = true;
 
+    /**
+     * @param array<string, mixed> $config
+     */
     public function __construct(array $config = [])
     {
         $this->icon ??= 'book';

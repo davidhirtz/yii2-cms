@@ -10,6 +10,9 @@ use Yii;
 
 class EntryCreateButton extends CreateButton
 {
+    /**
+     * @param array<string, mixed> $config
+     */
     public function __construct(array $config = [])
     {
         $this->label ??= Yii::t('cms', 'ENTRY_CREATE_BUTTON');

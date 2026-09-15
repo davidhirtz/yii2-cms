@@ -16,6 +16,7 @@ use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Models\SectionAsset;
 use Hirtz\Skeleton\Helpers\EventHelper;
 use Hirtz\Skeleton\Modules\Admin\Controllers\DashboardController;
+use Hirtz\Skeleton\Models\User;
 use Hirtz\Skeleton\Web\Application;
 use Hirtz\Tenant\Models\Tenant;
 use Hirtz\Tenant\Modules\Admin\Widgets\Grids\TenantGridView;
@@ -29,6 +30,7 @@ class Bootstrap implements BootstrapInterface
 {
     /**
      * @param Application $app
+     * @param Application<User> $app
      */
     public function bootstrap($app): void
     {

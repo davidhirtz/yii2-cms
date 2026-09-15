@@ -224,6 +224,10 @@ class CategoryControllerTest extends TestCase
         self::assertNotEmpty(Yii::$app->getSession()->getFlash('success'));
     }
 
+    /**
+     * @param array<string, mixed> $bodyParams
+     * @param array<string, mixed> $params
+     */
     private function post(string $route, array $bodyParams, array $params = [], bool $reload = false): mixed
     {
         $_SERVER['REQUEST_METHOD'] = 'POST';

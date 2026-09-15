@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Tests\Modules\Widgets\Grids;
 
+use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\EntryGridView;
 use Hirtz\Cms\Test\TestCase;
 use Hirtz\Tenant\Models\Collections\TenantCollection;
@@ -27,6 +28,9 @@ class EntryGridViewTest extends TestCase
     }
 }
 
+/**
+ * @extends EntryGridView<Entry>
+ */
 class TestEntryGridView extends EntryGridView
 {
     public function tenantDropdown(): ?Stringable

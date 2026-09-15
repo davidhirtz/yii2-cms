@@ -50,6 +50,9 @@ class ReorderEntriesTest extends TestCase
         self::assertEquals(Yii::t('cms', 'COMMON_ENTRY_ORDER_CHANGED'), $trail->getMessage());
     }
 
+    /**
+     * @return list<int>
+     */
     private function getRootEntryIds(): array
     {
         return TestEntry::find()
@@ -59,6 +62,9 @@ class ReorderEntriesTest extends TestCase
             ->column();
     }
 
+    /**
+     * @return list<int>
+     */
     private function getPostIds(): array
     {
         return $this->getPageEntry()

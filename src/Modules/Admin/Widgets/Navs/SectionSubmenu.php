@@ -23,6 +23,9 @@ class SectionSubmenu extends Submenu
 
     use ModuleTrait;
 
+    /**
+     * @var array<string, list<string>>
+     */
     protected array $additionalActiveRoutes = [];
 
     /**

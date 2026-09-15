@@ -4,7 +4,7 @@ declare(strict_types=1);
 /**
  * @var View $this
  * @var Section[] $sections
- * @var SectionGroup $group
+ * @var SectionGroup<Section> $group
  */
 
 use Hirtz\Cms\Models\Section;

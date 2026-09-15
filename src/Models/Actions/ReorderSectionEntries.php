@@ -15,6 +15,9 @@ use Hirtz\Skeleton\Models\Trail;
  */
 class ReorderSectionEntries extends ReorderActiveRecords
 {
+    /**
+     * @param list<int> $folderIds
+     */
     public function __construct(protected Section $section, array $folderIds)
     {
         $sectionEntries = $section->getSectionEntries()

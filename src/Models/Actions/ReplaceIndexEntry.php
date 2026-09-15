@@ -62,6 +62,9 @@ class ReplaceIndexEntry
         $this->entry->parent_id = null;
     }
 
+    /**
+     * @param array<string, mixed> $params
+     */
     public static function run(array $params = []): static
     {
         $action = Yii::createObject(static::class, $params);

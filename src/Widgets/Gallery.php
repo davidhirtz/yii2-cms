@@ -29,15 +29,27 @@ class Gallery extends Widget
     protected ?int $start = null;
     protected ?int $limit = null;
     protected string $viewFile = 'widgets/_assets';
+    /**
+     * @var array<string, mixed>
+     */
     protected array $viewParams = [];
 
+    /**
+     * @var array<string, list<int>>
+     */
     protected array $viewports = [
         'hidden-sm' => [Asset::TYPE_DEFAULT, Asset::TYPE_VIEWPORT_MOBILE],
         'hidden block-sm' => [Asset::TYPE_DEFAULT, Asset::TYPE_VIEWPORT_DESKTOP]
     ];
 
+    /**
+     * @var list<int>
+     */
     private array $sharedViewports = [];
 
+    /**
+     * @param list<Asset> $assets
+     */
     public function assets(array $assets): static
     {
         $this->assets = $assets;
@@ -68,6 +80,9 @@ class Gallery extends Widget
         return $this;
     }
 
+    /**
+     * @param array<string, mixed> $viewParams
+     */
     public function viewParams(array $viewParams): static
     {
         $this->viewParams = $viewParams;

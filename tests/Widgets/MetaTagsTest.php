@@ -159,6 +159,8 @@ class MetaTagsTest extends TestCase
     /**
      * `MetaTags` keeps its options protected and offers no setters, so a project configures it by subclassing —
      * which is what the test model does.
+     *
+     * @param array<string, mixed> $config
      */
     private function render(Entry $entry, array $config = []): void
     {

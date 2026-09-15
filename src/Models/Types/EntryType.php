@@ -23,6 +23,9 @@ class EntryType extends Type implements AssetModelTypeInterface
      */
     protected ?array $orderBy = null;
 
+    /**
+     * @var array<string, mixed>|null
+     */
     protected ?array $sort = null;
     protected ?bool $showCategories = null;
     protected ?bool $showCategoryDropdown = null;
@@ -38,6 +41,9 @@ class EntryType extends Type implements AssetModelTypeInterface
         return $this;
     }
 
+    /**
+     * @param array<string, mixed>|null $sort
+     */
     public function sort(?array $sort): static
     {
         $this->sort = $sort;
@@ -76,6 +82,9 @@ class EntryType extends Type implements AssetModelTypeInterface
         return $this->orderBy;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getSort(): ?array
     {
         return $this->sort;

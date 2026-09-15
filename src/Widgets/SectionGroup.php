@@ -26,6 +26,9 @@ class SectionGroup extends Widget
     protected array $sections = [];
 
     protected string $viewFile = '';
+    /**
+     * @var array<string, mixed>
+     */
     protected array $viewParams = [];
     protected string $key = '';
     protected ?string $wrapperKey = null;
@@ -69,6 +72,9 @@ class SectionGroup extends Widget
         return $this;
     }
 
+    /**
+     * @param array<string, mixed> $viewParams
+     */
     public function viewParams(array $viewParams): static
     {
         $this->viewParams = $viewParams;

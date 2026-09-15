@@ -23,6 +23,7 @@ use yii\db\ActiveQuery;
 use Hirtz\Skeleton\Validators\RelationValidator;
 use Override;
 use Yii;
+use Hirtz\Skeleton\Models\Interfaces\TrailModelInterface;
 
 /**
  * @property int $entry_id
@@ -54,6 +55,9 @@ class Section extends ActiveRecord implements AssetModelInterface, SearchableInt
 
     public bool|null $shouldUpdateEntryAfterSave = null;
 
+    /**
+     * @var list<TrailModelInterface>|null
+     */
     private ?array $trailParents = null;
 
     #[Override]
@@ -182,6 +186,9 @@ class Section extends ActiveRecord implements AssetModelInterface, SearchableInt
         return parent::beforeSave($insert);
     }
 
+    /**
+     * @param array<string, mixed> $changedAttributes
+     */
     #[Override]
     public function afterSave($insert, $changedAttributes): void
     {
@@ -230,9 +237,12 @@ class Section extends ActiveRecord implements AssetModelInterface, SearchableInt
         parent::afterDelete();
     }
 
+    /**
+     * @return EntryQuery<Entry>
+     */
     public function getEntries(): EntryQuery
     {
-        /** @var EntryQuery $relation */
+        /** @var EntryQuery<Entry> $relation */
         $relation = $this->hasMany(Entry::class, ['id' => 'entry_id'])
             ->via('sectionEntries');
 
@@ -257,11 +267,17 @@ class Section extends ActiveRecord implements AssetModelInterface, SearchableInt
             ->inverseOf('section');
     }
 
+    /**
+     * @return SectionQuery<static>
+     */
     public function findSiblings(): SectionQuery
     {
         return static::find()->where(['entry_id' => $this->entry_id]);
     }
 
+    /**
+     * @return SectionQuery<static>
+     */
     #[Override]
     public static function find(): SectionQuery
     {
@@ -288,6 +304,9 @@ class Section extends ActiveRecord implements AssetModelInterface, SearchableInt
         }
     }
 
+    /**
+     * @return list<TrailModelInterface>
+     */
     public function getTrailParents(): array
     {
         return $this->trailParents ?? [$this->entry];
@@ -351,6 +370,9 @@ class Section extends ActiveRecord implements AssetModelInterface, SearchableInt
         return Yii::$app->has('user') && Yii::$app->getUser()->can(Entry::AUTH_ENTRY);
     }
 
+    /**
+     * @return array<string, int>
+     */
     public function getEntriesOrderBy(): ?array
     {
         return $this->getType()?->getEntriesOrderBy();
@@ -369,6 +391,9 @@ class Section extends ActiveRecord implements AssetModelInterface, SearchableInt
         return $this->getI18nAttribute('slug') ?: ('section-' . $this->id);
     }
 
+    /**
+     * @return array<int|string, mixed>|false
+     */
     public function getRoute(): false|array
     {
         return ($route = $this->entry->getRoute()) ? [...$route, '#' => $this->getHtmlId()] : false;
@@ -392,6 +417,9 @@ class Section extends ActiveRecord implements AssetModelInterface, SearchableInt
         return $this->getType()?->getViewFile();
     }
 
+    /**
+     * @return list<SectionAsset>
+     */
     public function getVisibleAssets(): array
     {
         return $this->hasAssetsEnabled() && $this->isAttributeVisible(self::FIELD_ASSETS) ? $this->assets : [];

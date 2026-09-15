@@ -22,6 +22,9 @@ use Hirtz\Tenant\Test\Fixtures\TenantFixture;
 
 trait CmsFixtureTrait
 {
+    /**
+     * @return array<string, mixed>
+     */
     public function fixtures(): array
     {
         return [
@@ -45,6 +48,9 @@ trait CmsFixtureTrait
         return $fixture;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function getAssetFixtureData(string $key): array
     {
         return $this->getAssetFixture()->data[$key];
@@ -62,6 +68,9 @@ trait CmsFixtureTrait
         return $fixture;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function getCategoryFixtureData(string $key): array
     {
         return $this->getCategoryFixture()->data[$key];
@@ -79,6 +88,9 @@ trait CmsFixtureTrait
         return $fixture;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function getEntryFixtureData(string $key): array
     {
         return $this->getEntryFixture()->data[$key];
@@ -96,6 +108,9 @@ trait CmsFixtureTrait
         return $fixture;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function getFileFixtureData(string $key): array
     {
         return $this->getFileFixture()->data[$key];
@@ -113,6 +128,9 @@ trait CmsFixtureTrait
         return $fixture;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function getSectionFixtureData(string $key): array
     {
         return $this->getSectionFixture()->data[$key];

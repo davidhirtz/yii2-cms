@@ -18,6 +18,9 @@ class SectionEntryCreateButton extends CreateButton
      */
     use ModelTrait;
 
+    /**
+     * @param array<string, mixed> $config
+     */
     public function __construct(array $config = [])
     {
         $this->label ??= Yii::t('cms', 'SECTION_ENTRY_CREATE_BUTTON');

@@ -56,6 +56,9 @@ class CategoryParentIdSelectField extends SelectField
         return $this->items ? parent::renderContent() : '';
     }
 
+    /**
+     * @return array<int, Category>
+     */
     protected function getCategories(): array
     {
         return array_filter(CategoryCollection::getAll(), fn (Category $category): bool => $category->hasDescendantsEnabled());

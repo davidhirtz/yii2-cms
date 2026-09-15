@@ -15,6 +15,9 @@ use Hirtz\Skeleton\Models\Trail;
  */
 class ReorderEntries extends ReorderActiveRecords
 {
+    /**
+     * @param list<int> $entryIds
+     */
     public function __construct(protected ?Entry $parent, array $entryIds)
     {
         $entries = ($parent?->findChildren() ?? Entry::find())

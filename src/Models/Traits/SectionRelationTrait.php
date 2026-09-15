@@ -13,9 +13,12 @@ use Hirtz\Cms\Models\Section;
  */
 trait SectionRelationTrait
 {
+    /**
+     * @return SectionQuery<Section>
+     */
     public function getSection(): SectionQuery
     {
-        /** @var SectionQuery $relation */
+        /** @var SectionQuery<Section> $relation */
         $relation = $this->hasOne(Section::class, ['id' => 'section_id']);
         return $relation;
     }

@@ -178,6 +178,9 @@ class SectionGridView extends GridView
             ->content($this->getButtonColumnContent(...));
     }
 
+    /**
+     * @return list<Stringable>
+     */
     protected function getButtonColumnContent(Section $section): array
     {
         $buttons = [];

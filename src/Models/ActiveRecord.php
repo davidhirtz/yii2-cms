@@ -107,6 +107,9 @@ abstract class ActiveRecord extends BaseActiveRecord implements
         return parent::beforeSave($insert);
     }
 
+    /**
+     * @param array<string, mixed> $changedAttributes
+     */
     #[Override]
     public function afterSave($insert, $changedAttributes): void
     {
@@ -121,6 +124,9 @@ abstract class ActiveRecord extends BaseActiveRecord implements
         parent::afterDelete();
     }
 
+    /**
+     * @return ActiveQuery<covariant static>
+     */
     abstract public function findSiblings(): ActiveQuery;
 
     protected function setDefaultPosition(): void
@@ -153,6 +159,9 @@ abstract class ActiveRecord extends BaseActiveRecord implements
         return $this->getType()?->getCssClass() ?? '';
     }
 
+    /**
+     * @return list<string>
+     */
     public function getTrailAttributes(): array
     {
         return array_diff($this->attributes(), [
@@ -166,6 +175,9 @@ abstract class ActiveRecord extends BaseActiveRecord implements
         ]);
     }
 
+    /**
+     * @return array<int|string, mixed>|false
+     */
     abstract public function getRoute(): array|false;
 
     #[Override]

@@ -85,6 +85,9 @@ class SiteController extends Controller
         ]);
     }
 
+    /**
+     * @return EntryQuery<Entry>
+     */
     protected function getQuery(): EntryQuery
     {
         $status = $this->request->getIsDraft() ? Entry::STATUS_DRAFT : Entry::STATUS_ENABLED;

@@ -258,6 +258,10 @@ class EntryControllerTest extends TestCase
         return $entry;
     }
 
+    /**
+     * @param array<string, mixed> $bodyParams
+     * @param array<string, mixed> $params
+     */
     private function post(string $route, array $params = [], array $bodyParams = [], bool $reload = false): mixed
     {
         $_SERVER['REQUEST_METHOD'] = 'POST';

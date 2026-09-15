@@ -192,6 +192,9 @@ class EntrySiteRelationsBuilder extends Component
         }
     }
 
+    /**
+     * @return EntryQuery<Entry>
+     */
     protected function getEntryQuery(): EntryQuery
     {
         return Entry::find()
@@ -236,7 +239,7 @@ class EntrySiteRelationsBuilder extends Component
                 }
 
                 if ($order = $section->getEntriesOrderBy()) {
-                    $this->sortSectionEntriesByEntryAttributes($entries, $order);
+                    $entries = $this->sortSectionEntriesByEntryAttributes($entries, $order);
                 }
             }
 
@@ -244,9 +247,15 @@ class EntrySiteRelationsBuilder extends Component
         }
     }
 
-    protected function sortSectionEntriesByEntryAttributes(array &$entries, array $order): void
+    /**
+     * @param array<int, Entry> $entries
+     * @param array<string, int> $order
+     * @return array<int, Entry>
+     */
+    protected function sortSectionEntriesByEntryAttributes(array $entries, array $order): array
     {
         ArrayHelper::multisort($entries, array_keys($order), array_values($order));
+        return $entries;
     }
 
     protected function loadAssets(): void

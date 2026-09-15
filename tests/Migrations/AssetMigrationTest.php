@@ -46,6 +46,8 @@ class AssetMigrationTest extends TestCase
 
     /**
      * The migration asserts that `asset` holds exactly what it copied, so the fixture must not fill it first.
+     *
+     * @return array<string, mixed>
      */
     #[Override]
     public function fixtures(): array

@@ -9,12 +9,16 @@ use Hirtz\Media\Models\File;
 use Hirtz\Media\Test\Fixtures\FileFixture;
 use Override;
 use Hirtz\Skeleton\Test\Fixtures\ActiveFixture;
+use yii\test\Fixture;
 
 /**
  * The rows carry their own `model_class`, so the fixture is loaded through the base model.
  */
 class AssetFixture extends ActiveFixture
 {
+    /**
+     * @var list<class-string<Fixture>>
+     */
     public $depends = [
         EntryFixture::class,
         FileFixture::class,

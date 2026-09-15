@@ -114,6 +114,9 @@ class EntryCategory extends \Hirtz\Skeleton\Db\ActiveRecord implements TrailMode
         return parent::beforeSave($insert);
     }
 
+    /**
+     * @param array<string, mixed> $changedAttributes
+     */
     #[Override]
     public function afterSave($insert, $changedAttributes): void
     {
@@ -235,6 +238,9 @@ class EntryCategory extends \Hirtz\Skeleton\Db\ActiveRecord implements TrailMode
         return (int)static::find()->where(['category_id' => $this->category_id])->max('[[position]]');
     }
 
+    /**
+     * @return list<TrailModelInterface>
+     */
     #[Override]
     public function getTrailParents(): array
     {

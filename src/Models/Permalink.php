@@ -139,9 +139,12 @@ class Permalink extends ActiveRecord
         return Yii::createObject(PermalinkQuery::class, [static::class]);
     }
 
+    /**
+     * @return EntryQuery<Entry>
+     */
     public function getEntry(): EntryQuery
     {
-        /** @var EntryQuery $relation */
+        /** @var EntryQuery<Entry> $relation */
         $relation = $this->hasOne(Entry::class, ['id' => 'entry_id']);
         return $relation;
     }

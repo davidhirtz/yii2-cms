@@ -11,7 +11,7 @@ use Hirtz\Skeleton\Data\ActiveDataProvider;
 use Override;
 
 /**
- * @property SectionQuery|null $query
+ * @property SectionQuery<Section>|null $query
  * @extends ActiveDataProvider<Section>
  */
 class SectionActiveDataProvider extends ActiveDataProvider

@@ -105,6 +105,9 @@ class EntryParentIdSelectField extends SelectField
             ->all();
     }
 
+    /**
+     * @return EntryQuery<Entry>
+     */
     protected function getEntryQuery(): EntryQuery
     {
         return Entry::find()
@@ -112,6 +115,9 @@ class EntryParentIdSelectField extends SelectField
             ->andWhere([Entry::tableName() . '.[[tenant_id]]' => $this->model->tenant_id]);
     }
 
+    /**
+     * @return array<string, int>
+     */
     protected function getOrderBy(): array
     {
         return static::getModule()->defaultEntryOrderBy ?? ['position' => SORT_ASC];
