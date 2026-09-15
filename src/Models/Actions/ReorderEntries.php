@@ -10,8 +10,7 @@ use Hirtz\Skeleton\I18n\Message;
 use Hirtz\Skeleton\Models\Trail;
 
 /**
- * @template T of Entry
- * @extends ReorderActiveRecords<T>
+ * @extends ReorderActiveRecords<Entry>
  */
 class ReorderEntries extends ReorderActiveRecords
 {

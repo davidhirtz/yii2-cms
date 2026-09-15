@@ -16,8 +16,7 @@ use Stringable;
 use Yii;
 
 /**
- * @template T of Entry
- * @property T $model
+ * @property Entry $model
  */
 class EntryParentIdSelectField extends SelectField
 {
@@ -25,7 +24,7 @@ class EntryParentIdSelectField extends SelectField
     use ParentIdSelectFieldTrait;
 
     /**
-     * @var T[]
+     * @var Entry[]
      */
     private array $entries;
 
@@ -53,7 +52,7 @@ class EntryParentIdSelectField extends SelectField
     }
 
     /**
-     * @param T[] $entries
+     * @param Entry[] $entries
      */
     protected function setItemsFromEntries(array $entries, ?int $parentId = null): void
     {
@@ -85,7 +84,7 @@ class EntryParentIdSelectField extends SelectField
     }
 
     /**
-     * @return T[]
+     * @return Entry[]
      */
     protected function getEntries(): array
     {
@@ -94,7 +93,7 @@ class EntryParentIdSelectField extends SelectField
     }
 
     /**
-     * @return T[]
+     * @return Entry[]
      */
     protected function findEntries(): array
     {

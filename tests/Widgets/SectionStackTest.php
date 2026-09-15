@@ -341,7 +341,7 @@ class SectionStackTest extends TestCase
         $senders = [];
 
         Event::on(SectionGroup::class, Widget::EVENT_CONFIGURE, function (Event $event) use (&$senders): void {
-            /** @var SectionGroup<Section> $group */
+            /** @var SectionGroup $group */
             $group = $event->sender;
             $senders[] = $group;
 
@@ -388,7 +388,7 @@ class SectionStackTest extends TestCase
 
     /**
      * @param Section[] $sections
-     * @return SectionStack<Section>
+     * @return SectionStack
      */
     private function createStack(array $sections): SectionStack
     {

@@ -10,9 +10,6 @@ use Hirtz\Cms\Modules\ModuleTrait;
 use Yii;
 use yii\caching\TagDependency;
 
-/**
- * @template T of Category
- */
 class CategoryCollection
 {
     use ModuleTrait;
@@ -25,7 +22,7 @@ class CategoryCollection
     protected static ?array $categories = null;
 
     /**
-     * @return array<int, T>
+     * @return array<int, Category>
      */
     public static function getAll(bool $refresh = false): array
     {
@@ -42,7 +39,7 @@ class CategoryCollection
     }
 
     /**
-     * @return array<int, T>
+     * @return array<int, Category>
      * @noinspection PhpUnused
      */
     public static function getAncestors(Category $descendant): array
@@ -67,7 +64,7 @@ class CategoryCollection
     }
 
     /**
-     * @return array<int, T>
+     * @return array<int, Category>
      * @noinspection PhpUnused
      */
     public static function getChildren(Category $parent): array
@@ -80,7 +77,7 @@ class CategoryCollection
     }
 
     /**
-     * @return array<int, T>
+     * @return array<int, Category>
      * @noinspection PhpUnused
      */
     public static function getDescendants(Category $ancestor): array
@@ -93,7 +90,7 @@ class CategoryCollection
     }
 
     /**
-     * @return array<int, T>
+     * @return array<int, Category>
      * @noinspection PhpUnused
      */
     public static function getByEntry(Entry $entry): array
@@ -105,7 +102,7 @@ class CategoryCollection
     }
 
     /**
-     * @return T|null
+     * @return Category|null
      * @noinspection PhpDocSignatureInspection
      */
     public static function getBySlug(string $slug, ?int $parentId = null): ?Category
@@ -135,7 +132,7 @@ class CategoryCollection
     }
 
     /**
-     * @return array<int, T>
+     * @return array<int, Category>
      */
     public static function findAll(): array
     {

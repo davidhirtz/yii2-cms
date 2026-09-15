@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /**
  * @var View $this
- * @var SectionStack<Section> $stack
+ * @var SectionStack $stack
  */
 
 use Hirtz\Cms\Models\Section;

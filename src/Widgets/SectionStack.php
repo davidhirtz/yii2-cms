@@ -12,9 +12,6 @@ use Hirtz\Skeleton\Widgets\Widget;
 use Override;
 use Stringable;
 
-/**
- * @template T of Section
- */
 class SectionStack extends Widget
 {
     protected Entry $entry;
@@ -25,7 +22,7 @@ class SectionStack extends Widget
     protected array $viewParams = [];
 
     /**
-     * @var T[]|null
+     * @var Section[]|null
      */
     protected ?array $sections = null;
 
@@ -36,12 +33,12 @@ class SectionStack extends Widget
     protected ?Closure $wrapper = null;
 
     /**
-     * @var SectionGroup<T>[]
+     * @var SectionGroup[]
      */
     private array $groups = [];
 
     /**
-     * @var T[]
+     * @var Section[]
      */
     private array $orderedSections = [];
 
@@ -57,7 +54,7 @@ class SectionStack extends Widget
     }
 
     /**
-     * @param T[] $sections
+     * @param Section[] $sections
      */
     public function sections(array $sections): static
     {
@@ -81,7 +78,7 @@ class SectionStack extends Widget
     }
 
     /**
-     * @param Closure(T): bool $filter
+     * @param Closure(Section): bool $filter
      */
     public function filter(Closure $filter): static
     {
@@ -90,7 +87,7 @@ class SectionStack extends Widget
     }
 
     /**
-     * @param Closure(T): string $groupKey
+     * @param Closure(Section): string $groupKey
      */
     public function groupKey(Closure $groupKey): static
     {
@@ -99,7 +96,7 @@ class SectionStack extends Widget
     }
 
     /**
-     * @param Closure(T): ?string $wrapperKey
+     * @param Closure(Section): ?string $wrapperKey
      */
     public function wrapperKey(Closure $wrapperKey): static
     {
@@ -108,7 +105,7 @@ class SectionStack extends Widget
     }
 
     /**
-     * @param Closure(T): string $sectionViewFile
+     * @param Closure(Section): string $sectionViewFile
      */
     public function sectionViewFile(Closure $sectionViewFile): static
     {
@@ -117,7 +114,7 @@ class SectionStack extends Widget
     }
 
     /**
-     * @param Closure(string, string, SectionGroup<T>[]): (string|Stringable) $wrapper
+     * @param Closure(string, string, SectionGroup[]): (string|Stringable) $wrapper
      */
     public function wrapper(Closure $wrapper): static
     {
@@ -176,13 +173,12 @@ class SectionStack extends Widget
     #[Override]
     public function getViewPath(): ?string
     {
-        return $this->viewPath ??= ($viewFile = $this->view->getViewFile())
-            ? dirname($viewFile)
-            : parent::getViewPath();
+        $viewFile = $this->view->getViewFile();
+        return $this->viewPath ??= is_string($viewFile) ? dirname($viewFile) : parent::getViewPath();
     }
 
     /**
-     * @return SectionGroup<T>[]
+     * @return SectionGroup[]
      */
     public function getGroups(): array
     {
@@ -190,7 +186,7 @@ class SectionStack extends Widget
     }
 
     /**
-     * @return T[]
+     * @return Section[]
      */
     public function getSections(): array
     {
@@ -198,8 +194,8 @@ class SectionStack extends Widget
     }
 
     /**
-     * @param T $section
-     * @return T|null
+     * @param Section $section
+     * @return Section|null
      */
     public function getPrevious(Section $section): ?Section
     {
@@ -207,8 +203,8 @@ class SectionStack extends Widget
     }
 
     /**
-     * @param T $section
-     * @return T|null
+     * @param Section $section
+     * @return Section|null
      */
     public function getNext(Section $section): ?Section
     {
@@ -246,8 +242,8 @@ class SectionStack extends Widget
     }
 
     /**
-     * @param T[] $sections
-     * @return T[]
+     * @param Section[] $sections
+     * @return Section[]
      */
     protected function filterSections(array $sections): array
     {
@@ -273,8 +269,8 @@ class SectionStack extends Widget
     /**
      * Collection is greedy and first come: an earlier head wins a section a later one would also take.
      *
-     * @param T[] $sections
-     * @return array<int, array{sections: T[], closed: bool}>
+     * @param Section[] $sections
+     * @return array<int, array{sections: Section[], closed: bool}>
      */
     protected function collectSections(array $sections): array
     {
@@ -312,8 +308,8 @@ class SectionStack extends Widget
     }
 
     /**
-     * @param array<int, array{sections: T[], closed: bool}> $units
-     * @return SectionGroup<T>[]
+     * @param array<int, array{sections: Section[], closed: bool}> $units
+     * @return SectionGroup[]
      */
     protected function createGroups(array $units): array
     {
@@ -353,8 +349,8 @@ class SectionStack extends Widget
     }
 
     /**
-     * @param T[] $sections
-     * @return SectionGroup<T>
+     * @param Section[] $sections
+     * @return SectionGroup
      */
     protected function createGroup(array $sections): SectionGroup
     {
@@ -370,7 +366,7 @@ class SectionStack extends Widget
     }
 
     /**
-     * @param SectionGroup<T>[] $groups
+     * @param SectionGroup[] $groups
      */
     protected function renderWrapper(?string $key, string $content, array $groups): string|Stringable
     {
@@ -386,7 +382,7 @@ class SectionStack extends Widget
     }
 
     /**
-     * @param T $section
+     * @param Section $section
      */
     protected function getSectionViewFile(Section $section): string
     {
@@ -396,7 +392,7 @@ class SectionStack extends Widget
     }
 
     /**
-     * @param T $section
+     * @param Section $section
      */
     protected function getGroupKey(Section $section): string
     {
@@ -411,7 +407,7 @@ class SectionStack extends Widget
     }
 
     /**
-     * @param T $section
+     * @param Section $section
      */
     protected function getWrapperKey(Section $section): ?string
     {
@@ -437,8 +433,8 @@ class SectionStack extends Widget
     }
 
     /**
-     * @param T $section
-     * @return T|null
+     * @param Section $section
+     * @return Section|null
      */
     private function getSectionByOffset(Section $section, int $offset): ?Section
     {

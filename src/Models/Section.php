@@ -423,7 +423,7 @@ class Section extends ActiveRecord implements AssetModelInterface, SearchableInt
      */
     public function getVisibleAssets(): array
     {
-        return $this->hasAssetsEnabled() && $this->isAttributeVisible(self::FIELD_ASSETS) ? $this->assets : [];
+        return $this->hasAssetsEnabled() && $this->isAttributeVisible(self::FIELD_ASSETS) ? array_values($this->assets) : [];
     }
 
     public function getAssetClass(): string

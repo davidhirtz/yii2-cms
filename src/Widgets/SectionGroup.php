@@ -10,18 +10,15 @@ use Hirtz\Skeleton\Widgets\Widget;
 use Override;
 use Stringable;
 
-/**
- * @template T of Section
- */
 class SectionGroup extends Widget
 {
     /**
-     * @var SectionStack<T>
+     * @var SectionStack
      */
     protected SectionStack $stack;
 
     /**
-     * @var T[]
+     * @var Section[]
      */
     protected array $sections = [];
 
@@ -34,22 +31,22 @@ class SectionGroup extends Widget
     protected ?string $wrapperKey = null;
 
     /**
-     * @var SectionGroup<T>|null
+     * @var SectionGroup|null
      */
     protected ?SectionGroup $previous = null;
 
     /**
-     * @var SectionGroup<T>|null
+     * @var SectionGroup|null
      */
     protected ?SectionGroup $next = null;
 
     /**
-     * @var T[]
+     * @var Section[]
      */
     private array $remaining = [];
 
     /**
-     * @param SectionStack<T> $stack
+     * @param SectionStack $stack
      */
     public function stack(SectionStack $stack): static
     {
@@ -58,7 +55,7 @@ class SectionGroup extends Widget
     }
 
     /**
-     * @param T[] $sections
+     * @param Section[] $sections
      */
     public function sections(array $sections): static
     {
@@ -94,7 +91,7 @@ class SectionGroup extends Widget
     }
 
     /**
-     * @param SectionGroup<T>|null $previous
+     * @param SectionGroup|null $previous
      */
     public function previous(?SectionGroup $previous): static
     {
@@ -103,7 +100,7 @@ class SectionGroup extends Widget
     }
 
     /**
-     * @param SectionGroup<T>|null $next
+     * @param SectionGroup|null $next
      */
     public function next(?SectionGroup $next): static
     {
@@ -143,7 +140,7 @@ class SectionGroup extends Widget
     }
 
     /**
-     * @param T $section
+     * @param Section $section
      */
     public function renderAdjacent(Section $section, ?string $viewFile = null): string
     {
@@ -164,7 +161,7 @@ class SectionGroup extends Widget
     }
 
     /**
-     * @param Closure(T): bool $callback
+     * @param Closure(Section): bool $callback
      */
     public function renderWhere(Closure $callback, ?string $viewFile = null): string
     {
@@ -181,7 +178,7 @@ class SectionGroup extends Widget
     }
 
     /**
-     * @return T[]
+     * @return Section[]
      */
     public function getSections(): array
     {
@@ -204,7 +201,7 @@ class SectionGroup extends Widget
     }
 
     /**
-     * @return SectionStack<T>
+     * @return SectionStack
      */
     public function getStack(): SectionStack
     {
@@ -212,7 +209,7 @@ class SectionGroup extends Widget
     }
 
     /**
-     * @return SectionGroup<T>|null
+     * @return SectionGroup|null
      */
     public function getPrevious(): ?SectionGroup
     {
@@ -220,7 +217,7 @@ class SectionGroup extends Widget
     }
 
     /**
-     * @return SectionGroup<T>|null
+     * @return SectionGroup|null
      */
     public function getNext(): ?SectionGroup
     {
@@ -228,7 +225,7 @@ class SectionGroup extends Widget
     }
 
     /**
-     * @param T[] $sections
+     * @param Section[] $sections
      */
     protected function renderSections(array $sections, ?string $viewFile = null): string
     {

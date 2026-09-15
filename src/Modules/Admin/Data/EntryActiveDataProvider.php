@@ -163,11 +163,13 @@ class EntryActiveDataProvider extends ActiveDataProvider
 
         $models = parent::prepareModels();
 
-        if ($order = $this->section?->getEntriesOrderBy()) {
+        $order = $this->section?->getEntriesOrderBy();
+
+        if (is_array($order)) {
             ArrayHelper::multisort($models, array_keys($order), array_values($order));
         }
 
-        return $models;
+        return array_values($models);
     }
 
     #[Override]

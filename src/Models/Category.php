@@ -293,11 +293,11 @@ class Category extends ActiveRecord implements SearchableInterface
     #[Override]
     public function getTrailAttributes(): array
     {
-        return array_diff(parent::getTrailAttributes(), [
+        return array_values(array_diff(parent::getTrailAttributes(), [
             'lft',
             'rgt',
             'entry_count',
-        ]);
+        ]));
     }
 
     public function getAdminType(): string

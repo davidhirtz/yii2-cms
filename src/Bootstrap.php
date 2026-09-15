@@ -100,7 +100,8 @@ class Bootstrap implements BootstrapInterface
             fn (Tenant $tenant, ModelEvent $event) => Yii::createObject(TenantBeforeDeleteEventHandler::class, [
                 $event,
                 $tenant,
-            ])
+            ]),
+            ModelEvent::class
         );
 
         foreach ([BaseActiveRecord::EVENT_AFTER_INSERT, BaseActiveRecord::EVENT_AFTER_UPDATE] as $name) {

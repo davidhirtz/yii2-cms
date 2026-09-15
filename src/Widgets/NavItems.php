@@ -8,18 +8,15 @@ use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Queries\EntryQuery;
 use Yii;
 
-/**
- * @template T of Entry
- */
 class NavItems
 {
     /**
-     * @var array<int, T>|null
+     * @var array<int, Entry>|null
      */
     protected static ?array $entries = null;
 
     /**
-     * @return array<int, T>
+     * @return array<int, Entry>
      */
     public static function getMenuItems(): array
     {
@@ -27,7 +24,7 @@ class NavItems
     }
 
     /**
-     * @return array<int, T>
+     * @return array<int, Entry>
      */
     public static function getMainMenuItems(): array
     {
@@ -35,7 +32,7 @@ class NavItems
     }
 
     /**
-     * @return array<int, T>
+     * @return array<int, Entry>
      */
     public static function getSubmenuItems(Entry $parent): array
     {
@@ -46,7 +43,7 @@ class NavItems
     }
 
     /**
-     * @return array<int, T>
+     * @return array<int, Entry>
      */
     public static function getFooterItems(): array
     {
@@ -54,7 +51,7 @@ class NavItems
     }
 
     /**
-     * @return array<int, T>
+     * @return array<int, Entry>
      */
     public static function getEntries(): array
     {
@@ -71,7 +68,7 @@ class NavItems
     }
 
     /**
-     * @return array<int, T>
+     * @return array<int, Entry>
      */
     protected static function findEntries(): array
     {
@@ -99,7 +96,7 @@ class NavItems
      * An `Entry` that declares neither attribute has no condition to add — the filters below answer `false` for
      * every record anyway, and `$where[0]` on an empty array was a `TypeError` on every page with a menu.
      *
-     * @return array<string, mixed>
+     * @return array<int|string, mixed>
      */
     protected static function getEntryQueryWhere(): array
     {
@@ -120,7 +117,7 @@ class NavItems
     }
 
     /**
-     * @param T $entry
+     * @param Entry $entry
      * @see \Hirtz\Cms\Models\Traits\MenuAttributeTrait::isMenuItem()
      */
     public static function getIsMenuItem(Entry $entry): bool
@@ -131,7 +128,7 @@ class NavItems
     }
 
     /**
-     * @param T $entry
+     * @param Entry $entry
      * @see \Hirtz\Cms\Models\Traits\FooterAttributeTrait::isFooterItem()
      */
     public static function getIsFooterItem(Entry $entry): bool

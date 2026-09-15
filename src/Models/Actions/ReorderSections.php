@@ -11,8 +11,7 @@ use Hirtz\Skeleton\I18n\Message;
 use Hirtz\Skeleton\Models\Trail;
 
 /**
- * @template T of Section
- * @template-extends ReorderActiveRecords<T>
+ * @template-extends ReorderActiveRecords<Section>
  */
 class ReorderSections extends ReorderActiveRecords
 {

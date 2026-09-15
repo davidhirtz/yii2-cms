@@ -19,9 +19,6 @@ use Yii;
 use yii\base\Component;
 use yii\base\Event;
 
-/**
- * @template T of Entry
- */
 class EntrySiteRelationsBuilder extends Component
 {
     use ModuleTrait;
@@ -38,7 +35,7 @@ class EntrySiteRelationsBuilder extends Component
     public array $assets = [];
 
     /**
-     * @var T[]
+     * @var Entry[]
      */
     public array $entries = [];
 

@@ -24,7 +24,7 @@ class CategoryFilterDropdown extends FilterDropdown
     }
 
     /**
-     * @return array<int, string>
+     * @return array<int|string, string>
      */
     protected function getNestedCategoryNames(): array
     {

@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Widgets;
 
-use Hirtz\Media\Models\Asset;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Modules\ModuleTrait;
+use Hirtz\Media\Models\Asset;
+use Hirtz\Media\Models\File;
+use Hirtz\Media\Models\Interfaces\AssetModelInterface;
 use Hirtz\Skeleton\Base\Traits\ContainerConfigurationTrait;
 use Hirtz\Skeleton\Web\UrlManager;
 use Hirtz\Skeleton\Widgets\Widget;
@@ -149,29 +151,35 @@ class MetaTags extends Widget
         }
     }
 
+    /**
+     * A category carries no assets, and `File::getTransformations()` is the relation to the generated derivatives —
+     * the preset the name refers to lives on the media module.
+     */
     protected function registerImageMetaTags(): void
     {
+        if (!$this->model instanceof AssetModelInterface) {
+            return;
+        }
+
+        $transformation = $this->transformationName
+            ? File::getModule()->getTransformations()[$this->transformationName] ?? null
+            : null;
+
         foreach ($this->model->assets as $asset) {
             if ($this->assetType && $this->assetType !== $asset->type) {
                 continue;
             }
 
             $file = $asset->file;
+            $url = $transformation ? $file->getTransformationUrl((string)$this->transformationName) : null;
 
-            if ($this->transformationName) {
-                $url = $file->getTransformationUrl($this->transformationName);
+            if ($url) {
+                $width = $transformation->getWidthFor($file);
+                $height = $transformation->getHeight()
+                    ?? (int)round($file->height * ($width / max($file->width, 1)));
 
-                if ($url) {
-                    $transformation = $file->getTransformations()[$this->transformationName] ?? [];
-
-                    if (array_key_exists('width', $transformation)) {
-                        $height = $file->getTransformations()[$this->transformationName]['height']
-                            ?? round($file->height * ($transformation['width'] / $file->width));
-
-                        $this->view->registerImageMetaTags($url, (int)$transformation['width'], (int)$height);
-                        continue;
-                    }
-                }
+                $this->view->registerImageMetaTags($url, $width, $height);
+                continue;
             }
 
             $this->view->registerImageMetaTags($file->getUrl(), $file->width, $file->height);

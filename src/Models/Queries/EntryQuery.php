@@ -95,18 +95,19 @@ class EntryQuery extends I18nActiveQuery
         return $this->whereNotUri(static::getModule()->entryIndexSlug ?: null);
     }
 
-    /**
-     * @param list<int>|Category|int $category
-     */
-    public function whereCategory(array|Category|int $category, bool $eagerLoading = false): static
+    public function whereCategory(Category|int $category, bool $eagerLoading = false): static
     {
         if ($category instanceof Category) {
-            if ($orderBy = $category->getEntriesOrderBy()) {
+            $orderBy = $category->getEntriesOrderBy();
+
+            if (is_array($orderBy)) {
                 $this->orderBy($orderBy);
             }
+
+            return $this->innerJoinWithEntryCategory((int)$category->id, $eagerLoading);
         }
 
-        return $this->innerJoinWithEntryCategory($category->id ?? $category, $eagerLoading);
+        return $this->innerJoinWithEntryCategory($category, $eagerLoading);
     }
 
     /**
@@ -116,7 +117,7 @@ class EntryQuery extends I18nActiveQuery
     public function whereCategories(array $categories, bool $eagerLoading = false): static
     {
         foreach ($categories as $category) {
-            $this->innerJoinWithEntryCategory($category->id ?? $category, $eagerLoading, true);
+            $this->innerJoinWithEntryCategory((int)($category->id ?? $category), $eagerLoading, true);
         }
 
         return $this;

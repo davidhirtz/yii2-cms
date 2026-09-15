@@ -20,9 +20,10 @@ abstract class DuplicateActiveRecord extends BaseDuplicateActiveRecord
     public int $defaultStatus = DraftStatusAttributeInterface::STATUS_DRAFT;
 
     /**
+     * @param T $model
      * @param array<string, mixed> $attributes
      */
-    public function __construct(protected ActiveRecord $model, array $attributes = [])
+    public function __construct(ActiveRecord $model, array $attributes = [])
     {
         $attributes['status'] ??= $this->defaultStatus;
         parent::__construct($model, $attributes);

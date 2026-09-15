@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Modules\Admin\Widgets\Navs;
 
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\Buttons\Traits\FrontendUrlTrait;
+use Hirtz\Skeleton\Helpers\Url;
 use Hirtz\Skeleton\Html\A;
 use Hirtz\Skeleton\Html\Traits\TagAttributesTrait;
 use Hirtz\Skeleton\Widgets\Traits\UrlTrait;
@@ -32,7 +33,7 @@ class FrontendLink extends Widget
         return A::make()
             ->attributes($this->attributes)
             ->addClass($this->isDisabled() ? 'text-invalid' : null)
-            ->text($this->url)
+            ->text(is_array($this->url) ? Url::to($this->url) : $this->url)
             ->href($this->url)
             ->target('_blank')
             ->render();

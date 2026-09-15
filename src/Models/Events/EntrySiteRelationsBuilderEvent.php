@@ -9,7 +9,7 @@ use Hirtz\Cms\Models\Entry;
 use yii\base\Event;
 
 /**
- * @property EntrySiteRelationsBuilder<Entry> $sender
+ * @property EntrySiteRelationsBuilder $sender
  */
 class EntrySiteRelationsBuilderEvent extends Event
 {

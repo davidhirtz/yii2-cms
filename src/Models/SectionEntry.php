@@ -147,13 +147,13 @@ class SectionEntry extends \Hirtz\Skeleton\Db\ActiveRecord
      */
     public function getTrailAttributes(): array
     {
-        return array_diff($this->attributes(), [
+        return array_values(array_diff($this->attributes(), [
             'id',
             'position',
             'updated_by_user_id',
             'updated_at',
             'created_at',
-        ]);
+        ]));
     }
 
     /**

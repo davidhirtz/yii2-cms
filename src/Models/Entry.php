@@ -489,14 +489,14 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
             ->select(['category_id'])
             ->column();
 
-        $this->category_ids = $categoryIds ? array_map(intval(...), $categoryIds) : null;
+        $this->category_ids = $categoryIds ? array_values(array_map(intval(...), $categoryIds)) : null;
 
         return $this;
     }
 
     public function recalculateEntryCount(): static
     {
-        $this->entry_count = $this->findDescendants()->count();
+        $this->entry_count = (int)$this->findDescendants()->count();
         return $this;
     }
 
@@ -616,7 +616,7 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
     #[Override]
     public function getTrailAttributes(): array
     {
-        return array_diff(parent::getTrailAttributes(), [
+        return array_values(array_diff(parent::getTrailAttributes(), [
             'path',
             'parent_status',
             'category_ids',
@@ -624,7 +624,7 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
             'section_count',
             'updated_at',
             'created_at',
-        ]);
+        ]));
     }
 
     public function getAdminType(): string
