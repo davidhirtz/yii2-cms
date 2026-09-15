@@ -45,7 +45,7 @@ trait VirtualSlugTrait
      */
     protected function getVirtualSlugAttributes(): array
     {
-        return array_values($this->getI18nAttributesNames('slug'));
+        return $this->getI18nAttributesNames('slug');
     }
 
     #[Override]

@@ -110,8 +110,8 @@ class EntryQuery extends I18nActiveQuery
     }
 
     /**
-     * @noinspection PhpUnused
      * @param list<Category|int|string> $categories
+     * @noinspection PhpUnused
      */
     public function whereCategories(array $categories, bool $eagerLoading = false): static
     {
