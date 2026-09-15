@@ -71,6 +71,16 @@ class EntryCategoryGridView extends GridView
     }
 
     /**
+     * The picker is the one grid a category is read out of context in — which branch of the tree a name belongs to
+     * is only readable from its path, so it is always rendered here. No `#[Override]`: the method comes from a
+     * trait this class uses itself.
+     */
+    protected function showCategoryAncestors(Category $category): bool
+    {
+        return (bool)$category->parent_id;
+    }
+
+    /**
      * @return list<Stringable>
      */
     protected function getButtonColumnContent(Category $category): array

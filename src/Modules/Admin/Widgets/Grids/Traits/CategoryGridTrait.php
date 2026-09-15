@@ -162,10 +162,11 @@ trait CategoryGridTrait
 
         foreach ($category->getAncestors() as $parent) {
             $url = $this->getRecordUrl($parent);
+            $name = (string)$parent->getI18nAttribute('name', fallback: true);
 
             $parents[] = $url
-                ? A::make()->text($parent->name)->href($url)
-                : Html::encode($parent->name);
+                ? A::make()->text($name)->href($url)
+                : Html::encode($name);
         }
 
         return implode(' / ', $parents);
@@ -173,7 +174,7 @@ trait CategoryGridTrait
 
     protected function showCategoryAncestors(Category $category): bool
     {
-        return $this->provider->searchString || $category->entryCategory;
+        return (bool)$category->parent_id && ($this->provider->searchString || $category->entryCategory);
     }
 
     protected function initAncestors(): void

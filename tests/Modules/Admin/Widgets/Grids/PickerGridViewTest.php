@@ -96,6 +96,21 @@ class PickerGridViewTest extends TestCase
         self::assertStringContainsString('<div class="badge">2</div>', $html);
     }
 
+    /**
+     * A subcategory is listed out of the context of its branch, so the picker always renders its path.
+     */
+    public function testTheCategoryPickerShowsTheCategoryPath(): void
+    {
+        $this->login();
+        $html = Yii::$app->runAction('admin/cms/entry-category/index', ['entry' => 1, 'category' => 1]);
+
+        self::assertIsString($html);
+        self::assertStringContainsString(
+            '<div class="strong">Child category 1</div><div class="small strong">Root category 1</div>',
+            $html,
+        );
+    }
+
     public function testTheFilePickerLinksToTheFileOnlyThroughItsButton(): void
     {
         $this->login();
