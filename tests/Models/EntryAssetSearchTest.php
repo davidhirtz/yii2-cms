@@ -9,7 +9,6 @@ use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
 use Hirtz\Cms\Test\TestCase;
 use Hirtz\Skeleton\Models\Search;
 use Hirtz\Skeleton\Models\User;
-use Yii;
 
 class EntryAssetSearchTest extends TestCase
 {
@@ -34,7 +33,7 @@ class EntryAssetSearchTest extends TestCase
     public function testTheResultTitleNamesTheEntry(): void
     {
         // The owner sees every hit, so the result is not hidden by the entry permission.
-        Yii::$app->getUser()->setIdentity(User::findOne(['name' => 'owner']));
+        $this->getWebUser()->setIdentity(User::findOne(['name' => 'owner']));
 
         $asset = $this->getAssetFromFixture('entry-asset');
         $asset->setAttributes(['name' => 'Cover image'], false);

@@ -34,7 +34,7 @@ class SectionActionDropdownTest extends TestCase
         $user = $this->getUserFromFixture('admin');
         $this->assignPermission($user->id, Entry::AUTH_ENTRY);
 
-        Yii::$app->getUser()->setIdentity($user);
+        $this->getWebUser()->setIdentity($user);
 
         $this->entry = $this->createEntry();
     }

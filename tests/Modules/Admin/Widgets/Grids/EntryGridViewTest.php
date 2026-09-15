@@ -64,7 +64,7 @@ class EntryGridViewTest extends TestCase
         $user = $this->getUserFromFixture('admin');
         $this->assignPermission($user->id, Entry::AUTH_ENTRY);
 
-        Yii::$app->getUser()->setIdentity($user);
+        $this->getWebUser()->setIdentity($user);
 
         return $user;
     }

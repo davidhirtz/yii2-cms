@@ -61,7 +61,7 @@ class SectionControllerTest extends TestCase
 
     public function testIndexIsForbiddenWithoutThePermission(): void
     {
-        Yii::$app->getUser()->setIdentity($this->getUserFromFixture('admin'));
+        $this->getWebUser()->setIdentity($this->getUserFromFixture('admin'));
 
         $this->expectException(ForbiddenHttpException::class);
         Yii::$app->runAction('admin/cms/section/index', ['entry' => $this->entry->id]);
@@ -104,7 +104,7 @@ class SectionControllerTest extends TestCase
         $response = $this->post('admin/cms/section/create-set', ['entry' => $this->entry->id], ['set' => '1']);
 
         self::assertInstanceOf(Response::class, $response);
-        self::assertNotEmpty(Yii::$app->getSession()->getFlash('success'));
+        self::assertNotEmpty($this->getWebSession()->getFlash('success'));
 
         $sections = Section::find()
             ->where(['entry_id' => $this->entry->id])
@@ -205,7 +205,7 @@ class SectionControllerTest extends TestCase
         self::assertSame(Section::STATUS_DISABLED, Section::findOne($first->id)->status);
         self::assertSame(Section::STATUS_DISABLED, Section::findOne($second->id)->status);
         self::assertSame(Section::STATUS_ENABLED, Section::findOne($third->id)->status);
-        self::assertNotEmpty(Yii::$app->getSession()->getFlash('success'));
+        self::assertNotEmpty($this->getWebSession()->getFlash('success'));
     }
 
     public function testMoveTakesTheSectionToAnotherEntryAndFixesBothCounts(): void
@@ -233,7 +233,7 @@ class SectionControllerTest extends TestCase
 
         self::assertInstanceOf(Response::class, $response);
         self::assertSame(2, (int)Section::find()->where(['entry_id' => $this->entry->id])->count());
-        self::assertNotEmpty(Yii::$app->getSession()->getFlash('success'));
+        self::assertNotEmpty($this->getWebSession()->getFlash('success'));
     }
 
     public function testDuplicateCanTargetAnotherEntry(): void
@@ -269,7 +269,7 @@ class SectionControllerTest extends TestCase
         $section = $this->createSection('Doomed');
 
         // the headers are resolved once, so `$_SERVER` alone would come too late
-        Yii::$app->getRequest()->getHeaders()->set('X-Requested-With', 'XMLHttpRequest');
+        $this->getWebRequest()->getHeaders()->set('X-Requested-With', 'XMLHttpRequest');
 
         self::assertSame('', $this->post('admin/cms/section/delete', ['id' => $section->id]));
         self::assertNull(Section::findOne($section->id));
@@ -294,7 +294,7 @@ class SectionControllerTest extends TestCase
         self::assertNotNull(Section::findOne($third->id));
 
         self::assertSame(1, Entry::findOne($this->entry->id)->section_count);
-        self::assertNotEmpty(Yii::$app->getSession()->getFlash('success'));
+        self::assertNotEmpty($this->getWebSession()->getFlash('success'));
     }
 
     public function testDeleteAllWithoutASelectionDeletesNothing(): void
@@ -305,7 +305,7 @@ class SectionControllerTest extends TestCase
         $this->post('admin/cms/section/delete-all');
 
         self::assertNotNull(Section::findOne($section->id));
-        self::assertEmpty(Yii::$app->getSession()->getFlash('success'));
+        self::assertEmpty($this->getWebSession()->getFlash('success'));
     }
 
     public function testDeleteAllRefusesAGetRequest(): void
@@ -411,7 +411,7 @@ class SectionControllerTest extends TestCase
     {
         $_SERVER['REQUEST_METHOD'] = 'POST';
 
-        $request = Yii::$app->getRequest();
+        $request = $this->getWebRequest();
         $request->setBodyParams([...$bodyParams, $request->csrfParam => $request->getCsrfToken()]);
 
         if ($reload) {
@@ -426,7 +426,7 @@ class SectionControllerTest extends TestCase
         $user = $this->getUserFromFixture('admin');
         $this->assignPermission($user->id, Entry::AUTH_ENTRY);
 
-        Yii::$app->getUser()->setIdentity($user);
+        $this->getWebUser()->setIdentity($user);
 
         return $user;
     }

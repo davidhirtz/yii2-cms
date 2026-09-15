@@ -8,7 +8,6 @@ use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
 use Hirtz\Cms\Test\TestCase;
 use Hirtz\Skeleton\Models\User;
-use Yii;
 
 class SectionSearchTest extends TestCase
 {
@@ -29,7 +28,7 @@ class SectionSearchTest extends TestCase
     public function testTheIndexTitleIsTheSectionNameAndTheResultTitleNamesTheEntry(): void
     {
         // The owner sees every hit, so the result is not hidden by the section permission.
-        Yii::$app->getUser()->setIdentity(User::findOne(['name' => 'owner']));
+        $this->getWebUser()->setIdentity(User::findOne(['name' => 'owner']));
 
         $section = $this->getSectionFromFixture('section-headline');
 

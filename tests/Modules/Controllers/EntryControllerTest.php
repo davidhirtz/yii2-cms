@@ -80,7 +80,7 @@ class EntryControllerTest extends TestCase
 
     public function testIndexIsForbiddenWithoutThePermission(): void
     {
-        Yii::$app->getUser()->setIdentity($this->getUserFromFixture('admin'));
+        $this->getWebUser()->setIdentity($this->getUserFromFixture('admin'));
 
         $this->expectException(ForbiddenHttpException::class);
         Yii::$app->runAction('admin/cms/entry/index');
@@ -115,7 +115,7 @@ class EntryControllerTest extends TestCase
 
         self::assertNotNull($entry);
         self::assertSame($parent->id, $entry->parent_id);
-        self::assertNotEmpty(Yii::$app->getSession()->getFlash('success'));
+        self::assertNotEmpty($this->getWebSession()->getFlash('success'));
     }
 
     public function testAFormReloadDoesNotSave(): void
@@ -175,7 +175,7 @@ class EntryControllerTest extends TestCase
         self::assertSame(Entry::STATUS_DISABLED, Entry::findOne($first->id)->status);
         self::assertSame(Entry::STATUS_DISABLED, Entry::findOne($second->id)->status);
         self::assertSame(Entry::STATUS_ENABLED, Entry::findOne($third->id)->status);
-        self::assertNotEmpty(Yii::$app->getSession()->getFlash('success'));
+        self::assertNotEmpty($this->getWebSession()->getFlash('success'));
     }
 
     public function testDuplicateCopiesTheEntry(): void
@@ -187,7 +187,7 @@ class EntryControllerTest extends TestCase
 
         self::assertInstanceOf(Response::class, $response);
         self::assertSame(2, (int)Entry::find()->where(['name' => 'Original'])->count());
-        self::assertNotEmpty(Yii::$app->getSession()->getFlash('success'));
+        self::assertNotEmpty($this->getWebSession()->getFlash('success'));
     }
 
     public function testReplaceIndexMakesTheEntryTheHomePage(): void
@@ -213,7 +213,7 @@ class EntryControllerTest extends TestCase
 
         self::assertInstanceOf(Response::class, $response);
         self::assertNull(Entry::findOne($entry->id));
-        self::assertNotEmpty(Yii::$app->getSession()->getFlash('success'));
+        self::assertNotEmpty($this->getWebSession()->getFlash('success'));
     }
 
     public function testDeleteRefusesAGetRequest(): void
@@ -266,7 +266,7 @@ class EntryControllerTest extends TestCase
     {
         $_SERVER['REQUEST_METHOD'] = 'POST';
 
-        $request = Yii::$app->getRequest();
+        $request = $this->getWebRequest();
         $request->setBodyParams([...$bodyParams, $request->csrfParam => $request->getCsrfToken()]);
 
         if ($reload) {
@@ -281,7 +281,7 @@ class EntryControllerTest extends TestCase
         $user = $this->getUserFromFixture('admin');
         $this->assignPermission($user->id, Entry::AUTH_ENTRY);
 
-        Yii::$app->getUser()->setIdentity($user);
+        $this->getWebUser()->setIdentity($user);
 
         return $user;
     }

@@ -55,7 +55,7 @@ class EntryCategoryControllerTest extends TestCase
 
     public function testIndexIsForbiddenWithoutThePermission(): void
     {
-        Yii::$app->getUser()->setIdentity($this->getUserFromFixture('admin'));
+        $this->getWebUser()->setIdentity($this->getUserFromFixture('admin'));
 
         $this->expectException(ForbiddenHttpException::class);
         Yii::$app->runAction('admin/cms/entry-category/index', ['entry' => 1]);
@@ -72,7 +72,7 @@ class EntryCategoryControllerTest extends TestCase
 
         self::assertSame(
             ['Category linked to entry.'],
-            Yii::$app->getSession()->getFlash('success')
+            $this->getWebSession()->getFlash('success')
         );
     }
 
@@ -90,7 +90,7 @@ class EntryCategoryControllerTest extends TestCase
 
         self::assertSame(
             ['2 categories linked to entry.'],
-            Yii::$app->getSession()->getFlash('success')
+            $this->getWebSession()->getFlash('success')
         );
     }
 
@@ -100,8 +100,8 @@ class EntryCategoryControllerTest extends TestCase
 
         $this->post('admin/cms/entry-category/create', ['entry' => 1, 'category' => 1]);
 
-        self::assertEmpty(Yii::$app->getSession()->getFlash('success'));
-        self::assertNotEmpty(Yii::$app->getSession()->getFlash('danger'));
+        self::assertEmpty($this->getWebSession()->getFlash('success'));
+        self::assertNotEmpty($this->getWebSession()->getFlash('danger'));
     }
 
     public function testCreateReportsAnUnknownCategory(): void
@@ -110,8 +110,8 @@ class EntryCategoryControllerTest extends TestCase
 
         $this->post('admin/cms/entry-category/create', ['entry' => 1, 'category' => 99999]);
 
-        self::assertEmpty(Yii::$app->getSession()->getFlash('success'));
-        self::assertNotEmpty(Yii::$app->getSession()->getFlash('danger'));
+        self::assertEmpty($this->getWebSession()->getFlash('success'));
+        self::assertNotEmpty($this->getWebSession()->getFlash('danger'));
     }
 
     public function testDeleteRemovesTheLink(): void
@@ -125,7 +125,7 @@ class EntryCategoryControllerTest extends TestCase
 
         self::assertSame(
             ['Category removed from entry.'],
-            Yii::$app->getSession()->getFlash('success')
+            $this->getWebSession()->getFlash('success')
         );
     }
 
@@ -143,7 +143,7 @@ class EntryCategoryControllerTest extends TestCase
 
         self::assertSame(
             ['2 categories removed from entry.'],
-            Yii::$app->getSession()->getFlash('success')
+            $this->getWebSession()->getFlash('success')
         );
     }
 
@@ -178,7 +178,7 @@ class EntryCategoryControllerTest extends TestCase
         $second = EntryCategory::findOne(['entry_id' => 1, 'category_id' => 1]);
 
         self::assertLessThan($second->position, $first->position);
-        self::assertNotEmpty(Yii::$app->getSession()->getFlash('success'));
+        self::assertNotEmpty($this->getWebSession()->getFlash('success'));
     }
 
     /**
@@ -189,7 +189,7 @@ class EntryCategoryControllerTest extends TestCase
     {
         $_SERVER['REQUEST_METHOD'] = 'POST';
 
-        $request = Yii::$app->getRequest();
+        $request = $this->getWebRequest();
         $request->setBodyParams([...$bodyParams, $request->csrfParam => $request->getCsrfToken()]);
 
         return Yii::$app->runAction($route, $params);
@@ -202,7 +202,7 @@ class EntryCategoryControllerTest extends TestCase
         $permission = Yii::$app->getAuthManager()->getPermission(TestEntry::AUTH_ENTRY);
         Yii::$app->getAuthManager()->assign($permission, $user->id);
 
-        Yii::$app->getUser()->setIdentity($user);
+        $this->getWebUser()->setIdentity($user);
 
         return $user;
     }

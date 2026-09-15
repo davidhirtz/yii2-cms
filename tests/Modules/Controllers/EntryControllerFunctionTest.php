@@ -8,7 +8,6 @@ use Hirtz\Cms\Test\Models\TestEntry;
 use Hirtz\Cms\Test\TestCase;
 use Hirtz\Skeleton\Test\Traits\FunctionalTestTrait;
 use Hirtz\Skeleton\Test\Traits\UserFixtureTrait;
-use Yii;
 
 class EntryControllerFunctionTest extends TestCase
 {
@@ -24,7 +23,7 @@ class EntryControllerFunctionTest extends TestCase
     public function testIndexWithoutPermission(): void
     {
         $user = $this->getUserFromFixture('admin');
-        Yii::$app->getUser()->login($user);
+        $this->getWebUser()->login($user);
 
         $this->open('/admin/cms/entry/index');
         self::assertResponseStatusCodeSame(403);
@@ -35,7 +34,7 @@ class EntryControllerFunctionTest extends TestCase
         $user = $this->getUserFromFixture('admin');
         $this->assignAdminRole($user->id);
 
-        Yii::$app->getUser()->login($user);
+        $this->getWebUser()->login($user);
 
         $this->open('/admin/cms/entry/index');
         self::assertResponseIsSuccessful();
@@ -49,7 +48,7 @@ class EntryControllerFunctionTest extends TestCase
     {
         $user = $this->getUserFromFixture('admin');
         $this->assignAdminRole($user->id);
-        Yii::$app->getUser()->login($user);
+        $this->getWebUser()->login($user);
 
         $entry = TestEntry::create();
         $entry->name = 'Test';

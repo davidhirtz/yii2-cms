@@ -125,7 +125,7 @@ class SetupControllerTest extends TestCase
 
     public function testTheSetupIsForbiddenForANonAdmin(): void
     {
-        Yii::$app->getUser()->setIdentity($this->getUserFromFixture('admin'));
+        $this->getWebUser()->setIdentity($this->getUserFromFixture('admin'));
 
         $this->expectException(ForbiddenHttpException::class);
         Yii::$app->runAction('admin/cms/setup/index');
@@ -136,7 +136,7 @@ class SetupControllerTest extends TestCase
         $user = $this->getUserFromFixture('admin');
         $this->assignAdminRole($user->id);
 
-        Yii::$app->getUser()->setIdentity($user);
+        $this->getWebUser()->setIdentity($user);
 
         return $user;
     }

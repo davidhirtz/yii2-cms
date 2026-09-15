@@ -37,7 +37,7 @@ class SectionCustomAttributesFunctionTest extends TestCase
         $user = $this->getUserFromFixture('admin');
         $this->assignAdminRole($user->id);
 
-        Yii::$app->getUser()->login($user);
+        $this->getWebUser()->login($user);
     }
 
     #[Override]

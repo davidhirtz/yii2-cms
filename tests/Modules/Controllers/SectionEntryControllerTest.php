@@ -56,7 +56,7 @@ class SectionEntryControllerTest extends TestCase
 
     public function testIndexIsForbiddenWithoutThePermission(): void
     {
-        Yii::$app->getUser()->setIdentity($this->getUserFromFixture('admin'));
+        $this->getWebUser()->setIdentity($this->getUserFromFixture('admin'));
 
         $this->expectException(ForbiddenHttpException::class);
         Yii::$app->runAction('admin/cms/section-entry/index', ['section' => 3]);
@@ -95,7 +95,7 @@ class SectionEntryControllerTest extends TestCase
 
         self::assertIsString($response);
         self::assertNotNull(SectionEntry::findOne(['section_id' => self::SECTION_ID, 'entry_id' => 1]));
-        self::assertNotEmpty(Yii::$app->getSession()->getFlash('success'));
+        self::assertNotEmpty($this->getWebSession()->getFlash('success'));
 
         // the section keeps its own count of them
         self::assertSame(1, Section::findOne(self::SECTION_ID)->entry_count);
@@ -108,8 +108,8 @@ class SectionEntryControllerTest extends TestCase
 
         $this->post('admin/cms/section-entry/create', ['section' => self::SECTION_ID, 'entry' => 1]);
 
-        self::assertEmpty(Yii::$app->getSession()->getFlash('success'));
-        self::assertNotEmpty(Yii::$app->getSession()->getFlash('danger'));
+        self::assertEmpty($this->getWebSession()->getFlash('success'));
+        self::assertNotEmpty($this->getWebSession()->getFlash('danger'));
     }
 
     public function testCreateOfAnUnknownEntryIsNotFound(): void
@@ -130,7 +130,7 @@ class SectionEntryControllerTest extends TestCase
         self::assertInstanceOf(Response::class, $response);
         self::assertNull(SectionEntry::findOne(['section_id' => self::SECTION_ID, 'entry_id' => 1]));
         self::assertSame(0, Section::findOne(self::SECTION_ID)->entry_count);
-        self::assertNotEmpty(Yii::$app->getSession()->getFlash('success'));
+        self::assertNotEmpty($this->getWebSession()->getFlash('success'));
     }
 
     /**
@@ -173,7 +173,7 @@ class SectionEntryControllerTest extends TestCase
         $second = SectionEntry::findOne($second->id);
 
         self::assertLessThan($first->position, $second->position);
-        self::assertNotEmpty(Yii::$app->getSession()->getFlash('success'));
+        self::assertNotEmpty($this->getWebSession()->getFlash('success'));
     }
 
     private function createSectionEntry(int $entryId): SectionEntry
@@ -195,7 +195,7 @@ class SectionEntryControllerTest extends TestCase
     {
         $_SERVER['REQUEST_METHOD'] = 'POST';
 
-        $request = Yii::$app->getRequest();
+        $request = $this->getWebRequest();
         $request->setBodyParams([...$bodyParams, $request->csrfParam => $request->getCsrfToken()]);
 
         return Yii::$app->runAction($route, $params);
@@ -208,7 +208,7 @@ class SectionEntryControllerTest extends TestCase
         $permission = Yii::$app->getAuthManager()->getPermission(TestEntry::AUTH_ENTRY);
         Yii::$app->getAuthManager()->assign($permission, $user->id);
 
-        Yii::$app->getUser()->setIdentity($user);
+        $this->getWebUser()->setIdentity($user);
 
         return $user;
     }

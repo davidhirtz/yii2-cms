@@ -71,7 +71,7 @@ class CategoryControllerTest extends TestCase
 
     public function testIndexIsForbiddenWithoutThePermission(): void
     {
-        Yii::$app->getUser()->setIdentity($this->getUserFromFixture('admin'));
+        $this->getWebUser()->setIdentity($this->getUserFromFixture('admin'));
 
         $this->expectException(ForbiddenHttpException::class);
         Yii::$app->runAction('admin/cms/category/index');
@@ -106,7 +106,7 @@ class CategoryControllerTest extends TestCase
 
         self::assertNotNull($category);
         self::assertNull($category->parent_id);
-        self::assertNotEmpty(Yii::$app->getSession()->getFlash('success'));
+        self::assertNotEmpty($this->getWebSession()->getFlash('success'));
     }
 
     public function testCreateKeepsTheParentFromTheQuery(): void
@@ -200,7 +200,7 @@ class CategoryControllerTest extends TestCase
         self::assertInstanceOf(Response::class, $response);
         self::assertNull(Category::findOne(3));
         self::assertSame(0, (int)EntryCategory::find()->where(['category_id' => 3])->count());
-        self::assertNotEmpty(Yii::$app->getSession()->getFlash('success'));
+        self::assertNotEmpty($this->getWebSession()->getFlash('success'));
     }
 
     public function testDeleteRefusesAGetRequest(): void
@@ -221,7 +221,7 @@ class CategoryControllerTest extends TestCase
 
         self::assertIsString($html);
         self::assertGreaterThan(Category::findOne(2)->lft, Category::findOne(1)->lft);
-        self::assertNotEmpty(Yii::$app->getSession()->getFlash('success'));
+        self::assertNotEmpty($this->getWebSession()->getFlash('success'));
     }
 
     /**
@@ -232,7 +232,7 @@ class CategoryControllerTest extends TestCase
     {
         $_SERVER['REQUEST_METHOD'] = 'POST';
 
-        $request = Yii::$app->getRequest();
+        $request = $this->getWebRequest();
         $request->setBodyParams([...$bodyParams, $request->csrfParam => $request->getCsrfToken()]);
 
         if ($reload) {
@@ -249,7 +249,7 @@ class CategoryControllerTest extends TestCase
         $permission = Yii::$app->getAuthManager()->getPermission(Category::AUTH_CATEGORY);
         Yii::$app->getAuthManager()->assign($permission, $user->id);
 
-        Yii::$app->getUser()->setIdentity($user);
+        $this->getWebUser()->setIdentity($user);
 
         return $user;
     }

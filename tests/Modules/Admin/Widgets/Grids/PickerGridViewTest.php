@@ -150,7 +150,7 @@ class PickerGridViewTest extends TestCase
             $auth->assign($auth->getPermission($permission), $user->id);
         }
 
-        Yii::$app->getUser()->setIdentity($user);
+        $this->getWebUser()->setIdentity($user);
 
         return $user;
     }
