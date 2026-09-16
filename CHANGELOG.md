@@ -1,5 +1,9 @@
 ## 3.0 (in development)
 
+- **`EntryAssetController` and `SectionAssetController` gained a POST-only `delete-all` action** that removes the
+  assets a grid selection names (monorepo issue #128). A project overriding one of those `behaviors()` has to add
+  `delete-all` to its access rule; the verbs come from `getAssetVerbs()`.
+
 - **`EntryController`, `CategoryController`, `SectionController`, `EntryAssetController` and
   `SectionAssetController` gained a POST-only `status` action** that cycles the record's status, which the grid's
   status icon posts to (monorepo issue #121). A project overriding one of those `behaviors()` has to add `status`

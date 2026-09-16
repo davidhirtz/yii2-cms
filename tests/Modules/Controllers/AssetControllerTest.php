@@ -194,6 +194,77 @@ class AssetControllerTest extends TestCase
         self::assertSame($count - 1, Entry::findOne(1)->asset_count);
     }
 
+    public function testDeleteAllRemovesTheSelectedAssetsAndFixesTheCounts(): void
+    {
+        $this->login();
+
+        $assets = EntryAsset::find()
+            ->andWhere(['model_id' => 1])
+            ->orderBy(['position' => SORT_ASC])
+            ->all();
+
+        self::assertCount(2, $assets);
+
+        [$deleted, $kept] = $assets;
+        $fileAssetCount = $deleted->file->asset_count;
+
+        $response = $this->post('admin/cms/entry-asset/delete-all', ['entry' => 1], [
+            'selection' => [(string)$deleted->id],
+        ]);
+
+        self::assertInstanceOf(Response::class, $response);
+
+        self::assertNull(EntryAsset::findOne($deleted->id));
+        self::assertNotNull(EntryAsset::findOne($kept->id));
+
+        self::assertSame(1, Entry::findOne(1)->asset_count);
+        self::assertSame($fileAssetCount - 1, File::findOne($deleted->file_id)?->asset_count);
+        self::assertNotEmpty($this->getWebSession()->getFlash('success'));
+    }
+
+    public function testDeleteAllIgnoresAnAssetOfAnotherRecord(): void
+    {
+        $this->login();
+
+        $sectionAsset = SectionAsset::find()->one();
+        self::assertNotNull($sectionAsset);
+
+        $this->post('admin/cms/entry-asset/delete-all', ['entry' => 1], [
+            'selection' => [(string)$sectionAsset->id],
+        ]);
+
+        self::assertNotNull(SectionAsset::findOne($sectionAsset->id));
+        self::assertEmpty($this->getWebSession()->getFlash('success'));
+    }
+
+    public function testDeleteAllRefusesAGetRequest(): void
+    {
+        $this->login();
+
+        $this->expectException(MethodNotAllowedHttpException::class);
+        Yii::$app->runAction('admin/cms/entry-asset/delete-all', ['entry' => 1]);
+    }
+
+    /**
+     * The row's own delete button is gone, so the footer is the only way to remove an asset from the grid. The
+     * checkbox carries the asset's id because `AssetArrayDataProvider` keys its rows by it — an array provider
+     * keys by array offset otherwise, and the selection would post positions.
+     */
+    public function testTheGridOffersTheSelectionInsteadOfARowDeleteButton(): void
+    {
+        $this->login();
+
+        $asset = EntryAsset::find()->andWhere(['model_id' => 1])->one();
+        self::assertNotNull($asset);
+
+        $html = Yii::$app->runAction('admin/cms/entry-asset/index', ['entry' => 1]);
+
+        self::assertIsString($html);
+        self::assertStringContainsString('name="selection[]" value="' . $asset->id . '"', $html);
+        self::assertStringContainsString('entry-asset/delete-all', $html);
+        self::assertStringNotContainsString('entry-asset/delete?', $html);
+    }
+
     public function testDeleteRefusesAGetRequest(): void
     {
         $this->login();
