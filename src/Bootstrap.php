@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms;
 
+use Hirtz\Cms\Models\Block;
+use Hirtz\Cms\Models\BlockAsset;
+use Hirtz\Cms\Models\BlockEntry;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Collections\CategoryCollection;
 use Hirtz\Cms\Models\Collections\MenuCollection;
@@ -47,6 +50,8 @@ class Bootstrap implements BootstrapInterface
 
         $app->extendComponent('search', [
             'models' => [
+                Block::class,
+                BlockAsset::class,
                 Category::class,
                 Entry::class,
                 EntryAsset::class,
@@ -66,12 +71,14 @@ class Bootstrap implements BootstrapInterface
             'cms' => [
                 'class' => Module::class,
                 'entryRelations' => [
+                    BlockEntry::class,
                     SectionEntry::class,
                 ],
             ],
             'media' => [
                 'class' => \Hirtz\Media\Module::class,
                 'assets' => [
+                    BlockAsset::class,
                     EntryAsset::class,
                     SectionAsset::class,
                 ],

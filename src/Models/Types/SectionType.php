@@ -31,6 +31,23 @@ class SectionType extends Type implements AssetModelTypeInterface, EntryRelation
     protected Closure|string|null $wrapper = null;
     protected ?Closure $collect = null;
     protected Closure|string|null $gridContent = null;
+    protected bool $allowsBlock = false;
+
+    /**
+     * Whether a section of this type carries a block instead of content of its own. The module's `enableBlocks`
+     * decides first, and the default is `false` on both sides: a section that has always been its own content
+     * must not grow a block field from a version bump.
+     */
+    public function allowBlock(bool $allowBlock = true): static
+    {
+        $this->allowsBlock = $allowBlock;
+        return $this;
+    }
+
+    public function allowsBlock(): bool
+    {
+        return $this->allowsBlock;
+    }
 
     /**
      * @param Closure(Section): bool|bool $visible whether the section is rendered on the site; a type declaring

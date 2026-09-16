@@ -6,11 +6,13 @@ namespace Hirtz\Cms\Modules\Admin\Widgets\Forms;
 
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
+use Hirtz\Cms\Modules\Admin\Widgets\Forms\Fields\BlockIdSelectField;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits\ActiveFormFieldsTrait;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits\SlugFieldTrait;
 use Hirtz\Skeleton\Widgets\Forms\ActiveForm;
 use Hirtz\Skeleton\Widgets\Forms\Traits\CustomAttributeFieldsTrait;
 use Override;
+use Stringable;
 use Yii;
 use yii\helpers\Html;
 
@@ -31,9 +33,15 @@ class SectionActiveForm extends ActiveForm
         return [
             $this->getStatusField(),
             $this->getTypeField(),
+            $this->getBlockIdField(),
             ...$this->getCustomAttributeFields(except: ['slug']),
             $this->getSlugField(),
         ];
+    }
+
+    protected function getBlockIdField(): ?Stringable
+    {
+        return BlockIdSelectField::make();
     }
 
     #[Override]

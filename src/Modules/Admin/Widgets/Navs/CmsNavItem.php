@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Widgets\Navs;
 
+use Hirtz\Cms\Models\Block;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Modules\ModuleTrait;
@@ -17,6 +18,7 @@ class CmsNavItem extends NavItem
 
     protected bool $showEntryTypes = false;
     protected bool $showCategories = true;
+    protected bool $showBlocks = true;
 
     /**
      * @param array<string, mixed> $config
@@ -25,7 +27,7 @@ class CmsNavItem extends NavItem
     {
         $this->icon ??= 'book';
         $this->order ??= 10;
-        $this->roles ??= [Category::AUTH_CATEGORY, Entry::AUTH_ENTRY];
+        $this->roles ??= [Block::AUTH_BLOCK, Category::AUTH_CATEGORY, Entry::AUTH_ENTRY];
         $this->url ??= ['/admin/cms/entry/index'];
 
         parent::__construct($config);
@@ -36,6 +38,10 @@ class CmsNavItem extends NavItem
     {
         if ($this->showCategories) {
             $this->showCategories = static::getModule()->enableCategories;
+        }
+
+        if ($this->showBlocks) {
+            $this->showBlocks = static::getModule()->enableBlocks;
         }
 
         $this->label ??= Yii::t('cms', 'COMMON_ENTRIES');
@@ -55,6 +61,10 @@ class CmsNavItem extends NavItem
             $this->addCategorySubnavItems();
         }
 
+        if ($this->showBlocks) {
+            $this->addBlockSubnavItems();
+        }
+
         parent::configure();
     }
 
@@ -70,6 +80,15 @@ class CmsNavItem extends NavItem
                 ->url(['/admin/cms/entry/index', 'type' => $type])
                 ->roles([Entry::AUTH_ENTRY]);
         }
+    }
+
+    protected function addBlockSubnavItems(): void
+    {
+        $this->addItem(NavItem::make()
+            ->label(Yii::t('cms', 'COMMON_BLOCKS'))
+            ->url(['/admin/cms/block/index'])
+            ->roles([Block::AUTH_BLOCK])
+            ->routes(['admin/cms/block', 'admin/cms/block-asset', 'admin/cms/block-entry']));
     }
 
     protected function addCategorySubnavItems(): void

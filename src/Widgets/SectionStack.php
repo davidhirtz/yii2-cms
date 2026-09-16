@@ -251,6 +251,11 @@ class SectionStack extends Widget
         $position = 1;
 
         foreach ($sections as $section) {
+            // A section that places a block and has none — deleted, disabled, or never picked — renders nothing.
+            if ($section->allowsBlock() && !$section->block) {
+                continue;
+            }
+
             $visible = $section->getType()?->getVisible();
 
             $isVisible = $visible === null
@@ -384,11 +389,14 @@ class SectionStack extends Widget
     /**
      * @param Section $section
      */
+    /**
+     * `Section::getViewFile()` rather than the type's, because a section carrying a block renders the block's.
+     */
     protected function getSectionViewFile(Section $section): string
     {
         return $this->sectionViewFile
             ? ($this->sectionViewFile)($section)
-            : ($section->getType()?->getViewFile() ?: $this->viewFile);
+            : ($section->getViewFile() ?: $this->viewFile);
     }
 
     /**

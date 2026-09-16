@@ -7,10 +7,12 @@ namespace Hirtz\Cms\Models;
 use Closure;
 use Hirtz\Cms\Models\CustomAttributes\SlugCustomAttribute;
 use Hirtz\Cms\Models\Interfaces\EntryRelationModelInterface;
+use Hirtz\Cms\Models\Queries\BlockQuery;
 use Hirtz\Cms\Models\Queries\SectionQuery;
 use Hirtz\Cms\Models\Traits\EntryRelationModelTrait;
 use Hirtz\Cms\Models\Traits\EntryRelationTrait;
 use Hirtz\Cms\Models\Types\SectionType;
+use Hirtz\Media\Models\Asset;
 use Hirtz\Media\Models\Interfaces\AssetModelInterface;
 use Hirtz\Media\Models\Traits\AssetModelTrait;
 use Hirtz\Skeleton\Models\CustomAttributes\CustomAttribute;
@@ -28,6 +30,7 @@ use Yii;
 
 /**
  * @property int $entry_id
+ * @property int|null $block_id
  * @property int $position
  * @property string|null $name
  * @property string|null $slug
@@ -36,6 +39,7 @@ use Yii;
  * @property int $entry_count
  *
  * @property-read SectionAsset[] $assets {@see static::getAssets()}
+ * @property-read Block|null $block {@see static::getBlock()}
  */
 class Section extends ActiveRecord implements AssetModelInterface, EntryRelationModelInterface, SearchableInterface
 {
@@ -72,6 +76,14 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
             [
                 ['slug'],
                 $this->validateSlug(...),
+            ],
+            [
+                ['block_id'],
+                RelationValidator::class,
+            ],
+            [
+                ['block_id'],
+                $this->validateBlockId(...),
             ],
         ])];
     }
@@ -167,6 +179,13 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
         }
     }
 
+    public function validateBlockId(): void
+    {
+        if ($this->block_id && !$this->allowsBlock()) {
+            $this->addInvalidAttributeError('block_id');
+        }
+    }
+
     #[Override]
     public function beforeSave($insert): bool
     {
@@ -255,6 +274,31 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
     public function getEntryRelationClass(): string
     {
         return SectionEntry::class;
+    }
+
+    /**
+     * @return BlockQuery<Block>
+     */
+    public function getBlock(): BlockQuery
+    {
+        /** @var BlockQuery<Block> $relation */
+        $relation = $this->hasOne(Block::class, ['id' => 'block_id']);
+        return $relation;
+    }
+
+    public function populateBlockRelation(?Block $block): void
+    {
+        $this->populateRelation('block', $block);
+        $this->block_id = $block?->id;
+    }
+
+    /**
+     * The block a section of this type actually carries, or null — a `block_id` left over from a type that no
+     * longer allows one renders nothing.
+     */
+    public function getVisibleBlock(): ?Block
+    {
+        return $this->allowsBlock() ? $this->block : null;
     }
 
     /**
@@ -363,17 +407,41 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
         return static::findType(static::normalizeTypeValue($this->type ?? null));
     }
 
+    /**
+     * A section carrying a block is a placeholder for it, so the block answers for the rendered view.
+     */
     public function getViewFile(): ?string
     {
-        return $this->getType()?->getViewFile();
+        return $this->getVisibleBlock()?->getViewFile() ?? $this->getType()?->getViewFile();
     }
 
     /**
-     * @return list<SectionAsset>
+     * @return list<Asset>
      */
     public function getVisibleAssets(): array
     {
+        if ($block = $this->getVisibleBlock()) {
+            return $block->getVisibleAssets();
+        }
+
         return $this->allowsAssets() ? array_values($this->assets) : [];
+    }
+
+    /**
+     * @return list<Entry>
+     */
+    public function getVisibleEntries(): array
+    {
+        if ($block = $this->getVisibleBlock()) {
+            return $block->getVisibleEntries();
+        }
+
+        return $this->allowsEntries() ? array_values($this->entries) : [];
+    }
+
+    public function allowsBlock(): bool
+    {
+        return static::getModule()->enableBlocks && ($this->getType()?->allowsBlock() ?? false);
     }
 
     public function getAssetClass(): string
@@ -396,6 +464,7 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
     {
         return [
             ...parent::attributeLabels(),
+            'block_id' => Yii::t('cms', 'SECTION_BLOCK_ID_LABEL'),
             'entry_id' => Yii::t('cms', 'SECTION_ENTRY_ID_LABEL'),
             'entry_count' => Yii::t('cms', 'SECTION_ENTRY_COUNT_LABEL'),
             'section_count' => Yii::t('cms', 'SECTION_SECTION_COUNT_LABEL')

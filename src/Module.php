@@ -62,6 +62,21 @@ class Module extends \Hirtz\Skeleton\Base\Module
     public bool $enableSectionEntries = false;
 
     /**
+     * @var bool whether global sections are enabled, which a section places by carrying a `block_id`
+     */
+    public bool $enableBlocks = false;
+
+    /**
+     * @var bool whether blocks should have assets
+     */
+    public bool $enableBlockAssets = true;
+
+    /**
+     * @var bool whether entries should be linkable to blocks
+     */
+    public bool $enableBlockEntries = true;
+
+    /**
      * @var list<class-string<EntryRelation>> the registered entry relation subclasses, one per model that links
      * entries.
      */
@@ -119,6 +134,12 @@ class Module extends \Hirtz\Skeleton\Base\Module
     {
         if (!$this->enableSections) {
             $this->enableSectionAssets = false;
+            $this->enableBlocks = false;
+        }
+
+        if (!$this->enableBlocks) {
+            $this->enableBlockAssets = false;
+            $this->enableBlockEntries = false;
         }
 
         if (!$this->enableCategories) {

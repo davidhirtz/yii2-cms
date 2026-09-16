@@ -1,5 +1,22 @@
 ## 3.0 (in development)
 
+- **Global sections** (monorepo issue #109). `Models\Block` is a section with no owner — the same types, assets,
+  linked entries and custom attributes, but no tenant and no entry — and a section places one by carrying a
+  `block_id`. `Module::$enableBlocks` (default `false`, cascading to `enableBlockAssets` and
+  `enableBlockEntries`) turns the feature on, `Block::AUTH_BLOCK` is the permission, and the admin adds
+  `BlockController`, `BlockAssetController` and `BlockEntryController` under `/admin/cms/` with a *Blocks* item
+  beside *Categories*.
+
+  A section carrying a block delegates to it: `Section::getViewFile()`, `getVisibleAssets()` and the new
+  `getVisibleEntries()` answer with the block's, so `Widgets\SectionStack` and every project view render one
+  unchanged, and a section that allows a block but has none renders nothing at all.
+  `Models\Types\SectionType::allowBlock()` is the opt-in, `Models\Types\BlockSectionType` the shipped type
+  that allows nothing else, and `Modules\Admin\Widgets\Forms\Fields\BlockIdSelectField` the form field.
+  `Models\Builders\EntrySiteRelationsBuilder` loads the blocks of an entry's sections with their assets and
+  linked entries, in one extra query. `block.name` is a column rather than a custom attribute, so it can be
+  sorted, searched and put in `i18nAttributes`. See `UPGRADE.md`.
+
+
 - **The section-entry link is polymorphic** (monorepo issue #109). `section_entry` is `entry_relation`, keyed by
   `model_class` / `model_id` the way `asset`, `trail` and `translation` are, so a second model can link entries
   through the same table. `Models\EntryRelation` is the base, `Models\SectionEntry` a subclass scoped to its

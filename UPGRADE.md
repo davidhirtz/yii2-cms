@@ -1,5 +1,48 @@
 # Upgrade Guide
 
+## 3.0 — Global sections
+
+Nothing changes for an installation that leaves `modules.cms.enableBlocks` off (the default). To turn the
+feature on:
+
+```php
+'modules' => [
+    'cms' => [
+        'enableBlocks' => true,
+    ],
+],
+```
+
+and give the section type family a type that carries a block:
+
+```php
+'container' => [
+    'definitions' => [
+        Section::class => [
+            'types' => fn (): array => [
+                SectionType::make(Section::TYPE_DEFAULT)->name(Yii::t('app', 'Text')),
+                BlockSectionType::make(2),
+            ],
+        ],
+    ],
+],
+```
+
+`BlockSectionType` allows the block and nothing else — no assets, no linked entries, no `name`, `content` or
+`slug` — which is what makes the section a placeholder. A type of a project's own opts in with
+`SectionType::allowBlock()` instead; the default is `false` on both the module and the type, so no existing
+type grows a block field.
+
+A view that renders sections needs no change as long as it reads `getVisibleAssets()` and the new
+`getVisibleEntries()`: a section carrying a block answers with the block's, and `Widgets\SectionStack` renders
+the block's `viewFile`. **A view reading `$section->assets` or `$section->entries` directly does need the
+change**, or a block section renders the section's own (empty) relations. Content is the one thing the section
+cannot delegate through a magic property — read it off `$section->getVisibleBlock() ?? $section`, as the
+bundle's own `resources/views/site/_sections.php` does.
+
+`Block::AUTH_BLOCK` is granted to `admin` and `manager` by `Migrations\M260916110000Block`. A project that
+wants its editors to manage blocks adds it to `author` itself.
+
 ## 3.0 — The section-entry link is polymorphic
 
 `section_entry` is `entry_relation` (monorepo issue #109). The table is keyed by `model_class` / `model_id`, so a

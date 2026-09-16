@@ -14,12 +14,14 @@ use Hirtz\Cms\Widgets\SectionGroup;
 use Hirtz\Skeleton\Web\View;
 
 foreach ($sections as $section) {
+    // A section carrying a block has no content of its own; the block is what it renders.
+    $record = $section->getVisibleBlock() ?? $section;
     ?>
     <section class="<?= $section->getCssClass(); ?>" id="<?= $section->getHtmlId(); ?>">
         <?php if ($assets = $section->getVisibleAssets()) {
             echo Gallery::make()->assets($assets);
         } ?>
-        <?= $section->getVisibleAttribute('content'); ?>
+        <?= $record->getVisibleAttribute('content'); ?>
         <?= AdminLink::tag($section); ?>
     </section>
     <?php

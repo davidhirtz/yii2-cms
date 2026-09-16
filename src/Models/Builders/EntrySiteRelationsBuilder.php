@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Models\Builders;
 
+use Hirtz\Cms\Models\Block;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Events\EntrySiteRelationsBuilderEvent;
@@ -60,14 +61,19 @@ class EntrySiteRelationsBuilder extends Component
     protected array $relatedEntryIds = [];
 
     /**
-     * @var Section[]
+     * @var list<Section|Block>
      */
-    protected array $sectionsWithAssets = [];
+    protected array $modelsWithAssets = [];
 
     /**
-     * @var Section[]
+     * @var array<int, Block>
      */
-    protected array $sectionsWithEntries = [];
+    protected array $blocks = [];
+
+    /**
+     * @var list<Section|Block>
+     */
+    protected array $modelsWithEntries = [];
 
     public function init(): void
     {
@@ -90,6 +96,7 @@ class EntrySiteRelationsBuilder extends Component
     protected function loadRelations(): void
     {
         $this->loadSections();
+        $this->loadBlocks();
 
         $this->loadEntryRelations();
         $this->loadEntries();
@@ -130,27 +137,72 @@ class EntrySiteRelationsBuilder extends Component
 
         foreach ($sections as $section) {
             if ($section->allowsAssets() && $section->asset_count) {
-                $this->sectionsWithAssets[] = $section;
+                $this->modelsWithAssets[] = $section;
             }
 
             if ($section->allowsEntries() && $section->entry_count) {
-                $this->sectionsWithEntries[] = $section;
+                $this->modelsWithEntries[] = $section;
             }
         }
 
         $this->entry->populateSectionRelations($sections);
     }
 
+    /**
+     * A section carrying a block renders it in place of its own content, so the block's assets and linked entries
+     * are loaded with the entry's own — one extra query, and none for an entry that places no block.
+     */
+    protected function loadBlocks(): void
+    {
+        $blockIds = [];
+
+        foreach ($this->entry->sections as $section) {
+            if ($section->block_id && $section->allowsBlock()) {
+                $blockIds[] = $section->block_id;
+            }
+        }
+
+        if (!$blockIds) {
+            return;
+        }
+
+        Yii::debug('Loading related blocks ...');
+
+        $this->blocks = Block::find()
+            ->selectSiteAttributes()
+            ->withTranslations()
+            ->whereStatus()
+            ->andWhere(['id' => array_unique($blockIds)])
+            ->indexBy('id')
+            ->all();
+
+        foreach ($this->blocks as $block) {
+            if ($block->allowsAssets() && $block->asset_count) {
+                $this->modelsWithAssets[] = $block;
+            }
+
+            if ($block->allowsEntries() && $block->entry_count) {
+                $this->modelsWithEntries[] = $block;
+            }
+        }
+
+        foreach ($this->entry->sections as $section) {
+            if ($section->block_id) {
+                $section->populateBlockRelation($this->blocks[$section->block_id] ?? null);
+            }
+        }
+    }
+
     protected function loadEntryRelations(): void
     {
-        if (!$this->sectionsWithEntries) {
+        if (!$this->modelsWithEntries) {
             return;
         }
 
         Yii::debug('Loading entry relations ...');
 
         $entryRelations = EntryRelation::find()
-            ->whereModels($this->sectionsWithEntries)
+            ->whereModels($this->modelsWithEntries)
             ->orderBy(['position' => SORT_ASC])
             ->all();
 
@@ -161,8 +213,8 @@ class EntrySiteRelationsBuilder extends Component
             $entryRelationsByModelId[$entryRelation->model_class][$entryRelation->model_id][] = $entryRelation;
         }
 
-        foreach ($this->entry->sections as $section) {
-            $section->populateEntryRelations($entryRelationsByModelId[Section::class][$section->id] ?? []);
+        foreach ($this->modelsWithEntries as $model) {
+            $model->populateEntryRelations($entryRelationsByModelId[$model::class][$model->id] ?? []);
         }
     }
 
@@ -216,30 +268,23 @@ class EntrySiteRelationsBuilder extends Component
 
     protected function populateEntryRelationEntries(): void
     {
-        if (!$this->sectionsWithEntries) {
-            return;
-        }
-
-        foreach ($this->entry->sections as $section) {
+        foreach ($this->modelsWithEntries as $model) {
             $entries = [];
+            $allowedTypes = $model->getEntriesTypes();
 
-            if ($section->entry_count) {
-                $allowedTypes = $section->getEntriesTypes();
+            foreach ($model->entryRelations as $entryRelation) {
+                $entry = $this->entries[$entryRelation->entry_id] ?? null;
 
-                foreach ($section->entryRelations as $entryRelation) {
-                    $entry = $this->entries[$entryRelation->entry_id] ?? null;
-
-                    if ($entry && (!$allowedTypes || in_array($entry->type, $allowedTypes, true))) {
-                        $entries[$entry->id] = $entry;
-                    }
-                }
-
-                if ($order = $section->getEntriesOrderBy()) {
-                    $entries = $this->sortEntriesByAttributes($entries, $order);
+                if ($entry && (!$allowedTypes || in_array($entry->type, $allowedTypes, true))) {
+                    $entries[$entry->id] = $entry;
                 }
             }
 
-            $section->populateRelation('entries', $entries);
+            if ($order = $model->getEntriesOrderBy()) {
+                $entries = $this->sortEntriesByAttributes($entries, $order);
+            }
+
+            $model->populateRelation('entries', $entries);
         }
     }
 
@@ -257,7 +302,7 @@ class EntrySiteRelationsBuilder extends Component
     protected function loadAssets(): void
     {
         $entries = array_filter($this->entries, fn (Entry $entry): bool => (bool)$entry->asset_count);
-        $models = [...array_values($entries), ...$this->sectionsWithAssets];
+        $models = [...array_values($entries), ...$this->modelsWithAssets];
 
         if (!$models) {
             return;
@@ -312,6 +357,10 @@ class EntrySiteRelationsBuilder extends Component
 
         foreach ($this->entry->sections as $section) {
             $section->populateAssetRelations($this->assets);
+        }
+
+        foreach ($this->blocks as $block) {
+            $block->populateAssetRelations($this->assets);
         }
     }
 }
