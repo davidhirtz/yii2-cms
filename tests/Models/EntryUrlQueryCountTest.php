@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Tests\Models;
 
+use davidhirtz\yii2\datetime\DateTime;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Test\Models\TestEntry;
 use Hirtz\Cms\Test\TestCase;
@@ -129,18 +130,22 @@ class EntryUrlQueryCountTest extends TestCase
 
     /**
      * The entry validates the permalink itself, so writing it must not check uniqueness again, and the relation
-     * it loaded for that must serve the save too: load, check, write, trail.
+     * it loaded for that must serve the save too: load, check, the entry's own row, write, trail.
+     *
+     * `TimestampBehavior` writes `updated_at` on every save, so whether the entry's row is updated at all would
+     * otherwise depend on the rename landing in a later second than the insert. Aging it pins the count.
      */
     public function testRenameRunsOneUniquenessCheck(): void
     {
         $entry = TestEntry::findOne($this->createEntry('test-entry')->id);
+        $entry->setOldAttribute('updated_at', new DateTime('-1 hour'));
 
         $count = $this->countQueries(function () use ($entry): void {
             $entry->slug = 'renamed';
             $entry->update();
         });
 
-        self::assertSame(4, $count);
+        self::assertSame(5, $count);
         self::assertSame('renamed', TestEntry::findOne($entry->id)->slug);
     }
 

@@ -53,6 +53,30 @@ class MenuIdsFieldTest extends TestCase
     }
 
     /**
+     * A form reload renders the loaded record without validating it, so a menu guarded on the posted type was
+     * offered only once the entry had been saved.
+     */
+    public function testAMenuGuardedByTheTypeFollowsAPostedType(): void
+    {
+        Entry::getModule()->setMenus(fn (): array => [
+            Menu::make(self::MAIN)->name('Main menu'),
+            Menu::make(self::FOOTER)
+                ->name('Footer')
+                ->available(fn (Entry $entry): bool => $entry->type === TestEntry::TYPE_POST),
+        ]);
+
+        $entry = TestEntry::create();
+        $entry->type = TestEntry::TYPE_PAGE;
+
+        self::assertStringNotContainsString('value="2"', $this->render($entry));
+
+        self::assertTrue($entry->load(['Entry' => ['type' => (string)TestEntry::TYPE_POST]]));
+        self::assertSame(TestEntry::TYPE_POST, $entry->type);
+
+        self::assertStringContainsString('value="2"', $this->render($entry));
+    }
+
+    /**
      * The field decides its visibility on the items its own `configure()` resolved, which only holds while
      * `Widgets\Forms\Fieldset` renders it before asking — rendering it standalone would not notice a regression.
      */
