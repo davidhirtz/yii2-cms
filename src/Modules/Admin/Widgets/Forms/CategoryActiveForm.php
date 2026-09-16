@@ -26,9 +26,9 @@ class CategoryActiveForm extends ActiveForm
     use SlugFieldTrait;
 
     #[Override]
-    protected function configure(): void
+    protected function getDefaultRows(): array
     {
-        $this->rows ??= [
+        return [
             [
                 $this->getStatusField(),
                 $this->getParentIdField(),
@@ -42,8 +42,6 @@ class CategoryActiveForm extends ActiveForm
                 $this->getSlugField(),
             ],
         ];
-
-        parent::configure();
     }
 
     #[Override]

@@ -1,5 +1,15 @@
 ## 3.0 (in development)
 
+- **`Modules\Admin\Widgets\Forms\EntryActiveForm::getRowsAsGroups()` is gone**, with the ambiguous row shape it
+  worked around (monorepo issue #120, skeleton `Widgets\Forms\ActiveForm`). The tenant row is part of what
+  `getDefaultRows()` declares now, so **a caller replacing the form's rows wholesale owns the tenant field too** —
+  it used to be spliced in afterwards whatever the caller passed. Adding to the form rather than replacing it, which
+  is what `Widget::EVENT_CONFIGURE` is for, is unaffected.
+
+- `EntryActiveForm`, `CategoryActiveForm` and `SectionActiveForm` declare their fields in `getDefaultRows()` instead
+  of assigning `$this->rows ??=` in `configure()`. A subclass overriding `configure()` to change the fields has to
+  move to the hook.
+
 - **`Modules\Admin\Controllers\Traits\SectionControllerTrait::isSectionAllowed()`** is the counterpart of
   `EntryControllerTrait::isEntryAllowed()`. `SectionEntryController` answers it with `Section::allowsEntries()`, so
   the whole controller behind the entries tab is refused where that tab is hidden — with `enableSectionEntries`

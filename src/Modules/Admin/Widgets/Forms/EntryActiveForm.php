@@ -13,7 +13,6 @@ use Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits\ParentIdFieldTrait;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits\SlugFieldTrait;
 use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Skeleton\Widgets\Forms\ActiveForm;
-use Hirtz\Skeleton\Widgets\Forms\Fieldset;
 use Hirtz\Skeleton\Widgets\Forms\Fields\DateTimeField;
 use Hirtz\Skeleton\Widgets\Forms\Fields\SelectField;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\Fields\TenantIdField;
@@ -41,7 +40,15 @@ class EntryActiveForm extends ActiveForm
     {
         $this->setTenant();
 
-        $this->rows ??= [
+        parent::configure();
+    }
+
+    #[Override]
+    protected function getDefaultRows(): array
+    {
+        $tenantIdRow = [$this->getTenantIdField()];
+
+        $rows = [
             [
                 $this->getStatusField(),
                 $this->getTypeField(),
@@ -58,31 +65,10 @@ class EntryActiveForm extends ActiveForm
             ],
         ];
 
-        $tenantIdRow = [$this->getTenantIdField()];
-        $rows = $this->getRowsAsGroups();
-
         // With several tenants the field decides which parents and which URL the rest of the form shows.
-        $this->rows = count(TenantCollection::getAll()) > 1
+        return count(TenantCollection::getAll()) > 1
             ? [$tenantIdRow, ...$rows]
             : [...$rows, $tenantIdRow];
-
-        parent::configure();
-    }
-
-    /**
-     * `rows` may be a flat list of fields; adding a row of our own has to keep that shape valid.
-     *
-     * @return array<int, mixed>
-     */
-    protected function getRowsAsGroups(): array
-    {
-        $first = current($this->rows);
-
-        if ($first === false) {
-            return [];
-        }
-
-        return is_array($first) || $first instanceof Fieldset ? $this->rows : [$this->rows];
     }
 
     /**

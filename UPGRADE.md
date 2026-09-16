@@ -1,5 +1,30 @@
 # Upgrade Guide
 
+## 3.0 — The entry form's tenant row moved into the declaration
+
+`Modules\Admin\Widgets\Forms\EntryActiveForm::getRowsAsGroups()` is gone with the ambiguous row shape it existed
+for (see the skeleton's `Widgets\Forms\ActiveForm`). The tenant row used to be spliced into `$rows` after the
+defaults, whatever the caller had passed; it is part of `getDefaultRows()` now.
+
+**So a caller replacing the entry form's rows wholesale owns the tenant field too.** With more than one tenant the
+field is what decides which parents and which URL the rest of the form shows, so a replacement that drops it leaves
+the form unable to switch tenant:
+
+```php
+EntryActiveForm::make()
+    ->model($entry)
+    ->rows([
+        [$form->getTenantIdField()],
+        [...],
+    ]);
+```
+
+Adding to the form rather than replacing it — `Widget::EVENT_CONFIGURE`, or `prepare()` — is unaffected: both run
+after the defaults, so the tenant row is already there.
+
+`EntryActiveForm`, `CategoryActiveForm` and `SectionActiveForm` declare their fields in `getDefaultRows()` now. A
+subclass overriding `configure()` to change the fields moves to that hook.
+
 ## 3.0 — One vocabulary for what a type has
 
 Three mechanisms answered the same question. The module's flag reached `Entry::hasAssetsEnabled()` and its kind; a
@@ -280,12 +305,15 @@ a form renders the definitions with `getCustomAttributeFields()`. `SectionActive
 the one with the URL in front of it — and excludes the definition from that list:
 
 ```php
-$this->rows ??= [
-    $this->getStatusField(),
-    $this->getTypeField(),
-    ...$this->getCustomAttributeFields(except: ['slug']),
-    $this->getSlugField(),
-];
+protected function getDefaultRows(): array
+{
+    return [
+        $this->getStatusField(),
+        $this->getTypeField(),
+        ...$this->getCustomAttributeFields(except: ['slug']),
+        $this->getSlugField(),
+    ];
+}
 ```
 
 A type's `hiddenFields()` is unchanged and still hides `name` or `content`.

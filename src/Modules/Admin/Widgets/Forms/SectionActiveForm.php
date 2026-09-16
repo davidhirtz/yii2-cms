@@ -26,16 +26,14 @@ class SectionActiveForm extends ActiveForm
     public int|false $maxBaseUrlLength = 70;
 
     #[Override]
-    protected function configure(): void
+    protected function getDefaultRows(): array
     {
-        $this->rows ??= [
+        return [
             $this->getStatusField(),
             $this->getTypeField(),
             ...$this->getCustomAttributeFields(except: ['slug']),
             $this->getSlugField(),
         ];
-
-        parent::configure();
     }
 
     #[Override]
