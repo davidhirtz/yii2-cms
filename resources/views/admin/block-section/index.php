@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * @see \Hirtz\Cms\Modules\Admin\Controllers\BlockController::actionSections()
+ * @see \Hirtz\Cms\Modules\Admin\Controllers\BlockSectionController::actionIndex()
  *
  * @var View $this
  * @var Block $block

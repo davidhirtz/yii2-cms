@@ -70,8 +70,8 @@ class BlockSubmenu extends Submenu
             ->badge($this->model->section_count)
             ->icon('link')
             ->label(Yii::t('cms', 'COMMON_SECTIONS'))
-            ->routes(['admin/cms/block/sections', ...$this->additionalActiveRoutes['sections'] ?? []])
-            ->url(['/admin/cms/block/sections', 'id' => $this->model->id]);
+            ->routes(['admin/cms/block-section', ...$this->additionalActiveRoutes['sections'] ?? []])
+            ->url(['/admin/cms/block-section/index', 'block' => $this->model->id]);
     }
 
     protected function getEntriesItem(): ?NavItem

@@ -30,7 +30,7 @@ class BlockController extends AbstractController
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['create', 'delete', 'index', 'sections', 'status', 'update'],
+                        'actions' => ['create', 'delete', 'index', 'status', 'update'],
                         'roles' => [Block::AUTH_BLOCK],
                     ],
                 ],
@@ -43,13 +43,6 @@ class BlockController extends AbstractController
                 ],
             ],
         ];
-    }
-
-    public function actionSections(int $id): Response|string
-    {
-        return $this->render('sections', [
-            'block' => $this->findBlock($id),
-        ]);
     }
 
     public function actionIndex(?int $type = null, ?string $q = null): Response|string

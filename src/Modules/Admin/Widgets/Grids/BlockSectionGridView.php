@@ -8,6 +8,7 @@ use Hirtz\Cms\Models\Block;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Skeleton\Widgets\Grids\Columns\ButtonColumn;
+use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\DeleteGridButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\ViewGridButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Column;
 use Hirtz\Skeleton\Widgets\Grids\Columns\LinkColumn;
@@ -24,6 +25,9 @@ use yii\data\ActiveDataProvider;
 /**
  * Every section that places one block, which is what makes a block safe to change or delete. It leads out of
  * itself on purpose — the section is where the placement is edited — so it is not a picker.
+ *
+ * The delete button is relative, so the grid only renders where
+ * {@see \Hirtz\Cms\Modules\Admin\Controllers\BlockSectionController} serves it.
  *
  * @extends GridView<Section>
  */
@@ -112,9 +116,17 @@ class BlockSectionGridView extends GridView
      */
     protected function getButtonColumnContent(Section $section): array
     {
-        return $this->webuser->can(Entry::AUTH_ENTRY)
-            ? [ViewGridButton::make()->url($this->getSectionUrl($section) ?: null)]
-            : [];
+        if (!$this->webuser->can(Entry::AUTH_ENTRY)) {
+            return [];
+        }
+
+        return [
+            ViewGridButton::make()
+                ->url($this->getSectionUrl($section) ?: null),
+            DeleteGridButton::make()
+                ->model($section)
+                ->url(['delete', 'id' => $section->id]),
+        ];
     }
 
     /**

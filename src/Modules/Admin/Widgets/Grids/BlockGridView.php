@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Modules\Admin\Widgets\Grids;
 
 use Hirtz\Cms\Models\Block;
-use Hirtz\Cms\Modules\Admin\Controllers\BlockController;
+use Hirtz\Cms\Modules\Admin\Controllers\BlockSectionController;
 use Hirtz\Cms\Modules\Admin\Data\BlockActiveDataProvider;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\Columns\EntryRelationCountColumn;
 use Hirtz\Cms\Modules\ModuleTrait;
@@ -106,13 +106,13 @@ class BlockGridView extends GridView
     }
 
     /**
-     * @see BlockController::actionSections()
+     * @see BlockSectionController::actionIndex()
      */
     protected function getSectionCountColumn(): ?Column
     {
         return BadgeColumn::make()
             ->property('section_count')
-            ->url(fn (Block $block) => ['sections', 'id' => $block->id]);
+            ->url(fn (Block $block) => ['/admin/cms/block-section/index', 'block' => $block->id]);
     }
 
     protected function getEntryCountColumn(): ?Column

@@ -6,7 +6,6 @@ namespace Hirtz\Cms\Tests\Modules\Controllers;
 
 use davidhirtz\yii2\datetime\DateTime;
 use Hirtz\Cms\Models\Block;
-use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Data\BlockActiveDataProvider;
 use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
 use Hirtz\Cms\Test\Models\TestEntry;
@@ -143,23 +142,6 @@ class BlockControllerTest extends TestCase
         $this->getWebRequest()->setQueryParams([$sort->sortParam => 'name']);
 
         self::assertSame($first->id, $provider->getModels()[0]->id);
-    }
-
-    public function testSectionsListsTheSectionsThatPlaceTheBlock(): void
-    {
-        $this->login();
-        $block = $this->createBlock('Placed');
-
-        $section = Section::findOne(6);
-        $section->block_id = $block->id;
-        $section->update(false, ['block_id']);
-
-        Block::findOne($block->id)->recalculateSectionCount()->update();
-
-        $html = Yii::$app->runAction('admin/cms/block/sections', ['id' => $block->id]);
-
-        self::assertIsString($html);
-        self::assertStringContainsString((string)$section->entry->getI18nAttribute('name'), $html);
     }
 
     private function createBlock(string $name): Block
