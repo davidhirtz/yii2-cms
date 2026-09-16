@@ -94,6 +94,17 @@ type has no sections or no categories, through `Traits\EntryControllerTrait::isE
 were not checked there either, so `enableSections => false` used to leave the section routes open. A project with a
 controller of its own overrides the hook.
 
+`Traits\SectionControllerTrait::isSectionAllowed()` is the same hook one level down. `SectionEntryController`
+answers it with `Section::allowsEntries()` — with `enableSectionEntries` defaulting to `false`, that controller's
+routes were reachable on every default installation — and `SectionController::actionEntries()`, the picker behind
+the same tab, refuses it too.
+
+**Record-scoped actions stay open on purpose.** `SectionController::actionUpdate()` and `actionDelete()` still reach
+a section whose entry's type has since stopped allowing sections, the same exemption `Type::isAvailableOrStored()`
+makes for a stored value: a record the configuration no longer allows must stay deletable, or it is invisible *and*
+immortal. `Section::validateEntryId()` refuses the save anyway. The media bundle's `findAsset()` works the same way,
+where `findAssetModel()` is the gate.
+
 ## 3.0 — The tenant select reloads the page
 
 `Assets\TenantDropdownAssetBundle` is gone, with the `resources/assets` tree behind it — the cms ships no

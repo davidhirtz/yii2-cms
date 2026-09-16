@@ -11,10 +11,23 @@ trait SectionControllerTrait
 {
     protected function findSection(int $id): Section
     {
-        if (!$section = Section::findOne($id)) {
+        $section = Section::findOne($id);
+
+        if (!$section || !$this->isSectionAllowed($section)) {
             throw new NotFoundHttpException();
         }
 
         return $section;
+    }
+
+    /**
+     * Whether the controller works with this section at all, the counterpart of
+     * {@see EntryControllerTrait::isEntryAllowed()}. A section the record *already has* is not refused here — only
+     * listing and adding are, which is the exemption {@see \Hirtz\Skeleton\Models\Types\Type::isAvailableOrStored()}
+     * makes for a stored value the configuration no longer allows.
+     */
+    protected function isSectionAllowed(Section $section): bool
+    {
+        return true;
     }
 }

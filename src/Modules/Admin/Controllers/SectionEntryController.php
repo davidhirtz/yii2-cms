@@ -7,6 +7,7 @@ namespace Hirtz\Cms\Modules\Admin\Controllers;
 use Hirtz\Cms\Models\Actions\ReorderSectionEntries;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Models\SectionEntry;
 use Hirtz\Cms\Modules\Admin\Controllers\Traits\EntryControllerTrait;
 use Hirtz\Cms\Modules\Admin\Controllers\Traits\SectionControllerTrait;
@@ -138,5 +139,10 @@ class SectionEntryController extends AbstractController
         }
 
         return (string)Flashes::make();
+    }
+
+    protected function isSectionAllowed(Section $section): bool
+    {
+        return $section->allowsEntries();
     }
 }

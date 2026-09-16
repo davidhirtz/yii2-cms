@@ -1,5 +1,17 @@
 ## 3.0 (in development)
 
+- **`Modules\Admin\Controllers\Traits\SectionControllerTrait::isSectionAllowed()`** is the counterpart of
+  `EntryControllerTrait::isEntryAllowed()`. `SectionEntryController` answers it with `Section::allowsEntries()`, so
+  the whole controller behind the entries tab is refused where that tab is hidden — with `enableSectionEntries`
+  defaulting to `false`, every one of its routes used to be reachable on a default installation.
+  `SectionController::actionEntries()`, the picker for the same tab, refuses it too.
+
+  **A section-scoped action is deliberately not gated.** `SectionController::actionUpdate()` and `actionDelete()`
+  still reach a section whose entry's type has since stopped allowing sections, which is the exemption
+  {@see Skeleton\Models\Types\Type::isAvailableOrStored()} makes everywhere else: a record stored in a state the
+  configuration no longer allows has to stay deletable, or it is invisible *and* immortal.
+  `Models\Section::validateEntryId()` refuses the save regardless.
+
 - **`Models\Entry::getVisibleSections()` honours `allowsSections()` on the site**, the way `getVisibleAssets()`
   always honoured `allowsAssets()`. `Widgets\SectionStack` read `$entry->sections` directly, so an entry whose type
   declared no sections still rendered every one of them — the admin hid the tab and refused the routes while the

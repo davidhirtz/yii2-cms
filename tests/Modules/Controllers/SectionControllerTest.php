@@ -348,10 +348,31 @@ class SectionControllerTest extends TestCase
         $this->login();
         $section = $this->createSection('Linking');
 
-        $html = Yii::$app->runAction('admin/cms/section/entries', ['id' => $section->id]);
+        $module = Section::getModule();
+        $module->enableSectionEntries = true;
 
-        self::assertIsString($html);
-        self::assertStringContainsString('Page', $html);
+        try {
+            $html = Yii::$app->runAction('admin/cms/section/entries', ['id' => $section->id]);
+
+            self::assertIsString($html);
+            self::assertStringContainsString('Page', $html);
+        } finally {
+            $module->enableSectionEntries = false;
+        }
+    }
+
+    /**
+     * The picker sits behind the entries tab, which the submenu shows for `Section::allowsEntries()`.
+     */
+    public function testEntriesRefusesASectionWithoutEntries(): void
+    {
+        $this->login();
+        $section = $this->createSection('Linking');
+
+        self::assertFalse($section->allowsEntries());
+
+        $this->expectException(NotFoundHttpException::class);
+        Yii::$app->runAction('admin/cms/section/entries', ['id' => $section->id]);
     }
 
     private function createEntry(string $name, string $slug): Entry

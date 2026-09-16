@@ -288,6 +288,12 @@ class SectionController extends AbstractController
     ): Response|string {
         $section = $this->findSection($id);
 
+        // The picker for the entries tab, which the submenu shows for `allowsEntries()` — `findSection()` cannot
+        // answer for it, since the controller's other actions must keep reaching a section that already exists.
+        if (!$section->allowsEntries()) {
+            throw new NotFoundHttpException();
+        }
+
         $provider = Yii::$container->get(EntryActiveDataProvider::class, config:[
             'category' => Category::findOne($category),
             'parent' => $parent ? Entry::findOne($parent) : null,
