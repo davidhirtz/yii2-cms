@@ -17,9 +17,14 @@
   sorted, searched and put in `i18nAttributes`.
 
   `block.section_count` records how many sections place a block, and `BlockSectionController` lists them
-  through `Modules\Admin\Widgets\Grids\BlockSectionGridView` and deletes one — the tab the count links to,
+  through `Modules\Admin\Widgets\Grids\BlockSectionGridView` and deletes them — the tab the count links to,
   the way the media file's asset tab lists and removes what holds a file. Listing is `Block::AUTH_BLOCK`,
-  deleting a section is `Entry::AUTH_ENTRY`, and the redirect stays on the tab until its last section is gone. The count is
+  deleting a section is `Entry::AUTH_ENTRY`, and the redirect stays on the tab until its last section is gone.
+  The grid offers the skeleton's `Widgets\Grids\Traits\SelectionTrait` — a selection and `delete-all`, on by
+  default — while its per-row delete button is behind `$showDeleteButton`, off, as `SectionGridView`'s is; the
+  `delete-all` is scoped to the block the selection was made on, so a crafted id cannot reach another's.
+  `SectionGridView` takes its own selection from that trait now, so `getSelectionButton()` is
+  `getDeleteSelectionButton()` and the `> 1` row guard moved into `canDeleteSelection()`. The count is
   maintained from the section: `Section::afterSave()` and `afterDelete()` call the new static
   `Section::recalculateBlockSectionCounts()` for the block a section holds and the one it left, and
   `Models\Actions\DeleteSections` and `CreateSectionSet` call it once at the end of a batch.

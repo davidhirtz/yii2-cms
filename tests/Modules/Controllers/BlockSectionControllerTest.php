@@ -7,6 +7,7 @@ namespace Hirtz\Cms\Tests\Modules\Controllers;
 use Hirtz\Cms\Models\Block;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
+use Hirtz\Cms\Modules\Admin\Widgets\Grids\BlockSectionGridView;
 use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
 use Hirtz\Cms\Test\Models\TestEntry;
 use Hirtz\Cms\Test\TestCase;
@@ -39,7 +40,89 @@ class BlockSectionControllerTest extends TestCase
 
         self::assertIsString($html);
         self::assertStringContainsString((string)$section->entry->getI18nAttribute('name'), $html);
+        self::assertStringContainsString("block-section/delete-all?block=$block->id", $html);
+
+        // The per-row delete button is opt-in; the selection is what the tab offers by default.
+        self::assertStringNotContainsString('block-section/delete?id=', $html);
+    }
+
+    public function testIndexRendersTheRowDeleteButtonBehindItsFlag(): void
+    {
+        Yii::$container->set(BlockSectionGridView::class, ['showDeleteButton' => true]);
+
+        $this->login();
+        $block = $this->createBlock();
+        $section = $this->placeBlock($block);
+
+        $html = Yii::$app->runAction('admin/cms/block-section/index', ['block' => $block->id]);
+
+        self::assertIsString($html);
         self::assertStringContainsString("block-section/delete?id=$section->id", $html);
+    }
+
+    public function testDeleteAllRemovesTheSelectedSections(): void
+    {
+        $this->login();
+        $block = $this->createBlock();
+        $first = $this->placeBlock($block);
+        $second = $this->placeBlock($block, 5);
+
+        $response = $this->post(
+            'admin/cms/block-section/delete-all',
+            ['block' => $block->id],
+            ['selection' => [(string)$first->id, (string)$second->id]]
+        );
+
+        self::assertNull(Section::findOne($first->id));
+        self::assertNull(Section::findOne($second->id));
+        self::assertSame(0, Block::findOne($block->id)->section_count);
+        self::assertNotEmpty($this->getWebSession()->getFlash('success'));
+
+        self::assertInstanceOf(Response::class, $response);
+        self::assertStringContainsString(
+            "block/update?id=$block->id",
+            (string)$response->getHeaders()->get('location')
+        );
+    }
+
+    /**
+     * The selection is scoped to the block it was made on, so a crafted id cannot reach another block's section.
+     */
+    public function testDeleteAllIgnoresASectionOfAnotherBlock(): void
+    {
+        $this->login();
+
+        $block = $this->createBlock();
+        $section = $this->placeBlock($block);
+
+        $other = $this->createBlock();
+        $otherSection = $this->placeBlock($other, 5);
+
+        $this->post(
+            'admin/cms/block-section/delete-all',
+            ['block' => $block->id],
+            ['selection' => [(string)$section->id, (string)$otherSection->id]]
+        );
+
+        self::assertNull(Section::findOne($section->id));
+        self::assertNotNull(Section::findOne($otherSection->id));
+    }
+
+    public function testDeleteAllWithoutTheEntryPermissionIsForbidden(): void
+    {
+        $user = $this->getUserFromFixture('admin');
+        $this->assignPermission($user->id, Block::AUTH_BLOCK);
+        $this->getWebUser()->setIdentity($user);
+
+        $block = $this->createBlock();
+        $section = $this->placeBlock($block);
+
+        $this->expectException(ForbiddenHttpException::class);
+        $this->post(
+            'admin/cms/block-section/delete-all',
+            ['block' => $block->id],
+            ['selection' => [(string)$section->id]]
+        );
     }
 
     public function testIndexWithoutABlockIsNotFound(): void
@@ -134,13 +217,14 @@ class BlockSectionControllerTest extends TestCase
 
     /**
      * @param array<string, mixed> $params
+     * @param array<string, mixed> $bodyParams
      */
-    private function post(string $route, array $params = []): mixed
+    private function post(string $route, array $params = [], array $bodyParams = []): mixed
     {
         $_SERVER['REQUEST_METHOD'] = 'POST';
 
         $request = $this->getWebRequest();
-        $request->setBodyParams([$request->csrfParam => $request->getCsrfToken()]);
+        $request->setBodyParams([...$bodyParams, $request->csrfParam => $request->getCsrfToken()]);
 
         return Yii::$app->runAction($route, $params);
     }

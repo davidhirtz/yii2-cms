@@ -251,7 +251,7 @@ class SectionController extends AbstractController
     }
 
     /**
-     * @see SectionGridView::getSelectionButton()
+     * @see SectionGridView::getDeleteSelectionRoute()
      */
     public function actionDeleteAll(): Response
     {

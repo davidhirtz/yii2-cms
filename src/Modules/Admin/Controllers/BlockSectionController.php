@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Controllers;
 
+use Hirtz\Cms\Models\Actions\DeleteSections;
 use Hirtz\Cms\Models\Block;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Controllers\Traits\BlockControllerTrait;
 use Hirtz\Cms\Modules\Admin\Controllers\Traits\SectionControllerTrait;
+use Hirtz\Cms\Modules\Admin\Widgets\Grids\BlockSectionGridView;
 use Override;
 use Yii;
 use yii\filters\AccessControl;
@@ -37,7 +39,7 @@ class BlockSectionController extends AbstractController
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['delete', 'index'],
+                        'actions' => ['delete', 'delete-all', 'index'],
                         'roles' => [Block::AUTH_BLOCK],
                     ],
                 ],
@@ -46,6 +48,7 @@ class BlockSectionController extends AbstractController
                 'class' => VerbFilter::class,
                 'actions' => [
                     'delete' => ['post'],
+                    'delete-all' => ['post'],
                 ],
             ],
         ];
@@ -70,11 +73,62 @@ class BlockSectionController extends AbstractController
         $section->delete();
         $this->errorOrSuccess($section, Yii::t('cms', 'SECTION_SUCCESS_DELETED'));
 
+        return $this->redirectToBlock($block);
+    }
+
+    /**
+     * @see BlockSectionGridView::getDeleteSelectionRoute()
+     */
+    public function actionDeleteAll(int $block): Response
+    {
+        $block = $this->findBlock($block);
+        $sections = $this->findBlockSections($block);
+
+        if (!$sections) {
+            return $this->redirect(['/admin/cms/block/update', 'id' => $block->id]);
+        }
+
+        $action = DeleteSections::create($sections);
+
+        if ($count = count($action->getDeleted())) {
+            $this->success(Yii::t('cms', 'SECTION_SUCCESS_SELECTED_DELETED', ['count' => $count]));
+        }
+
+        foreach ($action->getFailed() as $section) {
+            $this->error($section);
+        }
+
+        return $this->redirectToBlock($block);
+    }
+
+    /**
+     * The tab goes with the block's last section, so the redirect has to leave it.
+     */
+    protected function redirectToBlock(Block $block): Response
+    {
         $block->refresh();
 
         return $this->redirect($block->section_count
             ? ['index', 'block' => $block->id]
             : ['/admin/cms/block/update', 'id' => $block->id]);
+    }
+
+    /**
+     * Scoped to the block the selection was made on, so a crafted id cannot reach a section of another one.
+     *
+     * @return list<Section>
+     */
+    protected function findBlockSections(Block $block): array
+    {
+        if (!$this->webuser->can(Entry::AUTH_ENTRY)) {
+            throw new ForbiddenHttpException();
+        }
+
+        $ids = array_map(intval(...), $this->request->post('selection', []));
+
+        return $ids
+            ? array_values(Section::findAll(['id' => $ids, 'block_id' => $block->id]))
+            : [];
     }
 
     /**

@@ -15,21 +15,17 @@ use Hirtz\Media\Modules\Admin\Widgets\Grids\Columns\Thumbnail;
 use Hirtz\Skeleton\Html\A;
 use Hirtz\Skeleton\Html\Div;
 use Hirtz\Skeleton\Models\CustomAttributes\HtmlCustomAttribute;
-use Hirtz\Skeleton\Widgets\Buttons\Button;
 use Hirtz\Skeleton\Widgets\Grids\Columns\ButtonColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\DeleteGridButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\DraggableSortGridButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\ViewGridButton;
-use Hirtz\Skeleton\Widgets\Grids\Columns\CheckboxColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Column;
 use Hirtz\Skeleton\Widgets\Grids\Columns\DataColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\StatusIconColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\TypeColumn;
 use Hirtz\Skeleton\Widgets\Grids\GridSummary;
 use Hirtz\Skeleton\Widgets\Grids\GridView;
-use Hirtz\Skeleton\Widgets\Grids\Toolbars\GridFooter;
-use Hirtz\Skeleton\Widgets\Grids\Toolbars\GridToolbarItem;
-use Hirtz\Skeleton\Widgets\Modal;
+use Hirtz\Skeleton\Widgets\Grids\Traits\SelectionTrait;
 use Override;
 use Stringable;
 use Yii;
@@ -42,9 +38,9 @@ use yii\helpers\StringHelper;
 class SectionGridView extends GridView
 {
     use ModuleTrait;
+    use SelectionTrait;
 
     public bool $showDeleteButton = false;
-    public bool $showSelection = true;
 
     protected string $layout = '{summary}{items}{footer}';
 
@@ -54,9 +50,7 @@ class SectionGridView extends GridView
         $this->attributes['id'] ??= 'section-grid-view';
         $this->orderRoute = ['order', 'entry' => $this->provider->entry->id];
 
-        $this->showSelection = $this->showSelection
-            && $this->provider->getCount() > 1
-            && $this->webuser->can(Entry::AUTH_ENTRY);
+        $this->configureSelection();
 
         $this->columns ??= [
             $this->getCheckboxColumn(),
@@ -67,13 +61,6 @@ class SectionGridView extends GridView
             $this->getAssetCountColumn(),
             $this->getButtonColumn(),
         ];
-
-        if ($this->showSelection) {
-            $this->footer ??= GridFooter::make()
-                ->attributes($this->footerAttributes)
-                ->addClass('hidden flex-has-selection')
-                ->content($this->getSelectionButton());
-        }
 
         parent::configure();
     }
@@ -86,34 +73,25 @@ class SectionGridView extends GridView
             ->visible(fn (): bool => $this->provider->getCount() === 0);
     }
 
-    protected function getCheckboxColumn(): ?Column
+    /**
+     * A single section is deleted through its own row rather than through a selection of one.
+     */
+    protected function canDeleteSelection(): bool
     {
-        return $this->showSelection
-            ? CheckboxColumn::make()
-            : null;
+        return $this->provider->getCount() > 1 && $this->webuser->can(Entry::AUTH_ENTRY);
+    }
+
+    protected function getDeleteSelectionLabel(): string
+    {
+        return Yii::t('cms', 'SECTION_DELETE_SELECTED');
     }
 
     /**
      * @see SectionController::actionDeleteAll()
      */
-    protected function getSelectionButton(): Stringable
+    protected function getDeleteSelectionRoute(): array
     {
-        $modal = Modal::make()
-            ->title(Yii::t('cms', 'SECTION_DELETE_SELECTED'))
-            ->text(Yii::t('skeleton', 'COMMON_CONFIRM_DELETE_SELECTED'))
-            ->footer(Button::make()
-                ->danger()
-                ->text(Yii::t('cms', 'SECTION_DELETE_SELECTED'))
-                ->icon('trash')
-                ->post(['/admin/cms/section/delete-all'])
-                ->attribute('hx-include', '[data-check]:checked'));
-
-        return GridToolbarItem::make()
-            ->content(Button::make()
-                ->danger()
-                ->text(Yii::t('cms', 'SECTION_DELETE_SELECTED'))
-                ->icon('trash')
-                ->modal($modal));
+        return ['/admin/cms/section/delete-all'];
     }
 
     protected function getStatusColumn(): ?Column
