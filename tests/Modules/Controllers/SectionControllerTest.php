@@ -316,6 +316,37 @@ class SectionControllerTest extends TestCase
         Yii::$app->runAction('admin/cms/section/delete-all');
     }
 
+    /**
+     * The row's own delete button is off by default, so the footer is the only way to delete from the grid — and the
+     * footer is only offered for more than one section.
+     */
+    public function testTheGridOffersTheSelection(): void
+    {
+        $this->login();
+
+        $this->createSection('First');
+        $this->createSection('Second');
+
+        $html = Yii::$app->runAction('admin/cms/section/index', ['entry' => $this->entry->id]);
+
+        self::assertIsString($html);
+        self::assertStringContainsString('name="selection[]"', $html);
+        self::assertStringContainsString('/admin/cms/section/delete-all', $html);
+    }
+
+    public function testTheGridOffersNoSelectionForASingleSection(): void
+    {
+        $this->login();
+
+        $this->createSection('Only');
+
+        $html = Yii::$app->runAction('admin/cms/section/index', ['entry' => $this->entry->id]);
+
+        self::assertIsString($html);
+        self::assertStringNotContainsString('name="selection[]"', $html);
+        self::assertStringNotContainsString('/admin/cms/section/delete-all', $html);
+    }
+
     public function testDeleteRefusesAGetRequest(): void
     {
         $this->login();

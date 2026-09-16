@@ -46,7 +46,7 @@ class SectionGridView extends GridView
     public bool $showDeleteButton = false;
     public bool $showSelection = true;
 
-    protected string $layout = '{summary}{items}';
+    protected string $layout = '{summary}{items}{footer}';
 
     #[Override]
     protected function configure(): void
