@@ -61,7 +61,7 @@ class CategoryController extends AbstractController
 
     public function actionCreate(?int $parent = null): Response|string
     {
-        $category = Category::create();
+        $category = Category::instantiateFromPost($this->request->post());
         $category->loadDefaultValues();
         $category->parent_id = $parent;
 

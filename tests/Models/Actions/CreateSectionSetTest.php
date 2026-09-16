@@ -9,9 +9,12 @@ use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Models\Sets\SectionSet;
 use Hirtz\Cms\Models\Sets\SectionTemplate;
+use Hirtz\Cms\Models\Types\SectionType;
 use Hirtz\Cms\Test\TestCase;
+use Hirtz\Skeleton\Models\Definitions\DefinitionRegistry;
 use Hirtz\Skeleton\Test\Traits\UserFixtureTrait;
 use Override;
+use Yii;
 use yii\base\InvalidConfigException;
 
 class CreateSectionSetTest extends TestCase
@@ -110,6 +113,36 @@ class CreateSectionSetTest extends TestCase
         SectionTemplate::make(SectionTemplateTestStringEnum::Default);
     }
 
+    /**
+     * A template names the type, so the class the type names is what the section has to be built as — the
+     * definitions, the rules and the lifecycle hooks are all that class's.
+     */
+    public function testTheTypeDecidesTheSectionClass(): void
+    {
+        Yii::$container->set(Section::class, CreateSectionSetTestSection::class);
+        DefinitionRegistry::resetClass(Section::class);
+
+        try {
+            $action = CreateSectionSet::create($this->entry, $this->createSet(
+                SectionTemplate::make(CreateSectionSetTestSection::TYPE_TYPED)
+                    ->attribute('name', 'Typed'),
+                SectionTemplate::make(Section::TYPE_DEFAULT)
+                    ->attribute('name', 'Plain'),
+            ));
+
+            self::assertSame([], $action->getFailed());
+
+            $sections = $action->getSections();
+
+            self::assertInstanceOf(CreateSectionSetTestTypedSection::class, $sections[0]);
+            self::assertInstanceOf(CreateSectionSetTestSection::class, $sections[1]);
+            self::assertNotInstanceOf(CreateSectionSetTestTypedSection::class, $sections[1]);
+        } finally {
+            Yii::$container->clear(Section::class);
+            DefinitionRegistry::resetClass(Section::class);
+        }
+    }
+
     private function createSet(SectionTemplate ...$sections): SectionSet
     {
         return SectionSet::make(1)
@@ -144,6 +177,27 @@ class CreateSectionSetTest extends TestCase
 
         return $section;
     }
+}
+
+class CreateSectionSetTestSection extends Section
+{
+    public const int TYPE_TYPED = 2;
+
+    #[Override]
+    public function getTypes(): array
+    {
+        return [
+            SectionType::make(self::TYPE_DEFAULT)
+                ->name('Default'),
+            SectionType::make(self::TYPE_TYPED)
+                ->name('Typed')
+                ->modelClass(CreateSectionSetTestTypedSection::class),
+        ];
+    }
+}
+
+class CreateSectionSetTestTypedSection extends CreateSectionSetTestSection
+{
 }
 
 enum SectionTemplateTestEnum: int

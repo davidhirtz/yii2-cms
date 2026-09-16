@@ -1,5 +1,17 @@
 ## 3.0 (in development)
 
+- **A section, entry or category built from a known type goes through `instantiateByType()`** (monorepo issue
+  #105), so a type declaring a model class of its own gets it: `Models\Actions\CreateSectionSet` (the template
+  names the type) and `Modules\Admin\Controllers\SetupController`, whose attribute arrays a project declares and
+  which routinely name a type. **`EntryController`, `SectionController` and `CategoryController::actionCreate()`
+  take the posted type**, through `instantiateFromPost()`, since the type select reloads the form by posting to
+  the same action. A project's `EntryType::modelClass()` therefore has to keep the base `formName()`, see the
+  skeleton's changelog.
+
+  Side effect in `EntryController::actionCreate()`: with neither a `type` parameter nor
+  `Module::$defaultEntryType`, the form now starts at the column default rather than at no type at all — the
+  type select showed its first option while the custom attribute fields below it were the typeless ones.
+
 - **`Modules\Admin\Widgets\Forms\EntryActiveForm::getRowsAsGroups()` is gone**, with the ambiguous row shape it
   worked around (monorepo issue #120, skeleton `Widgets\Forms\ActiveForm`). The tenant row is part of what
   `getDefaultRows()` declares now, so **a caller replacing the form's rows wholesale owns the tenant field too** —

@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Tests\Modules\Controllers;
 
 use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Models\Types\EntryType;
 use Hirtz\Cms\Test\TestCase;
+use Hirtz\Skeleton\Models\Definitions\DefinitionRegistry;
 use Hirtz\Skeleton\Models\User;
 use Hirtz\Skeleton\Test\Traits\UserFixtureTrait;
 use Override;
@@ -116,6 +118,35 @@ class EntryControllerTest extends TestCase
         self::assertNotNull($entry);
         self::assertSame($parent->id, $entry->parent_id);
         self::assertNotEmpty($this->getWebSession()->getFlash('success'));
+    }
+
+    /**
+     * The type select reloads the form by posting to the same action, so the posted type — not the route's — is
+     * what the record has to be built from (monorepo issue #105).
+     */
+    public function testCreateResolvesTheClassFromThePostedType(): void
+    {
+        $this->login();
+
+        Yii::$container->set(Entry::class, EntryControllerTestEntry::class);
+        DefinitionRegistry::resetClass(Entry::class);
+
+        try {
+            $html = $this->post('admin/cms/entry/create', [], [
+                'Entry' => [
+                    'type' => EntryControllerTestEntry::TYPE_TYPED,
+                    'name' => 'Typed',
+                    'slug' => 'typed',
+                ],
+            ], reload: true);
+
+            self::assertIsString($html);
+            self::assertStringContainsString('The typed name', $html);
+            self::assertStringContainsString('name="Entry[name]"', $html);
+        } finally {
+            Yii::$container->clear(Entry::class);
+            DefinitionRegistry::resetClass(Entry::class);
+        }
     }
 
     public function testAFormReloadDoesNotSave(): void
@@ -284,5 +315,40 @@ class EntryControllerTest extends TestCase
         $this->getWebUser()->setIdentity($user);
 
         return $user;
+    }
+}
+
+class EntryControllerTestEntry extends Entry
+{
+    public const int TYPE_TYPED = 2;
+
+    #[Override]
+    public function getTypes(): array
+    {
+        return [
+            EntryType::make(self::TYPE_DEFAULT)
+                ->name('Default'),
+            EntryType::make(self::TYPE_TYPED)
+                ->name('Typed')
+                ->modelClass(EntryControllerTestTypedEntry::class),
+        ];
+    }
+
+    /**
+     * Pinned across the subclasses a type names, or the form would post under one name and load under another.
+     */
+    #[Override]
+    public function formName(): string
+    {
+        return 'Entry';
+    }
+}
+
+class EntryControllerTestTypedEntry extends EntryControllerTestEntry
+{
+    #[Override]
+    public function attributeLabels(): array
+    {
+        return [...parent::attributeLabels(), 'name' => 'The typed name'];
     }
 }

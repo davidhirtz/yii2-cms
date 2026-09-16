@@ -92,7 +92,7 @@ class SectionController extends AbstractController
     public function actionCreate(int $entry): Response|string
     {
         $entry = $this->findEntry($entry);
-        $section = Section::create();
+        $section = Section::instantiateFromPost($this->request->post());
 
         $section->populateEntryRelation($entry);
         $section->loadDefaultValues();

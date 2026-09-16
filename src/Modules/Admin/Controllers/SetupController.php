@@ -79,7 +79,7 @@ abstract class SetupController extends Controller
     {
         $this->insertInTransaction(function (): void {
             foreach ($this->getCategoryAttributes() as $attributes) {
-                $category = Category::create();
+                $category = Category::instantiateByType(self::getDeclaredType($attributes));
                 $category->setAttributes($attributes);
 
                 if (!$category->insert()) {
@@ -120,7 +120,7 @@ abstract class SetupController extends Controller
         $categories = ArrayHelper::remove($attributes, 'categories', []);
         $sections = ArrayHelper::remove($attributes, 'sections', []);
 
-        $entry = Entry::create();
+        $entry = Entry::instantiateByType(self::getDeclaredType($attributes));
         $entry->setAttributes($attributes);
 
         if ($parent instanceof Entry) {
@@ -144,7 +144,7 @@ abstract class SetupController extends Controller
             }
 
             foreach ($sections as $attributes) {
-                $section = Section::create();
+                $section = Section::instantiateByType(self::getDeclaredType($attributes));
                 $section->setAttributes($attributes);
                 $section->populateEntryRelation($entry);
 
@@ -155,6 +155,14 @@ abstract class SetupController extends Controller
         } else {
             ActiveRecordErrorLogger::log($entry);
         }
+    }
+
+    /**
+     * @param array<string, mixed> $attributes
+     */
+    protected static function getDeclaredType(array $attributes): ?int
+    {
+        return isset($attributes['type']) ? (int)$attributes['type'] : null;
     }
 
     protected function ensureDefaultFolder(): void

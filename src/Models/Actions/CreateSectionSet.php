@@ -54,12 +54,10 @@ class CreateSectionSet
 
     protected function createSection(SectionTemplate $template): Section
     {
-        $section = Section::create();
+        // Before the attributes: the custom attributes their values can be assigned to are the type's.
+        $section = Section::instantiateByType($template->type);
         $section->populateEntryRelation($this->entry);
         $section->setIsBatch(true);
-
-        // Before the attributes: the custom attributes a value can be assigned to are the type's.
-        $section->type = $template->type;
         $section->loadDefaultValues();
         $section->setAttributes($template->getAttributes(), false);
 

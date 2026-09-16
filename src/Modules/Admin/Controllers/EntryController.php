@@ -85,10 +85,9 @@ class EntryController extends AbstractController
 
     public function actionCreate(?int $parent = null, ?int $type = null): Response|string
     {
-        $entry = Entry::create();
+        $entry = Entry::instantiateFromPost($this->request->post(), $type ?: static::getModule()->defaultEntryType);
         $entry->loadDefaultValues();
         $entry->populateParentRelation(Entry::findOne($parent));
-        $entry->type = $type ?: static::getModule()->defaultEntryType;
 
         if (!$this->webuser->can(Entry::AUTH_ENTRY)) {
             throw new ForbiddenHttpException();
