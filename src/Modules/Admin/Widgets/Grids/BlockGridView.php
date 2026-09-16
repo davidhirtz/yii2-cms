@@ -21,6 +21,7 @@ use Hirtz\Skeleton\Widgets\Grids\Columns\StatusIconColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\TypeColumn;
 use Hirtz\Skeleton\Widgets\Grids\GridSummary;
 use Hirtz\Skeleton\Widgets\Grids\GridView;
+use Hirtz\Skeleton\Widgets\Grids\Toolbars\TypeFilterDropdown;
 use Override;
 use Stringable;
 use Yii;
@@ -42,6 +43,7 @@ class BlockGridView extends GridView
         $this->attributes['id'] ??= 'block-grid-view';
 
         $this->header ??= [
+            $this->getTypeDropdown(),
             $this->getSearchInput(),
         ];
 
@@ -65,6 +67,12 @@ class BlockGridView extends GridView
         return parent::getSummary()
             ->emptyMessage(Yii::t('cms', 'BLOCK_GRID_SUMMARY_EMPTY'))
             ->visible(fn (): bool => $this->provider->getCount() === 0);
+    }
+
+    protected function getTypeDropdown(): ?Stringable
+    {
+        return TypeFilterDropdown::make()
+            ->model(Block::instance());
     }
 
     protected function getStatusColumn(): ?Column
