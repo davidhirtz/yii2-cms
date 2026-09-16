@@ -156,7 +156,7 @@ trait PermalinkTrait
 
         // A tenant without a URL names no host, so its redirects are relative — which is all a single-tenant
         // installation needs, and two of those could not tell their slugs apart anyway.
-        $tenant = TenantCollection::getAll()[$this->tenant_id] ?? null;
+        $tenant = TenantCollection::getById($this->tenant_id);
         $hostInfo = $tenant?->getHostInfo();
         $host = $hostInfo ? parse_url($hostInfo, PHP_URL_HOST) : null;
 

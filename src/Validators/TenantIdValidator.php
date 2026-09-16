@@ -30,7 +30,7 @@ class TenantIdValidator extends Validator
         $tenantId = (int)$model->getAttribute($attribute);
 
         $tenant = $tenantId
-            ? TenantCollection::getAll()[$tenantId] ?? null
+            ? TenantCollection::getById($tenantId)
             : TenantCollection::getDefault();
 
         if (!$tenant) {

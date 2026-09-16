@@ -653,7 +653,7 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
      */
     public function getTenantRouteParams(): array
     {
-        return ['tenant' => TenantCollection::getAll()[$this->tenant_id] ?? null];
+        return ['tenant' => TenantCollection::getById($this->tenant_id)];
     }
 
     /**

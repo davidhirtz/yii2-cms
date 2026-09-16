@@ -80,7 +80,7 @@ class EntryActiveForm extends ActiveForm
      */
     protected function setTenant(): void
     {
-        $tenant = TenantCollection::getAll()[$this->model->tenant_id] ?? null;
+        $tenant = TenantCollection::getById($this->model->tenant_id);
 
         if (null === $tenant) {
             $tenant = TenantCollection::getFromRequest();
