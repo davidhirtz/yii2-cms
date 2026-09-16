@@ -1,5 +1,10 @@
 ## 3.0 (in development)
 
+- **`Models\Entry::getVisibleSections()` honours `allowsSections()` on the site**, the way `getVisibleAssets()`
+  always honoured `allowsAssets()`. `Widgets\SectionStack` read `$entry->sections` directly, so an entry whose type
+  declared no sections still rendered every one of them — the admin hid the tab and refused the routes while the
+  frontend carried on. A project handing the stack its own list with `sections()` is unaffected.
+
 - **`has<Feature>Enabled()` is `allows<Feature>()`, and the model answers for the type.** Whether an entry has
   assets, sections, categories or subentries was three unrelated mechanisms: a module flag read by
   `Models\Entry::has*Enabled()`, a `FIELD_*` marker in the type's `hiddenFields()` that each caller had to check

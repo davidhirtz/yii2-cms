@@ -81,6 +81,12 @@ Then the submenu item is `->visible($entry->allowsNewsletter())` and the control
 `hiddenFields()` with a marker of your own is still the way — the hotspot bundle does exactly that for
 `Cms\Hotspot\Module::FIELD_HOTSPOTS`.
 
+### The site honours it too
+
+`Widgets\SectionStack` read `$entry->sections` directly, so a type declaring no sections still rendered them — only
+the asset side went through a `getVisible*()`. The stack defaults to `Entry::getVisibleSections()` now. A project
+that hands it a list with `sections()` decides for itself, as before.
+
 ### A route refuses what the admin does not offer
 
 `Modules\Admin\Controllers\SectionController` and `EntryCategoryController` now answer `404` for an entry whose

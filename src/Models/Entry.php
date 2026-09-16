@@ -657,6 +657,14 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
     }
 
     /**
+     * @return Section[]
+     */
+    public function getVisibleSections(): array
+    {
+        return $this->allowsSections() ? array_values($this->sections) : [];
+    }
+
+    /**
      * @return Asset[]
      */
     public function getVisibleAssets(): array

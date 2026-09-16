@@ -21,7 +21,8 @@ class TestEntry extends Entry
                 ->hiddenFields('content'),
             EntryType::make(self::TYPE_POST)
                 ->name('Post')
-                ->allowAssets(false),
+                ->allowAssets(false)
+                ->allowSections(false),
         ];
     }
 }

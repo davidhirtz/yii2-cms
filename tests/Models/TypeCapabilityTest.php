@@ -49,6 +49,23 @@ class TypeCapabilityTest extends TestCase
         }
     }
 
+    /**
+     * The site asks the entry, not the section count: a type that declares no sections had its sections rendered
+     * anyway, where the asset side has always gone through `getVisibleAssets()`.
+     */
+    public function testTheTypeTakesTheSectionsOffAnEntry(): void
+    {
+        $entry = $this->getEntryFromFixture('page-enabled');
+
+        $entry->type = TestEntry::TYPE_PAGE;
+        self::assertTrue($entry->allowsSections());
+        self::assertNotSame([], $entry->getVisibleSections());
+
+        $entry->type = TestEntry::TYPE_POST;
+        self::assertFalse($entry->allowsSections());
+        self::assertSame([], $entry->getVisibleSections());
+    }
+
     public function testTheTypeTakesTheEntriesOffASection(): void
     {
         $section = $this->getSectionFromFixture('section-headline');

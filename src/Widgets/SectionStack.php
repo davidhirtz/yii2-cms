@@ -130,7 +130,7 @@ class SectionStack extends Widget
     protected function configure(): void
     {
         if ($this->isVisible()) {
-            $this->sections ??= $this->entry->sections ?? [];
+            $this->sections ??= $this->entry->getVisibleSections();
 
             $this->groups = $this->createGroups($this->collectSections($this->filterSections($this->sections)));
             $this->setRenderOrder();
