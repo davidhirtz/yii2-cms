@@ -71,7 +71,6 @@ class SectionSubmenu extends Submenu
     protected function getEntriesItem(): ?NavItem
     {
         return NavItem::make()
-            ->attribute('id', 'entries')
             ->badge($this->model->entry_count)
             ->icon('chain')
             ->label(Yii::t('cms', 'COMMON_SECTION_ENTRIES'))
@@ -81,7 +80,8 @@ class SectionSubmenu extends Submenu
                     ...$this->additionalActiveRoutes['entries'] ?? [],
                 ]
             )
-            ->url(['/admin/cms/section-entry/index', 'section' => $this->model->id]);
+            ->url(['/admin/cms/section-entry/index', 'section' => $this->model->id])
+            ->visible($this->model->isAttributeVisible(Section::FIELD_ENTRIES));
     }
 
     protected function getAssetsItem(): ?NavItem
@@ -95,6 +95,7 @@ class SectionSubmenu extends Submenu
                     ...$this->additionalActiveRoutes['assets'] ?? [],
                 ]
             )
-            ->url(SectionAsset::getAdminIndexRoute($this->model));
+            ->url(SectionAsset::getAdminIndexRoute($this->model))
+            ->visible($this->model->isAttributeVisible(Section::FIELD_ASSETS));
     }
 }

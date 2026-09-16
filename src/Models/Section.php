@@ -50,7 +50,7 @@ class Section extends ActiveRecord implements AssetModelInterface, SearchableInt
     /**
      * The marker that hides the linked entries panel, listed among a type's hidden fields.
      */
-    final public const string FIELD_ENTRIES = '#entries';
+    final public const string FIELD_ENTRIES = 'entries';
 
     final public const int SLUG_MAX_LENGTH = 100;
 

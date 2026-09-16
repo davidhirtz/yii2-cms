@@ -39,7 +39,7 @@ class EntryActiveForm extends ActiveForm
     #[Override]
     protected function configure(): void
     {
-        $this->setTenantFromRequest();
+        $this->setTenant();
 
         $this->rows ??= [
             [
@@ -85,9 +85,18 @@ class EntryActiveForm extends ActiveForm
         return is_array($first) || $first instanceof Fieldset ? $this->rows : [$this->rows];
     }
 
-    protected function setTenantFromRequest(): void
+    /**
+     * The record answers first: it is an existing entry, or a new one carrying the tenant the form reload posted.
+     * Only a record with none falls back to the request, which is what a `tenant` parameter on the create route and
+     * the admin's own host are for.
+     */
+    protected function setTenant(): void
     {
-        $tenant = TenantCollection::getFromRequest();
+        $tenant = TenantCollection::getAll()[$this->model->tenant_id] ?? null;
+
+        if (null === $tenant) {
+            $tenant = TenantCollection::getFromRequest();
+        }
 
         if (null === $tenant) {
             $manager = Yii::$app->getUrlManager();

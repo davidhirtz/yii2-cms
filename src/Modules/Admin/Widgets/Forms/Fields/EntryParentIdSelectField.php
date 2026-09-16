@@ -12,7 +12,6 @@ use Hirtz\Skeleton\Helpers\ArrayHelper;
 use Hirtz\Skeleton\Helpers\Html;
 use Hirtz\Skeleton\Widgets\Forms\Fields\SelectField;
 use Override;
-use Stringable;
 use Yii;
 
 /**
@@ -33,22 +32,20 @@ class EntryParentIdSelectField extends SelectField
     #[Override]
     protected function configure(): void
     {
-        $this->attributes['data-id'] ??= 'parent';
         $this->setItemsFromEntries($this->getEntries());
         $this->promptAttributes = ArrayHelper::remove($this->attributes, 'promptAttributes', []);
 
         parent::configure();
     }
 
+    /**
+     * The tenant select reloads the page rather than this one row, so an entry with no eligible parent simply has no
+     * field instead of a hidden one waiting to be filled.
+     */
     #[Override]
-    protected function renderContent(): string|Stringable
+    public function isVisible(): bool
     {
-        if (!$this->items) {
-            // Always render the row — the tenant dropdown reloads it — but hide it without suitable parents.
-            $this->rowAttributes['hidden'] = true;
-        }
-
-        return parent::renderContent();
+        return parent::isVisible() && $this->items !== [];
     }
 
     /**

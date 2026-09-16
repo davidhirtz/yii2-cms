@@ -19,6 +19,7 @@ use Hirtz\Skeleton\Models\Interfaces\I18nAttributeInterface;
 use Hirtz\Skeleton\Models\Interfaces\TrailModelInterface;
 use Hirtz\Skeleton\Models\Interfaces\TranslationInterface;
 use Hirtz\Skeleton\Models\Interfaces\TypeAttributeInterface;
+use Hirtz\Skeleton\Models\Interfaces\VisibleAttributeInterface;
 use Hirtz\Skeleton\Models\Traits\AdminModelTrait;
 use Hirtz\Skeleton\Models\Traits\CustomAttributesTrait;
 use Hirtz\Skeleton\Models\Traits\DraftStatusAttributeTrait;
@@ -49,7 +50,8 @@ abstract class ActiveRecord extends BaseActiveRecord implements
     I18nAttributeInterface,
     TrailModelInterface,
     TranslationInterface,
-    TypeAttributeInterface
+    TypeAttributeInterface,
+    VisibleAttributeInterface
 {
     use AdminModelTrait;
     use CustomAttributesTrait;

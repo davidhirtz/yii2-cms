@@ -40,9 +40,4 @@ class SlugCustomAttribute extends TextCustomAttribute
             : (Inflector::slug((string)$value, $this->replacement, $this->lowercase) ?: null);
     }
 
-    #[Override]
-    protected function getFingerprintData(): array
-    {
-        return [...parent::getFingerprintData(), $this->replacement, $this->lowercase];
-    }
 }

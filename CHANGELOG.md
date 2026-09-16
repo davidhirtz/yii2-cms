@@ -1,5 +1,25 @@
 ## 3.0 (in development)
 
+- **`Assets\TenantDropdownAssetBundle` is gone and `Modules\Admin\Widgets\Forms\Fields\TenantIdField` reloads the
+  page.** The tenant select carried a script of its own that fetched the current URL with a `tenant` query parameter
+  and replaced the parent select's `innerHTML` — so it reached the parents and nothing else, leaving the slug field
+  spelling out the previous tenant's host. It uses `Skeleton\Widgets\Forms\Fields\Field::reloadsForm()` now, like
+  the type select, and the bundle ships no JavaScript at all. The field no longer writes `data-id="tenant"` or a
+  `data-value` per option.
+
+  With it, `EntryActiveForm::setTenantFromRequest()` is `setTenant()` and **the record's own `tenant_id` wins over
+  the request**. It did not: an entry belonging to one tenant, opened on the admin host of another, was silently
+  re-tenanted by the form before it rendered, and the reload's posted value would have been discarded the same way.
+  The request is still what seeds a *new* entry, through the `tenant` parameter or the admin's own host.
+
+- **`Models\Section::FIELD_ENTRIES` is `'entries'`, not `'#entries'`**, and a type hiding it takes the tab out of
+  `Modules\Admin\Widgets\Navs\SectionSubmenu` server-side rather than through a script; the same holds for the
+  asset tab of both submenus and `Media\Models\Interfaces\AssetModelInterface::FIELD_ASSETS`. A project naming the
+  marker through the constant needs no change.
+
+  `Modules\Admin\Widgets\Forms\Fields\EntryParentIdSelectField` renders nothing where it used to render a hidden
+  row for the tenant script to fill.
+
 - **Entry menus replace `Entry::$show_in_menu` and `$show_in_footer`.** A project needing a third navigation — a
   copyright row, the two halves of a header — had to add a column of its own, and the two that shipped cost two
   columns where one does the job. `entry.menu_ids` is a JSON list of the menus an entry is in, added by

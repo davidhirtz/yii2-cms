@@ -1,5 +1,23 @@
 # Upgrade Guide
 
+## 3.0 — The tenant select reloads the page
+
+`Assets\TenantDropdownAssetBundle` is gone, with the `resources/assets` tree behind it — the cms ships no
+JavaScript at all now. `Modules\Admin\Widgets\Forms\Fields\TenantIdField` uses
+`Skeleton\Widgets\Forms\Fields\Field::reloadsForm()` instead, so a tenant change re-renders the page rather than
+fetching it and replacing the parent select's `innerHTML`. The slug field's host follows the tenant now, which it
+never did.
+
+A project that subclassed the field to point `registerClientScript()` at a bundle of its own drops the override.
+The field no longer writes `data-id="tenant"` on the select or a `data-value` per option, and
+`Modules\Admin\Widgets\Forms\Fields\EntryParentIdSelectField` renders nothing where it used to render a hidden
+row for that script to fill — a stylesheet or test keyed on either changes.
+
+**`EntryActiveForm::setTenantFromRequest()` is `setTenant()`, and the record wins over the request.** An entry
+belonging to one tenant, opened on the admin host of another, was silently re-tenanted by the form before it
+rendered; the request is now only what seeds a *new* entry. A subclass overriding the old name has to be renamed,
+or its tenant is never applied.
+
 ## 3.0.0 — Entry menus replace `show_in_menu` and `show_in_footer`
 
 Two checkboxes could never answer the question a real project asks. Every installation that needed a third

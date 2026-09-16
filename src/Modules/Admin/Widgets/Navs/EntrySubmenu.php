@@ -90,7 +90,8 @@ class EntrySubmenu extends Submenu
                     ...$this->additionalActiveRoutes['assets'] ?? [],
                 ]
             )
-            ->url(EntryAsset::getAdminIndexRoute($this->model));
+            ->url(EntryAsset::getAdminIndexRoute($this->model))
+            ->visible($this->model->isAttributeVisible(Entry::FIELD_ASSETS));
     }
 
     public function getSubentriesItem(): ?NavItem

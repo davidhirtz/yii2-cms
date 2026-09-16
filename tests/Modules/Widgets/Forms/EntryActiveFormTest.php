@@ -21,7 +21,7 @@ class EntryActiveFormTest extends TestCase
 
         self::assertGreaterThan(
             strpos($content, 'name="Entry[name]"'),
-            strpos($content, 'data-id="tenant"'),
+            strpos($content, 'name="Entry[tenant_id]"'),
             'The tenant field is not rendered after the name field.'
         );
     }
@@ -32,7 +32,7 @@ class EntryActiveFormTest extends TestCase
 
         self::assertLessThan(
             strpos($content, 'name="Entry[name]"'),
-            strpos($content, 'data-id="tenant"'),
+            strpos($content, 'name="Entry[tenant_id]"'),
             'The tenant field is not rendered before the name field.'
         );
     }

@@ -130,13 +130,13 @@ class SectionCustomAttributesFunctionTest extends TestCase
         self::assertSame(TestSection::TYPE_HEADLINE, TestSection::findOne($section->id)->type);
     }
 
-    public function testTheTypeSelectCarriesTheFingerprints(): void
+    public function testTheTypeSelectReloadsThePage(): void
     {
         $section = $this->getSectionFromFixture('section-headline');
 
         $this->open("/admin/cms/section/update?id=$section->id");
 
-        self::assertSelectorExists('select[name="Section[type]"][data-fingerprint][hx-post]');
-        self::assertSelectorExists('select[name="Section[type]"] option[data-fingerprint]');
+        self::assertSelectorExists('select[name="Section[type]"][hx-post][hx-trigger="change"]');
+        self::assertSelectorExists('select[name="Section[type]"][hx-select="#wrap"][hx-target="#wrap"]');
     }
 }
