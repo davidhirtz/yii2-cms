@@ -12,7 +12,7 @@
   unchanged, and a section that allows a block but has none renders nothing at all.
   `Models\Types\SectionType::allowBlock()` is the opt-in, `Models\Types\BlockSectionType` the shipped type
   that allows nothing else, and `Modules\Admin\Widgets\Forms\Fields\BlockIdSelectField` the form field.
-  `Models\Builders\EntrySiteRelationsBuilder` loads the blocks of an entry's sections with their assets and
+  `Models\Actions\PreloadEntrySiteRelations` loads the blocks of an entry's sections with their assets and
   linked entries, in one extra query. `block.name` is a column rather than a custom attribute, so it can be
   sorted, searched and put in `i18nAttributes`.
 
@@ -47,6 +47,14 @@
   moves onto the shared `Modules\Admin\Controllers\Traits\EntryRelationControllerTrait`; its reorder body
   parameter is `entry-relation`. `Models\Traits\SectionRelationTrait` is gone — the owner is polymorphic now.
   See `UPGRADE.md`.
+
+- **`Models\Builders\EntrySiteRelationsBuilder` is `Models\Actions\PreloadEntrySiteRelations`** (monorepo issue
+  #136). It builds nothing: it loads everything an entry's site view needs in one pass and populates the
+  relations, so it joins the verb-first classes in `Models\Actions\` and `Models\Builders\` is gone with it.
+  The event renames too — `Models\Events\EntrySiteRelationsBuilderEvent` is `Models\Events\EntrySiteRelationsEvent`,
+  deliberately without the sender's name in it, so the next rename leaves subscribers alone. Nothing else moves:
+  the three `EVENT_AFTER_LOAD_*` constants, the public `$entry`, `$assets`, `$entries`, `$files` and `$fileIds`
+  properties and the work in `init()` are unchanged. See `UPGRADE.md`.
 
 - **`EntryAssetController` and `SectionAssetController` traded `duplicate` for a POST-only `remove` action**
   (monorepo issue #133): an entry or section holds a file once, so the file picker's button removes what it
@@ -202,7 +210,7 @@
   when the presets became `Transformation` objects
 
 - **The templates of `Widgets\Gallery`, `Widgets\SectionStack`, `Widgets\SectionGroup`, `Widgets\NavItems`,
-  `Models\Collections\CategoryCollection`, `Models\Builders\EntrySiteRelationsBuilder`, the three
+  `Models\Collections\CategoryCollection`, `Models\Actions\PreloadEntrySiteRelations`, the three
   `Models\Actions\Reorder*` classes and `Modules\Admin\Widgets\Forms\Fields\EntryParentIdSelectField` are
   gone.** Each was generic over its own model and nothing ever specialised it, so every `@return array<int, T>`
   was a promise the body could not keep — a project that wrote `Gallery<MyAsset>` drops the argument

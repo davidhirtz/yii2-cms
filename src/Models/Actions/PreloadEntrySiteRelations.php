@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\Models\Builders;
+namespace Hirtz\Cms\Models\Actions;
 
 use Hirtz\Cms\Models\Block;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Models\Entry;
-use Hirtz\Cms\Models\Events\EntrySiteRelationsBuilderEvent;
+use Hirtz\Cms\Models\Events\EntrySiteRelationsEvent;
 use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Models\EntryRelation;
 use Hirtz\Cms\Modules\ModuleTrait;
@@ -20,7 +20,7 @@ use Yii;
 use yii\base\Component;
 use yii\base\Event;
 
-class EntrySiteRelationsBuilder extends Component
+class PreloadEntrySiteRelations extends Component
 {
     use ModuleTrait;
 
@@ -117,7 +117,7 @@ class EntrySiteRelationsBuilder extends Component
     #[Override]
     public function trigger($name, ?Event $event = null): void
     {
-        parent::trigger($name, $event ?? new EntrySiteRelationsBuilderEvent());
+        parent::trigger($name, $event ?? new EntrySiteRelationsEvent());
     }
 
     protected function loadSections(): void

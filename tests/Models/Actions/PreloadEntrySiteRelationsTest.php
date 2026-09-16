@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\Tests\Models\Builders;
+namespace Hirtz\Cms\Tests\Models\Actions;
 
-use Hirtz\Cms\Models\Builders\EntrySiteRelationsBuilder;
+use Hirtz\Cms\Models\Actions\PreloadEntrySiteRelations;
 use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
 use Hirtz\Cms\Test\Models\TestEntry;
 use Hirtz\Cms\Test\TestCase;
 use Hirtz\Skeleton\Db\ActiveQuery;
 
-class EntrySiteRelationsBuilderTest extends TestCase
+class PreloadEntrySiteRelationsTest extends TestCase
 {
     use CmsFixtureTrait;
     use ModuleTrait;
@@ -30,7 +30,7 @@ class EntrySiteRelationsBuilderTest extends TestCase
         $entry = $this->getEntryFromFixture('page-enabled');
         ActiveQuery::setStatus(TestEntry::STATUS_ENABLED);
 
-        $builder = new EntrySiteRelationsBuilder(['entry' => $entry]);
+        $preload = new PreloadEntrySiteRelations(['entry' => $entry]);
 
         self::assertTrue($entry->isRelationPopulated('sections'));
         self::assertTrue($entry->isRelationPopulated('assets'));
@@ -58,9 +58,9 @@ class EntrySiteRelationsBuilderTest extends TestCase
         self::assertTrue($asset->isRelationPopulated('file'));
         self::assertSame($section->id, $asset->model->id);
 
-        self::assertCount(4, $builder->assets);
-        self::assertCount(4, $builder->files);
-        self::assertCount(1, $builder->entries);
+        self::assertCount(4, $preload->assets);
+        self::assertCount(4, $preload->files);
+        self::assertCount(1, $preload->entries);
     }
 
     public function testDraftEntry(): void
@@ -69,7 +69,7 @@ class EntrySiteRelationsBuilderTest extends TestCase
 
         $entry = $this->getEntryFromFixture('page-enabled');
 
-        $builder = new EntrySiteRelationsBuilder(['entry' => $entry]);
+        $preload = new PreloadEntrySiteRelations(['entry' => $entry]);
 
         self::assertCount(4, $entry->sections);
         self::assertCount(2, $entry->assets);
@@ -79,9 +79,9 @@ class EntrySiteRelationsBuilderTest extends TestCase
 
         self::assertCount(3, $section->assets);
 
-        self::assertCount(6, $builder->assets);
-        self::assertCount(6, $builder->files);
-        self::assertCount(2, $builder->entries);
+        self::assertCount(6, $preload->assets);
+        self::assertCount(6, $preload->files);
+        self::assertCount(2, $preload->entries);
 
         $section = $this->getSectionFromFixture('section-blog-draft');
         $blog = $entry->sections[$section->id];
@@ -103,10 +103,10 @@ class EntrySiteRelationsBuilderTest extends TestCase
         $entry = $this->getEntryFromFixture('post-1');
         ActiveQuery::setStatus(TestEntry::STATUS_ENABLED);
 
-        $builder = new EntrySiteRelationsBuilder(['entry' => $entry]);
+        $preload = new PreloadEntrySiteRelations(['entry' => $entry]);
 
         self::assertTrue($entry->isRelationPopulated('parent'));
-        self::assertCount(2, $builder->entries);
+        self::assertCount(2, $preload->entries);
     }
 
     public function testDescendantEntryWithoutLoadingAncestors(): void
@@ -114,12 +114,12 @@ class EntrySiteRelationsBuilderTest extends TestCase
         $entry = $this->getEntryFromFixture('post-1');
         ActiveQuery::setStatus(TestEntry::STATUS_ENABLED);
 
-        $builder = new EntrySiteRelationsBuilder([
+        $preload = new PreloadEntrySiteRelations([
             'autoloadEntryAncestors' => false,
             'entry' => $entry,
         ]);
 
         self::assertNull($entry->parent);
-        self::assertCount(1, $builder->entries);
+        self::assertCount(1, $preload->entries);
     }
 }

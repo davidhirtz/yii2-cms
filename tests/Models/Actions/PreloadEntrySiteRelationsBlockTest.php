@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\Tests\Models\Builders;
+namespace Hirtz\Cms\Tests\Models\Actions;
 
 use Hirtz\Cms\Models\Block;
 use Hirtz\Cms\Models\BlockAsset;
 use Hirtz\Cms\Models\BlockEntry;
-use Hirtz\Cms\Models\Builders\EntrySiteRelationsBuilder;
+use Hirtz\Cms\Models\Actions\PreloadEntrySiteRelations;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Models\Types\BlockSectionType;
 use Hirtz\Cms\Models\Types\SectionType;
@@ -19,7 +19,7 @@ use Hirtz\Skeleton\Db\ActiveQuery;
 use Override;
 use Yii;
 
-class EntrySiteRelationsBuilderBlockTest extends TestCase
+class PreloadEntrySiteRelationsBlockTest extends TestCase
 {
     use CmsFixtureTrait;
     use ModuleTrait;
@@ -69,7 +69,7 @@ class EntrySiteRelationsBuilderBlockTest extends TestCase
         self::assertTrue($section->insert(), print_r($section->getErrors(), true));
 
         $entry = $this->getEntryFromFixture('page-enabled');
-        new EntrySiteRelationsBuilder(['entry' => $entry]);
+        new PreloadEntrySiteRelations(['entry' => $entry]);
 
         $sections = array_filter($entry->sections, fn (Section $section): bool => (bool)$section->block_id);
         $section = reset($sections);

@@ -90,6 +90,42 @@ The message keys `SECTION_ENTRY_ADD_TO_SECTION`, `SECTION_ENTRY_CREATE_BUTTON`, 
 `REORDER_SECTION_ENTRIES_LINKED` are replaced by `ENTRY_RELATION_*` and `REORDER_ENTRY_RELATIONS_LINKED`, whose
 copy names no model.
 
+## 3.0 — The entry site preloader is renamed
+
+`Models\Builders\EntrySiteRelationsBuilder` is `Models\Actions\PreloadEntrySiteRelations` (monorepo issue #136),
+and `Models\Builders\` is gone. The class builds nothing — it loads everything an entry's site view needs in one
+pass and populates the relations — so it belongs with the other verb-first classes in `Models\Actions\`.
+
+| was                                                      | is                                                       |
+|----------------------------------------------------------|----------------------------------------------------------|
+| `Hirtz\Cms\Models\Builders\EntrySiteRelationsBuilder`      | `Hirtz\Cms\Models\Actions\PreloadEntrySiteRelations`      |
+| `Hirtz\Cms\Models\Events\EntrySiteRelationsBuilderEvent`   | `Hirtz\Cms\Models\Events\EntrySiteRelationsEvent`         |
+| `Cms\Hotspot\Events\HotspotEntrySiteRelationsBuilderEventHandler` | `Cms\Hotspot\Events\HotspotEntrySiteRelationsEventHandler` |
+| `Cms\Shopify\Events\ProductEntrySiteRelationsBuilderEventHandler` | `Cms\Shopify\Events\ProductEntrySiteRelationsEventHandler` |
+
+The event drops the sender's name on purpose, so the next rename of the class leaves every subscriber alone.
+
+**Nothing else changes.** The three `EVENT_AFTER_LOAD_*` constants keep their names and their values, the public
+`$entry`, `$assets`, `$entries`, `$files`, `$fileIds` and `$autoloadEntryAncestors` properties are unchanged, and
+the work still happens in `init()` — so a project only rewrites the class names it spells out itself: an
+`Event::on()` or `EventHelper::on()` call, a `Yii::$container` definition or a subclass.
+
+```php
+// was
+Event::on(
+    EntrySiteRelationsBuilder::class,
+    EntrySiteRelationsBuilder::EVENT_AFTER_LOAD_ENTRIES,
+    new MyEntrySiteRelationsBuilderEventHandler(),
+);
+
+// is
+Event::on(
+    PreloadEntrySiteRelations::class,
+    PreloadEntrySiteRelations::EVENT_AFTER_LOAD_ENTRIES,
+    new MyEntrySiteRelationsEventHandler(),
+);
+```
+
 ## 3.0 — The entry form's tenant row moved into the declaration
 
 `Modules\Admin\Widgets\Forms\EntryActiveForm::getRowsAsGroups()` is gone with the ambiguous row shape it existed

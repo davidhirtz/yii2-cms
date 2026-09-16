@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Controllers;
 
-use Hirtz\Cms\Models\Builders\EntrySiteRelationsBuilder;
+use Hirtz\Cms\Models\Actions\PreloadEntrySiteRelations;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Module;
@@ -80,7 +80,7 @@ class SiteController extends Controller
 
     protected function populateEntryRelations(Entry $entry): void
     {
-        Yii::$container->get(EntrySiteRelationsBuilder::class, config: [
+        Yii::$container->get(PreloadEntrySiteRelations::class, config: [
             'entry' => $entry,
         ]);
     }
