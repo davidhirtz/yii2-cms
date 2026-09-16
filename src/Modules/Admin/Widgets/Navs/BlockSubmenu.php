@@ -38,22 +38,13 @@ class BlockSubmenu extends Submenu
     protected function configure(): void
     {
         $this->addItem(
-            $this->getBlocksItem(),
             $this->getBlockUpdateItem(),
-            $this->getSectionsItem(),
             $this->getEntriesItem(),
             $this->getAssetsItem(),
+            $this->getSectionsItem(),
         );
 
         parent::configure();
-    }
-
-    protected function getBlocksItem(): ?NavItem
-    {
-        return NavItem::make()
-            ->icon('angle-double-left')
-            ->label(Yii::t('cms', 'COMMON_BLOCKS'))
-            ->url(['/admin/cms/block/index']);
     }
 
     protected function getBlockUpdateItem(): ?NavItem
