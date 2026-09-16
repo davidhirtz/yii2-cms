@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Controllers;
 
+use Hirtz\Skeleton\Web\Traits\StatusControllerTrait;
 use Hirtz\Skeleton\Widgets\Flashes;
 use Hirtz\Cms\Models\Actions\CreateSectionSet;
 use Hirtz\Cms\Models\Actions\DeleteSections;
@@ -29,6 +30,7 @@ class SectionController extends AbstractController
 {
     use EntryControllerTrait;
     use SectionControllerTrait;
+    use StatusControllerTrait;
 
     /**
      * @var bool whether sections should be automatically inserted in {@see static::actionCreate()}.
@@ -55,6 +57,7 @@ class SectionController extends AbstractController
                             'index',
                             'move',
                             'order',
+                            'status',
                             'update',
                             'update-all',
                         ],
@@ -71,6 +74,7 @@ class SectionController extends AbstractController
                     'duplicate' => ['post'],
                     'order' => ['post'],
                     'move' => ['post'],
+                    'status' => ['post'],
                 ],
             ],
         ];
@@ -220,6 +224,11 @@ class SectionController extends AbstractController
 
         $this->success(Yii::t('cms', 'SECTION_SUCCESS_DUPLICATED'));
         return $this->redirect(['update', 'id' => $duplicate->id]);
+    }
+
+    public function actionStatus(int $id): Response
+    {
+        return $this->updateStatus($this->findSection($id));
     }
 
     public function actionDelete(int $id): Response|string

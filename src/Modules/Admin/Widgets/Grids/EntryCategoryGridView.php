@@ -12,6 +12,7 @@ use Hirtz\Skeleton\Widgets\Buttons\Button;
 use Hirtz\Skeleton\Widgets\Grids\Columns\ButtonColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Column;
 use Hirtz\Skeleton\Widgets\Grids\Columns\RelativeTimeColumn;
+use Hirtz\Skeleton\Widgets\Grids\GridSummary;
 use Hirtz\Skeleton\Widgets\Grids\GridView;
 use Override;
 use Stringable;
@@ -35,8 +36,14 @@ class EntryCategoryGridView extends GridView
     {
         $this->initAncestors();
 
+        $this->attributes['id'] ??= 'entry-category-grid-view';
+
         $this->rowAttributes ??= fn (Category $category) => [
             'class' => $category->entryCategory ? 'is-selected' : null,
+        ];
+
+        $this->header ??= [
+            $this->getSearchInput(),
         ];
 
         $this->columns ??= [
@@ -50,6 +57,13 @@ class EntryCategoryGridView extends GridView
         ];
 
         parent::configure();
+    }
+
+    #[Override]
+    protected function getSummary(): ?GridSummary
+    {
+        return parent::getSummary()
+            ->emptyMessage(Yii::t('cms', 'ENTRY_CATEGORY_GRID_SUMMARY_EMPTY'));
     }
 
     protected function getUpdatedAtColumn(): ?Column

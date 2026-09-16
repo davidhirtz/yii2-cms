@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Controllers;
 
+use Hirtz\Skeleton\Web\Traits\StatusControllerTrait;
 use Hirtz\Skeleton\Widgets\Flashes;
 use Hirtz\Cms\Models\Actions\ReorderCategories;
 use Hirtz\Cms\Models\Category;
@@ -20,6 +21,7 @@ use yii\web\ServerErrorHttpException;
 class CategoryController extends AbstractController
 {
     use CategoryControllerTrait;
+    use StatusControllerTrait;
 
     #[Override]
     public function behaviors(): array
@@ -31,7 +33,7 @@ class CategoryController extends AbstractController
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['create', 'delete', 'index', 'order', 'update'],
+                        'actions' => ['create', 'delete', 'index', 'order', 'status', 'update'],
                         'roles' => [Category::AUTH_CATEGORY],
                     ],
                 ],
@@ -41,6 +43,7 @@ class CategoryController extends AbstractController
                 'actions' => [
                     'delete' => ['post'],
                     'order' => ['post'],
+                    'status' => ['post'],
                 ],
             ],
         ];
@@ -96,6 +99,11 @@ class CategoryController extends AbstractController
         return $this->render('update', [
             'category' => $category,
         ]);
+    }
+
+    public function actionStatus(int $id): Response
+    {
+        return $this->updateStatus($this->findCategory($id));
     }
 
     public function actionDelete(int $id): Response|string

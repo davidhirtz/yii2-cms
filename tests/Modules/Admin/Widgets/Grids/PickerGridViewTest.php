@@ -111,6 +111,24 @@ class PickerGridViewTest extends TestCase
         );
     }
 
+    /**
+     * The picker lists every category in the installation, so it needs the search the category index has —
+     * `EntryCategoryController::actionIndex()` has always taken the `q` parameter, only the input was missing.
+     */
+    public function testTheCategoryPickerHasASearchInput(): void
+    {
+        $this->login();
+
+        // The grid reads the keyword off the request, the controller off its action parameter.
+        $this->getWebRequest()->setQueryParams(['entry' => 1, 'q' => 'Child']);
+        $html = Yii::$app->runAction('admin/cms/entry-category/index', ['entry' => 1, 'q' => 'Child']);
+
+        self::assertIsString($html);
+        self::assertStringContainsString('name="q" value="Child"', $html);
+        self::assertStringContainsString('<mark>Child</mark> category 1', $html);
+        self::assertStringNotContainsString('Root category 2', $html);
+    }
+
     public function testTheFilePickerLinksToTheFileOnlyThroughItsButton(): void
     {
         $this->login();
@@ -124,6 +142,25 @@ class PickerGridViewTest extends TestCase
         self::assertStringContainsString('<div class="badge">1</div>', $html);
 
         $this->assertRecordLinksOpenInANewTab($html, '/admin/media/file/update');
+    }
+
+    /**
+     * A picker must not change what it lists — the flow the user is in is picking, not editing — so the status icon
+     * stays an icon there and is the cycle button only on the index.
+     */
+    public function testTheStatusIconCyclesOnTheIndexButNotInAPicker(): void
+    {
+        $this->login();
+
+        $html = Yii::$app->runAction('admin/cms/entry/index');
+
+        self::assertIsString($html);
+        self::assertStringContainsString('hx-post="/admin/cms/entry/status?id=1"', $html);
+
+        $html = Yii::$app->runAction('admin/cms/section-entry/create', ['section' => 3]);
+
+        self::assertIsString($html);
+        self::assertStringNotContainsString('/admin/cms/entry/status', $html);
     }
 
     /**

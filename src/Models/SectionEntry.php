@@ -26,7 +26,6 @@ use Hirtz\Skeleton\Models\Interfaces\TrailModelInterface;
  * @property int $section_id
  * @property int $entry_id
  * @property int $position
- * @property int|null $updated_by_user_id
  * @property DateTime $updated_at
  */
 class SectionEntry extends \Hirtz\Skeleton\Db\ActiveRecord

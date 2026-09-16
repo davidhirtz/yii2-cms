@@ -12,6 +12,7 @@ use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Modules\Admin\Controllers\Traits\EntryControllerTrait;
 use Hirtz\Cms\Modules\Admin\Data\EntryActiveDataProvider;
 use Hirtz\Skeleton\Helpers\Url;
+use Hirtz\Skeleton\Web\Traits\StatusControllerTrait;
 use Hirtz\Skeleton\Widgets\Flashes;
 use Override;
 use Yii;
@@ -23,6 +24,7 @@ use yii\web\Response;
 class EntryController extends AbstractController
 {
     use EntryControllerTrait;
+    use StatusControllerTrait;
 
     #[Override]
     public function behaviors(): array
@@ -41,6 +43,7 @@ class EntryController extends AbstractController
                             'index',
                             'order',
                             'replace-index',
+                            'status',
                             'update',
                             'update-all',
                         ],
@@ -55,6 +58,7 @@ class EntryController extends AbstractController
                     'duplicate' => ['post'],
                     'replace-index' => ['post'],
                     'order' => ['post'],
+                    'status' => ['post'],
                     'update-all' => ['post'],
                 ],
             ],
@@ -184,6 +188,11 @@ class EntryController extends AbstractController
 
         $this->error($entry);
         return $this->redirectToEntry($entry);
+    }
+
+    public function actionStatus(int $id): Response
+    {
+        return $this->updateStatus($this->findEntry($id));
     }
 
     public function actionDelete(int $id): Response|string

@@ -38,7 +38,6 @@ use Yii;
  * @property int $status
  * @property int $type
  * @property int|false|null $position
- * @property int|null $updated_by_user_id
  * @property DateTime|null $updated_at
  * @property DateTime $created_at
  *

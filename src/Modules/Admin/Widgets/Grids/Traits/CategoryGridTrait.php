@@ -30,7 +30,10 @@ trait CategoryGridTrait
 
     protected function getStatusColumn(): ?Column
     {
-        return StatusIconColumn::make();
+        return StatusIconColumn::make()
+            ->enableUpdate($this->enableStatusUpdate
+                && !$this->isPicker()
+                && $this->webuser->can(Category::AUTH_CATEGORY));
     }
 
     protected function getTypeColumn(): ?Column

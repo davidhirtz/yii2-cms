@@ -25,6 +25,7 @@ use Hirtz\Skeleton\Widgets\Grids\Columns\Column;
 use Hirtz\Skeleton\Widgets\Grids\Columns\DataColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\StatusIconColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\TypeColumn;
+use Hirtz\Skeleton\Widgets\Grids\GridSummary;
 use Hirtz\Skeleton\Widgets\Grids\GridView;
 use Hirtz\Skeleton\Widgets\Grids\Toolbars\GridFooter;
 use Hirtz\Skeleton\Widgets\Grids\Toolbars\GridToolbarItem;
@@ -45,7 +46,7 @@ class SectionGridView extends GridView
     public bool $showDeleteButton = false;
     public bool $showSelection = true;
 
-    protected string $layout = '{items}';
+    protected string $layout = '{summary}{items}';
 
     #[Override]
     protected function configure(): void
@@ -75,6 +76,14 @@ class SectionGridView extends GridView
         }
 
         parent::configure();
+    }
+
+    #[Override]
+    protected function getSummary(): ?GridSummary
+    {
+        return parent::getSummary()
+            ->emptyMessage(Yii::t('cms', 'SECTION_GRID_SUMMARY_EMPTY'))
+            ->visible(fn (): bool => $this->provider->getCount() === 0);
     }
 
     protected function getCheckboxColumn(): ?Column
@@ -109,8 +118,12 @@ class SectionGridView extends GridView
 
     protected function getStatusColumn(): ?Column
     {
-        return StatusIconColumn::make()
-            ->url(fn (Section $model) => $model->getAdminRoute());
+        $column = StatusIconColumn::make();
+
+        // The icon is either the link to the section or the button that cycles its status, never both.
+        return $this->enableStatusUpdate && $this->webuser->can(Entry::AUTH_ENTRY)
+            ? $column->enableUpdate(true)
+            : $column->url(fn (Section $model) => $model->getAdminRoute());
     }
 
     protected function getTypeColumn(): ?Column

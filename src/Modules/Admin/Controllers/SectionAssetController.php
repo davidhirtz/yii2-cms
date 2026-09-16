@@ -35,7 +35,7 @@ class SectionAssetController extends Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['create', 'delete', 'duplicate', 'index', 'order', 'update'],
+                        'actions' => ['create', 'delete', 'duplicate', 'index', 'order', 'status', 'update'],
                         'roles' => [Entry::AUTH_ENTRY],
                     ],
                 ],
@@ -68,6 +68,11 @@ class SectionAssetController extends Controller
     public function actionDelete(int $id): Response|string
     {
         return $this->deleteAsset($this->findSectionAsset($id));
+    }
+
+    public function actionStatus(int $id): Response
+    {
+        return $this->updateStatus($this->findSectionAsset($id));
     }
 
     public function actionDuplicate(int $id): Response|string

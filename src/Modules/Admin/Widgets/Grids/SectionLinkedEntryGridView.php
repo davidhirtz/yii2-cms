@@ -8,6 +8,7 @@ use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Modules\Admin\Controllers\SectionEntryController;
 use Hirtz\Cms\Modules\Admin\Data\EntryActiveDataProvider;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\DeleteGridButton;
+use Hirtz\Skeleton\Widgets\Grids\GridSummary;
 use Override;
 use Stringable;
 use Traversable;
@@ -43,12 +44,20 @@ class SectionLinkedEntryGridView extends EntryGridView
             ];
         };
 
-        $this->layout = $this->provider->section->entry_count ? '{items}{footer}' : '{footer}';
+        $this->layout = $this->provider->section->entry_count ? '{items}{footer}' : '{summary}{footer}';
 
         /** @see SectionEntryController::actionOrder() */
         $this->orderRoute = ['order', 'section' => $this->provider->section->id];
 
         parent::configure();
+    }
+
+    #[Override]
+    protected function getSummary(): ?GridSummary
+    {
+        return parent::getSummary()
+            ->emptyMessage(Yii::t('cms', 'SECTION_ENTRY_GRID_SUMMARY_EMPTY'))
+            ->visible(fn (): bool => $this->provider->getCount() === 0);
     }
 
     /**

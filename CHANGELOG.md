@@ -1,5 +1,21 @@
 ## 3.0 (in development)
 
+- **`EntryController`, `CategoryController`, `SectionController`, `EntryAssetController` and
+  `SectionAssetController` gained a POST-only `status` action** that cycles the record's status, which the grid's
+  status icon posts to (monorepo issue #121). A project overriding one of those `behaviors()` has to add `status`
+  to its access rule and its verbs. The entry, category and section grids offer it, the pickers do not.
+
+- **The tenant filter is dropped from `Modules\Admin\Widgets\Grids\EntryGridView` while it lists the children of
+  an entry** (monorepo issue #123): they all belong to their parent's tenant, so the filter could only empty the
+  grid.
+
+- **`EntryCategoryGridView` renders the search input** (monorepo issue #124). `EntryCategoryController::actionIndex()`
+  had always taken the `q` parameter; only the input was missing, and the picker lists every category in the
+  installation.
+
+- **`SectionGridView`, `SectionLinkedEntryGridView` and `EntryCategoryGridView` explain themselves while empty**
+  (monorepo issue #119), through `GridView::emptyMessage()`.
+
 - **A section, entry or category built from a known type goes through `instantiateByType()`** (monorepo issue
   #105), so a type declaring a model class of its own gets it: `Models\Actions\CreateSectionSet` (the template
   names the type) and `Modules\Admin\Controllers\SetupController`, whose attribute arrays a project declares and

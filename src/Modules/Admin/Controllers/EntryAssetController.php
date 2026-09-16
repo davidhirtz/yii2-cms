@@ -34,7 +34,7 @@ class EntryAssetController extends Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['create', 'delete', 'duplicate', 'index', 'order', 'update'],
+                        'actions' => ['create', 'delete', 'duplicate', 'index', 'order', 'status', 'update'],
                         'roles' => [Entry::AUTH_ENTRY],
                     ],
                 ],
@@ -67,6 +67,11 @@ class EntryAssetController extends Controller
     public function actionDelete(int $id): Response|string
     {
         return $this->deleteAsset($this->findEntryAsset($id));
+    }
+
+    public function actionStatus(int $id): Response
+    {
+        return $this->updateStatus($this->findEntryAsset($id));
     }
 
     public function actionDuplicate(int $id): Response|string

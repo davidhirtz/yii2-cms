@@ -26,7 +26,6 @@ use Yii;
  * @property int $entry_id
  * @property int $category_id
  * @property int $position
- * @property int|null $updated_by_user_id
  * @property DateTime $updated_at
  *
  * @mixin TrailBehavior

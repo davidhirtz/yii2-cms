@@ -115,10 +115,15 @@ class EntryGridView extends GridView
     }
 
     /**
-     * A single-tenant project gets no dropdown at all.
+     * A single-tenant project gets no dropdown at all, and neither does a grid already scoped to one entry's
+     * children — they all belong to its tenant, so the filter could only empty the grid.
      */
     protected function getTenantDropdown(): ?Stringable
     {
+        if ($this->provider->parent) {
+            return null;
+        }
+
         $items = $this->getTenantDropdownItems();
 
         if (count($items) < 2) {
@@ -158,7 +163,10 @@ class EntryGridView extends GridView
 
     protected function getStatusColumn(): ?Column
     {
-        return StatusIconColumn::make();
+        return StatusIconColumn::make()
+            ->enableUpdate($this->enableStatusUpdate
+                && !$this->isPicker()
+                && $this->webuser->can(Entry::AUTH_ENTRY));
     }
 
     protected function getTypeColumn(): ?Column
