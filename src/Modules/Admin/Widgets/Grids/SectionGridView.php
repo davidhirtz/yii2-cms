@@ -126,7 +126,7 @@ class SectionGridView extends GridView
 
     protected function getNameColumnContent(Section $section): Stringable|string
     {
-        $html = $section->getNameColumnContent();
+        $html = $section->getGridContent();
         $cssClass = null;
 
         if (!$html) {

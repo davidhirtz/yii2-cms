@@ -184,7 +184,7 @@
   `cssClass()`); `Models\Types\EntryType` adds `orderBy()`, `sort()`, `showCategories()`,
   `showCategoryDropdown()`, `showInMenu()` and `showInFooter()`; `Models\Types\SectionType` adds the four
   `Widgets\SectionStack` stages — `visible()`, `group()`, `wrapper()`, `collect()` — plus `entriesOrderBy()`,
-  `entriesTypes()` and `nameColumn()`; `Models\Types\CategoryType` adds nothing. `EntryType` and `SectionType`
+  `entriesTypes()` and `gridContent()`; `Models\Types\CategoryType` adds nothing. `EntryType` and `SectionType`
   also carry the media `sizes()` and `transformations()`. `SectionType::entriesTypes()` is validated against the
   entry's own declarations, which the array never was. `Models\Section::FIELD_ENTRIES` replaces the magic
   `'#entries'` string, and `Models\Traits\MetaImageTrait::getMetaImageTypeOptions()` is `getMetaImageTypes()`,

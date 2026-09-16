@@ -38,7 +38,7 @@ class SectionType extends Type implements AssetModelTypeInterface
      */
     protected array $entriesTypes = [];
 
-    protected Closure|string|null $nameColumn = null;
+    protected Closure|string|null $gridContent = null;
 
     /**
      * @param Closure(Section): bool|bool $visible whether the section is rendered on the site; a type declaring
@@ -93,11 +93,13 @@ class SectionType extends Type implements AssetModelTypeInterface
     }
 
     /**
-     * @param Closure(Section): ?string|string|null $nameColumn
+     * What the admin grid shows for a section of this type, in place of its name.
+     *
+     * @param Closure(Section): ?string|string|null $gridContent
      */
-    public function nameColumn(Closure|string|null $nameColumn): static
+    public function gridContent(Closure|string|null $gridContent): static
     {
-        $this->nameColumn = $nameColumn;
+        $this->gridContent = $gridContent;
         return $this;
     }
 
@@ -137,9 +139,9 @@ class SectionType extends Type implements AssetModelTypeInterface
         return $this->entriesTypes ?: null;
     }
 
-    public function getNameColumn(): Closure|string|null
+    public function getGridContent(): Closure|string|null
     {
-        return $this->nameColumn;
+        return $this->gridContent;
     }
 
     #[Override]

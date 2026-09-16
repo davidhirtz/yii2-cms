@@ -318,10 +318,10 @@ class Section extends ActiveRecord implements AssetModelInterface, SearchableInt
         return Yii::t('cms', 'COMMON_SECTION');
     }
 
-    public function getNameColumnContent(): ?string
+    public function getGridContent(): ?string
     {
-        $nameColumn = $this->getType()?->getNameColumn();
-        return $nameColumn instanceof Closure ? $nameColumn($this) : $nameColumn;
+        $content = $this->getType()?->getGridContent();
+        return $content instanceof Closure ? $content($this) : $content;
     }
 
     public function getAdminRoute(): array|false

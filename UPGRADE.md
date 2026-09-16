@@ -229,7 +229,7 @@ Read the skeleton's guide on typed type definitions first, and the media one for
 | `wrapper(Closure\|string\|null)`       | `getWrapper()`        | stage 4                             |
 | `entriesOrderBy(?array)`               | `getEntriesOrderBy()` | `Section::getEntriesOrderBy()`      |
 | `entriesTypes(int ...)`                | `getEntriesTypes()`   | `Section::getEntriesTypes()`, `Modules\Admin\Widgets\Grids\SectionEntryGridView` |
-| `nameColumn(Closure\|string\|null)`    | `getNameColumn()`     | `Section::getNameColumnContent()`   |
+| `gridContent(Closure\|string\|null)`   | `getGridContent()`    | `Section::getGridContent()`         |
 
 `visible()` keeps the meaning the section stack gave it — whether the section is *rendered on the site*. Whether
 a type is offered in the admin is the base class's `available()`.
