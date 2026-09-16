@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Modules\Admin\Widgets\Grids;
 
 use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Modules\Admin\Controllers\Traits\EntryRelationControllerTrait;
 use Hirtz\Skeleton\Models\Types\Type;
 use Hirtz\Skeleton\Widgets\Buttons\Button;
 use Hirtz\Skeleton\Widgets\Grids\Toolbars\TypeFilterDropdown;
@@ -16,7 +17,7 @@ use Yii;
 /**
  * @extends EntryGridView<Entry>
  */
-class SectionEntryGridView extends EntryGridView
+class EntryRelationGridView extends EntryGridView
 {
     protected string $layout = '{header}{summary}{items}{pager}';
 
@@ -24,7 +25,7 @@ class SectionEntryGridView extends EntryGridView
     protected function configure(): void
     {
         $this->rowAttributes ??= fn (Entry $entry) => [
-            'class' => $entry->sectionEntry ? ['is-selected'] : [],
+            'class' => $entry->entryRelation ? ['is-selected'] : [],
         ];
 
         parent::configure();
@@ -45,7 +46,7 @@ class SectionEntryGridView extends EntryGridView
     protected function getTypeDropdownItems(): array
     {
         $items = Entry::instance()::getTypeDefinitions();
-        $entryTypes = $this->provider->section->getEntriesTypes();
+        $entryTypes = $this->provider->relatedModel?->getEntriesTypes();
 
         if ($entryTypes !== null) {
             $items = array_intersect_key($items, array_flip($entryTypes));
@@ -61,7 +62,7 @@ class SectionEntryGridView extends EntryGridView
     }
 
     /**
-     * @see SectionEntryController::actionCreate()
+     * @see EntryRelationControllerTrait::actionCreate()
      * @return Traversable<int, Stringable>
      */
     #[Override]
@@ -71,18 +72,19 @@ class SectionEntryGridView extends EntryGridView
 
         $canUpdate = $this->webuser->can(Entry::AUTH_ENTRY);
 
-        if (!$canUpdate || $entry->sectionEntry) {
+        if (!$canUpdate || $entry->entryRelation) {
             return;
         }
 
-        $allowedTypes = $this->provider->section->getEntriesTypes();
+        $model = $this->provider->relatedModel;
+        $allowedTypes = $model?->getEntriesTypes();
 
-        if ($allowedTypes === null || in_array($entry->type, $allowedTypes, true)) {
+        if ($model && ($allowedTypes === null || in_array($entry->type, $allowedTypes, true))) {
             yield Button::make()
                 ->primary()
                 ->icon('star')
-                ->tooltip(Yii::t('cms', 'SECTION_ENTRY_ADD_TO_SECTION'))
-                ->post(['section-entry/create', 'section' => $this->provider->section->id, 'entry' => $entry->id]);
+                ->tooltip(Yii::t('cms', 'ENTRY_RELATION_ADD_TO_MODEL'))
+                ->post(['create', $model->getParamName() => $model->id, 'entry' => $entry->id]);
         }
     }
 

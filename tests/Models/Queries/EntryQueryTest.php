@@ -139,7 +139,7 @@ class EntryQueryTest extends TestCase
     public function testWhereSectionJoinsTheLinkedEntries(): void
     {
         $section = Section::findOne(3);
-        $names = $this->getNames(TestEntry::find()->whereSection($section));
+        $names = $this->getNames(TestEntry::find()->whereRelatedModel($section));
 
         self::assertContains('Test Page – Enabled', $names);
         self::assertNotContains('Test Page – Disabled', $names);
@@ -149,8 +149,8 @@ class EntryQueryTest extends TestCase
     {
         $section = Section::findOne(3);
 
-        $inner = $this->getNames(TestEntry::find()->whereSection($section));
-        $left = $this->getNames(TestEntry::find()->whereSection($section, 'LEFT JOIN'));
+        $inner = $this->getNames(TestEntry::find()->whereRelatedModel($section));
+        $left = $this->getNames(TestEntry::find()->whereRelatedModel($section, 'LEFT JOIN'));
 
         self::assertGreaterThan(count($inner), count($left));
     }

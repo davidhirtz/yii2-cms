@@ -9,19 +9,23 @@ declare(strict_types=1);
  * @var EntryActiveDataProvider $provider
  */
 
+use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Data\EntryActiveDataProvider;
-use Hirtz\Cms\Modules\Admin\Widgets\Grids\SectionEntryGridView;
+use Hirtz\Cms\Modules\Admin\Widgets\Grids\EntryRelationGridView;
 use Hirtz\Cms\Modules\Admin\Widgets\Navs\SectionHeader;
 use Hirtz\Cms\Modules\Admin\Widgets\Navs\SectionSubmenu;
 use Hirtz\Skeleton\Web\View;
 use Hirtz\Skeleton\Widgets\Grids\GridContainer;
 
+/** @var Section $section */
+$section = $provider->relatedModel;
+
 echo SectionHeader::make()
-    ->model($provider->section);
+    ->model($section);
 
 echo SectionSubmenu::make()
-    ->model($provider->section);
+    ->model($section);
 
 echo GridContainer::make()
-    ->grid(SectionEntryGridView::make()
+    ->grid(EntryRelationGridView::make()
         ->provider($provider));

@@ -1,5 +1,23 @@
 ## 3.0 (in development)
 
+- **The section-entry link is polymorphic** (monorepo issue #109). `section_entry` is `entry_relation`, keyed by
+  `model_class` / `model_id` the way `asset`, `trail` and `translation` are, so a second model can link entries
+  through the same table. `Models\EntryRelation` is the base, `Models\SectionEntry` a subclass scoped to its
+  `model_class`, and `Module::$entryRelations` the registry `instantiate()` dispatches on. A model that links
+  entries implements `Models\Interfaces\EntryRelationModelInterface` and uses
+  `Models\Traits\EntryRelationModelTrait`; its type implements `Models\Interfaces\EntryRelationTypeInterface`
+  through `Models\Types\Traits\EntryRelationTypeTrait`, which is where `SectionType`'s `allowEntries()`,
+  `entriesTypes()` and `entriesOrderBy()` now live. Renamed with it: `$section->sectionEntries` →
+  `$section->entryRelations`, `$entry->sectionEntry` → `$entry->entryRelation`,
+  `EntryQuery::whereSection()` → `whereRelatedModel()`, `EntryActiveDataProvider::$section` → `$relatedModel`
+  (and `$innerJoinSection` → `$innerJoinRelatedModel`), `Models\Actions\ReorderSectionEntries` →
+  `ReorderEntryRelations`, `SectionEntryGridView` → `EntryRelationGridView`, `SectionLinkedEntryGridView` →
+  `LinkedEntryGridView`, `Columns\SectionEntryCountColumn` → `EntryRelationCountColumn`,
+  `Buttons\SectionEntryCreateButton` → `EntryRelationCreateButton`. `SectionEntryController` keeps its route and
+  moves onto the shared `Modules\Admin\Controllers\Traits\EntryRelationControllerTrait`; its reorder body
+  parameter is `entry-relation`. `Models\Traits\SectionRelationTrait` is gone — the owner is polymorphic now.
+  See `UPGRADE.md`.
+
 - **`EntryAssetController` and `SectionAssetController` traded `duplicate` for a POST-only `remove` action**
   (monorepo issue #133): an entry or section holds a file once, so the file picker's button removes what it
   already has rather than adding a second row, and duplicating an asset onto its own record no longer means

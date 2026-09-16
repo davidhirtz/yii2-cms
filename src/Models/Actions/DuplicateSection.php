@@ -59,24 +59,24 @@ class DuplicateSection extends DuplicateActiveRecord
         }
 
         if ($this->model->entry_count) {
-            $this->duplicateSectionEntries();
+            $this->duplicateEntryRelations();
         }
     }
 
-    protected function duplicateSectionEntries(): void
+    protected function duplicateEntryRelations(): void
     {
-        Yii::debug('Duplicating section entries ...');
+        Yii::debug('Duplicating entry relations ...');
 
         $entries = $this->model->getEntries()->all();
         $position = 0;
 
         foreach ($entries as $entry) {
-            $sectionEntry = SectionEntry::create();
-            $sectionEntry->populateEntryRelation($entry);
-            $sectionEntry->populateSectionRelation($this->duplicate);
-            $sectionEntry->setIsBatch(true);
-            $sectionEntry->position = ++$position;
-            $sectionEntry->insert();
+            $entryRelation = SectionEntry::create();
+            $entryRelation->populateEntryRelation($entry);
+            $entryRelation->populateModelRelation($this->duplicate);
+            $entryRelation->setIsBatch(true);
+            $entryRelation->position = ++$position;
+            $entryRelation->insert();
         }
     }
 }

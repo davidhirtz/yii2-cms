@@ -8,6 +8,8 @@ use Hirtz\Cms\Models\Actions\DeletePermalinkRedirects;
 use Hirtz\Cms\Models\Actions\UpdateTenantEntryCount;
 use Hirtz\Cms\Models\Menus\Menu;
 use Hirtz\Cms\Models\Queries\EntryQuery;
+use Hirtz\Cms\Models\Interfaces\EntryRelationModelInterface;
+use Hirtz\Cms\Models\Queries\EntryRelationQuery;
 use Hirtz\Cms\Models\Queries\SectionQuery;
 use Hirtz\Cms\Models\Traits\PermalinkTrait;
 use Hirtz\Cms\Models\Traits\SlugAttributeTrait;
@@ -32,6 +34,7 @@ use Yii;
 use davidhirtz\yii2\datetime\DateTime;
 use davidhirtz\yii2\datetime\DateTimeValidator;
 use yii\db\ActiveQuery;
+use yii\db\Query;
 
 /**
  * @property int $tenant_id
@@ -53,7 +56,7 @@ use yii\db\ActiveQuery;
  * @property-read Permalink[] $permalinks {@see static::getPermalinks()}
  * @property-read EntryCategory $entryCategory {@see static::getEntryCategory()}
  * @property-read EntryCategory[] $entryCategories {@see static::getEntryCategories()}
- * @property-read SectionEntry|null $sectionEntry {@see static::getSectionEntry()}
+ * @property-read EntryRelation|null $entryRelation {@see static::getEntryRelation()}
  * @property-read Section[] $sections {@see static::getSections()}
  *
  * @method EntryQuery<static> findAncestors()
@@ -328,24 +331,14 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
                 }
             }
 
-            if (static::getModule()->enableSectionEntries) {
-                Yii::debug('Loading affected sections ...', __METHOD__);
+            if (static::getModule()->getEntryRelationClasses()) {
+                Yii::debug('Loading affected entry relations ...', __METHOD__);
 
-                $sectionIds = SectionEntry::find()
-                    ->select('section_id')
-                    ->where(['entry_id' => $this->id])
-                    ->column();
+                $models = $this->findEntryRelationModelIds();
 
-                if ($sectionIds) {
-                    $this->on(static::EVENT_AFTER_DELETE, function () use ($sectionIds): void {
-                        $sections = Section::find()
-                            ->where(['id' => $sectionIds])
-                            ->all();
-
-                        foreach ($sections as $section) {
-                            $section->recalculateEntryCount()->update();
-                        }
-                    });
+                if ($models) {
+                    // The database cascade takes the relation rows; the counts they hung on are the model layer's.
+                    $this->on(static::EVENT_AFTER_DELETE, fn () => $this->recalculateEntryRelationModels($models));
                 }
             }
         }
@@ -388,12 +381,70 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
     }
 
     /**
-     * @return ActiveQuery<SectionEntry>
+     * @return list<array{class-string<EntryRelationModelInterface>, int}>
      */
-    public function getSectionEntry(): ActiveQuery
+    protected function findEntryRelationModelIds(): array
     {
-        return $this->hasOne(SectionEntry::class, ['entry_id' => 'id'])
+        $rows = (new Query())
+            ->select(['model_class', 'model_id'])
+            ->from(EntryRelation::tableName())
+            ->where(['entry_id' => $this->id])
+            ->all();
+
+        $models = [];
+
+        foreach ($rows as $row) {
+            $relationClass = static::getModule()->getEntryRelationClass((string)$row['model_class']);
+
+            if ($relationClass) {
+                $models[] = [$relationClass::getModelClass(), (int)$row['model_id']];
+            }
+        }
+
+        return $models;
+    }
+
+    /**
+     * @param list<array{class-string<EntryRelationModelInterface>, int}> $models
+     */
+    protected function recalculateEntryRelationModels(array $models): void
+    {
+        foreach (static::getModule()->getEntryRelationClasses() as $relationClass) {
+            $modelClass = $relationClass::getModelClass();
+            $ids = [];
+
+            foreach ($models as [$class, $id]) {
+                if ($class === $modelClass) {
+                    $ids[] = $id;
+                }
+            }
+
+            if (!$ids) {
+                continue;
+            }
+
+            $records = Yii::createObject($modelClass)::find()
+                ->andWhere(['id' => array_values(array_unique($ids))])
+                ->all();
+
+            foreach ($records as $record) {
+                if ($record instanceof EntryRelationModelInterface) {
+                    $record->recalculateEntryCount()->update();
+                }
+            }
+        }
+    }
+
+    /**
+     * @return EntryRelationQuery<EntryRelation>
+     */
+    public function getEntryRelation(): EntryRelationQuery
+    {
+        /** @var EntryRelationQuery<EntryRelation> $relation */
+        $relation = $this->hasOne(EntryRelation::class, ['entry_id' => 'id'])
             ->inverseOf('entry');
+
+        return $relation;
     }
 
     /**

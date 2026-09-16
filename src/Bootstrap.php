@@ -14,6 +14,7 @@ use Hirtz\Cms\Models\Events\TenantAfterSaveEventHandler;
 use Hirtz\Cms\Models\Events\TenantBeforeDeleteEventHandler;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Models\SectionAsset;
+use Hirtz\Cms\Models\SectionEntry;
 use Hirtz\Skeleton\Helpers\EventHelper;
 use Hirtz\Skeleton\Modules\Admin\Controllers\DashboardController;
 use Hirtz\Skeleton\Models\User;
@@ -64,6 +65,9 @@ class Bootstrap implements BootstrapInterface
             ],
             'cms' => [
                 'class' => Module::class,
+                'entryRelations' => [
+                    SectionEntry::class,
+                ],
             ],
             'media' => [
                 'class' => \Hirtz\Media\Module::class,

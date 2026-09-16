@@ -94,7 +94,7 @@ class SectionEntryControllerTest extends TestCase
         $response = $this->post('admin/cms/section-entry/create', ['section' => self::SECTION_ID, 'entry' => 1]);
 
         self::assertIsString($response);
-        self::assertNotNull(SectionEntry::findOne(['section_id' => self::SECTION_ID, 'entry_id' => 1]));
+        self::assertNotNull(SectionEntry::findOne(['model_id' => self::SECTION_ID, 'entry_id' => 1]));
         self::assertNotEmpty($this->getWebSession()->getFlash('success'));
 
         // the section keeps its own count of them
@@ -128,7 +128,7 @@ class SectionEntryControllerTest extends TestCase
         $response = $this->post('admin/cms/section-entry/delete', ['section' => self::SECTION_ID, 'entry' => 1]);
 
         self::assertInstanceOf(Response::class, $response);
-        self::assertNull(SectionEntry::findOne(['section_id' => self::SECTION_ID, 'entry_id' => 1]));
+        self::assertNull(SectionEntry::findOne(['model_id' => self::SECTION_ID, 'entry_id' => 1]));
         self::assertSame(0, Section::findOne(self::SECTION_ID)->entry_count);
         self::assertNotEmpty($this->getWebSession()->getFlash('success'));
     }
@@ -164,7 +164,7 @@ class SectionEntryControllerTest extends TestCase
 
         // the body carries the junction's own ids, not the entry ids
         $html = $this->post('admin/cms/section-entry/order', ['section' => self::SECTION_ID], [
-            'section-entry' => [$second->id, $first->id],
+            'entry-relation' => [$second->id, $first->id],
         ]);
 
         self::assertIsString($html);
@@ -179,7 +179,7 @@ class SectionEntryControllerTest extends TestCase
     private function createSectionEntry(int $entryId): SectionEntry
     {
         $sectionEntry = SectionEntry::create();
-        $sectionEntry->populateSectionRelation(Section::findOne(self::SECTION_ID));
+        $sectionEntry->populateModelRelation(Section::findOne(self::SECTION_ID));
         $sectionEntry->populateEntryRelation(TestEntry::findOne($entryId));
 
         self::assertTrue($sectionEntry->insert(), print_r($sectionEntry->getErrors(), true));

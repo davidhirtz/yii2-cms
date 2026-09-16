@@ -6,6 +6,7 @@ namespace Hirtz\Cms;
 
 use Closure;
 use Hirtz\Cms\Models\Collections\CategoryCollection;
+use Hirtz\Cms\Models\EntryRelation;
 use Hirtz\Cms\Models\Menus\Menu;
 use Hirtz\Cms\Models\Sets\SectionSet;
 use Hirtz\Skeleton\Filters\PageCache;
@@ -59,6 +60,12 @@ class Module extends \Hirtz\Skeleton\Base\Module
      * @since 1.4.0
      */
     public bool $enableSectionEntries = false;
+
+    /**
+     * @var list<class-string<EntryRelation>> the registered entry relation subclasses, one per model that links
+     * entries.
+     */
+    public array $entryRelations = [];
 
     /**
      * @var bool whether the default url rules should be loaded automatically, defaults to true
@@ -221,6 +228,33 @@ class Module extends \Hirtz\Skeleton\Base\Module
     public function findMenu(?int $value): ?Menu
     {
         return $value === null ? null : ($this->getMenus()[$value] ?? null);
+    }
+
+    /**
+     * @param class-string|string|null $modelClass
+     * @return class-string<EntryRelation>|null
+     */
+    public function getEntryRelationClass(?string $modelClass): ?string
+    {
+        if ($modelClass === null) {
+            return null;
+        }
+
+        foreach ($this->getEntryRelationClasses() as $class) {
+            if ($class::getModelClass() === $modelClass) {
+                return $class;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @return list<class-string<EntryRelation>>
+     */
+    public function getEntryRelationClasses(): array
+    {
+        return $this->entryRelations;
     }
 
     public function invalidatePageCache(): void

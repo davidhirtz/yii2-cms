@@ -5,50 +5,32 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Models\Types;
 
 use Closure;
-use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Models\Interfaces\EntryRelationTypeInterface;
 use Hirtz\Cms\Models\Section;
+use Hirtz\Cms\Models\Types\Traits\EntryRelationTypeTrait;
 use Hirtz\Cms\Widgets\SectionStack;
 use Hirtz\Media\Models\Interfaces\AssetModelTypeInterface;
 use Hirtz\Media\Models\Types\Traits\AssetModelTypeTrait;
 use Override;
-use yii\base\InvalidConfigException;
 
 /**
  * The four stages {@see SectionStack} runs over an entry's sections. `visible` is the frontend render filter, not
  * whether the type is offered in the admin — that is {@see static::available()}.
  */
-class SectionType extends Type implements AssetModelTypeInterface
+class SectionType extends Type implements AssetModelTypeInterface, EntryRelationTypeInterface
 {
     // The class's own `validate()` would shadow the trait's, so it is aliased and called from there instead.
     use AssetModelTypeTrait {
         validate as validateAssetModelType;
     }
 
+    use EntryRelationTypeTrait;
+
     protected Closure|bool|null $visible = null;
     protected Closure|string|null $group = null;
     protected Closure|string|null $wrapper = null;
     protected ?Closure $collect = null;
-    /**
-     * @var array<string, int>|null
-     */
-    protected ?array $entriesOrderBy = null;
-
-    /**
-     * @var list<int>
-     */
-    protected array $entriesTypes = [];
-
     protected Closure|string|null $gridContent = null;
-    protected bool $allowsEntries = true;
-
-    /**
-     * Whether a section of this type links entries. The module's `enableSectionEntries` decides first.
-     */
-    public function allowEntries(bool $allowEntries = true): static
-    {
-        $this->allowsEntries = $allowEntries;
-        return $this;
-    }
 
     /**
      * @param Closure(Section): bool|bool $visible whether the section is rendered on the site; a type declaring
@@ -88,21 +70,6 @@ class SectionType extends Type implements AssetModelTypeInterface
     }
 
     /**
-     * @param array<string, int>|null $entriesOrderBy
-     */
-    public function entriesOrderBy(?array $entriesOrderBy): static
-    {
-        $this->entriesOrderBy = $entriesOrderBy;
-        return $this;
-    }
-
-    public function entriesTypes(int ...$entriesTypes): static
-    {
-        $this->entriesTypes = array_values($entriesTypes);
-        return $this;
-    }
-
-    /**
      * What the admin grid shows for a section of this type, in place of its name.
      *
      * @param Closure(Section): ?string|string|null $gridContent
@@ -111,11 +78,6 @@ class SectionType extends Type implements AssetModelTypeInterface
     {
         $this->gridContent = $gridContent;
         return $this;
-    }
-
-    public function allowsEntries(): bool
-    {
-        return $this->allowsEntries;
     }
 
     public function getVisible(): Closure|bool|null
@@ -138,22 +100,6 @@ class SectionType extends Type implements AssetModelTypeInterface
         return $this->collect;
     }
 
-    /**
-     * @return array<string, int>
-     */
-    public function getEntriesOrderBy(): ?array
-    {
-        return $this->entriesOrderBy;
-    }
-
-    /**
-     * @return list<int>|null null means every entry type, an empty declaration being no restriction at all
-     */
-    public function getEntriesTypes(): ?array
-    {
-        return $this->entriesTypes ?: null;
-    }
-
     public function getGridContent(): Closure|string|null
     {
         return $this->gridContent;
@@ -163,13 +109,6 @@ class SectionType extends Type implements AssetModelTypeInterface
     public function validate(string $modelClass): void
     {
         $this->validateAssetModelType($modelClass);
-
-        $entryTypes = Entry::instance()::getTypeDefinitions();
-
-        foreach ($this->entriesTypes as $type) {
-            if (!isset($entryTypes[$type])) {
-                throw new InvalidConfigException("{$this->getDisplayValue()} of $modelClass names the undeclared entry type $type.");
-            }
-        }
+        $this->validateEntriesTypes($modelClass);
     }
 }

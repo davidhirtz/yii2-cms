@@ -9,8 +9,8 @@ use Hirtz\Cms\Test\Fixtures\AssetFixture;
 use Hirtz\Cms\Test\Fixtures\CategoryFixture;
 use Hirtz\Cms\Test\Fixtures\EntryCategoryFixture;
 use Hirtz\Cms\Test\Fixtures\EntryFixture;
+use Hirtz\Cms\Test\Fixtures\EntryRelationFixture;
 use Hirtz\Cms\Test\Fixtures\PermalinkFixture;
-use Hirtz\Cms\Test\Fixtures\SectionEntryFixture;
 use Hirtz\Cms\Test\Fixtures\SectionFixture;
 use Hirtz\Cms\Test\Models\TestEntry;
 use Hirtz\Cms\Test\Models\TestSection;
@@ -33,10 +33,10 @@ trait CmsFixtureTrait
             'category' => CategoryFixture::class,
             'entry' => EntryFixture::class,
             'entry_category' => EntryCategoryFixture::class,
+            'entry_relation' => EntryRelationFixture::class,
             'file' => FileFixture::class,
             'permalink' => PermalinkFixture::class,
             'section' => SectionFixture::class,
-            'section_entry' => SectionEntryFixture::class,
             'tenant' => TenantFixture::class,
             'user' => UserFixture::class,
         ];

@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Widgets\Buttons;
 
-use Hirtz\Cms\Models\Entry;
-use Hirtz\Cms\Models\Section;
+use Hirtz\Cms\Models\Interfaces\EntryRelationModelInterface;
+use Hirtz\Skeleton\Db\ActiveRecord;
 use Hirtz\Skeleton\Web\Application;
 use Hirtz\Skeleton\Widgets\Buttons\CreateButton;
 use Hirtz\Skeleton\Widgets\Traits\ModelTrait;
 use Override;
 use Yii;
 
-class SectionEntryCreateButton extends CreateButton
+class EntryRelationCreateButton extends CreateButton
 {
     /**
-     * @use ModelTrait<Section>
+     * @use ModelTrait<(ActiveRecord&EntryRelationModelInterface)|null>
      */
     use ModelTrait;
 
@@ -24,8 +24,7 @@ class SectionEntryCreateButton extends CreateButton
      */
     public function __construct(array $config = [])
     {
-        $this->label ??= Yii::t('cms', 'SECTION_ENTRY_CREATE_BUTTON');
-        $this->roles ??= [Entry::AUTH_ENTRY];
+        $this->label ??= Yii::t('cms', 'ENTRY_RELATION_CREATE_BUTTON');
 
         parent::__construct($config);
     }
@@ -33,12 +32,15 @@ class SectionEntryCreateButton extends CreateButton
     #[Override]
     protected function configure(): void
     {
+        $entryRelationClass = $this->model->getEntryRelationClass();
         $entryTypes = $this->model->getEntriesTypes();
 
+        $this->roles ??= [$entryRelationClass::instance()->getPermissionName()];
+
         $this->url = [
-            '/admin/cms/section-entry/create',
+            $entryRelationClass::getAdminControllerRoute() . '/create',
             ...Application::current()->getRequest()->getQueryParams(),
-            'section' => $this->model->id,
+            $this->model->getParamName() => $this->model->id,
             'type' => $entryTypes ? current($entryTypes) : null,
         ];
 

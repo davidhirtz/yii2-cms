@@ -1,5 +1,49 @@
 # Upgrade Guide
 
+## 3.0 — The section-entry link is polymorphic
+
+`section_entry` is `entry_relation` (monorepo issue #109). The table is keyed by `model_class` / `model_id`, so a
+model other than a section can link entries through it — which is what the block feature needs.
+`Migrations\M260916100000EntryRelation` renames the table and the column, fills `model_class` and replaces the
+index; nothing has to be migrated by hand.
+
+`model_id` points at more than one table, so it carries **no foreign key**. A model that links entries deletes its
+own rows: `Models\Traits\EntryRelationModelTrait::deleteEntryRelations()` does it from `beforeDelete()`, the way
+`Media\Models\Folder` deletes its files.
+
+What a project renames:
+
+| was                                          | is                                                   |
+|----------------------------------------------|------------------------------------------------------|
+| `$section->sectionEntries`                   | `$section->entryRelations`                            |
+| `$entry->sectionEntry`                       | `$entry->entryRelation`                               |
+| `SectionEntry::populateSectionRelation()`    | `EntryRelation::populateModelRelation()`              |
+| `Models\Traits\SectionRelationTrait`        | — (the owner is polymorphic)                          |
+| `EntryQuery::whereSection()`                 | `EntryQuery::whereRelatedModel()`                     |
+| `EntryActiveDataProvider::$section`          | `$relatedModel`                                       |
+| `EntryActiveDataProvider::$innerJoinSection` | `$innerJoinRelatedModel`                              |
+| `Models\Actions\ReorderSectionEntries`      | `ReorderEntryRelations`                               |
+| `Grids\SectionEntryGridView`                 | `Grids\EntryRelationGridView`                         |
+| `Grids\SectionLinkedEntryGridView`           | `Grids\LinkedEntryGridView`                           |
+| `Grids\Columns\SectionEntryCountColumn`      | `Grids\Columns\EntryRelationCountColumn`              |
+| `Buttons\SectionEntryCreateButton`           | `Buttons\EntryRelationCreateButton`                   |
+
+`SectionEntryController` keeps its route and its access rule, and moves onto
+`Modules\Admin\Controllers\Traits\EntryRelationControllerTrait`; a subclass overriding one of its actions
+follows the trait's `renderEntryRelationIndex()`, `createEntryRelation()`, `deleteEntryRelation()` and
+`reorderEntryRelations()`. The reorder body parameter is `entry-relation`, since `EntryRelation::formName()` is
+what names it.
+
+`SectionType`'s `allowEntries()`, `entriesTypes()` and `entriesOrderBy()` moved into
+`Models\Types\Traits\EntryRelationTypeTrait` behind `Models\Interfaces\EntryRelationTypeInterface`. The
+declarations are unchanged; a type class of a project's own that redeclared them can drop them.
+
+The message keys `SECTION_ENTRY_ADD_TO_SECTION`, `SECTION_ENTRY_CREATE_BUTTON`, `SECTION_ENTRY_ENTRY_ID_LABEL`,
+`SECTION_ENTRY_GRID_SUMMARY_EMPTY`, `SECTION_ENTRY_REMOVE_TITLE`, `SECTION_ENTRY_SECTION_ID_LABEL`,
+`SECTION_ENTRY_SUCCESS_ADDED`, `SECTION_ENTRY_SUCCESS_REMOVED`, `SECTION_ENTRY_UPDATED_AT_LABEL` and
+`REORDER_SECTION_ENTRIES_LINKED` are replaced by `ENTRY_RELATION_*` and `REORDER_ENTRY_RELATIONS_LINKED`, whose
+copy names no model.
+
 ## 3.0 — The entry form's tenant row moved into the declaration
 
 `Modules\Admin\Widgets\Forms\EntryActiveForm::getRowsAsGroups()` is gone with the ambiguous row shape it existed

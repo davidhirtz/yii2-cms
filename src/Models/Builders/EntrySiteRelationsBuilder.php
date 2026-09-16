@@ -8,7 +8,7 @@ use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Events\EntrySiteRelationsBuilderEvent;
 use Hirtz\Cms\Models\Queries\EntryQuery;
-use Hirtz\Cms\Models\SectionEntry;
+use Hirtz\Cms\Models\EntryRelation;
 use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Media\Models\Asset;
 use Hirtz\Media\Models\Collections\FolderCollection;
@@ -65,9 +65,9 @@ class EntrySiteRelationsBuilder extends Component
     protected array $sectionsWithAssets = [];
 
     /**
-     * @var int[]
+     * @var Section[]
      */
-    protected array $sectionIdsWithEntries = [];
+    protected array $sectionsWithEntries = [];
 
     public function init(): void
     {
@@ -91,12 +91,12 @@ class EntrySiteRelationsBuilder extends Component
     {
         $this->loadSections();
 
-        $this->loadSectionEntries();
+        $this->loadEntryRelations();
         $this->loadEntries();
         $this->trigger(self::EVENT_AFTER_LOAD_ENTRIES);
 
         $this->populateParentRelations();
-        $this->populateSectionEntryRelations();
+        $this->populateEntryRelationEntries();
 
         $this->loadAssets();
         $this->trigger(self::EVENT_AFTER_LOAD_ASSETS);
@@ -134,36 +134,35 @@ class EntrySiteRelationsBuilder extends Component
             }
 
             if ($section->allowsEntries() && $section->entry_count) {
-                $this->sectionIdsWithEntries[] = $section->id;
+                $this->sectionsWithEntries[] = $section;
             }
         }
 
         $this->entry->populateSectionRelations($sections);
     }
 
-    protected function loadSectionEntries(): void
+    protected function loadEntryRelations(): void
     {
-        if (!$this->sectionIdsWithEntries) {
+        if (!$this->sectionsWithEntries) {
             return;
         }
 
-        Yii::debug('Loading section entry relations ...');
+        Yii::debug('Loading entry relations ...');
 
-        /** @var SectionEntry[] $sectionEntries */
-        $sectionEntries = SectionEntry::find()
-            ->andWhere(['section_id' => $this->sectionIdsWithEntries])
+        $entryRelations = EntryRelation::find()
+            ->whereModels($this->sectionsWithEntries)
             ->orderBy(['position' => SORT_ASC])
             ->all();
 
-        $sectionEntriesBySectionId = [];
+        $entryRelationsByModelId = [];
 
-        foreach ($sectionEntries as $sectionEntry) {
-            $this->relatedEntryIds[] = $sectionEntry->entry_id;
-            $sectionEntriesBySectionId[$sectionEntry->section_id][] = $sectionEntry;
+        foreach ($entryRelations as $entryRelation) {
+            $this->relatedEntryIds[] = $entryRelation->entry_id;
+            $entryRelationsByModelId[$entryRelation->model_class][$entryRelation->model_id][] = $entryRelation;
         }
 
         foreach ($this->entry->sections as $section) {
-            $section->populateRelation('sectionEntries', $sectionEntriesBySectionId[$section->id] ?? []);
+            $section->populateEntryRelations($entryRelationsByModelId[Section::class][$section->id] ?? []);
         }
     }
 
@@ -215,9 +214,9 @@ class EntrySiteRelationsBuilder extends Component
         }
     }
 
-    protected function populateSectionEntryRelations(): void
+    protected function populateEntryRelationEntries(): void
     {
-        if (!$this->sectionIdsWithEntries) {
+        if (!$this->sectionsWithEntries) {
             return;
         }
 
@@ -227,8 +226,8 @@ class EntrySiteRelationsBuilder extends Component
             if ($section->entry_count) {
                 $allowedTypes = $section->getEntriesTypes();
 
-                foreach ($section->sectionEntries as $sectionEntry) {
-                    $entry = $this->entries[$sectionEntry->entry_id] ?? null;
+                foreach ($section->entryRelations as $entryRelation) {
+                    $entry = $this->entries[$entryRelation->entry_id] ?? null;
 
                     if ($entry && (!$allowedTypes || in_array($entry->type, $allowedTypes, true))) {
                         $entries[$entry->id] = $entry;
@@ -236,7 +235,7 @@ class EntrySiteRelationsBuilder extends Component
                 }
 
                 if ($order = $section->getEntriesOrderBy()) {
-                    $entries = $this->sortSectionEntriesByEntryAttributes($entries, $order);
+                    $entries = $this->sortEntriesByAttributes($entries, $order);
                 }
             }
 
@@ -249,7 +248,7 @@ class EntrySiteRelationsBuilder extends Component
      * @param array<string, int> $order
      * @return array<int, Entry>
      */
-    protected function sortSectionEntriesByEntryAttributes(array $entries, array $order): array
+    protected function sortEntriesByAttributes(array $entries, array $order): array
     {
         ArrayHelper::multisort($entries, array_keys($order), array_values($order));
         return $entries;

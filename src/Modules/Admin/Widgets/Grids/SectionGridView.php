@@ -9,7 +9,7 @@ use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Controllers\SectionController;
 use Hirtz\Cms\Modules\Admin\Data\SectionActiveDataProvider;
 use Hirtz\Media\Modules\Admin\Widgets\Grids\Columns\AssetCountColumn;
-use Hirtz\Cms\Modules\Admin\Widgets\Grids\Columns\SectionEntryCountColumn;
+use Hirtz\Cms\Modules\Admin\Widgets\Grids\Columns\EntryRelationCountColumn;
 use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Media\Modules\Admin\Widgets\Grids\Columns\Thumbnail;
 use Hirtz\Skeleton\Html\A;
@@ -184,7 +184,7 @@ class SectionGridView extends GridView
 
     protected function getEntriesCountColumn(): ?Column
     {
-        return SectionEntryCountColumn::make();
+        return EntryRelationCountColumn::make();
     }
 
     protected function getButtonColumn(): ?Column

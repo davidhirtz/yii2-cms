@@ -4,38 +4,34 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Widgets\Grids\Columns;
 
-use Hirtz\Cms\Models\Section;
-use Hirtz\Cms\Modules\Admin\Widgets\Grids\SectionGridView;
+use Hirtz\Cms\Models\Interfaces\EntryRelationModelInterface;
 use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Skeleton\Widgets\Grids\Columns\BadgeColumn;
 use Override;
 use Stringable;
 use yii\base\Model;
 
-/**
- * @property SectionGridView $grid
- */
-class SectionEntryCountColumn extends BadgeColumn
+class EntryRelationCountColumn extends BadgeColumn
 {
     use ModuleTrait;
 
     public function __construct()
     {
         $this->property ??= 'entry_count';
-        $this->url ??= fn (Section $section) => $section->getAdminRoute() + ['#' => 'entries'];
+        $this->url ??= fn (EntryRelationModelInterface $model) => $model->getAdminRoute() + ['#' => 'entries'];
 
         parent::__construct();
     }
 
-    #[\Override]
+    #[Override]
     public function isVisible(): bool
     {
-        if (!parent::isVisible() || !static::getModule()->enableSectionEntries) {
+        if (!parent::isVisible()) {
             return false;
         }
 
-        foreach ($this->grid->provider->getModels() as $section) {
-            if ($section->allowsEntries() && $section->entry_count > 0) {
+        foreach ($this->grid->provider->getModels() as $model) {
+            if ($model instanceof EntryRelationModelInterface && $model->allowsEntries() && $model->entry_count > 0) {
                 return true;
             }
         }
@@ -49,7 +45,7 @@ class SectionEntryCountColumn extends BadgeColumn
     #[Override]
     protected function getBody(array|Model $model, string|int $key, int $index): string|Stringable
     {
-        return $model instanceof Section && $model->allowsEntries()
+        return $model instanceof EntryRelationModelInterface && $model->allowsEntries()
             ? parent::getBody($model, $key, $index)
             : '';
     }

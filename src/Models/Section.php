@@ -6,8 +6,9 @@ namespace Hirtz\Cms\Models;
 
 use Closure;
 use Hirtz\Cms\Models\CustomAttributes\SlugCustomAttribute;
-use Hirtz\Cms\Models\Queries\EntryQuery;
+use Hirtz\Cms\Models\Interfaces\EntryRelationModelInterface;
 use Hirtz\Cms\Models\Queries\SectionQuery;
+use Hirtz\Cms\Models\Traits\EntryRelationModelTrait;
 use Hirtz\Cms\Models\Traits\EntryRelationTrait;
 use Hirtz\Cms\Models\Types\SectionType;
 use Hirtz\Media\Models\Interfaces\AssetModelInterface;
@@ -24,7 +25,6 @@ use Hirtz\Skeleton\Validators\RelationValidator;
 use Hirtz\Skeleton\Web\User as WebUser;
 use Override;
 use Yii;
-use yii\db\ActiveQuery;
 
 /**
  * @property int $entry_id
@@ -36,13 +36,11 @@ use yii\db\ActiveQuery;
  * @property int $entry_count
  *
  * @property-read SectionAsset[] $assets {@see static::getAssets()}
- * @property-read Entry[] $entries {@see static::getEntries()}
- * @property-read SectionEntry $sectionEntry {@see static::getSectionEntry()}
- * @property-read SectionEntry[] $sectionEntries {@see static::getSectionEntries()}
  */
-class Section extends ActiveRecord implements AssetModelInterface, SearchableInterface
+class Section extends ActiveRecord implements AssetModelInterface, EntryRelationModelInterface, SearchableInterface
 {
     use AssetModelTrait;
+    use EntryRelationModelTrait;
     use EntryRelationTrait;
     use SearchableTrait;
     use TranslatableAttributesTrait;
@@ -220,6 +218,10 @@ class Section extends ActiveRecord implements AssetModelInterface, SearchableInt
             }
         }
 
+        if ($this->entry_count) {
+            $this->deleteEntryRelations();
+        }
+
         return true;
     }
 
@@ -231,36 +233,6 @@ class Section extends ActiveRecord implements AssetModelInterface, SearchableInt
         }
 
         parent::afterDelete();
-    }
-
-    /**
-     * @return EntryQuery<Entry>
-     */
-    public function getEntries(): EntryQuery
-    {
-        /** @var EntryQuery<Entry> $relation */
-        $relation = $this->hasMany(Entry::class, ['id' => 'entry_id'])
-            ->via('sectionEntries');
-
-        return $relation;
-    }
-
-    /**
-     * @return ActiveQuery<SectionEntry>
-     */
-    public function getSectionEntry(): ActiveQuery
-    {
-        return $this->hasOne(SectionEntry::class, ['section_id' => 'id'])
-            ->inverseOf('section');
-    }
-
-    /**
-     * @return ActiveQuery<SectionEntry>
-     */
-    public function getSectionEntries(): ActiveQuery
-    {
-        return $this->hasMany(SectionEntry::class, ['section_id' => 'id'])
-            ->inverseOf('section');
     }
 
     /**
@@ -280,10 +252,9 @@ class Section extends ActiveRecord implements AssetModelInterface, SearchableInt
         return Yii::createObject(SectionQuery::class, [static::class]);
     }
 
-    public function recalculateEntryCount(): static
+    public function getEntryRelationClass(): string
     {
-        $this->entry_count = (int)$this->getSectionEntries()->count();
-        return $this;
+        return SectionEntry::class;
     }
 
     /**
@@ -366,22 +337,6 @@ class Section extends ActiveRecord implements AssetModelInterface, SearchableInt
         return WebUser::current()?->can(Entry::AUTH_ENTRY) ?? false;
     }
 
-    /**
-     * @return array<string, int>
-     */
-    public function getEntriesOrderBy(): ?array
-    {
-        return $this->getType()?->getEntriesOrderBy();
-    }
-
-    /**
-     * @return list<int>|null
-     */
-    public function getEntriesTypes(): ?array
-    {
-        return $this->getType()?->getEntriesTypes();
-    }
-
     public function getHtmlId(): ?string
     {
         return $this->getI18nAttribute('slug') ?: ('section-' . $this->id);
@@ -433,7 +388,7 @@ class Section extends ActiveRecord implements AssetModelInterface, SearchableInt
 
     public function allowsEntries(): bool
     {
-        return static::getModule()->enableSectionEntries && ($this->getType()?->allowsEntries() ?? true);
+        return static::getModule()->enableSectionEntries && $this->typeAllowsEntries();
     }
 
     #[Override]

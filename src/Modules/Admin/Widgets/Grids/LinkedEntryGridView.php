@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Modules\Admin\Widgets\Grids;
 
 use Hirtz\Cms\Models\Entry;
-use Hirtz\Cms\Modules\Admin\Controllers\SectionEntryController;
+use Hirtz\Cms\Modules\Admin\Controllers\Traits\EntryRelationControllerTrait;
 use Hirtz\Cms\Modules\Admin\Data\EntryActiveDataProvider;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\DeleteGridButton;
 use Hirtz\Skeleton\Widgets\Grids\GridSummary;
@@ -21,22 +21,22 @@ use yii\helpers\Inflector;
 /**
  * @extends EntryGridView<Entry>
  */
-class SectionLinkedEntryGridView extends EntryGridView
+class LinkedEntryGridView extends EntryGridView
 {
     protected string $layout = '{items}{footer}';
 
     #[Override]
     protected function configure(): void
     {
-        $this->attributes['id'] ??= 'section-entry-grid';
+        $this->attributes['id'] ??= 'entry-relation-grid';
 
         $this->rowAttributes ??= function (Entry $entry): array {
-            $allowedTypes = $this->provider->section->getEntriesTypes();
+            $allowedTypes = $this->provider->relatedModel?->getEntriesTypes();
 
             return [
                 'id' => implode('-', [
-                    Inflector::camel2id($entry->sectionEntry->formName()),
-                    ...$entry->sectionEntry->getPrimaryKey(true),
+                    Inflector::camel2id((string)$entry->entryRelation?->formName()),
+                    ...(array)$entry->entryRelation?->getPrimaryKey(true),
                 ]),
                 'class' => $allowedTypes && !in_array($entry->type, $allowedTypes, true)
                     ? ['invalid']
@@ -44,10 +44,11 @@ class SectionLinkedEntryGridView extends EntryGridView
             ];
         };
 
-        $this->layout = $this->provider->section->entry_count ? '{items}{footer}' : '{summary}{footer}';
+        $model = $this->provider->relatedModel;
+        $this->layout = $model?->entry_count ? '{items}{footer}' : '{summary}{footer}';
 
-        /** @see SectionEntryController::actionOrder() */
-        $this->orderRoute = ['order', 'section' => $this->provider->section->id];
+        /** @see EntryRelationControllerTrait::actionOrder() */
+        $this->orderRoute = ['order', ...$model ? [$model->getParamName() => $model->id] : []];
 
         parent::configure();
     }
@@ -56,7 +57,7 @@ class SectionLinkedEntryGridView extends EntryGridView
     protected function getSummary(): ?GridSummary
     {
         return parent::getSummary()
-            ->emptyMessage(Yii::t('cms', 'SECTION_ENTRY_GRID_SUMMARY_EMPTY'))
+            ->emptyMessage(Yii::t('cms', 'ENTRY_RELATION_GRID_SUMMARY_EMPTY'))
             ->visible(fn (): bool => $this->provider->getCount() === 0);
     }
 
@@ -78,13 +79,15 @@ class SectionLinkedEntryGridView extends EntryGridView
     }
 
     /**
-     * @see SectionEntryController::actionDelete()
+     * @see EntryRelationControllerTrait::actionDelete()
      */
     #[Override]
     protected function getDeleteButton(Entry $entry): Stringable
     {
+        $model = $this->provider->relatedModel;
+
         return DeleteGridButton::make()
-            ->url(['section-entry/delete', 'section' => $this->provider->section->id, 'entry' => $entry->id])
-            ->title(Yii::t('cms', 'SECTION_ENTRY_REMOVE_TITLE'));
+            ->url(['delete', ...$model ? [$model->getParamName() => $model->id] : [], 'entry' => $entry->id])
+            ->title(Yii::t('cms', 'ENTRY_RELATION_REMOVE_TITLE'));
     }
 }

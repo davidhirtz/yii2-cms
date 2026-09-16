@@ -8,8 +8,8 @@ use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\EntryCategory;
 use Hirtz\Cms\Models\Queries\EntryQuery;
-use Hirtz\Cms\Models\Section;
-use Hirtz\Cms\Models\SectionEntry;
+use Hirtz\Cms\Models\EntryRelation;
+use Hirtz\Cms\Models\Interfaces\EntryRelationModelInterface;
 use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Skeleton\Data\ActiveDataProvider;
 use Hirtz\Skeleton\Web\Application;
@@ -31,10 +31,10 @@ class EntryActiveDataProvider extends ActiveDataProvider
     public ?int $tenantId = null;
     public ?Category $category = null;
     public ?Entry $parent = null;
-    public ?Section $section = null;
+    public ?EntryRelationModelInterface $relatedModel = null;
     public ?int $type = null;
     public ?string $searchString = null;
-    public bool $innerJoinSection = true;
+    public bool $innerJoinRelatedModel = true;
 
     public function __construct($config = [])
     {
@@ -88,8 +88,8 @@ class EntryActiveDataProvider extends ActiveDataProvider
             $this->whereEntry();
         }
 
-        if (static::getModule()->enableSectionEntries) {
-            $this->whereSection();
+        if (static::getModule()->getEntryRelationClasses()) {
+            $this->whereRelatedModel();
         }
 
         if ($this->searchString) {
@@ -133,7 +133,7 @@ class EntryActiveDataProvider extends ActiveDataProvider
             return;
         }
 
-        if ($this->section && $this->innerJoinSection) {
+        if ($this->relatedModel && $this->innerJoinRelatedModel) {
             return;
         }
 
@@ -144,10 +144,13 @@ class EntryActiveDataProvider extends ActiveDataProvider
         $this->query->andWhere(['parent_id' => $this->parent?->id]);
     }
 
-    protected function whereSection(): void
+    protected function whereRelatedModel(): void
     {
-        if ($this->section) {
-            $this->query->whereSection($this->section, $this->innerJoinSection ? 'INNER JOIN' : 'LEFT JOIN');
+        if ($this->relatedModel) {
+            $this->query->whereRelatedModel(
+                $this->relatedModel,
+                $this->innerJoinRelatedModel ? 'INNER JOIN' : 'LEFT JOIN'
+            );
         }
     }
 
@@ -163,7 +166,7 @@ class EntryActiveDataProvider extends ActiveDataProvider
 
         $models = parent::prepareModels();
 
-        $order = $this->section?->getEntriesOrderBy();
+        $order = $this->relatedModel?->getEntriesOrderBy();
 
         if (is_array($order)) {
             ArrayHelper::multisort($models, array_keys($order), array_values($order));
@@ -203,7 +206,7 @@ class EntryActiveDataProvider extends ActiveDataProvider
     {
         return isset($this->query->orderBy) && in_array(key($this->query->orderBy), [
                 EntryCategory::tableName() . '.[[position]]',
-                SectionEntry::tableName() . '.[[position]]',
+                EntryRelation::tableName() . '.[[position]]',
                 'position',
             ], true);
     }

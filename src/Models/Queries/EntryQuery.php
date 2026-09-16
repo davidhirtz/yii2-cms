@@ -11,8 +11,8 @@ use Hirtz\Cms\Models\EntryCategory;
 use Hirtz\Cms\Models\Menus\Menu;
 use Hirtz\Cms\Models\Permalink;
 use Hirtz\Media\Models\Queries\AssetQuery;
-use Hirtz\Cms\Models\Section;
-use Hirtz\Cms\Models\SectionEntry;
+use Hirtz\Cms\Models\EntryRelation;
+use Hirtz\Cms\Models\Interfaces\EntryRelationModelInterface;
 use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Skeleton\Db\ActiveQuery;
 use Hirtz\Skeleton\Db\I18nActiveQuery;
@@ -172,18 +172,21 @@ class EntryQuery extends I18nActiveQuery
         ], $eagerLoading);
     }
 
-    public function whereSection(Section $section, string $joinType = 'INNER JOIN'): static
+    public function whereRelatedModel(EntryRelationModelInterface $model, string $joinType = 'INNER JOIN'): static
     {
-        $tableName = SectionEntry::tableName();
+        $tableName = EntryRelation::tableName();
 
         if ($joinType === 'INNER JOIN') {
-            $this->orderBy($section->getEntriesOrderBy() ?? ["$tableName.[[position]]" => SORT_ASC]);
+            $this->orderBy($model->getEntriesOrderBy() ?? ["$tableName.[[position]]" => SORT_ASC]);
         }
 
         return $this->selectWith(
-            'sectionEntry',
+            'entryRelation',
             $joinType,
-            fn (ActiveQuery $query) => $query->onCondition(["$tableName.[[section_id]]" => $section->id]),
+            fn (ActiveQuery $query) => $query->onCondition([
+                "$tableName.[[model_class]]" => $model->getEntryRelationClass()::getModelClass(),
+                "$tableName.[[model_id]]" => $model->id,
+            ]),
         );
     }
 
