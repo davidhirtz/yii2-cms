@@ -55,13 +55,15 @@ class EntryActiveForm extends ActiveForm
                 $this->getParentIdField(),
                 $this->getNameField(),
                 $this->getPublishDateField(),
-                $this->getMenuIdsField(),
+            ],
+            [
                 ...$this->getCustomAttributeFields(),
             ],
             [
                 $this->getTitleField(),
                 $this->getDescriptionField(),
                 $this->getSlugField(),
+                $this->getMenuIdsField(),
             ],
         ];
 

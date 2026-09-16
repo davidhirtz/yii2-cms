@@ -34,6 +34,8 @@ class CategoryActiveForm extends ActiveForm
                 $this->getParentIdField(),
                 $this->getTypeField(),
                 $this->getNameField(),
+            ],
+            [
                 ...$this->getCustomAttributeFields(except: ['title', 'description']),
             ],
             [

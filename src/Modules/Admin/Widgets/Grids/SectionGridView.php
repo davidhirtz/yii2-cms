@@ -45,6 +45,8 @@ class SectionGridView extends GridView
     public bool $showDeleteButton = false;
     public bool $showSelection = true;
 
+    protected string $layout = '{items}';
+
     #[Override]
     protected function configure(): void
     {
@@ -59,7 +61,7 @@ class SectionGridView extends GridView
             $this->getCheckboxColumn(),
             $this->getStatusColumn(),
             $this->getTypeColumn(),
-            $this->getNameColumn(),
+            $this->getContentColumn(),
             $this->getEntriesCountColumn(),
             $this->getAssetCountColumn(),
             $this->getButtonColumn(),
@@ -117,10 +119,9 @@ class SectionGridView extends GridView
                 ->url(fn (Section $model) => $model->getAdminRoute());
     }
 
-    protected function getNameColumn(): ?Column
+    protected function getContentColumn(): ?Column
     {
         return DataColumn::make()
-            ->property('name')
             ->content($this->getNameColumnContent(...));
     }
 
@@ -148,6 +149,7 @@ class SectionGridView extends GridView
             $html = $section->getCustomAttribute('content') instanceof HtmlCustomAttribute
                 ? strip_tags($html)
                 : $html;
+
             $html = StringHelper::truncate($html, 100);
         }
 
