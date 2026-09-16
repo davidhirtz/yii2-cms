@@ -129,6 +129,23 @@ class PickerGridViewTest extends TestCase
         self::assertStringNotContainsString('Root category 2', $html);
     }
 
+    /**
+     * The picker hangs off an entry, and a GET form submits its own fields and nothing else — so the entry the
+     * search would otherwise leave behind is a hidden input.
+     */
+    public function testTheCategoryPickerSearchKeepsTheEntry(): void
+    {
+        $this->login();
+
+        $this->getWebRequest()->setQueryParams(['entry' => 1, 'category' => 1]);
+        $html = Yii::$app->runAction('admin/cms/entry-category/index', ['entry' => 1, 'category' => 1]);
+
+        self::assertIsString($html);
+        self::assertStringContainsString('action="/admin/cms/entry-category/index" method="get"', $html);
+        self::assertStringContainsString('<input type="hidden" name="entry" value="1">', $html);
+        self::assertStringContainsString('<input type="hidden" name="category" value="1">', $html);
+    }
+
     public function testTheFilePickerLinksToTheFileOnlyThroughItsButton(): void
     {
         $this->login();
