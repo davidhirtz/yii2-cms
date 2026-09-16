@@ -8,6 +8,8 @@ use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
 use Hirtz\Cms\Test\Models\TestEntry;
 use Hirtz\Cms\Test\TestCase;
+use Hirtz\Media\Modules\Admin\Widgets\Grids\FileGridView;
+use Hirtz\Media\Modules\Admin\Widgets\Navs\AssetSubmenuItem;
 use Hirtz\Skeleton\Models\User;
 use Hirtz\Skeleton\Test\Fixtures\UserFixture;
 use Override;
@@ -159,6 +161,48 @@ class PickerGridViewTest extends TestCase
         self::assertStringContainsString('<div class="badge">1</div>', $html);
 
         $this->assertRecordLinksOpenInANewTab($html, '/admin/media/file/update');
+    }
+
+    /**
+     * The toggle carries whatever the picker is narrowed to, so the action can lead back into the same list, and it
+     * swaps the grid alone: a click on the thirtieth row must leave the user on the thirtieth row. Naming the
+     * submenu's asset count in `hx-select-oob` replaces the body's own, so the flashes are named again beside it.
+     */
+    public function testTheFilePickerToggleCarriesTheFilterAndSwapsTheGridAlone(): void
+    {
+        $this->login();
+
+        $this->getWebRequest()->setQueryParams(['entry' => 1, 'folder' => 1, 'q' => 'Test']);
+        $html = Yii::$app->runAction('admin/cms/entry-asset/create', ['entry' => 1, 'folder' => 1, 'q' => 'Test']);
+
+        self::assertIsString($html);
+
+        $attributes = 'hx-select="#' . FileGridView::ID . '" hx-swap="outerHTML" hx-target="#' . FileGridView::ID
+            . '" hx-select-oob="#flashes:beforeend,#' . AssetSubmenuItem::ID . '"';
+
+        // The file the entry already has is removed, the one it does not is added.
+        self::assertStringContainsString(
+            $attributes . ' hx-post="/admin/cms/entry-asset/remove?entry=1&amp;file=1&amp;folder=1&amp;q=Test"',
+            $html,
+        );
+
+        self::assertStringContainsString(
+            $attributes . ' hx-post="/admin/cms/entry-asset/create?entry=1&amp;file=3&amp;folder=1&amp;q=Test"',
+            $html,
+        );
+    }
+
+    /**
+     * Replacing an asset's file leads to that asset's own page, so its button keeps the body's whole-page swap.
+     */
+    public function testTheFileReplacementButtonSwapsTheWholePage(): void
+    {
+        $this->login();
+        $html = Yii::$app->runAction('admin/cms/entry-asset/create', ['entry' => 1, 'asset' => 1]);
+
+        self::assertIsString($html);
+        self::assertStringContainsString('hx-post="/admin/cms/entry-asset/create?entry=1&amp;file=3&amp;asset=1"', $html);
+        self::assertStringNotContainsString('hx-select="#' . FileGridView::ID . '" hx-swap', $html);
     }
 
     /**

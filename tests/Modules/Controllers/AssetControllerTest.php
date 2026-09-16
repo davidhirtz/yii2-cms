@@ -174,7 +174,7 @@ class AssetControllerTest extends TestCase
 
     /**
      * The picker's toggle: an entry holds a file once, so the button of a file it already has removes that asset
-     * and answers with the picker itself.
+     * and leads back into the picker, carrying whatever the picker was narrowed to.
      */
     public function testRemoveDeletesTheAssetForTheFileAndFixesTheCount(): void
     {
@@ -183,12 +183,19 @@ class AssetControllerTest extends TestCase
         $asset = EntryAsset::findOne(1);
         self::assertNotNull($asset);
 
-        $html = $this->post('admin/cms/entry-asset/remove', [
+        $response = $this->post('admin/cms/entry-asset/remove', [
             'entry' => 1,
             'file' => $asset->file_id,
+            'folder' => 1,
+            'q' => 'test',
         ]);
 
-        self::assertIsString($html);
+        self::assertInstanceOf(Response::class, $response);
+        self::assertStringEndsWith(
+            '/admin/cms/entry-asset/create?entry=1&folder=1&q=test',
+            (string)$response->getHeaders()->get('Location'),
+        );
+
         self::assertNull(EntryAsset::findOne(1));
         self::assertSame(1, Entry::findOne(1)->asset_count);
     }
