@@ -92,10 +92,11 @@ class SectionController extends AbstractController
     public function actionCreate(int $entry): Response|string
     {
         $entry = $this->findEntry($entry);
+
         $section = Section::instantiateFromPost($this->request->post());
+        $section->loadDefaultValues();
 
         $section->populateEntryRelation($entry);
-        $section->loadDefaultValues();
 
         if (($this->autoCreateSection || ($section->load($this->request->post()) && !$this->request->isFormReload())) && $section->insert()) {
             $this->success(Yii::t('cms', 'SECTION_SUCCESS_CREATED'));
