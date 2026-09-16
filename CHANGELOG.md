@@ -14,7 +14,20 @@
   that allows nothing else, and `Modules\Admin\Widgets\Forms\Fields\BlockIdSelectField` the form field.
   `Models\Builders\EntrySiteRelationsBuilder` loads the blocks of an entry's sections with their assets and
   linked entries, in one extra query. `block.name` is a column rather than a custom attribute, so it can be
-  sorted, searched and put in `i18nAttributes`. See `UPGRADE.md`.
+  sorted, searched and put in `i18nAttributes`.
+
+  `block.section_count` records how many sections place a block, and
+  `BlockController::actionSections()` lists them through `Modules\Admin\Widgets\Grids\BlockSectionGridView` —
+  the tab the count links to, the way the media file's asset tab lists what holds a file. The count is
+  maintained from the section: `Section::afterSave()` and `afterDelete()` call the new static
+  `Section::recalculateBlockSectionCounts()` for the block a section holds and the one it left, and
+  `Models\Actions\DeleteSections` and `CreateSectionSet` call it once at the end of a batch.
+
+  A block has **no `position`**: it belongs to nothing, so there is nothing to order it within. It is not
+  draggable and `Modules\Admin\Data\BlockActiveDataProvider` sorts by `updated_at DESC` through the `Sort`'s
+  `defaultOrder` rather than through the query, so every column header works.
+  `Models\ActiveRecord::setDefaultPosition()` returns early for a record without the column, which is what lets
+  a cms model drop it. See `UPGRADE.md`.
 
 
 - **The section-entry link is polymorphic** (monorepo issue #109). `section_entry` is `entry_relation`, keyed by

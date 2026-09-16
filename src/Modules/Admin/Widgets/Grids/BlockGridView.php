@@ -11,8 +11,8 @@ use Hirtz\Cms\Modules\Admin\Widgets\Grids\Columns\EntryRelationCountColumn;
 use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Media\Modules\Admin\Widgets\Grids\Columns\AssetCountColumn;
 use Hirtz\Skeleton\Html\A;
+use Hirtz\Skeleton\Widgets\Grids\Columns\BadgeColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\ButtonColumn;
-use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\DraggableSortGridButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\ViewGridButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Column;
 use Hirtz\Skeleton\Widgets\Grids\Columns\DataColumn;
@@ -33,13 +33,13 @@ class BlockGridView extends GridView
 {
     use ModuleTrait;
 
+    // A block belongs to nothing, so there is no order to drag it into; the grid sorts by its columns instead.
+    protected ?array $orderRoute = null;
+
     #[Override]
     protected function configure(): void
     {
         $this->attributes['id'] ??= 'block-grid-view';
-
-        /** @see BlockController::actionOrder() */
-        $this->orderRoute = ['order'];
 
         $this->header ??= [
             $this->getSearchInput(),
@@ -49,6 +49,7 @@ class BlockGridView extends GridView
             $this->getStatusColumn(),
             $this->getTypeColumn(),
             $this->getNameColumn(),
+            $this->getSectionCountColumn(),
             $this->getEntryCountColumn(),
             $this->getAssetCountColumn(),
             $this->getUpdatedAtColumn(),
@@ -96,6 +97,16 @@ class BlockGridView extends GridView
             ->href($block->getAdminRoute());
     }
 
+    /**
+     * @see BlockController::actionSections()
+     */
+    protected function getSectionCountColumn(): ?Column
+    {
+        return BadgeColumn::make()
+            ->property('section_count')
+            ->url(fn (Block $block) => ['sections', 'id' => $block->id]);
+    }
+
     protected function getEntryCountColumn(): ?Column
     {
         return EntryRelationCountColumn::make();
@@ -123,15 +134,9 @@ class BlockGridView extends GridView
      */
     protected function getButtonColumnContent(Block $block): array
     {
-        $buttons = [];
-
-        if ($this->isSortable() && $this->webuser->can(Block::AUTH_BLOCK)) {
-            $buttons[] = DraggableSortGridButton::make();
-        }
-
-        $buttons[] = ViewGridButton::make()
-            ->model($block);
-
-        return $buttons;
+        return [
+            ViewGridButton::make()
+                ->model($block),
+        ];
     }
 }

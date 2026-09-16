@@ -34,6 +34,7 @@ class DeleteSections
     public function run(): bool
     {
         $entryIds = [];
+        $blockIds = [];
 
         foreach ($this->sections as $section) {
             $section->setIsBatch(true);
@@ -44,11 +45,13 @@ class DeleteSections
             }
 
             $entryIds[$section->entry_id] = $section->entry_id;
+            $blockIds[] = $section->block_id;
             $this->deleted[] = $section;
         }
 
         if ($this->deleted) {
             $this->updateSectionCounts($entryIds);
+            Section::recalculateBlockSectionCounts($blockIds);
         }
 
         return !$this->failed;

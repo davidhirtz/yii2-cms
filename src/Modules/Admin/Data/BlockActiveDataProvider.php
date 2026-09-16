@@ -9,6 +9,7 @@ use Hirtz\Cms\Models\Queries\BlockQuery;
 use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Skeleton\Data\ActiveDataProvider;
 use Override;
+use yii\data\Sort;
 
 /**
  * @property BlockQuery<Block> $query
@@ -34,10 +35,24 @@ class BlockActiveDataProvider extends ActiveDataProvider
         parent::prepareQuery();
     }
 
+    /**
+     * The order belongs to the `Sort`, not to the query: `yii\data\ActiveDataProvider::prepareModels()` *adds*
+     * the sort to whatever the query already carries, so an `orderBy()` here would win over every column header.
+     *
+     * @param array<string, mixed>|Sort|bool $value
+     */
+    #[Override]
+    public function setSort($value): void
+    {
+        if (is_array($value)) {
+            $value['defaultOrder'] ??= ['updated_at' => SORT_DESC];
+        }
+
+        parent::setSort($value);
+    }
+
     protected function initQuery(): void
     {
-        $this->query->orderBy(['position' => SORT_ASC]);
-
         if ($this->type) {
             $this->query->andWhere([Block::tableName() . '.[[type]]' => $this->type]);
         }

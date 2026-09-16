@@ -219,7 +219,26 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
             $this->entry->update();
         }
 
+        if (!$this->getIsBatch()) {
+            static::recalculateBlockSectionCounts([$this->block_id, $changedAttributes['block_id'] ?? null]);
+        }
+
         parent::afterSave($insert, $changedAttributes);
+    }
+
+    /**
+     * `section.block_id` has no count column on the section's side, so both the block a section moved to and the
+     * one it left have to be recounted. A caller deleting or inserting in batch owns them instead.
+     *
+     * @param list<int|null> $blockIds
+     */
+    public static function recalculateBlockSectionCounts(array $blockIds): void
+    {
+        $blockIds = array_values(array_unique(array_filter(array_map(intval(...), $blockIds))));
+
+        foreach ($blockIds ? Block::findAll(['id' => $blockIds]) : [] as $block) {
+            $block->recalculateSectionCount()->update();
+        }
     }
 
     #[Override]
@@ -247,8 +266,12 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
     #[Override]
     public function afterDelete(): void
     {
-        if (!$this->getIsBatch() && !$this->entry->isDeleted()) {
-            $this->entry->recalculateSectionCount()->update();
+        if (!$this->getIsBatch()) {
+            if (!$this->entry->isDeleted()) {
+                $this->entry->recalculateSectionCount()->update();
+            }
+
+            static::recalculateBlockSectionCounts([$this->block_id]);
         }
 
         parent::afterDelete();

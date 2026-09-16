@@ -130,6 +130,11 @@ abstract class ActiveRecord extends BaseActiveRecord implements
 
     protected function setDefaultPosition(): void
     {
+        // A cms record need not be ordered: `Models\Block` belongs to nothing, so it carries no `position`.
+        if (!$this->hasAttribute('position')) {
+            return;
+        }
+
         if (!$this->position) {
             $this->position = $this->position !== false ? ($this->getMaxPosition() + 1) : 0;
         }

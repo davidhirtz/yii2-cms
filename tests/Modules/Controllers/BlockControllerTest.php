@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Tests\Modules\Controllers;
 
+use davidhirtz\yii2\datetime\DateTime;
 use Hirtz\Cms\Models\Block;
+use Hirtz\Cms\Models\Section;
+use Hirtz\Cms\Modules\Admin\Data\BlockActiveDataProvider;
 use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
 use Hirtz\Cms\Test\Models\TestEntry;
 use Hirtz\Cms\Test\TestCase;
@@ -12,6 +15,7 @@ use Hirtz\Skeleton\Models\User;
 use Hirtz\Skeleton\Test\Fixtures\UserFixture;
 use Override;
 use Yii;
+use yii\data\Sort;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -97,23 +101,65 @@ class BlockControllerTest extends TestCase
         self::assertNotEmpty($this->getWebSession()->getFlash('success'));
     }
 
-    public function testOrderRewritesThePositions(): void
+    public function testTheGridIsSortedByTheMostRecentlyUpdated(): void
     {
         $this->login();
 
-        $first = $this->createBlock('First');
-        $second = $this->createBlock('Second');
+        $older = $this->createBlock('Older');
+        $newer = $this->createBlock('Newer');
 
-        self::assertLessThan($second->position, $first->position);
+        // `TimestampBehavior` overwrites an assigned `updated_at`, and two inserts land in the same second.
+        Block::updateAll(['updated_at' => new DateTime('-1 day')], ['id' => $older->id]);
 
-        $this->post('admin/cms/block/order', bodyParams: [
-            'block' => [$second->id, $first->id],
-        ]);
+        $provider = Yii::$container->get(BlockActiveDataProvider::class);
+        $sort = $provider->getSort();
 
-        self::assertLessThan(
-            Block::findOne($first->id)->position,
-            Block::findOne($second->id)->position
+        self::assertInstanceOf(Sort::class, $sort);
+        self::assertSame(['updated_at' => SORT_DESC], $sort->defaultOrder);
+
+        self::assertSame(
+            [$newer->id, $older->id],
+            array_map(fn (Block $block): int => $block->id, $provider->getModels())
         );
+    }
+
+    /**
+     * The default order is the `Sort`'s, not the query's: `yii\data\ActiveDataProvider::prepareModels()` *adds*
+     * the sort to what the query carries, so an `orderBy()` of its own would win over every column header.
+     */
+    public function testTheGridIsSortableByAColumn(): void
+    {
+        $this->login();
+
+        $this->createBlock('Zebra');
+        $first = $this->createBlock('Antelope');
+
+        $provider = Yii::$container->get(BlockActiveDataProvider::class);
+
+        $sort = $provider->getSort();
+        self::assertInstanceOf(Sort::class, $sort);
+
+        // Every data provider after the first in a process is numbered, so the parameter is the `Sort`'s own.
+        $this->getWebRequest()->setQueryParams([$sort->sortParam => 'name']);
+
+        self::assertSame($first->id, $provider->getModels()[0]->id);
+    }
+
+    public function testSectionsListsTheSectionsThatPlaceTheBlock(): void
+    {
+        $this->login();
+        $block = $this->createBlock('Placed');
+
+        $section = Section::findOne(6);
+        $section->block_id = $block->id;
+        $section->update(false, ['block_id']);
+
+        Block::findOne($block->id)->recalculateSectionCount()->update();
+
+        $html = Yii::$app->runAction('admin/cms/block/sections', ['id' => $block->id]);
+
+        self::assertIsString($html);
+        self::assertStringContainsString((string)$section->entry->getI18nAttribute('name'), $html);
     }
 
     private function createBlock(string $name): Block

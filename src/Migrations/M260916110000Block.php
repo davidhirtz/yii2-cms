@@ -15,7 +15,8 @@ use yii\db\Migration;
 
 /**
  * Global sections (monorepo issue #109). `name` is a column rather than a custom attribute because the block
- * select sorts by it and the grid searches it.
+ * select sorts by it and the grid searches it. There is no `position`: a block belongs to nothing, so there is
+ * no set for it to be ordered within, and the grid sorts by `updated_at` instead.
  *
  * @noinspection PhpUnused
  */
@@ -31,9 +32,9 @@ class M260916110000Block extends Migration
             'id' => $this->primaryKey()->unsigned(),
             'status' => $this->tinyInteger(1)->unsigned()->notNull()->defaultValue(Block::STATUS_ENABLED),
             'type' => $this->smallInteger()->notNull()->defaultValue(Block::TYPE_DEFAULT),
-            'position' => $this->integer()->unsigned()->notNull()->defaultValue(0),
             'name' => $this->string(250)->notNull(),
             'custom_attributes' => $this->json()->null(),
+            'section_count' => $this->smallInteger()->unsigned()->notNull()->defaultValue(0),
             'asset_count' => $this->smallInteger()->unsigned()->notNull()->defaultValue(0),
             'entry_count' => $this->smallInteger()->unsigned()->notNull()->defaultValue(0),
             'updated_by_user_id' => $this->integer()->unsigned()->null(),
@@ -41,7 +42,7 @@ class M260916110000Block extends Migration
             'created_at' => $this->dateTime()->notNull(),
         ], $this->getTableOptions());
 
-        $this->createIndex('status', Block::tableName(), ['status', 'position']);
+        $this->createIndex('status', Block::tableName(), ['status', 'name']);
 
         $blockTable = $schema->getRawTableName(Block::tableName());
 

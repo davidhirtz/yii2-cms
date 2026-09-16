@@ -24,9 +24,9 @@ use Yii;
  * A section with no owner: the same types, assets, linked entries and custom attributes, but no tenant and no
  * entry. A section carrying a `block_id` renders it in place of its own content.
  *
- * @property int $position
  * @property string $name
  * @property string|null $content
+ * @property int $section_count
  * @property int $asset_count
  * @property int $entry_count
  *
@@ -120,13 +120,29 @@ class Block extends ActiveRecord implements AssetModelInterface, EntryRelationMo
     }
 
     /**
-     * Every block is a sibling of every other: there is nothing for it to belong to.
+     * A block belongs to nothing, so it has no `position` and nothing to be ordered within — the base needs the
+     * method for {@see \Hirtz\Cms\Models\ActiveRecord::getMaxPosition()}, which is never reached here.
      *
      * @return BlockQuery<static>
      */
     public function findSiblings(): BlockQuery
     {
         return static::find();
+    }
+
+    public function recalculateSectionCount(): static
+    {
+        $this->section_count = (int)$this->getSections()->count();
+        return $this;
+    }
+
+    /**
+     * @return list<string>
+     */
+    #[Override]
+    public function getTrailAttributes(): array
+    {
+        return array_values(array_diff(parent::getTrailAttributes(), ['section_count']));
     }
 
     /**
@@ -237,6 +253,7 @@ class Block extends ActiveRecord implements AssetModelInterface, EntryRelationMo
         return [
             ...parent::attributeLabels(),
             'name' => Yii::t('cms', 'BLOCK_NAME_LABEL'),
+            'section_count' => Yii::t('cms', 'BLOCK_SECTION_COUNT_LABEL'),
             'entry_count' => Yii::t('cms', 'BLOCK_ENTRY_COUNT_LABEL'),
         ];
     }

@@ -40,6 +40,7 @@ class BlockSubmenu extends Submenu
         $this->addItem(
             $this->getBlocksItem(),
             $this->getBlockUpdateItem(),
+            $this->getSectionsItem(),
             $this->getEntriesItem(),
             $this->getAssetsItem(),
         );
@@ -62,6 +63,24 @@ class BlockSubmenu extends Submenu
             ->label($this->model->getAdminType())
             ->routes(['admin/cms/block/update', ...$this->additionalActiveRoutes['block'] ?? []])
             ->url($this->model->getAdminRoute());
+    }
+
+    /**
+     * Only once the block is placed somewhere: an unused block has nothing to list, and the tab would say so at
+     * the cost of a page of its own.
+     */
+    protected function getSectionsItem(): ?NavItem
+    {
+        if (!$this->model->section_count) {
+            return null;
+        }
+
+        return NavItem::make()
+            ->badge($this->model->section_count)
+            ->icon('link')
+            ->label(Yii::t('cms', 'COMMON_SECTIONS'))
+            ->routes(['admin/cms/block/sections', ...$this->additionalActiveRoutes['sections'] ?? []])
+            ->url(['/admin/cms/block/sections', 'id' => $this->model->id]);
     }
 
     protected function getEntriesItem(): ?NavItem

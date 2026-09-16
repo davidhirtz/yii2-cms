@@ -43,6 +43,9 @@ bundle's own `resources/views/site/_sections.php` does.
 `Block::AUTH_BLOCK` is granted to `admin` and `manager` by `Migrations\M260916110000Block`. A project that
 wants its editors to manage blocks adds it to `author` itself.
 
+A model extending `Models\ActiveRecord` may now omit the `position` column — `setDefaultPosition()` returns
+early when there is none, rather than throwing on an unknown attribute. `Models\Block` is the first to do it.
+
 ## 3.0 — The section-entry link is polymorphic
 
 `section_entry` is `entry_relation` (monorepo issue #109). The table is keyed by `model_class` / `model_id`, so a

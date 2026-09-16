@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Controllers;
 
-use Hirtz\Cms\Models\Actions\ReorderBlocks;
 use Hirtz\Cms\Models\Block;
 use Hirtz\Cms\Modules\Admin\Controllers\Traits\BlockControllerTrait;
 use Hirtz\Cms\Modules\Admin\Data\BlockActiveDataProvider;
 use Hirtz\Skeleton\Web\Traits\StatusControllerTrait;
-use Hirtz\Skeleton\Widgets\Flashes;
 use Override;
 use Yii;
 use yii\filters\AccessControl;
@@ -32,7 +30,7 @@ class BlockController extends AbstractController
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['create', 'delete', 'index', 'order', 'status', 'update'],
+                        'actions' => ['create', 'delete', 'index', 'sections', 'status', 'update'],
                         'roles' => [Block::AUTH_BLOCK],
                     ],
                 ],
@@ -41,11 +39,17 @@ class BlockController extends AbstractController
                 'class' => VerbFilter::class,
                 'actions' => [
                     'delete' => ['post'],
-                    'order' => ['post'],
                     'status' => ['post'],
                 ],
             ],
         ];
+    }
+
+    public function actionSections(int $id): Response|string
+    {
+        return $this->render('sections', [
+            'block' => $this->findBlock($id),
+        ]);
     }
 
     public function actionIndex(?int $type = null, ?string $q = null): Response|string
@@ -110,14 +114,5 @@ class BlockController extends AbstractController
 
         $errors = $block->getFirstErrors();
         throw new ServerErrorHttpException(reset($errors) ?: null);
-    }
-
-    public function actionOrder(): string
-    {
-        if (ReorderBlocks::runWithBodyParam('block')) {
-            $this->success(Yii::t('cms', 'BLOCK_SUCCESS_ORDERED'));
-        }
-
-        return (string)Flashes::make();
     }
 }
