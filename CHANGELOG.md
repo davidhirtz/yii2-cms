@@ -1,5 +1,11 @@
 ## 3.0 (in development)
 
+- **`EntryAssetController` and `SectionAssetController` traded `duplicate` for a POST-only `remove` action**
+  (monorepo issue #133): an entry or section holds a file once, so the file picker's button removes what it
+  already has rather than adding a second row, and duplicating an asset onto its own record no longer means
+  anything. A project overriding one of those `behaviors()` swaps `duplicate` for `remove` in its access rule.
+  See the media bundle's `UPGRADE.md`.
+
 - **`EntryAssetController` and `SectionAssetController` gained a POST-only `delete-all` action** that removes the
   assets a grid selection names (monorepo issue #128). A project overriding one of those `behaviors()` has to add
   `delete-all` to its access rule; the verbs come from `getAssetVerbs()`.

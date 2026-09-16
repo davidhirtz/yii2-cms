@@ -74,7 +74,7 @@ return [
         'type' => Asset::TYPE_VIEWPORT_MOBILE,
         'model_class' => Section::class,
         'model_id' => 1,
-        'file_id' => 5,
+        'file_id' => 6,
         'position' => 4,
         'created_at' => new Expression('UTC_TIMESTAMP()'),
     ],

@@ -39,9 +39,9 @@ class SectionAssetController extends Controller
                             'create',
                             'delete',
                             'delete-all',
-                            'duplicate',
                             'index',
                             'order',
+                            'remove',
                             'status',
                             'update',
                         ],
@@ -84,9 +84,13 @@ class SectionAssetController extends Controller
         return $this->updateStatus($this->findSectionAsset($id));
     }
 
-    public function actionDuplicate(int $id): Response|string
-    {
-        return $this->duplicateAsset($this->findSectionAsset($id));
+    public function actionRemove(
+        ?int $section = null,
+        ?int $file = null,
+        ?int $folder = null,
+        ?string $q = null,
+    ): Response|string {
+        return $this->removeAsset($this->findSectionWithAssets($section), $file, $folder, $q);
     }
 
     public function actionDeleteAll(?int $section = null): Response

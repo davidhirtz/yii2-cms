@@ -172,15 +172,59 @@ class AssetControllerTest extends TestCase
         Yii::$app->runAction('admin/cms/entry-asset/update', ['id' => $sectionAsset->id]);
     }
 
-    public function testDuplicateCopiesTheAsset(): void
+    /**
+     * The picker's toggle: an entry holds a file once, so the button of a file it already has removes that asset
+     * and answers with the picker itself.
+     */
+    public function testRemoveDeletesTheAssetForTheFileAndFixesTheCount(): void
     {
         $this->login();
+
+        $asset = EntryAsset::findOne(1);
+        self::assertNotNull($asset);
+
+        $html = $this->post('admin/cms/entry-asset/remove', [
+            'entry' => 1,
+            'file' => $asset->file_id,
+        ]);
+
+        self::assertIsString($html);
+        self::assertNull(EntryAsset::findOne(1));
+        self::assertSame(1, Entry::findOne(1)->asset_count);
+    }
+
+    public function testRemoveRefusesAFileTheEntryDoesNotHave(): void
+    {
+        $this->login();
+
+        $this->expectException(NotFoundHttpException::class);
+        $this->post('admin/cms/entry-asset/remove', ['entry' => 1, 'file' => 99999]);
+    }
+
+    public function testRemoveRefusesAGetRequest(): void
+    {
+        $this->login();
+
+        $this->expectException(MethodNotAllowedHttpException::class);
+        Yii::$app->runAction('admin/cms/entry-asset/remove', ['entry' => 1, 'file' => 1]);
+    }
+
+    /**
+     * The same file cannot be added to the same entry twice — the picker offers a remove button for it, and the
+     * route behind the add button refuses it as well.
+     */
+    public function testCreateRefusesAFileTheEntryAlreadyHas(): void
+    {
+        $this->login();
+
+        $asset = EntryAsset::findOne(1);
+        self::assertNotNull($asset);
+
         $count = (int)EntryAsset::find()->andWhere(['model_id' => 1])->count();
 
-        $response = $this->post('admin/cms/entry-asset/duplicate', ['id' => 1]);
+        $this->post('admin/cms/entry-asset/create', ['entry' => 1, 'file' => $asset->file_id]);
 
-        self::assertInstanceOf(Response::class, $response);
-        self::assertSame($count + 1, (int)EntryAsset::find()->andWhere(['model_id' => 1])->count());
+        self::assertSame($count, (int)EntryAsset::find()->andWhere(['model_id' => 1])->count());
     }
 
     public function testDeleteRemovesTheAssetAndFixesTheCount(): void

@@ -33,7 +33,9 @@ class AssetTest extends TestCase
     public function testCreateSectionAsset(): void
     {
         $section = $this->getSectionFromFixture('section-headline');
-        $file = $this->getFileFromFixture('file-5');
+
+        // the section already holds files 3 to 6, and a section holds a file once
+        $file = $this->getFileFromFixture('file-1');
 
         $asset = SectionAsset::create();
         $asset->populateModelRelation($section);
@@ -79,7 +81,7 @@ class AssetTest extends TestCase
         $asset->populateFileRelation($this->getFileFromFixture('file-5'));
         self::assertSame(1, $asset->update());
 
-        self::assertSame(3, $asset->file->asset_count);
+        self::assertSame(2, $asset->file->asset_count);
         self::assertSame(0, $this->getFileFromFixture('file-1')->asset_count);
     }
 

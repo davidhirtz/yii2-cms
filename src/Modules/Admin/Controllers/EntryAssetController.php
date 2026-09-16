@@ -38,9 +38,9 @@ class EntryAssetController extends Controller
                             'create',
                             'delete',
                             'delete-all',
-                            'duplicate',
                             'index',
                             'order',
+                            'remove',
                             'status',
                             'update',
                         ],
@@ -83,9 +83,13 @@ class EntryAssetController extends Controller
         return $this->updateStatus($this->findEntryAsset($id));
     }
 
-    public function actionDuplicate(int $id): Response|string
-    {
-        return $this->duplicateAsset($this->findEntryAsset($id));
+    public function actionRemove(
+        ?int $entry = null,
+        ?int $file = null,
+        ?int $folder = null,
+        ?string $q = null,
+    ): Response|string {
+        return $this->removeAsset($this->findEntryWithAssets($entry), $file, $folder, $q);
     }
 
     public function actionDeleteAll(?int $entry = null): Response
