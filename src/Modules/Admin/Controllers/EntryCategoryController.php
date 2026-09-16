@@ -51,11 +51,6 @@ class EntryCategoryController extends AbstractController
         ];
     }
 
-    protected function isEntryAllowed(Entry $entry): bool
-    {
-        return $entry->allowsCategories();
-    }
-
     public function actionIndex(int $entry, ?int $category = null, ?string $q = null): string
     {
         $entry = $this->findEntry($entry);
@@ -135,5 +130,15 @@ class EntryCategoryController extends AbstractController
         }
 
         return (string) Flashes::make();
+    }
+
+    /**
+     * Whether the controller works with this entry at all. A controller behind a submenu tab answers with the
+     * capability that tab is shown for, so a route cannot do what the admin does not offer — the media
+     * `Modules\Admin\Controllers\Traits\AssetControllerTrait` refuses an asset model the same way.
+     */
+    protected function isEntryAllowed(Entry $entry): bool
+    {
+        return $entry->allowsCategories();
     }
 }

@@ -777,11 +777,6 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
         return static::getModule()->enableCategories && ($this->getType()?->allowsCategories() ?? true);
     }
 
-    public function hasInvalidParentStatus(): bool
-    {
-        return $this->parent_status !== static::STATUS_ENABLED;
-    }
-
     public function allowsDescendants(): bool
     {
         return static::getModule()->enableNestedEntries
@@ -803,6 +798,11 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
     public function allowsSections(): bool
     {
         return static::getModule()->enableSections && ($this->getType()?->allowsSections() ?? true);
+    }
+
+    public function hasInvalidParentStatus(): bool
+    {
+        return $this->parent_status !== static::STATUS_ENABLED;
     }
 
     public function hasPermalink(): bool

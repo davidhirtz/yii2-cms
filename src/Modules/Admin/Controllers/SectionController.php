@@ -76,11 +76,6 @@ class SectionController extends AbstractController
         ];
     }
 
-    protected function isEntryAllowed(Entry $entry): bool
-    {
-        return $entry->allowsSections();
-    }
-
     public function actionIndex(int $entry): Response|string
     {
         $entry = $this->findEntry($entry);
@@ -304,5 +299,15 @@ class SectionController extends AbstractController
             'section' => $section,
             'provider' => $provider,
         ]);
+    }
+
+    /**
+     * Whether the controller works with this entry at all. A controller behind a submenu tab answers with the
+     * capability that tab is shown for, so a route cannot do what the admin does not offer — the media
+     * `Modules\Admin\Controllers\Traits\AssetControllerTrait` refuses an asset model the same way.
+     */
+    protected function isEntryAllowed(Entry $entry): bool
+    {
+        return $entry->allowsSections();
     }
 }
