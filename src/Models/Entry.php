@@ -35,9 +35,7 @@ use yii\db\ActiveQuery;
 
 /**
  * @property int $tenant_id
- * @property int|null $parent_id
  * @property int|null $parent_status
- * @property list<int>|null $path
  * @property int|null|false $position
  * @property string $name
  * @property string|null $slug virtual, backed by {@see Permalink::$slug}

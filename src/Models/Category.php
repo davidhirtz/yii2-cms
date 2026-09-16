@@ -22,9 +22,6 @@ use Yii;
 use yii\db\ActiveQuery;
 
 /**
- * @property int|null $parent_id
- * @property int $lft
- * @property int $rgt
  * @property int $position
  * @property string $name
  * @property string|null $slug
@@ -35,7 +32,6 @@ use yii\db\ActiveQuery;
  * @property-read Entry[] $entries {@see static::getEntries()}
  * @property-read EntryCategory|null $entryCategory {@see static::getEntryCategory()}
  * @property-read EntryCategory[] $entryCategories {@see static::getEntryCategories()}
- * @property-read static|null $parent {@see static::getParent()}
  * @property-read static[] $ancestors {@see static::getAncestors()}
  * @property-read static[] $descendants {@see static::getDescendants()}
  */
