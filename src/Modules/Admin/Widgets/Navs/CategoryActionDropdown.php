@@ -46,7 +46,7 @@ class CategoryActionDropdown extends ActionDropdown
 
     protected function getEntryGridViewButton(): ?Stringable
     {
-        return $this->model->hasEntriesEnabled()
+        return $this->model->allowsEntries()
             ? Button::make()
                 ->primary()
                 ->text(Yii::t('cms', 'CATEGORY_VIEW_ALL_ENTRIES'))

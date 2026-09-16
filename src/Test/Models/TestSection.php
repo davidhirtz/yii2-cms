@@ -30,24 +30,31 @@ class TestSection extends Section
         return [
             SectionType::make(self::TYPE_HEADLINE)
                 ->name('Headline')
-                ->hiddenFields('content', self::FIELD_ENTRIES)
+                ->hiddenFields('content')
+                ->allowEntries(false)
                 ->customAttributes(fn (): array => [
                     TextCustomAttribute::make('subtitle')
                         ->translatable(),
                 ]),
             SectionType::make(self::TYPE_TEXT_COLUMN)
                 ->name('Column')
-                ->hiddenFields('name', self::FIELD_ASSETS, self::FIELD_ENTRIES),
+                ->hiddenFields('name')
+                ->allowAssets(false)
+                ->allowEntries(false),
             SectionType::make(self::TYPE_GALLERY)
                 ->name('Gallery')
-                ->hiddenFields('name', 'content', self::FIELD_ENTRIES),
+                ->hiddenFields('name', 'content')
+                ->allowEntries(false),
             SectionType::make(self::TYPE_BLOG)
                 ->name('Blog')
                 ->entriesOrderBy(['position' => SORT_ASC])
-                ->hiddenFields('name', 'content', self::FIELD_ASSETS),
+                ->hiddenFields('name', 'content')
+                ->allowAssets(false),
             SectionType::make(self::TYPE_LINK_LIST)
                 ->name('Link list')
-                ->hiddenFields('content', self::FIELD_ASSETS, self::FIELD_ENTRIES)
+                ->hiddenFields('content')
+                ->allowAssets(false)
+                ->allowEntries(false)
                 ->customAttributes(fn (): array => [
                     GroupCustomAttribute::make('links')
                         ->multiple()

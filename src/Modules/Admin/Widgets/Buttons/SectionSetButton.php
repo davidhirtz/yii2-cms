@@ -42,7 +42,7 @@ class SectionSetButton extends Widget
     public function isVisible(): bool
     {
         return (bool)$this->model->id
-            && $this->model->hasSectionsEnabled()
+            && $this->model->allowsSections()
             && $this->webuser->can(Entry::AUTH_ENTRY)
             && $this->getSets() !== [];
     }

@@ -76,6 +76,11 @@ class SectionController extends AbstractController
         ];
     }
 
+    protected function isEntryAllowed(Entry $entry): bool
+    {
+        return $entry->allowsSections();
+    }
+
     public function actionIndex(int $entry): Response|string
     {
         $entry = $this->findEntry($entry);

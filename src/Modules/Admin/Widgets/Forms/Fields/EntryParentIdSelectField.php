@@ -85,7 +85,7 @@ class EntryParentIdSelectField extends SelectField
      */
     protected function getEntries(): array
     {
-        $this->entries ??= array_filter($this->findEntries(), fn (Entry $entry) => $entry->hasDescendantsEnabled());
+        $this->entries ??= array_filter($this->findEntries(), fn (Entry $entry) => $entry->allowsDescendants());
         return $this->entries;
     }
 

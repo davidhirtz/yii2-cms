@@ -1,5 +1,32 @@
 ## 3.0 (in development)
 
+- **`has<Feature>Enabled()` is `allows<Feature>()`, and the model answers for the type.** Whether an entry has
+  assets, sections, categories or subentries was three unrelated mechanisms: a module flag read by
+  `Models\Entry::has*Enabled()`, a `FIELD_*` marker in the type's `hiddenFields()` that each caller had to check
+  itself, and `Models\Types\EntryType::showsCategories()`. The model is the single reader now — the installation's
+  flag, the type's declaration and the record's own state, resolved in one place:
+
+  ```php
+  EntryType::make(2)->allowAssets(false)->allowSections(false)->allowCategories(false)->allowDescendants(false);
+  SectionType::make(2)->allowEntries(false);
+  CategoryType::make(2)->allowEntries(false)->allowDescendants(false);
+  ```
+
+  Renamed on `Models\Entry`: `allowsAssets()`, `allowsCategories()`, `allowsSections()`, `allowsDescendants()`,
+  `allowsParent()`. On `Models\Section`: `allowsAssets()`, `allowsEntries()`. On `Models\Category`:
+  `allowsDescendants()`, `allowsEntries()`, `allowsParent()` — the last two used to answer a bare `true` and now
+  read the type. `Models\Section::FIELD_ENTRIES` is gone with `Media\…\AssetModelInterface::FIELD_ASSETS`.
+
+  `Models\Types\EntryType::showsCategories()` and `showsCategoryDropdown()` are **not** renamed: they are
+  tri-state grid settings with a default of their own to fall through to, where an `allow*()` is a plain `bool` a
+  type can only narrow with.
+
+- **A route no longer does what the submenu does not offer.** `Modules\Admin\Controllers\SectionController` and
+  `EntryCategoryController` refuse an entry whose type has no sections or no categories, through the new
+  `Modules\Admin\Controllers\Traits\EntryControllerTrait::isEntryAllowed()` hook — the module flags were not
+  checked there either, so `enableSections => false` left the section routes open. `Models\Section::validateEntryId()`
+  and `Models\EntryCategory` refused the write already; this refuses the page.
+
 - **`Assets\TenantDropdownAssetBundle` is gone and `Modules\Admin\Widgets\Forms\Fields\TenantIdField` reloads the
   page.** The tenant select carried a script of its own that fetched the current URL with a `tenant` query parameter
   and replaced the parent select's `innerHTML` — so it reached the parents and nothing else, leaving the slug field

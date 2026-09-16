@@ -81,7 +81,7 @@ class SectionSubmenu extends Submenu
                 ]
             )
             ->url(['/admin/cms/section-entry/index', 'section' => $this->model->id])
-            ->visible($this->model->isAttributeVisible(Section::FIELD_ENTRIES));
+            ->visible($this->model->allowsEntries());
     }
 
     protected function getAssetsItem(): ?NavItem
@@ -96,6 +96,6 @@ class SectionSubmenu extends Submenu
                 ]
             )
             ->url(SectionAsset::getAdminIndexRoute($this->model))
-            ->visible($this->model->isAttributeVisible(Section::FIELD_ASSETS));
+            ->visible($this->model->allowsAssets());
     }
 }

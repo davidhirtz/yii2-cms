@@ -35,7 +35,7 @@ class SectionCountColumn extends BadgeColumn
         }
 
         foreach ($this->grid->provider->getModels() as $model) {
-            if ($model->hasSectionsEnabled()) {
+            if ($model->allowsSections()) {
                 return true;
             }
         }
@@ -49,7 +49,7 @@ class SectionCountColumn extends BadgeColumn
     #[Override]
     protected function getBody(array|Model $model, string|int $key, int $index): string|Stringable
     {
-        return $model instanceof Entry && $model->hasSectionsEnabled()
+        return $model instanceof Entry && $model->allowsSections()
             ? parent::getBody($model, $key, $index)
             : '';
     }

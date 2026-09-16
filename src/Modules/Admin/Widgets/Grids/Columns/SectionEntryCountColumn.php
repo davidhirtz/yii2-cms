@@ -35,7 +35,7 @@ class SectionEntryCountColumn extends BadgeColumn
         }
 
         foreach ($this->grid->provider->getModels() as $section) {
-            if ($section->hasEntriesEnabled() && $section->entry_count > 0) {
+            if ($section->allowsEntries() && $section->entry_count > 0) {
                 return true;
             }
         }
@@ -49,7 +49,7 @@ class SectionEntryCountColumn extends BadgeColumn
     #[Override]
     protected function getBody(array|Model $model, string|int $key, int $index): string|Stringable
     {
-        return $model instanceof Section && $model->hasEntriesEnabled()
+        return $model instanceof Section && $model->allowsEntries()
             ? parent::getBody($model, $key, $index)
             : '';
     }

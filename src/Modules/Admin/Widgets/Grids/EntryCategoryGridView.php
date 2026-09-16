@@ -88,7 +88,7 @@ class EntryCategoryGridView extends GridView
         $buttons = [$this->getAdminLinkButton($category)];
 
         // Categories can always be removed even, if they were not supposed to have entries enabled
-        if ($category->hasEntriesEnabled() || $category->entryCategory) {
+        if ($category->allowsEntries() || $category->entryCategory) {
             $buttons[] = Button::make()
                 ->primary()
                 ->icon($category->entryCategory ? 'ban' : 'star')

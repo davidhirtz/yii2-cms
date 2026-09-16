@@ -72,7 +72,7 @@ trait CategoryGridTrait
 
         if ($this->showCategoryAncestors($category)) {
             $html .= Div::make()
-                ->class('small', 'strong')
+                ->class('small')
                 ->content($this->getCategoryAncestors($category));
         }
 
@@ -122,7 +122,7 @@ trait CategoryGridTrait
 
     protected function hasBranchesEnabled(): bool
     {
-        return $this->provider->parent?->hasDescendantsEnabled()
+        return $this->provider->parent?->allowsDescendants()
             ?? static::getModule()->enableNestedCategories;
     }
 
@@ -143,7 +143,7 @@ trait CategoryGridTrait
         return BadgeColumn::make()
             ->property('entry_count')
             ->url($this->isPicker() ? null : fn (Category $category) => ['entry/index', 'category' => $category->id])
-            ->value(fn (Category $category) => $category->hasEntriesEnabled() ? $category->entry_count : null);
+            ->value(fn (Category $category) => $category->allowsEntries() ? $category->entry_count : null);
     }
 
     protected function getUrl(Category $category): string|Stringable

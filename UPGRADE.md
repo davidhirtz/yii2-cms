@@ -1,5 +1,93 @@
 # Upgrade Guide
 
+## 3.0 — One vocabulary for what a type has
+
+Three mechanisms answered the same question. The module's flag reached `Entry::hasAssetsEnabled()` and its kind; a
+type's `hiddenFields(Entry::FIELD_ASSETS)` reached whichever caller remembered to ask `isAttributeVisible()`; and
+`EntryType::showsCategories()` reached one grid. So the frontend hid the assets of a type that declared none while
+the admin still accepted them, and a route stayed open behind a submenu tab that was gone.
+
+**The model is the single reader**, and it resolves all three: the installation's flag, the type's declaration, and
+whatever the record itself says. Nothing else has to consult a type.
+
+### Renames
+
+| Before | After |
+|---|---|
+| `Entry::hasAssetsEnabled()` | `Entry::allowsAssets()` |
+| `Entry::hasCategoriesEnabled()` | `Entry::allowsCategories()` |
+| `Entry::hasSectionsEnabled()` | `Entry::allowsSections()` |
+| `Entry::hasDescendantsEnabled()` | `Entry::allowsDescendants()` |
+| `Entry::hasParentEnabled()` | `Entry::allowsParent()` |
+| `Section::hasAssetsEnabled()` | `Section::allowsAssets()` |
+| `Section::hasEntriesEnabled()` | `Section::allowsEntries()` |
+| `Category::hasDescendantsEnabled()` | `Category::allowsDescendants()` |
+| `Category::hasEntriesEnabled()` | `Category::allowsEntries()` |
+| `Category::hasParentEnabled()` | `Category::allowsParent()` |
+
+`EntryType::showsCategories()` and `showsCategoryDropdown()` keep their names. They are tri-state *grid* settings
+with a default of their own to fall through to, where an `allow*()` is a plain `bool` — a type narrows what the
+installation turned on and can never widen it.
+
+### The markers are methods
+
+```php
+// before
+EntryType::make(2)->hiddenFields('content', Entry::FIELD_ASSETS);
+SectionType::make(2)->hiddenFields(Section::FIELD_ENTRIES);
+
+// after
+EntryType::make(2)->hiddenFields('content')->allowAssets(false);
+SectionType::make(2)->allowEntries(false);
+```
+
+`Section::FIELD_ENTRIES` and `Media\Models\Interfaces\AssetModelInterface::FIELD_ASSETS` are gone.
+`hiddenFields()` is a list of **attribute** names again — `parent_id` still belongs there, which is why
+`allowsParent()` has no `allowParent()` on the type to go with it.
+
+### A project's own per-type flag
+
+Subclass the type and the model, which is how a project extends here anyway — it declares its types in the
+container and re-points `Entry::class`:
+
+```php
+class EntryType extends \Hirtz\Cms\Models\Types\EntryType
+{
+    protected bool $allowsNewsletter = true;
+
+    public function allowNewsletter(bool $allowNewsletter = true): static
+    {
+        $this->allowsNewsletter = $allowNewsletter;
+        return $this;
+    }
+
+    public function allowsNewsletter(): bool
+    {
+        return $this->allowsNewsletter;
+    }
+}
+
+class Entry extends \Hirtz\Cms\Models\Entry
+{
+    public function allowsNewsletter(): bool
+    {
+        return $this->getType()?->allowsNewsletter() ?? true;
+    }
+}
+```
+
+Then the submenu item is `->visible($entry->allowsNewsletter())` and the controller behind it answers
+`isEntryAllowed()` with the same call. Where the type class belongs to another bundle and cannot be subclassed,
+`hiddenFields()` with a marker of your own is still the way — the hotspot bundle does exactly that for
+`Cms\Hotspot\Module::FIELD_HOTSPOTS`.
+
+### A route refuses what the admin does not offer
+
+`Modules\Admin\Controllers\SectionController` and `EntryCategoryController` now answer `404` for an entry whose
+type has no sections or no categories, through `Traits\EntryControllerTrait::isEntryAllowed()`. The module flags
+were not checked there either, so `enableSections => false` used to leave the section routes open. A project with a
+controller of its own overrides the hook.
+
 ## 3.0 — The tenant select reloads the page
 
 `Assets\TenantDropdownAssetBundle` is gone, with the `resources/assets` tree behind it — the cms ships no

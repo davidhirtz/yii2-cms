@@ -170,7 +170,7 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
 
     protected function validateParentId(): void
     {
-        $this->parent_id = $this->parent_id && $this->hasParentEnabled() ? (int)$this->parent_id : null;
+        $this->parent_id = $this->parent_id && $this->allowsParent() ? (int)$this->parent_id : null;
 
         if ($this->isAttributeChanged('parent_id')) {
             $parent = self::findOne($this->parent_id);
@@ -661,7 +661,7 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
      */
     public function getVisibleAssets(): array
     {
-        if (!$this->hasAssetsEnabled() || !$this->isAttributeVisible(self::FIELD_ASSETS)) {
+        if (!$this->allowsAssets()) {
             return [];
         }
 
@@ -767,14 +767,14 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
         return EntryAsset::class;
     }
 
-    public function hasAssetsEnabled(): bool
+    public function allowsAssets(): bool
     {
-        return static::getModule()->enableEntryAssets;
+        return static::getModule()->enableEntryAssets && $this->typeAllowsAssets();
     }
 
-    public function hasCategoriesEnabled(): bool
+    public function allowsCategories(): bool
     {
-        return static::getModule()->enableCategories;
+        return static::getModule()->enableCategories && ($this->getType()?->allowsCategories() ?? true);
     }
 
     public function hasInvalidParentStatus(): bool
@@ -782,21 +782,27 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
         return $this->parent_status !== static::STATUS_ENABLED;
     }
 
-    public function hasDescendantsEnabled(): bool
+    public function allowsDescendants(): bool
     {
-        return static::getModule()->enableNestedEntries && !$this->isIndex();
+        return static::getModule()->enableNestedEntries
+            && !$this->isIndex()
+            && ($this->getType()?->allowsDescendants() ?? true);
     }
 
-    public function hasParentEnabled(): bool
+    /**
+     * `parent_id` is an attribute of the entry's own, so a type declares it through `hiddenFields()` rather than
+     * through an `allow*()` of its own.
+     */
+    public function allowsParent(): bool
     {
         return static::getModule()->enableNestedEntries
             && $this->isAttributeVisible('parent_id')
             && !$this->isIndex();
     }
 
-    public function hasSectionsEnabled(): bool
+    public function allowsSections(): bool
     {
-        return static::getModule()->enableSections;
+        return static::getModule()->enableSections && ($this->getType()?->allowsSections() ?? true);
     }
 
     public function hasPermalink(): bool

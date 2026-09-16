@@ -129,11 +129,11 @@ class EntrySiteRelationsBuilder extends Component
             ->all();
 
         foreach ($sections as $section) {
-            if ($section->hasAssetsEnabled() && $section->asset_count) {
+            if ($section->allowsAssets() && $section->asset_count) {
                 $this->sectionsWithAssets[] = $section;
             }
 
-            if ($section->hasEntriesEnabled() && $section->entry_count) {
+            if ($section->allowsEntries() && $section->entry_count) {
                 $this->sectionIdsWithEntries[] = $section->id;
             }
         }

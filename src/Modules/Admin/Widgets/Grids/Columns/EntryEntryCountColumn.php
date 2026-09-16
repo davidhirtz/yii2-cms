@@ -44,7 +44,7 @@ class EntryEntryCountColumn extends BadgeColumn
         }
 
         foreach ($this->grid->provider->getModels() as $model) {
-            if ($model->hasDescendantsEnabled()) {
+            if ($model->allowsDescendants()) {
                 return true;
             }
         }
@@ -58,7 +58,7 @@ class EntryEntryCountColumn extends BadgeColumn
     #[Override]
     protected function getBody(array|Model $model, string|int $key, int $index): string|Stringable
     {
-        return $model instanceof Entry && $model->hasDescendantsEnabled()
+        return $model instanceof Entry && $model->allowsDescendants()
             ? parent::getBody($model, $key, $index)
             : '';
     }

@@ -39,6 +39,16 @@ class SectionType extends Type implements AssetModelTypeInterface
     protected array $entriesTypes = [];
 
     protected Closure|string|null $gridContent = null;
+    protected bool $allowsEntries = true;
+
+    /**
+     * Whether a section of this type links entries. The module's `enableSectionEntries` decides first.
+     */
+    public function allowEntries(bool $allowEntries = true): static
+    {
+        $this->allowsEntries = $allowEntries;
+        return $this;
+    }
 
     /**
      * @param Closure(Section): bool|bool $visible whether the section is rendered on the site; a type declaring
@@ -101,6 +111,11 @@ class SectionType extends Type implements AssetModelTypeInterface
     {
         $this->gridContent = $gridContent;
         return $this;
+    }
+
+    public function allowsEntries(): bool
+    {
+        return $this->allowsEntries;
     }
 
     public function getVisible(): Closure|bool|null

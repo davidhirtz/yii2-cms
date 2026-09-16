@@ -49,12 +49,12 @@ class EntrySubmenu extends Submenu
         $this->module = $module;
 
         if ($this->showEntryCategories) {
-            $this->showEntryCategories = $this->model->hasCategoriesEnabled()
+            $this->showEntryCategories = $this->model->allowsCategories()
                 && $this->webuser->can(Entry::AUTH_ENTRY);
         }
 
         if ($this->showEntrySections) {
-            $this->showEntrySections = $this->model->hasSectionsEnabled()
+            $this->showEntrySections = $this->model->allowsSections()
                 && $this->webuser->can(Entry::AUTH_ENTRY);
         }
 
@@ -91,7 +91,7 @@ class EntrySubmenu extends Submenu
                 ]
             )
             ->url(EntryAsset::getAdminIndexRoute($this->model))
-            ->visible($this->model->isAttributeVisible(Entry::FIELD_ASSETS));
+            ->visible($this->model->allowsAssets());
     }
 
     public function getSubentriesItem(): ?NavItem
@@ -102,7 +102,7 @@ class EntrySubmenu extends Submenu
             ->label(Yii::t('cms', 'COMMON_SUBENTRIES'))
             ->routes(['admin/cms/entry/index', ...$this->additionalActiveRoutes['subentries'] ?? []])
             ->url(['/admin/cms/entry/index', 'parent' => $this->model->id])
-            ->visible($this->model->hasDescendantsEnabled());
+            ->visible($this->model->allowsDescendants());
     }
 
     protected function getEntryCategoriesItem(): ?NavItem

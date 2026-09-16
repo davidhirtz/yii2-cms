@@ -51,6 +51,11 @@ class EntryCategoryController extends AbstractController
         ];
     }
 
+    protected function isEntryAllowed(Entry $entry): bool
+    {
+        return $entry->allowsCategories();
+    }
+
     public function actionIndex(int $entry, ?int $category = null, ?string $q = null): string
     {
         $entry = $this->findEntry($entry);

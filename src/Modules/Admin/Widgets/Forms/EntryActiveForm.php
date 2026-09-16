@@ -131,7 +131,7 @@ class EntryActiveForm extends ActiveForm
     #[Override]
     protected function hasParentIdField(): bool
     {
-        return static::getModule()->enableNestedEntries && $this->model->hasParentEnabled();
+        return $this->model->allowsParent();
     }
 
     #[Override]

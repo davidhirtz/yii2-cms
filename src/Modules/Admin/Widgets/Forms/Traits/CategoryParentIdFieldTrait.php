@@ -23,6 +23,6 @@ trait CategoryParentIdFieldTrait
     #[Override]
     protected function hasParentIdField(): bool
     {
-        return static::getModule()->enableNestedCategories && $this->model->hasParentEnabled();
+        return $this->model->allowsParent();
     }
 }

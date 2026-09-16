@@ -75,7 +75,12 @@ class EntryGridView extends GridView
 
         $type = $enableCategories ? Entry::instance()::findType($this->provider->type) : null;
 
-        if ($type) {
+        // A grid filtered to one type reads that type. Display is `shows*`, but a type with no categories at all
+        // has nothing to show either, whatever it declares.
+        if ($type && !$type->allowsCategories()) {
+            $this->showCategories = false;
+            $this->showCategoryDropdown = false;
+        } elseif ($type) {
             $this->showCategories = $type->showsCategories() ?? $this->showCategories;
             $this->showCategoryDropdown = $type->showsCategoryDropdown() ?? $this->showCategoryDropdown;
         }
@@ -224,7 +229,7 @@ class EntryGridView extends GridView
             return $entry->getAdminRoute() ?: null;
         }
 
-        return $entry->hasDescendantsEnabled() && $entry->entry_count
+        return $entry->allowsDescendants() && $entry->entry_count
             ? $this->getDescendantUrl($entry)
             : null;
     }
@@ -342,7 +347,7 @@ class EntryGridView extends GridView
         $categories = [];
 
         foreach (CategoryCollection::getAll() as $category) {
-            if ($category->hasEntriesEnabled() && in_array($category->id, $categoryIds, true)) {
+            if ($category->allowsEntries() && in_array($category->id, $categoryIds, true)) {
                 $categories[] = Button::make()
                     ->secondary()
                     ->text($category->getI18nAttribute('name'))

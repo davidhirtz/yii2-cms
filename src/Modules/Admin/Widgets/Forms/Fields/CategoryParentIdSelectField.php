@@ -61,6 +61,6 @@ class CategoryParentIdSelectField extends SelectField
      */
     protected function getCategories(): array
     {
-        return array_filter(CategoryCollection::getAll(), fn (Category $category): bool => $category->hasDescendantsEnabled());
+        return array_filter(CategoryCollection::getAll(), fn (Category $category): bool => $category->allowsDescendants());
     }
 }

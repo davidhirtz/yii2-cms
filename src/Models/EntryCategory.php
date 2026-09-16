@@ -85,14 +85,14 @@ class EntryCategory extends \Hirtz\Skeleton\Db\ActiveRecord implements TrailMode
 
     public function validateCategoryId(): void
     {
-        if (!$this->category->hasEntriesEnabled()) {
+        if (!$this->category->allowsEntries()) {
             $this->addInvalidAttributeError('category_id');
         }
     }
 
     public function validateEntryId(): void
     {
-        if (!$this->entry->hasCategoriesEnabled()) {
+        if (!$this->entry->allowsCategories()) {
             $this->addInvalidAttributeError('entry_id');
         }
     }
@@ -182,7 +182,7 @@ class EntryCategory extends \Hirtz\Skeleton\Db\ActiveRecord implements TrailMode
     {
         if ($categories = $this->category->getAncestors()) {
             foreach ($categories as $category) {
-                if ($category->inheritNestedCategories() && $category->hasEntriesEnabled()) {
+                if ($category->inheritNestedCategories() && $category->allowsEntries()) {
                     $junction = static::create();
                     $junction->populateInheritedRelation($this, $category);
 

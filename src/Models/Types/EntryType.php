@@ -22,6 +22,32 @@ class EntryType extends Type implements AssetModelTypeInterface
     protected ?array $sort = null;
     protected ?bool $showCategories = null;
     protected ?bool $showCategoryDropdown = null;
+    protected bool $allowsCategories = true;
+    protected bool $allowsSections = true;
+    protected bool $allowsDescendants = true;
+
+    /**
+     * Whether an entry of this type is put into categories. The module's `enableCategories` decides first: a type
+     * only ever narrows what the installation turned on, which is why these take a plain `bool` where
+     * {@see static::showCategories()} — a grid setting with a default of its own to fall through to — takes `?bool`.
+     */
+    public function allowCategories(bool $allowCategories = true): static
+    {
+        $this->allowsCategories = $allowCategories;
+        return $this;
+    }
+
+    public function allowSections(bool $allowSections = true): static
+    {
+        $this->allowsSections = $allowSections;
+        return $this;
+    }
+
+    public function allowDescendants(bool $allowDescendants = true): static
+    {
+        $this->allowsDescendants = $allowDescendants;
+        return $this;
+    }
 
     /**
      * @param array<string, int>|null $orderBy the entry index order, which also disables manual ordering
@@ -67,6 +93,21 @@ class EntryType extends Type implements AssetModelTypeInterface
     public function getSort(): ?array
     {
         return $this->sort;
+    }
+
+    public function allowsCategories(): bool
+    {
+        return $this->allowsCategories;
+    }
+
+    public function allowsSections(): bool
+    {
+        return $this->allowsSections;
+    }
+
+    public function allowsDescendants(): bool
+    {
+        return $this->allowsDescendants;
     }
 
     public function showsCategories(): ?bool

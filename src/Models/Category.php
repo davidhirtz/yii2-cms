@@ -349,19 +349,24 @@ class Category extends ActiveRecord implements SearchableInterface
         return self::class;
     }
 
-    public function hasDescendantsEnabled(): bool
+    public function allowsDescendants(): bool
     {
-        return static::getModule()->inheritNestedCategories;
+        return static::getModule()->inheritNestedCategories
+            && ($this->getType()?->allowsDescendants() ?? true);
     }
 
-    public function hasEntriesEnabled(): bool
+    public function allowsEntries(): bool
     {
-        return true;
+        return $this->getType()?->allowsEntries() ?? true;
     }
 
-    public function hasParentEnabled(): bool
+    /**
+     * `parent_id` is an attribute of the category's own, so a type declares it through `hiddenFields()` rather than
+     * through an `allow*()` of its own.
+     */
+    public function allowsParent(): bool
     {
-        return true;
+        return static::getModule()->enableNestedCategories && $this->isAttributeVisible('parent_id');
     }
 
     public function inheritNestedCategories(): bool

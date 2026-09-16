@@ -47,11 +47,6 @@ class Section extends ActiveRecord implements AssetModelInterface, SearchableInt
     use SearchableTrait;
     use TranslatableAttributesTrait;
 
-    /**
-     * The marker that hides the linked entries panel, listed among a type's hidden fields.
-     */
-    final public const string FIELD_ENTRIES = 'entries';
-
     final public const int SLUG_MAX_LENGTH = 100;
 
     public bool|null $shouldUpdateEntryAfterSave = null;
@@ -169,7 +164,7 @@ class Section extends ActiveRecord implements AssetModelInterface, SearchableInt
 
     public function validateEntryId(): void
     {
-        if (!$this->entry->hasSectionsEnabled()) {
+        if (!$this->entry->allowsSections()) {
             $this->addInvalidAttributeError('entry_id');
         }
     }
@@ -423,7 +418,7 @@ class Section extends ActiveRecord implements AssetModelInterface, SearchableInt
      */
     public function getVisibleAssets(): array
     {
-        return $this->hasAssetsEnabled() && $this->isAttributeVisible(self::FIELD_ASSETS) ? array_values($this->assets) : [];
+        return $this->allowsAssets() ? array_values($this->assets) : [];
     }
 
     public function getAssetClass(): string
@@ -431,14 +426,14 @@ class Section extends ActiveRecord implements AssetModelInterface, SearchableInt
         return SectionAsset::class;
     }
 
-    public function hasAssetsEnabled(): bool
+    public function allowsAssets(): bool
     {
-        return static::getModule()->enableSectionAssets;
+        return static::getModule()->enableSectionAssets && $this->typeAllowsAssets();
     }
 
-    public function hasEntriesEnabled(): bool
+    public function allowsEntries(): bool
     {
-        return static::getModule()->enableSectionEntries;
+        return static::getModule()->enableSectionEntries && ($this->getType()?->allowsEntries() ?? true);
     }
 
     #[Override]
