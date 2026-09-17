@@ -53,7 +53,11 @@ class CategoryHeader extends ModelHeader
         return CreateButton::make()
             ->label(Yii::t('cms', 'CATEGORY_CREATE_BUTTON'))
             ->icon('plus')
-            ->url(['/admin/cms/category/create', 'parent' => $this->provider?->parent?->id]);
+            ->url([
+                '/admin/cms/category/create',
+                'parent' => $this->provider?->parent?->id,
+                'type' => $this->provider?->type,
+            ]);
     }
 
     protected function getCategoryActionDropdown(): ?Stringable

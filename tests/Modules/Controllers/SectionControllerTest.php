@@ -8,6 +8,7 @@ use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Models\Sets\SectionSet;
 use Hirtz\Cms\Models\Sets\SectionTemplate;
+use Hirtz\Cms\Models\Types\SectionType;
 use Hirtz\Cms\Modules\Admin\Controllers\SectionController;
 use Hirtz\Cms\Test\TestCase;
 use Hirtz\Skeleton\Models\User;
@@ -27,6 +28,8 @@ class SectionControllerTest extends TestCase
 {
     use UserFixtureTrait;
 
+    private const int TYPE_GALLERY = 2;
+
     private Entry $entry;
 
     #[Override]
@@ -35,6 +38,13 @@ class SectionControllerTest extends TestCase
         parent::setUp();
 
         $this->entry = $this->createEntry('Page', 'page');
+    }
+
+    #[Override]
+    protected function tearDown(): void
+    {
+        Yii::$container->clear(Section::class);
+        parent::tearDown();
     }
 
     public function testIndexListsTheSectionsOfTheEntry(): void
@@ -83,6 +93,34 @@ class SectionControllerTest extends TestCase
         self::assertNotNull($section);
         self::assertStringContainsString("id=$section->id", (string)$response->getHeaders()->get('location'));
         self::assertSame(1, Entry::findOne($this->entry->id)->section_count);
+    }
+
+    /**
+     * The create button carries the grid's own type filter, so the action has to answer for it (monorepo issue
+     * #161).
+     */
+    public function testCreateTakesTheTypeFromTheQuery(): void
+    {
+        // The container is how a project declares types without subclassing, and the base `Section` the
+        // controller loads has only its default one.
+        Yii::$container->set(Section::class, [
+            'types' => fn (): array => [
+                SectionType::make(Section::TYPE_DEFAULT)->name('Default'),
+                SectionType::make(self::TYPE_GALLERY)->name('Gallery'),
+            ],
+        ]);
+
+        $this->login();
+
+        Yii::$app->runAction('admin/cms/section/create', [
+            'entry' => $this->entry->id,
+            'type' => self::TYPE_GALLERY,
+        ]);
+
+        $section = Section::findOne(['entry_id' => $this->entry->id]);
+
+        self::assertNotNull($section);
+        self::assertSame(self::TYPE_GALLERY, $section->type);
     }
 
     public function testCreateRendersTheFormWhenItIsNotAutomatic(): void

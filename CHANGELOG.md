@@ -1,5 +1,17 @@
 ## 3.0 (in development)
 
+- **A create action takes the type from the query** (monorepo issue #161).
+  `Modules\Admin\Controllers\CategoryController::actionCreate()` and `SectionController::actionCreate()` take a
+  `?int $type` and hand it to `instantiateFromPost()`, the way the entry, block, location and tag ones already
+  did — their create buttons carried the grid's own type filter into a URL nothing read.
+  `Modules\Admin\Widgets\Navs\CategoryHeader`'s create button carries the provider's type now.
+
+- **`Modules\Admin\Widgets\Buttons\EntryCreateButton` stops dropping the filtered type.** It overwrote the
+  query's `type` with `$this->view->params['entryType']`, which was **always** `null` there: `$view` is assigned
+  by `Widgets\Widget::__construct()`, which runs after a subclass's, and `??` answers `null` for an
+  uninitialized typed property rather than erroring. The pinned type is read in `configure()` now, and only
+  where the query named none.
+
 - **`Modules\Admin\Widgets\Navs\BlockSubmenu`'s *Sections* tab is `th-list`**, the icon the entry submenu's
   sections tab already carries (monorepo issue #148). It was `link`, which Font Awesome draws as the `chain` of
   the *Entries* tab beside it — the two names are aliases of the same glyph.

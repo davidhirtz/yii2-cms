@@ -6,6 +6,7 @@ namespace Hirtz\Cms\Tests\Modules\Controllers;
 
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\EntryCategory;
+use Hirtz\Cms\Models\Types\CategoryType;
 use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
 use Hirtz\Cms\Test\Models\TestEntry;
 use Hirtz\Cms\Test\TestCase;
@@ -22,6 +23,8 @@ class CategoryControllerTest extends TestCase
 {
     use CmsFixtureTrait;
 
+    private const int TYPE_TOPIC = 2;
+
     #[Override]
     protected function setUp(): void
     {
@@ -31,6 +34,13 @@ class CategoryControllerTest extends TestCase
         $module->enableCategories = true;
         $module->enableNestedCategories = true;
         $module->inheritNestedCategories = true;
+    }
+
+    #[Override]
+    protected function tearDown(): void
+    {
+        Yii::$container->clear(Category::class);
+        parent::tearDown();
     }
 
     public function testIndexListsTheRootCategories(): void
@@ -122,6 +132,33 @@ class CategoryControllerTest extends TestCase
         ], ['parent' => 1]);
 
         self::assertSame(1, Category::findOne(['slug' => 'a-nested-category'])?->parent_id);
+    }
+
+    /**
+     * The create button carries the page's own type, so the action has to answer for it (monorepo issue #161).
+     */
+    public function testCreateKeepsTheTypeFromTheQuery(): void
+    {
+        // The container is how a project declares types without subclassing, and the base `Category` the
+        // controller loads has only its default one.
+        Yii::$container->set(Category::class, [
+            'types' => fn (): array => [
+                CategoryType::make(Category::TYPE_DEFAULT)->name('Default'),
+                CategoryType::make(self::TYPE_TOPIC)->name('Topic'),
+            ],
+        ]);
+
+        $this->login();
+
+        $this->post('admin/cms/category/create', [
+            'Category' => [
+                'status' => Category::STATUS_ENABLED,
+                'name' => 'A typed category',
+                'slug' => 'a-typed-category',
+            ],
+        ], ['type' => self::TYPE_TOPIC]);
+
+        self::assertSame(self::TYPE_TOPIC, Category::findOne(['slug' => 'a-typed-category'])?->type);
     }
 
     /**
