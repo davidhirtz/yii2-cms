@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Validators;
 
 use Hirtz\Cms\Models\Entry;
+use Hirtz\Skeleton\Behaviors\AttributeTypecastBehavior;
+use Hirtz\Skeleton\Validators\Interfaces\AttributeTypeInterface;
 use Hirtz\Tenant\Models\Collections\TenantCollection;
 use Override;
 use Yii;
@@ -15,11 +17,17 @@ use yii\validators\Validator;
  * An empty value resolves to the default tenant, so imports and single-tenant projects can create entries without
  * knowing about tenants at all.
  */
-class TenantIdValidator extends Validator
+class TenantIdValidator extends Validator implements AttributeTypeInterface
 {
     /** @var string[] */
     public $attributes = ['tenant_id'];
     public $skipOnEmpty = false;
+
+    #[Override]
+    public function getAttributeType(): string
+    {
+        return AttributeTypecastBehavior::TYPE_INTEGER;
+    }
 
     /**
      * @param Entry $model

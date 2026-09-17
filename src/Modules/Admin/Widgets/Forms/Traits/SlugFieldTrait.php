@@ -18,7 +18,6 @@ trait SlugFieldTrait
                 ->prepare(
                     fn (InputField $field) => $field->prepend(
                         Div::make()
-                            ->attribute('id', $this->getSlugId($field->language))
                             ->class('text-truncate hidden sm:block')
                             ->addStyle(['max-width' => 'min(24rem, 40vw)'])
                             ->text($this->getSlugBaseUrl($field->language))
@@ -32,10 +31,5 @@ trait SlugFieldTrait
     protected function hasSlugField(): bool
     {
         return true;
-    }
-
-    protected function getSlugId(?string $language = null): string
-    {
-        return $this->getId() . '-' . $this->model->getI18nAttributeName('slug', $language);
     }
 }

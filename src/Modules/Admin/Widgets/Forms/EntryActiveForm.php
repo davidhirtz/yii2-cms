@@ -122,20 +122,29 @@ class EntryActiveForm extends ActiveForm
         return $this->model->allowsParent();
     }
 
+    /**
+     * The prefix is the parent's path rather than its route: an entry being created under a parent that has no
+     * children yet is exactly the case {@see Entry::getRoute()} answers `false` for.
+     */
     #[Override]
     protected function getSlugBaseUrl(?string $language = null): string
     {
-        $manager = Yii::$app->getUrlManager();
+        return Yii::$app->getI18n()->callback($language ?? Yii::$app->language, function (): string {
+            $manager = Yii::$app->getUrlManager();
+            $parent = $this->model->parent_id ? $this->model->parent : null;
+            $params = $this->getSlugBaseRouteParams();
+            $slug = $parent?->getFormattedSlug();
 
-        $route = [
-            '/cms/site/index',
-            ...$this->getSlugBaseRouteParams(),
-            'language' => $manager->i18nUrl ? $language : null,
-        ];
+            $route = $slug
+                ? ['/cms/site/view', 'slug' => $slug, ...$params]
+                : ['/cms/site/index', ...$params];
 
-        $url = $this->model->isEnabled() ? $manager->createAbsoluteUrl($route) : $manager->createDraftUrl($route);
+            $url = $this->model->isEnabled() && ($parent?->isEnabled() ?? true)
+                ? $manager->createAbsoluteUrl($route)
+                : $manager->createDraftUrl($route);
 
-        return rtrim($url, '/') . '/';
+            return rtrim($url, '/') . '/';
+        });
     }
 
     /**
@@ -144,21 +153,6 @@ class EntryActiveForm extends ActiveForm
     protected function getSlugBaseRouteParams(): array
     {
         return $this->model->getTenantRouteParams();
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    protected function getParentIdAttributes(): array
-    {
-        $attributes = [];
-
-        foreach ($this->model->getI18nAttributeNames('slug') as $language => $attribute) {
-            $attributes['data-form-target'][] = '#' . $this->getSlugId($language);
-            $attributes['promptAttributes']['data-value'][] = $this->getSlugBaseUrl($language);
-        }
-
-        return $attributes;
     }
 
     protected function hasSlugField(): bool

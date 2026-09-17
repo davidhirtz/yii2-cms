@@ -1,5 +1,23 @@
 ## 3.0 (in development)
 
+- **The entry's parent select reloads the form instead of swapping URLs in the browser** (monorepo issues #151,
+  #150 and #155). `Modules\Admin\Widgets\Forms\Traits\ParentIdSelectFieldTrait::getParentIdOptionDataValue()`
+  and its `$parentSlugMaxLength`, `ParentIdFieldTrait::getParentIdAttributes()` and
+  `SlugFieldTrait::getSlugId()` are **deleted** with the `data-form-target` script they fed; the field calls the
+  skeleton's `Widgets\Forms\Fields\Field::reloadsForm()`, so the server renders the base URL of the chosen
+  parent and nothing builds a URL per option any more. The prefix div carried the *same* id as the slug input it
+  sits in front of, and the script wrote into whichever of the two it found first — the slug input, with the
+  *next* language's base URL, so opening an entry and pressing Update renamed the record.
+  `EntryActiveForm::getSlugBaseUrl()` composes the parent's path rather than its route, so a new entry under a
+  parent that has no children yet gets a URL instead of an empty prefix. The category's parent select no longer
+  emits `data-value` either: a category's slug is a filter parameter, and the form never read it.
+
+- **`Validators\TenantIdValidator` declares its attribute an integer** through the skeleton's new
+  `Validators\Interfaces\AttributeTypeInterface`. Nothing else typed `tenant_id`, so a form reload — which
+  renders the loaded record without validating it — left the posted string in place and
+  `Models\Entry::getTenantRouteParams()` handed it to a `?int` parameter: every reload of the entry form was a
+  500, the type and tenant selects included.
+
 - **A page's title stays on the record that owns it, and the records below it name themselves underneath.**
   `Models\Entry`, `Section`, `Block` and `Category` answer the skeleton's `getAdminParent()` /
   `getAdminIndexBreadcrumb()`, `Section` also its `getAdminSubtitle()`, and the four headers extend

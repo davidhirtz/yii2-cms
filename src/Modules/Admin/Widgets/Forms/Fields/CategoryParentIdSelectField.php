@@ -32,19 +32,11 @@ class CategoryParentIdSelectField extends SelectField
             $this->indent
         );
 
-        $attributeNames = $this->model->getI18nAttributeNames('slug');
-
         foreach ($categories as $category) {
-            $item = [
+            $this->addItem($category->id, [
                 'label' => $labels[$category->id],
                 'disabled' => $category->lft >= $this->model->lft && $category->rgt <= $this->model->rgt,
-            ];
-
-            foreach ($attributeNames as $language => $attributeName) {
-                $item['data-value'][] = $this->getParentIdOptionDataValue($category, $language);
-            }
-
-            $this->addItem($category->id, $item);
+            ]);
         }
 
         parent::configure();
