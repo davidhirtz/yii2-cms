@@ -25,12 +25,6 @@ class SectionEntry extends EntryRelation
     }
 
     #[Override]
-    public function getPermissionName(): string
-    {
-        return Entry::AUTH_ENTRY;
-    }
-
-    #[Override]
     public function getModel(): Section
     {
         /** @var Section */

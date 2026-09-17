@@ -26,12 +26,6 @@ class BlockAsset extends Asset
     }
 
     #[Override]
-    public function getPermissionName(): string
-    {
-        return Block::AUTH_BLOCK;
-    }
-
-    #[Override]
     public function getAdminType(): string
     {
         return Yii::t('cms', 'BLOCK_ASSET_BLOCK_ASSET');

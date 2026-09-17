@@ -1,5 +1,9 @@
 ## 3.0 (in development)
 
+- **`Models\EntryRelation::getPermissionName()` answers the model's own**, the way the media `Asset` does since
+  monorepo issue #147, so `SectionEntry` and `BlockEntry` declare none. `EntryAsset`, `SectionAsset` and
+  `BlockAsset` lost theirs for the same reason.
+
 - **The entry's parent select reloads the form instead of swapping URLs in the browser** (monorepo issues #151,
   #150 and #155). `Modules\Admin\Widgets\Forms\Traits\ParentIdSelectFieldTrait::getParentIdOptionDataValue()`
   and its `$parentSlugMaxLength`, `ParentIdFieldTrait::getParentIdAttributes()` and

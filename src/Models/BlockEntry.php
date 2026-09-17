@@ -25,12 +25,6 @@ class BlockEntry extends EntryRelation
     }
 
     #[Override]
-    public function getPermissionName(): string
-    {
-        return Block::AUTH_BLOCK;
-    }
-
-    #[Override]
     public function getModel(): Block
     {
         /** @var Block */

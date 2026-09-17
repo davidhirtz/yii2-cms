@@ -29,12 +29,6 @@ class EntryAsset extends Asset
     }
 
     #[Override]
-    public function getPermissionName(): string
-    {
-        return Entry::AUTH_ENTRY;
-    }
-
-    #[Override]
     public function getAdminType(): string
     {
         return Yii::t('media', 'ASSET_ENTRY_ASSET');

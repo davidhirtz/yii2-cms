@@ -62,9 +62,13 @@ class EntryRelation extends ActiveRecord implements TrailModelInterface
         throw new NotSupportedException(static::class . ' must implement "getAdminControllerRoute()".');
     }
 
+    /**
+     * An entry relation is only ever edited through the model it hangs on, so it answers that model's permission.
+     * Read off the class rather than the record: a grid asks per row, and a bare instance has to answer as well.
+     */
     public function getPermissionName(): string
     {
-        throw new NotSupportedException(static::class . ' must implement "getPermissionName()".');
+        return static::getModelClass()::instance()->getPermissionName();
     }
 
     /**
