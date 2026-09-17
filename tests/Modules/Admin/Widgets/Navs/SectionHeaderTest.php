@@ -18,7 +18,7 @@ class SectionHeaderTest extends TestCase
 {
     use CmsFixtureTrait;
 
-    public function testTheTitleIsTheSection(): void
+    public function testTheTitleStaysOnTheEntry(): void
     {
         $this->login();
         $section = $this->getSectionFromFixture('section-headline');
@@ -27,30 +27,13 @@ class SectionHeaderTest extends TestCase
 
         self::assertIsString($html);
         self::assertStringContainsString(
-            '<h1><a href="/admin/cms/section/update?id=' . $section->id . '">' . $section->getAdminName() . '</a></h1>',
-            $html,
-        );
-        self::assertStringNotContainsString($section->entry->name . '</a></h1>', $html);
-    }
-
-    public function testTheTitleFallsBackToTheModelId(): void
-    {
-        $this->login();
-        $section = $this->getSectionFromFixture('section-entry-draft');
-
-        $html = Yii::$app->runAction('admin/cms/section/update', ['id' => $section->id]);
-
-        self::assertIsString($html);
-        self::assertStringContainsString(
-            '>' . Yii::t('skeleton', 'COMMON_MODEL_ID', [
-                'model' => $section->getAdminType(),
-                'id' => $section->id,
-            ]) . '</a></h1>',
+            '<h1><a href="/admin/cms/entry/update?id=' . $section->entry_id . '">'
+            . $section->entry->getAdminName() . '</a></h1>',
             $html,
         );
     }
 
-    public function testThePathHoldsTheEntry(): void
+    public function testTheSubtitleNamesTheSectionByItsPosition(): void
     {
         $this->login();
         $section = $this->getSectionFromFixture('section-headline');
@@ -58,14 +41,19 @@ class SectionHeaderTest extends TestCase
         $html = Yii::$app->runAction('admin/cms/section/update', ['id' => $section->id]);
 
         self::assertIsString($html);
-        self::assertStringContainsString('class="header-path small"', $html);
         self::assertStringContainsString(
-            '<a class="header-path-link" href="/admin/cms/entry/update?id=' . $section->entry_id . '">',
+            '<h2 class="header-subtitle">' . Yii::t('skeleton', 'COMMON_MODEL_ID', [
+                'model' => Yii::t('cms', 'COMMON_SECTION'),
+                'id' => $section->position,
+            ]) . '</h2>',
             $html,
         );
     }
 
-    public function testThePathOfANestedEntryHoldsBothEntries(): void
+    /**
+     * An entry filed under another entry is still its own base, so the title never climbs to the ancestor.
+     */
+    public function testTheTitleOfASectionOfANestedEntryIsThatEntry(): void
     {
         $this->login();
 
@@ -79,29 +67,38 @@ class SectionHeaderTest extends TestCase
 
         self::assertIsString($html);
         self::assertStringContainsString(
-            '<a class="header-path-link" href="/admin/cms/entry/update?id=' . $entry->parent_id . '">',
+            '<h1><a href="/admin/cms/entry/update?id=' . $entry->id . '">' . $entry->getAdminName() . '</a></h1>',
             $html,
         );
-        self::assertStringContainsString(
-            '<a class="header-path-link" href="/admin/cms/entry/update?id=' . $entry->id . '">',
-            $html,
-        );
+        self::assertStringNotContainsString($entry->parent->getAdminName() . '</a></h1>', $html);
+    }
+
+    public function testTheSubheadingIsTheSectionsFrontendUrl(): void
+    {
+        $this->login();
+        $section = $this->getSectionFromFixture('section-headline');
+
+        $html = Yii::$app->runAction('admin/cms/section/update', ['id' => $section->id]);
+
+        self::assertIsString($html);
+        self::assertStringContainsString('#' . $section->getHtmlId() . '" target="_blank"', $html);
     }
 
     public function testTheBreadcrumbsAreEntriesEntrySections(): void
     {
         $this->login();
         $section = $this->getSectionFromFixture('section-headline');
-        $entry = $section->entry;
 
         $html = Yii::$app->runAction('admin/cms/section/update', ['id' => $section->id]);
 
         self::assertIsString($html);
-
-        $crumbs = $this->getBreadcrumbLabels();
         self::assertSame(
-            [Yii::t('cms', 'COMMON_ENTRIES'), $entry->getAdminName(), Yii::t('cms', 'COMMON_SECTIONS')],
-            $crumbs,
+            [
+                Yii::t('cms', 'COMMON_ENTRIES'),
+                $section->entry->getAdminName(),
+                Yii::t('cms', 'COMMON_SECTIONS'),
+            ],
+            $this->getBreadcrumbLabels(),
         );
     }
 

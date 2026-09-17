@@ -7,6 +7,7 @@ namespace Hirtz\Cms\Tests\Modules\Admin\Widgets\Navs;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
 use Hirtz\Cms\Test\TestCase;
+use Hirtz\Media\Models\Asset;
 use Hirtz\Skeleton\Models\User;
 use Hirtz\Skeleton\Test\Fixtures\UserFixture;
 use Yii;
@@ -19,19 +20,7 @@ class AssetHeaderTest extends TestCase
 {
     use CmsFixtureTrait;
 
-    public function testTheEntryAssetPageIsTitledWithTheAsset(): void
-    {
-        $this->login();
-        $asset = $this->getAssetFromFixture('entry-asset');
-
-        $html = Yii::$app->runAction('admin/cms/entry-asset/update', ['id' => $asset->id]);
-
-        self::assertIsString($html);
-        self::assertStringContainsString('>' . $asset->getAdminName() . '</a></h1>', $html);
-        self::assertStringNotContainsString($asset->model->getAdminName() . '</a></h1>', $html);
-    }
-
-    public function testTheEntryAssetPathHoldsTheEntry(): void
+    public function testTheEntryAssetPageIsTitledWithTheEntry(): void
     {
         $this->login();
         $asset = $this->getAssetFromFixture('entry-asset');
@@ -40,12 +29,17 @@ class AssetHeaderTest extends TestCase
 
         self::assertIsString($html);
         self::assertStringContainsString(
-            '<a class="header-path-link" href="/admin/cms/entry/update?id=' . $asset->model_id . '">',
+            '<h1><a href="/admin/cms/entry/update?id=' . $asset->model_id . '">'
+            . $asset->model->getAdminName() . '</a></h1>',
+            $html,
+        );
+        self::assertStringContainsString(
+            '<h2 class="header-subtitle">' . $this->getPositionLabel($asset) . '</h2>',
             $html,
         );
     }
 
-    public function testTheSectionAssetPathHoldsTheEntryAndTheSection(): void
+    public function testTheSectionAssetSubtitleHoldsTheSectionAndTheAsset(): void
     {
         $this->login();
         $asset = $this->getAssetFromFixture('section-image-1');
@@ -55,13 +49,32 @@ class AssetHeaderTest extends TestCase
 
         self::assertIsString($html);
         self::assertStringContainsString(
-            '<a class="header-path-link" href="/admin/cms/entry/update?id=' . $section->entry_id . '">',
+            '<h1><a href="/admin/cms/entry/update?id=' . $section->entry_id . '">'
+            . $section->entry->getAdminName() . '</a></h1>',
             $html,
         );
         self::assertStringContainsString(
-            '<a class="header-path-link" href="/admin/cms/section/update?id=' . $section->id . '">',
+            '<h2 class="header-subtitle">' . Yii::t('skeleton', 'COMMON_MODEL_ID', [
+                'model' => Yii::t('cms', 'COMMON_SECTION'),
+                'id' => $section->position,
+            ]) . ' · ' . $this->getPositionLabel($asset) . '</h2>',
             $html,
         );
+    }
+
+    /**
+     * An asset has no frontend URL of its own, so the subheading links to the record it hangs on.
+     */
+    public function testTheSectionAssetSubheadingIsTheSectionsFrontendUrl(): void
+    {
+        $this->login();
+        $asset = $this->getAssetFromFixture('section-image-1');
+        $section = $this->getSectionFromFixture('section-headline');
+
+        $html = Yii::$app->runAction('admin/cms/section-asset/update', ['id' => $asset->id]);
+
+        self::assertIsString($html);
+        self::assertStringContainsString('#' . $section->getHtmlId() . '" target="_blank"', $html);
     }
 
     public function testTheSectionAssetPageStillRendersTheSectionSubmenu(): void
@@ -75,6 +88,18 @@ class AssetHeaderTest extends TestCase
         self::assertIsString($html);
         self::assertStringContainsString('/admin/cms/section/update?id=' . $section->id, $html);
         self::assertStringContainsString('/admin/cms/section-asset/index?section=' . $section->id, $html);
+    }
+
+    /**
+     * The noun is the asset subclass's own — "Entry asset", "Section asset" — which is what keeps a deep chain
+     * readable.
+     */
+    private function getPositionLabel(Asset $asset): string
+    {
+        return Yii::t('skeleton', 'COMMON_MODEL_ID', [
+            'model' => $asset->getAdminType(),
+            'id' => $asset->position,
+        ]);
     }
 
     private function login(): User

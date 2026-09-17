@@ -371,6 +371,12 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
     }
 
     #[Override]
+    public function getAdminSubtitle(): string
+    {
+        return $this->getAdminPositionLabel();
+    }
+
+    #[Override]
     public function getAdminIndexBreadcrumb(): Breadcrumb
     {
         return new Breadcrumb(Yii::t('cms', 'COMMON_SECTIONS'), [

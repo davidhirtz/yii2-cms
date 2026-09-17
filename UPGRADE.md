@@ -1,18 +1,20 @@
 # Upgrade Guide
 
-## 3.0 — A page's header is its own record
+## 3.0 — A page's title stays on the record that owns it
 
-A section page is titled with the section, an asset page with the asset. The record above it is the header path,
-which `Models\Entry::getAdminParent()`, `Section::getAdminParent()` and the media `Asset::getAdminParent()`
-answer for; `Modules\Admin\Widgets\Navs\Traits\EntryHeaderTrait` is deleted and no header knows another
-header's class.
+A section page is titled with its **entry** and says "Section #3" beneath; a section's asset adds
+"· Section asset #1" to that same line. Which record owns the title is
+`Skeleton\Models\Interfaces\AdminModelInterface::getAdminSubtitle()` — a record that answers one is edited
+*through* another — and `Modules\Admin\Widgets\Navs\Traits\EntryHeaderTrait` is deleted, no header knowing
+another header's class any more.
 
 A project view rendering an asset page passes the **asset** to the media `AssetHeader`, not its owner to the
-owner's header. Which submenu the page shows does not change:
+owner's header, and gives it the nearest frontend URL as its subheading:
 
 ```php
 echo AssetHeader::make()
     ->model($asset)
+    ->subheading(FrontendLink::findInChain($asset)?->addClass('hidden-sticky'))
     ->content(AssetActionDropdown::make()->model($asset));
 
 echo SectionSubmenu::make()
@@ -21,8 +23,9 @@ echo SectionSubmenu::make()
 
 A project header extending `EntryHeader`, `SectionHeader`, `BlockHeader` or `CategoryHeader` that called
 `addEntryBreadcrumbs()`, `addSectionBreadcrumbs()`, `addCategoryBreadcrumbs()` or `addEntriesBreadcrumb()`
-drops the call; a project model with a page of its own declares `getAdminIndexBreadcrumb()` instead. A project
-subclass of `SectionSubmenu` that overrode `getSectionsItem()` drops it — a submenu holds one record's views.
+drops the call; a project model with a page of its own declares `getAdminIndexBreadcrumb()` instead, and one
+edited through another declares `getAdminParent()` and `getAdminSubtitle()` as well. A project subclass of
+`SectionSubmenu` that overrode `getSectionsItem()` drops it — a submenu holds one record's views.
 
 ## 3.0 — `Widgets\AdminLink` moved to `yii2-skeleton`
 

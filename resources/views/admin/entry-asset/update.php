@@ -12,6 +12,7 @@ declare(strict_types=1);
 use Hirtz\Cms\Models\EntryAsset;
 use Hirtz\Cms\Modules\Admin\Controllers\EntryAssetController;
 use Hirtz\Cms\Modules\Admin\Widgets\Navs\EntrySubmenu;
+use Hirtz\Cms\Modules\Admin\Widgets\Navs\FrontendLink;
 use Hirtz\Media\Modules\Admin\Widgets\Forms\AssetActiveForm;
 use Hirtz\Media\Modules\Admin\Widgets\Navs\AssetActionDropdown;
 use Hirtz\Media\Modules\Admin\Widgets\Navs\AssetHeader;
@@ -20,6 +21,7 @@ use Hirtz\Skeleton\Widgets\Forms\FormContainer;
 
 echo AssetHeader::make()
     ->model($asset)
+    ->subheading(FrontendLink::findInChain($asset)?->addClass('hidden-sticky'))
     ->content(AssetActionDropdown::make()
         ->model($asset));
 

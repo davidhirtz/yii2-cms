@@ -1,19 +1,22 @@
 ## 3.0 (in development)
 
-- **A page is titled with the record it edits or lists for.** `Models\Entry`, `Section`, `Block` and `Category`
-  answer the skeleton's `getAdminParent()` / `getAdminIndexBreadcrumb()`, and the four headers extend
+- **A page's title stays on the record that owns it, and the records below it name themselves underneath.**
+  `Models\Entry`, `Section`, `Block` and `Category` answer the skeleton's `getAdminParent()` /
+  `getAdminIndexBreadcrumb()`, `Section` also its `getAdminSubtitle()`, and the four headers extend
   `Skeleton\Widgets\Navs\ModelHeader` instead of assembling breadcrumbs of their own:
   `Modules\Admin\Widgets\Navs\Traits\EntryHeaderTrait` is **deleted**, with
-  `SectionHeader::addSectionBreadcrumbs()` and `CategoryHeader::addCategoryBreadcrumbs()`. Consequences a
-  project sees: a section page is titled with the **section** and no longer with its entry, which moves into the
-  path above the title; an asset page is titled with the **asset** and the three asset update views pass it to the
-  media `AssetHeader` while the submenu keeps the owner; and *Blocks* and *Categories* no longer carry an
-  *Entries* crumb, being nav items beside it rather than under it. `$maxParentBreadcrumbCount` is gone —
-  `ModelHeader::$maxPathCount` caps the path instead, and the bar is not capped at all.
+  `SectionHeader::addSectionBreadcrumbs()` and `CategoryHeader::addCategoryBreadcrumbs()`. A section page reads
+  "About — Section #3" and a section's asset "About — Section #3 · Section asset #1", the H1 linking to the
+  entry throughout. `$maxParentBreadcrumbCount` is gone and the bar is not capped at all. *Blocks* and
+  *Categories* no longer carry an *Entries* crumb, being nav items beside it rather than under it.
+
+- **`Modules\Admin\Widgets\Navs\FrontendLink::findInChain()`** answers the nearest record up the admin chain
+  that has a frontend URL, so an asset page keeps the website link its owner has; the three asset update views
+  pass it as the header's subheading. It answers `null` for a block and anything under one.
 
 - **`Modules\Admin\Widgets\Navs\SectionSubmenu` lost its `<<` tab.** A submenu holds the views of one record
-  and never a link out of it; the way back to the entry is the header path. `getSectionsItem()` is gone with the
-  last use of the `angle-double-left` icon.
+  and never a link out of it; the way back to the entry is the title. `getSectionsItem()` is gone with the last
+  use of the `angle-double-left` icon.
 
 - `Modules\Admin\Widgets\Navs\BlockHeader` no longer adds `BlockActionDropdown` itself (monorepo issue #144):
   the block's submenu views hand the header a dropdown of their own and rendered two.
