@@ -1,5 +1,9 @@
 ## 3.0 (in development)
 
+- **`Modules\Admin\Widgets\Navs\BlockSubmenu`'s *Sections* tab is `th-list`**, the icon the entry submenu's
+  sections tab already carries (monorepo issue #148). It was `link`, which Font Awesome draws as the `chain` of
+  the *Entries* tab beside it — the two names are aliases of the same glyph.
+
 - **`Models\EntryRelation::getPermissionName()` answers the model's own**, the way the media `Asset` does since
   monorepo issue #147, so `SectionEntry` and `BlockEntry` declare none. `EntryAsset`, `SectionAsset` and
   `BlockAsset` lost theirs for the same reason.

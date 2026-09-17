@@ -68,7 +68,7 @@ class BlockSubmenu extends Submenu
 
         return NavItem::make()
             ->badge($this->model->section_count)
-            ->icon('link')
+            ->icon('th-list')
             ->label(Yii::t('cms', 'COMMON_SECTIONS'))
             ->routes(['admin/cms/block-section', ...$this->additionalActiveRoutes['sections'] ?? []])
             ->url(['/admin/cms/block-section/index', 'block' => $this->model->id]);
