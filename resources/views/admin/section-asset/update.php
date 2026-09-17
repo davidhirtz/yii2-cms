@@ -11,15 +11,15 @@ declare(strict_types=1);
 
 use Hirtz\Cms\Models\SectionAsset;
 use Hirtz\Cms\Modules\Admin\Controllers\SectionAssetController;
-use Hirtz\Cms\Modules\Admin\Widgets\Navs\SectionHeader;
 use Hirtz\Cms\Modules\Admin\Widgets\Navs\SectionSubmenu;
 use Hirtz\Media\Modules\Admin\Widgets\Forms\AssetActiveForm;
 use Hirtz\Media\Modules\Admin\Widgets\Navs\AssetActionDropdown;
+use Hirtz\Media\Modules\Admin\Widgets\Navs\AssetHeader;
 use Hirtz\Skeleton\Web\View;
 use Hirtz\Skeleton\Widgets\Forms\FormContainer;
 
-echo SectionHeader::make()
-    ->model($asset->model)
+echo AssetHeader::make()
+    ->model($asset)
     ->content(AssetActionDropdown::make()
         ->model($asset));
 

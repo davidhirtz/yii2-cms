@@ -21,6 +21,7 @@ use Hirtz\Cms\Validators\TenantIdValidator;
 use Hirtz\Media\Models\Asset;
 use Hirtz\Media\Models\Interfaces\AssetModelInterface;
 use Hirtz\Media\Models\Traits\AssetModelTrait;
+use Hirtz\Skeleton\Models\Breadcrumb;
 use Hirtz\Skeleton\Models\Interfaces\SearchableInterface;
 use Hirtz\Skeleton\Models\Traits\MaterializedTreeTrait;
 use Hirtz\Skeleton\Models\Traits\SearchableTrait;
@@ -567,6 +568,30 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
     public function getAdminRoute(): false|array
     {
         return $this->id ? ['/admin/cms/entry/update', 'id' => $this->id] : false;
+    }
+
+    #[Override]
+    public function getAdminParent(): ?self
+    {
+        return $this->parent;
+    }
+
+    /**
+     * A root entry is listed in its own type's index, not in the default type's — that is the list it is in.
+     */
+    #[Override]
+    public function getAdminIndexBreadcrumb(): Breadcrumb
+    {
+        return $this->parent_id
+            ? new Breadcrumb(Yii::t('cms', 'COMMON_SUBENTRIES'), [
+                '/admin/cms/entry/index',
+                'type' => $this->type,
+                'parent' => $this->parent_id,
+            ])
+            : new Breadcrumb(Yii::t('cms', 'COMMON_ENTRIES'), [
+                '/admin/cms/entry/index',
+                'type' => $this->type,
+            ]);
     }
 
     public function getPermissionName(): string

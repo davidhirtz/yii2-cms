@@ -1,5 +1,20 @@
 ## 3.0 (in development)
 
+- **A page is titled with the record it edits or lists for.** `Models\Entry`, `Section`, `Block` and `Category`
+  answer the skeleton's `getAdminParent()` / `getAdminIndexBreadcrumb()`, and the four headers extend
+  `Skeleton\Widgets\Navs\ModelHeader` instead of assembling breadcrumbs of their own:
+  `Modules\Admin\Widgets\Navs\Traits\EntryHeaderTrait` is **deleted**, with
+  `SectionHeader::addSectionBreadcrumbs()` and `CategoryHeader::addCategoryBreadcrumbs()`. Consequences a
+  project sees: a section page is titled with the **section** and no longer with its entry, which moves into the
+  path above the title; an asset page is titled with the **asset** and the three asset update views pass it to the
+  media `AssetHeader` while the submenu keeps the owner; and *Blocks* and *Categories* no longer carry an
+  *Entries* crumb, being nav items beside it rather than under it. `$maxParentBreadcrumbCount` is gone —
+  `ModelHeader::$maxPathCount` caps the path instead, and the bar is not capped at all.
+
+- **`Modules\Admin\Widgets\Navs\SectionSubmenu` lost its `<<` tab.** A submenu holds the views of one record
+  and never a link out of it; the way back to the entry is the header path. `getSectionsItem()` is gone with the
+  last use of the `angle-double-left` icon.
+
 - `Modules\Admin\Widgets\Navs\BlockHeader` no longer adds `BlockActionDropdown` itself (monorepo issue #144):
   the block's submenu views hand the header a dropdown of their own and rendered two.
   `resources/views/admin/block/update.php` adds it now, as `entry/update.php` does with `EntryActionDropdown`, so

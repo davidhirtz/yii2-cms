@@ -6,43 +6,32 @@ namespace Hirtz\Cms\Modules\Admin\Widgets\Navs;
 
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Modules\Admin\Data\CategoryActiveDataProvider;
-use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Skeleton\Widgets\Buttons\CreateButton;
-use Hirtz\Skeleton\Widgets\Navs\Header;
-use Hirtz\Skeleton\Widgets\Traits\ModelTrait;
+use Hirtz\Skeleton\Widgets\Navs\ModelHeader;
 use Hirtz\Skeleton\Widgets\Traits\ProviderTrait;
 use Override;
 use Stringable;
 use Yii;
 
-class CategoryHeader extends Header
+/**
+ * @extends ModelHeader<Category|null>
+ */
+class CategoryHeader extends ModelHeader
 {
-    /**
-     * @use ModelTrait<Category>
-     */
-    use ModelTrait;
-    use ModuleTrait;
-
     /**
      * @use ProviderTrait<CategoryActiveDataProvider|null>
      */
     use ProviderTrait;
-
-    protected int $maxParentBreadcrumbCount = 2;
 
     #[Override]
     protected function configure(): void
     {
         $this->model ??= $this->provider?->parent;
 
-        $this->addEntriesBreadcrumb();
-
         if ($this->model) {
             $this->title ??= $this->model->getOldAttribute($this->model->getI18nAttributeName('name'));
             $this->subheading ??= FrontendLink::make()->model($this->model)->addClass('hidden-sticky');
-            $this->url ??= $this->model->getAdminRoute();
 
-            $this->addCategoryBreadcrumbs($this->model);
             $this->addContent($this->getCategoryActionDropdown());
         }
 
@@ -57,36 +46,6 @@ class CategoryHeader extends Header
         }
 
         parent::configure();
-    }
-
-    protected function addEntriesBreadcrumb(): void
-    {
-        $this->addBreadcrumb(Yii::t('cms', 'COMMON_ENTRIES'), [
-            '/admin/cms/entry/index',
-            'type' => static::getModule()->defaultEntryType,
-        ]);
-    }
-
-    protected function addCategoryBreadcrumbs(Category $category): void
-    {
-        $this->addBreadcrumb(Yii::t('cms', 'COMMON_CATEGORIES'), ['/admin/cms/category/index']);
-
-        if ($category->parent_id && $this->maxParentBreadcrumbCount > 0) {
-            $isIndex = Yii::$app->requestedRoute === 'admin/cms/category/index';
-            $count = count($this->model->getAncestors());
-
-            if ($count > $this->maxParentBreadcrumbCount) {
-                $this->addBreadcrumb('…');
-            }
-
-            foreach ($this->model->getAncestors() as $ancestor) {
-                if (--$count < $this->maxParentBreadcrumbCount) {
-                    $this->addBreadcrumb($ancestor->getI18nAttribute('name'), $isIndex
-                        ? ['index', 'parent' => $ancestor->id]
-                        : $ancestor->getAdminRoute());
-                }
-            }
-        }
     }
 
     protected function getCreateCategoryButton(): ?Stringable

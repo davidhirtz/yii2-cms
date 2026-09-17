@@ -10,15 +10,15 @@ declare(strict_types=1);
  */
 
 use Hirtz\Cms\Models\BlockAsset;
-use Hirtz\Cms\Modules\Admin\Widgets\Navs\BlockHeader;
 use Hirtz\Cms\Modules\Admin\Widgets\Navs\BlockSubmenu;
 use Hirtz\Media\Modules\Admin\Widgets\Forms\AssetActiveForm;
 use Hirtz\Media\Modules\Admin\Widgets\Navs\AssetActionDropdown;
+use Hirtz\Media\Modules\Admin\Widgets\Navs\AssetHeader;
 use Hirtz\Skeleton\Web\View;
 use Hirtz\Skeleton\Widgets\Forms\FormContainer;
 
-echo BlockHeader::make()
-    ->model($asset->model)
+echo AssetHeader::make()
+    ->model($asset)
     ->content(AssetActionDropdown::make()
         ->model($asset));
 

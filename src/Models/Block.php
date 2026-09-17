@@ -11,6 +11,7 @@ use Hirtz\Cms\Models\Traits\EntryRelationModelTrait;
 use Hirtz\Cms\Models\Types\BlockType;
 use Hirtz\Media\Models\Interfaces\AssetModelInterface;
 use Hirtz\Media\Models\Traits\AssetModelTrait;
+use Hirtz\Skeleton\Models\Breadcrumb;
 use Hirtz\Skeleton\Models\CustomAttributes\CustomAttribute;
 use Hirtz\Skeleton\Models\CustomAttributes\HtmlCustomAttribute;
 use Hirtz\Skeleton\Models\Interfaces\SearchableInterface;
@@ -199,6 +200,12 @@ class Block extends ActiveRecord implements AssetModelInterface, EntryRelationMo
     public function getAdminRoute(): array
     {
         return $this->id ? ['/admin/cms/block/update', 'id' => $this->id] : ['/admin/cms/block/index'];
+    }
+
+    #[Override]
+    public function getAdminIndexBreadcrumb(): Breadcrumb
+    {
+        return new Breadcrumb(Yii::t('cms', 'COMMON_BLOCKS'), ['/admin/cms/block/index']);
     }
 
     public function getPermissionName(): string

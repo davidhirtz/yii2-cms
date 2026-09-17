@@ -6,23 +6,18 @@ namespace Hirtz\Cms\Modules\Admin\Widgets\Navs;
 
 use Hirtz\Cms\Models\Block;
 use Hirtz\Cms\Modules\Admin\Data\BlockActiveDataProvider;
-use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Skeleton\Widgets\Buttons\CreateButton;
-use Hirtz\Skeleton\Widgets\Navs\Header;
-use Hirtz\Skeleton\Widgets\Traits\ModelTrait;
+use Hirtz\Skeleton\Widgets\Navs\ModelHeader;
 use Hirtz\Skeleton\Widgets\Traits\ProviderTrait;
 use Override;
 use Stringable;
 use Yii;
 
-class BlockHeader extends Header
+/**
+ * @extends ModelHeader<Block|null>
+ */
+class BlockHeader extends ModelHeader
 {
-    /**
-     * @use ModelTrait<Block>
-     */
-    use ModelTrait;
-    use ModuleTrait;
-
     /**
      * @use ProviderTrait<BlockActiveDataProvider|null>
      */
@@ -31,12 +26,8 @@ class BlockHeader extends Header
     #[Override]
     protected function configure(): void
     {
-        $this->addEntriesBreadcrumb();
-        $this->addBreadcrumb(Yii::t('cms', 'COMMON_BLOCKS'), ['/admin/cms/block/index']);
-
         if ($this->model) {
             $this->title ??= $this->model->getOldAttribute($this->model->getI18nAttributeName('name'));
-            $this->url ??= $this->model->getAdminRoute();
         }
 
         if ($this->provider) {
@@ -48,14 +39,6 @@ class BlockHeader extends Header
         }
 
         parent::configure();
-    }
-
-    protected function addEntriesBreadcrumb(): void
-    {
-        $this->addBreadcrumb(Yii::t('cms', 'COMMON_ENTRIES'), [
-            '/admin/cms/entry/index',
-            'type' => static::getModule()->defaultEntryType,
-        ]);
     }
 
     protected function getCreateBlockButton(): ?Stringable

@@ -15,6 +15,7 @@ use Hirtz\Cms\Models\Types\SectionType;
 use Hirtz\Media\Models\Asset;
 use Hirtz\Media\Models\Interfaces\AssetModelInterface;
 use Hirtz\Media\Models\Traits\AssetModelTrait;
+use Hirtz\Skeleton\Models\Breadcrumb;
 use Hirtz\Skeleton\Models\CustomAttributes\CustomAttribute;
 use Hirtz\Skeleton\Models\CustomAttributes\HtmlCustomAttribute;
 use Hirtz\Skeleton\Models\CustomAttributes\TextCustomAttribute;
@@ -361,6 +362,21 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
     public function getAdminRoute(): array|false
     {
         return $this->id ? ['/admin/cms/section/update', 'id' => $this->id] : false;
+    }
+
+    #[Override]
+    public function getAdminParent(): Entry
+    {
+        return $this->entry;
+    }
+
+    #[Override]
+    public function getAdminIndexBreadcrumb(): Breadcrumb
+    {
+        return new Breadcrumb(Yii::t('cms', 'COMMON_SECTIONS'), [
+            '/admin/cms/section/index',
+            'entry' => $this->entry_id,
+        ]);
     }
 
     public function getPermissionName(): string

@@ -9,6 +9,7 @@ use Hirtz\Cms\Models\Queries\CategoryQuery;
 use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Models\Traits\SlugAttributeTrait;
 use Hirtz\Cms\Models\Types\CategoryType;
+use Hirtz\Skeleton\Models\Breadcrumb;
 use Hirtz\Skeleton\Models\CustomAttributes\CustomAttribute;
 use Hirtz\Skeleton\Models\CustomAttributes\TextCustomAttribute;
 use Hirtz\Skeleton\Models\Interfaces\SearchableInterface;
@@ -304,6 +305,21 @@ class Category extends ActiveRecord implements SearchableInterface
     public function getAdminRoute(): array
     {
         return $this->id ? ['/admin/cms/category/update', 'id' => $this->id] : ['/admin/cms/category/index'];
+    }
+
+    #[Override]
+    public function getAdminParent(): ?self
+    {
+        return $this->parent;
+    }
+
+    #[Override]
+    public function getAdminIndexBreadcrumb(): Breadcrumb
+    {
+        return new Breadcrumb(Yii::t('cms', 'COMMON_CATEGORIES'), [
+            '/admin/cms/category/index',
+            'parent' => $this->parent_id,
+        ]);
     }
 
     public function getPermissionName(): string
