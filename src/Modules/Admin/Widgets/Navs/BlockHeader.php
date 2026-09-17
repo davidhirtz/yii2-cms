@@ -37,8 +37,6 @@ class BlockHeader extends Header
         if ($this->model) {
             $this->title ??= $this->model->getOldAttribute($this->model->getI18nAttributeName('name'));
             $this->url ??= $this->model->getAdminRoute();
-
-            $this->addContent(BlockActionDropdown::make()->model($this->model));
         }
 
         if ($this->provider) {

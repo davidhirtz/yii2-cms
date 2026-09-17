@@ -1,5 +1,10 @@
 ## 3.0 (in development)
 
+- `Modules\Admin\Widgets\Navs\BlockHeader` no longer adds `BlockActionDropdown` itself (monorepo issue #144):
+  the block's submenu views hand the header a dropdown of their own and rendered two.
+  `resources/views/admin/block/update.php` adds it now, as `entry/update.php` does with `EntryActionDropdown`, so
+  a project view rendering the header for a block adds the dropdown the same way.
+
 - **`Widgets\AdminLink` moved to `yii2-skeleton`** and links a section, an entry and a category again. It never
   referenced a cms class and the CSS it renders into is the skeleton's `Widgets\Buttons\AdminButton`, so the
   class is `Hirtz\Skeleton\Widgets\AdminLink` now and its default class lost the project-defined `overlay`.
