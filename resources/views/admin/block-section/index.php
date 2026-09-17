@@ -13,6 +13,7 @@ use Hirtz\Cms\Models\Block;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\BlockSectionGridView;
 use Hirtz\Cms\Modules\Admin\Widgets\Navs\BlockHeader;
 use Hirtz\Cms\Modules\Admin\Widgets\Navs\BlockSubmenu;
+use Hirtz\Skeleton\Modules\Admin\Widgets\HintAlert;
 use Hirtz\Skeleton\Web\View;
 use Hirtz\Skeleton\Widgets\Grids\GridContainer;
 
@@ -21,6 +22,9 @@ echo BlockHeader::make()
 
 echo BlockSubmenu::make()
     ->model($block);
+
+echo HintAlert::make()
+    ->text(Yii::t('cms', 'BLOCK_SECTION_INDEX_HINT'));
 
 echo GridContainer::make()
     ->grid(BlockSectionGridView::make()

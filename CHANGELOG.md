@@ -1,5 +1,9 @@
 ## 3.0 (in development)
 
+- **The block pages explain what a block is** (monorepo issue #163). `resources/views/admin/block/index.php`
+  and `block-section/index.php` render the skeleton's new `Modules\Admin\Widgets\HintAlert` with
+  `BLOCK_INDEX_HINT` and `BLOCK_SECTION_INDEX_HINT`; an account that turned its hints off sees neither.
+
 - **A create action takes the type from the query** (monorepo issue #161).
   `Modules\Admin\Controllers\CategoryController::actionCreate()` and `SectionController::actionCreate()` take a
   `?int $type` and hand it to `instantiateFromPost()`, the way the entry, block, location and tag ones already
