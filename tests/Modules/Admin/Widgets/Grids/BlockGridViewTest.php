@@ -27,10 +27,15 @@ class BlockGridViewTest extends TestCase
         self::assertStringNotContainsString('?type=', $html);
     }
 
+    /**
+     * The grid needs a record: an empty one drops its whole toolbar, the dropdown with it (monorepo issue #159).
+     */
     public function testTheTypeDropdownOffersEveryDeclaredType(): void
     {
         $this->declareTypes();
         $this->login();
+
+        $this->createBlock('Teaser Block', Block::TYPE_DEFAULT);
 
         $html = Yii::$app->runAction('admin/cms/block/index');
 
