@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Widgets;
 
 use Closure;
+use Hirtz\Cms\Widgets\Traits\TailwindViewportsTrait;
 use Hirtz\Media\Models\Asset;
 use Hirtz\Skeleton\Html\Div;
 use Hirtz\Skeleton\Html\Traits\TagAttributesTrait;
@@ -17,6 +18,7 @@ use Stringable;
  */
 class Gallery extends Widget
 {
+    use TailwindViewportsTrait;
     use TagAttributesTrait;
 
     /**
@@ -29,18 +31,11 @@ class Gallery extends Widget
     protected ?int $start = null;
     protected ?int $limit = null;
     protected string $viewFile = 'widgets/_assets';
+
     /**
      * @var array<string, mixed>
      */
     protected array $viewParams = [];
-
-    /**
-     * @var array<string, list<int>>
-     */
-    protected array $viewports = [
-        'hidden-sm' => [Asset::TYPE_DEFAULT, Asset::TYPE_VIEWPORT_MOBILE],
-        'hidden block-sm' => [Asset::TYPE_DEFAULT, Asset::TYPE_VIEWPORT_DESKTOP]
-    ];
 
     /**
      * @var list<int>
