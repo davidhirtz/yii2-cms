@@ -41,14 +41,15 @@ class SectionHeaderTest extends TestCase
         $html = Yii::$app->runAction('admin/cms/section/update', ['id' => $section->id]);
 
         self::assertIsString($html);
-        self::assertStringContainsString(
-            '<h2 class="header-subtitle"><a class="header-subtitle-item"'
-            . ' href="/admin/cms/section/update?id=' . $section->id . '">'
-            . Yii::t('skeleton', 'COMMON_MODEL_ID', [
-                'model' => Yii::t('cms', 'COMMON_SECTION'),
-                'id' => $section->position,
-            ]) . '</a></h2>',
-            $html,
+        self::assertSame(
+            [[
+                '/admin/cms/section/update?id=' . $section->id,
+                Yii::t('skeleton', 'COMMON_MODEL_ID', [
+                    'model' => Yii::t('cms', 'COMMON_SECTION'),
+                    'id' => $section->position,
+                ]),
+            ]],
+            $this->getSubtitleItems($html),
         );
     }
 
@@ -102,6 +103,22 @@ class SectionHeaderTest extends TestCase
             ],
             $this->getBreadcrumbLabels(),
         );
+    }
+
+    /**
+     * @return list<array{string, string}> the href and the text of each subtitle item, in order. Matched rather
+     *     than spelled out: an item also carries the generated `view-transition-name` its group is matched by.
+     */
+    private function getSubtitleItems(string $html): array
+    {
+        preg_match_all('~<a[^>]*class="header-subtitle-item"[^>]*>[^<]*</a>~', $html, $matches);
+
+        return array_map(static function (string $tag): array {
+            preg_match('~href="([^"]*)"~', $tag, $href);
+            preg_match('~>([^<]*)<~', $tag, $text);
+
+            return [$href[1] ?? '', $text[1] ?? ''];
+        }, $matches[0]);
     }
 
     /**

@@ -33,10 +33,9 @@ class AssetHeaderTest extends TestCase
             . $asset->model->getAdminName() . '</a></h1>',
             $html,
         );
-        self::assertStringContainsString(
-            '<h2 class="header-subtitle">'
-            . $this->subtitleItem('/admin/cms/entry-asset/update?id=' . $asset->id, $asset) . '</h2>',
-            $html,
+        self::assertSame(
+            [$this->subtitleItem('/admin/cms/entry-asset/update?id=' . $asset->id, $asset)],
+            $this->getSubtitleItems($html),
         );
     }
 
@@ -54,15 +53,18 @@ class AssetHeaderTest extends TestCase
             . $section->entry->getAdminName() . '</a></h1>',
             $html,
         );
-        self::assertStringContainsString(
-            '<h2 class="header-subtitle">'
-            . '<a class="header-subtitle-item" href="/admin/cms/section/update?id=' . $section->id . '">'
-            . Yii::t('skeleton', 'COMMON_MODEL_ID', [
-                'model' => Yii::t('cms', 'COMMON_SECTION'),
-                'id' => $section->position,
-            ]) . '</a>'
-            . $this->subtitleItem('/admin/cms/section-asset/update?id=' . $asset->id, $asset) . '</h2>',
-            $html,
+        self::assertSame(
+            [
+                [
+                    '/admin/cms/section/update?id=' . $section->id,
+                    Yii::t('skeleton', 'COMMON_MODEL_ID', [
+                        'model' => Yii::t('cms', 'COMMON_SECTION'),
+                        'id' => $section->position,
+                    ]),
+                ],
+                $this->subtitleItem('/admin/cms/section-asset/update?id=' . $asset->id, $asset),
+            ],
+            $this->getSubtitleItems($html),
         );
     }
 
@@ -97,14 +99,30 @@ class AssetHeaderTest extends TestCase
     /**
      * The noun is the base "Asset", not the subclass's "Section asset": whatever the asset hangs on is already
      * named, either as the title or as the item right before it.
+     *
+     * @return array{string, string}
      */
-    private function subtitleItem(string $route, Asset $asset): string
+    private function subtitleItem(string $route, Asset $asset): array
     {
-        return '<a class="header-subtitle-item" href="' . $route . '">'
-            . Yii::t('skeleton', 'COMMON_MODEL_ID', [
-                'model' => Yii::t('media', 'ASSET_ASSET'),
-                'id' => $asset->position,
-            ]) . '</a>';
+        return [$route, Yii::t('skeleton', 'COMMON_MODEL_ID', [
+            'model' => Yii::t('media', 'ASSET_ASSET'),
+            'id' => $asset->position,
+        ])];
+    }
+    /**
+     * @return list<array{string, string}> the href and the text of each subtitle item, in order. Matched rather
+     *     than spelled out: an item also carries the generated `view-transition-name` its group is matched by.
+     */
+    private function getSubtitleItems(string $html): array
+    {
+        preg_match_all('~<a[^>]*class="header-subtitle-item"[^>]*>[^<]*</a>~', $html, $matches);
+
+        return array_map(static function (string $tag): array {
+            preg_match('~href="([^"]*)"~', $tag, $href);
+            preg_match('~>([^<]*)<~', $tag, $text);
+
+            return [$href[1] ?? '', $text[1] ?? ''];
+        }, $matches[0]);
     }
 
     private function login(): User
