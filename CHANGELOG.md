@@ -6,8 +6,8 @@
   `Skeleton\Widgets\Navs\ModelHeader` instead of assembling breadcrumbs of their own:
   `Modules\Admin\Widgets\Navs\Traits\EntryHeaderTrait` is **deleted**, with
   `SectionHeader::addSectionBreadcrumbs()` and `CategoryHeader::addCategoryBreadcrumbs()`. A section page reads
-  "About — Section #3" and a section's asset "About — Section #3 · Section asset #1", the H1 linking to the
-  entry throughout. `$maxParentBreadcrumbCount` is gone and the bar is not capped at all. *Blocks* and
+  "About — Section #3" and a section's asset "About — Section #3 · Asset #1", the H1 linking to the entry
+  throughout and each subtitle item to its own page. `$maxParentBreadcrumbCount` is gone and the bar is not capped at all. *Blocks* and
   *Categories* no longer carry an *Entries* crumb, being nav items beside it rather than under it.
 
 - **`Modules\Admin\Widgets\Navs\FrontendLink::findInChain()`** answers the nearest record up the admin chain

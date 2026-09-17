@@ -3,7 +3,7 @@
 ## 3.0 — A page's title stays on the record that owns it
 
 A section page is titled with its **entry** and says "Section #3" beneath; a section's asset adds
-"· Section asset #1" to that same line. Which record owns the title is
+"Asset #1" to that same line, each item linking to its own page. Which record owns the title is
 `Skeleton\Models\Interfaces\AdminModelInterface::getAdminSubtitle()` — a record that answers one is edited
 *through* another — and `Modules\Admin\Widgets\Navs\Traits\EntryHeaderTrait` is deleted, no header knowing
 another header's class any more.

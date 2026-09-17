@@ -34,7 +34,8 @@ class AssetHeaderTest extends TestCase
             $html,
         );
         self::assertStringContainsString(
-            '<h2 class="header-subtitle">' . $this->getPositionLabel($asset) . '</h2>',
+            '<h2 class="header-subtitle">'
+            . $this->subtitleItem('/admin/cms/entry-asset/update?id=' . $asset->id, $asset) . '</h2>',
             $html,
         );
     }
@@ -54,10 +55,13 @@ class AssetHeaderTest extends TestCase
             $html,
         );
         self::assertStringContainsString(
-            '<h2 class="header-subtitle">' . Yii::t('skeleton', 'COMMON_MODEL_ID', [
+            '<h2 class="header-subtitle">'
+            . '<a class="header-subtitle-item" href="/admin/cms/section/update?id=' . $section->id . '">'
+            . Yii::t('skeleton', 'COMMON_MODEL_ID', [
                 'model' => Yii::t('cms', 'COMMON_SECTION'),
                 'id' => $section->position,
-            ]) . ' · ' . $this->getPositionLabel($asset) . '</h2>',
+            ]) . '</a>'
+            . $this->subtitleItem('/admin/cms/section-asset/update?id=' . $asset->id, $asset) . '</h2>',
             $html,
         );
     }
@@ -91,15 +95,16 @@ class AssetHeaderTest extends TestCase
     }
 
     /**
-     * The noun is the asset subclass's own — "Entry asset", "Section asset" — which is what keeps a deep chain
-     * readable.
+     * The noun is the base "Asset", not the subclass's "Section asset": whatever the asset hangs on is already
+     * named, either as the title or as the item right before it.
      */
-    private function getPositionLabel(Asset $asset): string
+    private function subtitleItem(string $route, Asset $asset): string
     {
-        return Yii::t('skeleton', 'COMMON_MODEL_ID', [
-            'model' => $asset->getAdminType(),
-            'id' => $asset->position,
-        ]);
+        return '<a class="header-subtitle-item" href="' . $route . '">'
+            . Yii::t('skeleton', 'COMMON_MODEL_ID', [
+                'model' => Yii::t('media', 'ASSET_ASSET'),
+                'id' => $asset->position,
+            ]) . '</a>';
     }
 
     private function login(): User

@@ -33,7 +33,7 @@ class SectionHeaderTest extends TestCase
         );
     }
 
-    public function testTheSubtitleNamesTheSectionByItsPosition(): void
+    public function testTheSubtitleNamesTheSectionByItsPositionAndLinksToIt(): void
     {
         $this->login();
         $section = $this->getSectionFromFixture('section-headline');
@@ -42,10 +42,12 @@ class SectionHeaderTest extends TestCase
 
         self::assertIsString($html);
         self::assertStringContainsString(
-            '<h2 class="header-subtitle">' . Yii::t('skeleton', 'COMMON_MODEL_ID', [
+            '<h2 class="header-subtitle"><a class="header-subtitle-item"'
+            . ' href="/admin/cms/section/update?id=' . $section->id . '">'
+            . Yii::t('skeleton', 'COMMON_MODEL_ID', [
                 'model' => Yii::t('cms', 'COMMON_SECTION'),
                 'id' => $section->position,
-            ]) . '</h2>',
+            ]) . '</a></h2>',
             $html,
         );
     }
