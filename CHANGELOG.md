@@ -1,5 +1,17 @@
 ## 3.0 (in development)
 
+- **`Widgets\AdminLink` moved to `yii2-skeleton`** and links a section, an entry and a category again. It never
+  referenced a cms class and the CSS it renders into is the skeleton's `Widgets\Buttons\AdminButton`, so the
+  class is `Hirtz\Skeleton\Widgets\AdminLink` now and its default class lost the project-defined `overlay`.
+  The frontend overlay link asked
+  `method_exists($model, 'getPermissionName')` and rendered nothing when that was false, which was every cms
+  model — only the asset and entry-relation families declared it, so the link had survived on assets alone.
+  `Skeleton\Models\Interfaces\AdminModelInterface::getPermissionName()` now declares it, `Models\Entry`,
+  `Category` and `Block` return their own `AUTH_*` constant, and `Section` and `EntryCategory` return
+  `Entry::AUTH_ENTRY` — a section has no permission of its own. `resources/views/site/_sections.php` gained a
+  `relative` class on its `<section>`, the positioned ancestor the overlay fills; a project overriding that view
+  adds it itself, and the class is the project's to define.
+
 - **Global sections** (monorepo issue #109). `Models\Block` is a section with no owner — the same types, assets,
   linked entries and custom attributes, but no tenant and no entry — and a section places one by carrying a
   `block_id`. `Module::$enableBlocks` (default `false`, cascading to `enableBlockAssets` and

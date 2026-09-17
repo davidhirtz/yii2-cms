@@ -201,6 +201,11 @@ class Block extends ActiveRecord implements AssetModelInterface, EntryRelationMo
         return $this->id ? ['/admin/cms/block/update', 'id' => $this->id] : ['/admin/cms/block/index'];
     }
 
+    public function getPermissionName(): string
+    {
+        return self::AUTH_BLOCK;
+    }
+
     /**
      * `content` has no column of its own: it is indexed only where the project declares it as a custom attribute.
      */

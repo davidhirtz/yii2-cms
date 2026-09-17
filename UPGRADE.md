@@ -1,5 +1,23 @@
 # Upgrade Guide
 
+## 3.0 — `Widgets\AdminLink` moved to `yii2-skeleton`
+
+The frontend overlay link is `Hirtz\Skeleton\Widgets\AdminLink` — it never referenced a cms class, and the CSS
+it renders into belongs to the skeleton's `Widgets\Buttons\AdminButton`. Rewrite the `use` statement; the
+`AdminLink::tag($model)` calls are unchanged. Its default class lost `overlay`; see
+`bundles/yii2-skeleton/UPGRADE.md` for what that costs a project that styled it.
+
+**A project overriding `resources/views/site/_sections.php` has to add `relative` to its `<section>` itself.**
+The shipped view names it now, because the overlay is absolutely positioned and fills the nearest positioned
+ancestor; the class is the project's to define, through Tailwind or a rule of its own. Almost every project
+overrides this view, so the shipped change does not reach them — and the symptom is an overlay over the whole
+viewport rather than over the section.
+
+It also **links a section, an entry and a category again.** It asked `method_exists($model,
+'getPermissionName')` and rendered nothing when that was false, which was every cms model but the asset, so the
+overlay had quietly survived on assets alone. `Models\Entry`, `Category` and `Block` answer their own `AUTH_*`
+constant now, `Section` and `EntryCategory` answer `Entry::AUTH_ENTRY`.
+
 ## 3.0 — Global sections
 
 Nothing changes for an installation that leaves `modules.cms.enableBlocks` off (the default). To turn the

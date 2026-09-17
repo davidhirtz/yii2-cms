@@ -569,6 +569,11 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
         return $this->id ? ['/admin/cms/entry/update', 'id' => $this->id] : false;
     }
 
+    public function getPermissionName(): string
+    {
+        return self::AUTH_ENTRY;
+    }
+
     /**
      * `content` has no column of its own: it is indexed only where the project declares it as a custom attribute.
      */
@@ -763,6 +768,7 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
         ]));
     }
 
+    #[Override]
     public function getAdminType(): string
     {
         return $this->getTypeName() ?: Yii::t('cms', 'COMMON_ENTRY');

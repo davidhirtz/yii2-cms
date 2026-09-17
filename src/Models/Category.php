@@ -306,6 +306,11 @@ class Category extends ActiveRecord implements SearchableInterface
         return $this->id ? ['/admin/cms/category/update', 'id' => $this->id] : ['/admin/cms/category/index'];
     }
 
+    public function getPermissionName(): string
+    {
+        return self::AUTH_CATEGORY;
+    }
+
     /**
      * `content` has no column of its own: it is indexed only where the project declares it as a custom attribute.
      */

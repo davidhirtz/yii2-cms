@@ -14,6 +14,7 @@ use Hirtz\Skeleton\Html\Div;
 use Hirtz\Skeleton\Html\Figcaption;
 use Hirtz\Skeleton\Html\Figure;
 use Hirtz\Skeleton\Html\Traits\TagAttributesTrait;
+use Hirtz\Skeleton\Widgets\AdminLink;
 use Hirtz\Skeleton\Widgets\Traits\UrlTrait;
 use Hirtz\Skeleton\Widgets\Widget;
 use Override;

@@ -346,6 +346,7 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
         return $this->trailParents ?? [$this->entry];
     }
 
+    #[Override]
     public function getAdminType(): string
     {
         return Yii::t('cms', 'COMMON_SECTION');
@@ -360,6 +361,11 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
     public function getAdminRoute(): array|false
     {
         return $this->id ? ['/admin/cms/section/update', 'id' => $this->id] : false;
+    }
+
+    public function getPermissionName(): string
+    {
+        return Entry::AUTH_ENTRY;
     }
 
     public function getSearchAttributes(): array
