@@ -149,33 +149,6 @@ class M260101000400CmsBaseline extends Migration
             SQL);
 
         $this->execute(<<<'SQL'
-            CREATE TABLE `cms_asset` (
-              `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-              `status` tinyint(1) unsigned NOT NULL DEFAULT 3,
-              `type` smallint(6) NOT NULL DEFAULT 1,
-              `entry_id` int(11) unsigned NOT NULL,
-              `section_id` int(11) unsigned DEFAULT NULL,
-              `file_id` int(11) unsigned NOT NULL,
-              `position` int(11) unsigned NOT NULL DEFAULT 0,
-              `name` varchar(255) DEFAULT NULL,
-              `content` text DEFAULT NULL,
-              `alt_text` varchar(255) DEFAULT NULL,
-              `link` varchar(255) DEFAULT NULL,
-              `embed_url` text DEFAULT NULL,
-              `hotspot_count` smallint(6) NOT NULL DEFAULT 0,
-              `updated_by_user_id` int(11) unsigned DEFAULT NULL,
-              `updated_at` datetime DEFAULT NULL,
-              `created_at` datetime NOT NULL,
-              `custom_attributes` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`custom_attributes`)),
-              PRIMARY KEY (`id`),
-              KEY `entry_id` (`entry_id`,`status`,`position`),
-              KEY `section_id` (`section_id`,`position`),
-              KEY `cms_asset_file_id_ibfk` (`file_id`),
-              KEY `cms_asset_updated_by_ibfk` (`updated_by_user_id`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci
-            SQL);
-
-        $this->execute(<<<'SQL'
             CREATE TABLE `permalink` (
               `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
               `tenant_id` int(11) unsigned NOT NULL,
@@ -245,22 +218,6 @@ class M260101000400CmsBaseline extends Migration
 
         $this->execute(<<<'SQL'
             ALTER TABLE `entry_relation` ADD CONSTRAINT `entry_relation_updated_by_ibfk` FOREIGN KEY (`updated_by_user_id`) REFERENCES `user` (`id`) ON DELETE SET NULL
-            SQL);
-
-        $this->execute(<<<'SQL'
-            ALTER TABLE `cms_asset` ADD CONSTRAINT `cms_asset_entry_id_ibfk` FOREIGN KEY (`entry_id`) REFERENCES `entry` (`id`) ON DELETE CASCADE
-            SQL);
-
-        $this->execute(<<<'SQL'
-            ALTER TABLE `cms_asset` ADD CONSTRAINT `cms_asset_file_id_ibfk` FOREIGN KEY (`file_id`) REFERENCES `file` (`id`) ON DELETE CASCADE
-            SQL);
-
-        $this->execute(<<<'SQL'
-            ALTER TABLE `cms_asset` ADD CONSTRAINT `cms_asset_section_id_ibfk` FOREIGN KEY (`section_id`) REFERENCES `section` (`id`) ON DELETE CASCADE
-            SQL);
-
-        $this->execute(<<<'SQL'
-            ALTER TABLE `cms_asset` ADD CONSTRAINT `cms_asset_updated_by_ibfk` FOREIGN KEY (`updated_by_user_id`) REFERENCES `user` (`id`) ON DELETE SET NULL
             SQL);
 
         $this->execute(<<<'SQL'

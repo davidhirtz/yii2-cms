@@ -68,6 +68,7 @@ class AssetMigrationTest extends TestCase
 
         // The migration lives in davidhirtz/yii2-upgrade now; this is the test that runs it.
         $this->requireUpgradeMigration('yii2-cms', M260912110000Assets::class);
+        $this->createLegacyTable('cms_asset');
 
         Yii::$app->getDb()->createCommand()
             ->addColumn(File::tableName(), self::LEGACY_FILE_COUNT_COLUMN, 'smallint NOT NULL DEFAULT 0')
@@ -85,7 +86,7 @@ class AssetMigrationTest extends TestCase
                 ->execute();
         }
 
-        $db->createCommand()->delete('{{%cms_asset}}')->execute();
+        $this->dropLegacyTable('cms_asset');
         $db->createCommand()->delete(Asset::tableName())->execute();
 
         Trail::deleteAll(['model_class' => [self::LEGACY_CLASS, EntryAsset::class, SectionAsset::class, Entry::class]]);
