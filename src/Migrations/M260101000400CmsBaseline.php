@@ -270,6 +270,28 @@ class M260101000400CmsBaseline extends Migration
         $this->execute(<<<'SQL'
             ALTER TABLE `permalink` ADD CONSTRAINT `permalink_tenant_id_ibfk` FOREIGN KEY (`tenant_id`) REFERENCES `tenant` (`id`) ON DELETE CASCADE
             SQL);
+
+        $this->execute(<<<'SQL'
+            INSERT INTO `auth_item` (`name`, `type`, `description`, `rule_name`, `data`, `updated_at`, `created_at`) VALUES
+              ('author', '1', NULL, NULL, NULL, '1789985567', '1789985567'),
+              ('block', '2', '{\"category\":\"cms\",\"key\":\"AUTH_BLOCK_DESCRIPTION\"}', NULL, NULL, '1789985584', '1789985584'),
+              ('category', '2', '{\"category\":\"cms\",\"key\":\"AUTH_CATEGORY_DESCRIPTION\"}', NULL, NULL, '1789985581', '1789985581'),
+              ('entry', '2', '{\"category\":\"cms\",\"key\":\"AUTH_ENTRY_DESCRIPTION\"}', NULL, NULL, '1789985581', '1789985581')
+            SQL);
+
+        $this->execute(<<<'SQL'
+            INSERT INTO `auth_item_child` (`parent`, `child`) VALUES
+              ('admin', 'block'),
+              ('manager', 'block'),
+              ('admin', 'category'),
+              ('author', 'category'),
+              ('manager', 'category'),
+              ('admin', 'entry'),
+              ('author', 'entry'),
+              ('manager', 'entry'),
+              ('author', 'file'),
+              ('author', 'folder')
+            SQL);
     }
 
     public function safeDown(): bool
