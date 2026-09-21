@@ -68,11 +68,6 @@ class EntryGridView extends GridView
         $this->attributes['id'] ??= 'entry-grid-view';
 
         $enableCategories = static::getModule()->enableCategories;
-
-        if ($this->showCategoryDropdown) {
-            $this->showCategoryDropdown = $enableCategories;
-        }
-
         $type = $enableCategories ? Entry::instance()::findType($this->provider->type) : null;
 
         // A grid filtered to one type reads that type. Display is `shows*`, but a type with no categories at all
@@ -81,7 +76,7 @@ class EntryGridView extends GridView
             $this->showCategories = false;
             $this->showCategoryDropdown = false;
         } elseif ($type) {
-            $this->showCategories = $type->showsCategories() ?? $this->showCategories;
+            $this->showCategories = $type->showsCategories() ?? $this->showCategories ?? true;
             $this->showCategoryDropdown = $type->showsCategoryDropdown() ?? $this->showCategoryDropdown;
         }
 
