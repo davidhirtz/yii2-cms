@@ -35,7 +35,7 @@ class M260915200000MenuIds extends Migration
     {
         $tableName = Entry::tableName();
 
-        $this->addColumn($tableName, 'menu_ids', (string)$this->json()
+        $this->addColumnIfMissing($tableName, 'menu_ids', (string)$this->json()
             ->null()
             ->after('publish_date'));
 

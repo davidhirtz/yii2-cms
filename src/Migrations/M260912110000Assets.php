@@ -284,6 +284,11 @@ class M260912110000Assets extends Migration
 
     protected function foldFileCounts(): void
     {
+        // The column is folded away and dropped, so a fresh install has nothing to fold.
+        if (!$this->hasColumn(File::tableName(), 'cms_asset_count')) {
+            return;
+        }
+
         $files = $this->getQuotedTableName(File::tableName());
 
         $this->execute("UPDATE $files SET [[asset_count]] = [[asset_count]] + [[cms_asset_count]]");

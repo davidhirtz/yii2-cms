@@ -28,8 +28,8 @@ class M260914210000AuthorRole extends Migration
 
         $auth->removeChild($auth->getRole(User::AUTH_ROLE_ADMIN), $author);
 
-        $auth->addChild($author, $auth->getPermission(File::AUTH_FILE));
-        $auth->addChild($author, $auth->getPermission(Folder::AUTH_FOLDER));
+        $this->addChildIfMissing($author, $auth->getPermission(File::AUTH_FILE));
+        $this->addChildIfMissing($author, $auth->getPermission(Folder::AUTH_FOLDER));
 
         $auth->invalidateCache();
     }

@@ -26,6 +26,11 @@ class M260916110000Block extends Migration
 
     public function safeUp(): void
     {
+        // a fresh install has the block table from the baseline already.
+        if ($this->hasTable(Block::tableName())) {
+            return;
+        }
+
         $schema = $this->getDb()->getSchema();
 
         $this->createTable(Block::tableName(), [

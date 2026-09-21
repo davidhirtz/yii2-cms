@@ -25,6 +25,11 @@ class M260916100000EntryRelation extends Migration
 
     public function safeUp(): void
     {
+        // a fresh install has `entry_relation` from the baseline and no `section_entry` to rename.
+        if (!$this->hasTable(self::LEGACY_TABLE)) {
+            return;
+        }
+
         $schema = $this->getDb()->getSchema();
         $legacy = $schema->getRawTableName(self::LEGACY_TABLE);
 
