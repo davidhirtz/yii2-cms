@@ -15,6 +15,7 @@ use Hirtz\Media\Models\Asset;
 use Hirtz\Media\Models\File;
 use Hirtz\Skeleton\Models\Trail;
 use Hirtz\Skeleton\Models\Translation;
+use Hirtz\Skeleton\Test\Traits\UpgradeMigrationTrait;
 use Override;
 use Yii;
 use yii\db\Expression;
@@ -28,6 +29,8 @@ use yii\db\JsonExpression;
  */
 class AssetMigrationTest extends TestCase
 {
+    use UpgradeMigrationTrait;
+
     use CmsFixtureTrait {
         fixtures as cmsFixtures;
     }
@@ -62,6 +65,9 @@ class AssetMigrationTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        // The migration lives in davidhirtz/yii2-upgrade now; this is the test that runs it.
+        $this->requireUpgradeMigration('yii2-cms', M260912110000Assets::class);
 
         Yii::$app->getDb()->createCommand()
             ->addColumn(File::tableName(), self::LEGACY_FILE_COUNT_COLUMN, 'smallint NOT NULL DEFAULT 0')

@@ -8,6 +8,7 @@ use Hirtz\Cms\Migrations\M260915200000MenuIds;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
 use Hirtz\Cms\Test\TestCase;
+use Hirtz\Skeleton\Test\Traits\UpgradeMigrationTrait;
 use Override;
 use Yii;
 use yii\db\Query;
@@ -18,6 +19,8 @@ use yii\db\Query;
  */
 class MenuIdsMigrationTest extends TestCase
 {
+    use UpgradeMigrationTrait;
+
     use CmsFixtureTrait;
 
     private const int MENU_VALUE = 1;
@@ -27,6 +30,9 @@ class MenuIdsMigrationTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        // The migration lives in davidhirtz/yii2-upgrade now; this is the test that runs it.
+        $this->requireUpgradeMigration('yii2-cms', M260915200000MenuIds::class);
 
         $this->dropMenuIdsColumn();
     }
