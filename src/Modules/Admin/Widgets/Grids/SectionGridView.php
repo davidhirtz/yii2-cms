@@ -41,6 +41,7 @@ class SectionGridView extends GridView
     use SelectionTrait;
 
     public bool $showDeleteButton = false;
+    public int $maxThumbnailCount = 3;
 
     protected string $layout = '{summary}{items}{footer}';
 
@@ -127,12 +128,7 @@ class SectionGridView extends GridView
         }
 
         if (!$html) {
-            foreach ($section->getVisibleAssets() as $asset) {
-                if ($asset->file->hasPreview()) {
-                    $html = Thumbnail::make()->file($asset->file);
-                    break;
-                }
-            }
+            $html = $this->getThumbnails($section);
         }
 
         if (!$html) {
@@ -153,6 +149,23 @@ class SectionGridView extends GridView
             ->content($html)
             ->href($section->getAdminRoute() ?: null)
             ->class($cssClass);
+    }
+
+    protected function getThumbnails(Section $section): ?Stringable
+    {
+        $thumbnails = [];
+
+        foreach ($section->getVisibleAssets() as $asset) {
+            if ($asset->file->hasPreview()) {
+                $thumbnails[] = Thumbnail::make()->file($asset->file);
+
+                if (count($thumbnails) >= $this->maxThumbnailCount) {
+                    break;
+                }
+            }
+        }
+
+        return $thumbnails ? Div::make()->class('img-thumbnails')->content(...$thumbnails) : null;
     }
 
     protected function getAssetCountColumn(): ?Column
