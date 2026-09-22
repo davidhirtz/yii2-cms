@@ -39,8 +39,8 @@ class BlockSubmenu extends Submenu
     {
         $this->addItem(
             $this->getBlockUpdateItem(),
-            $this->getEntriesItem(),
             $this->getAssetsItem(),
+            $this->getEntriesItem(),
             $this->getSectionsItem(),
         );
 
@@ -79,7 +79,7 @@ class BlockSubmenu extends Submenu
         return NavItem::make()
             ->badge($this->model->entry_count)
             ->icon('chain')
-            ->label(Yii::t('cms', 'COMMON_SECTION_ENTRIES'))
+            ->label(Yii::t('cms', 'ENTRY_RELATION_NAV_ENTRIES'))
             ->routes(['admin/cms/block-entry', ...$this->additionalActiveRoutes['entries'] ?? []])
             ->url(['/admin/cms/block-entry/index', 'block' => $this->model->id])
             ->visible($this->model->allowsEntries());

@@ -42,8 +42,8 @@ class SectionSubmenu extends Submenu
     {
         $this->addItem(
             $this->getSectionUpdateItem(),
-            $this->getEntriesItem(),
             $this->getAssetsItem(),
+            $this->getEntriesItem(),
         );
 
         parent::configure();
@@ -63,7 +63,7 @@ class SectionSubmenu extends Submenu
         return NavItem::make()
             ->badge($this->model->entry_count)
             ->icon('chain')
-            ->label(Yii::t('cms', 'COMMON_SECTION_ENTRIES'))
+            ->label(Yii::t('cms', 'ENTRY_RELATION_NAV_ENTRIES'))
             ->routes(
                 [
                     'admin/cms/section-entry',
