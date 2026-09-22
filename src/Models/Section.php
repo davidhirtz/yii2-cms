@@ -107,12 +107,6 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
     protected function getDefaultCustomAttributes(): array
     {
         return [
-            TextCustomAttribute::make('name')
-                ->label(Yii::t('cms', 'MODEL_NAME_LABEL'))
-                ->translatable($this->isTranslatableAttribute('name')),
-            HtmlCustomAttribute::make('content')
-                ->label(Yii::t('cms', 'MODEL_CONTENT_LABEL'))
-                ->translatable($this->isTranslatableAttribute('content')),
             SlugCustomAttribute::make('slug')
                 ->max(self::SLUG_MAX_LENGTH)
                 ->label(Yii::t('cms', 'SECTION_SLUG_LABEL'))

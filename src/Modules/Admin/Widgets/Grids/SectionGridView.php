@@ -121,13 +121,13 @@ class SectionGridView extends GridView
         $html = $section->getGridContent();
         $cssClass = null;
 
-        if (!$html) {
-            $name = $section->getI18nAttribute('name');
+        if (!$html && $section->hasAttribute('name')) {
+            $name = $section->getI18nAttribute('name') ?? '';
             $html = $name ? Div::make()->class('strong')->text($name) : null;
         }
 
         if (!$html) {
-            foreach ($section->assets as $asset) {
+            foreach ($section->getVisibleAssets() as $asset) {
                 if ($asset->file->hasPreview()) {
                     $html = Thumbnail::make()->file($asset->file);
                     break;
@@ -135,7 +135,7 @@ class SectionGridView extends GridView
             }
         }
 
-        if (!$html) {
+        if (!$html && $section->hasAttribute('content')) {
             $html = (string)($section->getI18nAttribute('content') ?? '');
             $html = $section->getCustomAttribute('content') instanceof HtmlCustomAttribute
                 ? strip_tags($html)
