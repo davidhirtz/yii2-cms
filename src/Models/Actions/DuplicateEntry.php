@@ -24,6 +24,7 @@ class DuplicateEntry extends DuplicateActiveRecord
         Entry $entry,
         protected ?Entry $parent = null,
         protected bool $shouldUpdateParentAfterInsert = true,
+        protected bool $shouldPrefixName = true,
         array $attributes = []
     ) {
         parent::__construct($entry, $attributes);
@@ -42,6 +43,10 @@ class DuplicateEntry extends DuplicateActiveRecord
         $this->duplicate->category_ids = $this->model->category_ids;
         $this->duplicate->entry_count = $this->model->entry_count;
         $this->duplicate->section_count = $this->model->section_count;
+
+        if ($this->shouldPrefixName) {
+            $this->prefixDuplicateName();
+        }
 
         if (!parent::beforeDuplicate()) {
             return false;
@@ -104,6 +109,7 @@ class DuplicateEntry extends DuplicateActiveRecord
                 'entry' => $entry,
                 'parent' => $this->duplicate,
                 'shouldUpdateParentAfterInsert' => false,
+                'shouldPrefixName' => false,
                 'attributes' => [
                     'status' => $entry->status,
                     'position' => ++$position,

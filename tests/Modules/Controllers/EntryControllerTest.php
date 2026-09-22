@@ -217,7 +217,7 @@ class EntryControllerTest extends TestCase
         $response = $this->post('admin/cms/entry/duplicate', ['id' => $entry->id]);
 
         self::assertInstanceOf(Response::class, $response);
-        self::assertSame(2, (int)Entry::find()->where(['name' => 'Original'])->count());
+        self::assertSame(1, (int)Entry::find()->where(['name' => 'Copy of Original'])->count());
         self::assertNotEmpty($this->getWebSession()->getFlash('success'));
     }
 

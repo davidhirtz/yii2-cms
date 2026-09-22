@@ -1,5 +1,10 @@
 ## 3.0 (in development)
 
+- **A duplicated entry is named "Copy of …"** (monorepo issue #219). `Models\Actions\DuplicateEntry` prefixes
+  the duplicate's name through the skeleton's `prefixDuplicateName()`. Its new `$shouldPrefixName` constructor
+  argument is what the recursive copy of the children passes `false` for, so only the record the duplication was
+  asked for is renamed.
+
 - **The block pages explain what a block is** (monorepo issue #163). `resources/views/admin/block/index.php`
   and `block-section/index.php` render the skeleton's new `Modules\Admin\Widgets\HintAlert` with
   `BLOCK_INDEX_HINT` and `BLOCK_SECTION_INDEX_HINT`; an account that turned its hints off sees neither.

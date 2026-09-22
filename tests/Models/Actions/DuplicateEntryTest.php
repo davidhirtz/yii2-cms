@@ -34,7 +34,7 @@ class DuplicateEntryTest extends TestCase
         $module->enableNestedEntries = true;
     }
 
-    public function testTheDuplicateIsADraftWithItsOwnSlug(): void
+    public function testTheDuplicateIsADraftCopyWithItsOwnSlug(): void
     {
         $entry = $this->createEntry('Original', 'original');
         $duplicate = DuplicateEntry::create(['entry' => $entry]);
@@ -42,9 +42,21 @@ class DuplicateEntryTest extends TestCase
         self::assertFalse($duplicate->getIsNewRecord());
         self::assertNotSame($entry->id, $duplicate->id);
 
-        self::assertSame('Original', $duplicate->name);
+        self::assertSame('Copy of Original', $duplicate->name);
         self::assertSame(Entry::STATUS_DRAFT, $duplicate->status);
         self::assertNotSame($entry->slug, $duplicate->slug);
+    }
+
+    /**
+     * The prefix would otherwise push a name that already fills the column past its length rule, failing the
+     * duplication outright.
+     */
+    public function testAFullLengthNameIsTruncatedToFitThePrefix(): void
+    {
+        $entry = $this->createEntry(str_repeat('a', 255), 'long');
+        $duplicate = DuplicateEntry::create(['entry' => $entry]);
+
+        self::assertSame('Copy of ' . str_repeat('a', 247), $duplicate->name);
     }
 
     public function testTheGivenAttributesWinOverTheDefaults(): void
@@ -60,6 +72,8 @@ class DuplicateEntryTest extends TestCase
         ]);
 
         self::assertSame(Entry::STATUS_ENABLED, $duplicate->status);
+
+        // a name the caller assigned is not prefixed
         self::assertSame('Renamed', $duplicate->name);
     }
 
@@ -105,6 +119,8 @@ class DuplicateEntryTest extends TestCase
             ->all();
 
         self::assertCount(2, $children);
+
+        // only the record the duplication was asked for is renamed, its children keep their names
         self::assertSame(['First child', 'Second child'], array_map(fn (Entry $child) => $child->name, $children));
 
         // a copied child keeps the status it had, rather than falling back to the draft default

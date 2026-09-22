@@ -156,8 +156,11 @@ class EntryTranslationTest extends TestCase
         $duplicate = DuplicateEntry::create([Entry::findOne($entry->id)]);
 
         self::assertNotSame($entry->id, $duplicate->id);
-        self::assertSame('Kontakt', $duplicate->getI18nAttribute('name', 'de'));
-        self::assertSame(['name' => 'Kontakt'], $this->getTranslations($duplicate));
+
+        // the name is prefixed per language, in that language
+        self::assertSame('Copy of Contact', $duplicate->name);
+        self::assertSame('Kopie von Kontakt', $duplicate->getI18nAttribute('name', 'de'));
+        self::assertSame(['name' => 'Kopie von Kontakt'], $this->getTranslations($duplicate));
     }
 
     /**
