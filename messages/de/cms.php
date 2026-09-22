@@ -15,7 +15,7 @@ return [
     'BLOCK_ENTRY_BLOCK_ENTRY' => 'Block-Eintrag',
     'BLOCK_ENTRY_COUNT_LABEL' => 'Einträge',
     'BLOCK_GRID_SUMMARY_EMPTY' => 'Es gibt noch keine Blöcke. Ein Block wird einmal angelegt und von beliebig vielen Sektionen eingebunden.',
-    'BLOCK_INDEX_HINT' => 'Ein Block ist ein Abschnitt, der zu keiner Seite gehört. Er wird hier einmal geschrieben und von beliebig vielen Abschnitten eingebunden, eine Änderung erreicht also jede Seite, die ihn zeigt.',
+    'BLOCK_INDEX_HINT' => 'Ein Block ist ein Abschnitt, der zu keiner Seite gehört. Er wird hier einmal geschrieben und von beliebig vielen Sektionen eingebunden, eine Änderung erreicht also jede Seite, die ihn zeigt.',
     'BLOCK_NAME_LABEL' => 'Name',
     'BLOCK_NEW_BLOCK' => 'Neuer Block',
     'BLOCK_SECTION_COUNT_LABEL' => 'Sektionen',
