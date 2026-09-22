@@ -136,6 +136,30 @@ class EntryGridView extends GridView
     }
 
     /**
+     * The tenant the grid is scoped to comes from the host as often as from the dropdown's parameter, and an empty
+     * grid of one tenant says nothing about the others — so the dropdown that reaches them has to stay.
+     */
+    #[Override]
+    protected function isFiltered(): bool
+    {
+        if (parent::isFiltered()) {
+            return true;
+        }
+
+        if ($this->provider->tenantId === null) {
+            return false;
+        }
+
+        foreach (is_array($this->header) ? $this->header : [] as $item) {
+            if ($item instanceof FilterDropdown && $item->getParamName() === $this->tenantParamName) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * @return array<int, string>
      */
     protected function getTenantDropdownItems(): array

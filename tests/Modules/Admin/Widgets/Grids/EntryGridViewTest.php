@@ -9,6 +9,8 @@ use Hirtz\Cms\Modules\Admin\Widgets\Grids\EntryGridView;
 use Hirtz\Cms\Test\TestCase;
 use Hirtz\Skeleton\Models\User;
 use Hirtz\Skeleton\Test\Traits\UserFixtureTrait;
+use Hirtz\Tenant\Models\Tenant;
+use Hirtz\Tenant\Web\UrlManager;
 use Yii;
 
 /**
@@ -45,7 +47,42 @@ class EntryGridViewTest extends TestCase
         self::assertStringContainsString('Needle', $html);
     }
 
-    private function createEntry(string $name, string $slug): Entry
+    /**
+     * The request's tenant has no entries, another one does — and the dropdown is the only way to it.
+     */
+    public function testAnEmptyTenantKeepsTheTenantDropdown(): void
+    {
+        $empty = $this->createTenant('Empty Tenant', 'https://www.empty-domain.localhost');
+        $other = $this->createTenant('Other Tenant', 'https://www.other-domain.localhost');
+
+        $manager = Yii::$app->getUrlManager();
+        self::assertInstanceOf(UrlManager::class, $manager);
+        $manager->setTenant($empty);
+
+        $this->login();
+        $this->createEntry('Needle', 'needle', $other);
+
+        $html = Yii::$app->runAction('admin/cms/entry/index');
+
+        self::assertIsString($html);
+        self::assertStringNotContainsString('Needle', $html);
+        self::assertStringContainsString('tenant=' . $other->id, $html);
+    }
+
+    private function createTenant(string $name, string $url): Tenant
+    {
+        $tenant = Tenant::create();
+        $tenant->loadDefaultValues();
+        $tenant->name = $name;
+        $tenant->language = Yii::$app->sourceLanguage;
+        $tenant->url = $url;
+
+        self::assertTrue($tenant->save(), implode(' ', $tenant->getErrorSummary(true)));
+
+        return $tenant;
+    }
+
+    private function createEntry(string $name, string $slug, ?Tenant $tenant = null): Entry
     {
         $entry = Entry::create();
         $entry->loadDefaultValues();
@@ -53,6 +90,10 @@ class EntryGridViewTest extends TestCase
         $entry->type = Entry::TYPE_DEFAULT;
         $entry->name = $name;
         $entry->slug = $slug;
+
+        if ($tenant) {
+            $entry->populateTenantRelation($tenant);
+        }
 
         self::assertTrue($entry->insert(), print_r($entry->getErrors(), true));
 
