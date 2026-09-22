@@ -17,7 +17,7 @@ use Hirtz\Skeleton\Html\Div;
 use Hirtz\Skeleton\Models\CustomAttributes\HtmlCustomAttribute;
 use Hirtz\Skeleton\Widgets\Grids\Columns\ButtonColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\DeleteGridButton;
-use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\DraggableSortGridButton;
+use Hirtz\Skeleton\Widgets\Buttons\DraggableSortButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\ViewGridButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Column;
 use Hirtz\Skeleton\Widgets\Grids\Columns\DataColumn;
@@ -183,7 +183,7 @@ class SectionGridView extends GridView
             && $this->provider->getCount() > 1
             && $this->webuser->can(Entry::AUTH_ENTRY)
         ) {
-            $buttons[] = DraggableSortGridButton::make();
+            $buttons[] = DraggableSortButton::make();
         }
 
         if ($this->webuser->can(Entry::AUTH_ENTRY)) {

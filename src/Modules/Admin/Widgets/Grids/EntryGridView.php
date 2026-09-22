@@ -23,7 +23,7 @@ use Hirtz\Skeleton\Widgets\Buttons\Button;
 use Hirtz\Skeleton\Widgets\Buttons\ButtonGroup;
 use Hirtz\Skeleton\Widgets\Grids\Columns\ButtonColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\DeleteGridButton;
-use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\DraggableSortGridButton;
+use Hirtz\Skeleton\Widgets\Buttons\DraggableSortButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\ViewGridButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Column;
 use Hirtz\Skeleton\Widgets\Grids\Columns\DataColumn;
@@ -329,7 +329,7 @@ class EntryGridView extends GridView
 
     protected function getSortableButton(): ?Stringable
     {
-        return DraggableSortGridButton::make();
+        return DraggableSortButton::make();
     }
 
     protected function getUpdateButton(Entry $entry): Stringable

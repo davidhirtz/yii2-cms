@@ -10,7 +10,7 @@ use Hirtz\Cms\Modules\Admin\Data\CategoryActiveDataProvider;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\Traits\CategoryGridTrait;
 use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Skeleton\Widgets\Grids\Columns\ButtonColumn;
-use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\DraggableSortGridButton;
+use Hirtz\Skeleton\Widgets\Buttons\DraggableSortButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\ViewGridButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Column;
 use Hirtz\Skeleton\Widgets\Grids\Columns\RelativeTimeColumn;
@@ -77,7 +77,7 @@ class CategoryGridView extends GridView
         $buttons = [];
 
         if ($this->isSortable()) {
-            $buttons[] = DraggableSortGridButton::make();
+            $buttons[] = DraggableSortButton::make();
         }
 
         $buttons[] = ViewGridButton::make()
