@@ -114,8 +114,8 @@ class SectionActionDropdownTest extends TestCase
         // The action names its record in the menu, in the confirmation and on the button that confirms it.
         self::assertStringContainsString('Are you sure you want to delete this section?', $html);
         self::assertSame(2, substr_count($html, 'Delete section</'));
+        self::assertStringContainsString('href="/admin/cms/section/create?entry=' . $section->entry_id . '"', $html);
         self::assertStringNotContainsString('Add Section Set', $html);
-        self::assertStringNotContainsString('New Section', $html);
     }
 
     private function render(): string
