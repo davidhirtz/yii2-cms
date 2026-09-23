@@ -10,6 +10,7 @@ use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Media\Models\Asset;
 use Hirtz\Media\Models\File;
 use Hirtz\Media\Models\Interfaces\AssetModelInterface;
+use Hirtz\Media\Transformations\Transformation;
 use Hirtz\Skeleton\Base\Traits\ContainerConfigurationTrait;
 use Hirtz\Skeleton\Web\UrlManager;
 use Hirtz\Skeleton\Widgets\Widget;
@@ -33,7 +34,7 @@ class MetaTags extends Widget
     protected bool $enableImages = true;
     protected bool $enableSocialMetaTags = true;
     protected ?int $assetType = Asset::TYPE_META_IMAGE;
-    protected ?string $transformationName = null;
+    protected Transformation|string|null $transformation = Transformation::NAME_OPEN_GRAPH;
     protected string|false $ogType = 'website';
 
     private UrlManager $urlManager;
@@ -50,6 +51,64 @@ class MetaTags extends Widget
     public function model(Category|Entry $model): static
     {
         $this->model = $model;
+        return $this;
+    }
+
+    /**
+     * @param list<string>|null $languages the languages of the hreflang links, by default those of the URL manager
+     */
+    public function languages(?array $languages): static
+    {
+        $this->languages = $languages;
+        return $this;
+    }
+
+    public function enableHrefLangLinks(bool $enableHrefLangLinks = true): static
+    {
+        $this->enableHrefLangLinks = $enableHrefLangLinks;
+        return $this;
+    }
+
+    public function enableCanonicalUrl(bool $enableCanonicalUrl = true): static
+    {
+        $this->enableCanonicalUrl = $enableCanonicalUrl;
+        return $this;
+    }
+
+    public function enableImages(bool $enableImages = true): static
+    {
+        $this->enableImages = $enableImages;
+        return $this;
+    }
+
+    public function enableSocialMetaTags(bool $enableSocialMetaTags = true): static
+    {
+        $this->enableSocialMetaTags = $enableSocialMetaTags;
+        return $this;
+    }
+
+    /**
+     * @param int|null $assetType the asset type offered as the share image, `null` for every asset
+     */
+    public function assetType(?int $assetType): static
+    {
+        $this->assetType = $assetType;
+        return $this;
+    }
+
+    /**
+     * The share image's transformation, or its name on the media module; `null` shares the original file, as does a
+     * transformation the file is too small for.
+     */
+    public function transformation(Transformation|string|null $transformation): static
+    {
+        $this->transformation = $transformation;
+        return $this;
+    }
+
+    public function ogType(string|false $ogType): static
+    {
+        $this->ogType = $ogType;
         return $this;
     }
 
@@ -151,8 +210,8 @@ class MetaTags extends Widget
     }
 
     /**
-     * A category carries no assets, and `File::getTransformations()` is the relation to the generated derivatives —
-     * the preset the name refers to lives on the media module.
+     * A category carries no assets. The URL comes from the media module, which only serves a transformation it
+     * declares under that name.
      */
     protected function registerImageMetaTags(): void
     {
@@ -160,9 +219,9 @@ class MetaTags extends Widget
             return;
         }
 
-        $transformation = $this->transformationName
-            ? File::getModule()->getTransformations()[$this->transformationName] ?? null
-            : null;
+        $transformation = is_string($this->transformation)
+            ? File::getModule()->getTransformation($this->transformation)
+            : $this->transformation;
 
         foreach ($this->model->assets as $asset) {
             if ($this->assetType && $this->assetType !== $asset->type) {
@@ -170,14 +229,10 @@ class MetaTags extends Widget
             }
 
             $file = $asset->file;
-            $url = $transformation ? $file->getTransformationUrl((string)$this->transformationName) : null;
+            $url = $transformation ? $file->getTransformationUrl($transformation->name) : null;
 
             if ($url) {
-                $width = $transformation->getWidthFor($file);
-                $height = $transformation->getHeight()
-                    ?? (int)round($file->height * ($width / max($file->width, 1)));
-
-                $this->view->registerImageMetaTags($url, $width, $height);
+                $this->view->registerImageMetaTags($url, ...$transformation->getSizeFor($file));
                 continue;
             }
 

@@ -1,5 +1,22 @@
 # Upgrade Guide
 
+## 3.0 — `MetaTags` is configured through setters
+
+`Widgets\MetaTags` keeps its options protected, so the v2 container definition
+`MetaTags::class => ['transformationName' => 'w_1280']` is a fatal. Each option has a setter —
+`languages()`, `enableHrefLangLinks()`, `enableCanonicalUrl()`, `enableImages()`, `enableSocialMetaTags()`,
+`assetType()`, `transformation()`, `ogType()` — and a project-wide default is a closure definition, which the
+call site can still override:
+
+```php
+'container' => ['definitions' => [
+    MetaTags::class => fn (): MetaTags => (new MetaTags())->transformation('w_1280'),
+]],
+```
+
+`transformationName` is `transformation()`, which takes a `Media\Transformations\Transformation` or its name
+and defaults to the media module's `og` preset instead of sharing the original file; `null` restores that.
+
 ## 3.0 — A page's title stays on the record that owns it
 
 A section page is titled with its **entry** and says "Section #3" beneath; a section's asset adds

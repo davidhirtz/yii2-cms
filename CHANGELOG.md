@@ -1,5 +1,6 @@
 ## Unreleased
 
+- Added setters for the `MetaTags` options; `transformation()` replaces `$transformationName` and defaults to the `og` transformation
 - Changed the `Artwork` closures to stack and answer the element they receive, added `Artwork::makeMedia()`, and made `Gallery` render an `Artwork` per asset, configured through `Gallery::artwork()`; `viewFile()` is optional
 
 ## 3.0.0 (September 23, 2026)

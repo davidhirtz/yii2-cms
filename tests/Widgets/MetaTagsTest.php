@@ -9,6 +9,8 @@ use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
 use Hirtz\Cms\Test\Models\TestEntry;
 use Hirtz\Cms\Test\TestCase;
 use Hirtz\Cms\Widgets\MetaTags;
+use Hirtz\Media\Models\File;
+use Hirtz\Media\Transformations\Transformation;
 use Hirtz\Skeleton\Models\CustomAttributes\HtmlCustomAttribute;
 use Override;
 use Yii;
@@ -106,7 +108,67 @@ class MetaTagsTest extends TestCase
         $head = $this->getHead();
 
         self::assertStringContainsString($meta->file->getUrl(), $head);
-        self::assertStringNotContainsString($this->getAssetFromFixture('entry-asset')->file->getUrl(), $head);
+        self::assertStringNotContainsString($this->getAssetFromFixture('entry-asset')->file->getFilename(), $head);
+    }
+
+    /**
+     * The `og` preset fits a 1000 × 1000 JPEG into 1200 × 630, which is what the size tags say; the SVG meta image
+     * cannot be transformed and is shared as it is.
+     */
+    public function testTheShareImageDefaultsToTheOpenGraphTransformation(): void
+    {
+        $this->render($this->getEntryFromFixture('page-enabled'), ['assetType' => null]);
+        $head = $this->getHead();
+
+        $url = $this->getAssetFromFixture('entry-asset')->file->getTransformationUrl(Transformation::NAME_OPEN_GRAPH);
+
+        self::assertNotNull($url);
+        self::assertStringContainsString($url, $head);
+        self::assertStringContainsString('<meta property="og:image:width" content="630">', $head);
+        self::assertStringContainsString($this->getAssetFromFixture('entry-meta-image')->file->getUrl(), $head);
+    }
+
+    public function testTheShareImageTakesATransformationItsNameOrNone(): void
+    {
+        $entry = $this->getEntryFromFixture('page-enabled');
+        $file = $this->getAssetFromFixture('entry-asset')->file;
+        $url = $file->getTransformationUrl(Transformation::NAME_ADMIN);
+
+        self::assertNotNull($url);
+
+        $this->render($entry, [
+            'assetType' => null,
+            'transformation' => File::getModule()->getTransformation(Transformation::NAME_ADMIN),
+        ]);
+
+        self::assertStringContainsString($url, $this->getHead());
+
+        $this->render($entry, ['assetType' => null, 'transformation' => Transformation::NAME_ADMIN]);
+        self::assertStringContainsString($url, $this->getHead());
+
+        $this->render($entry, ['assetType' => null, 'transformation' => null]);
+        self::assertStringContainsString($file->getUrl() . '"', $this->getHead());
+    }
+
+    /**
+     * The v2 property array fails on the protected options; a closure definition calls the setters.
+     */
+    public function testTheContainerSetsADefaultTheCallerCanOverride(): void
+    {
+        Yii::$container->set(MetaTags::class, fn (): MetaTags => (new MetaTags())->transformation(null));
+
+        try {
+            $entry = $this->getEntryFromFixture('page-enabled');
+            $file = $this->getAssetFromFixture('entry-asset')->file;
+
+            $this->render($entry, ['assetType' => null]);
+            self::assertStringContainsString($file->getUrl() . '"', $this->getHead());
+
+            $this->render($entry, ['assetType' => null, 'transformation' => Transformation::NAME_OPEN_GRAPH]);
+            self::assertStringContainsString('/og/', $this->getHead());
+        } finally {
+            Yii::$container->clear(MetaTags::class);
+        }
     }
 
     public function testEveryAssetIsRegisteredWithoutATypeFilter(): void
@@ -116,8 +178,8 @@ class MetaTagsTest extends TestCase
         $this->render($entry, ['assetType' => null]);
         $head = $this->getHead();
 
-        self::assertStringContainsString($this->getAssetFromFixture('entry-asset')->file->getUrl(), $head);
-        self::assertStringContainsString($this->getAssetFromFixture('entry-meta-image')->file->getUrl(), $head);
+        self::assertStringContainsString($this->getAssetFromFixture('entry-asset')->file->getFilename(), $head);
+        self::assertStringContainsString($this->getAssetFromFixture('entry-meta-image')->file->getFilename(), $head);
     }
 
     public function testTheImagesCanBeTurnedOff(): void
@@ -170,19 +232,16 @@ class MetaTagsTest extends TestCase
     }
 
     /**
-     * `MetaTags` keeps its options protected and offers no setters, so a project configures it by subclassing —
-     * which is what the test model does.
-     *
-     * @param array<string, mixed> $config
+     * @param array<string, mixed> $config the setters to call, by name
      */
     private function render(Entry $entry, array $config = []): void
     {
         Yii::$app->set('view', Yii::$app->getComponents()['view']);
 
-        $widget = TestMetaTags::make()->model($entry);
+        $widget = MetaTags::make()->model($entry);
 
         foreach ($config as $name => $value) {
-            $widget->set($name, $value);
+            $widget->$name($value);
         }
 
         $widget->__toString();
@@ -199,14 +258,5 @@ class MetaTagsTest extends TestCase
             ...array_map(strval(...), $view->metaTags),
             ...array_map(strval(...), $view->linkTags),
         ]);
-    }
-}
-
-class TestMetaTags extends MetaTags
-{
-    public function set(string $name, mixed $value): static
-    {
-        $this->$name = $value;
-        return $this;
     }
 }
