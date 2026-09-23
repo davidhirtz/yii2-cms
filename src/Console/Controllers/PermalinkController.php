@@ -24,8 +24,9 @@ class PermalinkController extends Controller
     use ModuleTrait;
 
     /**
-     * Rewrites the permalinks of every entry, inserting the missing ones and deleting the ones whose entry no
-     * longer has a URL.
+     * Rewrites the permalinks of every entry.
+     *
+     * Inserts the missing ones and deletes the ones whose entry no longer has a URL.
      */
     public function actionRebuild(): void
     {
