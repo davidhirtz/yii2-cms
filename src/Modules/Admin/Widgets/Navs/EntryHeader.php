@@ -29,7 +29,8 @@ class EntryHeader extends ModelHeader
         $this->model ??= $this->provider?->parent;
 
         if ($this->model) {
-            $this->title ??= $this->model->getOldAttribute($this->model->getI18nAttributeName('name'));
+            // The fallback reads the translation through the getter, which loads it for `getOldAttribute()`.
+            $this->title ??= $this->model->getOldAttribute($this->model->getI18nAttributeName('name', fallback: true));
             $this->subheading ??= FrontendLink::make()->model($this->model)->addClass('hidden-sticky');
         }
 

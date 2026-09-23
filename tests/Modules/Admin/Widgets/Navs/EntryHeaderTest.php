@@ -6,6 +6,7 @@ namespace Hirtz\Cms\Tests\Modules\Admin\Widgets\Navs;
 
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
+use Hirtz\Cms\Test\Models\TestEntry;
 use Hirtz\Cms\Test\TestCase;
 use Hirtz\Skeleton\Models\Breadcrumb;
 use Hirtz\Skeleton\Models\User;
@@ -57,6 +58,40 @@ class EntryHeaderTest extends TestCase
         self::assertIsString($html);
         self::assertStringContainsString('>' . $entry->getAdminName() . '</a></h1>', $html);
         self::assertSame([Yii::t('cms', 'COMMON_ENTRIES')], $this->getBreadcrumbLabels());
+    }
+
+    public function testTheIndexPageForAParentIsTitledWithItsNameInAnotherLanguage(): void
+    {
+        Yii::$app->getI18n()->setLanguages(['en-US', 'de']);
+        Yii::$container->setDefinitions([
+            Entry::class => ['class' => TestEntry::class, 'i18nAttributes' => ['name']],
+            TestEntry::class => ['i18nAttributes' => ['name']],
+        ]);
+
+        Entry::instance(true);
+        TestEntry::instance(true);
+
+        try {
+            $this->login()->language = 'de';
+            $translated = $this->getEntryFromFixture('page-enabled');
+            $translated->setAttributes(['name_de' => 'Seite'], false);
+            self::assertSame(1, $translated->update(), implode(' ', $translated->getErrorSummary(true)));
+
+            $untranslated = $this->getEntryFromFixture('page-disabled');
+
+            foreach (['Seite' => $translated, $untranslated->name => $untranslated] as $name => $entry) {
+                $html = Yii::$app->runAction('admin/cms/entry/index', ['parent' => $entry->id]);
+
+                self::assertIsString($html);
+                self::assertStringContainsString('>' . $name . '</a></h1>', $html);
+            }
+        } finally {
+            Yii::$container->clear(Entry::class);
+            Yii::$container->clear(TestEntry::class);
+
+            Entry::instance(true);
+            TestEntry::instance(true);
+        }
     }
 
     /**

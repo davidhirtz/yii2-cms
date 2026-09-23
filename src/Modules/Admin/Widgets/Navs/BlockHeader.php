@@ -27,7 +27,8 @@ class BlockHeader extends ModelHeader
     protected function configure(): void
     {
         if ($this->model) {
-            $this->title ??= $this->model->getOldAttribute($this->model->getI18nAttributeName('name'));
+            // The fallback reads the translation through the getter, which loads it for `getOldAttribute()`.
+            $this->title ??= $this->model->getOldAttribute($this->model->getI18nAttributeName('name', fallback: true));
         }
 
         if ($this->provider) {
