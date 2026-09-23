@@ -36,10 +36,9 @@ class GalleryTest extends TestCase
         self::assertStringContainsString('<li><div class="artwork"', $html);
     }
 
-    public function testTheContentClosureWinsOverTheViewFile(): void
+    public function testTheContentClosureReceivesTheGallery(): void
     {
         $html = (string)$this->createGallery()
-            ->viewFile('@cms/../tests/data/views/site/_gallery.php')
             ->artwork(fn (Artwork $artwork) => $artwork->addClass('artwork'))
             ->content(fn (array $assets, Gallery $gallery): string => implode('', array_map(
                 fn (Asset $asset): string => '<p>' . $gallery->makeArtwork($asset) . '</p>',
@@ -47,6 +46,23 @@ class GalleryTest extends TestCase
             )));
 
         self::assertStringStartsWith('<p><div class="artwork"', $html);
+    }
+
+    public function testTheLastOfContentAndViewFileWins(): void
+    {
+        $content = fn (): string => 'content';
+
+        self::assertSame('content', (string)$this->createGallery()
+            ->viewFile('@cms/../tests/data/views/site/_gallery.php')
+            ->content($content));
+
+        self::assertStringContainsString('<ul', (string)$this->createGallery()
+            ->content($content)
+            ->viewFile('@cms/../tests/data/views/site/_gallery.php'));
+
+        self::assertStringStartsWith('<div', (string)$this->createGallery()
+            ->content($content)
+            ->viewFile(null));
     }
 
     /**

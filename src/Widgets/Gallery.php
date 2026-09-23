@@ -26,11 +26,8 @@ class Gallery extends Widget
      */
     protected ?array $assets = null;
 
-    protected ?Closure $content = null;
-
     protected ?int $start = null;
     protected ?int $limit = null;
-    protected ?string $viewFile = null;
 
     /**
      * @var array<string, mixed>
@@ -41,6 +38,11 @@ class Gallery extends Widget
      * @var list<Closure>|null
      */
     private ?array $artworkClosures = null;
+
+    /**
+     * The markup of a run of assets, set by `content()` or `viewFile()`, whichever was called last.
+     */
+    private ?Closure $content = null;
 
     /**
      * @var list<int>
@@ -86,9 +88,19 @@ class Gallery extends Widget
         return $this;
     }
 
+    /**
+     * The view receives `$assets` and `$gallery` beside the `viewParams()`, read when it renders.
+     */
     public function viewFile(?string $viewFile): static
     {
-        $this->viewFile = $viewFile;
+        $this->content = $viewFile
+            ? fn (array $assets): string => $this->view->render($viewFile, [
+                ...$this->viewParams,
+                'assets' => $assets,
+                'gallery' => $this,
+            ])
+            : null;
+
         return $this;
     }
 
@@ -159,15 +171,9 @@ class Gallery extends Widget
             return '';
         }
 
-        if ($this->content) {
-            return ($this->content)($assets, $this);
-        }
-
-        if ($this->viewFile) {
-            return $this->view->render($this->viewFile, [...$this->viewParams, 'assets' => $assets, 'gallery' => $this]);
-        }
-
-        return implode('', array_map($this->makeArtwork(...), $assets));
+        return $this->content
+            ? ($this->content)($assets, $this)
+            : implode('', array_map($this->makeArtwork(...), $assets));
     }
 
     /**
