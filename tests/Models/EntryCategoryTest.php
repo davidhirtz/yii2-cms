@@ -119,13 +119,7 @@ class EntryCategoryTest extends TestCase
         $junction->populateEntryRelation($entry);
         $junction->populateCategoryRelation($root);
 
-        $updates = 0;
-
-        $entry->on(TestEntry::EVENT_AFTER_UPDATE, function () use (&$updates): void {
-            ++$updates;
-        });
-
-        $junction->delete();
+        $updates = $this->countQueries(fn () => $junction->delete(), '/^UPDATE `entry` /');
 
         self::assertSame(1, $updates);
     }

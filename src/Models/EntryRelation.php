@@ -13,7 +13,6 @@ use Hirtz\Skeleton\Behaviors\BlameableBehavior;
 use Hirtz\Skeleton\Behaviors\TimestampBehavior;
 use Hirtz\Skeleton\Behaviors\TrailBehavior;
 use Hirtz\Skeleton\Db\ActiveRecord;
-use Hirtz\Skeleton\Log\ActiveRecordErrorLogger;
 use Hirtz\Skeleton\Models\Interfaces\TrailModelInterface;
 use Hirtz\Skeleton\Models\Traits\AdminModelTrait;
 use Hirtz\Skeleton\Models\Traits\TrailModelTrait;
@@ -212,17 +211,9 @@ class EntryRelation extends ActiveRecord implements TrailModelInterface
         parent::afterDelete();
     }
 
-    public function updateModelEntryCount(): bool|int
+    public function updateModelEntryCount(): int
     {
-        $model = $this->model;
-        $model->recalculateEntryCount();
-
-        if ($model->update(false) === false) {
-            ActiveRecordErrorLogger::log($model);
-            return false;
-        }
-
-        return true;
+        return $this->model->updateEntryCount();
     }
 
     /**

@@ -48,7 +48,7 @@ interface EntryRelationModelInterface extends ActiveRecordInterface, TrailModelI
      */
     public function getEntryRelations(): EntryRelationQuery;
 
-    public function recalculateEntryCount(): static;
+    public function updateEntryCount(): int;
 
     /**
      * @param EntryRelation[]|null $entryRelations

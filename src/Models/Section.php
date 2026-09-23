@@ -209,19 +209,17 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
         if ($this->shouldUpdateEntryAfterSave) {
             if (array_key_exists('entry_id', $changedAttributes)) {
                 $this->updateOldEntryRelation($changedAttributes['entry_id'] ?? null);
-
-                $this->entry->recalculateSectionCount();
+                $this->entry->updateSectionCount();
             }
 
+            // A changed section is a changed entry, whether or not the count moved with it.
             if ($changedAttributes) {
-                $this->entry->updated_at = $this->updated_at;
+                $this->entry->updateAttributes(['updated_at' => $this->updated_at]);
             }
-
-            $this->entry->update(false);
         }
 
         if (!$this->getIsBatch()) {
-            static::recalculateBlockSectionCounts([$this->block_id, $changedAttributes['block_id'] ?? null]);
+            static::updateBlockSectionCounts([$this->block_id, $changedAttributes['block_id'] ?? null]);
         }
 
         parent::afterSave($insert, $changedAttributes);
@@ -233,12 +231,12 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
      *
      * @param list<int|null> $blockIds
      */
-    public static function recalculateBlockSectionCounts(array $blockIds): void
+    public static function updateBlockSectionCounts(array $blockIds): void
     {
         $blockIds = array_values(array_unique(array_filter(array_map(intval(...), $blockIds))));
 
         foreach ($blockIds ? Block::findAll(['id' => $blockIds]) : [] as $block) {
-            $block->recalculateSectionCount()->update(false);
+            $block->updateSectionCount();
         }
     }
 
@@ -269,10 +267,10 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
     {
         if (!$this->getIsBatch()) {
             if (!$this->entry->isDeleted()) {
-                $this->entry->recalculateSectionCount()->update(false);
+                $this->entry->updateSectionCount();
             }
 
-            static::recalculateBlockSectionCounts([$this->block_id]);
+            static::updateBlockSectionCounts([$this->block_id]);
         }
 
         parent::afterDelete();
@@ -334,7 +332,7 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
         $entry = Entry::findOne($entryId);
 
         if ($entry) {
-            $entry->recalculateSectionCount()->update(false);
+            $entry->updateSectionCount();
             $this->trailParents = [$entry, $this->entry];
         }
     }

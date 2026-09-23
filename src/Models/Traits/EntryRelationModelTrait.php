@@ -43,10 +43,11 @@ trait EntryRelationModelTrait
         return $relation;
     }
 
-    public function recalculateEntryCount(): static
+    public function updateEntryCount(): int
     {
-        $this->entry_count = (int)$this->getEntryRelations()->count();
-        return $this;
+        return $this->updateDenormalizedAttributes([
+            'entry_count' => (int)$this->getEntryRelations()->count(),
+        ]);
     }
 
     /**

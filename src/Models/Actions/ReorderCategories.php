@@ -35,8 +35,7 @@ class ReorderCategories extends ReorderActiveRecords
         Trail::createOrderTrail($this->parent, Message::make('cms', 'REORDER_CATEGORIES_CATEGORY_ORDER_CHANGED'));
 
         if ($this->parent) {
-            $this->parent->updated_at = new DateTime();
-            $this->parent->update(false);
+            $this->parent->updateAttributes(['updated_at' => new DateTime()]);
         }
 
         parent::afterReorder();

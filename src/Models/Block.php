@@ -131,10 +131,11 @@ class Block extends ActiveRecord implements AssetModelInterface, EntryRelationMo
         return static::find();
     }
 
-    public function recalculateSectionCount(): static
+    public function updateSectionCount(): int
     {
-        $this->section_count = (int)$this->getSections()->count();
-        return $this;
+        return $this->updateDenormalizedAttributes([
+            'section_count' => (int)$this->getSections()->count(),
+        ]);
     }
 
     /**

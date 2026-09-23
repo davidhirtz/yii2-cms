@@ -112,6 +112,30 @@ class EntryTest extends TestCase
         self::assertSame($entryCount + 1, $parent->entry_count);
     }
 
+    /**
+     * The parent is often the in-memory relation, which may hold changes nobody meant to save.
+     */
+    public function testACountUpdateSavesNothingElseOfTheParent(): void
+    {
+        $parent = $this->getEntryFromFixture('page-enabled');
+        $name = $parent->name;
+        $sectionCount = $parent->section_count;
+
+        $parent->name = 'Never saved';
+
+        $section = Section::instantiateByType(Section::TYPE_DEFAULT);
+        $section->loadDefaultValues();
+        $section->populateEntryRelation($parent);
+
+        self::assertTrue($section->insert(), print_r($section->getErrors(), true));
+
+        $row = TestEntry::findOne($parent->id);
+
+        self::assertSame($name, $row->name);
+        self::assertSame($sectionCount + 1, $row->section_count);
+        self::assertNotNull($row->updated_at);
+    }
+
     public function testDeleteEntry(): void
     {
         $entry = $this->getEntryFromFixture('page-enabled');

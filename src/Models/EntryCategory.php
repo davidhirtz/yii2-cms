@@ -153,28 +153,14 @@ class EntryCategory extends \Hirtz\Skeleton\Db\ActiveRecord implements TrailMode
         parent::afterDelete();
     }
 
-    public function updateEntryCategoryIds(): bool|int
+    public function updateEntryCategoryIds(): int
     {
-        $this->entry->recalculateCategoryIds();
-
-        if ($this->entry->update(false) === false) {
-            ActiveRecordErrorLogger::log($this->entry);
-            return false;
-        }
-
-        return true;
+        return $this->entry->updateCategoryIds();
     }
 
-    public function updateCategoryEntryCount(): bool|int
+    public function updateCategoryEntryCount(): int
     {
-        $this->category->recalculateEntryCount();
-
-        if ($this->category->update(false) === false) {
-            ActiveRecordErrorLogger::log($this->category);
-            return false;
-        }
-
-        return true;
+        return $this->category->updateEntryCount();
     }
 
     public function insertCategoryAncestors(): void

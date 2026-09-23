@@ -51,7 +51,7 @@ class DeleteSections
 
         if ($this->deleted) {
             $this->updateSectionCounts($entryIds);
-            Section::recalculateBlockSectionCounts($blockIds);
+            Section::updateBlockSectionCounts($blockIds);
         }
 
         return !$this->failed;
@@ -63,7 +63,7 @@ class DeleteSections
     protected function updateSectionCounts(array $entryIds): void
     {
         foreach (Entry::findAll(['id' => $entryIds]) as $entry) {
-            $entry->recalculateSectionCount()->update(false);
+            $entry->updateSectionCount();
         }
     }
 

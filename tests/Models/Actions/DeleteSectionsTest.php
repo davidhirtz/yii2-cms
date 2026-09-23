@@ -55,7 +55,7 @@ class DeleteSectionsTest extends TestCase
         self::assertSame(1, $section->delete());
         self::assertSame(1, Entry::findOne($this->entry->id)->section_count);
 
-        $this->entry->recalculateSectionCount()->update();
+        $this->entry->updateSectionCount();
         self::assertSame(0, Entry::findOne($this->entry->id)->section_count);
     }
 

@@ -261,7 +261,10 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
                 $entry->populateParentRelation($this);
                 $entry->parent_status = min($this->status, $this->parent_status);
                 $entry->path = [...$this->path ?? [], $this->id];
-                $entry->update(false);
+
+                // Only the tree columns, but through the save: the child's own hooks carry the change on to its
+                // permalinks and its children.
+                $entry->update(false, ['parent_status', 'path']);
             }
         }
 
@@ -274,12 +277,12 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
 
             if ($this->parent) {
                 $allRelatedAncestorIds = array_diff($allRelatedAncestorIds, [$this->parent_id]);
-                $this->parent->recalculateEntryCount()->update(false);
+                $this->parent->updateEntryCount();
             }
 
             if ($allRelatedAncestorIds) {
                 foreach (static::findAll($allRelatedAncestorIds) as $ancestor) {
-                    $ancestor->recalculateEntryCount()->update(false);
+                    $ancestor->updateEntryCount();
                 }
             }
         }
@@ -339,7 +342,7 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
 
                 if ($models) {
                     // The database cascade takes the relation rows; the counts they hung on are the model layer's.
-                    $this->on(static::EVENT_AFTER_DELETE, fn () => $this->recalculateEntryRelationModels($models));
+                    $this->on(static::EVENT_AFTER_DELETE, fn () => $this->updateEntryRelationModels($models));
                 }
             }
         }
@@ -355,7 +358,7 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
         if (!$this->getIsBatch()) {
             if ($this->parent_id) {
                 foreach ($this->getAncestors() as $ancestor) {
-                    $ancestor->recalculateEntryCount()->update(false);
+                    $ancestor->updateEntryCount();
                 }
             }
         }
@@ -408,7 +411,7 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
     /**
      * @param list<array{class-string<EntryRelationModelInterface>, int}> $models
      */
-    protected function recalculateEntryRelationModels(array $models): void
+    protected function updateEntryRelationModels(array $models): void
     {
         foreach (static::getModule()->getEntryRelationClasses() as $relationClass) {
             $modelClass = $relationClass::getModelClass();
@@ -430,7 +433,7 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
 
             foreach ($records as $record) {
                 if ($record instanceof EntryRelationModelInterface) {
-                    $record->recalculateEntryCount()->update(false);
+                    $record->updateEntryCount();
                 }
             }
         }
@@ -541,27 +544,29 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
         $this->populateRelation('sections', $sections);
     }
 
-    public function recalculateCategoryIds(): static
+    public function updateCategoryIds(): int
     {
         $categoryIds = $this->getEntryCategories()
             ->select(['category_id'])
             ->column();
 
-        $this->category_ids = $categoryIds ? array_values(array_map(intval(...), $categoryIds)) : null;
-
-        return $this;
+        return $this->updateDenormalizedAttributes([
+            'category_ids' => $categoryIds ? array_values(array_map(intval(...), $categoryIds)) : null,
+        ]);
     }
 
-    public function recalculateEntryCount(): static
+    public function updateEntryCount(): int
     {
-        $this->entry_count = (int)$this->findDescendants()->count();
-        return $this;
+        return $this->updateDenormalizedAttributes([
+            'entry_count' => (int)$this->findDescendants()->count(),
+        ]);
     }
 
-    public function recalculateSectionCount(): static
+    public function updateSectionCount(): int
     {
-        $this->section_count = (int)$this->getSections()->count();
-        return $this;
+        return $this->updateDenormalizedAttributes([
+            'section_count' => (int)$this->getSections()->count(),
+        ]);
     }
 
     #[Override]

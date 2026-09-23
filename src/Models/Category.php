@@ -217,10 +217,11 @@ class Category extends ActiveRecord implements SearchableInterface
             ->inverseOf('category');
     }
 
-    public function recalculateEntryCount(): static
+    public function updateEntryCount(): int
     {
-        $this->entry_count = (int)$this->getEntryCategories()->count();
-        return $this;
+        return $this->updateDenormalizedAttributes([
+            'entry_count' => (int)$this->getEntryCategories()->count(),
+        ]);
     }
 
     /**
