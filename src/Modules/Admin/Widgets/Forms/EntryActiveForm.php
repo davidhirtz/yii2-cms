@@ -82,9 +82,7 @@ class EntryActiveForm extends ActiveForm
     {
         $tenant = TenantCollection::getById($this->model->tenant_id);
 
-        if (null === $tenant) {
-            $tenant = TenantCollection::getFromRequest();
-        }
+        $tenant ??= TenantCollection::getFromRequest();
 
         if (null === $tenant) {
             $manager = Yii::$app->getUrlManager();

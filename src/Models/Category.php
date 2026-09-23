@@ -298,6 +298,7 @@ class Category extends ActiveRecord implements SearchableInterface
         ]));
     }
 
+    #[Override]
     public function getAdminType(): string
     {
         return $this->getTypeName() ?: Yii::t('cms', 'COMMON_CATEGORY');

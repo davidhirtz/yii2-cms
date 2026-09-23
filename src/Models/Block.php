@@ -193,6 +193,7 @@ class Block extends ActiveRecord implements AssetModelInterface, EntryRelationMo
         return $this->allowsAssets() ? array_values($this->assets) : [];
     }
 
+    #[Override]
     public function getAdminType(): string
     {
         return $this->getTypeName() ?: Yii::t('cms', 'COMMON_BLOCK');
