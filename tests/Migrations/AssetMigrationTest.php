@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Tests\Migrations;
 
-use Hirtz\Cms\Migrations\M260912110000Assets;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\EntryAsset;
 use Hirtz\Cms\Models\Section;
@@ -34,6 +33,8 @@ class AssetMigrationTest extends TestCase
     use CmsFixtureTrait {
         fixtures as cmsFixtures;
     }
+
+    private const string MIGRATION = 'Hirtz\\Cms\\Migrations\\M260912110000Assets';
 
     private const string LEGACY_CLASS = 'Hirtz\Cms\Models\Asset';
     private const string LEGACY_FILE_COUNT_COLUMN = 'cms_asset_count';
@@ -67,7 +68,7 @@ class AssetMigrationTest extends TestCase
         parent::setUp();
 
         // The migration lives in davidhirtz/yii2-upgrade now; this is the test that runs it.
-        $this->requireUpgradeMigration('yii2-cms', M260912110000Assets::class);
+        $this->requireUpgradeMigration('yii2-cms', self::MIGRATION);
         $this->createLegacyTable('cms_asset');
 
         Yii::$app->getDb()->createCommand()
@@ -193,7 +194,7 @@ class AssetMigrationTest extends TestCase
         $this->seed();
 
         ob_start();
-        (new M260912110000Assets())->up();
+        $this->createUpgradeMigration('yii2-cms', self::MIGRATION)->up();
         ob_end_clean();
     }
 

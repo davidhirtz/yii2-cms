@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Tests\Migrations;
 
-use Hirtz\Cms\Migrations\M260915200000MenuIds;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
 use Hirtz\Cms\Test\TestCase;
@@ -23,6 +22,8 @@ class MenuIdsMigrationTest extends TestCase
 
     use CmsFixtureTrait;
 
+    private const string MIGRATION = 'Hirtz\\Cms\\Migrations\\M260915200000MenuIds';
+
     private const int MENU_VALUE = 1;
     private const int FOOTER_VALUE = 2;
 
@@ -32,7 +33,7 @@ class MenuIdsMigrationTest extends TestCase
         parent::setUp();
 
         // The migration lives in davidhirtz/yii2-upgrade now; this is the test that runs it.
-        $this->requireUpgradeMigration('yii2-cms', M260915200000MenuIds::class);
+        $this->requireUpgradeMigration('yii2-cms', self::MIGRATION);
 
         $this->dropMenuIdsColumn();
     }
@@ -170,7 +171,7 @@ class MenuIdsMigrationTest extends TestCase
 
     private function migrate(): void
     {
-        $migration = new M260915200000MenuIds(['compact' => true]);
+        $migration = $this->createUpgradeMigration('yii2-cms', self::MIGRATION, ['compact' => true]);
         $migration->safeUp();
     }
 
