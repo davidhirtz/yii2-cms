@@ -14,7 +14,7 @@ use Override;
 use Stringable;
 
 /**
- * @template T of Asset
+ * @template T of Asset = Asset
  */
 class Gallery extends Widget
 {
@@ -22,7 +22,7 @@ class Gallery extends Widget
     use TagAttributesTrait;
 
     /**
-     * @var T[]
+     * @var list<T>|null
      */
     protected ?array $assets = null;
 
@@ -63,7 +63,7 @@ class Gallery extends Widget
     }
 
     /**
-     * @param Closure(T[], static): string $content
+     * @param Closure(list<T> $assets, static $gallery): string $content
      */
     public function content(Closure $content): static
     {
@@ -84,7 +84,7 @@ class Gallery extends Widget
     }
 
     /**
-     * The view receives `$assets` and `$gallery` beside the `$params`.
+     * The view receives `$assets` (`list<T>`) and `$gallery` beside the `$params`.
      *
      * @param array<string, mixed> $params
      */
@@ -151,7 +151,7 @@ class Gallery extends Widget
     }
 
     /**
-     * @param T[] $assets
+     * @param list<T> $assets
      */
     protected function renderAssetsInternal(array $assets): string
     {
@@ -165,7 +165,7 @@ class Gallery extends Widget
     }
 
     /**
-     * @return T[][]
+     * @return array<string, list<T>>
      */
     protected function getAssetsByViewports(): array
     {
