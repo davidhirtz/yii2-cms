@@ -538,8 +538,6 @@ Read the skeleton's guide on typed type definitions first, and the media one for
 | `sort(?array)`                | `getSort()`                 | the same                               |
 | `showCategories(?bool)`       | `showsCategories()`         | `Modules\Admin\Widgets\Grids\EntryGridView` |
 | `showCategoryDropdown(?bool)` | `showsCategoryDropdown()`   | the same                               |
-| `showInMenu(bool)`            | `hasShowInMenuEnabled()`    | `Models\Traits\MenuAttributeTrait`    |
-| `showInFooter(bool)`          | `hasShowInFooterEnabled()`  | `Models\Traits\FooterAttributeTrait`  |
 
 `Models\Types\SectionType`, likewise:
 
@@ -558,9 +556,6 @@ a type is offered in the admin is the base class's `available()`.
 
 `entriesTypes()` is validated against `Entry`'s own declarations now, so a type that names one the entry model
 does not declare throws instead of filtering the dropdown down to nothing.
-
-Two magic strings among the hidden fields became constants: `Models\Section::FIELD_ENTRIES` and the media
-`Models\Interfaces\AssetModelInterface::FIELD_ASSETS`.
 
 `Models\Traits\MetaImageTrait::getMetaImageTypeOptions()` is `getMetaImageTypes()` and returns a list, so
 `getTypes()` composes with the spread operator rather than `+`, which discarded a colliding key without a word.
@@ -677,46 +672,10 @@ A relative group view resolves against the directory of the view that renders th
 `@views/<controller id>/`, which is what `Widget::getViewPath()` would answer: the cms site views live in the
 bundle, where the application's view path does not reach. An absolute name (`@views/site/_tabs`) is unaffected.
 
-## 3.0.0 — Menu and footer attributes are wired up by hand
+## 3.0.0 — Trait rules are no longer discovered
 
 `Models\ActiveRecord::rules()` and `attributeLabels()` no longer call the skeleton's `ModelTrait::getTraitRules()`
 / `getTraitAttributeLabels()`, which discovered trait hooks by reflection and naming convention. Both are removed
-from the skeleton; see `bundles/yii2-skeleton/UPGRADE.md`.
-
-`Models\Traits\MenuAttributeTrait` and `Models\Traits\FooterAttributeTrait` keep their methods under shorter
-names and are called by the model that uses them:
-
-| removed                                   | replacement                   |
-|-------------------------------------------|-------------------------------|
-| `getMenuAttributeTraitRules()`            | `getMenuAttributeRules()`     |
-| `getMenuAttributeTraitAttributeLabels()`  | `getMenuAttributeLabels()`    |
-| `getFooterAttributeTraitRules()`          | `getFooterAttributeRules()`   |
-| `getFooterAttributeTraitAttributeLabels()`| `getFooterAttributeLabels()`  |
-
-```php
-class Entry extends \Hirtz\Cms\Models\Entry
-{
-    use MenuAttributeTrait;
-
-    public function rules(): array
-    {
-        return [
-            ...parent::rules(),
-            ...$this->getMenuAttributeRules(),
-        ];
-    }
-
-    public function attributeLabels(): array
-    {
-        return [
-            ...parent::attributeLabels(),
-            ...$this->getMenuAttributeLabels(),
-        ];
-    }
-}
-```
-
-Without the `rules()` spread `show_in_menu` is neither safe nor validated, so it is not loaded from a form post
-and `Skeleton\Widgets\Forms\Fields\Field` renders nothing for it — the checkbox added by
-`Modules\Admin\Widgets\Forms\Traits\MenuFieldTrait` disappears from the entry form without an error. Grep for
-`use MenuAttributeTrait` and `use FooterAttributeTrait` and check every hit.
+from the skeleton; see `bundles/yii2-skeleton/UPGRADE.md`. A project trait that relied on them is spread into
+`rules()` and `attributeLabels()` by the model using it. The menu and footer traits are gone altogether, see
+"Entry menus replace `show_in_menu` and `show_in_footer`".
