@@ -157,7 +157,7 @@ class EntryCategory extends \Hirtz\Skeleton\Db\ActiveRecord implements TrailMode
     {
         $this->entry->recalculateCategoryIds();
 
-        if (!$this->entry->update()) {
+        if ($this->entry->update(false) === false) {
             ActiveRecordErrorLogger::log($this->entry);
             return false;
         }
@@ -169,7 +169,7 @@ class EntryCategory extends \Hirtz\Skeleton\Db\ActiveRecord implements TrailMode
     {
         $this->category->recalculateEntryCount();
 
-        if (!$this->category->update()) {
+        if ($this->category->update(false) === false) {
             ActiveRecordErrorLogger::log($this->category);
             return false;
         }

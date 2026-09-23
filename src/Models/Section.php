@@ -217,7 +217,7 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
                 $this->entry->updated_at = $this->updated_at;
             }
 
-            $this->entry->update();
+            $this->entry->update(false);
         }
 
         if (!$this->getIsBatch()) {
@@ -238,7 +238,7 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
         $blockIds = array_values(array_unique(array_filter(array_map(intval(...), $blockIds))));
 
         foreach ($blockIds ? Block::findAll(['id' => $blockIds]) : [] as $block) {
-            $block->recalculateSectionCount()->update();
+            $block->recalculateSectionCount()->update(false);
         }
     }
 
@@ -269,7 +269,7 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
     {
         if (!$this->getIsBatch()) {
             if (!$this->entry->isDeleted()) {
-                $this->entry->recalculateSectionCount()->update();
+                $this->entry->recalculateSectionCount()->update(false);
             }
 
             static::recalculateBlockSectionCounts([$this->block_id]);
@@ -334,7 +334,7 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
         $entry = Entry::findOne($entryId);
 
         if ($entry) {
-            $entry->recalculateSectionCount()->update();
+            $entry->recalculateSectionCount()->update(false);
             $this->trailParents = [$entry, $this->entry];
         }
     }

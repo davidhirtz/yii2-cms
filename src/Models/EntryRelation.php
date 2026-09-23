@@ -217,7 +217,7 @@ class EntryRelation extends ActiveRecord implements TrailModelInterface
         $model = $this->model;
         $model->recalculateEntryCount();
 
-        if (!$model->update()) {
+        if ($model->update(false) === false) {
             ActiveRecordErrorLogger::log($model);
             return false;
         }

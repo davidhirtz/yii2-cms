@@ -63,7 +63,7 @@ class DeleteSections
     protected function updateSectionCounts(array $entryIds): void
     {
         foreach (Entry::findAll(['id' => $entryIds]) as $entry) {
-            $entry->recalculateSectionCount()->update();
+            $entry->recalculateSectionCount()->update(false);
         }
     }
 

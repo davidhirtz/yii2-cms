@@ -37,7 +37,7 @@ class ReorderEntries extends ReorderActiveRecords
 
         if ($this->parent) {
             $this->parent->updated_at = new DateTime();
-            $this->parent->update();
+            $this->parent->update(false);
         }
 
         parent::afterReorder();

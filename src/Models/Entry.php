@@ -261,7 +261,7 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
                 $entry->populateParentRelation($this);
                 $entry->parent_status = min($this->status, $this->parent_status);
                 $entry->path = [...$this->path ?? [], $this->id];
-                $entry->update();
+                $entry->update(false);
             }
         }
 
@@ -274,12 +274,12 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
 
             if ($this->parent) {
                 $allRelatedAncestorIds = array_diff($allRelatedAncestorIds, [$this->parent_id]);
-                $this->parent->recalculateEntryCount()->update();
+                $this->parent->recalculateEntryCount()->update(false);
             }
 
             if ($allRelatedAncestorIds) {
                 foreach (static::findAll($allRelatedAncestorIds) as $ancestor) {
-                    $ancestor->recalculateEntryCount()->update();
+                    $ancestor->recalculateEntryCount()->update(false);
                 }
             }
         }
@@ -355,7 +355,7 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
         if (!$this->getIsBatch()) {
             if ($this->parent_id) {
                 foreach ($this->getAncestors() as $ancestor) {
-                    $ancestor->recalculateEntryCount()->update();
+                    $ancestor->recalculateEntryCount()->update(false);
                 }
             }
         }
@@ -430,7 +430,7 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
 
             foreach ($records as $record) {
                 if ($record instanceof EntryRelationModelInterface) {
-                    $record->recalculateEntryCount()->update();
+                    $record->recalculateEntryCount()->update(false);
                 }
             }
         }

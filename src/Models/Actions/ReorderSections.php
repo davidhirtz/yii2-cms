@@ -37,7 +37,7 @@ class ReorderSections extends ReorderActiveRecords
         Trail::createOrderTrail($this->entry, Message::make('cms', 'REORDER_SECTIONS_SECTION_ORDER_CHANGED'));
 
         $this->entry->updated_at = new DateTime();
-        $this->entry->update();
+        $this->entry->update(false);
 
         parent::afterReorder();
     }
