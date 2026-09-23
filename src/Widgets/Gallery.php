@@ -30,11 +30,6 @@ class Gallery extends Widget
     protected ?int $limit = null;
 
     /**
-     * @var array<string, mixed>
-     */
-    protected array $viewParams = [];
-
-    /**
      * @var list<Closure>|null
      */
     private ?array $artworkClosures = null;
@@ -89,27 +84,20 @@ class Gallery extends Widget
     }
 
     /**
-     * The view receives `$assets` and `$gallery` beside the `viewParams()`, read when it renders.
+     * The view receives `$assets` and `$gallery` beside the `$params`.
+     *
+     * @param array<string, mixed> $params
      */
-    public function viewFile(?string $viewFile): static
+    public function viewFile(?string $viewFile, array $params = []): static
     {
         $this->content = $viewFile
             ? fn (array $assets): string => $this->view->render($viewFile, [
-                ...$this->viewParams,
+                ...$params,
                 'assets' => $assets,
                 'gallery' => $this,
             ])
             : null;
 
-        return $this;
-    }
-
-    /**
-     * @param array<string, mixed> $viewParams
-     */
-    public function viewParams(array $viewParams): static
-    {
-        $this->viewParams = $viewParams;
         return $this;
     }
 

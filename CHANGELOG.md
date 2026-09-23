@@ -1,8 +1,6 @@
 ## Unreleased
 
-- Fixed `Section`, `SectionGridView` and `MetaTags` failing on a record that declares no `slug`, `name`, `content`, `title` or `description`
-- Changed the `Artwork` closures to stack and answer the element they receive, added `Artwork::makeMedia()`, and made `Gallery` render an `Artwork` per asset, configured through `Gallery::artwork()`; `viewFile()` is optional and `widgets/_assets` is gone
-- Fixed `Artwork` failing on an asset that declares no `link`
+- Changed the `Artwork` closures to stack and answer the element they receive, added `Artwork::makeMedia()`, and made `Gallery` render an `Artwork` per asset, configured through `Gallery::artwork()`; `viewFile()` is optional
 
 ## 3.0.0 (September 23, 2026)
 

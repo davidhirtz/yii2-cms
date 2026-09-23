@@ -618,7 +618,7 @@ echo Gallery::make()
 
 The shipped `widgets/_assets` view is gone. A `viewFile()` or a `content()` closure, whichever is set last, takes
 over the markup and builds each artwork with `$gallery->makeArtwork($asset)`, which keeps the caller's closures; the
-view receives `$gallery`, the closure the assets and the gallery.
+view receives `$gallery` beside the parameters `viewFile()` was given, the closure the assets and the gallery.
 
 ## 3.0.0 — Sections
 

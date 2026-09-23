@@ -28,8 +28,7 @@ class GalleryTest extends TestCase
     public function testAViewFileTakesOverAndKeepsTheArtworkClosures(): void
     {
         $html = (string)$this->createGallery()
-            ->viewFile('@cms/../tests/data/views/site/_gallery.php')
-            ->viewParams(['class' => 'list'])
+            ->viewFile('@cms/../tests/data/views/site/_gallery.php', ['class' => 'list'])
             ->artwork(fn (Artwork $artwork) => $artwork->addClass('artwork'));
 
         self::assertStringContainsString('<ul class="list">', $html);
