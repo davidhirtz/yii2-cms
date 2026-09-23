@@ -27,7 +27,7 @@ class Artwork extends Widget
 
     protected Asset $asset;
 
-    protected bool $adminLink = true;
+    protected bool $adminLink = false;
     protected bool $aspectRatio = true;
     protected string|false $embedViewFile = 'widgets/_embed';
     protected int|false $lazyLoadingPosition = 5;
