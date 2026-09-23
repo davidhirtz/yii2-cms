@@ -18,17 +18,12 @@ class CategorySubmenu extends Submenu
      */
     use ModelTrait;
 
-    /**
-     * @var array<string, list<string>>
-     */
-    protected array $additionalActiveRoutes = [];
-
     #[Override]
     protected function configure(): void
     {
         $this->addItem(
-            $this->getCategoryUpdateItem(),
-            $this->getSubcategoriesItem(),
+            category: $this->getCategoryUpdateItem(),
+            subcategories: $this->getSubcategoriesItem(),
         );
 
         parent::configure();
@@ -39,7 +34,7 @@ class CategorySubmenu extends Submenu
         return NavItem::make()
             ->icon('cog')
             ->label($this->model->getAdminType())
-            ->routes(['admin/cms/category/update', ...$this->additionalActiveRoutes['category'] ?? []])
+            ->addRoute('admin/cms/category/update')
             ->url(['/admin/cms/category/update', 'id' => $this->model->id]);
     }
 
@@ -49,7 +44,7 @@ class CategorySubmenu extends Submenu
             ->badge($this->model->getBranchCount())
             ->icon('folder-open')
             ->label(Yii::t('cms', 'COMMON_SUBCATEGORIES'))
-            ->routes(['admin/cms/category/index', ...$this->additionalActiveRoutes['subcategories'] ?? []])
+            ->addRoute('admin/cms/category/index')
             ->url(['/admin/cms/category/index', 'parent' => $this->model->id]);
     }
 }

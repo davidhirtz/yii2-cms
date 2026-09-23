@@ -1,5 +1,12 @@
 ## 3.0 (in development)
 
+
+- **`EntrySubmenu::additionalActiveRoutes()`, `SectionSubmenu::additionalActiveRoutes()` and
+  `BlockSubmenu::additionalActiveRoutes()` are gone**, with the protected `$additionalActiveRoutes` of
+  `CategorySubmenu`. The submenus name their items instead (`entry`, `assets`, `subentries`, `categories`,
+  `sections`, …), and a route is added to one with the skeleton's `NavItem::addRoute()`:
+  `$submenu->getItem('assets')?->addRoute('admin/project/…')` from a `Widget::EVENT_CONFIGURE` listener.
+
 - **`Modules\Admin\Controllers\SectionController::$autoCreateSection` is gone.** A new section used to be
   inserted the moment its create button was clicked, since v2 could only add assets to a record that existed.
   Assets have their own view now, so `actionCreate()` renders the form and inserts on submit, like every other

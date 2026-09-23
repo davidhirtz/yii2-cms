@@ -24,20 +24,6 @@ class EntrySubmenu extends Submenu
     use ModuleTrait;
 
     protected Module $module;
-
-    /**
-     * @var array<string, list<string>>
-     */
-    protected array $additionalActiveRoutes = [];
-
-    /**
-     * @param array<string, list<string>> $additionalActiveRoutes keyed by the item the routes belong to
-     */
-    public function additionalActiveRoutes(array $additionalActiveRoutes): static
-    {
-        $this->additionalActiveRoutes = $additionalActiveRoutes;
-        return $this;
-    }
     protected bool $showEntryCategories = true;
     protected bool $showEntrySections = true;
 
@@ -59,13 +45,12 @@ class EntrySubmenu extends Submenu
         }
 
         $this->addItem(
-            $this->getEntryUpdateItem(),
-            $this->getAssetsItem(),
-            $this->getSubentriesItem(),
-            $this->getEntryCategoriesItem(),
-            $this->getEntrySectionsItem(),
+            entry: $this->getEntryUpdateItem(),
+            assets: $this->getAssetsItem(),
+            subentries: $this->getSubentriesItem(),
+            categories: $this->getEntryCategoriesItem(),
+            sections: $this->getEntrySectionsItem(),
         );
-
 
         parent::configure();
     }
@@ -75,7 +60,7 @@ class EntrySubmenu extends Submenu
         return NavItem::make()
             ->icon('cog')
             ->label($this->model->getAdminType())
-            ->routes(['admin/cms/entry/update', ...$this->additionalActiveRoutes['entry'] ?? []])
+            ->addRoute('admin/cms/entry/update')
             ->url($this->model->getAdminRoute() ?: null);
     }
 
@@ -84,12 +69,7 @@ class EntrySubmenu extends Submenu
         return AssetSubmenuItem::make()
             ->badge($this->model->asset_count)
             ->label($this->model->getAttributeLabel('asset_count'))
-            ->routes(
-                [
-                    'admin/cms/entry-asset',
-                    ...$this->additionalActiveRoutes['assets'] ?? [],
-                ]
-            )
+            ->addRoute('admin/cms/entry-asset')
             ->url(EntryAsset::getAdminIndexRoute($this->model))
             ->visible($this->model->allowsAssets());
     }
@@ -100,7 +80,7 @@ class EntrySubmenu extends Submenu
             ->badge($this->model->entry_count)
             ->icon('book')
             ->label(Yii::t('cms', 'COMMON_SUBENTRIES'))
-            ->routes(['admin/cms/entry/index', ...$this->additionalActiveRoutes['subentries'] ?? []])
+            ->addRoute('admin/cms/entry/index')
             ->url(['/admin/cms/entry/index', 'parent' => $this->model->id])
             ->visible($this->model->allowsDescendants());
     }
@@ -111,11 +91,10 @@ class EntrySubmenu extends Submenu
             ->badge($this->model->getCategoryCount())
             ->icon('folder-open')
             ->label(Yii::t('cms', 'COMMON_CATEGORIES'))
-            ->routes(['admin/cms/entry-category/'])
+            ->addRoute('admin/cms/entry-category/')
             ->url(['/admin/cms/entry-category/index', 'entry' => $this->model->id])
             ->visible($this->showEntryCategories);
     }
-
 
     protected function getEntrySectionsItem(): ?NavItem
     {
@@ -124,7 +103,7 @@ class EntrySubmenu extends Submenu
             ->url(['/admin/cms/section/index', 'entry' => $this->model->id])
             ->icon('th-list')
             ->badge($this->model->section_count)
-            ->routes(['admin/cms/section/', ...$this->additionalActiveRoutes['sections'] ?? []])
+            ->addRoute('admin/cms/section/')
             ->visible($this->showEntrySections);
     }
 }

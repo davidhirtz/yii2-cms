@@ -23,27 +23,13 @@ class SectionSubmenu extends Submenu
 
     use ModuleTrait;
 
-    /**
-     * @var array<string, list<string>>
-     */
-    protected array $additionalActiveRoutes = [];
-
-    /**
-     * @param array<string, list<string>> $additionalActiveRoutes keyed by the item the routes belong to
-     */
-    public function additionalActiveRoutes(array $additionalActiveRoutes): static
-    {
-        $this->additionalActiveRoutes = $additionalActiveRoutes;
-        return $this;
-    }
-
     #[Override]
     protected function configure(): void
     {
         $this->addItem(
-            $this->getSectionUpdateItem(),
-            $this->getAssetsItem(),
-            $this->getEntriesItem(),
+            section: $this->getSectionUpdateItem(),
+            assets: $this->getAssetsItem(),
+            entries: $this->getEntriesItem(),
         );
 
         parent::configure();
@@ -54,7 +40,7 @@ class SectionSubmenu extends Submenu
         return NavItem::make()
             ->icon('cog')
             ->label($this->model->getAdminType())
-            ->routes(['admin/cms/section/update', ...$this->additionalActiveRoutes['section'] ?? []])
+            ->addRoute('admin/cms/section/update')
             ->url($this->model->getAdminRoute() ?: null);
     }
 
@@ -64,12 +50,7 @@ class SectionSubmenu extends Submenu
             ->badge($this->model->entry_count)
             ->icon('chain')
             ->label(Yii::t('cms', 'ENTRY_RELATION_NAV_ENTRIES'))
-            ->routes(
-                [
-                    'admin/cms/section-entry',
-                    ...$this->additionalActiveRoutes['entries'] ?? [],
-                ]
-            )
+            ->addRoute('admin/cms/section-entry')
             ->url(['/admin/cms/section-entry/index', 'section' => $this->model->id])
             ->visible($this->model->allowsEntries());
     }
@@ -79,12 +60,7 @@ class SectionSubmenu extends Submenu
         return AssetSubmenuItem::make()
             ->badge($this->model->asset_count)
             ->label($this->model->getAttributeLabel('asset_count'))
-            ->routes(
-                [
-                    'admin/cms/section-asset',
-                    ...$this->additionalActiveRoutes['assets'] ?? [],
-                ]
-            )
+            ->addRoute('admin/cms/section-asset')
             ->url(SectionAsset::getAdminIndexRoute($this->model))
             ->visible($this->model->allowsAssets());
     }

@@ -20,28 +20,14 @@ class BlockSubmenu extends Submenu
      */
     use ModelTrait;
 
-    /**
-     * @var array<string, list<string>>
-     */
-    protected array $additionalActiveRoutes = [];
-
-    /**
-     * @param array<string, list<string>> $additionalActiveRoutes keyed by the item the routes belong to
-     */
-    public function additionalActiveRoutes(array $additionalActiveRoutes): static
-    {
-        $this->additionalActiveRoutes = $additionalActiveRoutes;
-        return $this;
-    }
-
     #[Override]
     protected function configure(): void
     {
         $this->addItem(
-            $this->getBlockUpdateItem(),
-            $this->getAssetsItem(),
-            $this->getEntriesItem(),
-            $this->getSectionsItem(),
+            block: $this->getBlockUpdateItem(),
+            assets: $this->getAssetsItem(),
+            entries: $this->getEntriesItem(),
+            sections: $this->getSectionsItem(),
         );
 
         parent::configure();
@@ -52,7 +38,7 @@ class BlockSubmenu extends Submenu
         return NavItem::make()
             ->icon('cog')
             ->label($this->model->getAdminType())
-            ->routes(['admin/cms/block/update', ...$this->additionalActiveRoutes['block'] ?? []])
+            ->addRoute('admin/cms/block/update')
             ->url($this->model->getAdminRoute());
     }
 
@@ -70,7 +56,7 @@ class BlockSubmenu extends Submenu
             ->badge($this->model->section_count)
             ->icon('th-list')
             ->label(Yii::t('cms', 'COMMON_SECTIONS'))
-            ->routes(['admin/cms/block-section', ...$this->additionalActiveRoutes['sections'] ?? []])
+            ->addRoute('admin/cms/block-section')
             ->url(['/admin/cms/block-section/index', 'block' => $this->model->id]);
     }
 
@@ -80,7 +66,7 @@ class BlockSubmenu extends Submenu
             ->badge($this->model->entry_count)
             ->icon('chain')
             ->label(Yii::t('cms', 'ENTRY_RELATION_NAV_ENTRIES'))
-            ->routes(['admin/cms/block-entry', ...$this->additionalActiveRoutes['entries'] ?? []])
+            ->addRoute('admin/cms/block-entry')
             ->url(['/admin/cms/block-entry/index', 'block' => $this->model->id])
             ->visible($this->model->allowsEntries());
     }
@@ -90,7 +76,7 @@ class BlockSubmenu extends Submenu
         return AssetSubmenuItem::make()
             ->badge($this->model->asset_count)
             ->label($this->model->getAttributeLabel('asset_count'))
-            ->routes(['admin/cms/block-asset', ...$this->additionalActiveRoutes['assets'] ?? []])
+            ->addRoute('admin/cms/block-asset')
             ->url(BlockAsset::getAdminIndexRoute($this->model))
             ->visible($this->model->allowsAssets());
     }
