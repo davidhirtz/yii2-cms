@@ -568,6 +568,44 @@ Its `visible` key — which nothing in v3 read — is `available()`, and `Widget
 honours it again.
 
 
+## 3.0.0 — `Widgets\Canvas` is `Widgets\Artwork`
+
+`Widgets\Artwork` renders an entry, section or block asset where `Widgets\Canvas` did, configured through setters
+rather than public properties. The template is gone: the parts render in a fixed order, and each is handed to a
+closure before it is placed, which is where a project changes it or drops it.
+
+| v2 `Canvas`                                               | v3 `Artwork`                                                                     |
+|-----------------------------------------------------------|----------------------------------------------------------------------------------|
+| `Widgets\Canvas`                                          | `Widgets\Artwork`                                                                |
+| `Canvas::widget(['asset' => $asset])`                     | `Artwork::make()->asset($asset)`; the asset is required                          |
+| `$template`, `$parts`, `renderAdmin()` and the `{…}` tokens | removed; the closures below, `adminLink(false)` for the admin link             |
+| `$wrapperOptions` (`['class' => 'canvas']`)               | `attributes()` / `addClass()`, or `wrapper(fn (Div $div) => …)`; no default class |
+| `$pictureOptions`                                         | `media(fn (Media $media) => …)`, the media `Widgets\Media` in place of `Picture` |
+| `$linkOptions`                                            | `link(fn (?A $a) => …)`; `url()` replaces the asset's `link`                     |
+| `$enableLinkWrapper`                                      | removed; the link wraps the media, never the caption                             |
+| `$captionOptions` (with `encode`)                         | `caption(fn (?Figcaption $caption) => …)`; encoded unless `content` is an `HtmlCustomAttribute` |
+| `$embedViewFile`                                          | `embedViewFile(string\|false)`                                                   |
+| `$enableMaxWidth`, `$defaultMaxWidth`                     | `maxWidth(true)`, `maxWidth(int $max)`                                           |
+| `$enableWrapperHeight`, `$setWrapperHeightWithAspectRatio` | `aspectRatio(bool)`, on the image rather than the wrapper; no `padding-top` fallback |
+| `$lazyLoadingParentPosition` (`2`, the asset's position)  | `lazyLoadingPosition(int\|false)` (`5`, artworks rendered in the request so far; `false` leaves every image lazy) |
+
+The markup changed with it. The wrapper is always a `div`; the media sits in a `figure` beside a `figcaption` when
+the asset has a caption or an embed, or when `figure()` is set; an embed and the media share a `div.relative`; the
+admin link is appended to the wrapper, which then carries `relative` too. A project's CSS keyed on `.canvas`
+targets the class it now passes itself:
+
+```php
+echo Artwork::make()
+    ->asset($asset)
+    ->addClass('canvas')
+    ->media(fn (Media $media) => $media->transformations(['md', 'lg']))
+    ->caption(fn (?Figcaption $caption) => $caption?->addClass('caption'));
+```
+
+A closure answering `false` or `null` drops its part (`caption()`, `link()`). The lazy-loading counter belongs to
+the request, reset by `Bootstrap` — `resetCounter()` restarts it where a page renders a second, independent run of
+artworks. The hotspot bundle's `Widgets\Artwork` extends this one; its own guide covers `hotspotViewFile()`.
+
 ## 3.0.0 — Sections
 
 `Widgets\Sections` is gone. `Widgets\SectionStack` renders an entry's sections and `Widgets\SectionGroup`
