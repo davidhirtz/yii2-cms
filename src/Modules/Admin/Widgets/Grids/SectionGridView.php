@@ -84,7 +84,12 @@ class SectionGridView extends GridView
 
     protected function getDeleteSelectionLabel(): string
     {
-        return Yii::t('cms', 'SECTION_DELETE_SELECTED');
+        return Yii::t('cms', 'SECTION_BUTTON_DELETE_SELECTED');
+    }
+
+    protected function getDeleteSelectionMessage(): string
+    {
+        return Yii::t('cms', 'SECTION_CONFIRM_DELETE_SELECTED');
     }
 
     /**
@@ -206,6 +211,8 @@ class SectionGridView extends GridView
 
         if ($this->showDeleteButton && $this->webuser->can(Entry::AUTH_ENTRY)) {
             $buttons[] = DeleteGridButton::make()
+                ->label(Yii::t('cms', 'SECTION_BUTTON_DELETE'))
+                ->title(Yii::t('cms', 'SECTION_CONFIRM_DELETE'))
                 ->model($section);
         }
 

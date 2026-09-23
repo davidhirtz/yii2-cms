@@ -49,18 +49,18 @@ class EntryActionDropdown extends ActionDropdown
                 ]))
                 ->footer(Button::make()
                     ->primary()
-                    ->text(Yii::t('media', 'ENTRY_ACTION_DROPDOWN_DUPLICATE'))
+                    ->text(Yii::t('cms', 'ENTRY_BUTTON_DUPLICATE'))
                     ->post(['duplicate', 'id' => $this->model->id], true));
 
             return Button::make()
                 ->primary()
-                ->text(Yii::t('cms', 'ENTRY_ACTION_DROPDOWN_DUPLICATE'))
+                ->text(Yii::t('cms', 'ENTRY_BUTTON_DUPLICATE'))
                 ->icon('copy')
                 ->modal($modal);
         }
 
         return DuplicateButton::make()
-            ->label(Yii::t('cms', 'ENTRY_ACTION_DROPDOWN_DUPLICATE'))
+            ->label(Yii::t('cms', 'ENTRY_BUTTON_DUPLICATE'))
             ->model($this->model);
     }
 

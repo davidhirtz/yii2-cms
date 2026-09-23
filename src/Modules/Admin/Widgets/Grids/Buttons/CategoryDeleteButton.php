@@ -31,6 +31,8 @@ class CategoryDeleteButton extends DeleteButton
             $this->message ??= Yii::t('cms', 'CATEGORY_DELETE_WARNING');
         }
 
+        $this->label ??= Yii::t('cms', 'CATEGORY_BUTTON_DELETE');
+        $this->title ??= Yii::t('cms', 'CATEGORY_CONFIRM_DELETE');
         $this->url ??= ['/admin/cms/category/delete', 'id' => $this->model->id];
 
         parent::configure();

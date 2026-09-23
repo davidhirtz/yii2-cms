@@ -30,6 +30,8 @@ class BlockDeleteButton extends DeleteButton
             $this->message ??= Yii::t('cms', 'BLOCK_DELETE_WARNING', ['count' => $this->model->section_count]);
         }
 
+        $this->label ??= Yii::t('cms', 'BLOCK_BUTTON_DELETE');
+        $this->title ??= Yii::t('cms', 'BLOCK_CONFIRM_DELETE');
         $this->url ??= ['/admin/cms/block/delete', 'id' => $this->model->id];
 
         parent::configure();

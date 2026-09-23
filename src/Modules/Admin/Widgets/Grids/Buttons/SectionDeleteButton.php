@@ -8,6 +8,7 @@ use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Skeleton\Widgets\Buttons\DeleteButton;
 use Override;
+use Yii;
 
 /**
  * @see SectionController::actionDelete()
@@ -26,6 +27,8 @@ class SectionDeleteButton extends DeleteButton
     #[Override]
     protected function configure(): void
     {
+        $this->label ??= Yii::t('cms', 'SECTION_BUTTON_DELETE');
+        $this->title ??= Yii::t('cms', 'SECTION_CONFIRM_DELETE');
         $this->url ??= ['/admin/cms/section/delete', 'id' => $this->model->id];
 
         parent::configure();

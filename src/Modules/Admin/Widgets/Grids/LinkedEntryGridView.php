@@ -87,6 +87,7 @@ class LinkedEntryGridView extends EntryGridView
         $model = $this->provider->relatedModel;
 
         return DeleteGridButton::make()
+            ->label(Yii::t('cms', 'ENTRY_RELATION_BUTTON_REMOVE'))
             ->url(['delete', ...$model ? [$model->getParamName() => $model->id] : [], 'entry' => $entry->id])
             ->title(Yii::t('cms', 'ENTRY_RELATION_REMOVE_TITLE'));
     }

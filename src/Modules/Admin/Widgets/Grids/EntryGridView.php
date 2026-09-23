@@ -365,6 +365,8 @@ class EntryGridView extends GridView
     protected function getDeleteButton(Entry $entry): Stringable
     {
         return DeleteGridButton::make()
+            ->label(Yii::t('cms', 'ENTRY_BUTTON_DELETE'))
+            ->title(Yii::t('cms', 'ENTRY_CONFIRM_DELETE'))
             ->model($entry);
     }
 

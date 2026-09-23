@@ -83,7 +83,7 @@ class SectionActionDropdown extends ActionDropdown
     {
         return Button::make()
             ->primary()
-            ->text(Yii::t('cms', 'SECTION_MOVE_COPY'))
+            ->text(Yii::t('cms', 'SECTION_BUTTON_MOVE_COPY'))
             ->icon('copy')
             ->url(['entries', 'id' => $this->model->id]);
     }
@@ -94,6 +94,7 @@ class SectionActionDropdown extends ActionDropdown
     protected function getDuplicateButton(): Stringable
     {
         return DuplicateButton::make()
+            ->label(Yii::t('cms', 'SECTION_BUTTON_DUPLICATE'))
             ->model($this->model);
     }
 
