@@ -128,7 +128,7 @@ class SectionGridView extends GridView
         $cssClass = null;
 
         if (!$html) {
-            $name = $section->getI18nAttribute('name');
+            $name = $section->getVisibleAttribute('name');
             $html = $name ? Div::make()->class('strong')->text($name) : null;
         }
 
@@ -137,7 +137,7 @@ class SectionGridView extends GridView
         }
 
         if (!$html) {
-            $html = (string)($section->getI18nAttribute('content') ?? '');
+            $html = (string)($section->getVisibleAttribute('content') ?? '');
             $html = $section->getCustomAttribute('content') instanceof HtmlCustomAttribute
                 ? strip_tags($html)
                 : $html;

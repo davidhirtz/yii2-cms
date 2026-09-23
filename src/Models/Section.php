@@ -75,10 +75,8 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
                 ['entry_id'],
                 $this->validateEntryId(...),
             ],
-            [
-                ['slug'],
-                $this->validateSlug(...),
-            ],
+            // a validator reads the attribute, and a project may leave `slug` out
+            ...($this->hasAttribute('slug') ? [[['slug'], $this->validateSlug(...)]] : []),
             [
                 ['block_id'],
                 RelationValidator::class,
@@ -418,7 +416,9 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
 
     public function getHtmlId(): ?string
     {
-        return $this->getI18nAttribute('slug') ?: ('section-' . $this->id);
+        // not `getVisibleAttribute()`: a type hiding the slug keeps the id it had
+        $slug = $this->hasAttribute('slug') ? $this->getI18nAttribute('slug') : null;
+        return $slug ?: ('section-' . $this->id);
     }
 
     /**

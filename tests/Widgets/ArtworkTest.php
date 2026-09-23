@@ -72,7 +72,7 @@ class ArtworkTest extends TestCase
     }
 
     /**
-     * `getVisibleAttribute()` answers `false` for an attribute the asset does not declare, as a project asset
+     * `getVisibleAttribute()` answers `null` for an attribute the asset does not declare, as a project asset
      * filtering its custom attributes does.
      */
     public function testAnAssetDeclaringNoLinkRendersWithoutOne(): void
@@ -93,7 +93,7 @@ class ArtworkTest extends TestCase
         EntryAsset::populateRecord($linkless, $asset->getOldAttributes());
         $linkless->populateRelation('file', $asset->file);
 
-        self::assertFalse($linkless->getVisibleAttribute('link'));
+        self::assertNull($linkless->getVisibleAttribute('link'));
 
         $html = (string)$this->createArtwork($linkless);
 

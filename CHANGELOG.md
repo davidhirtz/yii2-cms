@@ -1,5 +1,6 @@
 ## Unreleased
 
+- Fixed `Section`, `SectionGridView` and `MetaTags` failing on a record that declares no `slug`, `name`, `content`, `title` or `description`
 - Changed the `Artwork` closures to stack and answer the element they receive, added `Artwork::makeMedia()`, and made `Gallery` render an `Artwork` per asset, configured through `Gallery::artwork()`
 - Fixed `Artwork` failing on an asset that declares no `link`
 

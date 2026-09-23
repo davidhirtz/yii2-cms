@@ -56,6 +56,7 @@ class MetaTagsTest extends TestCase
     public function testTheDescriptionFallsBackToTheContent(): void
     {
         $entry = $this->getEntryFromFixture('page-enabled');
+        $entry->type = TestEntry::TYPE_POST;
         $entry->content = 'Some content';
 
         $this->render($entry);
@@ -65,6 +66,18 @@ class MetaTagsTest extends TestCase
 
         $this->render($entry);
         self::assertStringContainsString('A separate description', $this->getHead());
+    }
+
+    /**
+     * The page type hides `content`, so what it still holds is not the page's description.
+     */
+    public function testHiddenContentIsNotTheDescription(): void
+    {
+        $entry = $this->getEntryFromFixture('page-enabled');
+        $entry->content = 'Some content';
+
+        $this->render($entry);
+        self::assertStringNotContainsString('Some content', $this->getHead());
     }
 
     public function testTheOpenGraphTagsAreRegistered(): void
