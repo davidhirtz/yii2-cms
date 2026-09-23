@@ -1,4 +1,4 @@
-## 3.0.0 (in development)
+## 3.0.0 (September 23, 2026)
 
 - Renamed the namespace `davidhirtz\yii2\cms\` to `Hirtz\Cms\` and every directory to StudlyCase (`models\actions\` is `Models\Actions\`)
 - Moved the views from `src/modules/admin/views/` and `src/views/` to `resources/views/admin/` and `resources/views/site/`
