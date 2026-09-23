@@ -1,5 +1,31 @@
 # Upgrade Guide
 
+## 3.0 — The v2 admin widgets that are gone
+
+A record's page is a header, a submenu and an action dropdown now; the help panels that carried its buttons and
+the dropdowns the forms rendered by hand have no class of their own left.
+
+| removed                                                        | replacement                                                                                      |
+|----------------------------------------------------------------|--------------------------------------------------------------------------------------------------|
+| `modules\admin\widgets\forms\ActiveForm`                       | the skeleton's `Widgets\Forms\ActiveForm`, with `Modules\Admin\Widgets\Forms\Traits\SlugFieldTrait` |
+| `modules\admin\widgets\forms\fields\CategoryParentIdDropDown`  | `Modules\Admin\Widgets\Forms\Fields\CategoryParentIdSelectField`                                 |
+| `modules\admin\widgets\forms\fields\EntryParentIdDropDown`     | `Modules\Admin\Widgets\Forms\Fields\EntryParentIdSelectField`                                    |
+| `modules\admin\widgets\forms\fields\ParentIdFieldTrait`        | `Modules\Admin\Widgets\Forms\Traits\ParentIdSelectFieldTrait` and `ParentIdFieldTrait`            |
+| `modules\admin\widgets\forms\traits\EntryParentIdFieldTrait`   | `EntryParentIdSelectField`, a row of `EntryActiveForm::getDefaultRows()`                          |
+| `modules\admin\widgets\grids\FileAssetParentGridView`           | the media `Modules\Admin\Widgets\Grids\FileAssetGridView`, every asset of the file              |
+| `modules\admin\widgets\grids\columns\EntryCountColumn`         | `Modules\Admin\Widgets\Grids\Columns\EntryEntryCountColumn`                                      |
+| `modules\admin\widgets\navs\Submenu`                            | `Modules\Admin\Widgets\Navs\EntrySubmenu`, `SectionSubmenu`, `CategorySubmenu`, `BlockSubmenu`, with the matching `*Header` |
+| `modules\admin\widgets\panels\HelpPanel`                        | the record's action dropdown; an explanation is the skeleton's `Modules\Admin\Widgets\HintAlert` |
+| `modules\admin\widgets\panels\AssetHelpPanel`                   | the media `Modules\Admin\Widgets\Navs\AssetActionDropdown`                                      |
+| `modules\admin\widgets\panels\CategoryHelpPanel`                | `Modules\Admin\Widgets\Navs\CategoryActionDropdown`                                              |
+| `modules\admin\widgets\panels\EntryHelpPanel`                   | `Modules\Admin\Widgets\Navs\EntryActionDropdown`                                                 |
+| `modules\admin\widgets\panels\EntryDeletePanel`                 | `Modules\Admin\Widgets\Grids\Buttons\EntryDeleteButton`, in `EntryActionDropdown`               |
+| `modules\admin\widgets\panels\SectionHelpPanel`                 | `Modules\Admin\Widgets\Navs\SectionActionDropdown`                                               |
+| `modules\admin\widgets\panels\FileAssetParentPanel`             | the media `FileAssetGridView` on the file page                                                    |
+| `modules\admin\widgets\panels\traits\LinkButtonTrait`          | `Modules\Admin\Widgets\Buttons\Traits\LinkButtonTrait`                                           |
+| `modules\admin\helpers\FrontendLink`                           | `Modules\Admin\Widgets\Navs\FrontendLink`, a widget                                              |
+| `modules\admin\widgets\panels\traits\UpdateFileButtonTrait`    | the media `AssetActionDropdown::getUpdateFileButton()`                                            |
+
 ## 3.0 — `MetaTags` is configured through setters
 
 `Widgets\MetaTags` keeps its options protected, so the v2 container definition
