@@ -110,8 +110,7 @@ class EntryRelation extends ActiveRecord implements TrailModelInterface
             ],
             [
                 ['model_id'],
-                'filter',
-                'filter' => 'intval',
+                'integer',
             ],
             [
                 ['entry_id'],
