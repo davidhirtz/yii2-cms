@@ -30,7 +30,7 @@ class Gallery extends Widget
 
     protected ?int $start = null;
     protected ?int $limit = null;
-    protected string $viewFile = 'widgets/_assets';
+    protected ?string $viewFile = null;
 
     /**
      * @var array<string, mixed>
@@ -65,6 +65,9 @@ class Gallery extends Widget
         return $this;
     }
 
+    /**
+     * @param Closure(T[], static): string $content
+     */
     public function content(Closure $content): static
     {
         $this->content = $content;
@@ -99,8 +102,8 @@ class Gallery extends Widget
     }
 
     /**
-     * The view calls this for every asset, so a project view overriding `widgets/_assets` keeps the caller's
-     * `artwork()` closures.
+     * What the gallery renders per asset unless `content()` or `viewFile()` take over, which call it themselves to
+     * keep the caller's `artwork()` closures.
      *
      * @param T $asset
      */
@@ -156,9 +159,15 @@ class Gallery extends Widget
             return '';
         }
 
-        return $this->content
-            ? call_user_func($this->content, $assets)
-            : $this->view->render($this->viewFile, [...$this->viewParams, 'assets' => $assets, 'gallery' => $this]);
+        if ($this->content) {
+            return ($this->content)($assets, $this);
+        }
+
+        if ($this->viewFile) {
+            return $this->view->render($this->viewFile, [...$this->viewParams, 'assets' => $assets, 'gallery' => $this]);
+        }
+
+        return implode('', array_map($this->makeArtwork(...), $assets));
     }
 
     /**

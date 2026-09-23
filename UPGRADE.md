@@ -616,7 +616,9 @@ echo Gallery::make()
         ->media(fn (Media $media) => $media->sizes('min(100vw, 320px)')->transformations(['w_320', 'w_640'])));
 ```
 
-A project view overriding `widgets/_assets` builds each one with `$gallery->makeArtwork($asset)`.
+The shipped `widgets/_assets` view is gone. A `viewFile()` or a `content()` closure takes over the markup and builds
+each artwork with `$gallery->makeArtwork($asset)`, which keeps the caller's closures; the view receives `$gallery`, the closure
+the assets and the gallery.
 
 ## 3.0.0 — Sections
 
