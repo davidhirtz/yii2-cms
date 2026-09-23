@@ -52,6 +52,8 @@ class EntrySubmenu extends Submenu
             sections: $this->getEntrySectionsItem(),
         );
 
+        $this->backUrl ??= $this->getAdminBackUrl($this->model);
+
         parent::configure();
     }
 

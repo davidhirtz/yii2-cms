@@ -23,4 +23,17 @@ class EntrySubmenuTest extends TestCase
         self::assertSame('Page', $entry->getAdminType());
         self::assertStringContainsString('>Page</', EntrySubmenu::make()->model($entry)->render());
     }
+
+    public function testASubentryLeadsBackToTheSubentriesOfItsParent(): void
+    {
+        $html = EntrySubmenu::make()->model(TestEntry::findOne(4))->render();
+
+        self::assertStringContainsString('<a class="nav-link nav-back-link" href="/admin/cms/entry/index?type=', $html);
+        self::assertStringContainsString('parent=1"', $html);
+    }
+
+    public function testARootEntryHasNoBackButton(): void
+    {
+        self::assertStringNotContainsString('nav-back-link', EntrySubmenu::make()->model(TestEntry::findOne(1))->render());
+    }
 }

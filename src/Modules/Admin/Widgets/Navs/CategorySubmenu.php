@@ -26,6 +26,8 @@ class CategorySubmenu extends Submenu
             subcategories: $this->getSubcategoriesItem(),
         );
 
+        $this->backUrl ??= $this->getAdminBackUrl($this->model);
+
         parent::configure();
     }
 

@@ -32,6 +32,8 @@ class SectionSubmenu extends Submenu
             entries: $this->getEntriesItem(),
         );
 
+        $this->backUrl ??= $this->getAdminBackUrl($this->model);
+
         parent::configure();
     }
 

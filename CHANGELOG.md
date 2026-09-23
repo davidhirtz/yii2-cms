@@ -1,6 +1,11 @@
 ## 3.0 (in development)
 
 
+- **`EntrySubmenu`, `SectionSubmenu` and `CategorySubmenu` lead back up the tree**: a section to its entry's
+  sections, a subentry or subcategory to its parent's listing. A root entry or category shows none, and
+  `backUrl(false)` turns it off.
+
+
 - **`EntrySubmenu::additionalActiveRoutes()`, `SectionSubmenu::additionalActiveRoutes()` and
   `BlockSubmenu::additionalActiveRoutes()` are gone**, with the protected `$additionalActiveRoutes` of
   `CategorySubmenu`. The submenus name their items instead (`entry`, `assets`, `subentries`, `categories`,
