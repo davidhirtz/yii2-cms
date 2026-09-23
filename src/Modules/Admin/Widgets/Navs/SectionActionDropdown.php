@@ -48,6 +48,7 @@ class SectionActionDropdown extends ActionDropdown
             );
         } else {
             $this->addItem(
+                $this->getCreateButton($this->model->entry),
                 $this->getCopyButton(),
                 $this->getDuplicateButton(),
                 $this->getLinkButton(),

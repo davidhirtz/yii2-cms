@@ -32,11 +32,6 @@ class SectionController extends AbstractController
     use SectionControllerTrait;
     use StatusControllerTrait;
 
-    /**
-     * @var bool whether sections should be automatically inserted in {@see static::actionCreate()}.
-     */
-    public bool $autoCreateSection = true;
-
     #[Override]
     public function behaviors(): array
     {
@@ -102,7 +97,7 @@ class SectionController extends AbstractController
 
         $section->populateEntryRelation($entry);
 
-        if (($this->autoCreateSection || ($section->load($this->request->post()) && !$this->request->isFormReload())) && $section->insert()) {
+        if ($section->load($this->request->post()) && !$this->request->isFormReload() && $section->insert()) {
             $this->success(Yii::t('cms', 'SECTION_SUCCESS_CREATED'));
             return $this->redirect(['update', 'id' => $section->id]);
         }

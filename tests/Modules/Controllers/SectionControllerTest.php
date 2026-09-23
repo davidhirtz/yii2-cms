@@ -9,7 +9,6 @@ use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Models\Sets\SectionSet;
 use Hirtz\Cms\Models\Sets\SectionTemplate;
 use Hirtz\Cms\Models\Types\SectionType;
-use Hirtz\Cms\Modules\Admin\Controllers\SectionController;
 use Hirtz\Cms\Test\TestCase;
 use Hirtz\Skeleton\Models\User;
 use Hirtz\Skeleton\Test\Traits\UserFixtureTrait;
@@ -77,22 +76,45 @@ class SectionControllerTest extends TestCase
         Yii::$app->runAction('admin/cms/section/index', ['entry' => $this->entry->id]);
     }
 
-    /**
-     * A section has nothing worth asking about before it exists, so the default is to create it and open it.
-     */
-    public function testCreateInsertsTheSectionAndOpensIt(): void
+    public function testCreateRendersTheForm(): void
     {
         $this->login();
 
-        $response = Yii::$app->runAction('admin/cms/section/create', ['entry' => $this->entry->id]);
+        $html = Yii::$app->runAction('admin/cms/section/create', ['entry' => $this->entry->id]);
+
+        self::assertIsString($html);
+        self::assertStringContainsString('name="Section[name]"', $html);
+        self::assertSame(0, (int)Section::find()->where(['entry_id' => $this->entry->id])->count());
+    }
+
+    public function testCreateInsertsThePostedSectionAndOpensIt(): void
+    {
+        $this->login();
+
+        $response = $this->post('admin/cms/section/create', ['entry' => $this->entry->id], [
+            'Section' => ['name' => 'Intro'],
+        ]);
 
         self::assertInstanceOf(Response::class, $response);
 
         $section = Section::findOne(['entry_id' => $this->entry->id]);
 
         self::assertNotNull($section);
+        self::assertSame('Intro', $section->name);
         self::assertStringContainsString("id=$section->id", (string)$response->getHeaders()->get('location'));
         self::assertSame(1, Entry::findOne($this->entry->id)->section_count);
+    }
+
+    public function testCreateDoesNotInsertOnAFormReload(): void
+    {
+        $this->login();
+
+        $html = $this->post('admin/cms/section/create', ['entry' => $this->entry->id], [
+            'Section' => ['name' => 'Intro'],
+        ], reload: true);
+
+        self::assertIsString($html);
+        self::assertSame(0, (int)Section::find()->where(['entry_id' => $this->entry->id])->count());
     }
 
     /**
@@ -112,26 +134,15 @@ class SectionControllerTest extends TestCase
 
         $this->login();
 
-        Yii::$app->runAction('admin/cms/section/create', [
+        $this->post('admin/cms/section/create', [
             'entry' => $this->entry->id,
             'type' => self::TYPE_GALLERY,
-        ]);
+        ], ['Section' => ['name' => 'Gallery']]);
 
         $section = Section::findOne(['entry_id' => $this->entry->id]);
 
         self::assertNotNull($section);
         self::assertSame(self::TYPE_GALLERY, $section->type);
-    }
-
-    public function testCreateRendersTheFormWhenItIsNotAutomatic(): void
-    {
-        $this->login();
-        $this->setAutoCreateSection(false);
-
-        $html = Yii::$app->runAction('admin/cms/section/create', ['entry' => $this->entry->id]);
-
-        self::assertIsString($html);
-        self::assertSame(0, (int)Section::find()->where(['entry_id' => $this->entry->id])->count());
     }
 
     public function testCreateSetInsertsTheDeclaredSections(): void
@@ -482,15 +493,6 @@ class SectionControllerTest extends TestCase
                     SectionTemplate::make(Section::TYPE_DEFAULT)->attribute('name', 'Text'),
                 ),
         ]);
-    }
-
-    private function setAutoCreateSection(bool $value): void
-    {
-        $cms = Yii::$app->getModule('admin')->getModule('cms');
-        $cms->controllerMap['section'] = [
-            'class' => SectionController::class,
-            'autoCreateSection' => $value,
-        ];
     }
 
     /**

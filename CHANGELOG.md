@@ -1,5 +1,10 @@
 ## 3.0 (in development)
 
+- **`Modules\Admin\Controllers\SectionController::$autoCreateSection` is gone.** A new section used to be
+  inserted the moment its create button was clicked, since v2 could only add assets to a record that existed.
+  Assets have their own view now, so `actionCreate()` renders the form and inserts on submit, like every other
+  create action. A project that set the property to `false` drops it; one relying on the default gets the form.
+
 - **A duplicated entry is named "Copy of …"** (monorepo issue #219). `Models\Actions\DuplicateEntry` prefixes
   the duplicate's name through the skeleton's `prefixDuplicateName()`. Its new `$shouldPrefixName` constructor
   argument is what the recursive copy of the children passes `false` for, so only the record the duplication was
