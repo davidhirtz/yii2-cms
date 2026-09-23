@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Models;
 
 use Closure;
+use Hirtz\Cms\Models\Actions\UpdateBlockSectionCounts;
 use Hirtz\Cms\Models\CustomAttributes\SlugCustomAttribute;
 use Hirtz\Cms\Models\Interfaces\EntryRelationModelInterface;
 use Hirtz\Cms\Models\Queries\BlockQuery;
@@ -219,25 +220,10 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
         }
 
         if (!$this->getIsBatch()) {
-            static::updateBlockSectionCounts([$this->block_id, $changedAttributes['block_id'] ?? null]);
+            (new UpdateBlockSectionCounts([$this->block_id, $changedAttributes['block_id'] ?? null]))->update();
         }
 
         parent::afterSave($insert, $changedAttributes);
-    }
-
-    /**
-     * `section.block_id` has no count column on the section's side, so both the block a section moved to and the
-     * one it left have to be recounted. A caller deleting or inserting in batch owns them instead.
-     *
-     * @param list<int|null> $blockIds
-     */
-    public static function updateBlockSectionCounts(array $blockIds): void
-    {
-        $blockIds = array_values(array_unique(array_filter(array_map(intval(...), $blockIds))));
-
-        foreach ($blockIds ? Block::findAll(['id' => $blockIds]) : [] as $block) {
-            $block->updateSectionCount();
-        }
     }
 
     #[Override]
@@ -270,7 +256,7 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
                 $this->entry->updateSectionCount();
             }
 
-            static::updateBlockSectionCounts([$this->block_id]);
+            (new UpdateBlockSectionCounts([$this->block_id]))->update();
         }
 
         parent::afterDelete();

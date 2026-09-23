@@ -69,7 +69,7 @@ class CreateSectionSet
     protected function updateEntry(): void
     {
         $this->entry->updateSectionCount();
-        Section::updateBlockSectionCounts(array_map(fn (Section $section): ?int => $section->block_id, $this->sections));
+        (new UpdateBlockSectionCounts(array_map(fn (Section $section): ?int => $section->block_id, $this->sections)))->update();
     }
 
     /**

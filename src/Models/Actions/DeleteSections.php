@@ -51,7 +51,7 @@ class DeleteSections
 
         if ($this->deleted) {
             $this->updateSectionCounts($entryIds);
-            Section::updateBlockSectionCounts($blockIds);
+            (new UpdateBlockSectionCounts($blockIds))->update();
         }
 
         return !$this->failed;
