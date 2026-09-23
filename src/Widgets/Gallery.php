@@ -38,9 +38,23 @@ class Gallery extends Widget
     protected array $viewParams = [];
 
     /**
+     * @var list<Closure>|null
+     */
+    private ?array $artworkClosures = null;
+
+    /**
      * @var list<int>
      */
     private array $sharedViewports = [];
+
+    /**
+     * @param Closure(Artwork): Artwork $artwork
+     */
+    public function artwork(Closure $artwork): static
+    {
+        $this->artworkClosures[] = $artwork;
+        return $this;
+    }
 
     /**
      * @param list<T> $assets
@@ -82,6 +96,17 @@ class Gallery extends Widget
     {
         $this->viewParams = $viewParams;
         return $this;
+    }
+
+    /**
+     * The view calls this for every asset, so a project view overriding `widgets/_assets` keeps the caller's
+     * `artwork()` closures.
+     *
+     * @param T $asset
+     */
+    public function makeArtwork(Asset $asset): Artwork
+    {
+        return $this->evaluate($this->artworkClosures, Artwork::make()->asset($asset));
     }
 
     #[Override]
@@ -133,7 +158,7 @@ class Gallery extends Widget
 
         return $this->content
             ? call_user_func($this->content, $assets)
-            : $this->view->render($this->viewFile, [...$this->viewParams, 'assets' => $assets]);
+            : $this->view->render($this->viewFile, [...$this->viewParams, 'assets' => $assets, 'gallery' => $this]);
     }
 
     /**

@@ -3,15 +3,14 @@
 declare(strict_types=1);
 
 /**
- * @see Gallery
+ * @see Gallery::renderAssetsInternal()
  * @var Asset[] $assets
+ * @var Gallery<Asset> $gallery
  */
 
-use Hirtz\Media\Models\Asset;
 use Hirtz\Cms\Widgets\Gallery;
-use Hirtz\Media\Widgets\Media;
+use Hirtz\Media\Models\Asset;
 
 foreach ($assets as $asset) {
-    echo Media::make()
-        ->asset($asset);
+    echo $gallery->makeArtwork($asset);
 }

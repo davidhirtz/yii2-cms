@@ -33,11 +33,26 @@ class Artwork extends Widget
     protected int|false $lazyLoadingPosition = 5;
     protected bool|int $maxWidth = false;
 
-    private ?Closure $caption = null;
-    private ?Closure $figure = null;
-    private ?Closure $link = null;
-    private ?Closure $media = null;
-    private ?Closure $wrapper = null;
+    /**
+     * @var list<Closure>|null
+     */
+    private ?array $captionClosures = null;
+    /**
+     * @var list<Closure>|null
+     */
+    private ?array $figureClosures = null;
+    /**
+     * @var list<Closure>|null
+     */
+    private ?array $linkClosures = null;
+    /**
+     * @var list<Closure>|null
+     */
+    private ?array $mediaClosures = null;
+    /**
+     * @var list<Closure>|null
+     */
+    private ?array $wrapperClosures = null;
 
     private static int $counter = 0;
 
@@ -60,11 +75,11 @@ class Artwork extends Widget
     }
 
     /**
-     * @param Closure(?Figcaption): (string|Stringable|false|null)|null $caption
+     * @param Closure(?Figcaption): ?Figcaption $caption
      */
-    public function caption(?Closure $caption): static
+    public function caption(Closure $caption): static
     {
-        $this->caption = $caption;
+        $this->captionClosures[] = $caption;
         return $this;
     }
 
@@ -75,11 +90,11 @@ class Artwork extends Widget
     }
 
     /**
-     * @param Closure(?Figure): (string|Stringable|null)|null $figure
+     * @param Closure(Figure): Figure $figure
      */
-    public function figure(?Closure $figure): static
+    public function figure(Closure $figure): static
     {
-        $this->figure = $figure;
+        $this->figureClosures[] = $figure;
         return $this;
     }
 
@@ -90,11 +105,11 @@ class Artwork extends Widget
     }
 
     /**
-     * @param Closure(?A): (string|Stringable|false|null)|null $link
+     * @param Closure(?A): ?A $link
      */
-    public function link(?Closure $link): static
+    public function link(Closure $link): static
     {
-        $this->link = $link;
+        $this->linkClosures[] = $link;
         return $this;
     }
 
@@ -105,11 +120,11 @@ class Artwork extends Widget
     }
 
     /**
-     * @param Closure(Media): (string|Stringable)|null $media
+     * @param Closure(Media): Media $media
      */
-    public function media(?Closure $media): static
+    public function media(Closure $media): static
     {
-        $this->media = $media;
+        $this->mediaClosures[] = $media;
         return $this;
     }
 
@@ -128,18 +143,18 @@ class Artwork extends Widget
     }
 
     /**
-     * @param Closure(Div): (string|Stringable)|null $wrapper
+     * @param Closure(Div): Div $wrapper
      */
-    public function wrapper(?Closure $wrapper): static
+    public function wrapper(Closure $wrapper): static
     {
-        $this->wrapper = $wrapper;
+        $this->wrapperClosures[] = $wrapper;
         return $this;
     }
 
     #[Override]
     public function configure(): void
     {
-        $this->url ??= $this->asset->getVisibleAttribute('link');
+        $this->url ??= $this->asset->getVisibleAttribute('link') ?: null;
 
         if ($this->asset->file->hasDimensions() && $this->maxWidth !== false) {
             $width = $this->asset->file->width;
@@ -166,7 +181,7 @@ class Artwork extends Widget
                 ->addClass('relative');
         }
 
-        return $this->wrapper ? ($this->wrapper)($wrapper) : $wrapper;
+        return $this->evaluate($this->wrapperClosures, $wrapper);
     }
 
     protected function renderFigure(): string|Stringable
@@ -175,7 +190,7 @@ class Artwork extends Widget
         $embed = $this->renderEmbed();
         $media = $this->renderMedia();
 
-        if (!$caption && !$embed && !$this->figure) {
+        if (!$caption && !$embed && !$this->figureClosures) {
             return $media;
         }
 
@@ -188,10 +203,10 @@ class Artwork extends Widget
         $figure = Figure::make()
             ->content($media, $caption);
 
-        return $this->figure ? ($this->figure)($figure) : $figure;
+        return $this->evaluate($this->figureClosures, $figure);
     }
 
-    protected function renderCaption(): string|Stringable|null
+    protected function renderCaption(): ?Figcaption
     {
         $content = $this->asset->getVisibleAttribute('content') ?: null;
 
@@ -203,11 +218,28 @@ class Artwork extends Widget
             $content = Figcaption::make()->content($content);
         }
 
-        // the callback drops the caption with `false`, which is no caption rather than a rendered one
-        return ($this->caption ? ($this->caption)($content) : $content) ?: null;
+        return $this->evaluate($this->captionClosures, $content);
     }
 
     protected function renderMedia(): ?Stringable
+    {
+        $media = $this->evaluate($this->mediaClosures, $this->makeMedia());
+
+        $link = $this->url
+            ? A::make()
+                ->attribute('aria-label', $this->asset->getVisibleAttribute('name'))
+                ->content($media)
+                ->href($this->url)
+            : null;
+
+        return $this->evaluate($this->linkClosures, $link) ?? $media;
+    }
+
+    /**
+     * Builds the media before the `media()` closures run, so a subclass setting its defaults here leaves the
+     * caller's closures the last word — a closure it registered in `configure()` would run after them.
+     */
+    protected function makeMedia(): Media
     {
         $media = Media::make()
             ->asset($this->asset)
@@ -218,20 +250,7 @@ class Artwork extends Widget
             self::$counter++;
         }
 
-        if ($this->media) {
-            $media = ($this->media)($media);
-        }
-
-        $link = $this->url
-            ? A::make()
-                ->attribute('aria-label', $this->asset->getVisibleAttribute('name'))
-                ->content($media)
-                ->href($this->url)
-            : null;
-
-        $link = $this->link ? ($this->link)($link) : $link;
-
-        return $link ?: $media;
+        return $media;
     }
 
     protected function renderEmbed(): ?string

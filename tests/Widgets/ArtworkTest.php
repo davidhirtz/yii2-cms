@@ -6,11 +6,17 @@ namespace Hirtz\Cms\Tests\Widgets;
 
 use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
 use Hirtz\Cms\Test\TestCase;
+use Hirtz\Cms\Models\EntryAsset;
 use Hirtz\Cms\Widgets\Artwork;
 use Hirtz\Media\Models\Asset;
+use Hirtz\Media\Widgets\Media;
+use Hirtz\Skeleton\Html\A;
 use Hirtz\Skeleton\Html\Div;
 use Hirtz\Skeleton\Html\Figcaption;
 use Hirtz\Skeleton\Html\Figure;
+use Hirtz\Skeleton\Html\Img;
+use Hirtz\Skeleton\Models\CustomAttributes\CustomAttribute;
+use Override;
 
 class ArtworkTest extends TestCase
 {
@@ -63,6 +69,36 @@ class ArtworkTest extends TestCase
 
         self::assertStringContainsString('href="https://example.test"', $html);
         self::assertStringContainsString('aria-label="The label"', $html);
+    }
+
+    /**
+     * `getVisibleAttribute()` answers `false` for an attribute the asset does not declare, as a project asset
+     * filtering its custom attributes does.
+     */
+    public function testAnAssetDeclaringNoLinkRendersWithoutOne(): void
+    {
+        $asset = $this->getAssetFromFixture('entry-asset');
+
+        $linkless = new class () extends EntryAsset {
+            #[Override]
+            protected function getDefaultCustomAttributes(): array
+            {
+                return array_values(array_filter(
+                    parent::getDefaultCustomAttributes(),
+                    fn (CustomAttribute $attribute): bool => $attribute->name !== 'link'
+                ));
+            }
+        };
+
+        EntryAsset::populateRecord($linkless, $asset->getOldAttributes());
+        $linkless->populateRelation('file', $asset->file);
+
+        self::assertFalse($linkless->getVisibleAttribute('link'));
+
+        $html = (string)$this->createArtwork($linkless);
+
+        self::assertStringContainsString('<img', $html);
+        self::assertStringNotContainsString('<a', $html);
     }
 
     /**
@@ -123,14 +159,14 @@ class ArtworkTest extends TestCase
         self::assertStringNotContainsString('max-width', (string)$this->createArtwork($asset));
     }
 
-    public function testTheCallbacksCanReplaceEveryPart(): void
+    public function testTheClosuresCanReplaceEveryPart(): void
     {
         $asset = $this->getAssetFromFixture('entry-asset');
         $asset->content = 'A caption';
 
         $html = (string)$this->createArtwork($asset)
             ->wrapper(fn (Div $div) => $div->addClass('outer'))
-            ->figure(fn (?Figure $figure) => $figure?->addClass('inner'))
+            ->figure(fn (Figure $figure) => $figure->addClass('inner'))
             ->caption(fn (?Figcaption $caption) => $caption?->addClass('note'));
 
         self::assertStringContainsString('outer', $html);
@@ -143,9 +179,53 @@ class ArtworkTest extends TestCase
         $asset = $this->getAssetFromFixture('entry-asset');
         $asset->content = 'A caption';
 
-        $html = (string)$this->createArtwork($asset)->caption(fn (): bool => false);
+        $html = (string)$this->createArtwork($asset)->caption(fn (): null => null);
 
         self::assertStringNotContainsString('A caption', $html);
+    }
+
+    public function testTheClosuresStack(): void
+    {
+        $asset = $this->getAssetFromFixture('entry-asset');
+        $asset->content = 'A caption';
+        $asset->link = 'https://example.test';
+
+        $html = (string)$this->createArtwork($asset)
+            ->media(fn (Media $media) => $media->sizes('50vw'))
+            ->media(fn (Media $media) => $media->image(fn (Img $img) => $img->addClass('image')))
+            ->link(fn (?A $a) => $a?->addClass('first'))
+            ->link(fn (?A $a) => $a?->addClass('second'))
+            ->caption(fn (?Figcaption $caption) => $caption?->addClass('note'))
+            ->caption(fn (?Figcaption $caption) => $caption?->addClass('small'));
+
+        self::assertStringContainsString('sizes="50vw"', $html);
+        self::assertStringContainsString('class="image"', $html);
+        self::assertStringContainsString('class="first second"', $html);
+        self::assertStringContainsString('class="note small"', $html);
+    }
+
+    /**
+     * A subclass sets its media defaults in `makeMedia()`, which runs before the caller's closures.
+     */
+    public function testTheCallerOverridesTheDefaultsOfASubclass(): void
+    {
+        $artwork = new class () extends Artwork {
+            #[Override]
+            protected function makeMedia(): Media
+            {
+                return parent::makeMedia()->sizes('50vw');
+            }
+        };
+
+        $asset = $this->getAssetFromFixture('entry-asset');
+
+        self::assertStringContainsString('sizes="50vw"', (string)(clone $artwork)->asset($asset));
+
+        $html = (string)$artwork->asset($asset)
+            ->media(fn (Media $media) => $media->sizes('100vw'));
+
+        self::assertStringContainsString('sizes="100vw"', $html);
+        self::assertStringNotContainsString('50vw', $html);
     }
 
     private function createArtwork(?Asset $asset = null): Artwork

@@ -602,9 +602,21 @@ echo Artwork::make()
     ->caption(fn (?Figcaption $caption) => $caption?->addClass('caption'));
 ```
 
-A closure answering `false` or `null` drops its part (`caption()`, `link()`). The lazy-loading counter belongs to
+The closures stack: each runs in turn on what the previous one answered, and `null` drops the caption or the
+link. A subclass sets its media defaults in `makeMedia()`, before the caller's closures. The lazy-loading counter belongs to
 the request, reset by `Bootstrap` — `resetCounter()` restarts it where a page renders a second, independent run of
 artworks. The hotspot bundle's `Widgets\Artwork` extends this one; its own guide covers `hotspotViewFile()`.
+
+`Gallery` renders an `Artwork` per asset, so its v2 `canvasOptions` are `artwork()` closures:
+
+```php
+echo Gallery::make()
+    ->assets($entry->getVisibleAssets())
+    ->artwork(fn (Artwork $artwork) => $artwork
+        ->media(fn (Media $media) => $media->sizes('min(100vw, 320px)')->transformations(['w_320', 'w_640'])));
+```
+
+A project view overriding `widgets/_assets` builds each one with `$gallery->makeArtwork($asset)`.
 
 ## 3.0.0 — Sections
 

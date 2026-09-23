@@ -1,3 +1,8 @@
+## Unreleased
+
+- Changed the `Artwork` closures to stack and answer the element they receive, added `Artwork::makeMedia()`, and made `Gallery` render an `Artwork` per asset, configured through `Gallery::artwork()`
+- Fixed `Artwork` failing on an asset that declares no `link`
+
 ## 3.0.0 (September 23, 2026)
 
 - Renamed the namespace `davidhirtz\yii2\cms\` to `Hirtz\Cms\` and every directory to StudlyCase (`models\actions\` is `Models\Actions\`)
