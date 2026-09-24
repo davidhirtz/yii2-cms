@@ -813,6 +813,14 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
     }
 
     #[Override]
+    protected function getDefaultType(): EntryType
+    {
+        return EntryType::make(static::TYPE_DEFAULT)
+            ->name(Yii::t('cms', 'COMMON_ENTRY'))
+            ->plural(Yii::t('cms', 'COMMON_ENTRIES'));
+    }
+
+    #[Override]
     public static function getTypeClass(): string
     {
         return EntryType::class;

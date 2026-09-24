@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Tests\Models;
 
+use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
@@ -22,6 +23,19 @@ class EntryTest extends TestCase
 
         self::getModule()->enableNestedEntries = true;
         self::getModule()->enableSectionEntries = true;
+    }
+
+    /**
+     * The type names the entry in the submenu and elsewhere, so an entry nothing declares types for is an "Entry".
+     */
+    public function testTheDefaultTypeIsNamedAfterTheEntry(): void
+    {
+        $entry = Entry::create();
+        $entry->type = Entry::TYPE_DEFAULT;
+
+        self::assertSame([Entry::TYPE_DEFAULT], array_keys(Entry::getTypeDefinitions()));
+        self::assertSame('Entry', $entry->getTypeName());
+        self::assertSame('Entries', $entry->getTypePlural());
     }
 
     public function testCreateIndexEntry(): void

@@ -1,3 +1,7 @@
+## Unreleased
+
+- Changed `Entry`'s default type to be named *Entry*, overridable through `getDefaultType()`
+
 ## 3.1.0 (September 24, 2026)
 
 - Changed `Entry::updateSectionCount()` to renumber the sections `1..n` first, so a delete or a move leaves no gap;
