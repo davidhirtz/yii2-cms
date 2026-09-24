@@ -30,18 +30,17 @@ class EntryAssetSearchTest extends TestCase
         self::assertStringContainsString('A red bicycle', $document->content);
     }
 
-    public function testTheResultTitleNamesTheEntry(): void
+    public function testTheResultIsNamedLikeTheHeader(): void
     {
         // The owner sees every hit, so the result is not hidden by the entry permission.
         $this->getWebUser()->setIdentity(User::findOne(['name' => 'owner']));
 
         $asset = $this->getAssetFromFixture('entry-asset');
         $asset->setAttributes(['name' => 'Cover image'], false);
+        $result = $asset->getSearchResult();
 
-        self::assertSame(
-            $asset->model->getAdminName() . ' › Cover image',
-            $asset->getSearchResult()?->title
-        );
+        self::assertSame($asset->model->getAdminName(), $result?->title);
+        self::assertSame([$asset->getAdminSubtitle()], $result->subtitles);
     }
 
     public function testAHitIsHiddenWithoutTheEntryPermission(): void

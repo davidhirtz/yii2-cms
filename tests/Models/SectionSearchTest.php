@@ -25,18 +25,18 @@ class SectionSearchTest extends TestCase
         }
     }
 
-    public function testTheIndexTitleIsTheSectionNameAndTheResultTitleNamesTheEntry(): void
+    public function testTheIndexTitleIsTheSectionNameAndTheResultIsNamedLikeTheHeader(): void
     {
         // The owner sees every hit, so the result is not hidden by the section permission.
         $this->getWebUser()->setIdentity(User::findOne(['name' => 'owner']));
 
         $section = $this->getSectionFromFixture('section-headline');
+        $result = $section->getSearchResult();
 
         self::assertSame('Test Headline', $section->getSearchTitle());
-        self::assertSame(
-            $section->entry->getSearchTitle() . ' › Test Headline',
-            $section->getSearchResult()?->title
-        );
+        self::assertSame($section->entry->getAdminName(), $result?->title);
+        self::assertSame([$section->getAdminSubtitle()], $result->subtitles);
+        self::assertStringStartsWith('Test Headline', (string)$result->description);
     }
 
     public function testAnUnnamedSectionIsTitledByItsType(): void

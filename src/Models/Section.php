@@ -410,11 +410,6 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
         return mb_substr(SearchText::normalize($name !== '' ? $name : $this->getTypeName()), 0, 255);
     }
 
-    protected function getSearchResultTitle(): string
-    {
-        return implode(' › ', array_filter([$this->entry?->getSearchTitle(), $this->getSearchTitle()]));
-    }
-
     protected function isSearchResultVisible(): bool
     {
         return WebUser::current()?->can(Entry::AUTH_ENTRY) ?? false;

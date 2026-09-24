@@ -116,11 +116,11 @@ class AssetHeaderTest extends TestCase
      */
     private function getSubtitleItems(string $html): array
     {
-        preg_match_all('~<a[^>]*class="header-subtitle-item"[^>]*>[^<]*</a>~', $html, $matches);
+        preg_match_all('~<span[^>]*class="header-subtitle-item"[^>]*><a[^>]*>[^<]*</a></span>~', $html, $matches);
 
         return array_map(static function (string $tag): array {
             preg_match('~href="([^"]*)"~', $tag, $href);
-            preg_match('~>([^<]*)<~', $tag, $text);
+            preg_match('~([^<>]*)</a>~', $tag, $text);
 
             return [$href[1] ?? '', $text[1] ?? ''];
         }, $matches[0]);
