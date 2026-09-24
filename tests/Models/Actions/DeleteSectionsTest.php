@@ -97,6 +97,48 @@ class DeleteSectionsTest extends TestCase
         self::assertSame(1, Entry::findOne($this->entry->id)->section_count);
     }
 
+    /**
+     * The count is the total a section's position is read out of in the admin, so the two move together.
+     */
+    public function testTheSectionsLeftAreRenumbered(): void
+    {
+        $first = $this->createSection('First');
+        $second = $this->createSection('Second');
+        $third = $this->createSection('Third');
+        $fourth = $this->createSection('Fourth');
+
+        DeleteSections::create([$first, $third]);
+
+        self::assertSame(1, Section::findOne($second->id)?->position);
+        self::assertSame(2, Section::findOne($fourth->id)?->position);
+    }
+
+    public function testDeletingOneSectionRenumbersTheOthers(): void
+    {
+        $first = $this->createSection('First');
+        $second = $this->createSection('Second');
+
+        self::assertSame(1, $first->delete());
+        self::assertSame(1, Section::findOne($second->id)?->position);
+    }
+
+    public function testMovingASectionRenumbersTheEntryItLeft(): void
+    {
+        $other = $this->createEntry('Other', 'other');
+        $this->createSection('Resident', $other);
+
+        $moved = $this->createSection('Moved');
+        $kept = $this->createSection('Kept');
+
+        $moved->populateEntryRelation($other);
+        self::assertSame(1, $moved->update());
+
+        self::assertSame(1, Section::findOne($kept->id)?->position);
+        self::assertSame(2, Section::findOne($moved->id)?->position);
+        self::assertSame(1, Entry::findOne($this->entry->id)?->section_count);
+        self::assertSame(2, Entry::findOne($other->id)?->section_count);
+    }
+
     private function createEntry(string $name, string $slug): Entry
     {
         $entry = Entry::create();

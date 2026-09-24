@@ -355,7 +355,7 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
     #[Override]
     public function getAdminSubtitle(): string
     {
-        return $this->getAdminPositionLabel(siblings: $this->findSiblings());
+        return $this->getAdminPositionLabel(total: $this->entry->section_count);
     }
 
     #[Override]

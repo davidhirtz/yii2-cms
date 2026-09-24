@@ -21,6 +21,7 @@ use Hirtz\Cms\Validators\TenantIdValidator;
 use Hirtz\Media\Models\Asset;
 use Hirtz\Media\Models\Interfaces\AssetModelInterface;
 use Hirtz\Media\Models\Traits\AssetModelTrait;
+use Hirtz\Skeleton\Db\Commands\RenumberPositions;
 use Hirtz\Skeleton\Models\Breadcrumb;
 use Hirtz\Skeleton\Models\Interfaces\SearchableInterface;
 use Hirtz\Skeleton\Models\Traits\MaterializedTreeTrait;
@@ -562,8 +563,15 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
         ]);
     }
 
+    /**
+     * Renumbers the sections first, so the count is also the total each position is out of.
+     */
     public function updateSectionCount(): int
     {
+        (new RenumberPositions(Section::getDb(), Section::tableName(), ['entry_id'], [
+            'entry_id' => $this->id,
+        ]))->execute();
+
         return $this->updateDenormalizedAttributes([
             'section_count' => (int)$this->getSections()->count(),
         ]);

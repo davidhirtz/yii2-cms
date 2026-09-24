@@ -10,6 +10,7 @@ use Hirtz\Cms\Models\SectionAsset;
 use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
 use Hirtz\Cms\Test\Models\TestEntryAsset;
 use Hirtz\Cms\Test\TestCase;
+use Hirtz\Media\Models\Actions\DeleteAssets;
 
 class AssetTest extends TestCase
 {
@@ -100,5 +101,29 @@ class AssetTest extends TestCase
         self::assertSame(1, $asset->delete());
 
         self::assertSame(0, $this->getFileFromFixture('file-1')->asset_count);
+    }
+
+    public function testDeletingAnAssetRenumbersTheOthers(): void
+    {
+        $entry = $this->getEntryFromFixture('page-enabled');
+        [$first, $second] = array_values($entry->getAssets()->orderBy(['position' => SORT_ASC])->all());
+
+        self::assertSame(1, $first->delete());
+
+        self::assertSame(1, EntryAsset::findOne($second->id)?->position);
+        self::assertSame(1, Entry::findOne($entry->id)?->asset_count);
+    }
+
+    /**
+     * The batch skips each asset's own recount, so the action's single recount is what renumbers.
+     */
+    public function testABatchDeleteRenumbersTheAssetsLeft(): void
+    {
+        $entry = $this->getEntryFromFixture('page-enabled');
+        [$first, $second] = array_values($entry->getAssets()->orderBy(['position' => SORT_ASC])->all());
+
+        DeleteAssets::create($entry, [$first]);
+
+        self::assertSame(1, EntryAsset::findOne($second->id)?->position);
     }
 }

@@ -55,9 +55,9 @@ class SectionHeaderTest extends TestCase
     }
 
     /**
-     * A delete leaves a gap in `position`, so the subtitle counts the rank instead of reading the column.
+     * The subtitle reads the position out of the entry's count, which only holds while a delete renumbers.
      */
-    public function testTheSubtitleCountsTheRankAcrossAGapLeftByADelete(): void
+    public function testTheSubtitleStillAddsUpAfterADelete(): void
     {
         $this->login();
         $section = $this->getSectionFromFixture('section-headline');
