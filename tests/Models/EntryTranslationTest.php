@@ -83,6 +83,21 @@ class EntryTranslationTest extends TestCase
         self::assertSame(['kontakt', 'kontaktseite'], $data['slug_de']);
     }
 
+    /**
+     * @see https://github.com/davidhirtz/yii2-monorepo/issues/268
+     */
+    public function testSetAttributeOnALoadedEntryIsStored(): void
+    {
+        $entry = $this->createEntry(['name' => 'Contact', 'name_de' => 'Kontakt', 'slug' => 'contact', 'slug_de' => 'kontakt']);
+        $loaded = TestEntry::findOne($entry->id);
+
+        self::assertNotNull($loaded);
+        $loaded->setAttribute('name_de', 'Seite');
+
+        self::assertSame(1, $loaded->update(), implode(' ', $loaded->getErrorSummary(true)));
+        self::assertSame(['name' => 'Seite'], $this->getTranslations($entry));
+    }
+
     public function testSearchMatchesTheTranslationAndFallsBackToTheSourceLanguage(): void
     {
         $translated = $this->createEntry(['name' => 'Contact', 'name_de' => 'Kontakt', 'slug' => 'contact', 'slug_de' => 'kontakt']);
