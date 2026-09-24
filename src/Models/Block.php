@@ -199,6 +199,12 @@ class Block extends ActiveRecord implements AssetModelInterface, EntryRelationMo
         return $this->getTypeName() ?: Yii::t('cms', 'COMMON_BLOCK');
     }
 
+    #[Override]
+    protected function getDefaultAdminIcon(): ?string
+    {
+        return 'cube';
+    }
+
     public function getAdminRoute(): array
     {
         return $this->id ? ['/admin/cms/block/update', 'id' => $this->id] : ['/admin/cms/block/index'];

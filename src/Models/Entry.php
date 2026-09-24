@@ -813,6 +813,12 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
     }
 
     #[Override]
+    protected function getDefaultAdminIcon(): ?string
+    {
+        return 'book';
+    }
+
+    #[Override]
     protected function getDefaultType(): EntryType
     {
         return EntryType::make(static::TYPE_DEFAULT)

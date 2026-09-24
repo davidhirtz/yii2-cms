@@ -304,6 +304,12 @@ class Category extends ActiveRecord implements SearchableInterface
         return $this->getTypeName() ?: Yii::t('cms', 'COMMON_CATEGORY');
     }
 
+    #[Override]
+    protected function getDefaultAdminIcon(): ?string
+    {
+        return 'folder-open';
+    }
+
     public function getAdminRoute(): array
     {
         return $this->id ? ['/admin/cms/category/update', 'id' => $this->id] : ['/admin/cms/category/index'];

@@ -335,6 +335,12 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
         return Yii::t('cms', 'COMMON_SECTION');
     }
 
+    #[Override]
+    protected function getDefaultAdminIcon(): ?string
+    {
+        return 'th-list';
+    }
+
     public function getGridContent(): ?string
     {
         $content = $this->getType()?->getGridContent();
