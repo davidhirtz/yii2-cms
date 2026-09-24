@@ -7,7 +7,6 @@ namespace Hirtz\Cms\Tests\Modules\Admin\Widgets\Navs;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
 use Hirtz\Cms\Test\TestCase;
-use Hirtz\Media\Models\Asset;
 use Hirtz\Skeleton\Models\User;
 use Hirtz\Skeleton\Test\Fixtures\UserFixture;
 use Yii;
@@ -34,7 +33,7 @@ class AssetHeaderTest extends TestCase
             $html,
         );
         self::assertSame(
-            [$this->subtitleItem('/admin/cms/entry-asset/update?id=' . $asset->id, $asset)],
+            [$this->subtitleItem('/admin/cms/entry-asset/update?id=' . $asset->id, 1, 2)],
             $this->getSubtitleItems($html),
         );
     }
@@ -57,12 +56,13 @@ class AssetHeaderTest extends TestCase
             [
                 [
                     '/admin/cms/section/update?id=' . $section->id,
-                    Yii::t('skeleton', 'COMMON_MODEL_ID', [
+                    Yii::t('skeleton', 'COMMON_MODEL_POSITION_TOTAL', [
                         'model' => Yii::t('cms', 'COMMON_SECTION'),
-                        'id' => $section->position,
+                        'position' => 1,
+                        'total' => 5,
                     ]),
                 ],
-                $this->subtitleItem('/admin/cms/section-asset/update?id=' . $asset->id, $asset),
+                $this->subtitleItem('/admin/cms/section-asset/update?id=' . $asset->id, 1, 4),
             ],
             $this->getSubtitleItems($html),
         );
@@ -102,11 +102,12 @@ class AssetHeaderTest extends TestCase
      *
      * @return array{string, string}
      */
-    private function subtitleItem(string $route, Asset $asset): array
+    private function subtitleItem(string $route, int $position, int $total): array
     {
-        return [$route, Yii::t('skeleton', 'COMMON_MODEL_ID', [
+        return [$route, Yii::t('skeleton', 'COMMON_MODEL_POSITION_TOTAL', [
             'model' => Yii::t('media', 'ASSET_ASSET'),
-            'id' => $asset->position,
+            'position' => $position,
+            'total' => $total,
         ])];
     }
     /**

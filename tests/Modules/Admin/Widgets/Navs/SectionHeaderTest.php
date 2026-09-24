@@ -44,12 +44,39 @@ class SectionHeaderTest extends TestCase
         self::assertSame(
             [[
                 '/admin/cms/section/update?id=' . $section->id,
-                Yii::t('skeleton', 'COMMON_MODEL_ID', [
+                Yii::t('skeleton', 'COMMON_MODEL_POSITION_TOTAL', [
                     'model' => Yii::t('cms', 'COMMON_SECTION'),
-                    'id' => $section->position,
+                    'position' => 1,
+                    'total' => 5,
                 ]),
             ]],
             $this->getSubtitleItems($html),
+        );
+    }
+
+    /**
+     * A delete leaves a gap in `position`, so the subtitle counts the rank instead of reading the column.
+     */
+    public function testTheSubtitleCountsTheRankAcrossAGapLeftByADelete(): void
+    {
+        $this->login();
+        $section = $this->getSectionFromFixture('section-headline');
+
+        $siblings = $section->findSiblings()->orderBy(['position' => SORT_ASC])->all();
+        $last = array_pop($siblings);
+        self::assertNotNull($last);
+        self::assertSame(1, $section->delete());
+
+        $html = Yii::$app->runAction('admin/cms/section/update', ['id' => $last->id]);
+
+        self::assertIsString($html);
+        self::assertSame(
+            Yii::t('skeleton', 'COMMON_MODEL_POSITION_TOTAL', [
+                'model' => Yii::t('cms', 'COMMON_SECTION'),
+                'position' => 4,
+                'total' => 4,
+            ]),
+            $this->getSubtitleItems($html)[0][1] ?? null,
         );
     }
 
