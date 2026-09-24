@@ -1,4 +1,4 @@
-## Unreleased
+## 3.1.0 (September 24, 2026)
 
 - Changed `Entry::updateSectionCount()` to renumber the sections `1..n` first, so a delete or a move leaves no gap;
   `M260924100000RenumberSectionPositions` closes the gaps an installation already holds
