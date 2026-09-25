@@ -485,12 +485,13 @@ project that used the entry or category content declares it:
 `Models\Entry::getSearchAttributes()` still names `content`, so a declared one is indexed; an undeclared one is
 skipped rather than failing.
 
-A section declares `name`, `content` and `slug` itself, so nothing has to be configured for it — but **a project
-that had them among `Section::$i18nAttributes` has to move them to `translatableAttributes`**, or the model
-throws `Custom attribute "name" collides with a translated attribute`:
+A section declares `name`, `content` and `slug` itself, `name` and `content` translated by default, so nothing has
+to be configured for it — but **a project that had them among `Section::$i18nAttributes` has to drop them there**
+(and name a translated `slug` in `translatableAttributes`), or the model throws `Custom attribute "name" collides
+with a translated attribute`:
 
 ```php
-Section::class => ['translatableAttributes' => ['name', 'slug', 'content']],
+Section::class => ['translatableAttributes' => ['name', 'content', 'slug']],
 ```
 
 `i18nAttributes` names columns; a translatable custom attribute keeps its `_de` value inside the JSON. The

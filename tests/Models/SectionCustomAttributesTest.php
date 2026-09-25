@@ -48,6 +48,16 @@ class SectionCustomAttributesTest extends TestCase
         parent::tearDown();
     }
 
+    public function testNameAndContentAreTranslatedByDefault(): void
+    {
+        $section = new Section();
+
+        self::assertSame(['name', 'content'], $section->translatableAttributes);
+        self::assertContains('name_de', $section->attributes());
+        self::assertContains('content_de', $section->attributes());
+        self::assertNotContains('slug_de', $section->attributes());
+    }
+
     public function testTypeDecidesWhichDefinitionsApply(): void
     {
         $section = $this->getSectionFromFixture('section-headline');

@@ -23,7 +23,6 @@ use Hirtz\Skeleton\Models\CustomAttributes\TextCustomAttribute;
 use Hirtz\Skeleton\Models\Interfaces\SearchableInterface;
 use Hirtz\Skeleton\Models\Interfaces\TrailModelInterface;
 use Hirtz\Skeleton\Models\Traits\SearchableTrait;
-use Hirtz\Skeleton\Models\Traits\TranslatableAttributesTrait;
 use Hirtz\Skeleton\Search\SearchText;
 use Hirtz\Skeleton\Validators\RelationValidator;
 use Hirtz\Skeleton\Web\User as WebUser;
@@ -49,11 +48,16 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
     use EntryRelationModelTrait;
     use EntryRelationTrait;
     use SearchableTrait;
-    use TranslatableAttributesTrait;
 
     final public const int SLUG_MAX_LENGTH = 100;
 
     public bool|null $shouldUpdateEntryAfterSave = null;
+
+    /**
+     * @var list<string> the default custom attributes stored per language; declared here rather than through the
+     * skeleton's `TranslatableAttributesTrait`, since a class cannot give a trait property another default
+     */
+    public array $translatableAttributes = ['name', 'content'];
 
     /**
      * @var list<TrailModelInterface>|null
@@ -117,6 +121,11 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
                 ->label(Yii::t('cms', 'SECTION_SLUG_LABEL'))
                 ->translatable($this->isTranslatableAttribute('slug')),
         ];
+    }
+
+    protected function isTranslatableAttribute(string $name): bool
+    {
+        return in_array($name, $this->translatableAttributes, true);
     }
 
     #[Override]
