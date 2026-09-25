@@ -1,3 +1,7 @@
+## Unreleased
+
+- Added `Artwork::fetchPriorityHighPosition()`
+
 ## 3.2.0 (September 25, 2026)
 
 - Added `Entry::getDefaultType()`

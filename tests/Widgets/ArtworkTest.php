@@ -116,6 +116,40 @@ class ArtworkTest extends TestCase
     }
 
     /**
+     * Both positions count the artworks rendered in the request so far on the same counter.
+     */
+    public function testOnlyTheArtworksBeforeThePositionFetchWithHighPriority(): void
+    {
+        $asset = $this->getAssetFromFixture('entry-asset');
+
+        $render = fn (): string => (string)$this->createArtwork($asset)
+            ->fetchPriorityHighPosition(1)
+            ->lazyLoadingPosition(2);
+
+        $first = $render();
+        self::assertStringContainsString('fetchpriority="high"', $first);
+        self::assertStringNotContainsString('loading="lazy"', $first);
+
+        $second = $render();
+        self::assertStringNotContainsString('fetchpriority', $second);
+        self::assertStringNotContainsString('loading="lazy"', $second);
+
+        $third = $render();
+        self::assertStringNotContainsString('fetchpriority', $third);
+        self::assertStringContainsString('loading="lazy"', $third);
+    }
+
+    public function testTheFetchPriorityOfTheAssetWins(): void
+    {
+        $asset = $this->getAssetFromFixture('entry-asset');
+        $asset->fetchpriority = 'low';
+
+        $html = (string)$this->createArtwork($asset)->fetchPriorityHighPosition(1);
+
+        self::assertStringContainsString('fetchpriority="low"', $html);
+    }
+
+    /**
      * The counter belongs to the request, so `Bootstrap` drops it — a reset that only ran in the tests would
      * leave a resident application rendering every artwork after the first page lazily.
      */
@@ -139,14 +173,28 @@ class ArtworkTest extends TestCase
      * `false` hands the decision back to the media widget, which reads it off the asset, so the position on the
      * page stops mattering — every artwork renders the same way.
      */
-    public function testTheCounterIsNotConsultedWhilePositionIsFalse(): void
+    public function testTheCounterIsNotConsultedWhileBothPositionsAreFalse(): void
     {
         $asset = $this->getAssetFromFixture('entry-asset');
-        $first = (string)$this->createArtwork($asset)->lazyLoadingPosition(false);
+
+        $render = fn (): string => (string)$this->createArtwork($asset)
+            ->fetchPriorityHighPosition(false)
+            ->lazyLoadingPosition(false);
+
+        $first = $render();
+        self::assertStringNotContainsString('fetchpriority', $first);
 
         foreach (range(1, 10) as $ignored) {
-            self::assertSame($first, (string)$this->createArtwork($asset)->lazyLoadingPosition(false));
+            self::assertSame($first, $render());
         }
+    }
+
+    public function testTheFirstArtworkFetchesWithHighPriorityByDefault(): void
+    {
+        $asset = $this->getAssetFromFixture('entry-asset');
+
+        self::assertStringContainsString('fetchpriority="high"', (string)$this->createArtwork($asset));
+        self::assertStringNotContainsString('fetchpriority', (string)$this->createArtwork($asset));
     }
 
     public function testTheMaxWidthIsTakenFromTheFile(): void

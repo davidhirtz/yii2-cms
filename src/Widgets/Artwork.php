@@ -30,6 +30,7 @@ class Artwork extends Widget
     protected bool $adminLink = false;
     protected bool $aspectRatio = true;
     protected string|false $embedViewFile = 'widgets/_embed';
+    protected int|false $fetchPriorityHighPosition = 1;
     protected int|false $lazyLoadingPosition = 5;
     protected bool|int $maxWidth = false;
 
@@ -37,18 +38,22 @@ class Artwork extends Widget
      * @var list<Closure>|null
      */
     private ?array $captionClosures = null;
+
     /**
      * @var list<Closure>|null
      */
     private ?array $figureClosures = null;
+
     /**
      * @var list<Closure>|null
      */
     private ?array $linkClosures = null;
+
     /**
      * @var list<Closure>|null
      */
     private ?array $mediaClosures = null;
+
     /**
      * @var list<Closure>|null
      */
@@ -86,6 +91,12 @@ class Artwork extends Widget
     public function embedViewFile(string|false $embedViewFile): static
     {
         $this->embedViewFile = $embedViewFile;
+        return $this;
+    }
+
+    public function fetchPriorityHighPosition(int|false $position): static
+    {
+        $this->fetchPriorityHighPosition = $position;
         return $this;
     }
 
@@ -134,9 +145,6 @@ class Artwork extends Widget
         return $this;
     }
 
-    /**
-     * The counter decides which artworks load eagerly, so it belongs to the request: the cms `Bootstrap` resets it.
-     */
     public static function reset(): void
     {
         self::$counter = 0;
@@ -235,19 +243,24 @@ class Artwork extends Widget
         return $this->evaluate($this->linkClosures, $link) ?? $media;
     }
 
-    /**
-     * Builds the media before the `media()` closures run, so a subclass setting its defaults here leaves the
-     * caller's closures the last word — a closure it registered in `configure()` would run after them.
-     */
     protected function makeMedia(): Media
     {
         $media = Media::make()
             ->asset($this->asset)
             ->aspectRatio($this->aspectRatio);
 
+        if ($this->lazyLoadingPosition === false && $this->fetchPriorityHighPosition === false) {
+            return $media;
+        }
+
+        $position = self::$counter++;
+
         if ($this->lazyLoadingPosition !== false) {
-            $media->lazyLoading($this->lazyLoadingPosition <= self::$counter);
-            self::$counter++;
+            $media->lazyLoading($this->lazyLoadingPosition <= $position);
+        }
+
+        if ($this->fetchPriorityHighPosition !== false && $position < $this->fetchPriorityHighPosition) {
+            $media->fetchPriority('high');
         }
 
         return $media;
