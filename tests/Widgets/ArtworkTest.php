@@ -63,12 +63,11 @@ class ArtworkTest extends TestCase
     {
         $asset = $this->getAssetFromFixture('section-image-1');
         $asset->link = 'https://example.test';
-        $asset->name = 'The label';
 
         $html = (string)$this->createArtwork($asset);
 
         self::assertStringContainsString('href="https://example.test"', $html);
-        self::assertStringContainsString('aria-label="The label"', $html);
+        self::assertStringNotContainsString('aria-label', $html);
     }
 
     /**
