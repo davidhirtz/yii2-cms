@@ -1,4 +1,4 @@
-## Unreleased
+## 3.3.0 (September 25, 2026)
 
 - Changed `Section` to translate `name` and `content` by default
 - Added `Artwork::fetchPriorityHighPosition()`
