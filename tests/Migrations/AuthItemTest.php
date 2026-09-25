@@ -35,7 +35,14 @@ class AuthItemTest extends TestCase
         $permissions = Yii::$app->getAuthManager()->getPermissionsByRole(Module::AUTH_ROLE_AUTHOR);
 
         self::assertSame(
-            [Category::AUTH_CATEGORY, Entry::AUTH_ENTRY, File::AUTH_FILE, Folder::AUTH_FOLDER],
+            [
+                Block::AUTH_BLOCK,
+                Category::AUTH_CATEGORY,
+                Entry::AUTH_ENTRY,
+                File::AUTH_FILE,
+                Folder::AUTH_FOLDER,
+                Redirect::AUTH_REDIRECT,
+            ],
             $this->getSortedNames($permissions),
         );
     }
