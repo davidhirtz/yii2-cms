@@ -36,9 +36,6 @@ class EntryAsset extends Asset
     }
 
     /**
-     * An entry asset is the entry's preview image in a frontend grid: an alt text and the loading hints, nothing
-     * else. A definition left out is neither rendered nor saved, so a value stored under it survives untouched.
-     *
      * @return list<CustomAttribute>
      */
     #[Override]
