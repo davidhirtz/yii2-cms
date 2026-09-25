@@ -92,6 +92,10 @@ use Hirtz\Skeleton\Models\CustomAttributes\TextCustomAttribute;
 ],
 ```
 
+An entry asset is the entry's preview image, so `EntryAsset` declares only the `alt_text`, `loading` and
+`fetchpriority` custom attributes; section and block assets keep all of them. A project needing a caption or a link
+on an entry asset overrides `getDefaultCustomAttributes()` in its own subclass.
+
 Every type takes `name()`, `plural()`, `viewFile()`, `cssClass()`, `customAttributes()` and `hiddenFields()`.
 Per model:
 

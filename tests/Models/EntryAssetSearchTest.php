@@ -14,19 +14,16 @@ class EntryAssetSearchTest extends TestCase
 {
     use CmsFixtureTrait;
 
-    public function testTheDocumentCarriesTheContentAndTheAltText(): void
+    /**
+     * An entry asset declares neither `name` nor `content`, so its document carries the alt text alone.
+     */
+    public function testTheDocumentCarriesTheAltText(): void
     {
         $asset = $this->getAssetFromFixture('entry-asset');
-        $asset->setAttributes([
-            'name' => 'Cover image',
-            'content' => 'A caption below the image',
-            'alt_text' => 'A red bicycle',
-        ], false);
+        $asset->alt_text = 'A red bicycle';
 
         $document = $asset->getSearchDocuments()[0];
 
-        self::assertSame('Cover image', $document->title);
-        self::assertStringContainsString('A caption below the image', $document->content);
         self::assertStringContainsString('A red bicycle', $document->content);
     }
 
@@ -53,10 +50,10 @@ class EntryAssetSearchTest extends TestCase
     /**
      * The searchable attributes are custom attributes, so the change detection has to see them in the JSON column.
      */
-    public function testSavingTheContentWritesTheDocuments(): void
+    public function testSavingTheAltTextWritesTheDocuments(): void
     {
         $asset = $this->getAssetFromFixture('entry-asset');
-        $asset->content = 'A caption below the image';
+        $asset->alt_text = 'A red bicycle';
 
         self::assertSame(1, $asset->update());
 
@@ -70,7 +67,7 @@ class EntryAssetSearchTest extends TestCase
         self::assertNotEmpty($documents);
 
         foreach ($documents as $document) {
-            self::assertStringContainsString('A caption below the image', $document->content);
+            self::assertStringContainsString('A red bicycle', $document->content);
         }
     }
 

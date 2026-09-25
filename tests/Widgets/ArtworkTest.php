@@ -35,7 +35,7 @@ class ArtworkTest extends TestCase
 
     public function testTheCaptionBecomesAFigure(): void
     {
-        $asset = $this->getAssetFromFixture('entry-asset');
+        $asset = $this->getAssetFromFixture('section-image-1');
         $asset->content = 'A caption';
 
         $html = (string)$this->createArtwork($asset);
@@ -50,7 +50,7 @@ class ArtworkTest extends TestCase
      */
     public function testAnHtmlCaptionIsRenderedAsItStands(): void
     {
-        $asset = $this->getAssetFromFixture('entry-asset');
+        $asset = $this->getAssetFromFixture('section-image-1');
         $asset->content = '<strong>Bold</strong>';
 
         self::assertStringContainsString(
@@ -61,7 +61,7 @@ class ArtworkTest extends TestCase
 
     public function testTheAssetsLinkWrapsTheMedia(): void
     {
-        $asset = $this->getAssetFromFixture('entry-asset');
+        $asset = $this->getAssetFromFixture('section-image-1');
         $asset->link = 'https://example.test';
         $asset->name = 'The label';
 
@@ -161,7 +161,7 @@ class ArtworkTest extends TestCase
 
     public function testTheClosuresCanReplaceEveryPart(): void
     {
-        $asset = $this->getAssetFromFixture('entry-asset');
+        $asset = $this->getAssetFromFixture('section-image-1');
         $asset->content = 'A caption';
 
         $html = (string)$this->createArtwork($asset)
@@ -176,7 +176,7 @@ class ArtworkTest extends TestCase
 
     public function testTheCaptionCanBeDroppedByItsCallback(): void
     {
-        $asset = $this->getAssetFromFixture('entry-asset');
+        $asset = $this->getAssetFromFixture('section-image-1');
         $asset->content = 'A caption';
 
         $html = (string)$this->createArtwork($asset)->caption(fn (): null => null);
@@ -186,7 +186,7 @@ class ArtworkTest extends TestCase
 
     public function testTheClosuresStack(): void
     {
-        $asset = $this->getAssetFromFixture('entry-asset');
+        $asset = $this->getAssetFromFixture('section-image-1');
         $asset->content = 'A caption';
         $asset->link = 'https://example.test';
 

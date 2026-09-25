@@ -11,6 +11,7 @@ use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
 use Hirtz\Cms\Test\Models\TestEntryAsset;
 use Hirtz\Cms\Test\TestCase;
 use Hirtz\Media\Models\Actions\DeleteAssets;
+use Hirtz\Skeleton\Models\CustomAttributes\CustomAttribute;
 
 class AssetTest extends TestCase
 {
@@ -53,6 +54,23 @@ class AssetTest extends TestCase
         self::assertInstanceOf(SectionAsset::class, $this->getAssetFromFixture('section-image-1'));
     }
 
+    /**
+     * An entry asset is the entry's preview image, so it declares only what an image in a grid needs.
+     */
+    public function testAnEntryAssetDeclaresOnlyThePreviewImageAttributes(): void
+    {
+        $names = array_map(
+            fn (CustomAttribute $attribute): string => $attribute->name,
+            $this->getAssetFromFixture('entry-asset')->getCustomAttributes(),
+        );
+
+        self::assertSame(['alt_text', 'loading', 'fetchpriority'], $names);
+        self::assertContains('content', array_map(
+            fn (CustomAttribute $attribute): string => $attribute->name,
+            $this->getAssetFromFixture('section-image-1')->getCustomAttributes(),
+        ));
+    }
+
     public function testCreateAssetWithInvalidAttributes(): void
     {
         $asset = TestEntryAsset::create();
@@ -71,12 +89,12 @@ class AssetTest extends TestCase
     public function testUpdateAsset(): void
     {
         $asset = $this->getAssetFromFixture('entry-asset');
-        $asset->content = '<p>Updated content</p>';
+        $asset->alt_text = 'Updated alt text';
 
         $updatedAt = $asset->model->updated_at;
 
         self::assertSame(1, $asset->update());
-        self::assertSame('<p>Updated content</p>', $asset->content);
+        self::assertSame('Updated alt text', $asset->alt_text);
         self::assertTrue($asset->model->updated_at > $updatedAt);
 
         $asset->populateFileRelation($this->getFileFromFixture('file-5'));

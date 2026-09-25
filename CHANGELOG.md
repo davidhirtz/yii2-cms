@@ -1,6 +1,8 @@
 ## Unreleased
 
 - Changed `Entry`'s default type to be named *Entry*, overridable through `getDefaultType()`
+- Changed `EntryAsset` to declare only the `alt_text`, `loading` and `fetchpriority` custom attributes, the ones a
+  preview image uses; a project needing more overrides `getDefaultCustomAttributes()`
 
 ## 3.1.0 (September 24, 2026)
 

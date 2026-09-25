@@ -89,7 +89,7 @@ class AssetControllerTest extends TestCase
         $asset = EntryAsset::findOne(1);
         self::assertNotNull($asset);
 
-        $asset->name = 'Test';
+        $asset->alt_text = 'Test';
         $asset->update();
 
         $file = $this->getFileFromFixture('file-3');
@@ -111,7 +111,7 @@ class AssetControllerTest extends TestCase
 
         self::assertSame($count, (int)EntryAsset::find()->andWhere(['model_id' => 1])->count());
         self::assertSame($file->id, $asset->file_id);
-        self::assertSame('Test', $asset->name);
+        self::assertSame('Test', $asset->alt_text);
 
         self::assertSame($assetCount + 1, File::findOne($file->id)?->asset_count);
         self::assertSame($previousAssetCount - 1, File::findOne($previousFileId)?->asset_count);
