@@ -1,4 +1,4 @@
-## Unreleased
+## 3.2.0 (September 25, 2026)
 
 - Added `Entry::getDefaultType()`
 - Changed `EntryAsset` to declare only the `alt_text`, `loading` and `fetchpriority`
