@@ -69,7 +69,8 @@ class EntryController extends AbstractController
         ?int $category = null,
         ?int $parent = null,
         ?int $type = null,
-        ?string $q = null
+        ?string $q = null,
+        ?int $status = null,
     ): Response|string {
         if (!$type && static::getModule()->defaultEntryType) {
             return $this->redirect(Url::current(['type' => static::getModule()->defaultEntryType]));
@@ -79,6 +80,7 @@ class EntryController extends AbstractController
             'category' => Category::findOne($category),
             'parent' => Entry::findOne($parent),
             'searchString' => $q,
+            'status' => $status,
             'type' => $type,
         ]);
 

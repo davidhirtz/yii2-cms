@@ -398,6 +398,8 @@ class EntryGridView extends GridView
     #[Override]
     protected function isSortable(): bool
     {
-        return $this->provider->category === null && parent::isSortable();
+        return $this->provider->category === null
+            && $this->provider->status === null
+            && parent::isSortable();
     }
 }

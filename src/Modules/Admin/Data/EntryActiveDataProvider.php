@@ -33,6 +33,7 @@ class EntryActiveDataProvider extends ActiveDataProvider
     public ?Entry $parent = null;
     public ?EntryRelationModelInterface $relatedModel = null;
     public ?int $type = null;
+    public ?int $status = null;
     public ?string $searchString = null;
     public bool $innerJoinRelatedModel = true;
 
@@ -79,6 +80,10 @@ class EntryActiveDataProvider extends ActiveDataProvider
         }
 
         $this->whereType();
+
+        if ($this->status !== null) {
+            $this->query->andWhere([Entry::tableName() . '.[[status]]' => $this->status]);
+        }
 
         if (static::getModule()->enableCategories) {
             $this->whereCategory();

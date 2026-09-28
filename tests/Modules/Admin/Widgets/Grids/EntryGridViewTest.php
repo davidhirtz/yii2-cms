@@ -9,9 +9,12 @@ use Hirtz\Cms\Modules\Admin\Widgets\Grids\EntryGridView;
 use Hirtz\Cms\Test\TestCase;
 use Hirtz\Skeleton\Models\User;
 use Hirtz\Skeleton\Test\Traits\UserFixtureTrait;
+use Hirtz\Skeleton\Widgets\Grids\Toolbars\StatusFilterDropdown;
+use Hirtz\Skeleton\Widgets\Widget;
 use Hirtz\Tenant\Models\Tenant;
 use Hirtz\Tenant\Web\UrlManager;
 use Yii;
+use yii\base\Event;
 
 /**
  * The name column composes the entry link with the frontend URL and the category buttons, both of which a project
@@ -45,6 +48,53 @@ class EntryGridViewTest extends TestCase
 
         self::assertIsString($html);
         self::assertStringContainsString('Needle', $html);
+    }
+
+    public function testTheIndexFiltersByStatus(): void
+    {
+        $this->login();
+        $this->createEntry('Published', 'published');
+        $this->createEntry('Unfinished', 'unfinished', status: Entry::STATUS_DRAFT);
+
+        $html = Yii::$app->runAction('admin/cms/entry/index', ['status' => Entry::STATUS_DRAFT]);
+
+        self::assertIsString($html);
+        self::assertStringContainsString('Unfinished', $html);
+        self::assertStringNotContainsString('Published', $html);
+    }
+
+    /**
+     * The README's way of adding the status dropdown the default header leaves out.
+     */
+    public function testAListenerAddsTheStatusDropdown(): void
+    {
+        $handler = static function (Event $event): void {
+            $grid = $event->sender;
+            self::assertInstanceOf(EntryGridView::class, $grid);
+
+            $grid->header(fn (array $header): array => [
+                ...$header,
+                StatusFilterDropdown::make()->model(Entry::instance()),
+            ]);
+        };
+
+        $this->login();
+        $this->createEntry('Needle', 'needle');
+
+        $html = Yii::$app->runAction('admin/cms/entry/index');
+        self::assertIsString($html);
+        self::assertStringNotContainsString('status=' . Entry::STATUS_DRAFT, $html);
+
+        Event::on(EntryGridView::class, Widget::EVENT_CONFIGURE, $handler);
+
+        try {
+            $html = Yii::$app->runAction('admin/cms/entry/index');
+        } finally {
+            Event::off(EntryGridView::class, Widget::EVENT_CONFIGURE, $handler);
+        }
+
+        self::assertIsString($html);
+        self::assertStringContainsString('status=' . Entry::STATUS_DRAFT, $html);
     }
 
     /**
@@ -82,11 +132,15 @@ class EntryGridViewTest extends TestCase
         return $tenant;
     }
 
-    private function createEntry(string $name, string $slug, ?Tenant $tenant = null): Entry
-    {
+    private function createEntry(
+        string $name,
+        string $slug,
+        ?Tenant $tenant = null,
+        int $status = Entry::STATUS_ENABLED,
+    ): Entry {
         $entry = Entry::create();
         $entry->loadDefaultValues();
-        $entry->status = Entry::STATUS_ENABLED;
+        $entry->status = $status;
         $entry->type = Entry::TYPE_DEFAULT;
         $entry->name = $name;
         $entry->slug = $slug;

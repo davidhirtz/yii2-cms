@@ -1,3 +1,7 @@
+## Unreleased
+
+- Added a `status` parameter to the entry index (`EntryActiveDataProvider::$status`)
+
 ## 3.3.0 (September 25, 2026)
 
 - Changed `Section` to translate `name` and `content` by default

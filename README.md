@@ -138,6 +138,26 @@ A menu an entry is put into is stored in `entry.menu_ids`; `Models\Collections\M
 menu in one query. A section set creates its sections on an entry in one go and must name declared section types.
 `available()` limits either to some entries; a menu an entry is already in stays valid.
 
+### Admin
+
+The entry index takes a `status` parameter (`admin/cms/entry/index?status=1`), which also disables sorting. The grid
+offers no status dropdown by default; a project that wants one adds it to the header:
+
+```php
+use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Modules\Admin\Widgets\Grids\EntryGridView;
+use Hirtz\Skeleton\Widgets\Grids\Toolbars\StatusFilterDropdown;
+use Hirtz\Skeleton\Widgets\Widget;
+use yii\base\Event;
+
+Event::on(EntryGridView::class, Widget::EVENT_CONFIGURE, function (Event $event): void {
+    $event->sender->header(fn (array $header): array => [
+        ...$header,
+        StatusFilterDropdown::make()->model(Entry::instance()),
+    ]);
+});
+```
+
 ## Console commands
 
 - `permalink/rebuild` — rewrites every entry's permalinks, inserting the missing ones and deleting those of entries that
