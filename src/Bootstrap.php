@@ -18,6 +18,7 @@ use Hirtz\Cms\Models\Events\TenantBeforeDeleteEventHandler;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Models\SectionAsset;
 use Hirtz\Cms\Models\SectionEntry;
+use Hirtz\Skeleton\Filters\PageCache;
 use Hirtz\Skeleton\Helpers\EventHelper;
 use Hirtz\Skeleton\Modules\Admin\Controllers\DashboardController;
 use Hirtz\Skeleton\Models\User;
@@ -87,6 +88,7 @@ class Bootstrap implements BootstrapInterface
 
         $this->addDefaultUrlRules();
         $this->addTenantEventHandlers();
+        $this->addPageCacheEventHandlers();
 
         if (!Yii::$container->has(TenantGridView::class)) {
             Yii::$container->set(TenantGridView::class, Modules\Admin\Widgets\Grids\TenantGridView::class);
@@ -100,6 +102,22 @@ class Bootstrap implements BootstrapInterface
         $app->setMigrationNamespace('Hirtz\Cms\Migrations');
 
         $app->controllerMap['permalink'] ??= Console\Controllers\PermalinkController::class;
+    }
+
+    /**
+     * A cached page must not outlive the moment a scheduled entry goes live on it.
+     */
+    protected function addPageCacheEventHandlers(): void
+    {
+        EventHelper::on(PageCache::class, PageCache::EVENT_CONFIGURE, function (PageCache $filter): void {
+            $module = Yii::$app->getModule('cms');
+            $time = $module instanceof Module ? $module->getNextPublishTime() : null;
+
+            if ($time !== null) {
+                $seconds = max(1, $time - time());
+                $filter->duration = $filter->duration > 0 ? min($filter->duration, $seconds) : $seconds;
+            }
+        });
     }
 
     protected function addTenantEventHandlers(): void

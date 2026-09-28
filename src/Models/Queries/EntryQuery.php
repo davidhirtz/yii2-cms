@@ -73,6 +73,57 @@ class EntryQuery extends I18nActiveQuery
         return $this->andFilterWhere(['>=', Entry::tableName() . '.[[parent_status]]', self::$status]);
     }
 
+    /**
+     * The frontend asks for its status here — enabled on the site, draft on the draft domain — so an entry dated in
+     * the future stays out of every page, menu, relation and sitemap until its time, and still previews on the
+     * draft domain. The admin asks for no status and sees everything.
+     */
+    #[Override]
+    public function whereStatus(?int $status = null): static
+    {
+        parent::whereStatus($status);
+
+        return self::$status !== null && self::$status >= Entry::STATUS_ENABLED
+            ? $this->wherePublished()
+            : $this;
+    }
+
+    /**
+     * Rounded up to the end of the minute, so the statement — and the query and page caches keyed on it — holds for
+     * one: a scheduled entry goes live up to a minute early, and one saved this very second is never hidden. A type
+     * whose form hides the date keeps it for display: it gates nothing there.
+     */
+    public function wherePublished(): static
+    {
+        $modelClass = $this->modelClass;
+        $column = $modelClass::tableName() . '.[[publish_date]]';
+
+        $condition = ['or', [$column => null], ['<=', $column, gmdate('Y-m-d H:i:59')]];
+
+        if ($types = static::getTypesWithoutPublishDate($modelClass)) {
+            $condition[] = [$modelClass::tableName() . '.[[type]]' => $types];
+        }
+
+        return $this->andWhere($condition);
+    }
+
+    /**
+     * @param class-string<Entry> $modelClass
+     * @return list<int>
+     */
+    public static function getTypesWithoutPublishDate(string $modelClass): array
+    {
+        $types = [];
+
+        foreach ($modelClass::getTypeDefinitions() as $value => $type) {
+            if (in_array('publish_date', $type->getHiddenFields(), true)) {
+                $types[] = (int)$value;
+            }
+        }
+
+        return $types;
+    }
+
     #[Override]
     public function enabled(): static
     {

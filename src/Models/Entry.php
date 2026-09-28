@@ -161,6 +161,17 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
         return parent::beforeValidate();
     }
 
+    /**
+     * Enabled, but dated after now: {@see EntryQuery::whereStatus()} keeps it off the site until then.
+     */
+    public function isScheduled(): bool
+    {
+        return $this->isEnabled()
+            && $this->publish_date instanceof \DateTimeInterface
+            && $this->publish_date->getTimestamp() > time()
+            && $this->isAttributeVisible('publish_date');
+    }
+
     #[Override]
     public function afterValidate(): void
     {
@@ -774,12 +785,20 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
             return 'home';
         }
 
+        if ($this->isScheduled()) {
+            return 'clock';
+        }
+
         return parent::getStatusIcon();
     }
 
     public function getStatusName(): string
     {
-        $status = parent::getStatusName();
+        $status = $this->isScheduled() && $this->publish_date instanceof \DateTimeInterface
+            ? Yii::t('cms', 'ENTRY_STATUS_SCHEDULED', [
+                'date' => Yii::$app->getFormatter()->asDatetime($this->publish_date, 'short'),
+            ])
+            : parent::getStatusName();
 
         if ($this->hasInvalidParentStatus()) {
             $parentStatus = static::findStatus($this->parent_status)?->getName() ?? '';

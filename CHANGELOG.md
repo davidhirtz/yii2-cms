@@ -1,5 +1,6 @@
 ## Unreleased
 
+- Changed an enabled entry's `publish_date` to gate publishing: `EntryQuery::whereStatus()` leaves out entries dated in the future (`wherePublished()`), except for types whose form hides the date; `Entry::isScheduled()`; the page cache expires when the next one goes live (`Module::getNextPublishTime()`)
 - Added a `status` parameter to the entry index (`EntryActiveDataProvider::$status`)
 
 ## 3.3.0 (September 25, 2026)

@@ -6,8 +6,10 @@ namespace Hirtz\Cms;
 
 use Closure;
 use Hirtz\Cms\Models\Collections\CategoryCollection;
+use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\EntryRelation;
 use Hirtz\Cms\Models\Menus\Menu;
+use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Models\Sets\SectionSet;
 use Hirtz\Skeleton\Filters\PageCache;
 use Override;
@@ -276,6 +278,41 @@ class Module extends \Hirtz\Skeleton\Base\Module
     public function getEntryRelationClasses(): array
     {
         return $this->entryRelations;
+    }
+
+    /**
+     * The next time a scheduled entry goes live, `null` for none. Cached under the page cache's tag, so a save
+     * recomputes it, and recomputed once the moment has passed.
+     */
+    public function getNextPublishTime(): ?int
+    {
+        $cache = $this->getCache();
+        $key = [self::class, 'next-publish-time'];
+        $time = $cache?->get($key);
+
+        if (!is_int($time) || ($time > 0 && $time <= time())) {
+            $time = $this->findNextPublishTime() ?? 0;
+
+            $cache?->set($key, $time, 0, new TagDependency(['tags' => [PageCache::TAG_DEPENDENCY_KEY]]));
+        }
+
+        return $time > 0 ? $time : null;
+    }
+
+    protected function findNextPublishTime(): ?int
+    {
+        $query = Entry::find()
+            ->select(['MIN([[publish_date]])'])
+            ->andWhere(['>=', 'status', Entry::STATUS_ENABLED])
+            ->andWhere(['>', 'publish_date', gmdate('Y-m-d H:i:s')]);
+
+        if ($types = EntryQuery::getTypesWithoutPublishDate(Entry::class)) {
+            $query->andWhere(['not in', 'type', $types]);
+        }
+
+        $date = $query->scalar();
+
+        return is_string($date) ? (int)strtotime("$date UTC") : null;
     }
 
     public function invalidatePageCache(): void

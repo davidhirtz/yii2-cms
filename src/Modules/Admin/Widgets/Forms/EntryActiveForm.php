@@ -100,7 +100,8 @@ class EntryActiveForm extends ActiveForm
     protected function getPublishDateField(): ?Stringable
     {
         return DateTimeField::make()
-            ->property('publish_date');
+            ->property('publish_date')
+            ->hint(Yii::t('cms', 'ENTRY_PUBLISH_DATE_HINT'));
     }
 
     protected function getMenuIdsField(): ?Stringable
