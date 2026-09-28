@@ -16,9 +16,9 @@ class CmsNavItem extends NavItem
 {
     use ModuleTrait;
 
-    protected bool $showEntryTypes = false;
-    protected bool $showCategories = true;
-    protected bool $showBlocks = true;
+    public bool $showEntryTypes = false;
+    public bool $showCategories = true;
+    public bool $showBlocks = true;
 
     /**
      * @param array<string, mixed> $config
@@ -31,6 +31,24 @@ class CmsNavItem extends NavItem
         $this->url ??= ['/admin/cms/entry/index'];
 
         parent::__construct($config);
+    }
+
+    public function showEntryTypes(bool $showEntryTypes = true): static
+    {
+        $this->showEntryTypes = $showEntryTypes;
+        return $this;
+    }
+
+    public function showCategories(bool $showCategories = true): static
+    {
+        $this->showCategories = $showCategories;
+        return $this;
+    }
+
+    public function showBlocks(bool $showBlocks = true): static
+    {
+        $this->showBlocks = $showBlocks;
+        return $this;
     }
 
     #[Override]
@@ -46,15 +64,15 @@ class CmsNavItem extends NavItem
 
         $this->label ??= Yii::t('cms', 'COMMON_ENTRIES');
 
+        $this->routes([
+            'admin/cms/entry',
+            'admin/cms/section',
+            'admin/cms/entry-asset',
+            'admin/cms/section-asset',
+        ]);
+
         if ($this->showEntryTypes) {
             $this->addEntrySubnavItems();
-        } else {
-            $this->routes([
-                'admin/cms/entry',
-                'admin/cms/section',
-                'admin/cms/entry-asset',
-                'admin/cms/section-asset',
-            ]);
         }
 
         if ($this->showCategories) {
@@ -68,17 +86,20 @@ class CmsNavItem extends NavItem
         parent::configure();
     }
 
+    /**
+     * The current type is the one `EntryHeader`, `EntrySubmenu` or `SectionSubmenu` published while the page
+     * rendered, which happens before the layout renders this. A page outside the entries has none.
+     */
     protected function addEntrySubnavItems(): void
     {
-        $types = Entry::instance()::getTypeDefinitions();
-        $currentType = $this->view->params['entryType'] ?? key($types);
+        $currentType = $this->view->params['entryType'] ?? null;
 
-        foreach ($types as $type => $definition) {
+        foreach (Entry::instance()::getTypeDefinitions() as $type => $definition) {
             $this->addItem(NavItem::make()
-                ->active($currentType === $type))
+                ->active($currentType === $type)
                 ->label($definition->getPlural())
                 ->url(['/admin/cms/entry/index', 'type' => $type])
-                ->roles([Entry::AUTH_ENTRY]);
+                ->roles([Entry::AUTH_ENTRY]));
         }
     }
 

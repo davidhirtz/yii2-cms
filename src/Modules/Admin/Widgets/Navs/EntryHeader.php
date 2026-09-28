@@ -28,6 +28,9 @@ class EntryHeader extends ModelHeader
     {
         $this->model ??= $this->provider?->parent;
 
+        // Read by `CmsNavItem` and `EntryCreateButton`. A list names its own type, not its parent's.
+        $this->view->params['entryType'] ??= $this->provider ? $this->provider->type : $this->model?->type;
+
         if ($this->model) {
             // The fallback reads the translation through the getter, which loads it for `getOldAttribute()`.
             $this->title ??= $this->model->getOldAttribute($this->model->getI18nAttributeName('name', fallback: true));

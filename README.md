@@ -149,6 +149,15 @@ its form warns about (`Modules\Admin\Widgets\ScheduledAncestorAlert`, `Entry::fi
 
 ### Admin
 
+The aside lists every entry type under *Entries* when its item is told to, the type of the page being edited
+marked active:
+
+```php
+'container' => ['definitions' => [
+    CmsNavItem::class => ['showEntryTypes' => true],
+]],
+```
+
 The entry index takes a `status` parameter (`admin/cms/entry/index?status=1`), which also disables sorting. The grid
 offers no status dropdown by default; a project that wants one adds it to the header:
 

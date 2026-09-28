@@ -1,5 +1,7 @@
 ## Unreleased
 
+- Fixed `CmsNavItem::$showEntryTypes`, which could not be set and overwrote the entries item with each type; the
+  flags are public with setters, and `EntryHeader`, `EntrySubmenu` and `SectionSubmenu` publish the current type
 - Changed `EntryGridView::$showCategories` and `$showCategoryDropdown` defaults
 
 ## 3.4.0 (September 28, 2026)

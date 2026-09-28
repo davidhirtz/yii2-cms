@@ -34,6 +34,8 @@ class EntrySubmenu extends Submenu
         $module = Yii::$app->getModule('admin')->getModule('cms');
         $this->module = $module;
 
+        $this->view->params['entryType'] ??= $this->model->type;
+
         if ($this->showEntryCategories) {
             $this->showEntryCategories = $this->model->allowsCategories()
                 && $this->webuser->can(Entry::AUTH_ENTRY);

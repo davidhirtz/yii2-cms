@@ -26,6 +26,8 @@ class SectionSubmenu extends Submenu
     #[Override]
     protected function configure(): void
     {
+        $this->view->params['entryType'] ??= $this->model->entry?->type;
+
         $this->addItem(
             section: $this->getSectionUpdateItem(),
             assets: $this->getAssetsItem(),
