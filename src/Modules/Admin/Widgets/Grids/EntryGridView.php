@@ -35,6 +35,7 @@ use Hirtz\Skeleton\Widgets\Grids\Toolbars\FilterDropdown;
 use Hirtz\Skeleton\Widgets\Grids\Traits\SelectionTrait;
 use Hirtz\Skeleton\Widgets\Grids\Toolbars\TypeFilterDropdown;
 use Hirtz\Skeleton\Widgets\Grids\GridSummary;
+use Hirtz\Skeleton\Widgets\Grids\MissingTranslations;
 use Hirtz\Tenant\Models\Collections\TenantCollection;
 use Hirtz\Tenant\Models\Tenant;
 use Hirtz\Tenant\Web\UrlManager;
@@ -257,7 +258,7 @@ class EntryGridView extends GridView
             $html .= $this->getCategoryButtons($entry);
         }
 
-        return $html;
+        return $html . MissingTranslations::make()->model($entry);
     }
 
     /**

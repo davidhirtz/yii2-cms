@@ -18,6 +18,7 @@ use Hirtz\Skeleton\Widgets\Grids\Columns\Column;
 use Hirtz\Skeleton\Widgets\Grids\Columns\DataColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\StatusIconColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\TypeColumn;
+use Hirtz\Skeleton\Widgets\Grids\MissingTranslations;
 use Stringable;
 use Yii;
 
@@ -83,7 +84,7 @@ trait CategoryGridTrait
             $html .= $this->getUrl($category);
         }
 
-        return $html;
+        return $html . MissingTranslations::make()->model($category);
     }
 
     /**

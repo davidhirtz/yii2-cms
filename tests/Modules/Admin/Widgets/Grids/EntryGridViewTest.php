@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Tests\Modules\Admin\Widgets\Grids;
 
 use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Test\Models\TestEntry;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\EntryGridView;
 use Hirtz\Cms\Test\TestCase;
 use Hirtz\Skeleton\Models\User;
@@ -89,6 +90,45 @@ class EntryGridViewTest extends TestCase
         $html = Yii::$app->runAction('admin/cms/entry/index', ['q' => 'haystack']);
         self::assertIsString($html);
         self::assertStringNotContainsString(Yii::t('cms', 'ENTRY_GRID_SUMMARY_EMPTY'), $html);
+    }
+
+    public function testAnEntryLackingATranslationSaysWhichOne(): void
+    {
+        Yii::$app->getI18n()->setLanguages(['en-US', 'de']);
+
+        // The query layer reads `i18nAttributes` off the shared instance(), so it has to be configured.
+        Yii::$container->setDefinitions([
+            Entry::class => ['class' => TestEntry::class, 'i18nAttributes' => ['name', 'slug', 'description']],
+            TestEntry::class => ['i18nAttributes' => ['name', 'slug', 'description']],
+        ]);
+
+        Entry::instance(true);
+        TestEntry::instance(true);
+
+        try {
+            $this->login();
+            $entry = $this->createEntry('Needle', 'needle');
+
+            // A required attribute is copied into an empty translation on save; an optional one is what goes missing.
+            $entry->setAttribute('description', 'Sharp');
+            self::assertTrue($entry->save(), print_r($entry->getErrors(), true));
+
+            $html = Yii::$app->runAction('admin/cms/entry/index');
+            self::assertIsString($html);
+            self::assertStringContainsString(Yii::t('skeleton', 'GRID_MISSING_TRANSLATIONS', ['languages' => 'DE']), $html);
+
+            $entry->setAttribute('description_de', 'Spitz');
+            self::assertTrue($entry->save(), print_r($entry->getErrors(), true));
+
+            $html = Yii::$app->runAction('admin/cms/entry/index');
+            self::assertIsString($html);
+            self::assertStringNotContainsString(Yii::t('skeleton', 'GRID_MISSING_TRANSLATIONS', ['languages' => 'DE']), $html);
+        } finally {
+            Yii::$container->clear(Entry::class);
+            Yii::$container->clear(TestEntry::class);
+            Entry::instance(true);
+            TestEntry::instance(true);
+        }
     }
 
     public function testTheIndexFiltersByStatus(): void
