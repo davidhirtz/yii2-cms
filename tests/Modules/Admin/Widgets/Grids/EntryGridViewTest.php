@@ -75,6 +75,22 @@ class EntryGridViewTest extends TestCase
         self::assertStringNotContainsString('delete-all', $html);
     }
 
+    public function testAnEmptyIndexSaysWhatEntriesAre(): void
+    {
+        $this->login();
+
+        $html = Yii::$app->runAction('admin/cms/entry/index');
+        self::assertIsString($html);
+        self::assertStringContainsString(Yii::t('cms', 'ENTRY_GRID_SUMMARY_EMPTY'), $html);
+
+        $this->createEntry('Needle', 'needle');
+
+        $this->getWebRequest()->setQueryParams(['q' => 'haystack']);
+        $html = Yii::$app->runAction('admin/cms/entry/index', ['q' => 'haystack']);
+        self::assertIsString($html);
+        self::assertStringNotContainsString(Yii::t('cms', 'ENTRY_GRID_SUMMARY_EMPTY'), $html);
+    }
+
     public function testTheIndexFiltersByStatus(): void
     {
         $this->login();

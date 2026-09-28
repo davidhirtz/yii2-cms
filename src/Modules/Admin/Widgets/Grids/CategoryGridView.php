@@ -15,7 +15,9 @@ use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\ViewGridButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Column;
 use Hirtz\Skeleton\Widgets\Grids\Columns\RelativeTimeColumn;
 use Hirtz\Skeleton\Widgets\Grids\GridView;
+use Hirtz\Skeleton\Widgets\Grids\GridSummary;
 use Override;
+use Yii;
 use Stringable;
 
 /**
@@ -84,5 +86,11 @@ class CategoryGridView extends GridView
             ->model($category);
 
         return $buttons;
+    }
+
+    #[Override]
+    protected function getSummary(): ?GridSummary
+    {
+        return parent::getSummary()?->emptyMessage(Yii::t('cms', 'CATEGORY_GRID_SUMMARY_EMPTY'));
     }
 }

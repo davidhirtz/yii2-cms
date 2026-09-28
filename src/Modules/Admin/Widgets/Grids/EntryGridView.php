@@ -34,6 +34,7 @@ use Hirtz\Skeleton\Widgets\Grids\GridView;
 use Hirtz\Skeleton\Widgets\Grids\Toolbars\FilterDropdown;
 use Hirtz\Skeleton\Widgets\Grids\Traits\SelectionTrait;
 use Hirtz\Skeleton\Widgets\Grids\Toolbars\TypeFilterDropdown;
+use Hirtz\Skeleton\Widgets\Grids\GridSummary;
 use Hirtz\Tenant\Models\Collections\TenantCollection;
 use Hirtz\Tenant\Models\Tenant;
 use Hirtz\Tenant\Web\UrlManager;
@@ -425,5 +426,16 @@ class EntryGridView extends GridView
         return $this->provider->category === null
             && $this->provider->status === null
             && parent::isSortable();
+    }
+
+    /**
+     * A picker leads nowhere a new record is made, so it keeps the bare summary.
+     */
+    #[Override]
+    protected function getSummary(): ?GridSummary
+    {
+        $summary = parent::getSummary();
+
+        return $this->isPicker() ? $summary : $summary?->emptyMessage(Yii::t('cms', 'ENTRY_GRID_SUMMARY_EMPTY'));
     }
 }
