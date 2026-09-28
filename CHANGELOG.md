@@ -1,4 +1,4 @@
-## Unreleased
+## 3.4.0 (September 28, 2026)
 
 - Added `Entry::findScheduledAncestor()` and `ScheduledAncestorAlert`
 - Changed the cms records to refuse a save over an update made since the form was opened (`StaleSaveTrait`)
