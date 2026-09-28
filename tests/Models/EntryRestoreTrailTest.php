@@ -74,7 +74,9 @@ class EntryRestoreTrailTest extends TestCase
         $this->getWebUser()->setIdentity($user);
 
         $trail = $this->findLatestUpdate($entry);
-        self::assertStringNotContainsString('trail/restore', $this->renderGrid($entry));
+        $html = $this->renderGrid($entry);
+        self::assertStringNotContainsString('trail/restore', $html);
+        self::assertSame(5, substr_count($html, '<th'), 'Without a restorable row, the column is gone.');
 
         try {
             $this->post('admin/trail/restore', ['id' => $trail->id]);
@@ -85,7 +87,9 @@ class EntryRestoreTrailTest extends TestCase
         $this->assignPermission($user->id, Entry::AUTH_ENTRY);
         $this->getWebUser()->setIdentity($user);
 
-        self::assertStringContainsString('trail/restore?id=' . $trail->id, $this->renderGrid($entry));
+        $html = $this->renderGrid($entry);
+        self::assertStringContainsString('trail/restore?id=' . $trail->id, $html);
+        self::assertSame(6, substr_count($html, '<th'), 'The restore buttons have a column of their own.');
 
         $response = $this->post('admin/trail/restore', ['id' => $trail->id]);
 
