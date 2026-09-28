@@ -21,21 +21,21 @@ use Hirtz\Skeleton\Html\Div;
 use Hirtz\Skeleton\Web\Application;
 use Hirtz\Skeleton\Widgets\Buttons\Button;
 use Hirtz\Skeleton\Widgets\Buttons\ButtonGroup;
+use Hirtz\Skeleton\Widgets\Buttons\DraggableSortButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\ButtonColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\DeleteGridButton;
-use Hirtz\Skeleton\Widgets\Buttons\DraggableSortButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\ViewGridButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Column;
 use Hirtz\Skeleton\Widgets\Grids\Columns\DataColumn;
+use Hirtz\Skeleton\Widgets\Grids\Columns\MissingTranslationsColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\RelativeTimeColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\StatusIconColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\TypeColumn;
+use Hirtz\Skeleton\Widgets\Grids\GridSummary;
 use Hirtz\Skeleton\Widgets\Grids\GridView;
 use Hirtz\Skeleton\Widgets\Grids\Toolbars\FilterDropdown;
-use Hirtz\Skeleton\Widgets\Grids\Traits\SelectionTrait;
 use Hirtz\Skeleton\Widgets\Grids\Toolbars\TypeFilterDropdown;
-use Hirtz\Skeleton\Widgets\Grids\GridSummary;
-use Hirtz\Skeleton\Widgets\Grids\Columns\MissingTranslationsColumn;
+use Hirtz\Skeleton\Widgets\Grids\Traits\SelectionTrait;
 use Hirtz\Tenant\Models\Collections\TenantCollection;
 use Hirtz\Tenant\Models\Tenant;
 use Hirtz\Tenant\Web\UrlManager;
@@ -58,7 +58,7 @@ class EntryGridView extends GridView
 
     protected bool $showUrl = true;
     protected ?bool $showCategories = null;
-    protected bool $showCategoryDropdown = true;
+    protected ?bool $showCategoryDropdown = null;
     protected bool $showTypeDropdown = true;
     protected bool $showDeleteButton = false;
     /**
@@ -71,17 +71,14 @@ class EntryGridView extends GridView
     {
         $this->attributes['id'] ??= 'entry-grid-view';
 
-        $enableCategories = static::getModule()->enableCategories;
-        $type = $enableCategories ? Entry::instance()::findType($this->provider->type) : null;
+        $type = Entry::instance()::findType($this->provider->type);
 
-        // A grid filtered to one type reads that type. Display is `shows*`, but a type with no categories at all
-        // has nothing to show either, whatever it declares.
-        if ($type && !$type->allowsCategories()) {
+        if (!static::getModule()->enableCategories || ($type && !$type->allowsCategories())) {
             $this->showCategories = false;
             $this->showCategoryDropdown = false;
-        } elseif ($type) {
-            $this->showCategories = $type->showsCategories() ?? $this->showCategories ?? true;
-            $this->showCategoryDropdown = $type->showsCategoryDropdown() ?? $this->showCategoryDropdown;
+        } else {
+            $this->showCategories = $type?->showsCategories() ?? $this->showCategories ?? true;
+            $this->showCategoryDropdown = $type?->showsCategoryDropdown() ?? $this->showCategoryDropdown ?? true;
         }
 
         /**
@@ -186,8 +183,8 @@ class EntryGridView extends GridView
     }
 
     /**
-     * @see EntryController::actionUpdateAll()
      * @return array<int|string, mixed>|null
+     * @see EntryController::actionUpdateAll()
      */
     protected function getUpdateSelectionRoute(): ?array
     {

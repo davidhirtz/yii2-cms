@@ -1,3 +1,7 @@
+## Unreleased
+
+- Changed `EntryGridView::$showCategories` and `$showCategoryDropdown` defaults
+
 ## 3.4.0 (September 28, 2026)
 
 - Added `Entry::findScheduledAncestor()` and `ScheduledAncestorAlert`

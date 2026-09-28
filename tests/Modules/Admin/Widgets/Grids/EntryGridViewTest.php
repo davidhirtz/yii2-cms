@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Tests\Modules\Admin\Widgets\Grids;
 
+use Hirtz\Cms\Models\Category;
+use Hirtz\Cms\Models\Collections\CategoryCollection;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Test\Models\TestEntry;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\EntryGridView;
@@ -49,6 +51,39 @@ class EntryGridViewTest extends TestCase
 
         self::assertIsString($html);
         self::assertStringContainsString('Needle', $html);
+    }
+
+    /**
+     * The category buttons and the dropdown follow the module's `enableCategories`, which wins over a grid
+     * setting them: a type or a grid only ever narrows what the installation turned on.
+     */
+    public function testTheCategoryDropdownFollowsTheModule(): void
+    {
+        $category = Category::create();
+        $category->loadDefaultValues();
+        $category->name = 'Haystack';
+        $category->slug = 'haystack';
+        self::assertTrue($category->insert(), print_r($category->getErrors(), true));
+        CategoryCollection::getAll(true);
+
+        $this->login();
+        $this->createEntry('Needle', 'needle');
+
+        Entry::getModule()->enableCategories = false;
+        $html = Yii::$app->runAction('admin/cms/entry/index');
+        self::assertIsString($html);
+        self::assertStringNotContainsString('Haystack', $html);
+
+        Yii::$container->set(EntryGridView::class, GridViewWithCategoryDropdown::class);
+        $html = Yii::$app->runAction('admin/cms/entry/index');
+        self::assertIsString($html);
+        self::assertStringNotContainsString('Haystack', $html);
+        Yii::$container->clear(EntryGridView::class);
+
+        Entry::getModule()->enableCategories = true;
+        $html = Yii::$app->runAction('admin/cms/entry/index');
+        self::assertIsString($html);
+        self::assertStringContainsString('Haystack', $html);
     }
 
     /**
@@ -257,4 +292,12 @@ class GridViewWithoutUrl extends EntryGridView
 {
     protected bool $showUrl = false;
     protected ?bool $showCategories = false;
+}
+
+/**
+ * @extends EntryGridView<Entry>
+ */
+class GridViewWithCategoryDropdown extends EntryGridView
+{
+    protected ?bool $showCategoryDropdown = true;
 }
