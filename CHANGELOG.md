@@ -1,4 +1,4 @@
-## Unreleased
+## 3.5.1 (September 28, 2026)
 
 - Fixed `EntryGridView` publish date column
 
