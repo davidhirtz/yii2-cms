@@ -23,6 +23,8 @@ use yii\helpers\Inflector;
  */
 class LinkedEntryGridView extends EntryGridView
 {
+    public bool $showSelection = false;
+
     protected string $layout = '{items}{footer}';
 
     #[Override]

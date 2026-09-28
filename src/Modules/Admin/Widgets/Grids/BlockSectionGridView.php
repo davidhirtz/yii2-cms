@@ -109,6 +109,7 @@ class BlockSectionGridView extends GridView
 
     /**
      * @see BlockSectionController::actionDeleteAll()
+     * @return array<int|string, mixed>
      */
     protected function getDeleteSelectionRoute(): array
     {

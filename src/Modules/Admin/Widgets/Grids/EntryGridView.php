@@ -32,6 +32,7 @@ use Hirtz\Skeleton\Widgets\Grids\Columns\StatusIconColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\TypeColumn;
 use Hirtz\Skeleton\Widgets\Grids\GridView;
 use Hirtz\Skeleton\Widgets\Grids\Toolbars\FilterDropdown;
+use Hirtz\Skeleton\Widgets\Grids\Traits\SelectionTrait;
 use Hirtz\Skeleton\Widgets\Grids\Toolbars\TypeFilterDropdown;
 use Hirtz\Tenant\Models\Collections\TenantCollection;
 use Hirtz\Tenant\Models\Tenant;
@@ -49,6 +50,7 @@ use Yii;
 class EntryGridView extends GridView
 {
     use ModuleTrait;
+    use SelectionTrait;
 
     public string $tenantParamName = 'tenant';
 
@@ -88,6 +90,8 @@ class EntryGridView extends GridView
             ? ['entry-category/order', 'category' => $this->provider->category->id]
             : ['order', 'parent' => $this->provider->parent?->id];
 
+        $this->configureSelection();
+
         $this->header ??= [
             $this->getTenantDropdown(),
             $this->getTypeDropdown(),
@@ -96,6 +100,7 @@ class EntryGridView extends GridView
         ];
 
         $this->columns ??= [
+            $this->getCheckboxColumn(),
             $this->getStatusColumn(),
             $this->getTypeColumn(),
             $this->getNameColumn(),
@@ -165,6 +170,25 @@ class EntryGridView extends GridView
     protected function getTenantDropdownItems(): array
     {
         return array_map(fn (Tenant $tenant) => $tenant->name, TenantCollection::getAll());
+    }
+
+    /**
+     * A single entry changes status through its own row rather than through a selection of one.
+     */
+    protected function canUpdateSelection(): bool
+    {
+        return !$this->isPicker()
+            && $this->provider->getCount() > 1
+            && $this->webuser->can(Entry::AUTH_ENTRY);
+    }
+
+    /**
+     * @see EntryController::actionUpdateAll()
+     * @return array<int|string, mixed>|null
+     */
+    protected function getUpdateSelectionRoute(): ?array
+    {
+        return ['/admin/cms/entry/update-all'];
     }
 
     protected function getTypeDropdown(): ?Stringable

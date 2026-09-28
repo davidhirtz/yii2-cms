@@ -257,6 +257,36 @@ class SectionControllerTest extends TestCase
         self::assertNotEmpty($this->getWebSession()->getFlash('success'));
     }
 
+    public function testTheIndexOffersTheStatusOfASelection(): void
+    {
+        $this->login();
+        $this->createSection('First');
+
+        $html = Yii::$app->runAction('admin/cms/section/index', ['entry' => $this->entry->id]);
+        self::assertIsString($html);
+        self::assertStringNotContainsString('section/update-all', $html);
+
+        $this->createSection('Second');
+
+        $html = Yii::$app->runAction('admin/cms/section/index', ['entry' => $this->entry->id]);
+        self::assertIsString($html);
+        self::assertStringContainsString('hx-post="/admin/cms/section/update-all"', $html);
+    }
+
+    public function testUpdateAllReturnsToTheEntrysSections(): void
+    {
+        $this->login();
+        $section = $this->createSection('First');
+
+        $response = $this->post('admin/cms/section/update-all', [], [
+            'selection' => [(string)$section->id],
+            'Section' => ['status' => Section::STATUS_DISABLED],
+        ]);
+
+        self::assertInstanceOf(Response::class, $response);
+        self::assertStringContainsString('entry=' . $this->entry->id, (string)$response->getHeaders()->get('location'));
+    }
+
     public function testMoveTakesTheSectionToAnotherEntryAndFixesBothCounts(): void
     {
         $this->login();

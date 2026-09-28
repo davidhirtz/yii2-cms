@@ -82,6 +82,20 @@ class SectionGridView extends GridView
         return $this->provider->getCount() > 1 && $this->webuser->can(Entry::AUTH_ENTRY);
     }
 
+    protected function canUpdateSelection(): bool
+    {
+        return $this->canDeleteSelection();
+    }
+
+    /**
+     * @see SectionController::actionUpdateAll()
+     * @return array<int|string, mixed>|null
+     */
+    protected function getUpdateSelectionRoute(): ?array
+    {
+        return ['/admin/cms/section/update-all'];
+    }
+
     protected function getDeleteSelectionLabel(): string
     {
         return Yii::t('cms', 'SECTION_BUTTON_DELETE_SELECTED');
@@ -94,6 +108,7 @@ class SectionGridView extends GridView
 
     /**
      * @see SectionController::actionDeleteAll()
+     * @return array<int|string, mixed>
      */
     protected function getDeleteSelectionRoute(): array
     {

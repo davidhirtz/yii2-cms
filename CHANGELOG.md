@@ -1,5 +1,6 @@
 ## Unreleased
 
+- Added a status dropdown to the selection of the entry and section grids
 - Added a `status` parameter to the entry index (`EntryActiveDataProvider::$status`)
 
 ## 3.3.0 (September 25, 2026)

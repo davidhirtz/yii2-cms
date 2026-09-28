@@ -50,6 +50,31 @@ class EntryGridViewTest extends TestCase
         self::assertStringContainsString('Needle', $html);
     }
 
+    /**
+     * A status per item, posting the model's form name with the checked rows; entries have no bulk delete.
+     */
+    public function testASelectionOfEntriesChangesTheirStatus(): void
+    {
+        $this->login();
+        $this->createEntry('First', 'first');
+
+        $html = Yii::$app->runAction('admin/cms/entry/index');
+        self::assertIsString($html);
+        self::assertStringNotContainsString('entry/update-all', $html);
+
+        $this->createEntry('Second', 'second');
+
+        $html = Yii::$app->runAction('admin/cms/entry/index');
+        self::assertIsString($html);
+        self::assertStringContainsString('name="selection[]"', $html);
+        self::assertStringContainsString('hx-post="/admin/cms/entry/update-all"', $html);
+        self::assertStringContainsString(
+            'hx-vals="' . htmlspecialchars((string)json_encode(['Entry[status]' => Entry::STATUS_DRAFT])) . '"',
+            $html,
+        );
+        self::assertStringNotContainsString('delete-all', $html);
+    }
+
     public function testTheIndexFiltersByStatus(): void
     {
         $this->login();
