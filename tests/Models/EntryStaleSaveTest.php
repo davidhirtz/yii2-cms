@@ -87,6 +87,19 @@ class EntryStaleSaveTest extends TestCase
         self::assertStringNotContainsString('loadedAt', EntryActiveForm::make()->model($new)->render());
     }
 
+    public function testTheConflictIsAFlashNotALineInTheForm(): void
+    {
+        $this->getWebUser()->setIdentity($this->getUserFromFixture('admin'));
+
+        $entry = $this->createEntry();
+        $entry->addError('loadedAt', 'Changed by someone else.');
+
+        $html = EntryActiveForm::make()->model($entry)->render();
+
+        self::assertStringNotContainsString('Changed by someone else.', $html);
+        self::assertSame(['Changed by someone else.'], $this->getWebSession()->getFlash('warning'));
+    }
+
     private function createEntry(): Entry
     {
         $entry = Entry::create();
