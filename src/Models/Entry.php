@@ -986,6 +986,15 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
     }
 
     #[Override]
+    public function attributeHints(): array
+    {
+        return [
+            ...parent::attributeHints(),
+            'description' => Yii::t('cms', 'ENTRY_DESCRIPTION_HINT'),
+        ];
+    }
+
+    #[Override]
     public function attributeLabels(): array
     {
         return [

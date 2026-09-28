@@ -78,6 +78,7 @@ return [
     'ENTRY_CONFIRM_DELETE' => 'Are you sure you want to delete this entry?',
     'ENTRY_CREATE_BUTTON' => 'Create Entry',
     'ENTRY_CREATE_TITLE' => 'Create New Entry',
+    'ENTRY_DESCRIPTION_HINT' => 'Shown by search engines beneath the title, ideally in no more than 160 characters. Now: {count}.',
     'ENTRY_DESCRIPTION_LABEL' => 'Meta description',
     'ENTRY_ENTRY_COUNT_LABEL' => 'Subentries',
     'ENTRY_GRID_SUMMARY_EMPTY' => 'There are no entries here yet. Entries are the pages of the site — create one with the button above.',

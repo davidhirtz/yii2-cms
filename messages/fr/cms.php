@@ -78,6 +78,7 @@ return [
     'ENTRY_CONFIRM_DELETE' => 'Voulez-vous vraiment supprimer cette entrée ?',
     'ENTRY_CREATE_BUTTON' => 'Créer une entrée',
     'ENTRY_CREATE_TITLE' => 'Créer une nouvelle entrée',
+    'ENTRY_DESCRIPTION_HINT' => 'Affichée par les moteurs de recherche sous le titre, idéalement en 160 caractères au plus. Actuellement : {count}.',
     'ENTRY_DESCRIPTION_LABEL' => 'Méta description',
     'ENTRY_ENTRY_COUNT_LABEL' => 'Sous-entrées',
     'ENTRY_GRID_SUMMARY_EMPTY' => 'Il n’y a pas encore d’entrées ici. Les entrées sont les pages du site — créez-en une avec le bouton ci-dessus.',

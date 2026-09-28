@@ -78,6 +78,7 @@ return [
     'ENTRY_CONFIRM_DELETE' => 'Sind Sie sich sicher, dass Sie diesen Eintrag löschen wollen?',
     'ENTRY_CREATE_BUTTON' => 'Eintrag erstellen',
     'ENTRY_CREATE_TITLE' => 'Neuen Eintrag erstellen',
+    'ENTRY_DESCRIPTION_HINT' => 'Wird von Suchmaschinen unter dem Titel angezeigt, idealerweise mit höchstens 160 Zeichen. Aktuell: {count}.',
     'ENTRY_DESCRIPTION_LABEL' => 'Meta Beschreibung',
     'ENTRY_ENTRY_COUNT_LABEL' => 'Untereinträge',
     'ENTRY_GRID_SUMMARY_EMPTY' => 'Hier gibt es noch keine Einträge. Einträge sind die Seiten der Website – über den Button oben einen anlegen.',
