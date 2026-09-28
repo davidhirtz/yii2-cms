@@ -88,15 +88,22 @@ class CmsNavItem extends NavItem
 
     /**
      * The current type is the one `EntryHeader`, `EntrySubmenu` or `SectionSubmenu` published while the page
-     * rendered, which happens before the layout renders this. A page outside the entries has none.
+     * rendered, which happens before the layout renders this. A page outside the entries has none. The type's item
+     * is the active one, so the parent, whose routes cover every entry page, steps back.
      */
     protected function addEntrySubnavItems(): void
     {
         $currentType = $this->view->params['entryType'] ?? null;
 
         foreach (Entry::instance()::getTypeDefinitions() as $type => $definition) {
+            $isActive = $currentType === $type;
+
+            if ($isActive) {
+                $this->active ??= false;
+            }
+
             $this->addItem(NavItem::make()
-                ->active($currentType === $type)
+                ->active($isActive)
                 ->label($definition->getPlural())
                 ->url(['/admin/cms/entry/index', 'type' => $type])
                 ->roles([Entry::AUTH_ENTRY]));

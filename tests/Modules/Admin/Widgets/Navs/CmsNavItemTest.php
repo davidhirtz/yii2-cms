@@ -73,6 +73,18 @@ class CmsNavItemTest extends TestCase
 
         self::assertIsString($html);
         self::assertSame([TestEntry::TYPE_POST], $this->getActiveTypes($html));
+        self::assertFalse($this->isParentActive($html));
+    }
+
+    public function testTheParentIsActiveOnTheListOfEveryType(): void
+    {
+        $this->login();
+
+        $html = Yii::$app->runAction('admin/cms/entry/index');
+
+        self::assertIsString($html);
+        self::assertSame([], $this->getActiveTypes($html));
+        self::assertTrue($this->isParentActive($html));
     }
 
     public function testAnEntrysTypeIsActiveOnItsSectionPages(): void
@@ -104,6 +116,11 @@ class CmsNavItemTest extends TestCase
     {
         preg_match_all('~<a class="nav-link active" href="[^"]*[?&](?:amp;)?type=(\d+)"~', $html, $matches);
         return array_map(intval(...), $matches[1]);
+    }
+
+    private function isParentActive(string $html): bool
+    {
+        return str_contains($html, '<a class="nav-link active" href="' . Url::to(['/admin/cms/entry/index']) . '"');
     }
 
     private function login(): void
