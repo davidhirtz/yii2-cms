@@ -35,7 +35,7 @@ use Hirtz\Skeleton\Widgets\Grids\Toolbars\FilterDropdown;
 use Hirtz\Skeleton\Widgets\Grids\Traits\SelectionTrait;
 use Hirtz\Skeleton\Widgets\Grids\Toolbars\TypeFilterDropdown;
 use Hirtz\Skeleton\Widgets\Grids\GridSummary;
-use Hirtz\Skeleton\Widgets\Grids\MissingTranslations;
+use Hirtz\Skeleton\Widgets\Grids\Columns\MissingTranslationsColumn;
 use Hirtz\Tenant\Models\Collections\TenantCollection;
 use Hirtz\Tenant\Models\Tenant;
 use Hirtz\Tenant\Web\UrlManager;
@@ -106,6 +106,7 @@ class EntryGridView extends GridView
             $this->getStatusColumn(),
             $this->getTypeColumn(),
             $this->getNameColumn(),
+            $this->getMissingTranslationsColumn(),
             $this->getEntryCountColumn(),
             $this->getSectionCountColumn(),
             $this->getAssetCountColumn(),
@@ -258,7 +259,7 @@ class EntryGridView extends GridView
             $html .= $this->getCategoryButtons($entry);
         }
 
-        return $html . MissingTranslations::make()->model($entry);
+        return $html;
     }
 
     /**
@@ -438,5 +439,13 @@ class EntryGridView extends GridView
         $summary = parent::getSummary();
 
         return $this->isPicker() ? $summary : $summary?->emptyMessage(Yii::t('cms', 'ENTRY_GRID_SUMMARY_EMPTY'));
+    }
+
+    /**
+     * Shown only while a record on the page lacks a translation.
+     */
+    protected function getMissingTranslationsColumn(): ?Column
+    {
+        return MissingTranslationsColumn::make();
     }
 }

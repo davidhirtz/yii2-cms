@@ -26,7 +26,7 @@ use Hirtz\Skeleton\Widgets\Grids\Columns\TypeColumn;
 use Hirtz\Skeleton\Widgets\Grids\GridSummary;
 use Hirtz\Skeleton\Widgets\Grids\GridView;
 use Hirtz\Skeleton\Widgets\Grids\Traits\SelectionTrait;
-use Hirtz\Skeleton\Widgets\Grids\MissingTranslations;
+use Hirtz\Skeleton\Widgets\Grids\Columns\MissingTranslationsColumn;
 use Override;
 use Stringable;
 use Yii;
@@ -59,6 +59,7 @@ class SectionGridView extends GridView
             $this->getStatusColumn(),
             $this->getTypeColumn(),
             $this->getContentColumn(),
+            $this->getMissingTranslationsColumn(),
             $this->getEntriesCountColumn(),
             $this->getAssetCountColumn(),
             $this->getButtonColumn(),
@@ -169,7 +170,7 @@ class SectionGridView extends GridView
         return A::make()
             ->content($html)
             ->href($section->getAdminRoute() ?: null)
-            ->class($cssClass) . MissingTranslations::make()->model($section);
+            ->class($cssClass);
     }
 
     protected function getThumbnails(Section $section): ?Stringable
@@ -233,5 +234,13 @@ class SectionGridView extends GridView
         }
 
         return $buttons;
+    }
+
+    /**
+     * Shown only while a record on the page lacks a translation.
+     */
+    protected function getMissingTranslationsColumn(): ?Column
+    {
+        return MissingTranslationsColumn::make();
     }
 }

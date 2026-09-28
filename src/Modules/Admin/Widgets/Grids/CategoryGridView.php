@@ -13,6 +13,7 @@ use Hirtz\Skeleton\Widgets\Grids\Columns\ButtonColumn;
 use Hirtz\Skeleton\Widgets\Buttons\DraggableSortButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\ViewGridButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Column;
+use Hirtz\Skeleton\Widgets\Grids\Columns\MissingTranslationsColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\RelativeTimeColumn;
 use Hirtz\Skeleton\Widgets\Grids\GridView;
 use Hirtz\Skeleton\Widgets\Grids\GridSummary;
@@ -50,6 +51,7 @@ class CategoryGridView extends GridView
             $this->getStatusColumn(),
             $this->getTypeColumn(),
             $this->getNameColumn(),
+            $this->getMissingTranslationsColumn(),
             $this->getBranchCountColumn(),
             $this->getEntryCountColumn(),
             $this->getUpdatedAtColumn(),
@@ -92,5 +94,13 @@ class CategoryGridView extends GridView
     protected function getSummary(): ?GridSummary
     {
         return parent::getSummary()?->emptyMessage(Yii::t('cms', 'CATEGORY_GRID_SUMMARY_EMPTY'));
+    }
+
+    /**
+     * Shown only while a record on the page lacks a translation.
+     */
+    protected function getMissingTranslationsColumn(): ?Column
+    {
+        return MissingTranslationsColumn::make();
     }
 }
