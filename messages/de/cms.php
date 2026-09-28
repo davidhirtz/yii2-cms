@@ -99,6 +99,7 @@ return [
     'ENTRY_RELATION_SUCCESS_ADDED' => 'Eintrag verknüpft.',
     'ENTRY_RELATION_SUCCESS_REMOVED' => 'Verknüpfung des Eintrags entfernt.',
     'ENTRY_RELATION_UPDATED_AT_LABEL' => 'Hinzugefügt',
+    'ENTRY_SCHEDULED_ANCESTOR_ALERT' => '„{name}“ ist für {date} geplant, dieser Eintrag ist aber bereits online: Er ist unter seiner eigenen Adresse erreichbar, bevor der übergeordnete Eintrag erscheint.',
     'ENTRY_SECTION_COUNT_LABEL' => 'Sektionen',
     'ENTRY_SLUG_LABEL' => 'Url',
     'ENTRY_STATUS_SCHEDULED' => 'Geplant für {date}',

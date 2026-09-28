@@ -99,6 +99,7 @@ return [
     'ENTRY_RELATION_SUCCESS_ADDED' => 'Entrada associada.',
     'ENTRY_RELATION_SUCCESS_REMOVED' => 'Associação da entrada removida.',
     'ENTRY_RELATION_UPDATED_AT_LABEL' => 'Adicionada',
+    'ENTRY_SCHEDULED_ANCESTOR_ALERT' => '“{name}” está agendado para {date}, mas esta entrada já está no site: pode ser acedida no seu próprio endereço antes de o elemento superior ser publicado.',
     'ENTRY_SECTION_COUNT_LABEL' => 'Secções',
     'ENTRY_SLUG_LABEL' => 'Url',
     'ENTRY_STATUS_SCHEDULED' => 'Agendado para {date}',

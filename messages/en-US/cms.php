@@ -99,6 +99,7 @@ return [
     'ENTRY_RELATION_SUCCESS_ADDED' => 'Entry linked.',
     'ENTRY_RELATION_SUCCESS_REMOVED' => 'Entry unlinked.',
     'ENTRY_RELATION_UPDATED_AT_LABEL' => 'Added',
+    'ENTRY_SCHEDULED_ANCESTOR_ALERT' => '“{name}” is scheduled for {date}, but this entry is already on the site: it can be reached at its own address before its parent goes live.',
     'ENTRY_SECTION_COUNT_LABEL' => 'Sections',
     'ENTRY_SLUG_LABEL' => 'Url',
     'ENTRY_STATUS_SCHEDULED' => 'Scheduled for {date}',

@@ -99,6 +99,7 @@ return [
     'ENTRY_RELATION_SUCCESS_ADDED' => 'Entrée associée.',
     'ENTRY_RELATION_SUCCESS_REMOVED' => 'Association de l’entrée supprimée.',
     'ENTRY_RELATION_UPDATED_AT_LABEL' => 'Ajoutée',
+    'ENTRY_SCHEDULED_ANCESTOR_ALERT' => '« {name} » est programmé pour le {date}, mais cette entrée est déjà en ligne : elle est accessible à sa propre adresse avant que son parent ne paraisse.',
     'ENTRY_SECTION_COUNT_LABEL' => 'Sections',
     'ENTRY_SLUG_LABEL' => 'Url',
     'ENTRY_STATUS_SCHEDULED' => 'Programmé pour le {date}',

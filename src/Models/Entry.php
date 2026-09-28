@@ -779,6 +779,25 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
         return array_filter($this->assets, fn (Asset $asset): bool => $asset->type !== $asset::TYPE_META_IMAGE);
     }
 
+    /**
+     * The nearest ancestor still waiting for its publish date while this entry is live: `parent_status` follows a
+     * parent's status, not its date, so this entry is reachable at its own address before the parent is.
+     */
+    public function findScheduledAncestor(): ?Entry
+    {
+        if (!$this->isEnabled() || $this->isScheduled()) {
+            return null;
+        }
+
+        foreach (array_reverse($this->getAncestors()) as $ancestor) {
+            if ($ancestor->isScheduled()) {
+                return $ancestor;
+            }
+        }
+
+        return null;
+    }
+
     public function getStatusIcon(): string
     {
         if ($this->isIndex() && $this->isEnabled()) {

@@ -15,6 +15,7 @@ use Hirtz\Cms\Modules\Admin\Widgets\Forms\EntryActiveForm;
 use Hirtz\Cms\Modules\Admin\Widgets\Navs\EntryActionDropdown;
 use Hirtz\Cms\Modules\Admin\Widgets\Navs\EntryHeader;
 use Hirtz\Cms\Modules\Admin\Widgets\Navs\EntrySubmenu;
+use Hirtz\Cms\Modules\Admin\Widgets\ScheduledAncestorAlert;
 use Hirtz\Skeleton\Web\View;
 use Hirtz\Skeleton\Widgets\Forms\FormContainer;
 
@@ -24,6 +25,9 @@ echo EntryHeader::make()
 
 echo EntrySubmenu::make()
     ->model($entry);
+
+echo ScheduledAncestorAlert::make()
+    ->entry($entry);
 
 echo FormContainer::make()
     ->form(EntryActiveForm::make()->model($entry));

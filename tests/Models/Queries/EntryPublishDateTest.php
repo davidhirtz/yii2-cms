@@ -8,6 +8,7 @@ use davidhirtz\yii2\datetime\DateTime;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Models\Types\EntryType;
+use Hirtz\Cms\Modules\Admin\Widgets\ScheduledAncestorAlert;
 use Hirtz\Cms\Test\TestCase;
 use Hirtz\Skeleton\Db\ActiveQuery;
 use Hirtz\Skeleton\Filters\PageCache;
@@ -101,10 +102,36 @@ class EntryPublishDateTest extends TestCase
         self::assertSame(3600, $filter->duration);
     }
 
-    private function createEntry(string $name, string $slug, string $date, int $type = Entry::TYPE_DEFAULT): Entry
+    public function testALiveChildOfAScheduledParentIsWarnedAbout(): void
     {
+        Entry::getModule()->enableNestedEntries = true;
+
+        $parent = $this->createEntry('Parent', 'parent', '+1 day');
+        $child = $this->createEntry('Child', 'child', '-1 day', parent: $parent);
+
+        self::assertSame($parent->id, $child->findScheduledAncestor()?->id);
+
+        $html = ScheduledAncestorAlert::make()->entry($child)->render();
+        self::assertStringContainsString('data-alert="warning"', $html);
+        self::assertStringContainsString('“Parent”', $html);
+
+        $published = $this->createEntry('Published', 'published', '-1 day');
+        $sibling = $this->createEntry('Sibling', 'sibling', '-1 day', parent: $published);
+
+        self::assertNull($sibling->findScheduledAncestor());
+        self::assertSame('', ScheduledAncestorAlert::make()->entry($sibling)->render());
+    }
+
+    private function createEntry(
+        string $name,
+        string $slug,
+        string $date,
+        int $type = Entry::TYPE_DEFAULT,
+        ?Entry $parent = null,
+    ): Entry {
         $entry = PublishDateTestEntry::create();
         $entry->loadDefaultValues();
+        $entry->populateParentRelation($parent);
         $entry->status = Entry::STATUS_ENABLED;
         $entry->type = $type;
         $entry->name = $name;
