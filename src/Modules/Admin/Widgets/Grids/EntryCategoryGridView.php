@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Widgets\Grids;
 
+use Hirtz\Skeleton\Widgets\Buttons\CreateButton;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Modules\Admin\Data\CategoryActiveDataProvider;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\Traits\CategoryGridTrait;
@@ -63,7 +64,11 @@ class EntryCategoryGridView extends GridView
     protected function getSummary(): ?GridSummary
     {
         return parent::getSummary()
-            ->emptyMessage(Yii::t('cms', 'ENTRY_CATEGORY_GRID_SUMMARY_EMPTY'));
+            ->emptyMessage(Yii::t('cms', 'ENTRY_CATEGORY_GRID_SUMMARY_EMPTY'))
+            ->emptyButton(CreateButton::make()
+                ->label(Yii::t('cms', 'CATEGORY_CREATE_BUTTON'))
+                ->url(['/admin/cms/category/create'])
+                ->roles([Category::AUTH_CATEGORY]));
     }
 
     protected function getUpdatedAtColumn(): ?Column

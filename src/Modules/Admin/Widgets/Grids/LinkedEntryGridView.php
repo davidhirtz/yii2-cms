@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Widgets\Grids;
 
+use Hirtz\Skeleton\Db\ActiveRecord;
+use Hirtz\Cms\Modules\Admin\Widgets\Buttons\EntryRelationCreateButton;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Modules\Admin\Controllers\Traits\EntryRelationControllerTrait;
 use Hirtz\Cms\Modules\Admin\Data\EntryActiveDataProvider;
@@ -60,6 +62,9 @@ class LinkedEntryGridView extends EntryGridView
     {
         return parent::getSummary()
             ->emptyMessage(Yii::t('cms', 'ENTRY_RELATION_GRID_SUMMARY_EMPTY'))
+            ->emptyButton($this->provider->relatedModel instanceof ActiveRecord
+                ? EntryRelationCreateButton::make()->model($this->provider->relatedModel)
+                : null)
             ->visible(fn (): bool => $this->provider->getCount() === 0);
     }
 
