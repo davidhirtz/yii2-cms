@@ -30,6 +30,8 @@ use Hirtz\Skeleton\Models\Traits\TypeAttributeTrait;
 use Hirtz\Skeleton\Models\Traits\UpdatedByUserTrait;
 use Hirtz\Skeleton\Models\Traits\VisibleAttributeTrait;
 use Hirtz\Skeleton\Validators\DynamicRangeValidator;
+use Hirtz\Skeleton\Models\Interfaces\StaleSaveInterface;
+use Hirtz\Skeleton\Models\Traits\StaleSaveTrait;
 use Override;
 use Yii;
 
@@ -45,6 +47,7 @@ abstract class ActiveRecord extends BaseActiveRecord implements
     CustomAttributeInterface,
     DraftStatusAttributeInterface,
     I18nAttributeInterface,
+    StaleSaveInterface,
     TrailModelInterface,
     TranslationInterface,
     TypeAttributeInterface,
@@ -55,6 +58,7 @@ abstract class ActiveRecord extends BaseActiveRecord implements
     use DraftStatusAttributeTrait;
     use I18nAttributesTrait;
     use ModuleTrait;
+    use StaleSaveTrait;
     use TrailModelTrait;
     use TranslationTrait;
     use TypeAttributeTrait;
@@ -76,6 +80,7 @@ abstract class ActiveRecord extends BaseActiveRecord implements
     {
         return [
             ...parent::rules(),
+            ...$this->getStaleSaveRules(),
             [
                 ['status', 'type'],
                 DynamicRangeValidator::class,
