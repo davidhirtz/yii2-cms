@@ -1,7 +1,6 @@
 ## Unreleased
 
-- Changed `EntryGridView` to list an entry's publish date whenever its type's form shows the date, rather than only
-  when the order starts with it; a grid of every type lists it when its order uses the date (`hasPublishDate()`)
+- Fixed `EntryGridView` publish date column
 
 ## 3.5.0 (September 28, 2026)
 

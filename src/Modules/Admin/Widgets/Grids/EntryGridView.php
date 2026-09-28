@@ -336,10 +336,6 @@ class EntryGridView extends GridView
         return $this->hasPublishDate() ? $this->publishDateColumn() : $this->updatedAtColumn();
     }
 
-    /**
-     * A type whose form hides the date has none worth listing, the rule publishing follows as well. A grid of every
-     * type has no form to ask, so it lists the date when its order uses it.
-     */
     protected function hasPublishDate(): bool
     {
         $type = Entry::instance()::findType($this->provider->type);
@@ -440,9 +436,6 @@ class EntryGridView extends GridView
             && parent::isSortable();
     }
 
-    /**
-     * A picker leads nowhere a new record is made, so it keeps the bare summary.
-     */
     #[Override]
     protected function getSummary(): ?GridSummary
     {
