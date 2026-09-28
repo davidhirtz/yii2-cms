@@ -7,6 +7,8 @@ namespace Hirtz\Cms\Tests\Modules\Admin\Widgets\Grids;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Collections\CategoryCollection;
 use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Models\Types\EntryType;
+use Hirtz\Cms\Modules\Admin\Data\EntryActiveDataProvider;
 use Hirtz\Cms\Test\Models\TestEntry;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\EntryGridView;
 use Hirtz\Cms\Test\TestCase;
@@ -16,6 +18,7 @@ use Hirtz\Skeleton\Widgets\Grids\Toolbars\StatusFilterDropdown;
 use Hirtz\Skeleton\Widgets\Widget;
 use Hirtz\Tenant\Models\Tenant;
 use Hirtz\Tenant\Web\UrlManager;
+use Override;
 use Yii;
 use yii\base\Event;
 
@@ -274,6 +277,48 @@ class EntryGridViewTest extends TestCase
         return $entry;
     }
 
+    /**
+     * The date shows for a type whose form shows it, whatever the order: one sorted by a flag first and the date
+     * second used to list when it was last edited instead.
+     */
+    public function testATypeShowingTheDateListsIt(): void
+    {
+        self::assertTrue($this->hasPublishDate(DatedEntry::TYPE_DATED));
+    }
+
+    public function testATypeHidingTheDateListsTheUpdate(): void
+    {
+        self::assertFalse($this->hasPublishDate(DatedEntry::TYPE_UNDATED));
+    }
+
+    public function testAGridOfEveryTypeListsTheDateWhenItsOrderUsesIt(): void
+    {
+        self::assertTrue($this->hasPublishDate(null, ['is_featured' => SORT_DESC, 'publish_date' => SORT_DESC]));
+        self::assertFalse($this->hasPublishDate(null, ['position' => SORT_ASC]));
+    }
+
+    /**
+     * @param array<string, int>|null $orderBy
+     */
+    private function hasPublishDate(?int $type, ?array $orderBy = null): bool
+    {
+        Yii::$container->set(Entry::class, DatedEntry::class);
+        Entry::instance(true);
+
+        try {
+            $provider = Yii::$container->get(EntryActiveDataProvider::class, config: ['type' => $type]);
+
+            if ($orderBy !== null) {
+                $provider->query->orderBy($orderBy);
+            }
+
+            return DateColumnGridView::make()->provider($provider)->exposesPublishDate();
+        } finally {
+            Yii::$container->clear(Entry::class);
+            Entry::instance(true);
+        }
+    }
+
     private function login(): User
     {
         $user = $this->getUserFromFixture('admin');
@@ -300,4 +345,37 @@ class GridViewWithoutUrl extends EntryGridView
 class GridViewWithCategoryDropdown extends EntryGridView
 {
     protected ?bool $showCategoryDropdown = true;
+}
+
+/**
+ * @extends EntryGridView<Entry>
+ */
+class DateColumnGridView extends EntryGridView
+{
+    public function exposesPublishDate(): bool
+    {
+        return $this->hasPublishDate();
+    }
+}
+
+class DatedEntry extends Entry
+{
+    public const int TYPE_DATED = 1;
+    public const int TYPE_UNDATED = 2;
+
+    /**
+     * @return list<EntryType>
+     */
+    #[Override]
+    public function getTypes(): array
+    {
+        return [
+            EntryType::make(self::TYPE_DATED)
+                ->name('Dated')
+                ->orderBy(['position' => SORT_ASC]),
+            EntryType::make(self::TYPE_UNDATED)
+                ->name('Undated')
+                ->hiddenFields('publish_date'),
+        ];
+    }
 }

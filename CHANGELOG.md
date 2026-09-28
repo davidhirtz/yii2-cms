@@ -1,3 +1,8 @@
+## Unreleased
+
+- Changed `EntryGridView` to list an entry's publish date whenever its type's form shows the date, rather than only
+  when the order starts with it; a grid of every type lists it when its order uses the date (`hasPublishDate()`)
+
 ## 3.5.0 (September 28, 2026)
 
 - Fixed `CmsNavItem::$showEntryTypes`, which could not be set and overwrote the entries item with each type; the

@@ -333,9 +333,22 @@ class EntryGridView extends GridView
 
     protected function getDateColumn(): ?Column
     {
-        return $this->provider->query->orderBy && key($this->provider->query->orderBy) === 'publish_date'
-            ? $this->publishDateColumn()
-            : $this->updatedAtColumn();
+        return $this->hasPublishDate() ? $this->publishDateColumn() : $this->updatedAtColumn();
+    }
+
+    /**
+     * A type whose form hides the date has none worth listing, the rule publishing follows as well. A grid of every
+     * type has no form to ask, so it lists the date when its order uses it.
+     */
+    protected function hasPublishDate(): bool
+    {
+        $type = Entry::instance()::findType($this->provider->type);
+
+        if ($type !== null) {
+            return !in_array('publish_date', $type->getHiddenFields(), true);
+        }
+
+        return array_key_exists('publish_date', $this->provider->query->orderBy ?? []);
     }
 
     protected function publishDateColumn(): ?Column
