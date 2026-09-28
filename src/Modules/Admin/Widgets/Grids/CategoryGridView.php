@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Modules\Admin\Widgets\Grids;
 
 use Hirtz\Skeleton\Web\Application;
-use Hirtz\Skeleton\Widgets\Buttons\CreateButton;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Modules\Admin\Controllers\CategoryController;
 use Hirtz\Cms\Modules\Admin\Data\CategoryActiveDataProvider;
@@ -97,7 +96,12 @@ class CategoryGridView extends GridView
     {
         return parent::getSummary()
             ?->emptyMessage(Yii::t('cms', 'CATEGORY_GRID_SUMMARY_EMPTY'))
-            ->emptyButton($this->getCategoryCreateButton());
+            ->emptyLink(
+                Yii::t('cms', 'CATEGORY_GRID_SUMMARY_EMPTY_LINK'),
+                $this->webuser->can(Category::AUTH_CATEGORY)
+                    ? ['/admin/cms/category/create', ...Application::current()->getRequest()->getQueryParams()]
+                    : null,
+            );
     }
 
     /**
@@ -106,16 +110,5 @@ class CategoryGridView extends GridView
     protected function getMissingTranslationsColumn(): ?Column
     {
         return MissingTranslationsColumn::make();
-    }
-
-    /**
-     * @see CategoryController::actionCreate()
-     */
-    protected function getCategoryCreateButton(): Stringable
-    {
-        return CreateButton::make()
-            ->label(Yii::t('cms', 'CATEGORY_CREATE_BUTTON'))
-            ->url(['/admin/cms/category/create', ...Application::current()->getRequest()->getQueryParams()])
-            ->roles([Category::AUTH_CATEGORY]);
     }
 }

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Widgets\Grids;
 
-use Hirtz\Cms\Modules\Admin\Widgets\Buttons\SectionCreateButton;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Controllers\SectionController;
@@ -74,7 +73,12 @@ class SectionGridView extends GridView
     {
         return parent::getSummary()
             ->emptyMessage(Yii::t('cms', 'SECTION_GRID_SUMMARY_EMPTY'))
-            ->emptyButton(SectionCreateButton::make()->model($this->provider->entry))
+            ->emptyLink(
+                Yii::t('cms', 'SECTION_GRID_SUMMARY_EMPTY_LINK'),
+                $this->webuser->can(Entry::AUTH_ENTRY)
+                    ? ['/admin/cms/section/create', 'entry' => $this->provider->entry->id]
+                    : null,
+            )
             ->visible(fn (): bool => $this->provider->getCount() === 0);
     }
 

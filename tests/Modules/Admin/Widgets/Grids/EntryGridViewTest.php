@@ -83,7 +83,7 @@ class EntryGridViewTest extends TestCase
         $html = Yii::$app->runAction('admin/cms/entry/index');
         self::assertIsString($html);
         self::assertStringContainsString(Yii::t('cms', 'ENTRY_GRID_SUMMARY_EMPTY'), $html);
-        self::assertMatchesRegularExpression('#<div class="alert-buttons"><a class="btn btn-accent" href="/admin/cms/entry/create"#', $html);
+        self::assertStringContainsString('Click <a href="/admin/cms/entry/create">here</a> to create the first entry.', $html);
 
         $this->createEntry('Needle', 'needle');
 
@@ -91,7 +91,7 @@ class EntryGridViewTest extends TestCase
         $html = Yii::$app->runAction('admin/cms/entry/index', ['q' => 'haystack']);
         self::assertIsString($html);
         self::assertStringNotContainsString(Yii::t('cms', 'ENTRY_GRID_SUMMARY_EMPTY'), $html);
-        self::assertStringNotContainsString('<div class="alert-buttons"><a class="btn btn-accent"', $html);
+        self::assertStringNotContainsString('to create the first entry', $html);
     }
 
     public function testAnEntryLackingATranslationSaysWhichOne(): void

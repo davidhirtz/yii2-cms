@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Widgets\Grids;
 
-use Hirtz\Cms\Modules\Admin\Widgets\Buttons\EntryCreateButton;
 use Hirtz\Cms\Models\Collections\CategoryCollection;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Modules\Admin\Controllers\EntryCategoryController;
@@ -441,7 +440,12 @@ class EntryGridView extends GridView
 
         return $this->isPicker() ? $summary : $summary
             ?->emptyMessage(Yii::t('cms', 'ENTRY_GRID_SUMMARY_EMPTY'))
-            ->emptyButton(EntryCreateButton::make());
+            ->emptyLink(
+                Yii::t('cms', 'ENTRY_GRID_SUMMARY_EMPTY_LINK'),
+                $this->webuser->can(Entry::AUTH_ENTRY)
+                    ? ['/admin/cms/entry/create', ...Application::current()->getRequest()->getQueryParams()]
+                    : null,
+            );
     }
 
     /**

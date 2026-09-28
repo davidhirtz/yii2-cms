@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Widgets\Grids;
 
+use Hirtz\Skeleton\Web\Application;
 use Hirtz\Skeleton\Db\ActiveRecord;
 use Hirtz\Cms\Modules\Admin\Widgets\Buttons\EntryRelationCreateButton;
 use Hirtz\Cms\Models\Entry;
@@ -62,9 +63,7 @@ class LinkedEntryGridView extends EntryGridView
     {
         return parent::getSummary()
             ->emptyMessage(Yii::t('cms', 'ENTRY_RELATION_GRID_SUMMARY_EMPTY'))
-            ->emptyButton($this->provider->relatedModel instanceof ActiveRecord
-                ? EntryRelationCreateButton::make()->model($this->provider->relatedModel)
-                : null)
+            ->emptyLink(Yii::t('cms', 'ENTRY_RELATION_GRID_SUMMARY_EMPTY_LINK'), $this->getEntryRelationCreateRoute())
             ->visible(fn (): bool => $this->provider->getCount() === 0);
     }
 
@@ -97,5 +96,34 @@ class LinkedEntryGridView extends EntryGridView
             ->label(Yii::t('cms', 'ENTRY_RELATION_BUTTON_REMOVE'))
             ->url(['delete', ...$model ? [$model->getParamName() => $model->id] : [], 'entry' => $entry->id])
             ->title(Yii::t('cms', 'ENTRY_RELATION_REMOVE_TITLE'));
+    }
+
+    /**
+     * The route `EntryRelationCreateButton` leads to, `null` without the relation's permission.
+     *
+     * @return array<int|string, mixed>|null
+     */
+    protected function getEntryRelationCreateRoute(): ?array
+    {
+        $model = $this->provider->relatedModel;
+
+        if (!$model instanceof ActiveRecord) {
+            return null;
+        }
+
+        $entryRelationClass = $model->getEntryRelationClass();
+
+        if (!$this->webuser->can($entryRelationClass::instance()->getPermissionName())) {
+            return null;
+        }
+
+        $entryTypes = $model->getEntriesTypes();
+
+        return [
+            $entryRelationClass::getAdminControllerRoute() . '/create',
+            ...Application::current()->getRequest()->getQueryParams(),
+            $model->getParamName() => $model->id,
+            'type' => $entryTypes ? current($entryTypes) : null,
+        ];
     }
 }
