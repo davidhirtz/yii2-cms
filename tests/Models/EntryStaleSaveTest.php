@@ -96,7 +96,8 @@ class EntryStaleSaveTest extends TestCase
 
         $html = EntryActiveForm::make()->model($entry)->render();
 
-        self::assertStringNotContainsString('Changed by someone else.', $html);
+        self::assertStringNotContainsString('>Changed by someone else.', $html);
+        self::assertStringContainsString('data-stale-save="Changed by someone else."', $html);
         self::assertSame(['Changed by someone else.'], $this->getWebSession()->getFlash('warning'));
     }
 
