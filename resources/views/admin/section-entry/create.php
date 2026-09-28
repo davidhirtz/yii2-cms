@@ -16,6 +16,7 @@ use Hirtz\Cms\Modules\Admin\Widgets\Navs\SectionHeader;
 use Hirtz\Cms\Modules\Admin\Widgets\Navs\SectionSubmenu;
 use Hirtz\Skeleton\Web\View;
 use Hirtz\Skeleton\Widgets\Grids\GridContainer;
+use Hirtz\Skeleton\Modules\Admin\Widgets\HintAlert;
 
 /** @var Section $section */
 $section = $provider->relatedModel;
@@ -25,6 +26,9 @@ echo SectionHeader::make()
 
 echo SectionSubmenu::make()
     ->model($section);
+
+echo HintAlert::make()
+    ->text(Yii::t('cms', 'ENTRY_RELATION_CREATE_HINT'));
 
 echo GridContainer::make()
     ->grid(EntryRelationGridView::make()

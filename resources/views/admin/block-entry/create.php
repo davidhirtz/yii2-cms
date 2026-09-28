@@ -16,6 +16,7 @@ use Hirtz\Cms\Modules\Admin\Widgets\Navs\BlockHeader;
 use Hirtz\Cms\Modules\Admin\Widgets\Navs\BlockSubmenu;
 use Hirtz\Skeleton\Web\View;
 use Hirtz\Skeleton\Widgets\Grids\GridContainer;
+use Hirtz\Skeleton\Modules\Admin\Widgets\HintAlert;
 
 /** @var Block $block */
 $block = $provider->relatedModel;
@@ -25,6 +26,9 @@ echo BlockHeader::make()
 
 echo BlockSubmenu::make()
     ->model($block);
+
+echo HintAlert::make()
+    ->text(Yii::t('cms', 'ENTRY_RELATION_CREATE_HINT'));
 
 echo GridContainer::make()
     ->grid(EntryRelationGridView::make()
