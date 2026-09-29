@@ -18,6 +18,7 @@ use Hirtz\Cms\Models\Events\TenantBeforeDeleteEventHandler;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Models\SectionAsset;
 use Hirtz\Cms\Models\SectionEntry;
+use Hirtz\Skeleton\Base\ConfigBootstrapInterface;
 use Hirtz\Skeleton\Filters\PageCache;
 use Hirtz\Skeleton\Helpers\EventHelper;
 use Hirtz\Skeleton\Modules\Admin\Controllers\DashboardController;
@@ -25,14 +26,75 @@ use Hirtz\Skeleton\Models\User;
 use Hirtz\Skeleton\Web\Application;
 use Hirtz\Tenant\Models\Tenant;
 use Hirtz\Tenant\Modules\Admin\Widgets\Grids\TenantGridView;
+use Override;
 use Yii;
-use yii\base\BootstrapInterface;
 use yii\base\ModelEvent;
 use yii\db\BaseActiveRecord;
 use yii\i18n\PhpMessageSource;
 
-class Bootstrap implements BootstrapInterface
+class Bootstrap implements ConfigBootstrapInterface
 {
+    #[Override]
+    public static function getDefaultConfig(): array
+    {
+        return [
+            'components' => [
+                'i18n' => [
+                    'translations' => [
+                        'cms' => [
+                            'class' => PhpMessageSource::class,
+                            'basePath' => '@cms/../messages',
+                            'forceTranslation' => true,
+                        ],
+                    ],
+                ],
+                'search' => [
+                    'models' => [
+                        Block::class,
+                        BlockAsset::class,
+                        Category::class,
+                        Entry::class,
+                        EntryAsset::class,
+                        Section::class,
+                        SectionAsset::class,
+                    ],
+                ],
+            ],
+            'container' => [
+                'definitions' => [
+                    TenantGridView::class => Modules\Admin\Widgets\Grids\TenantGridView::class,
+                ],
+            ],
+            'controllerMap' => [
+                'permalink' => Console\Controllers\PermalinkController::class,
+            ],
+            'modules' => [
+                'admin' => [
+                    'modules' => [
+                        'cms' => [
+                            'class' => Modules\Admin\Module::class,
+                        ],
+                    ],
+                ],
+                'cms' => [
+                    'class' => Module::class,
+                    'entryRelations' => [
+                        BlockEntry::class,
+                        SectionEntry::class,
+                    ],
+                ],
+                'media' => [
+                    'class' => \Hirtz\Media\Module::class,
+                    'assets' => [
+                        BlockAsset::class,
+                        EntryAsset::class,
+                        SectionAsset::class,
+                    ],
+                ],
+            ],
+        ];
+    }
+
     /**
      * @param Application<User> $app
      */
@@ -43,56 +105,9 @@ class Bootstrap implements BootstrapInterface
         CategoryCollection::reset();
         MenuCollection::reset();
 
-        $app->getI18n()->translations['cms'] ??= [
-            'class' => PhpMessageSource::class,
-            'basePath' => '@cms/../messages',
-            'forceTranslation' => true,
-        ];
-
-        $app->extendComponent('search', [
-            'models' => [
-                Block::class,
-                BlockAsset::class,
-                Category::class,
-                Entry::class,
-                EntryAsset::class,
-                Section::class,
-                SectionAsset::class,
-            ],
-        ]);
-
-        $app->extendModules([
-            'admin' => [
-                'modules' => [
-                    'cms' => [
-                        'class' => Modules\Admin\Module::class,
-                    ],
-                ],
-            ],
-            'cms' => [
-                'class' => Module::class,
-                'entryRelations' => [
-                    BlockEntry::class,
-                    SectionEntry::class,
-                ],
-            ],
-            'media' => [
-                'class' => \Hirtz\Media\Module::class,
-                'assets' => [
-                    BlockAsset::class,
-                    EntryAsset::class,
-                    SectionAsset::class,
-                ],
-            ],
-        ]);
-
         $this->addDefaultUrlRules();
         $this->addTenantEventHandlers();
         $this->addPageCacheEventHandlers();
-
-        if (!Yii::$container->has(TenantGridView::class)) {
-            Yii::$container->set(TenantGridView::class, Modules\Admin\Widgets\Grids\TenantGridView::class);
-        }
 
         DashboardController::addRoles(static fn (): array => [
             Entry::AUTH_ENTRY,
@@ -101,7 +116,6 @@ class Bootstrap implements BootstrapInterface
 
         $app->setMigrationNamespace('Hirtz\Cms\Migrations');
 
-        $app->controllerMap['permalink'] ??= Console\Controllers\PermalinkController::class;
     }
 
     /**
