@@ -25,7 +25,7 @@ use Yii;
  */
 class BlockIdSelectField extends SelectField
 {
-    public ?string $property = 'block_id';
+    protected ?string $property = 'block_id';
 
     #[Override]
     public function isVisible(): bool

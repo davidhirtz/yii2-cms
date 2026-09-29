@@ -30,7 +30,7 @@ class EntryRelationCountColumn extends BadgeColumn
             return false;
         }
 
-        foreach ($this->grid->provider->getModels() as $model) {
+        foreach ($this->grid->getProvider()->getModels() as $model) {
             if ($model instanceof EntryRelationModelInterface && $model->allowsEntries() && $model->entry_count > 0) {
                 return true;
             }

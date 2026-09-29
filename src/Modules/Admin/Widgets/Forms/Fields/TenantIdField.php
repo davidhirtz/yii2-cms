@@ -20,7 +20,7 @@ use Yii;
  */
 class TenantIdField extends SelectField
 {
-    public ?string $property = 'tenant_id';
+    protected ?string $property = 'tenant_id';
 
     #[Override]
     protected function configure(): void

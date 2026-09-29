@@ -35,7 +35,7 @@ class MenuColumn extends LinkColumn
     public function isVisible(): bool
     {
         if (parent::isVisible()) {
-            foreach ($this->grid->provider->getModels() as $model) {
+            foreach ($this->grid->getProvider()->getModels() as $model) {
                 if ($model->isMenuItem()) {
                     return true;
                 }

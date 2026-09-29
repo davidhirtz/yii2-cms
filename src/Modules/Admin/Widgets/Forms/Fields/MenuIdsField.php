@@ -15,7 +15,7 @@ use Yii;
  */
 class MenuIdsField extends CheckboxListField
 {
-    public ?string $property = 'menu_ids';
+    protected ?string $property = 'menu_ids';
 
     #[Override]
     public function isVisible(): bool

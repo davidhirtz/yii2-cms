@@ -1,5 +1,6 @@
 ## Unreleased
 
+- Changed the `$property` of the admin fields and `BlockSectionGridView::$block` to protected, following the skeleton
 - Fixed `MetaTags`, whose options could not be set in the container, and a missing title no longer fails
 - Changed `CmsNavItem::$showEntryTypes`, `$showCategories` and `$showBlocks` back to protected: the container reaches
   them through their setters (skeleton 3.6)

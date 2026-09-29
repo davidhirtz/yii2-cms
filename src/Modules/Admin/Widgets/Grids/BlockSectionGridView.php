@@ -46,7 +46,7 @@ class BlockSectionGridView extends GridView
     protected string $layout = '{summary}{items}{pager}{footer}';
     protected ?array $orderRoute = null;
 
-    public Block $block;
+    protected Block $block;
 
     public function block(Block $block): static
     {

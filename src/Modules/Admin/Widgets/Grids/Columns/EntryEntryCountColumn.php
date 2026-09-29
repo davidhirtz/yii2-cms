@@ -43,7 +43,7 @@ class EntryEntryCountColumn extends BadgeColumn
             return false;
         }
 
-        foreach ($this->grid->provider->getModels() as $model) {
+        foreach ($this->grid->getProvider()->getModels() as $model) {
             if ($model->allowsDescendants()) {
                 return true;
             }

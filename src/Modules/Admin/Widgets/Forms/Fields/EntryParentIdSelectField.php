@@ -21,7 +21,7 @@ class EntryParentIdSelectField extends SelectField
     use ModuleTrait;
     use ParentIdSelectFieldTrait;
 
-    public ?string $property = 'parent_id';
+    protected ?string $property = 'parent_id';
 
     /**
      * @var Entry[]

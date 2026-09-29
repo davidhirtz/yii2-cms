@@ -25,6 +25,7 @@ use Yii;
 
 /**
  * @property Entry $model
+ * @method Entry getModel()
  */
 class EntryActiveForm extends ActiveForm
 {

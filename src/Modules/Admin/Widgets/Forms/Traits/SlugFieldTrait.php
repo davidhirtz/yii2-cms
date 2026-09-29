@@ -20,7 +20,7 @@ trait SlugFieldTrait
                         Div::make()
                             ->class('text-truncate hidden sm:block')
                             ->addStyle(['max-width' => 'min(24rem, 40vw)'])
-                            ->text($this->getSlugBaseUrl($field->language))
+                            ->text($this->getSlugBaseUrl($field->getLanguage()))
                     )
                 )
             : null;
