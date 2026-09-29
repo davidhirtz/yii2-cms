@@ -28,14 +28,14 @@ class MetaTags extends Widget
     /**
      * @var list<string>|null
      */
-    public ?array $languages = null;
-    public bool $enableHrefLangLinks = true;
-    public bool $enableCanonicalUrl = false;
-    public bool $enableImages = true;
-    public bool $enableSocialMetaTags = true;
-    public ?int $assetType = Asset::TYPE_META_IMAGE;
-    public Transformation|string|null $transformation = Transformation::NAME_OPEN_GRAPH;
-    public string|false $ogType = 'website';
+    protected ?array $languages = null;
+    protected bool $enableHrefLangLinks = true;
+    protected bool $enableCanonicalUrl = false;
+    protected bool $enableImages = true;
+    protected bool $enableSocialMetaTags = true;
+    protected ?int $assetType = Asset::TYPE_META_IMAGE;
+    protected Transformation|string|null $transformation = Transformation::NAME_OPEN_GRAPH;
+    protected string|false $ogType = 'website';
 
     private UrlManager $urlManager;
 

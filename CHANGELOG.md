@@ -1,7 +1,9 @@
 ## Unreleased
 
-- Fixed `MetaTags`, whose options could not be set in the container; they are public with setters, and a missing title
-  no longer fails
+- Fixed `MetaTags`, whose options could not be set in the container, and a missing title no longer fails
+- Changed `CmsNavItem::$showEntryTypes`, `$showCategories` and `$showBlocks` back to protected: the container reaches
+  them through their setters (skeleton 3.6)
+- Requires `davidhirtz/yii2-skeleton` `^3.6`
 
 ## 3.5.1 (September 28, 2026)
 

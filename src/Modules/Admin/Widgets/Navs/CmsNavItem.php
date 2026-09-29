@@ -16,9 +16,9 @@ class CmsNavItem extends NavItem
 {
     use ModuleTrait;
 
-    public bool $showEntryTypes = false;
-    public bool $showCategories = true;
-    public bool $showBlocks = true;
+    protected bool $showEntryTypes = false;
+    protected bool $showCategories = true;
+    protected bool $showBlocks = true;
 
     /**
      * @param array<string, mixed> $config
