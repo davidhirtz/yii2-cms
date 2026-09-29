@@ -1,3 +1,8 @@
+## Unreleased
+
+- Fixed `MetaTags`, whose options could not be set in the container; they are public with setters, and a missing title
+  no longer fails
+
 ## 3.5.1 (September 28, 2026)
 
 - Fixed `EntryGridView` publish date column

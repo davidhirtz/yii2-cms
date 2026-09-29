@@ -79,6 +79,20 @@ class ModelsWithoutCustomAttributesTest extends TestCase
         self::assertSame('Root category 1', Yii::$app->getView()->title);
     }
 
+    public function testTheMetaTagsOfACategoryWithoutTitleOrNameKeepTheDocumentTitle(): void
+    {
+        $category = $this->getCategoryFromFixture('root-1');
+
+        $bare = new CategoryWithoutCustomAttributes();
+        Category::populateRecord($bare, [...$category->getOldAttributes(), 'name' => null]);
+
+        Yii::$app->set('view', Yii::$app->getComponents()['view']);
+        Yii::$app->getView()->title('Default');
+        MetaTags::make()->model($bare)->__toString();
+
+        self::assertSame('Default', Yii::$app->getView()->title);
+    }
+
     private function createSection(): SectionWithoutCustomAttributes
     {
         $section = $this->getSectionFromFixture('section-headline');

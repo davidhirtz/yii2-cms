@@ -150,12 +150,9 @@ class MetaTagsTest extends TestCase
         self::assertStringContainsString($file->getUrl() . '"', $this->getHead());
     }
 
-    /**
-     * The v2 property array fails on the protected options; a closure definition calls the setters.
-     */
     public function testTheContainerSetsADefaultTheCallerCanOverride(): void
     {
-        Yii::$container->set(MetaTags::class, fn (): MetaTags => (new MetaTags())->transformation(null));
+        Yii::$container->set(MetaTags::class, ['transformation' => null]);
 
         try {
             $entry = $this->getEntryFromFixture('page-enabled');
