@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Models\Actions;
 
 use Hirtz\Cms\Models\Entry;
-use davidhirtz\yii2\datetime\DateTime;
+use Hirtz\Skeleton\Db\DateTime;
 use Hirtz\Skeleton\I18n\Message;
 use Hirtz\Skeleton\Models\Trail;
 

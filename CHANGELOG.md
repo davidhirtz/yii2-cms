@@ -1,3 +1,7 @@
+## Unreleased
+
+- Requires `davidhirtz/yii2-skeleton` `^3.7`, whose `AttributeTypecastBehavior` makes date columns dates: the models no longer attach `DateTimeBehavior`
+
 ## 3.6.0 (September 29, 2026)
 
 - Changed the `$property` of the admin fields and `BlockSectionGridView::$block` to protected, following the skeleton

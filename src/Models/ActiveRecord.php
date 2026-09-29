@@ -6,8 +6,7 @@ namespace Hirtz\Cms\Models;
 
 use Hirtz\Cms\Models\Types\Type;
 use Hirtz\Cms\Modules\ModuleTrait;
-use davidhirtz\yii2\datetime\DateTime;
-use davidhirtz\yii2\datetime\DateTimeBehavior;
+use Hirtz\Skeleton\Db\DateTime;
 use Hirtz\Skeleton\Behaviors\BlameableBehavior;
 use Hirtz\Skeleton\Behaviors\TimestampBehavior;
 use Hirtz\Skeleton\Behaviors\TrailBehavior;
@@ -70,7 +69,6 @@ abstract class ActiveRecord extends BaseActiveRecord implements
     {
         return [
             ...parent::behaviors(),
-            'DateTimeBehavior' => DateTimeBehavior::class,
             'TrailBehavior' => TrailBehavior::class,
         ];
     }

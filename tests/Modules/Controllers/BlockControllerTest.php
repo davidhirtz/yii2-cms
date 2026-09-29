@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Tests\Modules\Controllers;
 
-use davidhirtz\yii2\datetime\DateTime;
+use Hirtz\Skeleton\Db\DateTime;
 use Hirtz\Cms\Models\Block;
 use Hirtz\Cms\Modules\Admin\Data\BlockActiveDataProvider;
 use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;

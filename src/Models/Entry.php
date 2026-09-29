@@ -33,8 +33,8 @@ use Hirtz\Tenant\Models\Traits\TenantRelationTrait;
 use BackedEnum;
 use Override;
 use Yii;
-use davidhirtz\yii2\datetime\DateTime;
-use davidhirtz\yii2\datetime\DateTimeValidator;
+use Hirtz\Skeleton\Db\DateTime;
+use Hirtz\Skeleton\Validators\DateTimeValidator;
 use yii\db\ActiveQuery;
 use yii\db\Query;
 

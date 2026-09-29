@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Models;
 
-use davidhirtz\yii2\datetime\DateTime;
-use davidhirtz\yii2\datetime\DateTimeBehavior;
+use Hirtz\Skeleton\Db\DateTime;
 use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Models\Queries\PermalinkQuery;
 use Hirtz\Cms\Modules\ModuleTrait;
@@ -45,15 +44,6 @@ class Permalink extends ActiveRecord
 
     public int $slugMaxLength = 100;
     public int $uriMaxLength = 255;
-
-    #[Override]
-    public function behaviors(): array
-    {
-        return [
-            ...parent::behaviors(),
-            'DateTimeBehavior' => DateTimeBehavior::class,
-        ];
-    }
 
     #[Override]
     public function rules(): array

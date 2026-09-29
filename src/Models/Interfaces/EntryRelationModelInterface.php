@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Models\Interfaces;
 
-use davidhirtz\yii2\datetime\DateTime;
+use Hirtz\Skeleton\Db\DateTime;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\EntryRelation;
 use Hirtz\Cms\Models\Queries\EntryQuery;
