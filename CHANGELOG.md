@@ -1,4 +1,4 @@
-## Unreleased
+## 3.6.0 (September 29, 2026)
 
 - Changed the `$property` of the admin fields and `BlockSectionGridView::$block` to protected, following the skeleton
 - Fixed `MetaTags`, whose options could not be set in the container, and a missing title no longer fails
