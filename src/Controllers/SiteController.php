@@ -35,6 +35,9 @@ class SiteController extends Controller
             : '';
     }
 
+    /**
+     * @throws NotFoundHttpException
+     */
     public function actionView(string $slug): Response|string
     {
         if (str_ends_with($slug, '/')) {
