@@ -169,7 +169,7 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
         return $this->isEnabled()
             && $this->publish_date instanceof \DateTimeInterface
             && $this->publish_date->getTimestamp() > time()
-            && $this->isAttributeVisible('publish_date');
+            && ($this->getType()?->schedules() ?? true);
     }
 
     #[Override]

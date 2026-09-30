@@ -25,6 +25,7 @@ class EntryType extends Type implements AssetModelTypeInterface
     protected bool $allowsCategories = true;
     protected bool $allowsSections = true;
     protected bool $allowsDescendants = true;
+    protected ?bool $schedules = null;
 
     /**
      * Whether an entry of this type is put into categories. The module's `enableCategories` decides first: a type
@@ -46,6 +47,16 @@ class EntryType extends Type implements AssetModelTypeInterface
     public function allowDescendants(bool $allowDescendants = true): static
     {
         $this->allowsDescendants = $allowDescendants;
+        return $this;
+    }
+
+    /**
+     * Whether an entry's `publish_date` keeps it off the site until then. Unset, a type schedules unless it hides
+     * the date; a type whose date is something else (an event's day) shows it and passes `false`.
+     */
+    public function schedule(?bool $schedule = true): static
+    {
+        $this->schedules = $schedule;
         return $this;
     }
 
@@ -108,6 +119,11 @@ class EntryType extends Type implements AssetModelTypeInterface
     public function allowsDescendants(): bool
     {
         return $this->allowsDescendants;
+    }
+
+    public function schedules(): bool
+    {
+        return $this->schedules ?? !in_array('publish_date', $this->getHiddenFields(), true);
     }
 
     public function showsCategories(): ?bool

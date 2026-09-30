@@ -306,7 +306,7 @@ class Module extends \Hirtz\Skeleton\Base\Module
             ->andWhere(['>=', 'status', Entry::STATUS_ENABLED])
             ->andWhere(['>', 'publish_date', gmdate('Y-m-d H:i:s')]);
 
-        if ($types = EntryQuery::getTypesWithoutPublishDate(Entry::class)) {
+        if ($types = EntryQuery::getUnscheduledTypes(Entry::class)) {
             $query->andWhere(['not in', 'type', $types]);
         }
 

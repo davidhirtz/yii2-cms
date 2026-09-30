@@ -102,7 +102,7 @@ class EntryActiveForm extends ActiveForm
     {
         return DateTimeField::make()
             ->property('publish_date')
-            ->hint(Yii::t('cms', 'ENTRY_PUBLISH_DATE_HINT'));
+            ->hint(($this->model->getType()?->schedules() ?? true) ? Yii::t('cms', 'ENTRY_PUBLISH_DATE_HINT') : null);
     }
 
     protected function getMenuIdsField(): ?Stringable

@@ -10,6 +10,7 @@ use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\EntryCategory;
 use Hirtz\Cms\Models\Menus\Menu;
 use Hirtz\Cms\Models\Permalink;
+use Hirtz\Cms\Models\Types\EntryType;
 use Hirtz\Media\Models\Queries\AssetQuery;
 use Hirtz\Cms\Models\EntryRelation;
 use Hirtz\Cms\Models\Interfaces\EntryRelationModelInterface;
@@ -91,7 +92,7 @@ class EntryQuery extends I18nActiveQuery
     /**
      * Rounded up to the end of the minute, so the statement — and the query and page caches keyed on it — holds for
      * one: a scheduled entry goes live up to a minute early, and one saved this very second is never hidden. A type
-     * whose form hides the date keeps it for display: it gates nothing there.
+     * that does not schedule ({@see EntryType::schedules()}) keeps the date for display: it gates nothing there.
      */
     public function wherePublished(): static
     {
@@ -100,7 +101,7 @@ class EntryQuery extends I18nActiveQuery
 
         $condition = ['or', [$column => null], ['<=', $column, gmdate('Y-m-d H:i:59')]];
 
-        if ($types = static::getTypesWithoutPublishDate($modelClass)) {
+        if ($types = static::getUnscheduledTypes($modelClass)) {
             $condition[] = [$modelClass::tableName() . '.[[type]]' => $types];
         }
 
@@ -111,17 +112,27 @@ class EntryQuery extends I18nActiveQuery
      * @param class-string<Entry> $modelClass
      * @return list<int>
      */
-    public static function getTypesWithoutPublishDate(string $modelClass): array
+    public static function getUnscheduledTypes(string $modelClass): array
     {
         $types = [];
 
         foreach ($modelClass::getTypeDefinitions() as $value => $type) {
-            if (in_array('publish_date', $type->getHiddenFields(), true)) {
+            if ($type instanceof EntryType && !$type->schedules()) {
                 $types[] = (int)$value;
             }
         }
 
         return $types;
+    }
+
+    /**
+     * @param class-string<Entry> $modelClass
+     * @return list<int>
+     * @deprecated use {@see static::getUnscheduledTypes()}
+     */
+    public static function getTypesWithoutPublishDate(string $modelClass): array
+    {
+        return static::getUnscheduledTypes($modelClass);
     }
 
     #[Override]

@@ -142,10 +142,12 @@ menu in one query. A section set creates its sections on an entry in one go and 
 
 An enabled entry is on the site from its `publish_date`: the frontend's status query (`EntryQuery::whereStatus()`,
 behind `enabled()`, the menus, the relations and the sitemap) leaves out one dated later, to the minute; the draft
-domain previews it and the admin marks it *scheduled*. A type whose form hides the date (`hiddenFields('publish_date')`)
-keeps it for display only. A cached page expires when the next scheduled entry goes live. An entry's children follow
-its `status` through `parent_status`, not its date: the child of a scheduled entry is reachable at its own URL, which
-its form warns about (`Modules\Admin\Widgets\ScheduledAncestorAlert`, `Entry::findScheduledAncestor()`).
+domain previews it and the admin marks it *scheduled*. A type whose date means something else, an event's day, says
+so with `EntryType::schedule(false)`: its entries are listed whatever their date, and the form drops the scheduling
+hint. Unset, a type schedules unless its form hides the date (`hiddenFields('publish_date')`). A cached page
+expires when the next scheduled entry goes live. An entry's children follow its `status` through `parent_status`, not
+its date: the child of a scheduled entry is reachable at its own URL, which its form warns about
+(`Modules\Admin\Widgets\ScheduledAncestorAlert`, `Entry::findScheduledAncestor()`).
 
 ### Admin
 
