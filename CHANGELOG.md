@@ -1,3 +1,7 @@
+## Unreleased
+
+- Added copying an entry, section or block asset to another entry, section or block (`duplicate` on each asset controller)
+
 ## 3.8.0 (September 30, 2026)
 
 - Requires `davidhirtz/yii2-skeleton` `^3.8`: the bundle's defaults are `Bootstrap::getDefaultConfig()`, merged under the application's configuration, so a project's own configuration wins without the former "unless already set" guards

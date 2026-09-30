@@ -8,10 +8,12 @@ use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Models\SectionAsset;
 use Hirtz\Cms\Modules\Admin\Controllers\Traits\SectionControllerTrait;
+use Hirtz\Cms\Modules\Admin\Data\SectionActiveDataProvider;
 use Hirtz\Media\Modules\Admin\Controllers\Traits\AssetControllerTrait;
 use Hirtz\Cms\Modules\Admin\Module;
 use Hirtz\Skeleton\Web\Controller;
 use Override;
+use Yii;
 use yii\filters\AccessControl;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -39,9 +41,11 @@ class SectionAssetController extends Controller
                             'create',
                             'delete',
                             'delete-all',
+                            'duplicate',
                             'index',
                             'order',
                             'remove',
+                            'sections',
                             'status',
                             'update',
                         ],
@@ -82,6 +86,25 @@ class SectionAssetController extends Controller
     public function actionStatus(int $id): Response
     {
         return $this->updateStatus($this->findSectionAsset($id));
+    }
+
+    public function actionSections(int $id): Response|string
+    {
+        $asset = $this->findSectionAsset($id);
+
+        $provider = Yii::$container->get(SectionActiveDataProvider::class, [], [
+            'entry' => $asset->model->entry,
+        ]);
+
+        return $this->render('sections', [
+            'asset' => $asset,
+            'provider' => $provider,
+        ]);
+    }
+
+    public function actionDuplicate(int $id, int $section): Response
+    {
+        return $this->duplicateAsset($this->findSectionAsset($id), $this->findSectionWithAssets($section));
     }
 
     public function actionRemove(

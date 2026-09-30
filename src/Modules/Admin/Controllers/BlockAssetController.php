@@ -7,10 +7,12 @@ namespace Hirtz\Cms\Modules\Admin\Controllers;
 use Hirtz\Cms\Models\Block;
 use Hirtz\Cms\Models\BlockAsset;
 use Hirtz\Cms\Modules\Admin\Controllers\Traits\BlockControllerTrait;
+use Hirtz\Cms\Modules\Admin\Data\BlockActiveDataProvider;
 use Hirtz\Cms\Modules\Admin\Module;
 use Hirtz\Media\Modules\Admin\Controllers\Traits\AssetControllerTrait;
 use Hirtz\Skeleton\Web\Controller;
 use Override;
+use Yii;
 use yii\filters\AccessControl;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -35,9 +37,11 @@ class BlockAssetController extends Controller
                     [
                         'allow' => true,
                         'actions' => [
+                            'blocks',
                             'create',
                             'delete',
                             'delete-all',
+                            'duplicate',
                             'index',
                             'order',
                             'remove',
@@ -81,6 +85,24 @@ class BlockAssetController extends Controller
     public function actionStatus(int $id): Response
     {
         return $this->updateStatus($this->findBlockAsset($id));
+    }
+
+    public function actionBlocks(int $id, ?int $type = null, ?string $q = null): Response|string
+    {
+        $provider = Yii::$container->get(BlockActiveDataProvider::class, config: [
+            'searchString' => $q,
+            'type' => $type,
+        ]);
+
+        return $this->render('blocks', [
+            'asset' => $this->findBlockAsset($id),
+            'provider' => $provider,
+        ]);
+    }
+
+    public function actionDuplicate(int $id, int $block): Response
+    {
+        return $this->duplicateAsset($this->findBlockAsset($id), $this->findBlockWithAssets($block));
     }
 
     public function actionRemove(

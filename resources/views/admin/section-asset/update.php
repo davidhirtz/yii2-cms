@@ -23,7 +23,8 @@ echo AssetHeader::make()
     ->model($asset)
     ->subheading(FrontendLink::findInChain($asset)?->addClass('hidden-sticky'))
     ->content(AssetActionDropdown::make()
-        ->model($asset));
+        ->model($asset)
+        ->duplicateRoute(['sections', 'id' => $asset->id]));
 
 echo SectionSubmenu::make()
     ->model($asset->model);

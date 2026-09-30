@@ -4,13 +4,16 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Controllers;
 
+use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\EntryAsset;
 use Hirtz\Cms\Modules\Admin\Controllers\Traits\EntryControllerTrait;
+use Hirtz\Cms\Modules\Admin\Data\EntryActiveDataProvider;
 use Hirtz\Media\Modules\Admin\Controllers\Traits\AssetControllerTrait;
 use Hirtz\Cms\Modules\Admin\Module;
 use Hirtz\Skeleton\Web\Controller;
 use Override;
+use Yii;
 use yii\filters\AccessControl;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -38,6 +41,8 @@ class EntryAssetController extends Controller
                             'create',
                             'delete',
                             'delete-all',
+                            'duplicate',
+                            'entries',
                             'index',
                             'order',
                             'remove',
@@ -81,6 +86,31 @@ class EntryAssetController extends Controller
     public function actionStatus(int $id): Response
     {
         return $this->updateStatus($this->findEntryAsset($id));
+    }
+
+    public function actionEntries(
+        int $id,
+        ?int $category = null,
+        ?int $parent = null,
+        ?int $type = null,
+        ?string $q = null,
+    ): Response|string {
+        $provider = Yii::$container->get(EntryActiveDataProvider::class, config: [
+            'category' => Category::findOne($category),
+            'parent' => $parent ? Entry::findOne($parent) : null,
+            'searchString' => $q,
+            'type' => $type,
+        ]);
+
+        return $this->render('entries', [
+            'asset' => $this->findEntryAsset($id),
+            'provider' => $provider,
+        ]);
+    }
+
+    public function actionDuplicate(int $id, int $entry): Response
+    {
+        return $this->duplicateAsset($this->findEntryAsset($id), $this->findEntryWithAssets($entry));
     }
 
     public function actionRemove(
