@@ -18,6 +18,7 @@ use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Skeleton\Db\ActiveQuery;
 use Hirtz\Skeleton\Db\I18nActiveQuery;
 use Hirtz\Tenant\Models\Queries\Traits\TenantQueryTrait;
+use Hirtz\Tenant\Web\UrlManager;
 use Override;
 use Yii;
 use yii\db\Expression;
@@ -264,12 +265,16 @@ class EntryQuery extends I18nActiveQuery
 
     /**
      * A per-language record wins over the {@see Permalink::LANGUAGE_ALL} one for the same path. The matched record is
-     * handed to the entry, so the relation is not loaded to read it back.
+     * handed to the entry, so the relation is not loaded to read it back. The permalink's own copy of the tenant is
+     * what lets the lookup use its unique key, which leads with it.
      */
     public function whereUri(string $uri, ?string $language = null): static
     {
         $language ??= Yii::$app->language;
         $alias = Permalink::tableName();
+
+        $manager = Yii::$app->getUrlManager();
+        $tenant = $manager instanceof UrlManager ? $manager->tenant : null;
 
         return $this->innerJoin($alias, "$alias.[[entry_id]] = " . Entry::tableName() . '.[[id]]')
             ->selectJoinedRecord('permalink', Permalink::find(), $alias, function (Entry $entry, ?Permalink $permalink): void {
@@ -278,6 +283,7 @@ class EntryQuery extends I18nActiveQuery
                 }
             })
             ->andWhere([
+                ...$tenant ? ["$alias.[[tenant_id]]" => $tenant->id] : [],
                 "$alias.[[uri]]" => trim($uri, '/'),
                 "$alias.[[language]]" => [$language, Permalink::LANGUAGE_ALL],
             ])

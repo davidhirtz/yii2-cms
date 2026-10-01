@@ -53,6 +53,43 @@ class EntryTenantPermalinkTest extends TestCase
     }
 
     /**
+     * The unique key of the permalink leads with the tenant, so the lookup only uses it with the permalink's own copy.
+     */
+    public function testTheEntryLookupNamesThePermalinkTenant(): void
+    {
+        $second = $this->createTenant();
+
+        $this->createEntry('home', TenantCollection::getDefault());
+        $two = $this->createEntry('home', $second);
+
+        $manager = Yii::$app->getUrlManager();
+        self::assertInstanceOf(UrlManager::class, $manager);
+        $manager->setTenant($second);
+
+        $query = TestEntry::find()->whereUri('home');
+
+        self::assertStringContainsString(
+            "`permalink`.`tenant_id`=$second->id",
+            $query->createCommand()->getRawSql()
+        );
+
+        self::assertSame([$two->id], $query->select(TestEntry::tableName() . '.[[id]]')->column());
+    }
+
+    public function testTheEntryLookupWithoutATenantNamesNone(): void
+    {
+        $manager = Yii::$app->getUrlManager();
+        self::assertInstanceOf(UrlManager::class, $manager);
+        $manager->tenant = null;
+
+        $entry = $this->createEntry('home', TenantCollection::getDefault());
+        $query = TestEntry::find()->whereUri('home');
+
+        self::assertStringNotContainsString('`tenant_id`=', $query->createCommand()->getRawSql());
+        self::assertSame($entry->id, $query->one()?->id);
+    }
+
+    /**
      * The current tenant is the default one, as in the admin, so a target on another host must be absolute.
      */
     public function testRenameOnAnotherHostRecordsARedirectOnThatHost(): void
