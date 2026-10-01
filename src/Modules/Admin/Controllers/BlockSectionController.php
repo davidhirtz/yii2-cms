@@ -54,6 +54,16 @@ class BlockSectionController extends AbstractController
         ];
     }
 
+    #[Override]
+    public function beforeAction($action): bool
+    {
+        if (!static::getModule()->enableBlocks) {
+            throw new NotFoundHttpException();
+        }
+
+        return parent::beforeAction($action);
+    }
+
     public function actionIndex(?int $block = null): Response|string
     {
         if (!$block) {
