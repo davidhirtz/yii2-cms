@@ -32,11 +32,12 @@ class BlockSectionControllerTest extends TestCase
 
     public function testTheAdminIsNotFoundWhileTheBlocksAreDisabled(): void
     {
-        TestEntry::getModule()->enableBlocks = false;
         $this->login();
+        $block = $this->createBlock();
+        TestEntry::getModule()->enableBlocks = false;
 
         $this->expectException(NotFoundHttpException::class);
-        Yii::$app->runAction('admin/cms/block-section/index', ['block' => 1]);
+        Yii::$app->runAction('admin/cms/block-section/index', ['block' => $block->id]);
     }
 
     public function testIndexListsTheSectionsThatPlaceTheBlock(): void
