@@ -44,6 +44,26 @@ class EntryCategoryTest extends TestCase
         self::assertContains($category->id, TestEntry::findOne($entry->id)->category_ids);
     }
 
+    /**
+     * Every junction of the entry goes in the same loop, so none of them re-deletes the inherited ones.
+     */
+    public function testDeletingTheEntryDeletesItsJunctionsInBatch(): void
+    {
+        $entry = $this->getEntryFromFixture('post-1');
+        $child = $this->getCategoryFromFixture('child-1');
+        $this->createEntryCategory($entry, $child);
+
+        $entry = TestEntry::findOne($entry->id);
+        self::assertNotNull($entry);
+
+        self::assertSame(25, $this->countQueries(fn () => $entry->delete()));
+
+        foreach ([$child, $this->getCategoryFromFixture('root-1')] as $category) {
+            $junctions = (int)EntryCategory::find()->where(['category_id' => $category->id])->count();
+            self::assertSame($junctions, Category::findOne($category->id)?->entry_count);
+        }
+    }
+
     public function testTheJunctionIsAddedToEveryAncestorToo(): void
     {
         $entry = $this->getEntryFromFixture('post-1');

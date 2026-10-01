@@ -346,7 +346,7 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
 
             if ($this->category_ids) {
                 foreach ($this->entryCategories as $entryCategory) {
-                    $entryCategory->setIsBatch($this->getIsBatch());
+                    $entryCategory->setIsBatch(true);
                     $entryCategory->delete();
                 }
             }
