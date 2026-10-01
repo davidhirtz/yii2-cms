@@ -12,6 +12,7 @@ use Hirtz\Media\Modules\Admin\Widgets\Grids\Columns\AssetCountColumn;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\Columns\EntryRelationCountColumn;
 use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Media\Modules\Admin\Widgets\Grids\Columns\Thumbnail;
+use Hirtz\Skeleton\Helpers\Html;
 use Hirtz\Skeleton\Html\A;
 use Hirtz\Skeleton\Html\Div;
 use Hirtz\Skeleton\Models\CustomAttributes\HtmlCustomAttribute;
@@ -160,12 +161,12 @@ class SectionGridView extends GridView
         }
 
         if (!$html) {
-            $html = (string)($section->getVisibleAttribute('content') ?? '');
-            $html = $section->getCustomAttribute('content') instanceof HtmlCustomAttribute
-                ? strip_tags($html)
-                : $html;
+            $text = (string)($section->getVisibleAttribute('content') ?? '');
+            $text = $section->getCustomAttribute('content') instanceof HtmlCustomAttribute
+                ? html_entity_decode(strip_tags($text), ENT_QUOTES | ENT_HTML5)
+                : $text;
 
-            $html = StringHelper::truncate($html, 100);
+            $html = Html::encode(StringHelper::truncate($text, 100));
         }
 
         if (!$html) {
