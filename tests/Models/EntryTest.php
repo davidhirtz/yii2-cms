@@ -48,6 +48,16 @@ class EntryTest extends TestCase
         self::assertTrue($entry->isIndex());
     }
 
+    public function testDescriptionKeepsMultibyteCharacters(): void
+    {
+        $entry = TestEntry::create();
+        $entry->name = 'Århus';
+        $entry->description = "Århus ząb\r\n\r\nхлеб  日本";
+        $entry->validate();
+
+        self::assertSame('Århus ząb хлеб 日本', $entry->description);
+    }
+
     public function testCreateEntryValidationErrors(): void
     {
         $entry = TestEntry::create();

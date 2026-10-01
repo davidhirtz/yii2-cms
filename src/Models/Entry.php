@@ -145,8 +145,8 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
         $this->ensureSlug();
 
         foreach ($this->getI18nAttributeNames('description') as $attributeName) {
-            $description = preg_replace('/\R+/', ' ', (string)$this->$attributeName);
-            $description = preg_replace('/\s+/', ' ', $description);
+            $description = preg_replace('/\R+/u', ' ', (string)$this->$attributeName);
+            $description = preg_replace('/\s+/u', ' ', $description);
             $this->$attributeName = trim($description);
         }
 
