@@ -1,5 +1,6 @@
 ## Unreleased
 
+- Requires `davidhirtz/yii2-media` `^3.8`: the asset controllers copy an asset through its `duplicateAsset()`
 - Added copying an entry, section or block asset to another entry, section or block (`duplicate` on each asset controller)
 - Added `EntryType::schedule()`: whether a type's `publish_date` keeps an entry off the site, by default unless the
   type hides the date; `EntryQuery::getTypesWithoutPublishDate()` is deprecated for `getUnscheduledTypes()`
