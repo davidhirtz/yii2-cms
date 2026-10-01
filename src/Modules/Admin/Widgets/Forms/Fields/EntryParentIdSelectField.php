@@ -8,7 +8,6 @@ use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits\ParentIdSelectFieldTrait;
 use Hirtz\Cms\Modules\ModuleTrait;
-use Hirtz\Skeleton\Helpers\Html;
 use Hirtz\Skeleton\Widgets\Forms\Fields\SelectField;
 use Override;
 use Yii;
@@ -61,7 +60,7 @@ class EntryParentIdSelectField extends SelectField
                 continue;
             }
 
-            $name = Html::encode($entry->getI18nAttribute('name') ?: Yii::t('cms', 'COMMON_NO_TITLE'));
+            $name = $entry->getI18nAttribute('name') ?: Yii::t('cms', 'COMMON_NO_TITLE');
             $count = count($entry->getAncestorIds());
             $indent = ($count ? (str_repeat($this->indent, $count) . ' ') : '');
 
