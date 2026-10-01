@@ -36,7 +36,6 @@ use Yii;
 
 /**
  * @property int $id
- * @property int|false|null $position
  * @property DateTime|null $updated_at
  * @property DateTime $created_at
  *
@@ -138,8 +137,10 @@ abstract class ActiveRecord extends BaseActiveRecord implements
             return;
         }
 
-        if (!$this->position) {
-            $this->position = $this->position !== false ? ($this->getMaxPosition() + 1) : 0;
+        $position = $this->getAttribute('position');
+
+        if (!$position) {
+            $this->setAttribute('position', $position !== false ? ($this->getMaxPosition() + 1) : 0);
         }
     }
 
