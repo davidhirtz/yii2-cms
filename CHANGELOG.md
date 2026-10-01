@@ -1,6 +1,16 @@
 ## Unreleased
 
 - Fixed the baseline migration collation to `utf8mb4`
+- Changed the `davidhirtz/yii2-tenant` requirement to `^3.2`, the first release without `DateTimeBehavior`
+- Changed deleting an entry to delete its sections and assets in batch
+- Fixed the reorder actions invalidating the page cache before the transaction commits
+- Fixed reordering or deleting a category leaving `CategoryCollection` stale
+- Fixed a duplicated entry or section claiming the counts of children that were not copied
+- Fixed moving an entry to another tenant, or a section to another entry, leaving their search documents behind
+- Fixed `EntryQuery::whereUri()` scanning the whole permalink table; it constrains the permalink's tenant
+- Fixed the section grid querying assets and blocks per row
+- Fixed the category, block and block-section admins answering while their module flag is off
+- Fixed an entry name being encoded twice in the parent select
 
 ## 3.9.0 (October 1, 2026)
 
@@ -46,6 +56,8 @@
 
 ## 3.3.0 (September 25, 2026)
 
+- Added `Migrations\M260925100000AuthorBlocksAndRedirects`, which grants the `author` role the `block` and the skeleton's
+  `redirect` permission
 - Changed `Section` to translate `name` and `content` by default
 - Added `Artwork::fetchPriorityHighPosition()`
 
