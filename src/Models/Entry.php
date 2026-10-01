@@ -26,6 +26,7 @@ use Hirtz\Skeleton\Models\Breadcrumb;
 use Hirtz\Skeleton\Models\Interfaces\SearchableInterface;
 use Hirtz\Skeleton\Models\Traits\MaterializedTreeTrait;
 use Hirtz\Skeleton\Models\Traits\SearchableTrait;
+use Hirtz\Skeleton\Search\Search;
 use Hirtz\Skeleton\Web\User as WebUser;
 use Hirtz\Tenant\Models\Collections\TenantCollection;
 use Hirtz\Tenant\Models\Tenant;
@@ -303,6 +304,7 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
 
         if ($previousTenantId) {
             $this->updateDescendantTenants();
+            $this->updateSearchTenants();
             (new UpdateTenantEntryCount($previousTenantId))->update();
         }
 
@@ -525,6 +527,44 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
         ], ['id' => $descendantIds]);
 
         Permalink::updateAll(['tenant_id' => $this->tenant_id], ['entry_id' => $descendantIds]);
+    }
+
+    /**
+     * The sections and the descendants carry the entry's tenant in their search documents, but nothing saves them
+     * when it changes: the descendants are moved by {@see static::updateDescendantTenants()}, the sections not at all.
+     */
+    protected function updateSearchTenants(): void
+    {
+        $search = Search::getComponent();
+
+        if (!$search->isEnabled()) {
+            return;
+        }
+
+        $condition = ['entry_id' => $this->id];
+        $queries = [];
+
+        if ($this->entry_count) {
+            $descendantIds = $this->findDescendants()
+                ->select('id')
+                ->orderBy([]);
+
+            $condition = ['or', $condition, ['entry_id' => $descendantIds]];
+            $queries[] = static::findSearchable()->andWhere(['id' => $descendantIds]);
+        }
+
+        $queries[] = Section::findSearchable()->andWhere($condition);
+
+        foreach ($queries as $query) {
+            foreach ($query->batch() as $records) {
+                $models = array_filter(
+                    $records,
+                    fn (mixed $record): bool => $record instanceof SearchableInterface && $record->isSearchable()
+                );
+
+                $search->index(...$models);
+            }
+        }
     }
 
     protected function ensureRequiredI18nAttributes(): void

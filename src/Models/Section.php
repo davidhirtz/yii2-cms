@@ -16,6 +16,7 @@ use Hirtz\Cms\Models\Types\SectionType;
 use Hirtz\Media\Models\Asset;
 use Hirtz\Media\Models\Interfaces\AssetModelInterface;
 use Hirtz\Media\Models\Traits\AssetModelTrait;
+use Hirtz\Skeleton\Behaviors\SearchBehavior;
 use Hirtz\Skeleton\Models\Breadcrumb;
 use Hirtz\Skeleton\Models\CustomAttributes\CustomAttribute;
 use Hirtz\Skeleton\Models\CustomAttributes\HtmlCustomAttribute;
@@ -63,6 +64,21 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
      * @var list<TrailModelInterface>|null
      */
     private ?array $trailParents = null;
+
+    /**
+     * The documents carry the entry's tenant, so a section moved to another entry is reindexed.
+     */
+    #[Override]
+    public function behaviors(): array
+    {
+        return [
+            ...parent::behaviors(),
+            'SearchBehavior' => [
+                'class' => SearchBehavior::class,
+                'attributes' => [...SearchBehavior::STATE_ATTRIBUTES, 'entry_id'],
+            ],
+        ];
+    }
 
     #[Override]
     public function rules(): array

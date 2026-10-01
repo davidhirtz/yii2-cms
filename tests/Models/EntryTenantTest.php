@@ -8,9 +8,12 @@ use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Test\Models\TestEntry;
 use Hirtz\Cms\Test\TestCase;
 use Hirtz\Skeleton\Helpers\Url;
+use Hirtz\Skeleton\Models\Search;
+use Hirtz\Skeleton\Search\Search as SearchComponent;
 use Hirtz\Tenant\Models\Collections\TenantCollection;
 use Hirtz\Tenant\Models\Tenant;
 use Yii;
+use yii\db\Query;
 
 class EntryTenantTest extends TestCase
 {
@@ -135,6 +138,77 @@ class EntryTenantTest extends TestCase
 
         $parent->refresh();
         self::assertSame($newTenant->id, $parent->getPermalink()->tenant_id);
+    }
+
+    /**
+     * Neither the descendants nor the sections are saved when the tenant changes, but their search documents carry it.
+     */
+    public function testChangingTheTenantMovesTheSearchDocumentsOfSectionsAndDescendants(): void
+    {
+        TestEntry::getModule()->enableNestedEntries = true;
+
+        $parent = $this->createEntry('parent', TenantCollection::getDefault());
+        $child = $this->createEntry('child', TenantCollection::getDefault(), $parent);
+
+        $parentSection = $this->createSection($parent);
+        $childSection = $this->createSection($child);
+
+        $newTenant = $this->createTenant();
+
+        $parent->refresh();
+        $parent->tenant_id = $newTenant->id;
+
+        self::assertTrue($parent->save(), implode(' ', $parent->getErrorSummary(true)));
+
+        foreach ([$parent, $child, $parentSection, $childSection] as $record) {
+            self::assertSame([$newTenant->id], $this->getSearchTenantIds($record), $record::class);
+        }
+    }
+
+    public function testMovingASectionToAnEntryOfAnotherTenantMovesItsSearchDocuments(): void
+    {
+        $entry = $this->createEntry('entry', TenantCollection::getDefault());
+        $section = $this->createSection($entry);
+
+        $newTenant = $this->createTenant();
+        $other = $this->createEntry('other', $newTenant);
+
+        $section->populateEntryRelation($other);
+        self::assertSame(1, $section->update(), implode(' ', $section->getErrorSummary(true)));
+
+        self::assertSame([$newTenant->id], $this->getSearchTenantIds($section));
+    }
+
+    /**
+     * @return list<int>
+     */
+    protected function getSearchTenantIds(TestEntry|Section $record): array
+    {
+        $tenantIds = (new Query())
+            ->select(['tenant_id'])
+            ->distinct()
+            ->from(Search::tableName())
+            ->where([
+                'model_class' => SearchComponent::getComponent()->getRegisteredClass($record::class),
+                'model_id' => $record->id,
+            ])
+            ->column();
+
+        return array_values(array_map(intval(...), $tenantIds));
+    }
+
+    protected function createSection(TestEntry $entry): Section
+    {
+        $section = Section::create();
+        $section->loadDefaultValues();
+        $section->status = Section::STATUS_ENABLED;
+        $section->type = Section::TYPE_DEFAULT;
+        $section->name = 'Section of ' . $entry->name;
+        $section->populateEntryRelation($entry);
+
+        self::assertTrue($section->insert(), implode(' ', $section->getErrorSummary(true)));
+
+        return $section;
     }
 
     protected function createTenant(): Tenant
