@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Models;
 
 use Hirtz\Cms\Models\Actions\DeletePermalinkRedirects;
+use Hirtz\Cms\Models\Actions\UpdateBlockSectionCounts;
 use Hirtz\Cms\Models\Actions\UpdateTenantEntryCount;
 use Hirtz\Cms\Models\Menus\Menu;
 use Hirtz\Cms\Models\Queries\EntryQuery;
@@ -321,18 +322,26 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
         if ($isValid = parent::beforeDelete()) {
             (new DeletePermalinkRedirects($this))->delete();
 
+            // In batch: the entry goes with them, so neither its counts nor its sections' need keeping.
             if ($this->asset_count) {
                 foreach ($this->assets as $asset) {
-                    $asset->setIsBatch($this->getIsBatch());
+                    $asset->setIsBatch(true);
                     $asset->delete();
                 }
             }
 
             if ($this->section_count) {
+                $blockIds = [];
+
                 foreach ($this->sections as $section) {
-                    $section->setIsBatch($this->getIsBatch());
-                    $section->delete();
+                    $section->setIsBatch(true);
+
+                    if ($section->delete()) {
+                        $blockIds[] = $section->block_id;
+                    }
                 }
+
+                (new UpdateBlockSectionCounts($blockIds))->update();
             }
 
             if ($this->category_ids) {
