@@ -9,8 +9,12 @@ use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
 use Hirtz\Cms\Test\Models\TestEntry;
 use Hirtz\Cms\Test\TestCase;
+use Hirtz\Skeleton\Filters\PageCache;
 use Hirtz\Skeleton\Models\Trail;
+use Override;
 use Yii;
+use yii\caching\ArrayCache;
+use yii\caching\TagDependency;
 
 class ReorderEntriesTest extends TestCase
 {
@@ -48,6 +52,32 @@ class ReorderEntriesTest extends TestCase
         self::assertEquals($entry::class, $trail->model_class);
         self::assertEquals(1, $trail->model_id);
         self::assertEquals(Yii::t('cms', 'COMMON_ENTRY_ORDER_CHANGED'), $trail->getMessage());
+    }
+
+    /**
+     * Invalidated before the commit, a request in between would cache the old order under the new tag version.
+     */
+    public function testThePageCacheIsInvalidatedOnceCommitted(): void
+    {
+        $cache = new class () extends ArrayCache {
+            public ?int $invalidatedAt = null;
+
+            #[Override]
+            protected function setValue($key, $value, $duration): bool
+            {
+                if ($key === $this->buildKey([TagDependency::class, PageCache::TAG_DEPENDENCY_KEY])) {
+                    $this->invalidatedAt = Yii::$app->getDb()->getTransaction()?->getLevel();
+                }
+
+                return parent::setValue($key, $value, $duration);
+            }
+        };
+
+        Yii::$app->set('cache', $cache);
+        $level = Yii::$app->getDb()->getTransaction()?->getLevel();
+
+        self::assertGreaterThan(0, (new ReorderEntries(null, array_reverse($this->getRootEntryIds())))->run());
+        self::assertSame($level, $cache->invalidatedAt);
     }
 
     /**

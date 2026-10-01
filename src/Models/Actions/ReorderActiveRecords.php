@@ -7,6 +7,7 @@ namespace Hirtz\Cms\Models\Actions;
 use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Skeleton\Db\ActiveRecord;
 use Hirtz\Skeleton\Models\Actions\ReorderActiveRecords as BaseReorderActiveRecords;
+use Override;
 
 /**
  * @template TActiveRecord of ActiveRecord
@@ -16,9 +17,10 @@ class ReorderActiveRecords extends BaseReorderActiveRecords
 {
     use ModuleTrait;
 
-    protected function afterReorder(): void
+    #[Override]
+    protected function afterCommit(): void
     {
         static::getModule()->invalidatePageCache();
-        parent::afterReorder();
+        parent::afterCommit();
     }
 }
