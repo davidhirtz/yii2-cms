@@ -152,6 +152,41 @@ class DuplicateEntryTest extends TestCase
         );
     }
 
+    /**
+     * The children are inserted with validation, so a type or module change since the original was saved can refuse
+     * them: the counts follow what was inserted, not what the original says.
+     */
+    public function testTheCountsFollowTheChildrenActuallyCopied(): void
+    {
+        $entry = $this->createEntry('Original', 'original');
+
+        $this->createSection($entry, 'First');
+        $this->createSection($entry, 'Second');
+
+        $junction = EntryCategory::create();
+        $junction->populateEntryRelation($entry);
+        $junction->populateCategoryRelation($this->getCategoryFromFixture('root-2'));
+
+        self::assertTrue($junction->insert());
+
+        $entry->type = TestEntry::TYPE_POST;
+        self::assertNotFalse($entry->update(), print_r($entry->getErrors(), true));
+
+        $entry = TestEntry::findOne($entry->id);
+
+        self::assertSame(2, $entry->section_count);
+        self::assertNotEmpty($entry->category_ids);
+
+        TestEntry::getModule()->enableCategories = false;
+
+        $duplicate = DuplicateEntry::create(['entry' => $entry]);
+        $stored = TestEntry::findOne($duplicate->id);
+
+        self::assertSame(0, (int)Section::find()->where(['entry_id' => $duplicate->id])->count());
+        self::assertSame(0, $stored->section_count);
+        self::assertEmpty($stored->category_ids);
+    }
+
     public function testTheDuplicateCanBeMovedUnderAnotherParent(): void
     {
         $entry = $this->createEntry('Original', 'original');

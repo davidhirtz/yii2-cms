@@ -37,6 +37,7 @@ class DuplicateSection extends DuplicateActiveRecord
             : $this->entry);
 
         $this->duplicate->shouldUpdateEntryAfterSave = $this->shouldUpdateEntryAfterInsert;
+        // copied so the recount after the children are inserted writes only when one of them failed
         $this->duplicate->asset_count = $this->model->asset_count;
         $this->duplicate->entry_count = $this->model->entry_count;
 
@@ -56,10 +57,12 @@ class DuplicateSection extends DuplicateActiveRecord
 
         if ($this->model->asset_count) {
             $this->duplicateAssets();
+            $this->duplicate->updateAssetCount();
         }
 
         if ($this->model->entry_count) {
             $this->duplicateEntryRelations();
+            $this->duplicate->updateEntryCount();
         }
     }
 

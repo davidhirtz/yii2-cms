@@ -39,6 +39,7 @@ class DuplicateEntry extends DuplicateActiveRecord
 
         $this->duplicate->shouldUpdateParentAfterSave = $this->shouldUpdateParentAfterInsert;
 
+        // copied so the recount after the children are inserted writes only when one of them failed
         $this->duplicate->asset_count = $this->model->asset_count;
         $this->duplicate->category_ids = $this->model->category_ids;
         $this->duplicate->entry_count = $this->model->entry_count;
@@ -64,18 +65,22 @@ class DuplicateEntry extends DuplicateActiveRecord
 
         if ($this->model->asset_count) {
             $this->duplicateAssets();
+            $this->duplicate->updateAssetCount();
         }
 
         if ($this->model->category_ids) {
             $this->duplicateCategories();
+            $this->duplicate->updateCategoryIds();
         }
 
         if ($this->model->entry_count) {
             $this->duplicateEntries();
+            $this->duplicate->updateEntryCount();
         }
 
         if ($this->model->section_count) {
             $this->duplicateSections();
+            $this->duplicate->updateSectionCount();
         }
     }
 
