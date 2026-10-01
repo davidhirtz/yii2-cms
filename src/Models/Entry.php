@@ -48,7 +48,7 @@ use yii\db\Query;
  * @property string|null $slug virtual, backed by {@see Permalink::$slug}
  * @property string|null $title
  * @property string|null $description
- * @property string $content
+ * @property string|null $content
  * @property DateTime|null $publish_date
  * @property list<int>|null $category_ids
  * @property list<int>|null $menu_ids

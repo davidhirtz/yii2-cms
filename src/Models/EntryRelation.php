@@ -31,10 +31,10 @@ use yii\base\NotSupportedException;
  *
  * @property int $id
  * @property class-string<EntryRelationModelInterface> $model_class
- * @property int $model_id
- * @property int $entry_id
+ * @property int|null $model_id
+ * @property int|null $entry_id
  * @property int $position
- * @property DateTime $updated_at
+ * @property DateTime|null $updated_at
  *
  * @property-read TModel $model {@see static::getModel()}
  *
