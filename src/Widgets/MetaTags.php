@@ -12,6 +12,7 @@ use Hirtz\Media\Models\File;
 use Hirtz\Media\Models\Interfaces\AssetModelInterface;
 use Hirtz\Media\Transformations\Transformation;
 use Hirtz\Skeleton\Base\Traits\ContainerConfigurationTrait;
+use Hirtz\Skeleton\Models\CustomAttributes\HtmlCustomAttribute;
 use Hirtz\Skeleton\Web\UrlManager;
 use Hirtz\Skeleton\Widgets\Widget;
 use Override;
@@ -169,7 +170,15 @@ class MetaTags extends Widget
 
     protected function setMetaDescription(): void
     {
-        $content = $this->model->getVisibleAttribute('description') ?? $this->model->getVisibleAttribute('content');
+        $content = $this->model->getVisibleAttribute('description');
+
+        if ($content === null) {
+            $content = $this->model->getVisibleAttribute('content');
+
+            if ($content && $this->model->getCustomAttribute('content') instanceof HtmlCustomAttribute) {
+                $content = html_entity_decode(strip_tags(str_replace('<', ' <', $content)), ENT_QUOTES | ENT_HTML5);
+            }
+        }
 
         if ($content) {
             $this->view->description($content);

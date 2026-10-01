@@ -59,10 +59,10 @@ class MetaTagsTest extends TestCase
     {
         $entry = $this->getEntryFromFixture('page-enabled');
         $entry->type = TestEntry::TYPE_POST;
-        $entry->content = 'Some content';
+        $entry->content = '<p>Some content</p><p>AT&amp;T</p>';
 
         $this->render($entry);
-        self::assertStringContainsString('Some content', $this->getHead());
+        self::assertStringContainsString('<meta name="description" content="Some content AT&amp;T">', $this->getHead());
 
         $entry->description = 'A separate description';
 
