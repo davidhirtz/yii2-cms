@@ -20,8 +20,9 @@ The bundle bootstraps itself through `extra.bootstrap` (`Hirtz\Cms\Bootstrap`): 
 category, entry and section models plus their assets on the `search` component, the `BlockAsset`, `EntryAsset` and
 `SectionAsset` classes on `modules.media.assets`, and two URL rules: `''` → `cms/site/index` and the catch-all
 `<slug:.+>` → `cms/site/view`. The catch-all claims every path no other rule matches, so a project's own rules need a
-lower `position` (the cms rules sit at 1000 and 1100). The migration seeds the `entry` and `category` permissions and
-the `author` role. Upgrading from 2.x: see `UPGRADE.md`.
+lower `position` (the cms rules sit at 1000 and 1100). The migrations seed the `block`, `category` and `entry`
+permissions, granted to `admin` and `manager`, and the `author` role, which holds those three, the media library's
+`file` and `folder` and the skeleton's `redirect`. Upgrading from 2.x: see `UPGRADE.md`.
 
 ## Configuration
 
@@ -190,3 +191,29 @@ Event::on(EntryGridView::class, Widget::EVENT_CONFIGURE, function (Event $event)
 sections, grouped and wrapped as their types say; `Widgets\Artwork` and `Widgets\Gallery` render assets, and
 `Widgets\MetaTags` the page's meta tags and hreflang links. Saving any cms record invalidates the page cache
 (`Module::invalidatePageCache()`).
+
+A path with a trailing slash is redirected (301) to the one without; `SiteController::$redirectTrailingSlash = false`
+serves the entry at both:
+
+```php
+'container' => ['definitions' => [
+    \Hirtz\Cms\Controllers\SiteController::class => ['redirectTrailingSlash' => false],
+]],
+```
+
+Nothing is added to the sitemap by itself: `Sitemap\EntrySitemap` and `Sitemap\CategorySitemap` are registered on the
+skeleton's `sitemap` component.
+
+```php
+use Hirtz\Cms\Sitemap\CategorySitemap;
+use Hirtz\Cms\Sitemap\EntrySitemap;
+
+'components' => [
+    'sitemap' => [
+        'sitemaps' => [
+            'entries' => ['class' => EntrySitemap::class, 'enableImages' => true],
+            'categories' => CategorySitemap::class,
+        ],
+    ],
+],
+```

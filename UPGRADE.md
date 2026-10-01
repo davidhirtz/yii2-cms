@@ -1,5 +1,10 @@
 # Upgrade Guide
 
+The v2 → v3 database migrations named below do not ship with the bundle: they live in `davidhirtz/yii2-upgrade` under
+`migrations/yii2-cms/`, which applies them (see the skeleton's upgrade guide). The bundle itself ships
+`Migrations\M260101000400CmsBaseline` for a fresh install and the migrations dated after it,
+`M260924100000RenumberSectionPositions` and `M260925100000AuthorBlocksAndRedirects`, which every installation runs.
+
 ## 3.0 — The v2 admin widgets that are gone
 
 A record's page is a header, a submenu and an action dropdown now; the help panels that carried its buttons and
@@ -128,8 +133,9 @@ change**, or a block section renders the section's own (empty) relations. Conten
 cannot delegate through a magic property — read it off `$section->getVisibleBlock() ?? $section`, as the
 bundle's own `resources/views/site/_sections.php` does.
 
-`Block::AUTH_BLOCK` is granted to `admin` and `manager` by `Migrations\M260916110000Block`. A project that
-wants its editors to manage blocks adds it to `author` itself.
+`Block::AUTH_BLOCK` is granted to `admin` and `manager` by the upgrade's `M260916110000Block`; the bundle's
+`Migrations\M260925100000AuthorBlocksAndRedirects` grants it to `author` as well, together with the skeleton's
+`Redirect::AUTH_REDIRECT`. A project whose authors should manage neither removes the two from `author` itself.
 
 A model extending `Models\ActiveRecord` may now omit the `position` column — `setDefaultPosition()` returns
 early when there is none, rather than throwing on an unknown attribute. `Models\Block` is the first to do it.
@@ -138,7 +144,7 @@ early when there is none, rather than throwing on an unknown attribute. `Models\
 
 `section_entry` is `entry_relation` (monorepo issue #109). The table is keyed by `model_class` / `model_id`, so a
 model other than a section can link entries through it — which is what the block feature needs.
-`Migrations\M260916100000EntryRelation` renames the table and the column, fills `model_class` and replaces the
+The upgrade's `M260916100000EntryRelation` renames the table and the column, fills `model_class` and replaces the
 index; nothing has to be migrated by hand.
 
 `model_id` points at more than one table, so it carries **no foreign key**. A model that links entries deletes its
@@ -369,7 +375,7 @@ navigation — a copyright row, the left and the right half of a header — had 
 two that shipped cost two columns where one does the job.
 
 `entry.menu_ids` is that one column: a JSON list of the menus an entry is in, added by
-`Migrations\M260915200000MenuIds`, which also **upgrades a v2 installation in place**. Where the project had
+the upgrade's `M260915200000MenuIds`, which also **upgrades a v2 installation in place**. Where the project had
 `show_in_menu`, its entries land in menu `1`; where it had `show_in_footer`, in menu `2`; and both columns, with
 the index over them, are dropped. Neither is rebuilt on the way down — they were a project's own columns, added
 by migration traits the bundle no longer ships.
@@ -399,7 +405,7 @@ wants — `Menu::make(SiteMenu::Main)`, then `MenuCollection::getItems(SiteMenu:
 
 | removed                                                | replacement                                            |
 |--------------------------------------------------------|--------------------------------------------------------|
-| `Migrations\Traits\MenuColumnTrait`                    | `Migrations\M260915200000MenuIds`, which ships with the bundle |
+| `Migrations\Traits\MenuColumnTrait`                    | `M260915200000MenuIds` of `davidhirtz/yii2-upgrade`    |
 | `Migrations\Traits\FooterColumnTrait`                  | the same                                               |
 | `Models\Traits\MenuAttributeTrait`                     | `Entry::$menu_ids` and `Entry::isMenuItem()`, which every entry has |
 | `Models\Traits\FooterAttributeTrait`                   | the same                                               |
@@ -451,7 +457,7 @@ menu, while asking for all of them — what the collection does — is the cheap
 
 ## 3.0.0 — The category's meta title and description are custom attributes
 
-`Migrations\M260915120000CategoryMeta` drops `category.title` and `category.description` into the
+The upgrade's `M260915120000CategoryMeta` drops `category.title` and `category.description` into the
 `custom_attributes` column, translation rows included, the same way the free text moved. `Category` declares both
 itself, so a project configures nothing — unless it translated them, in which case they move from
 `Category::$i18nAttributes` to `translatableAttributes` (see the guide below for why). Neither can be a query
@@ -462,7 +468,7 @@ on every page it renders; only the category's moved.
 
 ## 3.0.0 — The free text of the cms models is a custom attribute
 
-`Migrations\M260915100000CustomAttributes` drops `entry.content`, `category.content` and `section.name`,
+The upgrade's `M260915100000CustomAttributes` drops `entry.content`, `category.content` and `section.name`,
 `section.slug` and `section.content`, moving each value into the `custom_attributes` column under its own name,
 and every `translation` row of those attributes under its suffixed one (`content_de`). A `content_de` column a
 project still had is read the same way.
@@ -538,7 +544,7 @@ off the record.
 
 ## 3.0.0 — `author` is a role to assign, not one `admin` holds
 
-`Migrations\M260914210000AuthorRole` removes `author` from `admin`, which lists the permissions themselves now
+The upgrade's `M260914210000AuthorRole` removes `author` from `admin`, which lists the permissions themselves now
 (see the skeleton's upgrade guide), and gives it `File::AUTH_FILE` and `Folder::AUTH_FOLDER` — the two permissions
 the `media` role carried before `yii2-media` dropped it — so an author can still use the media library. An
 `AccessRule` or a nav item that named `author` to mean "an editor or an administrator" has to name both.
@@ -592,7 +598,7 @@ Read the skeleton's guide on typed type definitions first, and the media one for
 | `group(Closure\|string\|null)`         | `getGroup()`          | stage 3                             |
 | `wrapper(Closure\|string\|null)`       | `getWrapper()`        | stage 4                             |
 | `entriesOrderBy(?array)`               | `getEntriesOrderBy()` | `Section::getEntriesOrderBy()`      |
-| `entriesTypes(int ...)`                | `getEntriesTypes()`   | `Section::getEntriesTypes()`, `Modules\Admin\Widgets\Grids\SectionEntryGridView` |
+| `entriesTypes(int ...)`                | `getEntriesTypes()`   | `Section::getEntriesTypes()`, `Modules\Admin\Widgets\Grids\LinkedEntryGridView`, `Modules\Admin\Widgets\Buttons\EntryRelationCreateButton` |
 | `gridContent(Closure\|string\|null)`   | `getGridContent()`    | `Section::getGridContent()`         |
 
 `visible()` keeps the meaning the section stack gave it — whether the section is *rendered on the site*. Whether
