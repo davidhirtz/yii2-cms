@@ -1,7 +1,6 @@
 ## Unreleased
 
 - Fixed the baseline migration collation to `utf8mb4`
-- Changed the `davidhirtz/yii2-tenant` requirement to `^3.2`, the first release without `DateTimeBehavior`
 - Changed deleting an entry to delete its sections and assets in batch
 - Fixed the reorder actions invalidating the page cache before the transaction commits
 - Fixed reordering or deleting a category leaving `CategoryCollection` stale
@@ -11,6 +10,12 @@
 - Fixed the section grid querying assets and blocks per row
 - Fixed the category, block and block-section admins answering while their module flag is off
 - Fixed an entry name being encoded twice in the parent select
+- Changed the requirements to `davidhirtz/yii2-skeleton` `^3.11` and `davidhirtz/yii2-media` `^3.10` (`touchOwners()`), and
+  `davidhirtz/yii2-tenant` `^3.2`, the first release without `DateTimeBehavior`
+- Changed deleting an entry to delete its category junctions in batch
+- Fixed adding, changing or removing a section's assets or linked entries, and reordering its linked entries, not
+  touching the entry's `updated_at` (the sitemap's `lastmod`); a block's save, deletion, assets and linked entries touch
+  every entry placing it
 
 ## 3.9.0 (October 1, 2026)
 
