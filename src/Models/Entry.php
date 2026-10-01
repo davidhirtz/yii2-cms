@@ -16,7 +16,6 @@ use Hirtz\Cms\Models\Traits\PermalinkTrait;
 use Hirtz\Cms\Models\Traits\SlugAttributeTrait;
 use Hirtz\Cms\Models\Traits\VirtualSlugTrait;
 use Hirtz\Cms\Models\Types\EntryType;
-use Hirtz\Cms\Module;
 use Hirtz\Cms\Validators\MenuIdsValidator;
 use Hirtz\Cms\Validators\TenantIdValidator;
 use Hirtz\Media\Models\Asset;

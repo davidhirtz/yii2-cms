@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use Hirtz\Cms\Models\Category;
-use Hirtz\Cms\Test\Models\TestEntry;
 use yii\db\Expression;
 
 $now = new Expression('UTC_TIMESTAMP()');

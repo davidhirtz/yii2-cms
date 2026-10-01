@@ -11,7 +11,6 @@ use Hirtz\Cms\Models\Sets\SectionSet;
 use Hirtz\Cms\Models\Sets\SectionTemplate;
 use Hirtz\Cms\Module;
 use Hirtz\Cms\Test\TestCase;
-use Yii;
 use yii\base\InvalidConfigException;
 
 /**

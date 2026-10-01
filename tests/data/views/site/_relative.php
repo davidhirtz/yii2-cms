@@ -7,7 +7,6 @@ declare(strict_types=1);
  * @var SectionStack $stack
  */
 
-use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Widgets\SectionStack;
 use Hirtz\Skeleton\Web\View;
 

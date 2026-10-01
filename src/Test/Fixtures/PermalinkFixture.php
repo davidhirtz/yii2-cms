@@ -7,7 +7,6 @@ namespace Hirtz\Cms\Test\Fixtures;
 use Hirtz\Cms\Models\Permalink;
 use Hirtz\Cms\Test\Models\TestEntry;
 use Override;
-use Yii;
 use yii\db\Expression;
 use Hirtz\Skeleton\Test\Fixtures\ActiveFixture;
 use yii\test\Fixture;

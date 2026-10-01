@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Tests\Models\Queries;
 
-use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Models\Section;
