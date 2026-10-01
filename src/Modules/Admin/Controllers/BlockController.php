@@ -12,6 +12,7 @@ use Override;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
+use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\web\ServerErrorHttpException;
 
@@ -43,6 +44,16 @@ class BlockController extends AbstractController
                 ],
             ],
         ];
+    }
+
+    #[Override]
+    public function beforeAction($action): bool
+    {
+        if (!static::getModule()->enableBlocks) {
+            throw new NotFoundHttpException();
+        }
+
+        return parent::beforeAction($action);
     }
 
     public function actionIndex(?int $type = null, ?string $q = null): Response|string

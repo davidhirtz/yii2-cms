@@ -79,6 +79,15 @@ class CategoryControllerTest extends TestCase
         self::assertStringNotContainsString('Root category 2', $html);
     }
 
+    public function testTheAdminIsNotFoundWhileTheCategoriesAreDisabled(): void
+    {
+        TestEntry::getModule()->enableCategories = false;
+        $this->login();
+
+        $this->expectException(NotFoundHttpException::class);
+        Yii::$app->runAction('admin/cms/category/create');
+    }
+
     public function testIndexIsForbiddenWithoutThePermission(): void
     {
         $this->getWebUser()->setIdentity($this->getUserFromFixture('admin'));

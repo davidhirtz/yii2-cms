@@ -15,6 +15,7 @@ use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\ForbiddenHttpException;
+use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\web\ServerErrorHttpException;
 
@@ -47,6 +48,16 @@ class CategoryController extends AbstractController
                 ],
             ],
         ];
+    }
+
+    #[Override]
+    public function beforeAction($action): bool
+    {
+        if (!static::getModule()->enableCategories) {
+            throw new NotFoundHttpException();
+        }
+
+        return parent::beforeAction($action);
     }
 
     public function actionIndex(?int $parent = null, ?int $type = null, ?string $q = null): Response|string

@@ -45,6 +45,15 @@ class BlockControllerTest extends TestCase
         self::assertStringContainsString('Listed Block', $html);
     }
 
+    public function testTheAdminIsNotFoundWhileTheBlocksAreDisabled(): void
+    {
+        TestEntry::getModule()->enableBlocks = false;
+        $this->login();
+
+        $this->expectException(NotFoundHttpException::class);
+        Yii::$app->runAction('admin/cms/block/create');
+    }
+
     public function testIndexIsForbiddenWithoutThePermission(): void
     {
         $this->getWebUser()->setIdentity($this->getUserFromFixture('admin'));
