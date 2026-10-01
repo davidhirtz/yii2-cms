@@ -1,3 +1,7 @@
+## Unreleased
+
+- Fixed the baseline migration creating its tables as `utf8mb3`, which rejects an emoji: a fresh install creates them as `utf8mb4`
+
 ## 3.9.0 (October 1, 2026)
 
 - Requires `davidhirtz/yii2-media` `^3.8`: the asset controllers copy an asset through its `duplicateAsset()`

@@ -43,7 +43,7 @@ class M260101000400CmsBaseline extends Migration
               KEY `entry_updated_by_ibfk` (`updated_by_user_id`),
               KEY `entry_parent_id` (`parent_id`),
               KEY `tenant_id` (`tenant_id`,`status`,`position`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
             SQL
         );
 
@@ -69,7 +69,7 @@ class M260101000400CmsBaseline extends Migration
               UNIQUE KEY `slug` (`slug`),
               KEY `parent_id` (`parent_id`,`status`),
               KEY `category_updated_by_ibfk` (`updated_by_user_id`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
             SQL
         );
 
@@ -84,7 +84,7 @@ class M260101000400CmsBaseline extends Migration
               PRIMARY KEY (`entry_id`,`category_id`),
               KEY `entry_category_category_id_ibfk` (`category_id`),
               KEY `entry_category_updated_by_ibfk` (`updated_by_user_id`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
             SQL
         );
 
@@ -105,7 +105,7 @@ class M260101000400CmsBaseline extends Migration
               PRIMARY KEY (`id`),
               KEY `status` (`status`,`name`),
               KEY `block_updated_by_ibfk` (`updated_by_user_id`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
             SQL
         );
 
@@ -128,7 +128,7 @@ class M260101000400CmsBaseline extends Migration
               KEY `entry_id` (`entry_id`,`status`,`position`),
               KEY `section_updated_by_ibfk` (`updated_by_user_id`),
               KEY `section_block_id_ibfk` (`block_id`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
             SQL
         );
 
@@ -146,7 +146,7 @@ class M260101000400CmsBaseline extends Migration
               UNIQUE KEY `model_class` (`model_class`,`model_id`,`entry_id`),
               KEY `entry_relation_entry_id_ibfk` (`entry_id`),
               KEY `entry_relation_updated_by_ibfk` (`updated_by_user_id`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
             SQL
         );
 
@@ -164,7 +164,7 @@ class M260101000400CmsBaseline extends Migration
               PRIMARY KEY (`id`),
               UNIQUE KEY `uri` (`tenant_id`,`language`,`uri`),
               UNIQUE KEY `entry` (`entry_id`,`language`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
             SQL
         );
 
