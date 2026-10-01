@@ -1,4 +1,4 @@
-## Unreleased
+## 3.9.0 (October 1, 2026)
 
 - Requires `davidhirtz/yii2-media` `^3.8`: the asset controllers copy an asset through its `duplicateAsset()`
 - Added copying an entry, section or block asset to another entry, section or block (`duplicate` on each asset controller)
