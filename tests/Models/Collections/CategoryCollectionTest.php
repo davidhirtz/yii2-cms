@@ -4,12 +4,16 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Tests\Models\Collections;
 
+use Hirtz\Cms\Models\Actions\ReorderCategories;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Collections\CategoryCollection;
 use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
 use Hirtz\Cms\Test\Models\TestEntry;
 use Hirtz\Cms\Test\TestCase;
 use Override;
+use Yii;
+use yii\caching\ArrayCache;
+use yii\caching\TagDependency;
 
 class CategoryCollectionTest extends TestCase
 {
@@ -145,5 +149,47 @@ class CategoryCollectionTest extends TestCase
 
         // the model invalidates the cache itself on save
         self::assertArrayHasKey($category->id, CategoryCollection::getAll());
+    }
+
+    public function testDeletingACategoryReloads(): void
+    {
+        self::assertArrayHasKey(2, CategoryCollection::getAll());
+
+        self::assertNotFalse($this->getCategoryFromFixture('root-2')->delete());
+
+        CategoryCollection::reset();
+        self::assertArrayNotHasKey(2, CategoryCollection::getAll());
+    }
+
+    /**
+     * Invalidated before the commit, a request in between would cache the old tree again.
+     */
+    public function testReorderingTheCategoriesReloadsOnceCommitted(): void
+    {
+        $cache = new class () extends ArrayCache {
+            public ?int $invalidatedAt = null;
+
+            #[Override]
+            protected function setValue($key, $value, $duration): bool
+            {
+                if ($key === $this->buildKey([TagDependency::class, CategoryCollection::CACHE_KEY])) {
+                    $this->invalidatedAt = Yii::$app->getDb()->getTransaction()?->getLevel();
+                }
+
+                return parent::setValue($key, $value, $duration);
+            }
+        };
+
+        Yii::$app->set('cache', $cache);
+        $level = Yii::$app->getDb()->getTransaction()?->getLevel();
+
+        $lft = CategoryCollection::getAll()[2]->lft;
+
+        self::assertGreaterThan(0, (new ReorderCategories(null, [2, 1]))->run());
+
+        self::assertSame($level, $cache->invalidatedAt);
+
+        CategoryCollection::reset();
+        self::assertNotSame($lft, CategoryCollection::getAll()[2]->lft);
     }
 }

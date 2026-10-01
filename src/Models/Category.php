@@ -184,6 +184,8 @@ class Category extends ActiveRecord implements SearchableInterface
     {
         $this->updateNestedTreeAfterDelete();
 
+        CategoryCollection::invalidateCache();
+
         parent::afterDelete();
     }
 

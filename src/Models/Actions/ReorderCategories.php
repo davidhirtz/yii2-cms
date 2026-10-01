@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Models\Actions;
 
 use Hirtz\Cms\Models\Category;
+use Hirtz\Cms\Models\Collections\CategoryCollection;
 use Hirtz\Skeleton\Db\DateTime;
 use Hirtz\Skeleton\I18n\Message;
 use Hirtz\Skeleton\Models\Trail;
@@ -39,5 +40,12 @@ class ReorderCategories extends ReorderActiveRecords
         }
 
         parent::afterReorder();
+    }
+
+    #[Override]
+    protected function afterCommit(): void
+    {
+        CategoryCollection::invalidateCache();
+        parent::afterCommit();
     }
 }
