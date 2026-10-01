@@ -34,6 +34,7 @@ class ReorderEntryRelations extends ReorderActiveRecords
     protected function afterReorder(): void
     {
         Trail::createOrderTrail($this->model, Message::make('cms', 'REORDER_ENTRY_RELATIONS_LINKED'));
+        $this->model->touchUpdatedAt();
         parent::afterReorder();
     }
 }

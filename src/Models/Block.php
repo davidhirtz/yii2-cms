@@ -11,6 +11,7 @@ use Hirtz\Cms\Models\Traits\EntryRelationModelTrait;
 use Hirtz\Cms\Models\Types\BlockType;
 use Hirtz\Media\Models\Interfaces\AssetModelInterface;
 use Hirtz\Media\Models\Traits\AssetModelTrait;
+use Hirtz\Skeleton\Db\DateTime;
 use Hirtz\Skeleton\Models\Breadcrumb;
 use Hirtz\Skeleton\Models\CustomAttributes\CustomAttribute;
 use Hirtz\Skeleton\Models\CustomAttributes\HtmlCustomAttribute;
@@ -90,12 +91,44 @@ class Block extends ActiveRecord implements AssetModelInterface, EntryRelationMo
         ];
     }
 
+    /**
+     * @param array<string, mixed> $changedAttributes
+     */
+    #[Override]
+    public function afterSave($insert, $changedAttributes): void
+    {
+        if (!$insert && $changedAttributes) {
+            $this->touchOwners();
+        }
+
+        parent::afterSave($insert, $changedAttributes);
+    }
+
+    /**
+     * Touches every entry placing the block, as its sections render it — even one whose type no longer shows a
+     * block, which is cheaper than loading each section's type.
+     */
+    #[Override]
+    protected function touchOwners(): void
+    {
+        if ($this->section_count) {
+            Entry::updateAll(['updated_at' => new DateTime()], [
+                'id' => Section::find()->select(['entry_id'])->where(['block_id' => $this->id]),
+            ]);
+        }
+    }
+
+    /**
+     * The key on `section.block_id` sets it to `null`, so the entries are touched while the sections still name it.
+     */
     #[Override]
     public function beforeDelete(): bool
     {
         if (!parent::beforeDelete()) {
             return false;
         }
+
+        $this->touchOwners();
 
         if ($this->asset_count) {
             foreach ($this->assets as $asset) {

@@ -250,6 +250,12 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
     }
 
     #[Override]
+    protected function touchOwners(): void
+    {
+        $this->entry->touchUpdatedAt();
+    }
+
+    #[Override]
     public function beforeDelete(): bool
     {
         if (!parent::beforeDelete()) {

@@ -6,6 +6,7 @@ namespace Hirtz\Cms\Tests\Models;
 
 use Hirtz\Cms\Models\Actions\DeleteSections;
 use Hirtz\Cms\Models\Block;
+use Hirtz\Cms\Models\BlockAsset;
 use Hirtz\Cms\Models\BlockEntry;
 use Hirtz\Cms\Models\EntryRelation;
 use Hirtz\Cms\Models\Section;
@@ -14,6 +15,7 @@ use Hirtz\Cms\Models\Types\SectionType;
 use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
 use Hirtz\Cms\Test\Models\TestEntry;
 use Hirtz\Cms\Test\TestCase;
+use Hirtz\Skeleton\Db\DateTime;
 use Override;
 use Yii;
 
@@ -170,6 +172,70 @@ class BlockTest extends TestCase
         // The base query is unscoped and returns both kinds; a subclass query only its own.
         self::assertCount(1, BlockEntry::find()->all());
         self::assertGreaterThan(1, count(EntryRelation::find()->all()));
+    }
+
+    public function testAddingABlockAssetTouchesTheEntriesPlacingIt(): void
+    {
+        $block = $this->createBlock();
+        $this->createBlockSection($block);
+        $aged = $this->ageEntry();
+
+        $asset = BlockAsset::create();
+        $asset->populateModelRelation(Block::findOne($block->id));
+        $asset->populateFileRelation($this->getFileFromFixture('file-1'));
+
+        self::assertTrue($asset->insert(), print_r($asset->getErrors(), true));
+        $this->assertEntryTouched($aged);
+    }
+
+    public function testLinkingAnEntryToABlockTouchesTheEntriesPlacingIt(): void
+    {
+        $block = $this->createBlock();
+        $this->createBlockSection($block);
+        $aged = $this->ageEntry();
+
+        $blockEntry = BlockEntry::create();
+        $blockEntry->populateModelRelation(Block::findOne($block->id));
+        $blockEntry->populateEntryRelation(TestEntry::findOne(4));
+
+        self::assertTrue($blockEntry->insert(), print_r($blockEntry->getErrors(), true));
+        $this->assertEntryTouched($aged);
+    }
+
+    public function testUpdatingABlockTouchesTheEntriesPlacingIt(): void
+    {
+        $block = $this->createBlock();
+        $this->createBlockSection($block);
+        $aged = $this->ageEntry();
+
+        $block = Block::findOne($block->id);
+        $block->name = 'Renamed Block';
+
+        self::assertSame(1, $block->update());
+        $this->assertEntryTouched($aged);
+    }
+
+    public function testDeletingABlockTouchesTheEntriesPlacingIt(): void
+    {
+        $block = $this->createBlock();
+        $this->createBlockSection($block);
+        $aged = $this->ageEntry();
+
+        self::assertSame(1, Block::findOne($block->id)->delete());
+        $this->assertEntryTouched($aged);
+    }
+
+    private function ageEntry(): int
+    {
+        $aged = new DateTime('-1 hour');
+        TestEntry::updateAll(['updated_at' => $aged], ['id' => 1]);
+
+        return $aged->getTimestamp();
+    }
+
+    private function assertEntryTouched(int $aged): void
+    {
+        self::assertGreaterThan($aged, TestEntry::findOne(1)?->updated_at?->getTimestamp());
     }
 
     private function createBlock(): Block
