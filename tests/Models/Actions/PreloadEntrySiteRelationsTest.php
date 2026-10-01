@@ -5,11 +5,14 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Tests\Models\Actions;
 
 use Hirtz\Cms\Models\Actions\PreloadEntrySiteRelations;
+use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
 use Hirtz\Cms\Test\Models\TestEntry;
+use Hirtz\Cms\Test\Models\TestSection;
 use Hirtz\Cms\Test\TestCase;
 use Hirtz\Skeleton\Db\ActiveQuery;
+use Yii;
 
 class PreloadEntrySiteRelationsTest extends TestCase
 {
@@ -96,6 +99,29 @@ class PreloadEntrySiteRelationsTest extends TestCase
         self::assertEquals($fixture->id, $post->id);
         self::assertTrue($post->isRelationPopulated('assets'));
         self::assertFalse($post->isRelationPopulated('sections'));
+    }
+
+    /**
+     * The rows name the class the relation declares, while a project re-points `Section` in the container.
+     */
+    public function testLinkedEntriesOfAProjectSection(): void
+    {
+        Yii::$container->set(Section::class, TestSection::class);
+
+        try {
+            ActiveQuery::setStatus(TestEntry::STATUS_DRAFT);
+
+            $entry = $this->getEntryFromFixture('page-enabled');
+            new PreloadEntrySiteRelations(['entry' => $entry]);
+
+            $section = $this->getSectionFromFixture('section-blog-draft');
+            $blog = $entry->sections[$section->id];
+
+            self::assertInstanceOf(TestSection::class, $blog);
+            self::assertCount(2, $blog->entries);
+        } finally {
+            Yii::$container->clear(Section::class);
+        }
     }
 
     public function testDescendantEntry(): void

@@ -214,7 +214,7 @@ class PreloadEntrySiteRelations extends Component
         }
 
         foreach ($this->modelsWithEntries as $model) {
-            $model->populateEntryRelations($entryRelationsByModelId[$model::class][$model->id] ?? []);
+            $model->populateEntryRelations($entryRelationsByModelId[$model->getEntryRelationClass()::getModelClass()][$model->id] ?? []);
         }
     }
 

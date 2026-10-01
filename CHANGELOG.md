@@ -3,6 +3,8 @@
 - Added copying an entry, section or block asset to another entry, section or block (`duplicate` on each asset controller)
 - Added `EntryType::schedule()`: whether a type's `publish_date` keeps an entry off the site, by default unless the
   type hides the date; `EntryQuery::getTypesWithoutPublishDate()` is deprecated for `getUnscheduledTypes()`
+- Fixed `PreloadEntrySiteRelations` leaving a section's linked entries empty on the site when the project re-points
+  `Section` in the container: the relations were matched by the record's class rather than the stored `model_class`
 
 ## 3.8.0 (September 30, 2026)
 
