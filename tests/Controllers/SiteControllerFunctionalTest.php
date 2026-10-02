@@ -102,7 +102,10 @@ final class SiteControllerFunctionalTest extends TestCase
         self::$client->followRedirects(false);
         self::$client->request('GET', $url);
 
-        self::assertStringContainsString('/admin/account/login', self::$client->getInternalResponse()->getHeader('location') ?? '');
+        $location = self::$client->getInternalResponse()->getHeader('location');
+
+        self::assertIsString($location);
+        self::assertStringContainsString('/admin/account/login', $location);
 
         $user = User::create();
         $user->loadDefaultValues();
