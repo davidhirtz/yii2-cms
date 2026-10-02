@@ -1,4 +1,4 @@
-## Unreleased
+## 3.10.0 (October 2, 2026)
 
 - Fixed the baseline migration collation to `utf8mb4`
 - Changed deleting an entry to delete its sections and assets in batch
