@@ -13,6 +13,8 @@ use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
 use Hirtz\Cms\Test\TestCase;
+use Hirtz\Skeleton\Models\User;
+use Hirtz\Skeleton\Test\Browser;
 use Hirtz\Skeleton\Test\Traits\FunctionalTestTrait;
 use Yii;
 
@@ -85,6 +87,34 @@ final class SiteControllerFunctionalTest extends TestCase
         self::assertResponseIsSuccessful();
         self::assertPageTitleSame($entry->name);
         self::assertResponseHeaderSame('x-robots-tag', 'none');
+    }
+
+    public function testTheDraftHostCanRequireALogin(): void
+    {
+        $entry = $this->getEntryFromFixture('page-draft');
+        $urlManager = Yii::$app->getUrlManager();
+        $urlManager->draftRequiresLogin = true;
+
+        $url = $urlManager->createDraftUrl($entry->getRoute() ?: []);
+
+        // Yii redirects a client that accepts HTML to the login, and refuses any other
+        self::$client = new Browser(['HTTP_ACCEPT' => 'text/html', 'HTTPS' => 'on']);
+        self::$client->followRedirects(false);
+        self::$client->request('GET', $url);
+
+        self::assertStringContainsString('/admin/account/login', self::$client->getInternalResponse()->getHeader('location') ?? '');
+
+        $user = User::create();
+        $user->loadDefaultValues();
+        $user->name = 'zz-draft-reader';
+        $user->email = 'zz-draft-reader@example.com';
+        self::assertTrue($user->insert(false));
+
+        $this->getWebUser()->login($user);
+
+        $this->open($url);
+        self::assertResponseIsSuccessful();
+        self::assertPageTitleSame($entry->name);
     }
 
     public function testDisabledEntry(): void
