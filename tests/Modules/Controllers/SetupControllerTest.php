@@ -42,6 +42,13 @@ class SetupControllerTest extends TestCase
         $cms->controllerMap['setup'] = TestSetupController::class;
     }
 
+    #[Override]
+    protected function tearDown(): void
+    {
+        TestSetupController::$entryAttributes = null;
+        parent::tearDown();
+    }
+
     public function testTheContentIsCreatedAndTheAdminIsSentToTheEntries(): void
     {
         $this->login();
