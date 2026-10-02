@@ -23,6 +23,7 @@ use Hirtz\Skeleton\Filters\PageCache;
 use Hirtz\Skeleton\Helpers\EventHelper;
 use Hirtz\Skeleton\Modules\Admin\Controllers\DashboardController;
 use Hirtz\Skeleton\Models\User;
+use Hirtz\Skeleton\Console\Application as ConsoleApplication;
 use Hirtz\Skeleton\Web\Application;
 use Hirtz\Tenant\Models\Tenant;
 use Hirtz\Tenant\Modules\Admin\Widgets\Grids\TenantGridView;
@@ -65,9 +66,6 @@ class Bootstrap implements ConfigBootstrapInterface
                     TenantGridView::class => Modules\Admin\Widgets\Grids\TenantGridView::class,
                 ],
             ],
-            'controllerMap' => [
-                'permalink' => Console\Controllers\PermalinkController::class,
-            ],
             'modules' => [
                 'admin' => [
                     'modules' => [
@@ -101,6 +99,12 @@ class Bootstrap implements ConfigBootstrapInterface
     public function bootstrap($app): void
     {
         Yii::setAlias('@cms', __DIR__);
+
+        // In `bootstrap()`, not the default config: a web application must not route to a console controller
+        if ($app instanceof ConsoleApplication) {
+            $app->controllerMap['permalink'] ??= Console\Controllers\PermalinkController::class;
+        }
+
         Artwork::reset();
         CategoryCollection::reset();
         MenuCollection::reset();
