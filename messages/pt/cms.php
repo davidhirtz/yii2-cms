@@ -110,6 +110,7 @@ return [
     'ENTRY_RELATION_UPDATED_AT_LABEL' => 'Adicionada',
     'ENTRY_SCHEDULED_ANCESTOR_ALERT' => '“{name}” está agendado para {date}, mas esta entrada já está no site: pode ser acedida no seu próprio endereço antes de o elemento superior ser publicado.',
     'ENTRY_SECTION_COUNT_LABEL' => 'Secções',
+    'ENTRY_SLUG_DESCENDANT_TOO_LONG_ERROR' => 'O URL de uma subentrada excederia {max} caracteres.',
     'ENTRY_SLUG_LABEL' => 'Url',
     'ENTRY_STATUS_SCHEDULED' => 'Agendado para {date}',
     'ENTRY_SUCCESS_CREATED' => 'A entrada foi criada.',

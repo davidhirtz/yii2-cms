@@ -110,6 +110,7 @@ return [
     'ENTRY_RELATION_UPDATED_AT_LABEL' => 'Added',
     'ENTRY_SCHEDULED_ANCESTOR_ALERT' => '“{name}” is scheduled for {date}, but this entry is already on the site: it can be reached at its own address before its parent goes live.',
     'ENTRY_SECTION_COUNT_LABEL' => 'Sections',
+    'ENTRY_SLUG_DESCENDANT_TOO_LONG_ERROR' => 'The URL of a subentry would be longer than {max} characters.',
     'ENTRY_SLUG_LABEL' => 'Url',
     'ENTRY_STATUS_SCHEDULED' => 'Scheduled for {date}',
     'ENTRY_SUCCESS_CREATED' => 'The entry was created.',

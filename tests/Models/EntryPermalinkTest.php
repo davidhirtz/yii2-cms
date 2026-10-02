@@ -113,6 +113,20 @@ class EntryPermalinkTest extends TestCase
         self::assertSame('second/child/grandchild', $this->findPermalinkUri($grandchild));
     }
 
+    public function testARenameThatWouldMakeADescendantsUriTooLongIsRefused(): void
+    {
+        $parent = $this->createEntry('parent');
+        $child = $this->createEntry(str_repeat('c', 100), $parent);
+        $this->createEntry(str_repeat('g', 100), $child);
+
+        $parent->refresh();
+        $parent->slug = str_repeat('p', 100);
+
+        self::assertFalse($parent->validate());
+        self::assertTrue($parent->hasErrors('slug'));
+        self::assertSame('parent/' . str_repeat('c', 100), $this->findPermalinkUri($child));
+    }
+
     public function testPermalinkIsDeletedWithTheEntry(): void
     {
         $entry = $this->createEntry('test-entry');

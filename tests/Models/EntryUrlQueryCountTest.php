@@ -130,7 +130,8 @@ class EntryUrlQueryCountTest extends TestCase
 
     /**
      * The entry validates the permalink itself, so writing it must not check uniqueness again, and the relation
-     * it loaded for that must serve the save too: load, check, the entry's own row, write, trail.
+     * it loaded for that must serve the save too: load, check, the descendants' longest URI, the entry's own row,
+     * write, trail.
      *
      * `TimestampBehavior` writes `updated_at` on every save, so whether the entry's row is updated at all would
      * otherwise depend on the rename landing in a later second than the insert. Aging it pins the count.
@@ -145,7 +146,7 @@ class EntryUrlQueryCountTest extends TestCase
             $entry->update();
         });
 
-        self::assertSame(5, $count);
+        self::assertSame(6, $count);
         self::assertSame('renamed', TestEntry::findOne($entry->id)->slug);
     }
 

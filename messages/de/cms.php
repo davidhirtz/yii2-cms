@@ -110,6 +110,7 @@ return [
     'ENTRY_RELATION_UPDATED_AT_LABEL' => 'Hinzugefügt',
     'ENTRY_SCHEDULED_ANCESTOR_ALERT' => '„{name}“ ist für {date} geplant, dieser Eintrag ist aber bereits online: Er ist unter seiner eigenen Adresse erreichbar, bevor der übergeordnete Eintrag erscheint.',
     'ENTRY_SECTION_COUNT_LABEL' => 'Sektionen',
+    'ENTRY_SLUG_DESCENDANT_TOO_LONG_ERROR' => 'Die URL eines Untereintrags wäre länger als {max} Zeichen.',
     'ENTRY_SLUG_LABEL' => 'Url',
     'ENTRY_STATUS_SCHEDULED' => 'Geplant für {date}',
     'ENTRY_SUCCESS_CREATED' => 'Der Eintrag wurde erstellt.',

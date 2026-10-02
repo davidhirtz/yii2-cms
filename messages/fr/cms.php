@@ -110,6 +110,7 @@ return [
     'ENTRY_RELATION_UPDATED_AT_LABEL' => 'Ajoutée',
     'ENTRY_SCHEDULED_ANCESTOR_ALERT' => '« {name} » est programmé pour le {date}, mais cette entrée est déjà en ligne : elle est accessible à sa propre adresse avant que son parent ne paraisse.',
     'ENTRY_SECTION_COUNT_LABEL' => 'Sections',
+    'ENTRY_SLUG_DESCENDANT_TOO_LONG_ERROR' => 'L’URL d’une sous-entrée dépasserait {max} caractères.',
     'ENTRY_SLUG_LABEL' => 'Url',
     'ENTRY_STATUS_SCHEDULED' => 'Programmé pour le {date}',
     'ENTRY_SUCCESS_CREATED' => 'L’entrée a été créée.',

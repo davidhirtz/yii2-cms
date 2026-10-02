@@ -37,6 +37,7 @@ use Yii;
 use Hirtz\Skeleton\Db\DateTime;
 use Hirtz\Skeleton\Validators\DateTimeValidator;
 use yii\db\ActiveQuery;
+use yii\db\Expression;
 use yii\db\Query;
 
 /**
@@ -229,7 +230,41 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
                 foreach ($permalink->getFirstErrors() as $error) {
                     $this->addError($attributeName, $error);
                 }
+
+                continue;
             }
+
+            $this->validateDescendantUris($permalink, $attributeName);
+        }
+    }
+
+    /**
+     * The descendants' permalinks follow a changed URI without being validated themselves: one that would outgrow
+     * the column is an error on the slug that causes it.
+     */
+    protected function validateDescendantUris(Permalink $permalink, string $attributeName): void
+    {
+        $oldUri = $permalink->getOldAttribute('uri');
+
+        if ($permalink->getIsNewRecord() || !is_string($oldUri) || $oldUri === $permalink->uri) {
+            return;
+        }
+
+        $descendantIds = $this->findDescendants()->select('id')->column();
+
+        if (!$descendantIds) {
+            return;
+        }
+
+        $length = Permalink::find()
+            ->select(new Expression('MAX(CHAR_LENGTH([[uri]]))'))
+            ->where(['entry_id' => $descendantIds, 'language' => $permalink->language])
+            ->scalar();
+
+        if ((int)$length - mb_strlen($oldUri) + mb_strlen($permalink->uri) > $permalink->uriMaxLength) {
+            $this->addError($attributeName, Yii::t('cms', 'ENTRY_SLUG_DESCENDANT_TOO_LONG_ERROR', [
+                'max' => $permalink->uriMaxLength,
+            ]));
         }
     }
 
@@ -773,7 +808,8 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
         $path = $this->parent?->getFormattedSlug($language) ?? '';
         $slug = $path . '/' . $this->getI18nAttribute('slug', $language);
 
-        return substr(trim($slug, '/'), 0, 255);
+        // Not cut to the column: an overlong URI is a validation error, see `validateDescendantUris()`
+        return trim($slug, '/');
     }
 
     /**
