@@ -170,6 +170,26 @@ class EntryTest extends TestCase
         self::assertNull(TestEntry::findOne($post->id));
     }
 
+    /**
+     * The counts are denormalised display values: a stale one must not decide what a deletion leaves behind.
+     */
+    public function testAStaleCountDoesNotOrphanTheChildren(): void
+    {
+        $parent = $this->getEntryFromFixture('page-enabled');
+
+        $child = TestEntry::create();
+        $child->loadDefaultValues();
+        $child->name = 'Child';
+        $child->slug = 'zz-child';
+        $child->populateParentRelation($parent);
+        self::assertTrue($child->insert(), print_r($child->getErrors(), true));
+
+        $parent->updateAttributes(['entry_count' => 0, 'asset_count' => 0, 'section_count' => 0]);
+
+        self::assertTrue(!!$parent->delete());
+        self::assertNull(TestEntry::findOne($child->id));
+    }
+
     public function testEntryAssets(): void
     {
         $entry = $this->getEntryFromFixture('page-enabled');

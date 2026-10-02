@@ -263,16 +263,12 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
         }
 
         // Unconditional: an entry deletion no longer sweeps the section assets through a shared column.
-        if ($this->asset_count) {
-            foreach ($this->assets as $asset) {
-                $asset->setIsBatch($this->getIsBatch());
-                $asset->delete();
-            }
+        foreach ($this->assets as $asset) {
+            $asset->setIsBatch($this->getIsBatch());
+            $asset->delete();
         }
 
-        if ($this->entry_count) {
-            $this->deleteEntryRelations();
-        }
+        $this->deleteEntryRelations();
 
         return true;
     }

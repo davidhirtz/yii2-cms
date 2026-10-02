@@ -171,9 +171,7 @@ class Category extends ActiveRecord implements SearchableInterface
         if ($isValid = parent::beforeDelete()) {
             $this->deleteNestedTreeItems();
 
-            if ($this->entry_count) {
-                $this->deleteEntryCategories();
-            }
+            $this->deleteEntryCategories();
         }
 
         return $isValid;

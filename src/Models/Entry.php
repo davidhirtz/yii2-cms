@@ -322,39 +322,31 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
             (new DeletePermalinkRedirects($this))->delete();
 
             // In batch: the entry goes with them, so neither its counts nor its sections' need keeping.
-            if ($this->asset_count) {
-                foreach ($this->assets as $asset) {
-                    $asset->setIsBatch(true);
-                    $asset->delete();
+            foreach ($this->assets as $asset) {
+                $asset->setIsBatch(true);
+                $asset->delete();
+            }
+
+            $blockIds = [];
+
+            foreach ($this->sections as $section) {
+                $section->setIsBatch(true);
+
+                if ($section->delete()) {
+                    $blockIds[] = $section->block_id;
                 }
             }
 
-            if ($this->section_count) {
-                $blockIds = [];
+            (new UpdateBlockSectionCounts($blockIds))->update();
 
-                foreach ($this->sections as $section) {
-                    $section->setIsBatch(true);
-
-                    if ($section->delete()) {
-                        $blockIds[] = $section->block_id;
-                    }
-                }
-
-                (new UpdateBlockSectionCounts($blockIds))->update();
+            foreach ($this->entryCategories as $entryCategory) {
+                $entryCategory->setIsBatch(true);
+                $entryCategory->delete();
             }
 
-            if ($this->category_ids) {
-                foreach ($this->entryCategories as $entryCategory) {
-                    $entryCategory->setIsBatch(true);
-                    $entryCategory->delete();
-                }
-            }
-
-            if ($this->entry_count) {
-                foreach ($this->getChildren() as $entry) {
-                    $entry->setIsBatch($this->getIsBatch());
-                    $entry->delete();
-                }
+            foreach ($this->getChildren() as $entry) {
+                $entry->setIsBatch($this->getIsBatch());
+                $entry->delete();
             }
 
             if (static::getModule()->getEntryRelationClasses()) {

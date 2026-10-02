@@ -56,7 +56,7 @@ class EntryCategoryTest extends TestCase
         $entry = TestEntry::findOne($entry->id);
         self::assertNotNull($entry);
 
-        self::assertSame(25, $this->countQueries(fn () => $entry->delete()));
+        self::assertSame(28, $this->countQueries(fn () => $entry->delete()));
 
         foreach ([$child, $this->getCategoryFromFixture('root-1')] as $category) {
             $junctions = (int)EntryCategory::find()->where(['category_id' => $category->id])->count();
