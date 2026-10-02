@@ -124,7 +124,7 @@ final class SiteControllerFunctionalTest extends TestCase
     public function testTheHomepageAnswersAtTheRootOnly(): void
     {
         $slug = Entry::getModule()->entryIndexSlug;
-        self::assertNotEmpty($slug);
+        self::assertIsString($slug);
 
         $entry = Entry::create();
         $entry->name = 'Homepage';

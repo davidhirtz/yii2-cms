@@ -31,7 +31,7 @@ class EntryRestoreTrailTest extends TestCase
 
         $entry->name = 'Renamed';
         $entry->publish_date = new DateTime('+1 day');
-        self::assertTrue($entry->save());
+        self::assertTrue($entry->save(), print_r($entry->getErrors(), true));
 
         $trail = $this->findLatestUpdate($entry);
         $action = new RestoreTrail($trail);
@@ -51,7 +51,7 @@ class EntryRestoreTrailTest extends TestCase
     {
         $entry = $this->createEntry();
         $entry->name = 'Renamed';
-        self::assertTrue($entry->save());
+        self::assertTrue($entry->save(), print_r($entry->getErrors(), true));
 
         $trail = $this->findLatestUpdate($entry);
         $trail->data = [...(array)$trail->data, 'dropped_column' => ['old', 'new']];
@@ -67,7 +67,7 @@ class EntryRestoreTrailTest extends TestCase
     {
         $entry = $this->createEntry();
         $entry->name = 'Renamed';
-        self::assertTrue($entry->save());
+        self::assertTrue($entry->save(), print_r($entry->getErrors(), true));
 
         $user = $this->getUserFromFixture('admin');
         $this->assignPermission($user->id, Trail::AUTH_TRAIL_INDEX);
@@ -102,7 +102,7 @@ class EntryRestoreTrailTest extends TestCase
     {
         $entry = $this->createEntry();
         $entry->name = 'Renamed';
-        self::assertTrue($entry->save());
+        self::assertTrue($entry->save(), print_r($entry->getErrors(), true));
 
         $user = $this->getUserFromFixture('admin');
         $this->assignPermission($user->id, Trail::AUTH_TRAIL_INDEX);

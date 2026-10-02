@@ -44,7 +44,7 @@ class EntryTest extends TestCase
         $entry->name = 'Home';
         $entry->slug = $entry::getModule()->entryIndexSlug ?: null;
 
-        self::assertTrue($entry->save());
+        self::assertTrue($entry->save(), print_r($entry->getErrors(), true));
         self::assertTrue($entry->isIndex());
     }
 

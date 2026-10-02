@@ -30,7 +30,7 @@ class BlockSubmenuTest extends TestCase
     {
         $block = Block::create();
         $block->name = 'Block';
-        self::assertTrue($block->insert());
+        self::assertTrue($block->insert(), print_r($block->getErrors(), true));
 
         $block->section_count = 1;
 
@@ -50,7 +50,7 @@ class BlockSubmenuTest extends TestCase
 
         $block = Block::create();
         $block->name = 'Block';
-        self::assertTrue($block->insert());
+        self::assertTrue($block->insert(), print_r($block->getErrors(), true));
 
         $html = BlockSubmenu::make()
             ->model($block)

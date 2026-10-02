@@ -136,7 +136,7 @@ class DuplicateEntryTest extends TestCase
         $junction->populateEntryRelation($entry);
         $junction->populateCategoryRelation($category);
 
-        self::assertTrue($junction->insert());
+        self::assertTrue($junction->insert(), print_r($junction->getErrors(), true));
 
         $entry->refresh();
 
@@ -167,7 +167,7 @@ class DuplicateEntryTest extends TestCase
         $junction->populateEntryRelation($entry);
         $junction->populateCategoryRelation($this->getCategoryFromFixture('root-2'));
 
-        self::assertTrue($junction->insert());
+        self::assertTrue($junction->insert(), print_r($junction->getErrors(), true));
 
         $entry->type = TestEntry::TYPE_POST;
         self::assertNotFalse($entry->update(), print_r($entry->getErrors(), true));

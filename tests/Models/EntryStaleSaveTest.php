@@ -28,7 +28,7 @@ class EntryStaleSaveTest extends TestCase
         self::assertInstanceOf(Entry::class, $second);
 
         $first->name = 'First editor';
-        self::assertTrue($first->save());
+        self::assertTrue($first->save(), print_r($first->getErrors(), true));
 
         $second->load(['Entry' => ['name' => 'Second editor', 'loadedAt' => (string)(time() - 5)]]);
 
@@ -62,13 +62,13 @@ class EntryStaleSaveTest extends TestCase
     {
         $entry = $this->createEntry();
         $entry->name = 'Changed';
-        self::assertTrue($entry->save());
+        self::assertTrue($entry->save(), print_r($entry->getErrors(), true));
 
         $other = Entry::findOne($entry->id);
         self::assertInstanceOf(Entry::class, $other);
         $other->name = 'Changed again';
 
-        self::assertTrue($other->save());
+        self::assertTrue($other->save(), print_r($other->getErrors(), true));
     }
 
     public function testTheFormCarriesWhenItWasRendered(): void

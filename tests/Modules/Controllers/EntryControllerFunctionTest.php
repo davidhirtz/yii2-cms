@@ -53,7 +53,7 @@ class EntryControllerFunctionTest extends TestCase
         $entry = TestEntry::create();
         $entry->name = 'Test';
         $entry->slug = 'before';
-        self::assertTrue($entry->save());
+        self::assertTrue($entry->save(), print_r($entry->getErrors(), true));
 
         $this->open("/admin/cms/entry/update?id=$entry->id");
         self::assertResponseIsSuccessful();

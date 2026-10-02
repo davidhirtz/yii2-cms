@@ -42,7 +42,7 @@ class PermalinkTest extends TestCase
     {
         $permalink = $this->makePermalink('blog/hello-world', 'hello-world');
         $permalink->language = 'de';
-        self::assertTrue($permalink->insert());
+        self::assertTrue($permalink->insert(), print_r($permalink->getErrors(), true));
 
         self::assertNull(Permalink::find()->whereUri('blog/hello-world', 'fr')->one());
     }
@@ -71,11 +71,11 @@ class PermalinkTest extends TestCase
     {
         $agnostic = $this->makePermalink('shared', 'shared');
         $agnostic->language = Permalink::LANGUAGE_ALL;
-        self::assertTrue($agnostic->insert());
+        self::assertTrue($agnostic->insert(), print_r($agnostic->getErrors(), true));
 
         $translated = $this->makePermalink('shared', 'shared');
         $translated->language = 'de';
-        self::assertTrue($translated->insert());
+        self::assertTrue($translated->insert(), print_r($translated->getErrors(), true));
 
         self::assertSame($translated->id, Permalink::find()->whereUri('shared', 'de')->one()?->id);
         self::assertSame($agnostic->id, Permalink::find()->whereUri('shared', 'fr')->one()?->id);
@@ -98,7 +98,7 @@ class PermalinkTest extends TestCase
         $permalink = $this->makePermalink('blog/hello-world', 'hello-world');
         $permalink->language = 'de';
 
-        self::assertTrue($permalink->insert());
+        self::assertTrue($permalink->insert(), print_r($permalink->getErrors(), true));
     }
 
     public function testEntryCanOnlyHaveOnePermalinkPerLanguage(): void

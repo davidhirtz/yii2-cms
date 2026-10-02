@@ -26,7 +26,7 @@ class EntryTenantTest extends TestCase
         $entry->slug = $entry::getModule()->entryIndexSlug ?: null;
         $entry->populateTenantRelation($tenant);
 
-        self::assertTrue($entry->save());
+        self::assertTrue($entry->save(), print_r($entry->getErrors(), true));
         self::assertTrue($entry->isIndex());
         self::assertEquals($tenant->id, $entry->tenant_id);
 
@@ -79,12 +79,12 @@ class EntryTenantTest extends TestCase
         $entry->name = 'Test';
         $entry->populateTenantRelation($tenant);
 
-        self::assertTrue($entry->insert());
+        self::assertTrue($entry->insert(), print_r($entry->getErrors(), true));
 
         $section = Section::create();
         $section->populateEntryRelation($entry);
 
-        self::assertTrue($section->insert());
+        self::assertTrue($section->insert(), print_r($section->getErrors(), true));
 
         self::assertEquals('https://www.domain.localhost/test', Url::toRoute($entry->getRoute() ?: []));
 
@@ -95,7 +95,7 @@ class EntryTenantTest extends TestCase
 
         $entry->tenant_id = $newTenant->id;
 
-        self::assertTrue($entry->save());
+        self::assertTrue($entry->save(), print_r($entry->getErrors(), true));
         self::assertEquals($newTenant->id, $entry->tenant_id);
         self::assertEquals('https://www.new-domain.localhost/test', Url::toRoute($entry->getRoute() ?: []));
 

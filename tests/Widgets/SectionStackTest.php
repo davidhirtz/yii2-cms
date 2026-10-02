@@ -366,7 +366,7 @@ class SectionStackTest extends TestCase
         $entry = Entry::create();
         $entry->name = 'No sections';
 
-        self::assertTrue($entry->insert());
+        self::assertTrue($entry->insert(), print_r($entry->getErrors(), true));
 
         $stack = SectionStack::make()
             ->viewFile('@cmsTestViews/site/_sections')
