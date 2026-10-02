@@ -15,7 +15,6 @@ use Hirtz\Skeleton\Db\ActiveRecord as BaseActiveRecord;
 use Hirtz\Skeleton\Models\Interfaces\CustomAttributeInterface;
 use Hirtz\Skeleton\Models\Interfaces\DraftStatusAttributeInterface;
 use Hirtz\Skeleton\Models\Interfaces\I18nAttributeInterface;
-use Hirtz\Skeleton\Models\Interfaces\TrailModelInterface;
 use Hirtz\Skeleton\Models\Interfaces\TranslationInterface;
 use Hirtz\Skeleton\Models\Interfaces\TypeAttributeInterface;
 use Hirtz\Skeleton\Models\Interfaces\VisibleAttributeInterface;
@@ -46,7 +45,6 @@ abstract class ActiveRecord extends BaseActiveRecord implements
     DraftStatusAttributeInterface,
     I18nAttributeInterface,
     StaleSaveInterface,
-    TrailModelInterface,
     TranslationInterface,
     TypeAttributeInterface,
     VisibleAttributeInterface

@@ -103,7 +103,6 @@ class CategoryCollection
 
     /**
      * @return Category|null
-     * @noinspection PhpDocSignatureInspection
      */
     public static function getBySlug(string $slug, ?int $parentId = null): ?Category
     {
