@@ -21,8 +21,14 @@ trait SlugAttributeTrait
 
     private ?bool $isSlugRequired = null;
 
+    /**
+     * A slug generated from the name is cut to the limit after it was slugged, since transliteration lengthens it
+     * (`東京都` becomes `dong-jing-du`): the editor never filled in the field the error would be reported on.
+     */
     public function ensureSlug(string $attribute = 'name'): void
     {
+        $generated = [];
+
         if ($this->isSlugRequired()) {
             foreach ($this->getI18nAttributeNames('slug') as $language => $attributeName) {
                 if (!$this->$attributeName) {
@@ -30,6 +36,7 @@ trait SlugAttributeTrait
 
                     if ($name) {
                         $this->$attributeName = mb_substr((string)$name, 0, $this->slugMaxLength);
+                        $generated[] = $attributeName;
                     }
                 }
             }
@@ -37,7 +44,13 @@ trait SlugAttributeTrait
 
         if (!$this->customSlugBehavior) {
             foreach ($this->getI18nAttributeNames('slug') as $attributeName) {
-                $this->$attributeName = Inflector::slug($this->$attributeName, $this->slugReplacement, $this->slugLowercase);
+                $slug = Inflector::slug($this->$attributeName, $this->slugReplacement, $this->slugLowercase);
+
+                if (in_array($attributeName, $generated, true)) {
+                    $slug = rtrim(mb_substr($slug, 0, $this->slugMaxLength), $this->slugReplacement);
+                }
+
+                $this->$attributeName = $slug;
             }
         }
     }

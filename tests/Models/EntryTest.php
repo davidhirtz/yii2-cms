@@ -190,6 +190,20 @@ class EntryTest extends TestCase
         self::assertNull(TestEntry::findOne($child->id));
     }
 
+    /**
+     * Transliteration lengthens a name, so a slug generated from it is cut after it was slugged.
+     */
+    public function testAGeneratedSlugIsCutToTheLimitAfterTransliteration(): void
+    {
+        $entry = TestEntry::create();
+        $entry->loadDefaultValues();
+        $entry->name = str_repeat('東京都', 30);
+
+        self::assertTrue($entry->validate(), print_r($entry->getErrors(), true));
+        self::assertLessThanOrEqual(100, mb_strlen((string)$entry->slug));
+        self::assertStringEndsNotWith('-', (string)$entry->slug);
+    }
+
     public function testEntryAssets(): void
     {
         $entry = $this->getEntryFromFixture('page-enabled');
