@@ -10,7 +10,11 @@ use Hirtz\Cms\Models\Menus\Menu;
 use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Test\TestCase;
 use Hirtz\Skeleton\Db\ActiveQuery;
+use Hirtz\Tenant\Models\Collections\TenantCollection;
+use Hirtz\Tenant\Models\Tenant;
+use Hirtz\Tenant\Web\UrlManager;
 use Override;
+use Yii;
 
 class MenuCollectionTest extends TestCase
 {
@@ -195,6 +199,27 @@ class MenuCollectionTest extends TestCase
         ]);
 
         EntryQuery::setStatus(Entry::STATUS_ENABLED);
+    }
+
+    public function testAMenuHoldsTheEntriesOfTheCurrentTenantOnly(): void
+    {
+        $this->setMenus();
+
+        $tenant = Tenant::create();
+        $tenant->loadDefaultValues();
+        $tenant->name = 'Second Tenant';
+        $tenant->language = Yii::$app->sourceLanguage;
+        $tenant->url = 'https://www.second-domain.localhost';
+        self::assertTrue($tenant->save(), implode(' ', $tenant->getErrorSummary(true)));
+
+        $first = $this->createEntry('First', 'first', menuIds: [self::MAIN]);
+        $this->createEntry('Second', 'second', menuIds: [self::MAIN], attributes: ['tenant_id' => $tenant->id]);
+
+        $manager = Yii::$app->getUrlManager();
+        self::assertInstanceOf(UrlManager::class, $manager);
+        $manager->setTenant(TenantCollection::getDefault());
+
+        self::assertSame([$first->id], array_keys(MenuCollection::getItems(self::MAIN)));
     }
 
     /**

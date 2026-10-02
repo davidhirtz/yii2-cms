@@ -117,6 +117,7 @@ class MenuCollection
             ->withPermalinks()
             ->whereStatus()
             ->andWhereParentStatus()
+            ->andWhereCurrentTenant()
             ->orderBy(['position' => SORT_ASC])
             ->indexBy('id');
     }
