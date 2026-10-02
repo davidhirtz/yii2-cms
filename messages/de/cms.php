@@ -119,7 +119,7 @@ return [
     'ENTRY_SUCCESS_ORDERED' => 'Die Reihenfolge der Einträge wurde geändert.',
     'ENTRY_SUCCESS_SELECTED_UPDATED' => 'Die ausgewählten Einträge wurden aktualisiert.',
     'ENTRY_SUCCESS_UPDATED' => 'Der Eintrag wurde aktualisiert.',
-    'ENTRY_TENANT_ID_ERROR' => 'Es existiert noch kein Mandant. Führe die Datenbank-Migrationen aus, um den Standard-Mandanten anzulegen.',
+    'ENTRY_TENANT_ID_ERROR' => 'Es existiert noch kein Mandant. Führen Sie die Datenbank-Migrationen aus, um den Standard-Mandanten anzulegen.',
     'ENTRY_TENANT_ID_LABEL' => 'Mandant',
     'ENTRY_TITLE_LABEL' => 'Meta Titel',
     'HOTSPOT_ASSET_ID_LABEL' => 'Dateiverknüpfung',
