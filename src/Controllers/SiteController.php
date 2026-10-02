@@ -54,6 +54,10 @@ class SiteController extends Controller
             return $response;
         }
 
+        if ($this->action?->id === 'view' && ($response = $this->redirectToCanonicalUrl($entry, $slug))) {
+            return $response;
+        }
+
         $this->populateEntryRelations($entry);
 
         return $this->render($entry->getViewFile() ?? 'view', [
@@ -76,6 +80,20 @@ class SiteController extends Controller
     {
         if (!$entry?->getRoute()) {
             throw new NotFoundHttpException();
+        }
+
+        return null;
+    }
+
+    /**
+     * The homepage answers at `/` only, and an entry at its URI as stored: the lookup ignores letter case, which
+     * would otherwise answer `/About` with the content of `/about`.
+     */
+    protected function redirectToCanonicalUrl(Entry $entry, string $slug): ?Response
+    {
+        if ($entry->isIndex() || trim($slug, '/') !== $entry->getFormattedSlug()) {
+            $route = $entry->getRoute();
+            return $route ? $this->redirect($route, 301) : null;
         }
 
         return null;

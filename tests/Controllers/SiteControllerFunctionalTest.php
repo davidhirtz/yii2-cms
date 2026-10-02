@@ -121,6 +121,32 @@ final class SiteControllerFunctionalTest extends TestCase
         self::assertResponseIsSuccessful();
     }
 
+    public function testTheHomepageAnswersAtTheRootOnly(): void
+    {
+        $slug = Entry::getModule()->entryIndexSlug;
+        self::assertNotEmpty($slug);
+
+        $entry = Entry::create();
+        $entry->name = 'Homepage';
+        $entry->slug = $slug;
+        self::assertTrue($entry->insert(), print_r($entry->getErrors(), true));
+
+        $this->open("/$slug");
+
+        self::assertCurrentUrlEquals('/');
+        self::assertPageTitleSame('Homepage');
+    }
+
+    public function testAUriInAnotherCaseRedirectsToTheStoredOne(): void
+    {
+        $entry = $this->getEntryFromFixture('page-enabled');
+
+        $this->open('/' . strtoupper($entry->getFormattedSlug()));
+
+        self::assertCurrentUrlEquals('/' . $entry->getFormattedSlug());
+        self::assertResponseIsSuccessful();
+    }
+
     public function testUnknownSlug(): void
     {
         $this->open('/there-is-no-such-page');
