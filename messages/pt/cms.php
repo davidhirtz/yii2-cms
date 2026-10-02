@@ -9,7 +9,7 @@ return [
     'AUTH_CATEGORY_DESCRIPTION' => 'Gerir categorias',
     'AUTH_ENTRY_DESCRIPTION' => 'Gerir entradas',
     'BLOCK_ASSET_BLOCKS_HINT' => 'Escolha o bloco para onde deve ir uma cópia deste recurso. A cópia mantém os seus textos e começa como rascunho.',
-    'BLOCK_ASSET_BLOCK_ASSET' => 'Elemento de bloco',
+    'BLOCK_ASSET_BLOCK_ASSET' => 'Recurso de bloco',
     'BLOCK_ASSET_BUTTON_COPY_TO_BLOCK' => 'Copiar recurso para este bloco',
     'BLOCK_BUTTON_DELETE' => 'Eliminar bloco',
     'BLOCK_CONFIRM_DELETE' => 'Tem a certeza de que pretende eliminar este bloco?',

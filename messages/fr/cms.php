@@ -9,7 +9,7 @@ return [
     'AUTH_CATEGORY_DESCRIPTION' => 'Gérer les catégories',
     'AUTH_ENTRY_DESCRIPTION' => 'Gérer les entrées',
     'BLOCK_ASSET_BLOCKS_HINT' => 'Choisissez le bloc qui doit recevoir une copie de cette ressource. La copie garde ses textes et commence en brouillon.',
-    'BLOCK_ASSET_BLOCK_ASSET' => 'Média de bloc',
+    'BLOCK_ASSET_BLOCK_ASSET' => 'Ressource de bloc',
     'BLOCK_ASSET_BUTTON_COPY_TO_BLOCK' => 'Copier la ressource dans ce bloc',
     'BLOCK_BUTTON_DELETE' => 'Supprimer le bloc',
     'BLOCK_CONFIRM_DELETE' => 'Voulez-vous vraiment supprimer ce bloc ?',
