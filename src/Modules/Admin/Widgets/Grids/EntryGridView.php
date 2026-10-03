@@ -66,6 +66,36 @@ class EntryGridView extends GridView
      */
     protected ?array $orderRoute = null;
 
+    public function showUrl(bool $showUrl = true): static
+    {
+        $this->showUrl = $showUrl;
+        return $this;
+    }
+
+    public function showCategories(?bool $showCategories = true): static
+    {
+        $this->showCategories = $showCategories;
+        return $this;
+    }
+
+    public function showCategoryDropdown(?bool $showCategoryDropdown = true): static
+    {
+        $this->showCategoryDropdown = $showCategoryDropdown;
+        return $this;
+    }
+
+    public function showTypeDropdown(bool $showTypeDropdown = true): static
+    {
+        $this->showTypeDropdown = $showTypeDropdown;
+        return $this;
+    }
+
+    public function showDeleteButton(bool $showDeleteButton = true): static
+    {
+        $this->showDeleteButton = $showDeleteButton;
+        return $this;
+    }
+
     #[Override]
     protected function configure(): void
     {

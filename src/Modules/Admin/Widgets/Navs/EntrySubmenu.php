@@ -27,6 +27,18 @@ class EntrySubmenu extends Submenu
     protected bool $showEntryCategories = true;
     protected bool $showEntrySections = true;
 
+    public function showEntryCategories(bool $showEntryCategories = true): static
+    {
+        $this->showEntryCategories = $showEntryCategories;
+        return $this;
+    }
+
+    public function showEntrySections(bool $showEntrySections = true): static
+    {
+        $this->showEntrySections = $showEntrySections;
+        return $this;
+    }
+
     #[Override]
     protected function configure(): void
     {

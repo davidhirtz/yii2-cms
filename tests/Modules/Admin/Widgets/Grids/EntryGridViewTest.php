@@ -32,7 +32,7 @@ class EntryGridViewTest extends TestCase
 
     public function testTheIndexRendersWithoutTheUrlAndTheCategories(): void
     {
-        Yii::$container->set(EntryGridView::class, GridViewWithoutUrl::class);
+        Yii::$container->set(EntryGridView::class, ['showUrl' => false, 'showCategories' => false]);
 
         $this->login();
         $this->createEntry('Needle', 'needle');
@@ -77,7 +77,7 @@ class EntryGridViewTest extends TestCase
         self::assertIsString($html);
         self::assertStringNotContainsString('Haystack', $html);
 
-        Yii::$container->set(EntryGridView::class, GridViewWithCategoryDropdown::class);
+        Yii::$container->set(EntryGridView::class, ['showCategoryDropdown' => true]);
         $html = Yii::$app->runAction('admin/cms/entry/index');
         self::assertIsString($html);
         self::assertStringNotContainsString('Haystack', $html);
@@ -87,6 +87,30 @@ class EntryGridViewTest extends TestCase
         $html = Yii::$app->runAction('admin/cms/entry/index');
         self::assertIsString($html);
         self::assertStringContainsString('Haystack', $html);
+    }
+
+    public function testTheContainerTurnsTheTypeDropdownOff(): void
+    {
+        Yii::$container->set(Entry::class, DatedEntry::class);
+        Entry::instance(true);
+
+        try {
+            $this->login();
+            $this->createEntry('Needle', 'needle');
+
+            $html = Yii::$app->runAction('admin/cms/entry/index');
+            self::assertIsString($html);
+            self::assertStringContainsString('Undated', $html);
+
+            Yii::$container->set(EntryGridView::class, ['showTypeDropdown' => false]);
+            $html = Yii::$app->runAction('admin/cms/entry/index');
+            self::assertIsString($html);
+            self::assertStringNotContainsString('Undated', $html);
+        } finally {
+            Yii::$container->clear(EntryGridView::class);
+            Yii::$container->clear(Entry::class);
+            Entry::instance(true);
+        }
     }
 
     /**
@@ -328,23 +352,6 @@ class EntryGridViewTest extends TestCase
 
         return $user;
     }
-}
-
-/**
- * @extends EntryGridView<Entry>
- */
-class GridViewWithoutUrl extends EntryGridView
-{
-    protected bool $showUrl = false;
-    protected ?bool $showCategories = false;
-}
-
-/**
- * @extends EntryGridView<Entry>
- */
-class GridViewWithCategoryDropdown extends EntryGridView
-{
-    protected ?bool $showCategoryDropdown = true;
 }
 
 /**

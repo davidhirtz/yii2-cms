@@ -15,4 +15,13 @@ trait TailwindViewportsTrait
         'sm:hidden' => [Asset::TYPE_DEFAULT, Asset::TYPE_VIEWPORT_MOBILE],
         'hidden sm:block' => [Asset::TYPE_DEFAULT, Asset::TYPE_VIEWPORT_DESKTOP],
     ];
+
+    /**
+     * @param array<string, list<int>> $viewports
+     */
+    public function viewports(array $viewports): static
+    {
+        $this->viewports = $viewports;
+        return $this;
+    }
 }

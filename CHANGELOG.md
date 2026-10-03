@@ -1,3 +1,8 @@
+## Unreleased
+
+- Added setters for `EntryGridView`'s `show*` options and `EntrySubmenu::showEntryCategories()`/`showEntrySections()`,
+  so the container can configure them
+
 ## 3.10.0 (October 2, 2026)
 
 - Fixed the baseline migration collation to `utf8mb4`
