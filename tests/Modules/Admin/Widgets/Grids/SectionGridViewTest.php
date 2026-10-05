@@ -16,7 +16,10 @@ use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
 use Hirtz\Cms\Test\Models\TestEntry;
 use Hirtz\Cms\Test\TestCase;
 use Hirtz\Media\Models\Asset;
+use Hirtz\Media\Models\File;
 use Hirtz\Media\Models\Interfaces\AssetModelInterface;
+use Hirtz\Media\Modules\Admin\Widgets\Grids\Columns\Thumbnail;
+use Hirtz\Skeleton\Html\Div;
 use Hirtz\Skeleton\Models\CustomAttributes\HtmlCustomAttribute;
 use Hirtz\Skeleton\Models\CustomAttributes\TextCustomAttribute;
 use Hirtz\Skeleton\Models\User;
@@ -34,6 +37,7 @@ class SectionGridViewTest extends TestCase
     protected function tearDown(): void
     {
         Yii::$container->clear(Section::class);
+        Yii::$container->clear(Thumbnail::class);
         parent::tearDown();
     }
 
@@ -48,6 +52,26 @@ class SectionGridViewTest extends TestCase
 
         self::assertSame(3, substr_count($this->render($section), 'class="img-thumbnail"'));
         self::assertSame(1, substr_count($this->render($section, 1), 'class="img-thumbnail"'));
+    }
+
+    /**
+     * The thumbnail the container resolves decides what has a preview, not the file (media-video draws one for a
+     * video).
+     */
+    public function testTheThumbnailDecidesWhichFilesHaveAPreview(): void
+    {
+        $section = $this->getSectionFromFixture('section-headline');
+        $section->name = null;
+        self::assertSame(1, $section->update());
+
+        $fileIds = array_map(fn (Asset $asset): int => $asset->file_id, $section->getVisibleAssets());
+        File::updateAll(['extension' => 'mp4'], ['id' => $fileIds]);
+
+        Yii::$container->set(Thumbnail::class, []);
+        self::assertStringNotContainsString('img-thumbnail', $this->renderSection($section));
+
+        Yii::$container->set(Thumbnail::class, VideoThumbnail::class);
+        self::assertSame(3, substr_count($this->render($section), 'class="img-thumbnail video"'));
     }
 
     /**
@@ -161,6 +185,14 @@ class SectionGridViewTest extends TestCase
 
     private function render(Section $section, int $maxThumbnailCount = 3): string
     {
+        $html = $this->renderSection($section, $maxThumbnailCount);
+        self::assertStringContainsString('<div class="img-thumbnails">', $html);
+
+        return $html;
+    }
+
+    private function renderSection(Section $section, int $maxThumbnailCount = 3): string
+    {
         $provider = Yii::$container->get(SectionActiveDataProvider::class, [], [
             'entry' => $section->entry,
             'query' => Section::find()->where(['id' => $section->id]),
@@ -169,11 +201,16 @@ class SectionGridViewTest extends TestCase
         $grid = SectionGridView::make()->provider($provider);
         $grid->maxThumbnailCount = $maxThumbnailCount;
 
-        $html = $grid->render();
+        return $grid->render();
+    }
+}
 
-        self::assertStringContainsString('<div class="img-thumbnails">', $html);
-
-        return $html;
+class VideoThumbnail extends Thumbnail
+{
+    #[Override]
+    protected function renderContent(): string|Stringable
+    {
+        return Div::make()->class('img-thumbnail video');
     }
 }
 

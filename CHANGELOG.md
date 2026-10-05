@@ -1,3 +1,7 @@
+## Unreleased
+
+- Fixed the section grid showing no thumbnail for a file the container's `Thumbnail` previews (a video)
+
 ## 3.11.0 (October 3, 2026)
 
 - Added setters for `EntryGridView`'s `show*` options and `EntrySubmenu::showEntryCategories()`/`showEntrySections()`,

@@ -185,8 +185,11 @@ class SectionGridView extends GridView
         $thumbnails = [];
 
         foreach ($section->getVisibleAssets() as $asset) {
-            if ($asset->file->hasPreview()) {
-                $thumbnails[] = Thumbnail::make()->file($asset->file);
+            // The container's thumbnail decides what has a preview (media-video draws one for a video).
+            $thumbnail = Thumbnail::make()->file($asset->file)->render();
+
+            if ($thumbnail !== '') {
+                $thumbnails[] = $thumbnail;
 
                 if (count($thumbnails) >= $this->maxThumbnailCount) {
                     break;
