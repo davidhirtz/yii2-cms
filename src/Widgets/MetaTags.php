@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Widgets;
 
 use Hirtz\Cms\Models\Category;
+use Hirtz\Cms\Models\Collections\CategoryCollection;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Media\Models\Asset;
@@ -12,8 +13,10 @@ use Hirtz\Media\Models\File;
 use Hirtz\Media\Models\Interfaces\AssetModelInterface;
 use Hirtz\Media\Transformations\Transformation;
 use Hirtz\Skeleton\Base\Traits\ContainerConfigurationTrait;
+use Hirtz\Skeleton\Models\Breadcrumb;
 use Hirtz\Skeleton\Models\CustomAttributes\HtmlCustomAttribute;
 use Hirtz\Skeleton\Web\UrlManager;
+use Hirtz\Skeleton\Widgets\StructuredData\BreadcrumbList;
 use Hirtz\Skeleton\Widgets\Widget;
 use Override;
 use Stringable;
@@ -32,6 +35,7 @@ class MetaTags extends Widget
     protected ?array $languages = null;
     protected bool $enableHrefLangLinks = true;
     protected bool $enableCanonicalUrl = true;
+    protected bool $enableBreadcrumbs = true;
     protected bool $enableImages = true;
     protected bool $enableSocialMetaTags = true;
     protected ?int $assetType = Asset::TYPE_META_IMAGE;
@@ -73,6 +77,15 @@ class MetaTags extends Widget
     public function enableCanonicalUrl(bool $enableCanonicalUrl = true): static
     {
         $this->enableCanonicalUrl = $enableCanonicalUrl;
+        return $this;
+    }
+
+    /**
+     * Renders the model's ancestors as a schema.org `BreadcrumbList`, only for a nested model.
+     */
+    public function enableBreadcrumbs(bool $enableBreadcrumbs = true): static
+    {
+        $this->enableBreadcrumbs = $enableBreadcrumbs;
         return $this;
     }
 
@@ -124,6 +137,9 @@ class MetaTags extends Widget
             ? array_keys($this->urlManager->languages)
             : [];
 
+        $this->enableBreadcrumbs = $this->enableBreadcrumbs
+            && $this->model->parent_id !== null;
+
         if (count($this->languages) < 2) {
             $this->enableHrefLangLinks = false;
         }
@@ -134,7 +150,36 @@ class MetaTags extends Widget
     protected function renderContent(): string|Stringable
     {
         $this->registerMetaTags();
-        return '';
+
+        $breadcrumbs = $this->enableBreadcrumbs ? $this->getBreadcrumbs() : [];
+
+        return count($breadcrumbs) > 1
+            ? BreadcrumbList::make()->breadcrumbs($breadcrumbs)
+            : '';
+    }
+
+    /**
+     * An entry's ancestors are the ones `PreloadEntrySiteRelations` loaded with the related entries, so they cost no
+     * query on the site and leave out what the request's status hides; a view rendered without the preload
+     * queries them. A category's come from the cached collection.
+     *
+     * @return list<Breadcrumb>
+     */
+    protected function getBreadcrumbs(): array
+    {
+        $ancestors = $this->model instanceof Entry
+            ? $this->model->getAncestors()
+            : CategoryCollection::getAncestors($this->model);
+
+        $breadcrumbs = [];
+
+        foreach ($ancestors as $ancestor) {
+            $breadcrumbs[] = new Breadcrumb($ancestor->getI18nAttribute('name'), $ancestor->getRoute() ?: null);
+        }
+
+        $breadcrumbs[] = new Breadcrumb($this->model->getI18nAttribute('name'));
+
+        return $breadcrumbs;
     }
 
     protected function registerMetaTags(): void

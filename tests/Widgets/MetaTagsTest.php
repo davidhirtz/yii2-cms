@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Tests\Widgets;
 
+use Hirtz\Cms\Models\Actions\PreloadEntrySiteRelations;
+use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
 use Hirtz\Cms\Test\Models\TestEntry;
@@ -11,6 +13,7 @@ use Hirtz\Cms\Test\TestCase;
 use Hirtz\Cms\Widgets\MetaTags;
 use Hirtz\Media\Models\File;
 use Hirtz\Media\Transformations\Transformation;
+use Hirtz\Skeleton\Db\ActiveQuery;
 use Hirtz\Skeleton\Models\CustomAttributes\HtmlCustomAttribute;
 use Override;
 use Yii;
@@ -202,6 +205,65 @@ class MetaTagsTest extends TestCase
         self::assertStringNotContainsString('rel="canonical"', $this->getHead());
     }
 
+    public function testANestedEntryListsItsAncestorsAsBreadcrumbs(): void
+    {
+        $parent = $this->getEntryFromFixture('page-enabled');
+        $url = Yii::$app->getUrlManager()->createAbsoluteUrl($parent->getRoute() ?: self::fail('The parent has no route.'));
+
+        $html = $this->render($this->getPreloadedEntryFromFixture('post-1'));
+
+        self::assertStringContainsString('"@type":"BreadcrumbList"', $html);
+        self::assertStringContainsString('{"@type":"ListItem","position":1,"name":"Test Page – Enabled","item":' . json_encode($url) . '}', $html);
+        self::assertStringContainsString('{"@type":"ListItem","position":2,"name":"Test Child 1"}', $html);
+    }
+
+    /**
+     * The ancestors come with the preload's query for the related entries, so the breadcrumbs cost nothing.
+     */
+    public function testTheBreadcrumbsRunNoQuery(): void
+    {
+        $entry = $this->getPreloadedEntryFromFixture('post-1');
+
+        $without = $this->countQueries(fn () => $this->render($entry, ['enableBreadcrumbs' => false]));
+        $with = $this->countQueries(fn () => $this->render($entry));
+
+        self::assertSame($without, $with);
+    }
+
+    public function testTheBreadcrumbsCanBeTurnedOff(): void
+    {
+        $html = $this->render($this->getPreloadedEntryFromFixture('post-1'), ['enableBreadcrumbs' => false]);
+        self::assertStringNotContainsString('BreadcrumbList', $html);
+    }
+
+    public function testATopLevelEntryHasNoBreadcrumbs(): void
+    {
+        $html = $this->render($this->getPreloadedEntryFromFixture('page-enabled'));
+        self::assertStringNotContainsString('BreadcrumbList', $html);
+    }
+
+    /**
+     * The status is the request's, as `SiteController` sets it: outside a draft host, the preload leaves out the draft
+     * parent, which leaves the entry no trail to list.
+     */
+    public function testAnUnpublishedAncestorIsLeftOut(): void
+    {
+        ActiveQuery::setStatus(Entry::STATUS_ENABLED);
+
+        $html = $this->render($this->getPreloadedEntryFromFixture('post-3'));
+        self::assertStringNotContainsString('BreadcrumbList', $html);
+    }
+
+    public function testANestedCategoryListsItsAncestorsAsBreadcrumbs(): void
+    {
+        $category = Category::findOne($this->getCategoryFixtureData('child-1')['id']) ?? self::fail('No category.');
+
+        $html = $this->render($category, ['enableSocialMetaTags' => false]);
+
+        self::assertStringContainsString('"position":1,"name":"Root category 1","item":', $html);
+        self::assertStringContainsString('{"@type":"ListItem","position":2,"name":"Child category 1"}', $html);
+    }
+
     /**
      * One language is no alternative, so the hreflang links are left out entirely.
      */
@@ -234,17 +296,25 @@ class MetaTagsTest extends TestCase
     /**
      * @param array<string, mixed> $config the setters to call, by name
      */
-    private function render(Entry $entry, array $config = []): void
+    private function render(Category|Entry $model, array $config = []): string
     {
         Yii::$app->set('view', Yii::$app->getComponents()['view']);
 
-        $widget = MetaTags::make()->model($entry);
+        $widget = MetaTags::make()->model($model);
 
         foreach ($config as $name => $value) {
             $widget->$name($value);
         }
 
-        $widget->__toString();
+        return $widget->__toString();
+    }
+
+    private function getPreloadedEntryFromFixture(string $key): Entry
+    {
+        $entry = $this->getEntryFromFixture($key);
+        Yii::$container->get(PreloadEntrySiteRelations::class, config: ['entry' => $entry]);
+
+        return $entry;
     }
 
     /**

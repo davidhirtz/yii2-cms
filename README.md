@@ -189,7 +189,8 @@ Event::on(EntryGridView::class, Widget::EVENT_CONFIGURE, function (Event $event)
 `Controllers\SiteController` resolves the slug to an entry, answers 404 for one without a URL, and renders the type's
 `viewFile` or `view`, with the layout `main`. `Widgets\SectionStack::make()->entry($entry)` renders the visible
 sections, grouped and wrapped as their types say; `Widgets\Artwork` and `Widgets\Gallery` render assets, and
-`Widgets\MetaTags` the page's meta tags, canonical link and hreflang links. Saving any cms record invalidates the page cache
+`Widgets\MetaTags` the page's meta tags, canonical link, hreflang links and, for a nested entry, its
+ancestors as JSON-LD breadcrumbs. Saving any cms record invalidates the page cache
 (`Module::invalidatePageCache()`).
 
 A path with a trailing slash is redirected (301) to the one without; `SiteController::$redirectTrailingSlash = false`

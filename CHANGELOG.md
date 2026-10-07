@@ -1,6 +1,7 @@
 ## Unreleased
 
 - Changed `MetaTags` to register the canonical link by default (`enableCanonicalUrl(false)` turns it off)
+- Added a schema.org `BreadcrumbList` of a nested entry's or category's ancestors to `MetaTags` (`enableBreadcrumbs()`)
 
 ## 3.11.1 (October 5, 2026)
 
