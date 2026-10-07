@@ -1,3 +1,7 @@
+## Unreleased
+
+- Changed `MetaTags` to register the canonical link by default (`enableCanonicalUrl(false)` turns it off)
+
 ## 3.11.1 (October 5, 2026)
 
 - Fixed the section grid showing no thumbnail for a file the container's `Thumbnail` previews (a video)

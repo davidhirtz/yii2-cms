@@ -31,7 +31,7 @@ class MetaTags extends Widget
      */
     protected ?array $languages = null;
     protected bool $enableHrefLangLinks = true;
-    protected bool $enableCanonicalUrl = false;
+    protected bool $enableCanonicalUrl = true;
     protected bool $enableImages = true;
     protected bool $enableSocialMetaTags = true;
     protected ?int $assetType = Asset::TYPE_META_IMAGE;

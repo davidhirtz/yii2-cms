@@ -188,15 +188,18 @@ class MetaTagsTest extends TestCase
         self::assertStringNotContainsString('og:image', $this->getHead());
     }
 
-    public function testTheCanonicalUrlIsOptional(): void
+    public function testTheCanonicalUrlCanBeTurnedOff(): void
     {
         $entry = $this->getEntryFromFixture('page-enabled');
 
-        $this->render($entry);
-        self::assertStringNotContainsString('rel="canonical"', $this->getHead());
+        $route = $entry->getRoute() ?: self::fail('The entry has no route.');
+        $url = Yii::$app->getUrlManager()->createAbsoluteUrl($route);
 
-        $this->render($entry, ['enableCanonicalUrl' => true]);
-        self::assertStringContainsString('rel="canonical"', $this->getHead());
+        $this->render($entry);
+        self::assertStringContainsString('<link href="' . $url . '" rel="canonical">', $this->getHead());
+
+        $this->render($entry, ['enableCanonicalUrl' => false]);
+        self::assertStringNotContainsString('rel="canonical"', $this->getHead());
     }
 
     /**
