@@ -1,5 +1,6 @@
 ## Unreleased
 
+- Changed `SectionSetButton` to extend the skeleton's `ConfirmButton`
 - Changed `MetaTags` to register the canonical link by default (`enableCanonicalUrl(false)` turns it off)
 - Added a schema.org `BreadcrumbList` of a nested entry's or category's ancestors to `MetaTags` (`enableBreadcrumbs()`)
 

@@ -7,9 +7,8 @@ namespace Hirtz\Cms\Modules\Admin\Widgets\Navs;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\Buttons\EntryDeleteButton;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\Buttons\FrontendLinkButton;
-use Hirtz\Skeleton\Widgets\Buttons\Button;
+use Hirtz\Skeleton\Widgets\Buttons\ConfirmButton;
 use Hirtz\Skeleton\Widgets\Buttons\DuplicateButton;
-use Hirtz\Skeleton\Widgets\Modal;
 use Hirtz\Skeleton\Widgets\Navs\ActionDropdown;
 use Hirtz\Skeleton\Widgets\Traits\ModelTrait;
 use Override;
@@ -36,27 +35,19 @@ class EntryActionDropdown extends ActionDropdown
         parent::configure();
     }
 
-
     /**
      * @see EntryController::actionDuplicate()
      */
     protected function getDuplicateButton(): ?Stringable
     {
         if ($this->model->entry_count > 1) {
-            $modal = Modal::make()
+            return ConfirmButton::make()
+                ->icon('copy')
+                ->label(Yii::t('cms', 'ENTRY_BUTTON_DUPLICATE'))
                 ->title(Yii::t('cms', 'ENTRY_ACTION_DROPDOWN_DUPLICATE_TITLE', [
                     'n' => Yii::$app->getFormatter()->asInteger($this->model->entry_count),
                 ]))
-                ->footer(Button::make()
-                    ->primary()
-                    ->text(Yii::t('cms', 'ENTRY_BUTTON_DUPLICATE'))
-                    ->post(['duplicate', 'id' => $this->model->id], true));
-
-            return Button::make()
-                ->primary()
-                ->text(Yii::t('cms', 'ENTRY_BUTTON_DUPLICATE'))
-                ->icon('copy')
-                ->modal($modal);
+                ->url(['duplicate', 'id' => $this->model->id]);
         }
 
         return DuplicateButton::make()
@@ -83,19 +74,12 @@ class EntryActionDropdown extends ActionDropdown
             return null;
         }
 
-        $modal = Modal::make()
-            ->title(Yii::t('cms', 'ENTRY_ACTION_DROPDOWN_MAKE_HOMEPAGE'))
-            ->content(Yii::t('cms', 'ENTRY_ACTION_DROPDOWN_MAKE_TITLE'))
-            ->footer(Button::make()
-                ->danger()
-                ->post(['replace-index', 'id' => $this->model->id], true)
-                ->text(Yii::t('cms', 'ENTRY_ACTION_DROPDOWN_MAKE_HOMEPAGE')));
-
-        return Button::make()
-            ->primary()
-            ->text(Yii::t('cms', 'ENTRY_ACTION_DROPDOWN_MAKE_HOMEPAGE'))
+        return ConfirmButton::make()
+            ->confirmStyle('danger')
             ->icon('home')
-            ->modal($modal);
+            ->label(Yii::t('cms', 'ENTRY_ACTION_DROPDOWN_MAKE_HOMEPAGE'))
+            ->text(Yii::t('cms', 'ENTRY_ACTION_DROPDOWN_MAKE_TITLE'))
+            ->url(['replace-index', 'id' => $this->model->id]);
     }
 
     protected function getEntryDeleteButton(): ?Stringable

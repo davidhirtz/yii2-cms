@@ -11,24 +11,16 @@ use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Skeleton\Html\Label;
 use Hirtz\Skeleton\Html\Option;
 use Hirtz\Skeleton\Html\Select;
-use Hirtz\Skeleton\Widgets\Buttons\Button;
-use Hirtz\Skeleton\Widgets\Modal;
-use Hirtz\Skeleton\Widgets\Traits\IconTrait;
-use Hirtz\Skeleton\Widgets\Traits\LabelTrait;
+use Hirtz\Skeleton\Widgets\Buttons\ConfirmButton;
 use Hirtz\Skeleton\Widgets\Traits\ModelTrait;
-use Hirtz\Skeleton\Widgets\Traits\TitleTrait;
-use Hirtz\Skeleton\Widgets\Widget;
 use Override;
-use Stringable;
 use Yii;
 
 /**
  * @see SectionController::actionCreateSet()
  */
-class SectionSetButton extends Widget
+class SectionSetButton extends ConfirmButton
 {
-    use IconTrait;
-    use LabelTrait;
     use ModuleTrait;
 
     /**
@@ -36,7 +28,7 @@ class SectionSetButton extends Widget
      */
     use ModelTrait;
 
-    use TitleTrait;
+    protected bool $pushHistory = false;
 
     #[Override]
     public function isVisible(): bool
@@ -52,40 +44,21 @@ class SectionSetButton extends Widget
     {
         $this->icon ??= 'layer-group';
         $this->label ??= Yii::t('cms', 'SECTION_SET_BUTTON');
-        $this->title ??= Yii::t('cms', 'SECTION_SET_BUTTON');
+        $this->url ??= ['/admin/cms/section/create-set', 'entry' => $this->model->id];
 
-        parent::configure();
-    }
-
-    #[Override]
-    protected function renderContent(): string|Stringable
-    {
-        return Button::make()
-            ->primary()
-            ->icon($this->icon)
-            ->modal($this->getModal())
-            ->text($this->label);
-    }
-
-    protected function getModal(): Modal
-    {
         $select = $this->getSelect();
 
-        return Modal::make()
-            ->title($this->title)
-            ->content(
-                Label::make()
-                    ->class('form-label')
-                    ->text(Yii::t('cms', 'SECTION_SET_LABEL'))
-                    ->for($select->getId()),
-                $select,
-            )
-            ->footer(Button::make()
-                ->primary()
-                ->text($this->label)
-                ->icon($this->icon)
-                ->post(['/admin/cms/section/create-set', 'entry' => $this->model->id])
-                ->attribute('hx-include', '#' . $select->getId()));
+        $this->addContent(
+            Label::make()
+                ->class('form-label')
+                ->text(Yii::t('cms', 'SECTION_SET_LABEL'))
+                ->for($select->getId()),
+            $select,
+        );
+
+        $this->include ??= '#' . $select->getId();
+
+        parent::configure();
     }
 
     protected function getSelect(): Select
