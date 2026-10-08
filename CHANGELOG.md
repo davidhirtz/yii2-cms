@@ -1,4 +1,4 @@
-## Unreleased
+## 3.12.0 (October 8, 2026)
 
 - Changed `SectionSetButton` to extend the skeleton's `ConfirmButton`
 - Changed `MetaTags` to register the canonical link by default (`enableCanonicalUrl(false)` turns it off)
