@@ -7,6 +7,7 @@ namespace Hirtz\Cms\Widgets;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Collections\CategoryCollection;
 use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Models\Types\EntryType;
 use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Media\Models\Asset;
 use Hirtz\Media\Models\File;
@@ -16,7 +17,11 @@ use Hirtz\Skeleton\Base\Traits\ContainerConfigurationTrait;
 use Hirtz\Skeleton\Models\Breadcrumb;
 use Hirtz\Skeleton\Models\CustomAttributes\HtmlCustomAttribute;
 use Hirtz\Skeleton\Web\UrlManager;
+use Hirtz\Skeleton\Helpers\StructuredData;
 use Hirtz\Skeleton\Widgets\StructuredData\BreadcrumbList;
+use Hirtz\Skeleton\Widgets\StructuredData\Organization;
+use Hirtz\Skeleton\Widgets\StructuredData\Thing;
+use Hirtz\Skeleton\Widgets\StructuredData\WebSite;
 use Hirtz\Skeleton\Widgets\Widget;
 use Override;
 use Stringable;
@@ -38,6 +43,7 @@ class MetaTags extends Widget
     protected bool $enableBreadcrumbs = true;
     protected bool $enableImages = true;
     protected bool $enableSocialMetaTags = true;
+    protected bool $enableStructuredData = true;
     protected ?int $assetType = Asset::TYPE_META_IMAGE;
     protected Transformation|string|null $transformation = Transformation::NAME_OPEN_GRAPH;
     protected string|false $ogType = 'website';
@@ -86,6 +92,16 @@ class MetaTags extends Widget
     public function enableBreadcrumbs(bool $enableBreadcrumbs = true): static
     {
         $this->enableBreadcrumbs = $enableBreadcrumbs;
+        return $this;
+    }
+
+    /**
+     * Registers the site's `WebSite` and `Organization`, the page and its breadcrumbs as schema.org nodes, and what the
+     * type adds through {@see EntryType::structuredData()}.
+     */
+    public function enableStructuredData(bool $enableStructuredData = true): static
+    {
+        $this->enableStructuredData = $enableStructuredData;
         return $this;
     }
 
@@ -147,15 +163,18 @@ class MetaTags extends Widget
         parent::configure();
     }
 
+    /**
+     * Everything goes into the head, the structured data included, so the widget itself renders nothing.
+     */
     protected function renderContent(): string|Stringable
     {
         $this->registerMetaTags();
 
-        $breadcrumbs = $this->enableBreadcrumbs ? $this->getBreadcrumbs() : [];
+        if ($this->enableStructuredData) {
+            $this->registerStructuredData();
+        }
 
-        return count($breadcrumbs) > 1
-            ? BreadcrumbList::make()->breadcrumbs($breadcrumbs)
-            : '';
+        return '';
     }
 
     /**
@@ -206,7 +225,7 @@ class MetaTags extends Widget
 
     protected function setDocumentTitle(): void
     {
-        $title = $this->model->getVisibleAttribute('title') ?? $this->model->getI18nAttribute('name');
+        $title = $this->getTitle();
 
         if ($title) {
             $this->view->title($title);
@@ -214,6 +233,20 @@ class MetaTags extends Widget
     }
 
     protected function setMetaDescription(): void
+    {
+        $content = $this->getDescription();
+
+        if ($content) {
+            $this->view->description($content);
+        }
+    }
+
+    protected function getTitle(): ?string
+    {
+        return $this->model->getVisibleAttribute('title') ?? $this->model->getI18nAttribute('name');
+    }
+
+    protected function getDescription(): ?string
     {
         $content = $this->model->getVisibleAttribute('description');
 
@@ -225,9 +258,7 @@ class MetaTags extends Widget
             }
         }
 
-        if ($content) {
-            $this->view->description($content);
-        }
+        return is_string($content) ? $content : null;
     }
 
     protected function registerHrefLangLinkTags(): void
@@ -252,11 +283,17 @@ class MetaTags extends Widget
 
     protected function registerCanonicalUrlTags(): void
     {
-        $route = $this->model->getRoute();
+        $url = $this->getUrl();
 
-        if ($route) {
-            $this->view->registerCanonicalTag($this->urlManager->createAbsoluteUrl($route));
+        if ($url) {
+            $this->view->registerCanonicalTag($url);
         }
+    }
+
+    protected function getUrl(): ?string
+    {
+        $route = $this->model->getRoute();
+        return $route ? $this->urlManager->createAbsoluteUrl($route) : null;
     }
 
     protected function registerSocialMetaTags(): void
@@ -266,19 +303,30 @@ class MetaTags extends Widget
         }
     }
 
+    protected function registerImageMetaTags(): void
+    {
+        foreach ($this->getImages() as [$url, $width, $height]) {
+            $this->view->registerImageMetaTags($url, $width, $height);
+        }
+    }
+
     /**
      * A category carries no assets. The URL comes from the media module, which only serves a transformation it
      * declares under that name.
+     *
+     * @return list<array{string, int|null, int|null}> the URL, width and height of each share image
      */
-    protected function registerImageMetaTags(): void
+    protected function getImages(): array
     {
-        if (!$this->model instanceof AssetModelInterface) {
-            return;
+        if (!$this->enableImages || !$this->model instanceof AssetModelInterface) {
+            return [];
         }
 
         $transformation = is_string($this->transformation)
             ? File::getModule()->getTransformation($this->transformation)
             : $this->transformation;
+
+        $images = [];
 
         foreach ($this->model->assets as $asset) {
             if ($this->assetType && $this->assetType !== $asset->type) {
@@ -289,11 +337,120 @@ class MetaTags extends Widget
             $url = $transformation ? $file->getTransformationUrl($transformation->name) : null;
 
             if ($url) {
-                $this->view->registerImageMetaTags($url, ...$transformation->getSizeFor($file));
+                $images[] = [$url, ...$transformation->getSizeFor($file)];
                 continue;
             }
 
-            $this->view->registerImageMetaTags($file->getUrl(), $file->width, $file->height);
+            $images[] = [$file->getUrl(), $file->width, $file->height];
         }
+
+        return $images;
+    }
+
+    /**
+     * The site's nodes first, then the page, which the type may replace, extend or give a main entity, then the
+     * breadcrumbs the page points to.
+     */
+    protected function registerStructuredData(): void
+    {
+        $organization = Organization::make();
+        $organization->register();
+
+        $publisher = $organization->isVisible() ? $organization->getId() : null;
+
+        $website = WebSite::make()->publisher($publisher);
+        $website->register();
+
+        $breadcrumbs = $this->enableBreadcrumbs ? $this->getBreadcrumbs() : [];
+        $breadcrumbList = null;
+
+        if (count($breadcrumbs) > 1) {
+            $breadcrumbList = BreadcrumbList::make()
+                ->id($this->getStructuredDataId('breadcrumb'))
+                ->breadcrumbs($breadcrumbs);
+        }
+
+        $node = $this->getPageNode($website->getId(), $breadcrumbList?->getId());
+        $structuredData = $this->model->getType()?->getStructuredData();
+        $result = $structuredData ? $structuredData($this->model, $node) : $node;
+
+        if ($result instanceof Thing) {
+            $main = $this->getMainEntityNode($result, $node);
+
+            if ($main !== null) {
+                $node['mainEntity'] = ['@id' => $main['@id']];
+                $this->view->registerStructuredData($main);
+            }
+
+            $result = $node;
+        }
+
+        if ($result !== null) {
+            $this->view->registerStructuredData($result);
+        }
+
+        $breadcrumbList?->register();
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    protected function getPageNode(?string $website, ?string $breadcrumb): array
+    {
+        $image = $this->getImages()[0] ?? null;
+
+        $publishDate = $this->model instanceof Entry && ($this->model->getType()?->schedules() ?? true)
+            ? $this->model->publish_date
+            : null;
+
+        return StructuredData::filter([
+            '@type' => $this->model instanceof Entry ? 'WebPage' : 'CollectionPage',
+            '@id' => $this->getStructuredDataId('webpage'),
+            'url' => $this->getUrl(),
+            'name' => $this->getTitle(),
+            'description' => $this->getDescription(),
+            'inLanguage' => Yii::$app->language,
+            'primaryImageOfPage' => $image ? StructuredData::image(...$image) : null,
+            'datePublished' => StructuredData::date($publishDate),
+            'dateModified' => StructuredData::date($this->model->updated_at),
+            'isPartOf' => $website ? ['@id' => $website] : null,
+            'breadcrumb' => $breadcrumb ? ['@id' => $breadcrumb] : null,
+        ]);
+    }
+
+    /**
+     * A main entity the type returned without an `@id` is named after its type on the page's URL, and takes the
+     * page's name, description, image and URL unless it sets its own.
+     *
+     * @param array<string, mixed> $page
+     * @return array<string, mixed>|null
+     */
+    protected function getMainEntityNode(Thing $thing, array $page): ?array
+    {
+        $node = $thing->build();
+
+        if ($node === null) {
+            return null;
+        }
+
+        $type = is_string($node['@type'] ?? null) ? $node['@type'] : 'thing';
+        $node = ['@type' => $type, '@id' => $node['@id'] ?? $this->getStructuredDataId(lcfirst($type)), ...$node];
+
+        $inherited = StructuredData::filter([
+            'name' => $page['name'] ?? null,
+            'description' => $page['description'] ?? null,
+            'image' => $page['primaryImageOfPage'] ?? null,
+            'url' => $page['url'] ?? null,
+        ]);
+
+        return [...$node, ...array_diff_key($inherited, $node)];
+    }
+
+    /**
+     * The page's URL with a fragment, or the fragment alone for a model without a route.
+     */
+    protected function getStructuredDataId(string $fragment): string
+    {
+        return StructuredData::id($this->getUrl() ?? '', $fragment);
     }
 }

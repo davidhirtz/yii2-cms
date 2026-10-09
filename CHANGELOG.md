@@ -1,3 +1,9 @@
+## Unreleased
+
+- Added structured data to `MetaTags`: the site's `WebSite` and `Organization`, the page and its breadcrumbs in one
+  graph in the head (`enableStructuredData()`); the breadcrumbs are no longer rendered in the body
+- Added `EntryType::structuredData()` and `CategoryType::structuredData()`
+
 ## 3.12.0 (October 8, 2026)
 
 - Changed `SectionSetButton` to extend the skeleton's `ConfirmButton`

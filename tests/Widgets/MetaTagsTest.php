@@ -7,6 +7,7 @@ namespace Hirtz\Cms\Tests\Widgets;
 use Hirtz\Cms\Models\Actions\PreloadEntrySiteRelations;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Models\Types\EntryType;
 use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
 use Hirtz\Cms\Test\Models\TestEntry;
 use Hirtz\Cms\Test\TestCase;
@@ -14,7 +15,14 @@ use Hirtz\Cms\Widgets\MetaTags;
 use Hirtz\Media\Models\File;
 use Hirtz\Media\Transformations\Transformation;
 use Hirtz\Skeleton\Db\ActiveQuery;
+use Hirtz\Skeleton\Db\DateTime;
+use Hirtz\Skeleton\Helpers\StructuredData;
+use Hirtz\Skeleton\Web\View;
+use Hirtz\Skeleton\Widgets\StructuredData\Event;
+use Hirtz\Skeleton\Widgets\StructuredData\Organization;
+use Hirtz\Skeleton\Models\CustomAttributes\DateTimeCustomAttribute;
 use Hirtz\Skeleton\Models\CustomAttributes\HtmlCustomAttribute;
+use Hirtz\Skeleton\Models\CustomAttributes\TextCustomAttribute;
 use Override;
 use Yii;
 
@@ -264,6 +272,158 @@ class MetaTagsTest extends TestCase
         self::assertStringContainsString('{"@type":"ListItem","position":2,"name":"Child category 1"}', $html);
     }
 
+    public function testThePageIsPartOfTheWebSite(): void
+    {
+        $entry = $this->getEntryFromFixture('page-enabled');
+        $url = $this->getUrl($entry);
+
+        $this->render($entry);
+        $graph = $this->getGraph();
+
+        self::assertSame(['https://www.test.localhost/#website', "$url#webpage"], array_keys($graph));
+        self::assertArrayNotHasKey('publisher', $graph['https://www.test.localhost/#website']);
+
+        $page = $graph["$url#webpage"];
+
+        self::assertSame('WebPage', $page['@type']);
+        self::assertSame($url, $page['url']);
+        self::assertSame('Test Page – Enabled', $page['name']);
+        self::assertSame(Yii::$app->language, $page['inLanguage']);
+        self::assertSame(['@id' => 'https://www.test.localhost/#website'], $page['isPartOf']);
+        self::assertSame(StructuredData::date($entry->publish_date), $page['datePublished']);
+        self::assertSame(StructuredData::date($entry->updated_at), $page['dateModified'] ?? null);
+        self::assertArrayNotHasKey('breadcrumb', $page);
+        self::assertArrayNotHasKey('mainEntity', $page);
+    }
+
+    public function testAConfiguredOrganizationPublishesTheWebSite(): void
+    {
+        Yii::$container->set(Organization::class, ['name' => 'Example GmbH']);
+
+        $this->render($this->getEntryFromFixture('page-enabled'));
+        $graph = $this->getGraph();
+
+        self::assertSame('Example GmbH', $graph['https://www.test.localhost/#organization']['name'] ?? null);
+        self::assertSame(
+            ['@id' => 'https://www.test.localhost/#organization'],
+            $graph['https://www.test.localhost/#website']['publisher'] ?? null,
+        );
+    }
+
+    public function testANestedPagePointsToItsBreadcrumbs(): void
+    {
+        $this->render($this->getPreloadedEntryFromFixture('post-1'));
+        $nodes = array_column($this->getGraph(), null, '@type');
+
+        self::assertArrayHasKey('BreadcrumbList', $nodes);
+        self::assertSame(['@id' => $nodes['BreadcrumbList']['@id']], $nodes['WebPage']['breadcrumb'] ?? null);
+    }
+
+    public function testACategoryIsACollectionPage(): void
+    {
+        $category = Category::findOne($this->getCategoryFixtureData('child-1')['id']) ?? self::fail('No category.');
+
+        $this->render($category, ['enableSocialMetaTags' => false]);
+        $pages = array_filter($this->getGraph(), fn (array $node): bool => ($node['@type'] ?? null) === 'CollectionPage');
+
+        self::assertCount(1, $pages);
+        self::assertArrayNotHasKey('datePublished', current($pages) ?: []);
+    }
+
+    public function testTheStructuredDataCanBeTurnedOff(): void
+    {
+        $this->render($this->getPreloadedEntryFromFixture('post-1'), ['enableStructuredData' => false]);
+        self::assertSame([], $this->getGraph());
+    }
+
+    public function testTheTypeChangesThePageNode(): void
+    {
+        $entry = $this->getStructuredDataEntry(StructuredDataTestEntry::TYPE_ARTICLE);
+        $url = $this->getUrl($entry);
+
+        $this->render($entry);
+        $page = $this->getGraph()["$url#webpage"] ?? [];
+
+        self::assertSame('Article', $page['@type'] ?? null);
+        self::assertSame('Test Page – Enabled', $page['headline'] ?? null);
+    }
+
+    public function testTheTypeCanLeaveThePageOut(): void
+    {
+        $entry = $this->getStructuredDataEntry(StructuredDataTestEntry::TYPE_NONE);
+        $this->render($entry);
+
+        self::assertSame(['https://www.test.localhost/#website'], array_keys($this->getGraph()));
+    }
+
+    /**
+     * The event is built from the entry's custom attributes; its date is the publish date, which the type does not
+     * schedule, so the page claims no publication date.
+     */
+    public function testAnEventIsThePagesMainEntity(): void
+    {
+        $previous = Yii::$app->getTimeZone();
+        Yii::$app->setTimeZone('Europe/Berlin');
+
+        try {
+            $entry = $this->getStructuredDataEntry(StructuredDataTestEntry::TYPE_EVENT);
+            $entry->publish_date = new DateTime('2026-10-09 18:00:00', new \DateTimeZone('UTC'));
+            $entry->end_date = new DateTime('2026-10-09 21:00:00', new \DateTimeZone('UTC'));
+            $entry->venue = 'Großer Saal – 東京 🎉';
+            $entry->address = 'Mu' . "\u{308}" . 'llerstraße 1, München';
+
+            $url = $this->getUrl($entry);
+
+            $this->render($entry);
+            $graph = $this->getGraph();
+            $page = $graph["$url#webpage"] ?? [];
+
+            self::assertSame(['@id' => "$url#event"], $page['mainEntity'] ?? null);
+            self::assertArrayNotHasKey('datePublished', $page);
+
+            self::assertSame([
+                '@type' => 'Event',
+                '@id' => "$url#event",
+                'startDate' => '2026-10-09T20:00:00+02:00',
+                'endDate' => '2026-10-09T23:00:00+02:00',
+                'eventStatus' => 'https://schema.org/EventScheduled',
+                'eventAttendanceMode' => 'https://schema.org/OfflineEventAttendanceMode',
+                'location' => [
+                    '@type' => 'Place',
+                    'name' => 'Großer Saal – 東京 🎉',
+                    'address' => 'Mu' . "\u{308}" . 'llerstraße 1, München',
+                ],
+                'name' => 'Test Page – Enabled',
+                'image' => $page['primaryImageOfPage'] ?? self::fail('The page has no image.'),
+                'url' => $url,
+            ], $graph["$url#event"] ?? null);
+        } finally {
+            Yii::$app->setTimeZone($previous);
+        }
+    }
+
+    public function testAnEventWithoutAPlaceIsLeftOut(): void
+    {
+        $entry = $this->getStructuredDataEntry(StructuredDataTestEntry::TYPE_EVENT);
+        $url = $this->getUrl($entry);
+
+        $this->render($entry);
+        $graph = $this->getGraph();
+
+        self::assertArrayNotHasKey("$url#event", $graph);
+        self::assertArrayNotHasKey('mainEntity', $graph["$url#webpage"] ?? []);
+    }
+
+    private function getStructuredDataEntry(int $type): StructuredDataTestEntry
+    {
+        $entry = StructuredDataTestEntry::findOne($this->getEntryFixtureData('page-enabled')['id'])
+            ?? self::fail('No entry.');
+
+        $entry->type = $type;
+
+        return $entry;
+    }
+
     /**
      * One language is no alternative, so the hreflang links are left out entirely.
      */
@@ -306,7 +466,26 @@ class MetaTagsTest extends TestCase
             $widget->$name($value);
         }
 
-        return $widget->__toString();
+        self::assertSame('', $widget->__toString(), 'Everything goes into the head.');
+
+        $nodes = array_values($this->getGraph());
+        return $nodes ? StructuredData::encode($nodes) : '';
+    }
+
+    /**
+     * @return array<int|string, array<string, mixed>>
+     */
+    private function getGraph(): array
+    {
+        $view = Yii::$app->getView();
+        self::assertInstanceOf(View::class, $view);
+
+        return $view->getStructuredData();
+    }
+
+    private function getUrl(Entry $entry): string
+    {
+        return Yii::$app->getUrlManager()->createAbsoluteUrl($entry->getRoute() ?: self::fail('The entry has no route.'));
     }
 
     private function getPreloadedEntryFromFixture(string $key): Entry
@@ -328,5 +507,47 @@ class MetaTagsTest extends TestCase
             ...array_map(strval(...), $view->metaTags),
             ...array_map(strval(...), $view->linkTags),
         ]);
+    }
+}
+
+/**
+ * @property DateTime|string|null $end_date
+ * @property string|null $venue
+ * @property string|null $address
+ */
+class StructuredDataTestEntry extends TestEntry
+{
+    public const int TYPE_ARTICLE = 10;
+    public const int TYPE_NONE = 11;
+    public const int TYPE_EVENT = 12;
+
+    #[Override]
+    public function getTypes(): array
+    {
+        return [
+            ...parent::getTypes(),
+            EntryType::make(self::TYPE_ARTICLE)
+                ->name('Article')
+                ->structuredData(fn (Entry $entry, array $node): array => [
+                    ...$node,
+                    '@type' => 'Article',
+                    'headline' => $entry->name,
+                ]),
+            EntryType::make(self::TYPE_NONE)
+                ->name('None')
+                ->structuredData(fn (): ?array => null),
+            EntryType::make(self::TYPE_EVENT)
+                ->name('Event')
+                ->schedule(false)
+                ->customAttributes([
+                    DateTimeCustomAttribute::make('end_date'),
+                    TextCustomAttribute::make('venue'),
+                    TextCustomAttribute::make('address'),
+                ])
+                ->structuredData(fn (Entry $entry): Event => Event::make()
+                    ->startDate($entry->publish_date)
+                    ->endDate($entry->getVisibleAttribute('end_date'))
+                    ->location($entry->getVisibleAttribute('venue'), $entry->getVisibleAttribute('address'))),
+        ];
     }
 }

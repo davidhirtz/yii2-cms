@@ -189,9 +189,52 @@ Event::on(EntryGridView::class, Widget::EVENT_CONFIGURE, function (Event $event)
 `Controllers\SiteController` resolves the slug to an entry, answers 404 for one without a URL, and renders the type's
 `viewFile` or `view`, with the layout `main`. `Widgets\SectionStack::make()->entry($entry)` renders the visible
 sections, grouped and wrapped as their types say; `Widgets\Artwork` and `Widgets\Gallery` render assets, and
-`Widgets\MetaTags` the page's meta tags, canonical link, hreflang links and, for a nested entry, its
-ancestors as JSON-LD breadcrumbs. Saving any cms record invalidates the page cache
-(`Module::invalidatePageCache()`).
+`Widgets\MetaTags` the page's meta tags, canonical link, hreflang links and its structured data (below). Saving any
+cms record invalidates the page cache (`Module::invalidatePageCache()`).
+
+### Structured data
+
+`MetaTags` adds schema.org nodes to the page's graph, which the head renders as one JSON-LD script: the skeleton's
+`WebSite`, its `Organization` once configured, a `WebPage` (a category's is a `CollectionPage`) with the title,
+description, share image and dates, and the ancestors of a nested entry or category as a `BreadcrumbList`.
+`enableStructuredData(false)` turns it off.
+
+```php
+'container' => ['definitions' => [
+    \Hirtz\Skeleton\Widgets\StructuredData\Organization::class => [
+        'name' => 'Example GmbH',
+        'logo' => '/images/logo.png',
+        'sameAs' => ['https://www.instagram.com/example'],
+    ],
+]],
+```
+
+A type changes the page node with `structuredData()`. The closure gets the entry (or category) and the node
+`MetaTags` derived, and answers the node changed, `null` for none, or a skeleton `Thing` that becomes the page's
+`mainEntity`, taking the page's name, description, image and URL unless it sets its own. Specialised data is built
+from the type's custom attributes; an event takes its day from `publish_date`, which it then does not schedule:
+
+```php
+use Hirtz\Skeleton\Models\CustomAttributes\DateTimeCustomAttribute;
+use Hirtz\Skeleton\Models\CustomAttributes\TextCustomAttribute;
+use Hirtz\Skeleton\Widgets\StructuredData\Event;
+
+EntryType::make(self::TYPE_EVENT)
+    ->name('Event')
+    ->schedule(false)
+    ->customAttributes([
+        DateTimeCustomAttribute::make('end_date'),
+        TextCustomAttribute::make('venue'),
+        TextCustomAttribute::make('address'),
+    ])
+    ->structuredData(fn (Entry $entry): Event => Event::make()
+        ->startDate($entry->publish_date)
+        ->endDate($entry->getVisibleAttribute('end_date'))
+        ->location($entry->getVisibleAttribute('venue'), $entry->getVisibleAttribute('address'))),
+```
+
+An event without a start or a place is left out, so an incomplete entry never ships invalid data. Any other type is
+a `Thing::make()->type('…')->properties([...])`; a closure that registers more nodes itself calls their `register()`.
 
 A path with a trailing slash is redirected (301) to the one without; `SiteController::$redirectTrailingSlash = false`
 serves the entry at both:

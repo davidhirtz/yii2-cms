@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Models\Types;
 
+use Closure;
+use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Widgets\MetaTags;
 use Hirtz\Media\Models\Interfaces\AssetModelTypeInterface;
 use Hirtz\Media\Models\Types\Traits\AssetModelTypeTrait;
+use Hirtz\Skeleton\Widgets\StructuredData\Thing;
 
 class EntryType extends Type implements AssetModelTypeInterface
 {
@@ -26,6 +30,11 @@ class EntryType extends Type implements AssetModelTypeInterface
     protected bool $allowsSections = true;
     protected bool $allowsDescendants = true;
     protected ?bool $schedules = null;
+
+    /**
+     * @var Closure(Entry, array<string, mixed>): (array<string, mixed>|Thing|null)|null
+     */
+    protected ?Closure $structuredData = null;
 
     /**
      * Whether an entry of this type is put into categories. The module's `enableCategories` decides first: a type
@@ -58,6 +67,27 @@ class EntryType extends Type implements AssetModelTypeInterface
     {
         $this->schedules = $schedule;
         return $this;
+    }
+
+    /**
+     * The page's structured data, given the node {@see MetaTags} derives for the entry. The closure answers
+     * that node changed, a {@see Thing} that becomes the page's main entity (an `Event` built from custom attributes),
+     * or `null` for none. Anything else it registers itself.
+     *
+     * @param Closure(Entry, array<string, mixed>): (array<string, mixed>|Thing|null)|null $structuredData
+     */
+    public function structuredData(?Closure $structuredData): static
+    {
+        $this->structuredData = $structuredData;
+        return $this;
+    }
+
+    /**
+     * @return Closure(Entry, array<string, mixed>): (array<string, mixed>|Thing|null)|null
+     */
+    public function getStructuredData(): ?Closure
+    {
+        return $this->structuredData;
     }
 
     /**
