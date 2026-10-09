@@ -1,8 +1,6 @@
 ## Unreleased
 
-- Added structured data to `MetaTags`: the site's `WebSite` and `Organization`, the page and its breadcrumbs in one
-  graph in the head (`enableStructuredData()`); the breadcrumbs are no longer rendered in the body
-- Added `EntryType::structuredData()` and `CategoryType::structuredData()`
+- Added structured data to `MetaTags` and `EntryType::structuredData()`; breadcrumbs moved to the head
 
 ## 3.12.0 (October 8, 2026)
 

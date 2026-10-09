@@ -356,10 +356,6 @@ class MetaTagsTest extends TestCase
         self::assertSame(['https://www.test.localhost/#website'], array_keys($this->getGraph()));
     }
 
-    /**
-     * The event is built from the entry's custom attributes; its date is the publish date, which the type does not
-     * schedule, so the page claims no publication date.
-     */
     public function testAnEventIsThePagesMainEntity(): void
     {
         $previous = Yii::$app->getTimeZone();

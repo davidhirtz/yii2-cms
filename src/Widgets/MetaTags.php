@@ -7,7 +7,6 @@ namespace Hirtz\Cms\Widgets;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Collections\CategoryCollection;
 use Hirtz\Cms\Models\Entry;
-use Hirtz\Cms\Models\Types\EntryType;
 use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Media\Models\Asset;
 use Hirtz\Media\Models\File;
@@ -95,10 +94,6 @@ class MetaTags extends Widget
         return $this;
     }
 
-    /**
-     * Registers the site's `WebSite` and `Organization`, the page and its breadcrumbs as schema.org nodes, and what the
-     * type adds through {@see EntryType::structuredData()}.
-     */
     public function enableStructuredData(bool $enableStructuredData = true): static
     {
         $this->enableStructuredData = $enableStructuredData;
@@ -163,9 +158,6 @@ class MetaTags extends Widget
         parent::configure();
     }
 
-    /**
-     * Everything goes into the head, the structured data included, so the widget itself renders nothing.
-     */
     protected function renderContent(): string|Stringable
     {
         $this->registerMetaTags();
@@ -314,7 +306,7 @@ class MetaTags extends Widget
      * A category carries no assets. The URL comes from the media module, which only serves a transformation it
      * declares under that name.
      *
-     * @return list<array{string, int|null, int|null}> the URL, width and height of each share image
+     * @return list<array{string, int|null, int|null}>
      */
     protected function getImages(): array
     {
@@ -347,10 +339,6 @@ class MetaTags extends Widget
         return $images;
     }
 
-    /**
-     * The site's nodes first, then the page, which the type may replace, extend or give a main entity, then the
-     * breadcrumbs the page points to.
-     */
     protected function registerStructuredData(): void
     {
         $organization = Organization::make();
@@ -419,9 +407,6 @@ class MetaTags extends Widget
     }
 
     /**
-     * A main entity the type returned without an `@id` is named after its type on the page's URL, and takes the
-     * page's name, description, image and URL unless it sets its own.
-     *
      * @param array<string, mixed> $page
      * @return array<string, mixed>|null
      */
@@ -446,9 +431,6 @@ class MetaTags extends Widget
         return [...$node, ...array_diff_key($inherited, $node)];
     }
 
-    /**
-     * The page's URL with a fragment, or the fragment alone for a model without a route.
-     */
     protected function getStructuredDataId(string $fragment): string
     {
         return StructuredData::id($this->getUrl() ?? '', $fragment);
