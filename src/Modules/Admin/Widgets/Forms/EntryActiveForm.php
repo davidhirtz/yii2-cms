@@ -157,6 +157,6 @@ class EntryActiveForm extends ActiveForm
 
     protected function hasSlugField(): bool
     {
-        return !$this->model->isIndex() || !$this->model->isEnabled();
+        return (!$this->model->isIndex() || !$this->model->isEnabled()) && !$this->model->isNewIndex();
     }
 }

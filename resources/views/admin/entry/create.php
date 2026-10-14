@@ -16,7 +16,9 @@ use Hirtz\Skeleton\Web\View;
 use Hirtz\Skeleton\Widgets\Forms\FormContainer;
 
 echo EntryHeader::make()
-    ->title(Yii::t('cms', 'ENTRY_CREATE_TITLE'));
+    ->title($entry->isNewIndex()
+        ? Yii::t('cms', 'ENTRY_CREATE_INDEX_TITLE')
+        : Yii::t('cms', 'ENTRY_CREATE_TITLE'));
 
 echo FormContainer::make()
     ->form(EntryActiveForm::make()

@@ -145,9 +145,14 @@ class EntryGridViewTest extends TestCase
         $html = Yii::$app->runAction('admin/cms/entry/index');
         self::assertIsString($html);
         self::assertStringContainsString(Yii::t('cms', 'ENTRY_GRID_SUMMARY_EMPTY'), $html);
-        self::assertStringContainsString('Click <a href="/admin/cms/entry/create">here</a> to create the first entry.', $html);
+        self::assertStringContainsString('Click <a href="/admin/cms/entry/create">here</a> to create the homepage.', $html);
+        self::assertStringContainsString(Yii::t('cms', 'ENTRY_CREATE_INDEX_BUTTON'), $html);
 
         $this->createEntry('Needle', 'needle');
+
+        $html = Yii::$app->runAction('admin/cms/entry/index');
+        self::assertIsString($html);
+        self::assertStringNotContainsString(Yii::t('cms', 'ENTRY_CREATE_INDEX_BUTTON'), $html);
 
         $this->getWebRequest()->setQueryParams(['q' => 'haystack']);
         $html = Yii::$app->runAction('admin/cms/entry/index', ['q' => 'haystack']);

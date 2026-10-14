@@ -1061,6 +1061,22 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
             && $this->parent_id === null;
     }
 
+    /**
+     * A tenant's first entry is created as its homepage.
+     */
+    public function isNewIndex(): bool
+    {
+        if (!$this->getIsNewRecord() || $this->parent_id || !static::getModule()->entryIndexSlug) {
+            return false;
+        }
+
+        $tenantId = $this->tenant_id ?: TenantCollection::getDefault()?->id;
+
+        return !static::find()
+            ->andWhere([static::tableName() . '.[[tenant_id]]' => $tenantId])
+            ->exists();
+    }
+
     #[Override]
     public function attributeHints(): array
     {

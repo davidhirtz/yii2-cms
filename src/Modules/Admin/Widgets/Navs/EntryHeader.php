@@ -52,6 +52,10 @@ class EntryHeader extends ModelHeader
 
     protected function getCreateEntryButton(): ?Stringable
     {
-        return EntryCreateButton::make();
+        $button = EntryCreateButton::make();
+
+        return $this->provider?->createsIndex()
+            ? $button->label(Yii::t('cms', 'ENTRY_CREATE_INDEX_BUTTON'))
+            : $button;
     }
 }

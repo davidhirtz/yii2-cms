@@ -120,6 +120,35 @@ class EntryControllerTest extends TestCase
         self::assertNotEmpty($this->getWebSession()->getFlash('success'));
     }
 
+    public function testTheFirstEntryIsCreatedAsTheHomepage(): void
+    {
+        $this->login();
+
+        $html = Yii::$app->runAction('admin/cms/entry/create');
+
+        self::assertIsString($html);
+        self::assertStringContainsString(Yii::t('cms', 'ENTRY_CREATE_INDEX_TITLE'), $html);
+        self::assertStringNotContainsString('name="Entry[slug]"', $html);
+
+        $this->post('admin/cms/entry/create', [], [
+            'Entry' => [
+                'status' => Entry::STATUS_ENABLED,
+                'name' => 'Welcome',
+            ],
+        ]);
+
+        self::assertTrue(Entry::findOne(['name' => 'Welcome'])?->isIndex());
+
+        $this->post('admin/cms/entry/create', [], [
+            'Entry' => [
+                'status' => Entry::STATUS_ENABLED,
+                'name' => 'About',
+            ],
+        ]);
+
+        self::assertFalse(Entry::findOne(['name' => 'About'])?->isIndex());
+    }
+
     /**
      * The type select reloads the form by posting to the same action, so the posted type — not the route's — is
      * what the record has to be built from (monorepo issue #105).

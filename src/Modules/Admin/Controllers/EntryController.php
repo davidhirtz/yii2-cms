@@ -100,9 +100,17 @@ class EntryController extends AbstractController
             throw new ForbiddenHttpException();
         }
 
-        if ($entry->load($this->request->post()) && !$this->request->isFormReload() && $entry->insert()) {
-            $this->success(Yii::t('cms', 'ENTRY_SUCCESS_CREATED'));
-            return $this->redirectToEntry($entry);
+        if ($entry->load($this->request->post()) && !$this->request->isFormReload()) {
+            if ($entry->isNewIndex()) {
+                foreach ($entry->getI18nAttributesNames('slug') as $attribute) {
+                    $entry->$attribute = (string)static::getModule()->entryIndexSlug;
+                }
+            }
+
+            if ($entry->insert()) {
+                $this->success(Yii::t('cms', 'ENTRY_SUCCESS_CREATED'));
+                return $this->redirectToEntry($entry);
+            }
         }
 
         return $this->render('create', [

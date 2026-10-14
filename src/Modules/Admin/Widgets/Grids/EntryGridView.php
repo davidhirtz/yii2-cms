@@ -474,7 +474,9 @@ class EntryGridView extends GridView
         return $this->isPicker() ? $summary : $summary
             ?->emptyMessage(Yii::t('cms', 'ENTRY_GRID_SUMMARY_EMPTY'))
             ->emptyLink(
-                Yii::t('cms', 'ENTRY_GRID_SUMMARY_EMPTY_LINK'),
+                $this->provider->createsIndex()
+                    ? Yii::t('cms', 'ENTRY_GRID_SUMMARY_EMPTY_INDEX_LINK')
+                    : Yii::t('cms', 'ENTRY_GRID_SUMMARY_EMPTY_LINK'),
                 $this->webuser->can(Entry::AUTH_ENTRY)
                     ? ['/admin/cms/entry/create', ...Application::current()->getRequest()->getQueryParams()]
                     : null,

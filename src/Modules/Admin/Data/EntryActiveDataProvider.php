@@ -13,6 +13,7 @@ use Hirtz\Cms\Models\Interfaces\EntryRelationModelInterface;
 use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Skeleton\Data\ActiveDataProvider;
 use Hirtz\Skeleton\Web\Application;
+use Hirtz\Tenant\Models\Collections\TenantCollection;
 use Hirtz\Tenant\Web\UrlManager;
 use Override;
 use Yii;
@@ -60,6 +61,22 @@ class EntryActiveDataProvider extends ActiveDataProvider
 
         $manager = Yii::$app->getUrlManager();
         return $manager instanceof UrlManager ? $manager->tenant?->id : null;
+    }
+
+    /**
+     * @see Entry::isNewIndex()
+     */
+    public function createsIndex(): bool
+    {
+        if ($this->parent || !static::getModule()->entryIndexSlug || $this->getTotalCount() > 0) {
+            return false;
+        }
+
+        $tenantId = $this->tenantId ?? TenantCollection::getDefault()?->id;
+
+        return !Entry::find()
+            ->andWhere([Entry::tableName() . '.[[tenant_id]]' => $tenantId])
+            ->exists();
     }
 
     #[Override]

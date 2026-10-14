@@ -1,3 +1,7 @@
+## Unreleased
+
+- Added `Entry::isNewIndex()`: a tenant's first entry created in the admin becomes its homepage
+
 ## 3.13.0 (October 11, 2026)
 
 - Added structured data to `MetaTags` and `EntryType::structuredData()`; breadcrumbs moved to the head
