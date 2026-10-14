@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Tests\Models\Actions;
 
 use Hirtz\Cms\Models\Actions\PreloadEntrySiteRelations;
+use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
@@ -99,6 +100,23 @@ class PreloadEntrySiteRelationsTest extends TestCase
         self::assertEquals($fixture->id, $post->id);
         self::assertTrue($post->isRelationPopulated('assets'));
         self::assertFalse($post->isRelationPopulated('sections'));
+    }
+
+    public function testALinkedEntryUnderADraftParentIsLeftOut(): void
+    {
+        $section = $this->getSectionFromFixture('section-blog-draft');
+        $section->updateAttributes(['status' => TestSection::STATUS_ENABLED]);
+
+        ActiveQuery::setStatus(TestEntry::STATUS_ENABLED);
+
+        $entry = $this->getEntryFromFixture('page-enabled');
+        $preload = new PreloadEntrySiteRelations(['entry' => $entry]);
+
+        $id = $this->getEntryFromFixture('post-3')->id;
+        $visible = array_map(fn (Entry $entry): int => $entry->id, $entry->sections[$section->id]->getVisibleEntries());
+
+        self::assertArrayNotHasKey($id, $preload->entries);
+        self::assertNotContains($id, $visible);
     }
 
     /**

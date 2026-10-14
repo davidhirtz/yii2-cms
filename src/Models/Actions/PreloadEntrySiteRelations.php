@@ -250,6 +250,7 @@ class PreloadEntrySiteRelations extends Component
             ->withTranslations()
             ->withPermalinks()
             ->whereStatus()
+            ->andWhereParentStatus()
             ->indexBy('id');
     }
 
