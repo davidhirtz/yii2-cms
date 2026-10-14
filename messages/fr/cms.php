@@ -174,4 +174,5 @@ return [
     'SECTION_SUCCESS_SET_CREATED' => '{count,plural,one{# section a été créée} other{# sections ont été créées}} à partir de « {name} ».',
     'SECTION_SUCCESS_UPDATED' => 'La section a été mise à jour.',
     'SECTION_TYPE_BLOCK' => 'Bloc',
+    'SITE_MISSING_INDEX' => 'Si vous êtes l’éditeur de ce site, créez la page d’accueil {here}.',
 ];

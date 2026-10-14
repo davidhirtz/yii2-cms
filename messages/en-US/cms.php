@@ -174,4 +174,5 @@ return [
     'SECTION_SUCCESS_SET_CREATED' => '{count,plural,one{# section was} other{# sections were}} created from “{name}”.',
     'SECTION_SUCCESS_UPDATED' => 'The section was updated.',
     'SECTION_TYPE_BLOCK' => 'Block',
+    'SITE_MISSING_INDEX' => 'If you are the editor of this site, create the homepage {here}.',
 ];

@@ -1,6 +1,7 @@
 ## Unreleased
 
 - Added `Entry::isNewIndex()`: a tenant's first entry created in the admin becomes its homepage
+- Added `site/missing-index`: the 404 at `/` while no homepage entry exists links to the admin
 
 ## 3.13.0 (October 11, 2026)
 

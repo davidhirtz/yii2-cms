@@ -30,9 +30,20 @@ class SiteController extends Controller
 
     public function actionIndex(): Response|string
     {
-        return $this->module->entryIndexSlug
-            ? $this->actionView($this->module->entryIndexSlug)
-            : '';
+        if (!$this->module->entryIndexSlug) {
+            return '';
+        }
+
+        try {
+            return $this->actionView($this->module->entryIndexSlug);
+        } catch (NotFoundHttpException $exception) {
+            if (Entry::find()->whereIndex()->exists()) {
+                throw $exception;
+            }
+
+            $this->response->setStatusCode(404);
+            return $this->render('missing-index');
+        }
     }
 
     /**

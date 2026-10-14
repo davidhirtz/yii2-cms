@@ -180,6 +180,28 @@ final class SiteControllerFunctionalTest extends TestCase
         self::assertResponseIsSuccessful();
     }
 
+    public function testAMissingHomepageTellsTheEditorToCreateIt(): void
+    {
+        $this->open('/');
+
+        self::assertResponseStatusCodeSame(404);
+        self::assertSelectorExists('a[href="/admin/cms/entry/index"]');
+    }
+
+    public function testADisabledHomepageIsAPlainNotFound(): void
+    {
+        $entry = Entry::create();
+        $entry->name = 'Homepage';
+        $entry->slug = Entry::getModule()->entryIndexSlug ?: null;
+        $entry->status = Entry::STATUS_DISABLED;
+        self::assertTrue($entry->insert());
+
+        $this->open('/');
+
+        self::assertResponseStatusCodeSame(404);
+        self::assertSelectorNotExists('a[href="/admin/cms/entry/index"]');
+    }
+
     public function testUnknownSlug(): void
     {
         $this->open('/there-is-no-such-page');
