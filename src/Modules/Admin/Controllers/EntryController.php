@@ -215,7 +215,7 @@ class EntryController extends AbstractController
             $this->error($errors);
         }
 
-        return $this->redirect([...$this->request->get(), 'index']);
+        return $this->redirect(['index', ...$this->request->get()]);
     }
 
     public function actionOrder(?int $parent = null): string
@@ -235,8 +235,9 @@ class EntryController extends AbstractController
     {
         $route = $entry->getAdminRoute();
 
+        // An integer query key would be renumbered ahead of the route and taken for it
         return $this->redirect($route
-            ? [...$this->request->get(), ...$route]
-            : [...$this->request->get(), 'index']);
+            ? [...array_filter($this->request->get(), is_string(...), ARRAY_FILTER_USE_KEY), ...$route]
+            : ['index', ...$this->request->get()]);
     }
 }
