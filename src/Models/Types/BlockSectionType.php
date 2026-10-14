@@ -7,6 +7,7 @@ namespace Hirtz\Cms\Models\Types;
 use BackedEnum;
 use Closure;
 use Hirtz\Cms\Models\Section;
+use Hirtz\Skeleton\Helpers\Html;
 use Override;
 use Yii;
 
@@ -32,15 +33,12 @@ class BlockSectionType extends SectionType
         return $this->name ?? Yii::t('cms', 'SECTION_TYPE_BLOCK');
     }
 
-    /**
-     * The grid shows which block a section of this type carries, since it has nothing of its own to show.
-     */
     #[Override]
     public function getGridContent(): Closure|string|null
     {
         return $this->gridContent ?? static fn (Section $section): ?string => $section->block
             ? Yii::t('cms', 'SECTION_GRID_CONTENT_BLOCK', [
-                'name' => $section->block->getI18nAttribute('name'),
+                'name' => Html::encode($section->block->getI18nAttribute('name')),
             ])
             : null;
     }

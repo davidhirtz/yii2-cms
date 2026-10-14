@@ -87,7 +87,7 @@ class SectionType extends Type implements AssetModelTypeInterface, EntryRelation
     }
 
     /**
-     * What the admin grid shows for a section of this type, in place of its name.
+     * What the admin grid shows for a section of this type, in place of its name, as HTML: encode what a user wrote.
      *
      * @param Closure(Section): ?string|string|null $gridContent
      */

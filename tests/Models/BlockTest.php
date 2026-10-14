@@ -225,6 +225,17 @@ class BlockTest extends TestCase
         $this->assertEntryTouched($aged);
     }
 
+    public function testTheGridContentEncodesTheBlockName(): void
+    {
+        $block = Block::create();
+        $block->name = '<b id="x">Å</b>';
+        self::assertTrue($block->insert(), print_r($block->getErrors(), true));
+
+        $section = $this->createBlockSection($block);
+
+        self::assertStringContainsString('&lt;b id=&quot;x&quot;&gt;Å&lt;/b&gt;', (string)$section->getGridContent());
+    }
+
     private function ageEntry(): int
     {
         $aged = new DateTime('-1 hour');
