@@ -1,4 +1,4 @@
-## Unreleased
+## 3.14.0 (October 15, 2026)
 
 - Changed the `davidhirtz/yii2-skeleton` requirement to `^3.18` (protected widget options)
 - Changed the public options of the admin grids and forms to protected properties with fluent setters
