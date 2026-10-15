@@ -91,6 +91,25 @@ class SetupControllerTest extends TestCase
         self::assertSame($this->getUserFromFixture('owner')->id, $entry->updated_by_user_id);
     }
 
+    public function testTheFileInTheRootConfigIsTheDefault(): void
+    {
+        $root = Yii::getAlias('@runtime/' . uniqid('setup-root-'));
+        $this->file = "$root/config/setup.php";
+        mkdir(dirname($this->file), 0777, true);
+
+        Yii::setAlias('@root', $root);
+        $this->writeSetupFile("return ['entries' => [['status' => Entry::STATUS_ENABLED, 'name' => 'Root', 'slug' => 'root']]];");
+
+        try {
+            self::assertSame(ExitCode::OK, $this->runSetup(['file' => null]));
+            self::assertNotNull(Entry::findOne(['name' => 'Root']));
+        } finally {
+            @unlink($this->file);
+            @rmdir(dirname($this->file));
+            @rmdir($root);
+        }
+    }
+
     public function testWithoutAFileAHomepageIsInserted(): void
     {
         self::assertSame(ExitCode::OK, $this->runSetup(['file' => null]));

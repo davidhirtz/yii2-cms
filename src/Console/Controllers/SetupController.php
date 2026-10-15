@@ -23,7 +23,7 @@ class SetupController extends Controller
     use UserIdentityTrait;
 
     /**
-     * @var string|null the file returning the `categories` and `entries` to insert, `@app/config/setup.php` when it
+     * @var string|null the file returning the `categories` and `entries` to insert, `@root/config/setup.php` when it
      * is not given
      */
     public ?string $file = null;
@@ -51,7 +51,7 @@ class SetupController extends Controller
      */
     public function actionIndex(): int
     {
-        $path = Yii::getAlias($this->file ?? '@app/config/setup.php');
+        $path = Yii::getAlias($this->file ?? '@root/config/setup.php');
 
         if ($this->file !== null && !is_file($path)) {
             $this->stderr("File $path not found." . PHP_EOL, Console::FG_RED);
