@@ -103,6 +103,7 @@ class Bootstrap implements ConfigBootstrapInterface
         // In `bootstrap()`, not the default config: a web application must not route to a console controller
         if ($app instanceof ConsoleApplication) {
             $app->controllerMap['permalink'] ??= Console\Controllers\PermalinkController::class;
+            $app->controllerMap['setup'] ??= Console\Controllers\SetupController::class;
         }
 
         Artwork::reset();

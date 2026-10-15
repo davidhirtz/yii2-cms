@@ -131,16 +131,6 @@ class Module extends \Hirtz\Skeleton\Base\Module
      */
     private ?array $menus = null;
 
-    /**
-     * @var Closure(): list<array<string, mixed>>|list<array<string, mixed>>
-     */
-    private Closure|array $setupCategories = [];
-
-    /**
-     * @var Closure(): list<array<string, mixed>>|list<array<string, mixed>>
-     */
-    private Closure|array $setupEntries = [];
-
     #[Override]
     public function init(): void
     {
@@ -261,40 +251,6 @@ class Module extends \Hirtz\Skeleton\Base\Module
     public function findMenu(?int $value): ?Menu
     {
         return $value === null ? null : ($this->getMenus()[$value] ?? null);
-    }
-
-    /**
-     * @param Closure(): list<array<string, mixed>>|list<array<string, mixed>> $categories
-     */
-    public function setSetupCategories(Closure|array $categories): void
-    {
-        $this->setupCategories = $categories;
-    }
-
-    /**
-     * @return list<array<string, mixed>>
-     */
-    public function getSetupCategories(): array
-    {
-        return $this->setupCategories instanceof Closure ? ($this->setupCategories)() : $this->setupCategories;
-    }
-
-    /**
-     * A closure is called after the categories are inserted, so an entry can name one it finds by slug.
-     *
-     * @param Closure(): list<array<string, mixed>>|list<array<string, mixed>> $entries
-     */
-    public function setSetupEntries(Closure|array $entries): void
-    {
-        $this->setupEntries = $entries;
-    }
-
-    /**
-     * @return list<array<string, mixed>>
-     */
-    public function getSetupEntries(): array
-    {
-        return $this->setupEntries instanceof Closure ? ($this->setupEntries)() : $this->setupEntries;
     }
 
     /**
