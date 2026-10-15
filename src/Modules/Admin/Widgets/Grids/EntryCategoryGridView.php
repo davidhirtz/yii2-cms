@@ -28,8 +28,8 @@ class EntryCategoryGridView extends GridView
     use CategoryGridTrait;
     use ModuleTrait;
 
-    public string $categoryParamName = 'category';
-    public bool $showUrl = false;
+    protected string $categoryParamName = 'category';
+    protected bool $showUrl = false;
 
     #[Override]
     public function configure(): void

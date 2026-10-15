@@ -18,8 +18,8 @@ use Yii;
  */
 class SectionAssetParentSectionGridView extends SectionGridView
 {
-    public bool $enableStatusUpdate = false;
-    public bool $showSelection = false;
+    protected bool $enableStatusUpdate = false;
+    protected bool $showSelection = false;
 
     protected SectionAsset $asset;
 

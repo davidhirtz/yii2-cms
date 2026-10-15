@@ -18,7 +18,7 @@ use Stringable;
  */
 class SectionParentEntryGridView extends EntryGridView
 {
-    public bool $showSelection = false;
+    protected bool $showSelection = false;
 
     protected Section $section;
 

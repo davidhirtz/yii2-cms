@@ -1,5 +1,6 @@
 ## Unreleased
 
+- Changed the public options of the admin grids and forms to protected properties with fluent setters
 - Added the `setup` command, inserting the content of `config/setup.php` as `--user`
 - Removed `Modules\Admin\Controllers\SetupController`, use the `setup` command
 - Added `Entry::isNewIndex()`: a tenant's first entry created in the admin becomes its homepage

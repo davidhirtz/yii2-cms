@@ -25,7 +25,13 @@ class SectionActiveForm extends ActiveForm
     use CustomAttributeFieldsTrait;
     use SlugFieldTrait;
 
-    public int|false $maxBaseUrlLength = 70;
+    protected int|false $maxBaseUrlLength = 70;
+
+    public function maxBaseUrlLength(int|false $maxBaseUrlLength): static
+    {
+        $this->maxBaseUrlLength = $maxBaseUrlLength;
+        return $this;
+    }
 
     #[Override]
     protected function getDefaultRows(): array

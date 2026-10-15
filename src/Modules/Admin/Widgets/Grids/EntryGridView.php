@@ -54,7 +54,7 @@ class EntryGridView extends GridView
     use ModuleTrait;
     use SelectionTrait;
 
-    public string $tenantParamName = 'tenant';
+    protected string $tenantParamName = 'tenant';
 
     protected bool $showUrl = true;
     protected ?bool $showCategories = null;
@@ -65,6 +65,12 @@ class EntryGridView extends GridView
      * @var array<int|string, mixed>|null
      */
     protected ?array $orderRoute = null;
+
+    public function tenantParamName(string $tenantParamName): static
+    {
+        $this->tenantParamName = $tenantParamName;
+        return $this;
+    }
 
     public function showUrl(bool $showUrl = true): static
     {

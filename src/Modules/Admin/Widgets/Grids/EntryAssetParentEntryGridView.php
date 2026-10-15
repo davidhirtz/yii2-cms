@@ -18,7 +18,7 @@ use Yii;
  */
 class EntryAssetParentEntryGridView extends EntryGridView
 {
-    public bool $showSelection = false;
+    protected bool $showSelection = false;
 
     protected EntryAsset $asset;
 

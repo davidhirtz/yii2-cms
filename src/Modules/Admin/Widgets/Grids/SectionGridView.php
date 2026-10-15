@@ -42,10 +42,22 @@ class SectionGridView extends GridView
     use ModuleTrait;
     use SelectionTrait;
 
-    public bool $showDeleteButton = false;
-    public int $maxThumbnailCount = 3;
+    protected bool $showDeleteButton = false;
+    protected int $maxThumbnailCount = 3;
 
     protected string $layout = '{summary}{items}{footer}';
+
+    public function showDeleteButton(bool $showDeleteButton = true): static
+    {
+        $this->showDeleteButton = $showDeleteButton;
+        return $this;
+    }
+
+    public function maxThumbnailCount(int $maxThumbnailCount): static
+    {
+        $this->maxThumbnailCount = $maxThumbnailCount;
+        return $this;
+    }
 
     #[Override]
     protected function configure(): void

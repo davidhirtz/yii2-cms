@@ -15,7 +15,7 @@ use Yii;
 
 class BlockAssetParentBlockGridView extends BlockGridView
 {
-    public bool $enableStatusUpdate = false;
+    protected bool $enableStatusUpdate = false;
 
     protected BlockAsset $asset;
 

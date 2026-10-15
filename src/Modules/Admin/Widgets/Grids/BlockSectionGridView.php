@@ -41,12 +41,18 @@ class BlockSectionGridView extends GridView
      * @var bool whether each row offers a delete button of its own beside the selection, which deletes the
      * section rather than only its placement.
      */
-    public bool $showDeleteButton = false;
+    protected bool $showDeleteButton = false;
 
     protected string $layout = '{summary}{items}{pager}{footer}';
     protected ?array $orderRoute = null;
 
     protected Block $block;
+
+    public function showDeleteButton(bool $showDeleteButton = true): static
+    {
+        $this->showDeleteButton = $showDeleteButton;
+        return $this;
+    }
 
     public function block(Block $block): static
     {

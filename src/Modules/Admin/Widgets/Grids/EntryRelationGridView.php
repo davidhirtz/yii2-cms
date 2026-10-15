@@ -19,7 +19,7 @@ use Yii;
  */
 class EntryRelationGridView extends EntryGridView
 {
-    public bool $showSelection = false;
+    protected bool $showSelection = false;
 
     protected string $layout = '{header}{summary}{items}{pager}';
 

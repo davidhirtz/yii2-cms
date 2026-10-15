@@ -198,10 +198,10 @@ class SectionGridViewTest extends TestCase
             'query' => Section::find()->where(['id' => $section->id]),
         ]);
 
-        $grid = SectionGridView::make()->provider($provider);
-        $grid->maxThumbnailCount = $maxThumbnailCount;
-
-        return $grid->render();
+        return SectionGridView::make()
+            ->provider($provider)
+            ->maxThumbnailCount($maxThumbnailCount)
+            ->render();
     }
 }
 

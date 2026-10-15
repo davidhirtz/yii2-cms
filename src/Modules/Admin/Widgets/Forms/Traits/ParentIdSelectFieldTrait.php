@@ -6,5 +6,11 @@ namespace Hirtz\Cms\Modules\Admin\Widgets\Forms\Traits;
 
 trait ParentIdSelectFieldTrait
 {
-    public string $indent = '–';
+    protected string $indent = '–';
+
+    public function indent(string $indent): static
+    {
+        $this->indent = $indent;
+        return $this;
+    }
 }

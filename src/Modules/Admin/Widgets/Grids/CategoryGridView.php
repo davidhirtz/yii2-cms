@@ -31,8 +31,20 @@ class CategoryGridView extends GridView
     use CategoryGridTrait;
     use ModuleTrait;
 
-    public string $categoryParamName = 'parent';
-    public bool $showUrl = true;
+    protected string $categoryParamName = 'parent';
+    protected bool $showUrl = true;
+
+    public function categoryParamName(string $categoryParamName): static
+    {
+        $this->categoryParamName = $categoryParamName;
+        return $this;
+    }
+
+    public function showUrl(bool $showUrl = true): static
+    {
+        $this->showUrl = $showUrl;
+        return $this;
+    }
 
     #[Override]
     protected function configure(): void
