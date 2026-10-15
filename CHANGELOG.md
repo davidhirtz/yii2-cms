@@ -1,4 +1,4 @@
-## Unreleased
+## 3.14.1 (October 15, 2026)
 
 - Fixed `setup` reading `@app/config/setup.php` instead of `@root/config/setup.php`
 
