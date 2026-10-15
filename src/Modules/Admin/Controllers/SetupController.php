@@ -22,13 +22,9 @@ use yii\helpers\ArrayHelper;
 use yii\web\Response;
 
 /**
- * @noinspection PhpUnused
- */
-
-/**
  * @extends Controller<Module>
  */
-abstract class SetupController extends Controller
+class SetupController extends Controller
 {
     use ModuleTrait;
 
@@ -53,12 +49,18 @@ abstract class SetupController extends Controller
     /**
      * @return list<array<string, mixed>>
      */
-    abstract public function getCategoryAttributes(): array;
+    public function getCategoryAttributes(): array
+    {
+        return self::getModule()->getSetupCategories();
+    }
 
     /**
      * @return list<array<string, mixed>>
      */
-    abstract public function getEntryAttributes(): array;
+    public function getEntryAttributes(): array
+    {
+        return self::getModule()->getSetupEntries();
+    }
 
     public function actionIndex(): Response
     {

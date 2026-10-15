@@ -49,6 +49,8 @@ permissions, granted to `admin` and `manager`, and the `author` role, which hold
 | `inheritNestedCategories` | `true` | an entry is also in the ancestors of its categories |
 | `menus` | `[]` | `Models\Menus\Menu` definitions, see below |
 | `sectionSets` | `[]` | `Models\Sets\SectionSet` definitions, see below |
+| `setupCategories` | `[]` | category attributes `/admin/cms/setup` inserts, see below |
+| `setupEntries` | `[]` | entry attributes `/admin/cms/setup` inserts, see below |
 
 The flags cascade in `init()`: without sections there are no section assets and no blocks, without blocks no block
 assets or block entries, without categories no nested categories, and without nested categories nothing is inherited.
@@ -138,6 +140,26 @@ use Hirtz\Cms\Models\Sets\SectionTemplate;
 A menu an entry is put into is stored in `entry.menu_ids`; `Models\Collections\MenuCollection` loads every `autoload`
 menu in one query. A section set creates its sections on an entry in one go and must name declared section types.
 `available()` limits either to some entries; a menu an entry is already in stays valid.
+
+### Setup
+
+`/admin/cms/setup` (admins only) inserts the declared categories while there are none, then the declared entries while
+there are none, and creates the default folder. An entry may carry `sections`, `categories` (`EntryCategory`
+attributes) and child `entries`; a `type` picks the class. The entries closure is called after the categories exist:
+
+```php
+'modules' => [
+    'cms' => [
+        'setupEntries' => fn (): array => [
+            ['name' => 'Home', 'slug' => 'home', 'title' => Yii::$app->name, 'sections' => [['type' => 1]]],
+            ['name' => 'Imprint', 'menu_ids' => [2]],
+        ],
+    ],
+],
+```
+
+A subclass of `Modules\Admin\Controllers\SetupController` overriding `getEntryAttributes()` and
+`getCategoryAttributes()`, mapped through `modules.admin.modules.cms.controllerMap`, still works.
 
 ### Publishing
 

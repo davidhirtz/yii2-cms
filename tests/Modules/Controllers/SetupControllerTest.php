@@ -19,8 +19,7 @@ use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
 /**
- * `SetupController` is abstract — a project subclasses it and supplies the content a fresh installation starts
- * with. It runs once, so a failure there is easy to miss: every insert is logged rather than thrown.
+ * It runs once, so a failure there is easy to miss: every insert is logged rather than thrown.
  */
 class SetupControllerTest extends TestCase
 {
@@ -38,15 +37,8 @@ class SetupControllerTest extends TestCase
         // `Entry::validateParentId()` drops the parent while nesting is off, so a sub-entry would become a root one
         $module->enableNestedEntries = true;
 
-        $cms = Yii::$app->getModule('admin')->getModule('cms');
-        $cms->controllerMap['setup'] = TestSetupController::class;
-    }
-
-    #[Override]
-    protected function tearDown(): void
-    {
-        TestSetupController::$entryAttributes = null;
-        parent::tearDown();
+        $module->setSetupCategories(TestSetupController::getDefaultCategoryAttributes());
+        $module->setSetupEntries(TestSetupController::getDefaultEntryAttributes(...));
     }
 
     public function testTheContentIsCreatedAndTheAdminIsSentToTheEntries(): void
@@ -114,9 +106,9 @@ class SetupControllerTest extends TestCase
         $this->login();
         $this->logger->isRecording = true;
 
-        TestSetupController::$entryAttributes = [
+        Entry::getModule()->setSetupEntries([
             ['status' => Entry::STATUS_ENABLED, 'type' => Entry::TYPE_DEFAULT, 'name' => ''],
-        ];
+        ]);
 
         Yii::$app->runAction('admin/cms/setup/index');
 
@@ -128,6 +120,36 @@ class SetupControllerTest extends TestCase
         );
 
         self::assertNotEmpty($messages);
+    }
+
+    public function testNothingDeclaredCreatesNothing(): void
+    {
+        $this->login();
+
+        $module = Entry::getModule();
+        $module->setSetupCategories([]);
+        $module->setSetupEntries([]);
+
+        Yii::$app->runAction('admin/cms/setup/index');
+
+        self::assertSame(0, (int)Category::find()->count());
+        self::assertSame(0, (int)Entry::find()->count());
+        self::assertFalse(FolderCollection::getDefault()->getIsNewRecord());
+    }
+
+    public function testASubclassMappedByTheProjectSuppliesTheContent(): void
+    {
+        $this->login();
+
+        $module = Entry::getModule();
+        $module->setSetupCategories([]);
+        $module->setSetupEntries([]);
+
+        Yii::$app->getModule('admin')->getModule('cms')->controllerMap['setup'] = TestSetupController::class;
+        Yii::$app->runAction('admin/cms/setup/index');
+
+        self::assertNotNull(Category::findOne(['slug' => 'news']));
+        self::assertNotNull(Entry::findOne(['name' => 'About']));
     }
 
     public function testTheSetupIsForbiddenForANonAdmin(): void
@@ -151,16 +173,22 @@ class SetupControllerTest extends TestCase
 
 class TestSetupController extends SetupController
 {
-    /**
-     * @var array<int, array<string, mixed>>|null
-     */
-    public static ?array $entryAttributes = null;
+    #[Override]
+    public function getCategoryAttributes(): array
+    {
+        return self::getDefaultCategoryAttributes();
+    }
+
+    #[Override]
+    public function getEntryAttributes(): array
+    {
+        return self::getDefaultEntryAttributes();
+    }
 
     /**
      * @return list<array<string, mixed>>
      */
-    #[Override]
-    public function getCategoryAttributes(): array
+    public static function getDefaultCategoryAttributes(): array
     {
         return [
             [
@@ -174,16 +202,14 @@ class TestSetupController extends SetupController
     /**
      * @return list<array<string, mixed>>
      */
-    #[Override]
-    public function getEntryAttributes(): array
+    public static function getDefaultEntryAttributes(): array
     {
-        return array_values(self::$entryAttributes ?? [
+        return [
             [
                 'status' => Entry::STATUS_ENABLED,
                 'type' => Entry::TYPE_DEFAULT,
                 'name' => 'Home',
                 'slug' => 'home',
-                // the categories are inserted first, so the entry configuration can name one by its slug
                 'categories' => [
                     ['category_id' => Category::findOne(['slug' => 'news'])?->id],
                 ],
@@ -203,6 +229,6 @@ class TestSetupController extends SetupController
                     ],
                 ],
             ],
-        ]);
+        ];
     }
 }
