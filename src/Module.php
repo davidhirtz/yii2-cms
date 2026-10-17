@@ -66,7 +66,7 @@ class Module extends \Hirtz\Skeleton\Base\Module
     /**
      * @var bool whether global sections are enabled, which a section places by carrying a `block_id`
      */
-    public bool $enableBlocks = false;
+    public bool $enableBlocks = true;
 
     /**
      * @var bool whether blocks should have assets
