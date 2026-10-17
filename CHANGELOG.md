@@ -1,3 +1,7 @@
+## Unreleased
+
+- Added `resources/css/tailwind.css`, imported by a project's Tailwind stylesheet for the classes of `TailwindViewportsTrait`
+
 ## 3.14.1 (October 15, 2026)
 
 - Fixed `setup` reading `@app/config/setup.php` instead of `@root/config/setup.php`

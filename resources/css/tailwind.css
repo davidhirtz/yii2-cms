@@ -1,0 +1,2 @@
+/* Tailwind scans no `vendor/`: the classes of `TailwindViewportsTrait::$viewports`. */
+@source inline("hidden sm:block sm:hidden");

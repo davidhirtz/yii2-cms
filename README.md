@@ -214,6 +214,16 @@ sections, grouped and wrapped as their types say; `Widgets\Artwork` and `Widgets
 `Widgets\MetaTags` the page's meta tags, canonical link, hreflang links and its structured data (below). Saving any
 cms record invalidates the page cache (`Module::invalidatePageCache()`).
 
+### Tailwind
+
+`Gallery`'s default viewports (`TailwindViewportsTrait`) are Tailwind classes. Tailwind scans no `vendor/`, so the
+project's stylesheet imports them:
+
+```css
+@import "tailwindcss";
+@import "../../vendor/davidhirtz/yii2-cms/resources/css/tailwind.css";
+```
+
 ### Structured data
 
 `MetaTags` adds schema.org nodes to the page's graph, which the head renders as one JSON-LD script: the skeleton's
