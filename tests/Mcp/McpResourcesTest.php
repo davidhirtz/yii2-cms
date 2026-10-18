@@ -98,6 +98,26 @@ class McpResourcesTest extends TestCase
         self::assertStringContainsString('"de"', $text);
     }
 
+    public function testCategoriesAreAddedWithTheirAncestorsAndRemovedWithTheirDescendants(): void
+    {
+        $module = Entry::getModule();
+        $module->enableCategories = true;
+        $module->enableNestedCategories = true;
+        $module->inheritNestedCategories = true;
+
+        $entry = $this->getEntryFromFixture('page-draft');
+        $child = $this->getCategoryFromFixture('child-1');
+
+        $result = $this->callTool('assign_categories', ['resource' => 'entry', 'id' => $entry->id, 'add' => [$child->id]]);
+        self::assertEqualsCanonicalizing([$child->id, (int)$child->parent_id], array_column($result['categories'] ?? [], 'id'));
+
+        $result = $this->callTool('assign_categories', ['resource' => 'entry', 'id' => $entry->id, 'remove' => [(int)$child->parent_id]]);
+        self::assertSame([], $result['categories'] ?? null);
+
+        $result = $this->callTool('assign_categories', ['resource' => 'entry', 'id' => $entry->id, 'add' => [999]], true);
+        self::assertSame('Category not found: 999', $result['error'] ?? null);
+    }
+
     public function testCreatingAnEntryGoesThroughTheModelLayer(): void
     {
         $result = $this->callTool('create_record', [

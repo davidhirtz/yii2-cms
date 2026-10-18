@@ -25,6 +25,7 @@ use Hirtz\Skeleton\Base\ConfigBootstrapInterface;
 use Hirtz\Skeleton\Db\ActiveRecord;
 use Hirtz\Skeleton\Filters\PageCache;
 use Hirtz\Skeleton\Helpers\EventHelper;
+use Hirtz\Skeleton\Mcp\Mcp as SkeletonMcp;
 use Hirtz\Skeleton\Mcp\Prompt;
 use Hirtz\Skeleton\Mcp\Resource;
 use Hirtz\Skeleton\Modules\Admin\Controllers\DashboardController;
@@ -101,6 +102,11 @@ class Bootstrap implements ConfigBootstrapInterface
                             . 'content block of an entry, created with "entry" set to the entry\'s id where the entry\'s '
                             . 'type allows sections, and shows a shared block through its block_id. reorder puts '
                             . 'entries, sections and categories in order under their parent.',
+                    ],
+                    'tools' => [
+                        static fn (SkeletonMcp $mcp): ?Mcp\AssignCategoriesTool => Entry::getModule()->enableCategories
+                            ? new Mcp\AssignCategoriesTool($mcp)
+                            : null,
                     ],
                     'prompts' => [
                         static fn (): Prompt => Mcp\Prompts::translateEntry(),
