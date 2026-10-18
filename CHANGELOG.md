@@ -1,4 +1,4 @@
-## Unreleased
+## 3.15.0 (October 18, 2026)
 
 - Changed the `davidhirtz/yii2-skeleton` requirement to `^3.19` (MCP resources)
 - Changed the `davidhirtz/yii2-media` requirement to `^3.17` (MCP asset resources)
