@@ -1,7 +1,7 @@
 ## Unreleased
 
 - Changed the `davidhirtz/yii2-skeleton` requirement to `^3.19` (MCP resources)
-- Added the MCP resources `entry`, `section`, `category` and `block`
+- Added the MCP resources `entry`, `section`, `category` and `block`, instructions and the prompts `translate_entry` and `write_meta_descriptions`
 - Added `resources/css/tailwind.css`, imported by a project's Tailwind stylesheet for the classes of `TailwindViewportsTrait`
 
 ## 3.14.1 (October 15, 2026)

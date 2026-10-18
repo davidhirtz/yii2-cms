@@ -6,10 +6,14 @@ namespace Hirtz\Cms\Validators;
 
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Skeleton\Behaviors\AttributeTypecastBehavior;
+use Hirtz\Skeleton\Mcp\SchemaBuilder;
 use Hirtz\Skeleton\Validators\Interfaces\AttributeTypeInterface;
+use Hirtz\Skeleton\Validators\Interfaces\JsonSchemaInterface;
+use Hirtz\Tenant\Models\Tenant;
 use Hirtz\Tenant\Models\Collections\TenantCollection;
 use Override;
 use Yii;
+use yii\base\Model;
 use yii\base\NotSupportedException;
 use yii\validators\Validator;
 
@@ -17,7 +21,7 @@ use yii\validators\Validator;
  * An empty value resolves to the default tenant, so imports and single-tenant projects can create entries without
  * knowing about tenants at all.
  */
-class TenantIdValidator extends Validator implements AttributeTypeInterface
+class TenantIdValidator extends Validator implements AttributeTypeInterface, JsonSchemaInterface
 {
     /** @var string[] */
     public $attributes = ['tenant_id'];
@@ -27,6 +31,18 @@ class TenantIdValidator extends Validator implements AttributeTypeInterface
     public function getAttributeType(): string
     {
         return AttributeTypecastBehavior::TYPE_INTEGER;
+    }
+
+    #[Override]
+    public function getJsonSchema(Model $model, string $attribute): array
+    {
+        $names = array_map(fn (Tenant $tenant): string => $tenant->name, TenantCollection::getAll());
+
+        return [
+            'type' => ['integer', 'null'],
+            'enum' => [...array_keys($names), null],
+            'description' => SchemaBuilder::describeEnum($names) . ' Empty for the default tenant.',
+        ];
     }
 
     /**

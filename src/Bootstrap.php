@@ -25,6 +25,7 @@ use Hirtz\Skeleton\Base\ConfigBootstrapInterface;
 use Hirtz\Skeleton\Db\ActiveRecord;
 use Hirtz\Skeleton\Filters\PageCache;
 use Hirtz\Skeleton\Helpers\EventHelper;
+use Hirtz\Skeleton\Mcp\Prompt;
 use Hirtz\Skeleton\Mcp\Resource;
 use Hirtz\Skeleton\Modules\Admin\Controllers\DashboardController;
 use Hirtz\Skeleton\Models\User;
@@ -93,6 +94,17 @@ class Bootstrap implements ConfigBootstrapInterface
                             ])->run() !== false)
                             ->url(static fn (Category $category): array|false => $category->getRoute()),
                         static fn (): Resource => Resource::make('block', Block::class),
+                    ],
+                    'instructions' => [
+                        static fn (): string => 'An entry is a page or article; it nests under another entry through '
+                            . '"parent" on create_record, and its frontend URL comes from its slug. A section is a '
+                            . 'content block of an entry, created with "entry" set to the entry\'s id where the entry\'s '
+                            . 'type allows sections, and shows a shared block through its block_id. reorder puts '
+                            . 'entries, sections and categories in order under their parent.',
+                    ],
+                    'prompts' => [
+                        static fn (): Prompt => Mcp\Prompts::translateEntry(),
+                        static fn (): Prompt => Mcp\Prompts::writeMetaDescriptions(),
                     ],
                 ],
                 'search' => [

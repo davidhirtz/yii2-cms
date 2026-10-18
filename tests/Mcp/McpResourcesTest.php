@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Tests\Mcp;
 
 use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Models\Menus\Menu;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
 use Hirtz\Cms\Test\TestCase;
@@ -14,6 +15,7 @@ use Hirtz\Skeleton\Models\Search;
 use Hirtz\Skeleton\Models\Trail;
 use Hirtz\Skeleton\Models\Translation;
 use Hirtz\Skeleton\Models\User;
+use Hirtz\Tenant\Models\Collections\TenantCollection;
 use Override;
 use Yii;
 
@@ -54,6 +56,46 @@ class McpResourcesTest extends TestCase
         foreach (['entry', 'section', 'category', 'block'] as $name) {
             self::assertContains($name, $names);
         }
+    }
+
+    public function testTenantsAndMenusAreNamedInTheSchema(): void
+    {
+        Entry::getModule()->setMenus(fn (): array => [
+            Menu::make(1)->name('Hauptmenü'),
+            Menu::make(2)->name('Footer')->available(false),
+        ]);
+
+        $properties = $this->callTool('describe_resource', ['resource' => 'entry'])['attributes']['properties'] ?? [];
+
+        self::assertSame(['array', 'null'], $properties['menu_ids']['type'] ?? null);
+        self::assertSame([1], $properties['menu_ids']['items']['enum'] ?? null);
+        self::assertSame('Values: 1: Hauptmenü.', $properties['menu_ids']['description'] ?? null);
+
+        $tenant = TenantCollection::getDefault() ?? self::fail('No tenant');
+        self::assertContains($tenant->id, $properties['tenant_id']['enum'] ?? []);
+        self::assertStringContainsString("$tenant->id: $tenant->name", $properties['tenant_id']['description'] ?? '');
+
+        self::assertSame(['integer', 'null'], $properties['parent_id']['type'] ?? null);
+    }
+
+    public function testTheServerExplainsEntriesAndOffersPrompts(): void
+    {
+        $server = Mcp::getComponent()->createServer();
+
+        $result = $server->handle(['jsonrpc' => '2.0', 'id' => 1, 'method' => 'initialize', 'params' => []])['result'] ?? [];
+        self::assertStringContainsString('A section is a content block of an entry', $result['instructions'] ?? '');
+
+        $prompts = $server->handle(['jsonrpc' => '2.0', 'id' => 2, 'method' => 'prompts/list'])['result']['prompts'] ?? [];
+        self::assertSame(['translate_entry', 'write_meta_descriptions'], array_column($prompts, 'name'));
+
+        $result = $server->handle(['jsonrpc' => '2.0', 'id' => 3, 'method' => 'prompts/get', 'params' => [
+            'name' => 'translate_entry',
+            'arguments' => ['id' => '42', 'language' => 'de'],
+        ]])['result'] ?? [];
+
+        $text = $result['messages'][0]['content']['text'] ?? '';
+        self::assertStringContainsString('{"entry_id": 42}', $text);
+        self::assertStringContainsString('"de"', $text);
     }
 
     public function testCreatingAnEntryGoesThroughTheModelLayer(): void

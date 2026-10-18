@@ -5,8 +5,12 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Validators;
 
 use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Models\Menus\Menu;
 use Hirtz\Cms\Modules\ModuleTrait;
+use Hirtz\Skeleton\Mcp\SchemaBuilder;
+use Hirtz\Skeleton\Validators\Interfaces\JsonSchemaInterface;
 use Override;
+use yii\base\Model;
 use yii\base\NotSupportedException;
 use yii\validators\Validator;
 
@@ -15,13 +19,30 @@ use yii\validators\Validator;
  * dropped rather than reported: the declaration is project configuration a record cannot answer for, and a
  * menu that stops being available must not lock every later save of the entries already in it.
  */
-class MenuIdsValidator extends Validator
+class MenuIdsValidator extends Validator implements JsonSchemaInterface
 {
     use ModuleTrait;
 
     /** @var string[] */
     public $attributes = ['menu_ids'];
     public $skipOnEmpty = false;
+
+    #[Override]
+    public function getJsonSchema(Model $model, string $attribute): array
+    {
+        $menus = array_filter(
+            static::getModule()->getMenus(),
+            fn (Menu $menu): bool => !$model instanceof Entry || $menu->isAvailableOrStored($model),
+        );
+
+        $names = array_map(fn (Menu $menu): string => $menu->getName(), $menus);
+
+        return array_filter([
+            'type' => ['array', 'null'],
+            'items' => ['type' => 'integer', 'enum' => array_keys($names)],
+            'description' => $names ? SchemaBuilder::describeEnum($names) : null,
+        ]);
+    }
 
     /**
      * @param Entry $model
