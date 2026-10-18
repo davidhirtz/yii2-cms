@@ -326,6 +326,30 @@ class EntryGridViewTest extends TestCase
         self::assertFalse($this->hasPublishDate(null, ['position' => SORT_ASC]));
     }
 
+    public function testASubentryGridOrderedByDateListsTheDateAfterLoadingItsModels(): void
+    {
+        Entry::getModule()->enableNestedEntries = true;
+
+        $parent = new DatedParentEntry();
+        $parent->setAttributes($this->createEntry('Parent', 'parent')->getAttributes(), false);
+        $parent->setIsNewRecord(false);
+
+        foreach (['first', 'second'] as $slug) {
+            $child = Entry::create();
+            $child->loadDefaultValues();
+            $child->type = Entry::TYPE_DEFAULT;
+            $child->name = $slug;
+            $child->slug = $slug;
+            $child->parent_id = $parent->id;
+            self::assertTrue($child->insert(), print_r($child->getErrors(), true));
+        }
+
+        $provider = Yii::$container->get(EntryActiveDataProvider::class, config: ['parent' => $parent]);
+        self::assertSame(2, $provider->getCount());
+
+        self::assertTrue(DateColumnGridView::make()->provider($provider)->exposesPublishDate());
+    }
+
     /**
      * @param array<string, int>|null $orderBy
      */
@@ -389,5 +413,14 @@ class DatedEntry extends Entry
                 ->name('Undated')
                 ->hiddenFields('publish_date'),
         ];
+    }
+}
+
+class DatedParentEntry extends Entry
+{
+    #[Override]
+    public function getDescendantsOrderBy(): array
+    {
+        return ['publish_date' => SORT_DESC];
     }
 }

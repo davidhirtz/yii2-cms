@@ -380,7 +380,11 @@ class EntryGridView extends GridView
             return !in_array('publish_date', $type->getHiddenFields(), true);
         }
 
-        return array_key_exists('publish_date', $this->provider->query->orderBy ?? []);
+        // Loading the models drops the query's order once a sort holds it.
+        $sort = $this->provider->getSort();
+        $orderBy = $sort ? $sort->defaultOrder : $this->provider->query->orderBy;
+
+        return array_key_exists('publish_date', $orderBy ?? []);
     }
 
     protected function publishDateColumn(): ?Column
