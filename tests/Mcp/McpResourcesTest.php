@@ -9,6 +9,8 @@ use Hirtz\Cms\Models\Menus\Menu;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
 use Hirtz\Cms\Test\TestCase;
+use Hirtz\Media\Models\Asset;
+use Hirtz\Media\Models\File;
 use Hirtz\Skeleton\Db\DateTime;
 use Hirtz\Skeleton\Mcp\Mcp;
 use Hirtz\Skeleton\Models\Search;
@@ -116,6 +118,35 @@ class McpResourcesTest extends TestCase
 
         $result = $this->callTool('assign_categories', ['resource' => 'entry', 'id' => $entry->id, 'add' => [999]], true);
         self::assertSame('Category not found: 999', $result['error'] ?? null);
+    }
+
+    public function testAnEntrysAssetsAreUpdatedReorderedAndDetached(): void
+    {
+        $ids = array_column($this->callTool('find_records', [
+            'resource' => 'entry_asset',
+            'filter' => ['model_id' => 1],
+            'order' => 'position',
+        ])['records'] ?? [], 'id');
+
+        self::assertSame([1, 2], $ids);
+
+        $properties = $this->callTool('describe_resource', ['resource' => 'entry_asset'])['attributes']['properties'] ?? [];
+        self::assertArrayNotHasKey('model_id', $properties);
+        self::assertArrayNotHasKey('file_id', $properties);
+
+        $result = $this->callTool('update_record', ['resource' => 'entry_asset', 'id' => 1, 'attributes' => ['alt_text' => 'Ein Bild – Привет 🎉']]);
+        self::assertSame('Ein Bild – Привет 🎉', $result['attributes']['alt_text'] ?? null);
+
+        self::assertTrue($this->callTool('reorder', ['resource' => 'entry_asset', 'parent' => 1, 'ids' => [2, 1]])['reordered'] ?? false);
+        self::assertSame(1, Asset::findOne(2)?->position);
+
+        $this->callTool('detach_file', ['resource' => 'entry_asset', 'id' => 1]);
+        self::assertNull(Asset::findOne(1));
+        self::assertNotNull(File::findOne(1));
+
+        // an asset of another owner is not an entry asset
+        $this->callTool('detach_file', ['resource' => 'entry_asset', 'id' => 4], true);
+        self::assertNotNull(Asset::findOne(4));
     }
 
     public function testCreatingAnEntryGoesThroughTheModelLayer(): void

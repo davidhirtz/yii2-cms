@@ -21,6 +21,7 @@ use Hirtz\Cms\Models\Events\TenantBeforeDeleteEventHandler;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Models\SectionAsset;
 use Hirtz\Cms\Models\SectionEntry;
+use Hirtz\Media\Mcp\AssetResources;
 use Hirtz\Skeleton\Base\ConfigBootstrapInterface;
 use Hirtz\Skeleton\Db\ActiveRecord;
 use Hirtz\Skeleton\Filters\PageCache;
@@ -95,6 +96,9 @@ class Bootstrap implements ConfigBootstrapInterface
                             ])->run() !== false)
                             ->url(static fn (Category $category): array|false => $category->getRoute()),
                         static fn (): Resource => Resource::make('block', Block::class),
+                        static fn (): Resource => AssetResources::make('entry_asset', EntryAsset::class, 'entry'),
+                        static fn (): Resource => AssetResources::make('section_asset', SectionAsset::class, 'section'),
+                        static fn (): Resource => AssetResources::make('block_asset', BlockAsset::class, 'block'),
                     ],
                     'instructions' => [
                         static fn (): string => 'An entry is a page or article; it nests under another entry through '
