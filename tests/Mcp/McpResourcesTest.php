@@ -88,7 +88,11 @@ class McpResourcesTest extends TestCase
         self::assertStringContainsString('A section is a content block of an entry', $result['instructions'] ?? '');
 
         $prompts = $server->handle(['jsonrpc' => '2.0', 'id' => 2, 'method' => 'prompts/list'])['result']['prompts'] ?? [];
-        self::assertSame(['translate_entry', 'write_meta_descriptions'], array_column($prompts, 'name'));
+        self::assertSame(['getting_started', 'translate_entry', 'write_meta_descriptions'], array_column($prompts, 'name'));
+
+        $text = $server->handle(['jsonrpc' => '2.0', 'id' => 4, 'method' => 'prompts/get', 'params' => ['name' => 'getting_started']])['result']['messages'][0]['content']['text'] ?? '';
+        self::assertStringContainsString('list_resources', $text);
+        self::assertStringContainsString('plain language', $text);
 
         $result = $server->handle(['jsonrpc' => '2.0', 'id' => 3, 'method' => 'prompts/get', 'params' => [
             'name' => 'translate_entry',

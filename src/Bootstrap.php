@@ -113,6 +113,7 @@ class Bootstrap implements ConfigBootstrapInterface
                             : null,
                     ],
                     'prompts' => [
+                        static fn (): Prompt => Mcp\Prompts::gettingStarted(),
                         static fn (): Prompt => Mcp\Prompts::translateEntry(),
                         static fn (): Prompt => Mcp\Prompts::writeMetaDescriptions(),
                     ],

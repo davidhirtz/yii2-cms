@@ -206,7 +206,8 @@ Event::on(EntryGridView::class, Widget::EVENT_CONFIGURE, function (Event $event)
 The bundle registers the [MCP](https://github.com/davidhirtz/yii2-skeleton#mcp-server) resources `entry` (optionally under a `parent`
 entry, reorderable), `section` (created under its `entry`, reorderable), `category` (optionally under a `parent`,
 reorderable), `block`, the assets `entry_asset`, `section_asset` and `block_asset`, with `enableCategories` the tool `assign_categories`, a paragraph of instructions on entries
-and sections, and the prompts `translate_entry` and `write_meta_descriptions`.
+and sections, and the prompts `getting_started` (what the connected user can do, in plain language), `translate_entry` and
+`write_meta_descriptions`.
 
 ## Console commands
 

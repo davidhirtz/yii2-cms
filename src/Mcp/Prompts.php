@@ -8,6 +8,29 @@ use Hirtz\Skeleton\Mcp\Prompt;
 
 class Prompts
 {
+    /**
+     * Written for the person, not the model: what this connection lets them do, in their own language.
+     */
+    public static function gettingStarted(): Prompt
+    {
+        return Prompt::make('getting_started')
+            ->title('Getting started')
+            ->description('Explains in plain language what you can do on this website through this connection.')
+            ->text(static fn (): string => implode("\n\n", [
+                'I am an editor of this website, not a developer. Explain to me in plain language, in the language '
+                . 'I write in, what I can do on this website with you.',
+                'First look around: list_resources for what I may see and edit, describe_resource for the pages '
+                . '(entries) and their types, and find_records for a few recent entries, so your examples name real '
+                . 'pages of this site. Which of your tools you can call tells you whether this connection may write '
+                . 'or only read.',
+                'Then answer briefly: what the site consists of (page types, sections, images, categories, '
+                . 'languages), what I can ask you to do, with five to eight example requests that fit this site, '
+                . 'and the rules: new content is saved as a draft until it is published, nothing is deleted, every '
+                . 'change shows in the site\'s history. Say what is not possible this way: the design or layout, '
+                . 'new languages, users and settings. Use no technical terms such as tool, resource or attribute.',
+            ]));
+    }
+
     public static function translateEntry(): Prompt
     {
         return Prompt::make('translate_entry')
