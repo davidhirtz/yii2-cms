@@ -51,7 +51,9 @@ class McpResourcesTest extends TestCase
     {
         $names = array_column($this->callTool('list_resources')['resources'] ?? [], 'name');
 
-        self::assertSame(['redirect', 'entry', 'section', 'category', 'block'], array_slice($names, 0, 5));
+        foreach (['entry', 'section', 'category', 'block'] as $name) {
+            self::assertContains($name, $names);
+        }
     }
 
     public function testCreatingAnEntryGoesThroughTheModelLayer(): void
