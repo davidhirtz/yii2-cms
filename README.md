@@ -201,6 +201,12 @@ Event::on(EntryGridView::class, Widget::EVENT_CONFIGURE, function (Event $event)
 });
 ```
 
+## MCP
+
+The bundle registers the [MCP](https://github.com/davidhirtz/yii2-skeleton#mcp-server) resources `entry` (optionally under a `parent`
+entry, reorderable), `section` (created under its `entry`, reorderable), `category` (optionally under a `parent`,
+reorderable) and `block`.
+
 ## Console commands
 
 - `permalink/rebuild` — rewrites every entry's permalinks, inserting the missing ones and deleting those of entries that
