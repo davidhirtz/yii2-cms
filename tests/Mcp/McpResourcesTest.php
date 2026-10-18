@@ -153,6 +153,12 @@ class McpResourcesTest extends TestCase
         self::assertNotNull(Asset::findOne(4));
     }
 
+    public function testUploadLinkLeadsToTheEntrysImages(): void
+    {
+        $result = $this->callTool('upload_link', ['resource' => 'entry', 'id' => 1]);
+        self::assertSame('https://www.test.localhost/admin/cms/entry-asset/index?entry=1', $result['url'] ?? null);
+    }
+
     public function testCreatingAnEntryGoesThroughTheModelLayer(): void
     {
         $result = $this->callTool('create_record', [
