@@ -34,8 +34,9 @@ class Prompts
             ->description('Writes the missing meta descriptions of the entries.')
             ->argument('limit', 'How many entries at most, 20 when it is not given.')
             ->text(static fn (array $arguments): string => implode("\n\n", [
-                'Find up to ' . ($arguments['limit'] ?? '20') . ' entries without a meta description: find_records with '
-                . 'resource "entry" and filter {"description": [null, ""]}.',
+                'Find up to ' . ($arguments['limit'] ?? '20') . ' entries without a meta description in one of the '
+                . 'content languages: find_records with resource "entry" and "missing" naming the description of each '
+                . 'language (description, description_de, …, as describe_resource lists them).',
                 'For each, read the entry and its sections (find_records, resource "section", filter {"entry_id": <id>}) '
                 . 'and write a description of what the page offers, at most 160 characters, in every content language '
                 . 'whose description is empty. Save it with update_record, passing the updated_at get_record answered.',
