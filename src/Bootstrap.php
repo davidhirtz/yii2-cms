@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms;
 
+use Hirtz\Cms\Models\Actions\ReorderCategories;
+use Hirtz\Cms\Models\Actions\ReorderEntries;
+use Hirtz\Cms\Models\Actions\ReorderSections;
 use Hirtz\Cms\Models\Block;
 use Hirtz\Cms\Models\BlockAsset;
 use Hirtz\Cms\Models\BlockEntry;
@@ -19,8 +22,10 @@ use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Models\SectionAsset;
 use Hirtz\Cms\Models\SectionEntry;
 use Hirtz\Skeleton\Base\ConfigBootstrapInterface;
+use Hirtz\Skeleton\Db\ActiveRecord;
 use Hirtz\Skeleton\Filters\PageCache;
 use Hirtz\Skeleton\Helpers\EventHelper;
+use Hirtz\Skeleton\Mcp\Resource;
 use Hirtz\Skeleton\Modules\Admin\Controllers\DashboardController;
 use Hirtz\Skeleton\Models\User;
 use Hirtz\Skeleton\Console\Application as ConsoleApplication;
@@ -47,6 +52,47 @@ class Bootstrap implements ConfigBootstrapInterface
                             'basePath' => '@cms/../messages',
                             'forceTranslation' => true,
                         ],
+                    ],
+                ],
+                'mcp' => [
+                    'resources' => [
+                        static fn (): Resource => Resource::make('entry', Entry::class)
+                            ->defaultType(static fn (): ?int => Entry::getModule()->defaultEntryType)
+                            ->parent('parent', Entry::class, static fn (Entry $entry, ?Entry $parent) => $entry->populateParentRelation($parent), false)
+                            ->beforeInsert(static function (Entry $entry): void {
+                                if ($entry->isNewIndex()) {
+                                    foreach ($entry->getI18nAttributesNames('slug') as $attribute) {
+                                        $entry->$attribute = (string)Entry::getModule()->entryIndexSlug;
+                                    }
+                                }
+                            })
+                            ->reorder(static fn (?ActiveRecord $parent, array $ids): bool => Yii::createObject(ReorderEntries::class, [
+                                $parent instanceof Entry ? $parent : null,
+                                $ids,
+                            ])->run() !== false)
+                            ->url(static fn (Entry $entry): array|false => $entry->getRoute()),
+                        static fn (): Resource => Resource::make('section', Section::class)
+                            ->parent('entry', Entry::class, static function (Section $section, ?Entry $entry): bool {
+                                if (!$entry?->allowsSections()) {
+                                    return false;
+                                }
+
+                                $section->populateEntryRelation($entry);
+                                return true;
+                            })
+                            ->reorder(static fn (?ActiveRecord $entry, array $ids): bool => $entry instanceof Entry
+                                && Yii::createObject(ReorderSections::class, [$entry, $ids])->run() !== false)
+                            ->url(static fn (Section $section): array|false => $section->getRoute()),
+                        static fn (): Resource => Resource::make('category', Category::class)
+                            ->parent('parent', Category::class, static function (Category $category, ?Category $parent): void {
+                                $category->parent_id = $parent?->id;
+                            }, false)
+                            ->reorder(static fn (?ActiveRecord $parent, array $ids): bool => Yii::createObject(ReorderCategories::class, [
+                                $parent instanceof Category ? $parent : null,
+                                $ids,
+                            ])->run() !== false)
+                            ->url(static fn (Category $category): array|false => $category->getRoute()),
+                        static fn (): Resource => Resource::make('block', Block::class),
                     ],
                 ],
                 'search' => [
