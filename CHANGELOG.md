@@ -1,5 +1,6 @@
 ## Unreleased
 
+- Changed `PreloadEntrySiteRelations` to load the files of `FileCustomAttribute`s with the asset files and populate them
 - Added an icon to the meta image asset type
 - Added `SectionType::shareWithBlocks()`, on by default; `SectionType` extends `BlockType`
 - Added `Block::getEntry()`, the entry a block is rendered on

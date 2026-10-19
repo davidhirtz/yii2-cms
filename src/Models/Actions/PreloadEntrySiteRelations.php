@@ -11,6 +11,7 @@ use Hirtz\Cms\Models\Events\EntrySiteRelationsEvent;
 use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Models\EntryRelation;
 use Hirtz\Cms\Modules\ModuleTrait;
+use Hirtz\Media\Models\Actions\LoadCustomAttributeFiles;
 use Hirtz\Media\Models\Asset;
 use Hirtz\Media\Models\Collections\FolderCollection;
 use Hirtz\Media\Models\File;
@@ -19,6 +20,7 @@ use Override;
 use Yii;
 use yii\base\Component;
 use yii\base\Event;
+use yii\base\Model;
 
 class PreloadEntrySiteRelations extends Component
 {
@@ -107,6 +109,8 @@ class PreloadEntrySiteRelations extends Component
 
         $this->loadAssets();
         $this->trigger(self::EVENT_AFTER_LOAD_ASSETS);
+
+        $this->addCustomAttributeFileIds();
 
         $this->loadFiles();
         $this->trigger(self::EVENT_AFTER_LOAD_FILES);
@@ -325,6 +329,31 @@ class PreloadEntrySiteRelations extends Component
         }
     }
 
+    /**
+     * The files the custom attributes name share the asset files' query.
+     */
+    protected function addCustomAttributeFileIds(): void
+    {
+        $this->fileIds = [...$this->fileIds, ...LoadCustomAttributeFiles::getFileIds($this->getCustomAttributeModels())];
+    }
+
+    /**
+     * Every loaded section, not only those with assets.
+     *
+     * @return list<Model>
+     */
+    protected function getCustomAttributeModels(): array
+    {
+        $sections = $this->entry->isRelationPopulated('sections') ? array_values($this->entry->sections) : [];
+
+        return [
+            ...array_values($this->entries),
+            ...$sections,
+            ...array_values($this->blocks),
+            ...array_values($this->assets),
+        ];
+    }
+
     protected function loadFiles(): void
     {
         $fileIds = array_unique($this->fileIds);
@@ -365,5 +394,7 @@ class PreloadEntrySiteRelations extends Component
         foreach ($this->blocks as $block) {
             $block->populateAssetRelations($this->assets);
         }
+
+        LoadCustomAttributeFiles::populate($this->getCustomAttributeModels(), $this->files);
     }
 }
