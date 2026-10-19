@@ -22,7 +22,6 @@ use Hirtz\Skeleton\Models\CustomAttributes\TextCustomAttribute;
 use Hirtz\Skeleton\Models\Definitions\DefinitionRegistry;
 use Override;
 use Yii;
-use yii\base\InvalidConfigException;
 
 class CreateBlockFromSectionTest extends TestCase
 {
@@ -94,12 +93,24 @@ class CreateBlockFromSectionTest extends TestCase
         self::assertSame(Section::findType(self::TYPE_HEADLINE), Block::findType(self::TYPE_HEADLINE));
     }
 
-    public function testASharedTypeAllowingABlockIsRefused(): void
+    public function testABlockTypeWinsOverASharedSectionTypeOfItsValue(): void
     {
-        $this->setSectionTypes(SectionType::make(9)->name('Both')->allowBlock()->shareWithBlocks());
+        $teaser = BlockType::make(self::TYPE_HEADLINE)->name('Teaser');
 
-        $this->expectException(InvalidConfigException::class);
-        Section::getTypeDefinitions();
+        Yii::$container->set(Block::class, [
+            'types' => fn (): array => [$teaser],
+        ]);
+
+        self::assertSame([self::TYPE_HEADLINE, self::TYPE_BLOG], array_keys(Block::getTypeDefinitions()));
+        self::assertSame('Teaser', Block::findType(self::TYPE_HEADLINE)?->getName());
+    }
+
+    public function testATypeCarryingABlockOrAModelClassIsNotShared(): void
+    {
+        self::assertFalse(SectionType::make(9)->allowBlock()->isSharedWithBlocks());
+        self::assertFalse(SectionType::make(9)->modelClass(Section::class)->isSharedWithBlocks());
+        self::assertFalse(BlockSectionType::make(9)->isSharedWithBlocks());
+        self::assertTrue(SectionType::make(9)->isSharedWithBlocks());
     }
 
     public function testTheSectionBecomesTheBlockSectionOfANewBlock(): void
@@ -197,15 +208,14 @@ class CreateBlockFromSectionTest extends TestCase
             'types' => fn (): array => [
                 SectionType::make(self::TYPE_HEADLINE)
                     ->name('Headline')
-                    ->shareWithBlocks()
                     ->customAttributes($customAttributes ?? fn (): array => [
                         TextCustomAttribute::make('subtitle'),
                     ]),
                 SectionType::make(self::TYPE_COLUMN)
-                    ->name('Column'),
+                    ->name('Column')
+                    ->shareWithBlocks(false),
                 SectionType::make(self::TYPE_BLOG)
-                    ->name('Blog')
-                    ->shareWithBlocks(),
+                    ->name('Blog'),
                 ...($extra ? [$extra] : []),
             ],
         ]);

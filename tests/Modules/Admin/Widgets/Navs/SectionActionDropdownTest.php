@@ -135,8 +135,7 @@ class SectionActionDropdownTest extends TestCase
         Yii::$container->set(Section::class, [
             'types' => fn (): array => [
                 SectionType::make(Section::TYPE_DEFAULT)
-                    ->name('Text')
-                    ->shareWithBlocks(),
+                    ->name('Text'),
             ],
         ]);
 

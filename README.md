@@ -84,7 +84,7 @@ use Hirtz\Skeleton\Models\CustomAttributes\TextCustomAttribute;
         Section::class => [
             'types' => fn (): array => [
                 SectionType::make(1)->name('Text'),
-                SectionType::make(2)->name('Gallery')->hiddenFields('content')->shareWithBlocks(),
+                SectionType::make(2)->name('Gallery')->hiddenFields('content')->shareWithBlocks(false),
                 BlockSectionType::make(Section::TYPE_BLOCK)->name('Shared block'),
             ],
         ],
@@ -104,12 +104,15 @@ Per model:
   index order and turns off manual ordering; `sort()`, `showCategories()`, `showCategoryDropdown()` configure the admin grid.
 - **`SectionType`**: `allowBlock()` (off by default, needs `enableBlocks`), `allowEntries()`, `entriesTypes()`,
   `entriesOrderBy()`, `allowAssets()`; for `Widgets\SectionStack` on the site, `visible()`, `group()`, `wrapper()` and
-  `collect()`; `gridContent()` replaces the name in the admin grid; `shareWithBlocks()` offers the type for blocks
-  too, and a section of it can be converted into a block from its action dropdown. `BlockSectionType`, whose sections
+  `collect()`; `gridContent()` replaces the name in the admin grid. With `enableBlocks` every section type is a block
+  type too (`shareWithBlocks(false)` keeps it to sections; one allowing a block or naming a `modelClass` never is), and
+  a section of it can be converted into a block from its action dropdown. Its `available()` and `customAttributes()`
+  closures then receive a `Block` as well, and its view a block whose `entry` is the entry it is rendered on. `BlockSectionType`, whose sections
   only carry a block, is added as `Section::TYPE_BLOCK` with `enableBlocks`, unless one is declared.
 - **`CategoryType`**: `allowDescendants()`, `allowEntries()`.
 - **`BlockType`**: `allowEntries()`, `entriesTypes()`, `entriesOrderBy()`, `allowAssets()`. The shared section types
-  join the block types; without block types configured, they replace the default one.
+  join the block types, a block type winning over a section type of its value; without block types configured, they
+  replace the default one.
 
 ### Menus and section sets
 

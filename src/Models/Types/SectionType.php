@@ -8,8 +8,6 @@ use Closure;
 use Hirtz\Cms\Models\Block;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Widgets\SectionStack;
-use Override;
-use yii\base\InvalidConfigException;
 
 /**
  * The four stages {@see SectionStack} runs over an entry's sections. `visible` is the frontend render filter, not
@@ -24,7 +22,7 @@ class SectionType extends BlockType
     protected ?Closure $collect = null;
     protected Closure|string|null $gridContent = null;
     protected bool $allowsBlock = false;
-    protected bool $isSharedWithBlocks = false;
+    protected bool $isSharedWithBlocks = true;
 
     /**
      * Whether a section of this type carries a block instead of content of its own. The module's `enableBlocks`
@@ -43,7 +41,7 @@ class SectionType extends BlockType
     }
 
     /**
-     * Offers the type for blocks too, under the same value, and lets a section of it become one.
+     * Offers the type for blocks too, under the same value, and lets a section of it become one. On by default.
      *
      * @see Block::getTypesWithSharedSectionTypes()
      */
@@ -53,9 +51,12 @@ class SectionType extends BlockType
         return $this;
     }
 
+    /**
+     * A type carrying a block or naming a section class of its own is never shared, whatever it declares.
+     */
     public function isSharedWithBlocks(): bool
     {
-        return $this->isSharedWithBlocks;
+        return $this->isSharedWithBlocks && !$this->allowsBlock && $this->modelClass === null;
     }
 
     /**
@@ -129,15 +130,5 @@ class SectionType extends BlockType
     public function getGridContent(): Closure|string|null
     {
         return $this->gridContent;
-    }
-
-    #[Override]
-    public function validate(string $modelClass): void
-    {
-        parent::validate($modelClass);
-
-        if ($this->isSharedWithBlocks && $this->allowsBlock) {
-            throw new InvalidConfigException("{$this->getDisplayValue()} of $modelClass allows a block and cannot be shared with blocks.");
-        }
     }
 }

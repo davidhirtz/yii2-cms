@@ -82,6 +82,10 @@ class PreloadEntrySiteRelationsBlockTest extends TestCase
         self::assertCount(1, $section->getVisibleAssets());
         self::assertCount(1, $section->getVisibleEntries());
         self::assertTrue($section->block->isRelationPopulated('assets'));
+
+        // A view shared with sections reads the entry off the block too.
+        self::assertSame($entry, $section->block->entry);
+        self::assertNull(Block::findOne($block->id)?->entry);
     }
 }
 

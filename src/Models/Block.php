@@ -36,6 +36,7 @@ use Yii;
  * @property int $entry_count
  *
  * @property-read BlockAsset[] $assets {@see static::getAssets()}
+ * @property-read Entry|null $entry {@see static::getEntry()}
  * @property-read Section[] $sections {@see static::getSections()}
  */
 class Block extends ActiveRecord implements AssetModelInterface, EntryRelationModelInterface, SearchableInterface
@@ -163,6 +164,20 @@ class Block extends ActiveRecord implements AssetModelInterface, EntryRelationMo
     public function findSiblings(): BlockQuery
     {
         return static::find();
+    }
+
+    /**
+     * The entry the block is rendered on, populated by `PreloadEntrySiteRelations`, so a view shared with sections can
+     * read `entry` off either. A block has no entry of its own: `null` everywhere else.
+     */
+    public function getEntry(): ?Entry
+    {
+        return null;
+    }
+
+    public function populateEntryRelation(?Entry $entry): void
+    {
+        $this->populateRelation('entry', $entry);
     }
 
     public function updateSectionCount(): int
@@ -311,7 +326,15 @@ class Block extends ActiveRecord implements AssetModelInterface, EntryRelationMo
     {
         /** @var list<BlockType> $types */
         $types = $this->getTypes();
-        return [...$types, ...static::getSharedSectionTypes()];
+        $values = array_map(static fn (BlockType $type): int => $type->value, $types);
+
+        foreach (static::getSharedSectionTypes() as $type) {
+            if (!in_array($type->value, $values, true)) {
+                $types[] = $type;
+            }
+        }
+
+        return $types;
     }
 
     /**

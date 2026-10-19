@@ -177,6 +177,8 @@ class PreloadEntrySiteRelations extends Component
             ->all();
 
         foreach ($this->blocks as $block) {
+            $block->populateEntryRelation($this->entry);
+
             if ($block->allowsAssets() && $block->asset_count) {
                 $this->modelsWithAssets[] = $block;
             }

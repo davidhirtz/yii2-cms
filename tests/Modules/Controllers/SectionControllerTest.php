@@ -518,7 +518,7 @@ class SectionControllerTest extends TestCase
 
     public function testCreateBlockOfATypeNotSharedIsNotFound(): void
     {
-        Section::getModule()->enableBlocks = true;
+        $this->shareDefaultType(false);
         $user = $this->login();
         $this->assignPermission($user->id, Block::AUTH_BLOCK);
 
@@ -528,7 +528,7 @@ class SectionControllerTest extends TestCase
         $this->post('admin/cms/section/create-block', ['id' => $section->id]);
     }
 
-    private function shareDefaultType(): void
+    private function shareDefaultType(bool $share = true): void
     {
         Section::getModule()->enableBlocks = true;
 
@@ -536,7 +536,7 @@ class SectionControllerTest extends TestCase
             'types' => fn (): array => [
                 SectionType::make(Section::TYPE_DEFAULT)
                     ->name('Text')
-                    ->shareWithBlocks(),
+                    ->shareWithBlocks($share),
             ],
         ]);
 
