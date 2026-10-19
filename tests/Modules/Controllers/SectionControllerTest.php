@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Tests\Modules\Controllers;
 
+use Hirtz\Cms\Models\Block;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Models\Sets\SectionSet;
 use Hirtz\Cms\Models\Sets\SectionTemplate;
 use Hirtz\Cms\Models\Types\SectionType;
 use Hirtz\Cms\Test\TestCase;
+use Hirtz\Skeleton\Models\Definitions\DefinitionRegistry;
 use Hirtz\Skeleton\Models\User;
 use Hirtz\Skeleton\Test\Traits\UserFixtureTrait;
 use Override;
@@ -483,6 +485,62 @@ class SectionControllerTest extends TestCase
 
         $this->expectException(NotFoundHttpException::class);
         Yii::$app->runAction('admin/cms/section/entries', ['id' => $section->id]);
+    }
+
+    public function testCreateBlockOpensTheBlockTheSectionNowPlaces(): void
+    {
+        $this->shareDefaultType();
+        $user = $this->login();
+        $this->assignPermission($user->id, Block::AUTH_BLOCK);
+
+        $section = $this->createSection('Hero');
+        $response = $this->post('admin/cms/section/create-block', ['id' => $section->id]);
+
+        $section = Section::findOne($section->id);
+        self::assertSame(Section::TYPE_BLOCK, $section->type);
+        self::assertSame('Hero', $section->block?->name);
+
+        self::assertInstanceOf(Response::class, $response);
+        self::assertStringEndsWith("/admin/cms/block/update?id=$section->block_id", (string)$response->getHeaders()->get('location'));
+        self::assertNotEmpty($this->getWebSession()->getFlash('success'));
+    }
+
+    public function testCreateBlockIsForbiddenWithoutTheBlockPermission(): void
+    {
+        $this->shareDefaultType();
+        $this->login();
+
+        $section = $this->createSection('Hero');
+
+        $this->expectException(ForbiddenHttpException::class);
+        $this->post('admin/cms/section/create-block', ['id' => $section->id]);
+    }
+
+    public function testCreateBlockOfATypeNotSharedIsNotFound(): void
+    {
+        Section::getModule()->enableBlocks = true;
+        $user = $this->login();
+        $this->assignPermission($user->id, Block::AUTH_BLOCK);
+
+        $section = $this->createSection('Hero');
+
+        $this->expectException(NotFoundHttpException::class);
+        $this->post('admin/cms/section/create-block', ['id' => $section->id]);
+    }
+
+    private function shareDefaultType(): void
+    {
+        Section::getModule()->enableBlocks = true;
+
+        Yii::$container->set(Section::class, [
+            'types' => fn (): array => [
+                SectionType::make(Section::TYPE_DEFAULT)
+                    ->name('Text')
+                    ->shareWithBlocks(),
+            ],
+        ]);
+
+        DefinitionRegistry::reset();
     }
 
     private function createEntry(string $name, string $slug): Entry

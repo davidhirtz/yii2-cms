@@ -12,6 +12,7 @@ use Hirtz\Cms\Models\Queries\BlockQuery;
 use Hirtz\Cms\Models\Queries\SectionQuery;
 use Hirtz\Cms\Models\Traits\EntryRelationModelTrait;
 use Hirtz\Cms\Models\Traits\EntryRelationTrait;
+use Hirtz\Cms\Models\Types\BlockSectionType;
 use Hirtz\Cms\Models\Types\SectionType;
 use Hirtz\Media\Models\Asset;
 use Hirtz\Media\Models\Interfaces\AssetModelInterface;
@@ -21,6 +22,7 @@ use Hirtz\Skeleton\Models\Breadcrumb;
 use Hirtz\Skeleton\Models\CustomAttributes\CustomAttribute;
 use Hirtz\Skeleton\Models\CustomAttributes\HtmlCustomAttribute;
 use Hirtz\Skeleton\Models\CustomAttributes\TextCustomAttribute;
+use Hirtz\Skeleton\Models\Definitions\DefinitionRegistry;
 use Hirtz\Skeleton\Models\Interfaces\SearchableInterface;
 use Hirtz\Skeleton\Models\Interfaces\TrailModelInterface;
 use Hirtz\Skeleton\Models\Traits\SearchableTrait;
@@ -51,6 +53,11 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
     use SearchableTrait;
 
     final public const int SLUG_MAX_LENGTH = 100;
+
+    /**
+     * The value of the block section type added with `enableBlocks`, high enough to clear a project's own.
+     */
+    public const int TYPE_BLOCK = 9999;
 
     public bool|null $shouldUpdateEntryAfterSave = null;
 
@@ -457,6 +464,59 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
         return ($route = $this->entry->getRoute()) ? [...$route, '#' => $this->getHtmlId()] : false;
     }
 
+    /**
+     * @return list<SectionType>
+     */
+    public function getTypesWithBlockSectionType(): array
+    {
+        /** @var list<SectionType> $types */
+        $types = $this->getTypes();
+
+        if (!static::getModule()->enableBlocks) {
+            return $types;
+        }
+
+        foreach ($types as $type) {
+            if ($type instanceof BlockSectionType) {
+                return $types;
+            }
+        }
+
+        return [...$types, BlockSectionType::make(static::TYPE_BLOCK)];
+    }
+
+    /**
+     * @return array<int, SectionType>
+     */
+    #[Override]
+    public static function getTypeDefinitions(): array
+    {
+        return DefinitionRegistry::get(static::class, 'getTypesWithBlockSectionType', static::getTypeClass());
+    }
+
+    public static function findBlockSectionType(): ?BlockSectionType
+    {
+        foreach (static::getTypeDefinitions() as $type) {
+            if ($type instanceof BlockSectionType) {
+                return $type;
+            }
+        }
+
+        return null;
+    }
+
+    public function allowsBlockConversion(): bool
+    {
+        if (!static::getModule()->enableBlocks || !$this->getType()?->isSharedWithBlocks()) {
+            return false;
+        }
+
+        return static::findBlockSectionType()?->isAvailable($this) ?? false;
+    }
+
+    /**
+     * @return class-string<SectionType>
+     */
     #[Override]
     public static function getTypeClass(): string
     {

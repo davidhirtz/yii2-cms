@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Widgets\Navs;
 
+use Hirtz\Cms\Models\Block;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Modules\Admin\Data\SectionActiveDataProvider;
@@ -12,6 +13,7 @@ use Hirtz\Cms\Modules\Admin\Widgets\Buttons\SectionSetButton;
 use Hirtz\Cms\Modules\Admin\Widgets\Buttons\Traits\LinkButtonTrait;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\Buttons\SectionDeleteButton;
 use Hirtz\Skeleton\Widgets\Buttons\Button;
+use Hirtz\Skeleton\Widgets\Buttons\ConfirmButton;
 use Hirtz\Skeleton\Widgets\Buttons\DuplicateButton;
 use Hirtz\Skeleton\Widgets\Navs\ActionDropdown;
 use Hirtz\Skeleton\Widgets\Traits\ModelTrait;
@@ -51,6 +53,7 @@ class SectionActionDropdown extends ActionDropdown
                 $this->getCreateButton($this->model->entry),
                 $this->getCopyButton(),
                 $this->getDuplicateButton(),
+                $this->getCreateBlockButton(),
                 $this->getLinkButton(),
                 $this->getDeleteButton(),
             );
@@ -97,6 +100,22 @@ class SectionActionDropdown extends ActionDropdown
         return DuplicateButton::make()
             ->label(Yii::t('cms', 'SECTION_BUTTON_DUPLICATE'))
             ->model($this->model);
+    }
+
+    /**
+     * @see SectionController::actionCreateBlock()
+     */
+    protected function getCreateBlockButton(): ?Stringable
+    {
+        if (!$this->model->allowsBlockConversion() || !$this->webuser->can(Block::AUTH_BLOCK)) {
+            return null;
+        }
+
+        return ConfirmButton::make()
+            ->icon('cube')
+            ->label(Yii::t('cms', 'SECTION_BUTTON_CREATE_BLOCK'))
+            ->text(Yii::t('cms', 'SECTION_ACTION_DROPDOWN_CREATE_BLOCK_TEXT'))
+            ->url(['create-block', 'id' => $this->model->id]);
     }
 
     protected function getDeleteButton(): ?Stringable

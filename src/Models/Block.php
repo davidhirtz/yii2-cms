@@ -8,10 +8,13 @@ use Hirtz\Cms\Models\Interfaces\EntryRelationModelInterface;
 use Hirtz\Cms\Models\Queries\BlockQuery;
 use Hirtz\Cms\Models\Queries\SectionQuery;
 use Hirtz\Cms\Models\Traits\EntryRelationModelTrait;
+use Closure;
 use Hirtz\Cms\Models\Types\BlockType;
+use Hirtz\Cms\Models\Types\SectionType;
 use Hirtz\Media\Models\Interfaces\AssetModelInterface;
 use Hirtz\Media\Models\Traits\AssetModelTrait;
 use Hirtz\Skeleton\Db\DateTime;
+use Hirtz\Skeleton\Models\Definitions\DefinitionRegistry;
 use Hirtz\Skeleton\Models\Breadcrumb;
 use Hirtz\Skeleton\Models\CustomAttributes\CustomAttribute;
 use Hirtz\Skeleton\Models\CustomAttributes\HtmlCustomAttribute;
@@ -43,6 +46,8 @@ class Block extends ActiveRecord implements AssetModelInterface, EntryRelationMo
     use TranslatableAttributesTrait;
 
     final public const string AUTH_BLOCK = 'block';
+
+    private bool $hasConfiguredTypes = false;
 
     #[Override]
     public function rules(): array
@@ -283,6 +288,59 @@ class Block extends ActiveRecord implements AssetModelInterface, EntryRelationMo
         return self::class;
     }
 
+    #[Override]
+    public function setTypes(Closure|array $types): void
+    {
+        $this->hasConfiguredTypes = true;
+        parent::setTypes($types);
+    }
+
+    /**
+     * The default type gives way to the shared section types when nothing is configured.
+     */
+    #[Override]
+    public function getTypes(): array
+    {
+        return $this->hasConfiguredTypes || !static::getSharedSectionTypes() ? parent::getTypes() : [];
+    }
+
+    /**
+     * @return list<BlockType>
+     */
+    public function getTypesWithSharedSectionTypes(): array
+    {
+        /** @var list<BlockType> $types */
+        $types = $this->getTypes();
+        return [...$types, ...static::getSharedSectionTypes()];
+    }
+
+    /**
+     * @return list<SectionType>
+     */
+    public static function getSharedSectionTypes(): array
+    {
+        if (!static::getModule()->enableBlocks) {
+            return [];
+        }
+
+        return array_values(array_filter(
+            Section::getTypeDefinitions(),
+            static fn (SectionType $type): bool => $type->isSharedWithBlocks(),
+        ));
+    }
+
+    /**
+     * @return array<int, BlockType>
+     */
+    #[Override]
+    public static function getTypeDefinitions(): array
+    {
+        return DefinitionRegistry::get(static::class, 'getTypesWithSharedSectionTypes', static::getTypeClass());
+    }
+
+    /**
+     * @return class-string<BlockType>
+     */
     #[Override]
     public static function getTypeClass(): string
     {

@@ -5,33 +5,26 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Models\Types;
 
 use Closure;
-use Hirtz\Cms\Models\Interfaces\EntryRelationTypeInterface;
+use Hirtz\Cms\Models\Block;
 use Hirtz\Cms\Models\Section;
-use Hirtz\Cms\Models\Types\Traits\EntryRelationTypeTrait;
 use Hirtz\Cms\Widgets\SectionStack;
-use Hirtz\Media\Models\Interfaces\AssetModelTypeInterface;
-use Hirtz\Media\Models\Types\Traits\AssetModelTypeTrait;
 use Override;
+use yii\base\InvalidConfigException;
 
 /**
  * The four stages {@see SectionStack} runs over an entry's sections. `visible` is the frontend render filter, not
- * whether the type is offered in the admin — that is {@see static::available()}.
+ * whether the type is offered in the admin — that is {@see static::available()}. A block type, so that one shared
+ * with blocks is the same definition on both.
  */
-class SectionType extends Type implements AssetModelTypeInterface, EntryRelationTypeInterface
+class SectionType extends BlockType
 {
-    // The class's own `validate()` would shadow the trait's, so it is aliased and called from there instead.
-    use AssetModelTypeTrait {
-        validate as validateAssetModelType;
-    }
-
-    use EntryRelationTypeTrait;
-
     protected Closure|bool|null $visible = null;
     protected Closure|string|null $group = null;
     protected Closure|string|null $wrapper = null;
     protected ?Closure $collect = null;
     protected Closure|string|null $gridContent = null;
     protected bool $allowsBlock = false;
+    protected bool $isSharedWithBlocks = false;
 
     /**
      * Whether a section of this type carries a block instead of content of its own. The module's `enableBlocks`
@@ -47,6 +40,22 @@ class SectionType extends Type implements AssetModelTypeInterface, EntryRelation
     public function allowsBlock(): bool
     {
         return $this->allowsBlock;
+    }
+
+    /**
+     * Offers the type for blocks too, under the same value, and lets a section of it become one.
+     *
+     * @see Block::getTypesWithSharedSectionTypes()
+     */
+    public function shareWithBlocks(bool $shareWithBlocks = true): static
+    {
+        $this->isSharedWithBlocks = $shareWithBlocks;
+        return $this;
+    }
+
+    public function isSharedWithBlocks(): bool
+    {
+        return $this->isSharedWithBlocks;
     }
 
     /**
@@ -125,7 +134,10 @@ class SectionType extends Type implements AssetModelTypeInterface, EntryRelation
     #[Override]
     public function validate(string $modelClass): void
     {
-        $this->validateAssetModelType($modelClass);
-        $this->validateEntriesTypes($modelClass);
+        parent::validate($modelClass);
+
+        if ($this->isSharedWithBlocks && $this->allowsBlock) {
+            throw new InvalidConfigException("{$this->getDisplayValue()} of $modelClass allows a block and cannot be shared with blocks.");
+        }
     }
 }

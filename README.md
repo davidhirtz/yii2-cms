@@ -84,8 +84,8 @@ use Hirtz\Skeleton\Models\CustomAttributes\TextCustomAttribute;
         Section::class => [
             'types' => fn (): array => [
                 SectionType::make(1)->name('Text'),
-                SectionType::make(2)->name('Gallery')->hiddenFields('content'),
-                BlockSectionType::make(3),
+                SectionType::make(2)->name('Gallery')->hiddenFields('content')->shareWithBlocks(),
+                BlockSectionType::make(Section::TYPE_BLOCK)->name('Shared block'),
             ],
         ],
         EntryAsset::class => ['translatableAttributes' => ['alt_text']],
@@ -104,10 +104,12 @@ Per model:
   index order and turns off manual ordering; `sort()`, `showCategories()`, `showCategoryDropdown()` configure the admin grid.
 - **`SectionType`**: `allowBlock()` (off by default, needs `enableBlocks`), `allowEntries()`, `entriesTypes()`,
   `entriesOrderBy()`, `allowAssets()`; for `Widgets\SectionStack` on the site, `visible()`, `group()`, `wrapper()` and
-  `collect()`; `gridContent()` replaces the name in the admin grid. `BlockSectionType` is a ready-made type whose sections
-  only carry a block.
+  `collect()`; `gridContent()` replaces the name in the admin grid; `shareWithBlocks()` offers the type for blocks
+  too, and a section of it can be converted into a block from its action dropdown. `BlockSectionType`, whose sections
+  only carry a block, is added as `Section::TYPE_BLOCK` with `enableBlocks`, unless one is declared.
 - **`CategoryType`**: `allowDescendants()`, `allowEntries()`.
-- **`BlockType`**: `allowEntries()`, `entriesTypes()`, `entriesOrderBy()`, `allowAssets()`.
+- **`BlockType`**: `allowEntries()`, `entriesTypes()`, `entriesOrderBy()`, `allowAssets()`. The shared section types
+  join the block types; without block types configured, they replace the default one.
 
 ### Menus and section sets
 

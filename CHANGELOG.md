@@ -1,3 +1,9 @@
+## Unreleased
+
+- Added `SectionType::shareWithBlocks()`; `SectionType` extends `BlockType`
+- Added `Section::TYPE_BLOCK`, a `BlockSectionType` registered automatically with `enableBlocks`
+- Added `Models\Actions\CreateBlockFromSection` and the section action `create-block`
+
 ## 3.15.0 (October 18, 2026)
 
 - Changed the `davidhirtz/yii2-skeleton` requirement to `^3.19` (MCP resources)

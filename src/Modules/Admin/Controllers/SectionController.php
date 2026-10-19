@@ -6,10 +6,12 @@ namespace Hirtz\Cms\Modules\Admin\Controllers;
 
 use Hirtz\Skeleton\Web\Traits\StatusControllerTrait;
 use Hirtz\Skeleton\Widgets\Flashes;
+use Hirtz\Cms\Models\Actions\CreateBlockFromSection;
 use Hirtz\Cms\Models\Actions\CreateSectionSet;
 use Hirtz\Cms\Models\Actions\DeleteSections;
 use Hirtz\Cms\Models\Actions\DuplicateSection;
 use Hirtz\Cms\Models\Actions\ReorderSections;
+use Hirtz\Cms\Models\Block;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
@@ -42,6 +44,12 @@ class SectionController extends AbstractController
                 'rules' => [
                     [
                         'allow' => true,
+                        'actions' => ['create-block'],
+                        'roles' => [Block::AUTH_BLOCK],
+                        'matchCallback' => fn (): bool => $this->webuser->can(Entry::AUTH_ENTRY),
+                    ],
+                    [
+                        'allow' => true,
                         'actions' => [
                             'create',
                             'create-set',
@@ -63,6 +71,7 @@ class SectionController extends AbstractController
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
+                    'create-block' => ['post'],
                     'create-set' => ['post'],
                     'delete' => ['post'],
                     'delete-all' => ['post'],
@@ -224,6 +233,25 @@ class SectionController extends AbstractController
 
         $this->success(Yii::t('cms', 'SECTION_SUCCESS_DUPLICATED'));
         return $this->redirect(['update', 'id' => $duplicate->id]);
+    }
+
+    public function actionCreateBlock(int $id): Response
+    {
+        $section = $this->findSection($id);
+
+        if (!$section->allowsBlockConversion()) {
+            throw new NotFoundHttpException();
+        }
+
+        $action = CreateBlockFromSection::create($section);
+
+        if ($errors = $action->getFirstErrors()) {
+            $this->error($errors);
+            return $this->redirect(['update', 'id' => $section->id]);
+        }
+
+        $this->success(Yii::t('cms', 'SECTION_SUCCESS_BLOCK_CREATED'));
+        return $this->redirect(['/admin/cms/block/update', 'id' => $action->block->id]);
     }
 
     public function actionStatus(int $id): Response

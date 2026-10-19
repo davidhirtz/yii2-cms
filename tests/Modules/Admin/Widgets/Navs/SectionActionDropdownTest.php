@@ -4,14 +4,17 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Tests\Modules\Admin\Widgets\Navs;
 
+use Hirtz\Cms\Models\Block;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Models\Sets\SectionSet;
 use Hirtz\Cms\Models\Sets\SectionTemplate;
+use Hirtz\Cms\Models\Types\SectionType;
 use Hirtz\Cms\Modules\Admin\Controllers\SectionController;
 use Hirtz\Cms\Modules\Admin\Data\SectionActiveDataProvider;
 use Hirtz\Cms\Modules\Admin\Widgets\Navs\SectionActionDropdown;
 use Hirtz\Cms\Test\TestCase;
+use Hirtz\Skeleton\Models\Definitions\DefinitionRegistry;
 use Hirtz\Skeleton\Test\Traits\UserFixtureTrait;
 use Override;
 use Yii;
@@ -37,6 +40,13 @@ class SectionActionDropdownTest extends TestCase
         $this->getWebUser()->setIdentity($user);
 
         $this->entry = $this->createEntry();
+    }
+
+    #[Override]
+    protected function tearDown(): void
+    {
+        Yii::$container->clear(Section::class);
+        parent::tearDown();
     }
 
     public function testTheProviderOffersTheCreateButtonAndTheDeclaredSets(): void
@@ -116,6 +126,44 @@ class SectionActionDropdownTest extends TestCase
         self::assertSame(2, substr_count($html, 'Delete section</'));
         self::assertStringContainsString('href="/admin/cms/section/create?entry=' . $section->entry_id . '"', $html);
         self::assertStringNotContainsString('Add Section Set', $html);
+    }
+
+    public function testASharedSectionOffersToBecomeABlock(): void
+    {
+        Section::getModule()->enableBlocks = true;
+
+        Yii::$container->set(Section::class, [
+            'types' => fn (): array => [
+                SectionType::make(Section::TYPE_DEFAULT)
+                    ->name('Text')
+                    ->shareWithBlocks(),
+            ],
+        ]);
+
+        DefinitionRegistry::reset();
+
+        $section = $this->createSection();
+        self::assertStringNotContainsString('Convert to block', $this->renderSection($section));
+
+        $this->assignPermission($this->getUserFromFixture('admin')->id, Block::AUTH_BLOCK);
+        $this->getWebUser()->setIdentity($this->getUserFromFixture('admin'));
+
+        $html = $this->renderSection($section);
+
+        self::assertStringContainsString('Convert to block', $html);
+        self::assertStringContainsString('/admin/cms/section/create-block?id=' . $section->id, $html);
+    }
+
+    private function renderSection(Section $section): string
+    {
+        Yii::$app->controller = Yii::createObject(SectionController::class, [
+            'section',
+            Yii::$app->getModule('admin')->getModule('cms'),
+        ]);
+
+        return SectionActionDropdown::make()
+            ->model($section)
+            ->render();
     }
 
     private function render(): string

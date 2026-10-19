@@ -106,25 +106,11 @@ feature on:
 ],
 ```
 
-and give the section type family a type that carries a block:
-
-```php
-'container' => [
-    'definitions' => [
-        Section::class => [
-            'types' => fn (): array => [
-                SectionType::make(Section::TYPE_DEFAULT)->name(Yii::t('app', 'Text')),
-                BlockSectionType::make(2),
-            ],
-        ],
-    ],
-],
-```
-
-`BlockSectionType` allows the block and nothing else — no assets, no linked entries, no `name`, `content` or
-`slug` — which is what makes the section a placeholder. A type of a project's own opts in with
-`SectionType::allowBlock()` instead; the default is `false` on both the module and the type, so no existing
-type grows a block field.
+which adds a `BlockSectionType` under `Section::TYPE_BLOCK` (`9999`) to the section types. It allows the block
+and nothing else — no assets, no linked entries, no `name`, `content` or `slug` — which is what makes the section a
+placeholder. A project declaring a `BlockSectionType` of its own (to name it, or to limit it with `available()`)
+keeps that one instead. A type of a project's own opts in with `SectionType::allowBlock()`; the default is `false`
+on both the module and the type, so no existing type grows a block field.
 
 A view that renders sections needs no change as long as it reads `getVisibleAssets()` and the new
 `getVisibleEntries()`: a section carrying a block answers with the block's, and `Widgets\SectionStack` renders
