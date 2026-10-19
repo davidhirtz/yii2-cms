@@ -1,5 +1,6 @@
 ## Unreleased
 
+- Added an icon to the meta image asset type
 - Added `SectionType::shareWithBlocks()`; `SectionType` extends `BlockType`
 - Added `Section::TYPE_BLOCK`, a `BlockSectionType` registered automatically with `enableBlocks`
 - Added `Models\Actions\CreateBlockFromSection` and the section action `create-block`

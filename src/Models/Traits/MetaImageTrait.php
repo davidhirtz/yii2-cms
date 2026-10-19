@@ -24,6 +24,7 @@ trait MetaImageTrait
         return [
             AssetType::make(static::TYPE_META_IMAGE)
                 ->name(Yii::t('cms', 'META_IMAGE_META_IMAGE'))
+                ->icon('share-nodes')
                 ->hiddenFields(...$hiddenFields)
                 ->available(static fn (Asset $asset): bool => $asset instanceof EntryAsset),
         ];
