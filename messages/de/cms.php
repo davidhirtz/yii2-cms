@@ -158,7 +158,6 @@ return [
     'SECTION_ENTRY_COUNT_LABEL' => 'Einträge',
     'SECTION_ENTRY_ID_LABEL' => 'Eintrag',
     'SECTION_ENTRY_SECTION_ENTRY' => 'Sektion-Eintrag',
-    'SECTION_GRID_CONTENT_BLOCK' => 'Block: {name}',
     'SECTION_GRID_SUMMARY_EMPTY' => 'Dieser Eintrag hat noch keine Sektionen. Sektionen bilden den Inhalt der Seite.',
     'SECTION_GRID_SUMMARY_EMPTY_LINK' => 'Die erste Sektion {here} anlegen.',
     'SECTION_NEW_SECTION' => 'Neue Sektion',

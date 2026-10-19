@@ -158,7 +158,6 @@ return [
     'SECTION_ENTRY_COUNT_LABEL' => 'Entradas',
     'SECTION_ENTRY_ID_LABEL' => 'Entrada',
     'SECTION_ENTRY_SECTION_ENTRY' => 'Secção-Entrada',
-    'SECTION_GRID_CONTENT_BLOCK' => 'Bloco: {name}',
     'SECTION_GRID_SUMMARY_EMPTY' => 'Esta entrada ainda não tem secções. As secções formam o conteúdo da página.',
     'SECTION_GRID_SUMMARY_EMPTY_LINK' => 'Clique {here} para criar a primeira secção.',
     'SECTION_NEW_SECTION' => 'Nova secção',

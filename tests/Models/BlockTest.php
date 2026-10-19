@@ -233,7 +233,7 @@ class BlockTest extends TestCase
 
         $section = $this->createBlockSection($block);
 
-        self::assertStringContainsString('&lt;b id=&quot;x&quot;&gt;Å&lt;/b&gt;', (string)$section->getGridContent());
+        self::assertSame('&lt;b id=&quot;x&quot;&gt;Å&lt;/b&gt;', $section->getGridContent());
     }
 
     private function ageEntry(): int

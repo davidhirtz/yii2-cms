@@ -158,7 +158,6 @@ return [
     'SECTION_ENTRY_COUNT_LABEL' => 'Entrées',
     'SECTION_ENTRY_ID_LABEL' => 'Entrée',
     'SECTION_ENTRY_SECTION_ENTRY' => 'Section-Entrée',
-    'SECTION_GRID_CONTENT_BLOCK' => 'Bloc : {name}',
     'SECTION_GRID_SUMMARY_EMPTY' => 'Cette entrée n’a pas encore de sections. Les sections constituent le contenu de la page.',
     'SECTION_GRID_SUMMARY_EMPTY_LINK' => 'Cliquez {here} pour créer la première section.',
     'SECTION_NEW_SECTION' => 'Nouvelle section',

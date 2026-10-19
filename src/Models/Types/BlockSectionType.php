@@ -37,9 +37,7 @@ class BlockSectionType extends SectionType
     public function getGridContent(): Closure|string|null
     {
         return $this->gridContent ?? static fn (Section $section): ?string => $section->block
-            ? Yii::t('cms', 'SECTION_GRID_CONTENT_BLOCK', [
-                'name' => Html::encode($section->block->getI18nAttribute('name')),
-            ])
+            ? Html::encode($section->block->getI18nAttribute('name'))
             : null;
     }
 }
