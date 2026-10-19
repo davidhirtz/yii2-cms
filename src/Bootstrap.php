@@ -157,6 +157,11 @@ class Bootstrap implements ConfigBootstrapInterface
                         EntryAsset::class,
                         SectionAsset::class,
                     ],
+                    'fileReferenceModels' => [
+                        Block::class,
+                        Entry::class,
+                        Section::class,
+                    ],
                 ],
             ],
         ];
