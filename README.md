@@ -34,7 +34,7 @@ permissions, granted to `admin` and `manager`, and the `author` role, which hold
 | `defaultEntryOrderBy` | `['position' => SORT_ASC]` | entry order when neither the type nor the category sets one |
 | `defaultEntryType` | `null` | entry type the admin's default links filter by |
 | `enableBlockAssets` | `true` | blocks have assets |
-| `enableBlockEntries` | `true` | blocks link entries |
+| `enableBlockEntries` | `null` | blocks link entries, `null` follows `enableSectionEntries` |
 | `enableBlocks` | `false` | sections may carry a shared block |
 | `enableCategories` | `false` | entries are put into categories |
 | `enableEntryAssets` | `true` | entries have assets |

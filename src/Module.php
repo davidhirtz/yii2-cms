@@ -74,9 +74,9 @@ class Module extends \Hirtz\Skeleton\Base\Module
     public bool $enableBlockAssets = true;
 
     /**
-     * @var bool whether entries should be linkable to blocks
+     * @var bool|null whether entries should be linkable to blocks, `null` follows {@see $enableSectionEntries}
      */
-    public bool $enableBlockEntries = true;
+    public ?bool $enableBlockEntries = null;
 
     /**
      * @var list<class-string<EntryRelation>> the registered entry relation subclasses, one per model that links
@@ -138,6 +138,8 @@ class Module extends \Hirtz\Skeleton\Base\Module
             $this->enableSectionAssets = false;
             $this->enableBlocks = false;
         }
+
+        $this->enableBlockEntries ??= $this->enableSectionEntries;
 
         if (!$this->enableBlocks) {
             $this->enableBlockAssets = false;
