@@ -6,9 +6,11 @@ namespace Hirtz\Cms\Tests\Modules\Controllers;
 
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\EntryAsset;
+use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Models\SectionAsset;
 use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
 use Hirtz\Cms\Test\TestCase;
+use Hirtz\Media\Models\CustomAttributes\FileCustomAttribute;
 use Hirtz\Media\Models\File;
 use Hirtz\Skeleton\Models\User;
 use Hirtz\Skeleton\Test\Fixtures\UserFixture;
@@ -147,6 +149,37 @@ class AssetControllerTest extends TestCase
 
         self::assertIsString($html);
         self::assertStringContainsString('name="Asset[', $html);
+    }
+
+    public function testUpdateNamesTheUsesOfTheFileInItsDeleteConfirmation(): void
+    {
+        $this->login();
+        Yii::$app->getAuthManager()->assign(Yii::$app->getAuthManager()->getPermission(File::AUTH_FILE), $this->getWebUser()->getId());
+
+        Yii::$container->set(Section::class, [
+            'customAttributes' => [FileCustomAttribute::make('hero')->required()],
+        ]);
+
+        try {
+            $asset = EntryAsset::findOne(1) ?? self::fail('The asset fixture was not loaded.');
+
+            $section = Section::create();
+            $section->loadDefaultValues();
+            $section->populateEntryRelation(Entry::findOne($asset->model_id) ?? self::fail('The entry was not found.'));
+            $section->name = 'Å Москва 東京';
+            $section->setAttribute('hero', $asset->file_id);
+            self::assertTrue($section->insert(), print_r($section->getErrors(), true));
+
+            $html = Yii::$app->runAction('admin/cms/entry-asset/update', ['id' => $asset->id]);
+        } finally {
+            Yii::$container->clear(Section::class);
+        }
+
+        self::assertIsString($html);
+        self::assertStringContainsString('/admin/media/file/delete?id=' . $asset->file_id, $html);
+        self::assertStringContainsString('The file is attached', $html);
+        self::assertStringContainsString('It is used once in one record, which loses it.', $html);
+        self::assertStringContainsString('One of these uses is required', $html);
     }
 
     public function testUpdateOfAnUnknownAssetIsNotFound(): void
