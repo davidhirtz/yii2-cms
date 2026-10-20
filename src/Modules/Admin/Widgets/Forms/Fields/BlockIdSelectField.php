@@ -84,6 +84,7 @@ class BlockIdSelectField extends SelectField
                 ->tooltip(Yii::t('cms', 'COMMON_OPEN_ADMIN'))
                 ->url($url ?? '#')
                 ->attribute('hidden', $url === null)
+                ->attribute('data-select-link-target', true)
                 ->target('_blank'));
     }
 
