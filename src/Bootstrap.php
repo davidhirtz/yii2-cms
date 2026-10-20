@@ -152,12 +152,12 @@ class Bootstrap implements ConfigBootstrapInterface
                 ],
                 'media' => [
                     'class' => \Hirtz\Media\Module::class,
-                    'assets' => [
+                    'assetClasses' => [
                         BlockAsset::class,
                         EntryAsset::class,
                         SectionAsset::class,
                     ],
-                    'fileReferenceModels' => [
+                    'fileReferenceModelClasses' => [
                         Block::class,
                         Entry::class,
                         Section::class,
