@@ -342,6 +342,14 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
     }
 
     /**
+     * The visible block, or else the section; the HTML id and the admin link stay the section's.
+     */
+    public function getContentModel(): Block|static
+    {
+        return $this->getVisibleBlock() ?? $this;
+    }
+
+    /**
      * Updates the old entry relation after the section was moved to another entry. Override this method if the old
      * entry should be further manipulated after the section's entry was changed.
      */

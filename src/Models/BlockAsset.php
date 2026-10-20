@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Models;
 
 use Hirtz\Media\Models\Asset;
+use Hirtz\Skeleton\Models\CustomAttributes\CustomAttribute;
 use Override;
 use Yii;
 
@@ -13,6 +14,22 @@ use Yii;
  */
 class BlockAsset extends Asset
 {
+    /**
+     * The fields of the container's section asset class, not its type's; their closures receive the block asset.
+     *
+     * @return list<CustomAttribute>
+     */
+    #[Override]
+    protected function getDefaultCustomAttributes(): array
+    {
+        $asset = Yii::$container->get(SectionAsset::class, [], [
+            'customAttributes' => [],
+            'translatableAttributes' => $this->translatableAttributes,
+        ]);
+
+        return $asset->getCustomAttributes();
+    }
+
     #[Override]
     public static function getModelClass(): string
     {

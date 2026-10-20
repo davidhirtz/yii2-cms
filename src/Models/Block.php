@@ -17,7 +17,6 @@ use Hirtz\Skeleton\Db\DateTime;
 use Hirtz\Skeleton\Models\Definitions\DefinitionRegistry;
 use Hirtz\Skeleton\Models\Breadcrumb;
 use Hirtz\Skeleton\Models\CustomAttributes\CustomAttribute;
-use Hirtz\Skeleton\Models\CustomAttributes\HtmlCustomAttribute;
 use Hirtz\Skeleton\Models\Interfaces\SearchableInterface;
 use Hirtz\Skeleton\Models\Traits\SearchableTrait;
 use Hirtz\Skeleton\Models\Traits\TranslatableAttributesTrait;
@@ -86,15 +85,40 @@ class Block extends ActiveRecord implements AssetModelInterface, EntryRelationMo
     }
 
     /**
+     * The fields of the container's section class, not its type's; their closures receive the block.
+     *
      * @return list<CustomAttribute>
      */
     protected function getDefaultCustomAttributes(): array
     {
-        return [
-            HtmlCustomAttribute::make('content')
-                ->label(Yii::t('cms', 'MODEL_CONTENT_LABEL'))
-                ->translatable($this->isTranslatableAttribute('content')),
-        ];
+        $section = Yii::$container->get(Section::class, [], [
+            'customAttributes' => [],
+            'translatableAttributes' => $this->translatableAttributes,
+        ]);
+
+        $excluded = $this->getSectionOnlyAttributeNames();
+
+        return array_values(array_filter(
+            $section->getCustomAttributes(),
+            static fn (CustomAttribute $definition): bool => !in_array($definition->name, $excluded, true),
+        ));
+    }
+
+    /**
+     * @return list<string>
+     */
+    protected function getSectionOnlyAttributeNames(): array
+    {
+        return ['name', 'slug'];
+    }
+
+    /**
+     * A shared section type hiding a section's `name` does not hide the block's required one.
+     */
+    #[Override]
+    public function isAttributeVisible(string $attribute): bool
+    {
+        return $attribute === 'name' || parent::isAttributeVisible($attribute);
     }
 
     /**

@@ -1,5 +1,8 @@
 ## Unreleased
 
+- Changed `Block` and `BlockAsset` to carry the custom attributes of the container's `Section` and `SectionAsset`
+- Changed `BlockSectionType` to hide every field but those of `visibleFields()` and to take the group of the block's type
+- Added `Section::getContentModel()`
 - Changed `Module::$enableBlockEntries` to follow `$enableSectionEntries` unless set
 
 ## 3.16.0 (October 20, 2026)

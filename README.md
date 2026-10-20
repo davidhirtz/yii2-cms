@@ -108,11 +108,18 @@ Per model:
   type too (`shareWithBlocks(false)` keeps it to sections; one allowing a block or naming a `modelClass` never is), and
   a section of it can be converted into a block from its action dropdown. Its `available()` and `customAttributes()`
   closures then receive a `Block` as well, and its view a block whose `entry` is the entry it is rendered on. `BlockSectionType`, whose sections
-  only carry a block, is added as `Section::TYPE_BLOCK` with `enableBlocks`, unless one is declared.
+  only carry a block, is added as `Section::TYPE_BLOCK` with `enableBlocks`, unless one is declared. It shows the
+  status, the type and the block (`visibleFields()`) plus its own `customAttributes()`, and takes the `group()` of the
+  block's type, or else that type's view file.
 - **`CategoryType`**: `allowDescendants()`, `allowEntries()`.
 - **`BlockType`**: `allowEntries()`, `entriesTypes()`, `entriesOrderBy()`, `allowAssets()`. The shared section types
   join the block types, a block type winning over a section type of its value; without block types configured, they
   replace the default one.
+
+A block carries the custom attributes of the `Section` class the container resolves, its `slug` and `name` aside (the
+block's `name` is a required column), and a block asset those of `SectionAsset`. A project's fields therefore need no
+`Block` class of their own, but their closures receive a `Block` or a `BlockAsset` too: type them to what both share,
+such as `Hirtz\Cms\Models\ActiveRecord` or `Hirtz\Media\Models\Asset`.
 
 ### Menus and section sets
 
@@ -223,7 +230,9 @@ and sections, and the prompts `getting_started` (what the connected user can do,
 
 `Controllers\SiteController` resolves the slug to an entry, answers 404 for one without a URL, and renders the type's
 `viewFile` or `view`, with the layout `main`. `Widgets\SectionStack::make()->entry($entry)` renders the visible
-sections, grouped and wrapped as their types say; `Widgets\Artwork` and `Widgets\Gallery` render assets, and
+sections, grouped and wrapped as their types say; a section view reads content, fields, assets and entries off
+`Section::getContentModel()`, the block a section carries or else the section, and the HTML id and admin link off the
+section; `Widgets\Artwork` and `Widgets\Gallery` render assets, and
 `Widgets\MetaTags` the page's meta tags, canonical link, hreflang links and its structured data (below). Saving any
 cms record invalidates the page cache (`Module::invalidatePageCache()`).
 
