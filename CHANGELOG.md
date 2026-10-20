@@ -1,4 +1,4 @@
-## Unreleased
+## 3.16.0 (October 20, 2026)
 
 - Changed the `davidhirtz/yii2-media` requirement to `^3.18`
 - Changed `PreloadEntrySiteRelations` to load the files of `FileCustomAttribute`s with the asset files and populate them
