@@ -20,7 +20,6 @@ use Hirtz\Skeleton\Html\A;
 use Hirtz\Skeleton\Html\Div;
 use Hirtz\Skeleton\Web\Application;
 use Hirtz\Skeleton\Widgets\Buttons\Button;
-use Hirtz\Skeleton\Widgets\Buttons\ButtonGroup;
 use Hirtz\Skeleton\Widgets\Buttons\DraggableSortButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\ButtonColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\DeleteGridButton;
@@ -289,7 +288,7 @@ class EntryGridView extends GridView
         }
 
         if ($this->showCategories) {
-            $html .= $this->getCategoryButtons($entry);
+            $html .= $this->getCategoryBadges($entry);
         }
 
         return $html;
@@ -453,22 +452,21 @@ class EntryGridView extends GridView
             ->model($entry);
     }
 
-    protected function getCategoryButtons(Entry $entry): ?Stringable
+    protected function getCategoryBadges(Entry $entry): ?Stringable
     {
         $categoryIds = $entry->getCategoryIds();
         $categories = [];
 
         foreach (CategoryCollection::getAll() as $category) {
             if ($category->allowsEntries() && in_array($category->id, $categoryIds, true)) {
-                $categories[] = Button::make()
-                    ->secondary()
+                $categories[] = A::make()
+                    ->class('badge')
                     ->text($category->getI18nAttribute('name'))
-                    ->current(['category' => $category->id, 'page' => null])
-                    ->addClass('btn-sm');
+                    ->current(['category' => $category->id, 'page' => null]);
             }
         }
 
-        return $categories ? ButtonGroup::make()->content(...$categories) : null;
+        return $categories ? Div::make()->class('badge-list')->content(...$categories) : null;
     }
 
     protected function getUrl(Entry $entry): ?Stringable

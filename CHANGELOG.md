@@ -1,3 +1,7 @@
+## Unreleased
+
+- Changed `EntryGridView::getCategoryButtons()` to `getCategoryBadges()`, rendering the categories as badges
+
 ## 3.17.0 (October 21, 2026)
 
 - Changed the `davidhirtz/yii2-skeleton` requirement to `^3.21` (a nav item shown for a sub-item's role)
