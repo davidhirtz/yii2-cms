@@ -130,6 +130,7 @@ class EntryCategoryGridView extends GridView
             ->icon('external-link-alt')
             ->tooltip(Yii::t('cms', 'COMMON_OPEN_ADMIN'))
             ->url($category->getAdminRoute())
-            ->target('_blank');
+            ->target('_blank')
+            ->roles([Category::AUTH_CATEGORY]);
     }
 }

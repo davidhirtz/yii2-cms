@@ -27,7 +27,7 @@ class CmsNavItem extends NavItem
     {
         $this->icon ??= 'book';
         $this->order ??= 10;
-        $this->roles ??= [Block::AUTH_BLOCK, Category::AUTH_CATEGORY, Entry::AUTH_ENTRY];
+        $this->roles ??= [Entry::AUTH_ENTRY];
         $this->url ??= ['/admin/cms/entry/index'];
 
         parent::__construct($config);

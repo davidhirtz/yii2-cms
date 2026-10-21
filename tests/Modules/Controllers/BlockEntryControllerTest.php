@@ -59,6 +59,33 @@ class BlockEntryControllerTest extends TestCase
     }
 
     /**
+     * The links are the block's to manage, while the entries' own pages need the entry permission.
+     */
+    public function testABlockUserManagesTheLinkedEntriesWithoutOpeningThem(): void
+    {
+        $this->login();
+        $block = $this->createBlock();
+
+        $blockEntry = BlockEntry::create();
+        $blockEntry->populateModelRelation($block);
+        $blockEntry->populateEntryRelation(TestEntry::findOne(1));
+        self::assertTrue($blockEntry->insert(), print_r($blockEntry->getErrors(), true));
+
+        $html = Yii::$app->runAction('admin/cms/block-entry/index', ['block' => $block->id]);
+
+        self::assertIsString($html);
+        self::assertStringContainsString("/block-entry/delete?block=$block->id&amp;entry=1", $html);
+        self::assertStringNotContainsString('/admin/cms/entry/update?id=1"', $html);
+        self::assertStringNotContainsString('/admin/cms/section/index?entry=', $html);
+
+        $html = Yii::$app->runAction('admin/cms/block-entry/create', ['block' => $block->id]);
+
+        self::assertIsString($html);
+        self::assertMatchesRegularExpression("~/block-entry/create\\?block=$block->id&amp;entry=\\d+~", $html);
+        self::assertStringNotContainsString('/admin/cms/entry/update?id=', $html);
+    }
+
+    /**
      * The tab is only offered for a block that links entries, so the route refuses one that does not.
      */
     public function testIndexIsNotFoundWhileTheFeatureIsOff(): void

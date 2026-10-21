@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Modules\Admin\Widgets\Grids\Traits;
 
 use Hirtz\Cms\Models\Category;
+use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Collections\CategoryCollection;
 use Hirtz\Cms\Modules\Admin\Data\CategoryActiveDataProvider;
 use Hirtz\Cms\Modules\Admin\Widgets\Navs\FrontendLink;
@@ -145,7 +146,9 @@ trait CategoryGridTrait
     {
         return BadgeColumn::make()
             ->property('entry_count')
-            ->url($this->isPicker() ? null : fn (Category $category) => ['entry/index', 'category' => $category->id])
+            ->url($this->isPicker() || !$this->webuser->can(Entry::AUTH_ENTRY)
+                ? null
+                : fn (Category $category) => ['entry/index', 'category' => $category->id])
             ->value(fn (Category $category) => $category->allowsEntries() ? $category->entry_count : null);
     }
 

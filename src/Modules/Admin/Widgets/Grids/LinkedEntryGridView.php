@@ -73,7 +73,7 @@ class LinkedEntryGridView extends EntryGridView
     #[Override]
     protected function getButtonColumnContent(Entry $entry): Traversable
     {
-        if (!$this->webuser->can(Entry::AUTH_ENTRY)) {
+        if (!$this->canUpdateEntryRelations()) {
             return;
         }
 

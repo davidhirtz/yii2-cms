@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Tests\Modules\Admin\Widgets\Navs;
 
+use Hirtz\Cms\Models\Block;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Modules\Admin\Widgets\Navs\CmsNavItem;
 use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
@@ -56,6 +57,25 @@ class CmsNavItemTest extends TestCase
             $url = Url::to(['/admin/cms/entry/index', 'type' => $type]);
             self::assertMatchesRegularExpression('~href="' . preg_quote($url, '~') . '"><span class="nav-link-label">' . $label . '<~', $html);
         }
+    }
+
+    public function testItLeadsToTheBlocksOfAUserWhoMayOnlyOpenThose(): void
+    {
+        TestEntry::getModule()->enableBlocks = true;
+
+        /** @var UserFixture $fixture */
+        $fixture = $this->getFixture('user');
+        $user = User::findOne($fixture->data['admin']['id']);
+        self::assertInstanceOf(User::class, $user);
+
+        $auth = Yii::$app->getAuthManager();
+        $auth->assign($auth->getPermission(Block::AUTH_BLOCK), $user->id);
+        $this->getWebUser()->setIdentity($user);
+
+        $html = CmsNavItem::make()->render();
+
+        self::assertStringStartsWith('<li class="nav-item"><a class="nav-link" href="' . Url::to(['/admin/cms/block/index']) . '">', $html);
+        self::assertStringNotContainsString('/admin/cms/entry/index', $html);
     }
 
     public function testNoTypeIsActiveOutsideTheEntries(): void

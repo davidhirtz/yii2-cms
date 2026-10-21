@@ -67,6 +67,21 @@ class CategoryControllerTest extends TestCase
         self::assertMatchesRegularExpression('#<h1><a href="[^"]*/admin/cms/category/index[^"]*">#', $html);
     }
 
+    public function testTheCategoryPagesLeadToTheEntriesOnlyWithTheirPermission(): void
+    {
+        $this->login();
+
+        $html = Yii::$app->runAction('admin/cms/category/index');
+
+        self::assertIsString($html);
+        self::assertStringNotContainsString('/admin/cms/entry/index', $html);
+
+        $html = Yii::$app->runAction('admin/cms/category/update', ['id' => 1]);
+
+        self::assertIsString($html);
+        self::assertStringNotContainsString('/admin/cms/entry/index', $html);
+    }
+
     public function testIndexListsTheChildrenOfAParent(): void
     {
         $this->login();

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Modules\Admin\Widgets\Navs;
 
 use Hirtz\Cms\Models\Category;
+use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Modules\Admin\Widgets\Buttons\Traits\LinkButtonTrait;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\Buttons\CategoryDeleteButton;
 use Hirtz\Skeleton\Widgets\Buttons\Button;
@@ -46,7 +47,7 @@ class CategoryActionDropdown extends ActionDropdown
 
     protected function getEntryGridViewButton(): ?Stringable
     {
-        return $this->model->allowsEntries()
+        return $this->model->allowsEntries() && $this->webuser->can(Entry::AUTH_ENTRY)
             ? Button::make()
                 ->primary()
                 ->text(Yii::t('cms', 'CATEGORY_VIEW_ALL_ENTRIES'))

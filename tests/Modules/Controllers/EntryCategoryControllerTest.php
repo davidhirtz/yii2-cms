@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Tests\Modules\Controllers;
 
+use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\EntryCategory;
 use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
 use Hirtz\Cms\Test\Models\TestEntry;
@@ -43,6 +44,25 @@ class EntryCategoryControllerTest extends TestCase
 
         // the linked ones offer the remove route, the others the link route
         self::assertStringContainsString('entry-category/delete', $html);
+    }
+
+    public function testThePickerLeadsToTheCategoriesOnlyWithTheirPermission(): void
+    {
+        $user = $this->login();
+
+        $html = Yii::$app->runAction('admin/cms/entry-category/index', ['entry' => 1]);
+
+        self::assertIsString($html);
+        self::assertStringNotContainsString('/admin/cms/category/update?id=', $html);
+
+        $permission = Yii::$app->getAuthManager()->getPermission(Category::AUTH_CATEGORY);
+        Yii::$app->getAuthManager()->assign($permission, $user->id);
+        $this->getWebUser()->setIdentity($user);
+
+        $html = Yii::$app->runAction('admin/cms/entry-category/index', ['entry' => 1]);
+
+        self::assertIsString($html);
+        self::assertStringContainsString('/admin/cms/category/update?id=', $html);
     }
 
     public function testIndexOfAnUnknownEntryIsNotFound(): void

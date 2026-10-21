@@ -72,9 +72,7 @@ class EntryRelationGridView extends EntryGridView
     {
         yield $this->getAdminLinkButton($entry);
 
-        $canUpdate = $this->webuser->can(Entry::AUTH_ENTRY);
-
-        if (!$canUpdate || $entry->entryRelation) {
+        if (!$this->canUpdateEntryRelations() || $entry->entryRelation) {
             return;
         }
 

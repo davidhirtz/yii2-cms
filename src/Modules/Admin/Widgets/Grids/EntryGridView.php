@@ -313,7 +313,7 @@ class EntryGridView extends GridView
     protected function getRecordUrl(Entry $entry): array|string|null
     {
         if (!$this->isPicker()) {
-            return $entry->getAdminRoute() ?: null;
+            return $this->webuser->can(Entry::AUTH_ENTRY) ? ($entry->getAdminRoute() ?: null) : null;
         }
 
         return $entry->allowsDescendants() && $entry->entry_count
@@ -347,7 +347,8 @@ class EntryGridView extends GridView
             ->icon('external-link-alt')
             ->tooltip(Yii::t('cms', 'COMMON_OPEN_ADMIN'))
             ->url($entry->getAdminRoute() ?: null)
-            ->target('_blank');
+            ->target('_blank')
+            ->roles([Entry::AUTH_ENTRY]);
     }
 
     protected function getEntryCountColumn(): ?Column
@@ -358,13 +359,13 @@ class EntryGridView extends GridView
     protected function getSectionCountColumn(): ?Column
     {
         $column = SectionCountColumn::make();
-        return $this->isPicker() ? $column->url(null) : $column;
+        return $this->isPicker() || !$this->webuser->can(Entry::AUTH_ENTRY) ? $column->url(null) : $column;
     }
 
     protected function getAssetCountColumn(): ?Column
     {
         $column = AssetCountColumn::make();
-        return $this->isPicker() ? $column->url(null) : $column;
+        return $this->isPicker() || !$this->webuser->can(Entry::AUTH_ENTRY) ? $column->url(null) : $column;
     }
 
     protected function getDateColumn(): ?Column
@@ -422,6 +423,15 @@ class EntryGridView extends GridView
         if ($this->showDeleteButton && $this->webuser->can(Entry::AUTH_ENTRY)) {
             yield $this->getDeleteButton($entry);
         }
+    }
+
+    /**
+     * Adding, removing and sorting linked entries needs the related model's permission, not the entry one.
+     */
+    protected function canUpdateEntryRelations(): bool
+    {
+        $model = $this->provider->relatedModel;
+        return $model && $this->webuser->can($model->getEntryRelationClass()::instance()->getPermissionName());
     }
 
     protected function getSortableButton(): ?Stringable
