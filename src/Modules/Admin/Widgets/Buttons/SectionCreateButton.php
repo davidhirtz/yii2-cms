@@ -30,6 +30,11 @@ class SectionCreateButton extends CreateButton
         parent::__construct($config);
     }
 
+    #[Override]
+    public function isVisible(): bool
+    {
+        return $this->model->allowsSections() && parent::isVisible();
+    }
 
     /**
      * @see SectionController::actionCreate()

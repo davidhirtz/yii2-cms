@@ -95,8 +95,12 @@ class SectionActionDropdown extends ActionDropdown
     /**
      * @see SectionController::actionDuplicate()
      */
-    protected function getDuplicateButton(): Stringable
+    protected function getDuplicateButton(): ?Stringable
     {
+        if (!$this->model->entry->allowsSections()) {
+            return null;
+        }
+
         return DuplicateButton::make()
             ->label(Yii::t('cms', 'SECTION_BUTTON_DUPLICATE'))
             ->model($this->model);

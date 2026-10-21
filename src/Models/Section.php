@@ -407,8 +407,12 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
     }
 
     #[Override]
-    public function getAdminIndexBreadcrumb(): Breadcrumb
+    public function getAdminIndexBreadcrumb(): ?Breadcrumb
     {
+        if (!$this->entry->allowsSections()) {
+            return null;
+        }
+
         return new Breadcrumb(Yii::t('cms', 'COMMON_SECTIONS'), [
             '/admin/cms/section/index',
             'entry' => $this->entry_id,

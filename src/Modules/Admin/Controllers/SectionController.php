@@ -192,9 +192,9 @@ class SectionController extends AbstractController
         }
 
         // The grid is scoped to one entry, so the first section names the page the selection was made on.
-        return $this->redirect(isset($sections[0])
-            ? ['index', 'entry' => $sections[0]->entry_id]
-            : ['/admin/cms/entry/index']);
+        return isset($sections[0])
+            ? $this->redirectToSections($sections[0])
+            : $this->redirect(['/admin/cms/entry/index']);
     }
 
 
@@ -228,7 +228,7 @@ class SectionController extends AbstractController
 
         if ($errors = $duplicate->getFirstErrors()) {
             $this->error($errors);
-            return $this->redirect(['index', 'entry' => $section->entry_id]);
+            return $this->redirectToSections($section);
         }
 
         $this->success(Yii::t('cms', 'SECTION_SUCCESS_DUPLICATED'));
@@ -275,7 +275,7 @@ class SectionController extends AbstractController
             $this->error($errors);
         }
 
-        return $this->redirect(['index', 'entry' => $section->entry_id]);
+        return $this->redirectToSections($section);
     }
 
     /**
@@ -301,7 +301,7 @@ class SectionController extends AbstractController
         }
 
         // The grid is scoped to one entry, so the first section names the page the selection was made on.
-        return $this->redirect(['index', 'entry' => $sections[0]->entry_id]);
+        return $this->redirectToSections($sections[0]);
     }
 
     public function actionOrder(int $entry): string
@@ -337,6 +337,16 @@ class SectionController extends AbstractController
             'section' => $section,
             'provider' => $provider,
         ]);
+    }
+
+    /**
+     * A section stays reachable after its entry stopped allowing sections, but the entry's section index does not.
+     */
+    protected function redirectToSections(Section $section): Response
+    {
+        return $this->redirect($section->entry->allowsSections()
+            ? ['index', 'entry' => $section->entry_id]
+            : ['/admin/cms/entry/update', 'id' => $section->entry_id]);
     }
 
     /**

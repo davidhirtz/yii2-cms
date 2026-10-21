@@ -495,6 +495,39 @@ class SectionControllerTest extends TestCase
         self::assertStringNotContainsString("&amp;entry={$link->id}", $html);
     }
 
+    public function testASectionLeadsToItsEntrysSections(): void
+    {
+        $this->login();
+        $section = $this->createSection('Placed');
+
+        $html = Yii::$app->runAction('admin/cms/section/update', ['id' => $section->id]);
+
+        self::assertIsString($html);
+        self::assertStringContainsString("/section/index?entry={$this->entry->id}\"", $html);
+        self::assertStringContainsString("/section/create?entry={$this->entry->id}\"", $html);
+        self::assertStringContainsString("/section/duplicate?id=$section->id\"", $html);
+    }
+
+    public function testASectionWhoseEntryNoLongerAllowsSectionsLeadsBackToTheEntry(): void
+    {
+        $this->login();
+        $section = $this->createSection('Stranded');
+
+        Section::getModule()->enableSections = false;
+
+        $html = Yii::$app->runAction('admin/cms/section/update', ['id' => $section->id]);
+
+        self::assertIsString($html);
+        self::assertStringNotContainsString("/section/index?entry={$this->entry->id}\"", $html);
+        self::assertStringNotContainsString("/section/create?entry={$this->entry->id}\"", $html);
+        self::assertStringNotContainsString("/section/duplicate?id=$section->id\"", $html);
+
+        $response = $this->post('admin/cms/section/delete', ['id' => $section->id]);
+
+        self::assertInstanceOf(Response::class, $response);
+        self::assertStringEndsWith("/admin/cms/entry/update?id={$this->entry->id}", (string)$response->getHeaders()->get('location'));
+    }
+
     public function testCreateBlockOpensTheBlockTheSectionNowPlaces(): void
     {
         $this->shareDefaultType();
