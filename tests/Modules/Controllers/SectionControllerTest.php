@@ -9,6 +9,7 @@ use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Models\Sets\SectionSet;
 use Hirtz\Cms\Models\Sets\SectionTemplate;
+use Hirtz\Cms\Models\Types\EntryType;
 use Hirtz\Cms\Models\Types\SectionType;
 use Hirtz\Cms\Test\TestCase;
 use Hirtz\Skeleton\Models\Definitions\DefinitionRegistry;
@@ -44,6 +45,7 @@ class SectionControllerTest extends TestCase
     #[Override]
     protected function tearDown(): void
     {
+        Yii::$container->clear(Entry::class);
         Yii::$container->clear(Section::class);
         parent::tearDown();
     }
@@ -467,6 +469,30 @@ class SectionControllerTest extends TestCase
         self::assertIsString($html);
         self::assertStringContainsString("/section/move?id={$section->id}&amp;entry={$this->entry->id}", $html);
         self::assertStringContainsString("/section/duplicate?id={$section->id}&amp;entry={$this->entry->id}", $html);
+    }
+
+    public function testTheMovePickerOffersNoEntryThatDoesNotAllowSections(): void
+    {
+        Yii::$container->set(Entry::class, [
+            'types' => fn (): array => [
+                EntryType::make(Entry::TYPE_DEFAULT)->name('Page'),
+                EntryType::make(2)->name('Link')->allowSections(false),
+            ],
+        ]);
+
+        DefinitionRegistry::reset();
+
+        $this->login();
+        $section = $this->createSection('Moving');
+
+        $link = $this->createEntry('Link', 'link');
+        $link->updateAttributes(['type' => 2]);
+
+        $html = Yii::$app->runAction('admin/cms/section/entries', ['id' => $section->id]);
+
+        self::assertIsString($html);
+        self::assertStringContainsString("/section/move?id={$section->id}&amp;entry={$this->entry->id}", $html);
+        self::assertStringNotContainsString("&amp;entry={$link->id}", $html);
     }
 
     public function testCreateBlockOpensTheBlockTheSectionNowPlaces(): void
