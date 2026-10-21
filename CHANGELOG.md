@@ -4,6 +4,7 @@
 - Changed `BlockSectionType` to hide every field but those of `visibleFields()` and to take the group of the block's type
 - Added `Section::getContentModel()`
 - Changed `Module::$enableBlockEntries` to follow `$enableSectionEntries` unless set
+- Fixed the section move/copy picker answering 404 unless the section allows linked entries
 
 ## 3.16.0 (October 20, 2026)
 

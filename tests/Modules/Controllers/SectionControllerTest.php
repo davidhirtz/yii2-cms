@@ -455,36 +455,18 @@ class SectionControllerTest extends TestCase
         );
     }
 
-    public function testEntriesRendersThePickerForTheSection(): void
+    public function testEntriesRendersTheMovePickerForASectionWithoutEntries(): void
     {
         $this->login();
-        $section = $this->createSection('Linking');
-
-        $module = Section::getModule();
-        $module->enableSectionEntries = true;
-
-        try {
-            $html = Yii::$app->runAction('admin/cms/section/entries', ['id' => $section->id]);
-
-            self::assertIsString($html);
-            self::assertStringContainsString('Page', $html);
-        } finally {
-            $module->enableSectionEntries = false;
-        }
-    }
-
-    /**
-     * The picker sits behind the entries tab, which the submenu shows for `Section::allowsEntries()`.
-     */
-    public function testEntriesRefusesASectionWithoutEntries(): void
-    {
-        $this->login();
-        $section = $this->createSection('Linking');
+        $section = $this->createSection('Moving');
 
         self::assertFalse($section->allowsEntries());
 
-        $this->expectException(NotFoundHttpException::class);
-        Yii::$app->runAction('admin/cms/section/entries', ['id' => $section->id]);
+        $html = Yii::$app->runAction('admin/cms/section/entries', ['id' => $section->id]);
+
+        self::assertIsString($html);
+        self::assertStringContainsString("/section/move?id={$section->id}&amp;entry={$this->entry->id}", $html);
+        self::assertStringContainsString("/section/duplicate?id={$section->id}&amp;entry={$this->entry->id}", $html);
     }
 
     public function testCreateBlockOpensTheBlockTheSectionNowPlaces(): void
