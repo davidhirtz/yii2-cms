@@ -8,6 +8,7 @@ use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
 use Hirtz\Cms\Test\Models\TestEntry;
 use Hirtz\Cms\Test\TestCase;
+use Hirtz\Media\Models\File;
 use Hirtz\Media\Modules\Admin\Widgets\Grids\FileGridView;
 use Hirtz\Media\Modules\Admin\Widgets\Navs\AssetSubmenuItem;
 use Hirtz\Skeleton\Models\User;
@@ -150,7 +151,10 @@ class PickerGridViewTest extends TestCase
 
     public function testTheFilePickerLinksToTheFileOnlyThroughItsButton(): void
     {
-        $this->login();
+        $user = $this->login();
+        $auth = Yii::$app->getAuthManager();
+        $auth->assign($auth->getPermission(File::AUTH_FILE), $user->id);
+        $this->getWebUser()->setIdentity($user);
         $html = Yii::$app->runAction('admin/cms/entry-asset/create', ['entry' => 1]);
 
         self::assertIsString($html);
