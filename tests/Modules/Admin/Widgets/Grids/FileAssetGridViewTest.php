@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Tests\Modules\Admin\Widgets\Grids;
 
+use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Models\SectionAsset;
 use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
@@ -13,6 +14,8 @@ use Hirtz\Media\Models\CustomAttributes\FileCustomAttribute;
 use Hirtz\Media\Models\File;
 use Hirtz\Media\Modules\Admin\Widgets\Grids\FileAssetGridView;
 use Hirtz\Media\Modules\Admin\Widgets\Grids\FileReferenceGridView;
+use Hirtz\Skeleton\Models\User;
+use Hirtz\Skeleton\Test\Fixtures\UserFixture;
 use Override;
 use Yii;
 use yii\web\Controller;
@@ -46,6 +49,27 @@ class FileAssetGridViewTest extends TestCase
             . '<span class="model-heading-subtitle">',
             $html,
         );
+    }
+
+    public function testTheOwnerIsLinkedOnlyWithItsPermission(): void
+    {
+        $file = $this->getFileFromFixture('file-3');
+        $link = '<a href="/admin/cms/section/update?id=';
+
+        /** @var UserFixture $fixture */
+        $fixture = $this->getFixture('user');
+        $user = User::findOne($fixture->data['admin']['id']) ?? self::fail('The user was not found.');
+
+        $auth = Yii::$app->getAuthManager();
+        $auth->assign($auth->getPermission(File::AUTH_FILE), $user->id);
+        $this->getWebUser()->setIdentity($user);
+
+        self::assertStringNotContainsString($link, (string)FileAssetGridView::make()->file($file));
+
+        $auth->assign($auth->getPermission(Entry::AUTH_ENTRY), $user->id);
+        $this->getWebUser()->setIdentity($user);
+
+        self::assertStringContainsString($link, (string)FileAssetGridView::make()->file($file));
     }
 
     /**
