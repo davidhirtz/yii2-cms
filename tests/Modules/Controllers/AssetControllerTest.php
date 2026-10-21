@@ -151,6 +151,36 @@ class AssetControllerTest extends TestCase
         self::assertStringContainsString('name="Asset[', $html);
     }
 
+    public function testTheAssetPageLeadsToTheEntrysAssets(): void
+    {
+        $this->loginWithFilePermission();
+
+        $html = Yii::$app->runAction('admin/cms/entry-asset/update', ['id' => 1]);
+
+        self::assertIsString($html);
+        self::assertStringContainsString('href="/admin/cms/entry-asset/index?entry=1"', $html);
+        self::assertStringContainsString('href="/admin/cms/entry-asset/create?entry=1&amp;asset=1"', $html);
+        self::assertStringContainsString('returnUrl=%2Fadmin%2Fcms%2Fentry-asset%2Findex%3Fentry%3D1', $html);
+    }
+
+    public function testAnAssetWhoseEntryNoLongerAllowsAssetsLeadsBackToTheEntry(): void
+    {
+        $this->loginWithFilePermission();
+        Entry::getModule()->enableEntryAssets = false;
+
+        $html = Yii::$app->runAction('admin/cms/entry-asset/update', ['id' => 1]);
+
+        self::assertIsString($html);
+        self::assertStringNotContainsString('/admin/cms/entry-asset/index?entry=1', $html);
+        self::assertStringNotContainsString('/admin/cms/entry-asset/create?entry=1', $html);
+        self::assertStringContainsString('returnUrl=%2Fadmin%2Fcms%2Fentry%2Fupdate%3Fid%3D1', $html);
+
+        $response = $this->post('admin/cms/entry-asset/delete', ['id' => 1]);
+
+        self::assertInstanceOf(Response::class, $response);
+        self::assertStringEndsWith('/admin/cms/entry/update?id=1#asset-1', (string)$response->getHeaders()->get('location'));
+    }
+
     public function testUpdateNamesTheUsesOfTheFileInItsDeleteConfirmation(): void
     {
         $this->login();
@@ -412,6 +442,16 @@ class AssetControllerTest extends TestCase
         $request->setBodyParams([...$bodyParams, $request->csrfParam => $request->getCsrfToken()]);
 
         return Yii::$app->runAction($route, $params);
+    }
+
+    private function loginWithFilePermission(): void
+    {
+        $user = $this->login();
+
+        $permission = Yii::$app->getAuthManager()->getPermission(File::AUTH_FILE);
+        Yii::$app->getAuthManager()->assign($permission, $user->id);
+
+        $this->getWebUser()->setIdentity($user);
     }
 
     private function login(): User
