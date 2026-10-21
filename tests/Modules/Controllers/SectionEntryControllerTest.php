@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Tests\Modules\Controllers;
 
+use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Models\SectionEntry;
+use Hirtz\Cms\Models\Types\SectionType;
 use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
 use Hirtz\Cms\Test\Models\TestEntry;
 use Hirtz\Cms\Test\TestCase;
+use Hirtz\Skeleton\Models\Definitions\DefinitionRegistry;
 use Hirtz\Skeleton\Models\User;
 use Hirtz\Skeleton\Test\Fixtures\UserFixture;
 use Override;
@@ -85,6 +88,37 @@ class SectionEntryControllerTest extends TestCase
 
         self::assertInstanceOf(Response::class, $response);
         self::assertStringContainsString('type=' . TestEntry::TYPE_PAGE, (string)$response->getHeaders()->get('location'));
+    }
+
+    public function testCreateListsEveryTypeWhenTheSectionRefusesTheDefaultOne(): void
+    {
+        Yii::$container->setDefinitions([
+            Entry::class => TestEntry::class,
+            Section::class => [
+                'types' => fn (): array => [
+                    SectionType::make(Section::TYPE_DEFAULT)
+                        ->name('Text')
+                        ->entriesTypes(TestEntry::TYPE_POST),
+                ],
+            ],
+        ]);
+
+        Entry::instance(true);
+        DefinitionRegistry::reset();
+
+        try {
+            $this->login();
+            TestEntry::getModule()->defaultEntryType = TestEntry::TYPE_PAGE;
+
+            $html = Yii::$app->runAction('admin/cms/section-entry/create', ['section' => self::SECTION_ID]);
+
+            self::assertIsString($html);
+        } finally {
+            Yii::$container->clear(Entry::class);
+            Yii::$container->clear(Section::class);
+            Entry::instance(true);
+            DefinitionRegistry::reset();
+        }
     }
 
     public function testCreateAddsTheEntryToTheSection(): void

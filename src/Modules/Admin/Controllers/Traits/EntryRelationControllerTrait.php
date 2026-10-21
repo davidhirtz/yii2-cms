@@ -72,8 +72,10 @@ trait EntryRelationControllerTrait
             $this->errorOrSuccess($entryRelation, Yii::t('cms', 'ENTRY_RELATION_SUCCESS_ADDED'));
         }
 
-        if (!$type && static::getModule()->defaultEntryType) {
-            return $this->redirect(Url::current(['type' => static::getModule()->defaultEntryType]));
+        $defaultType = static::getModule()->defaultEntryType;
+
+        if (!$type && $defaultType && in_array($defaultType, $model->getEntriesTypes() ?? [$defaultType], true)) {
+            return $this->redirect(Url::current(['type' => $defaultType]));
         }
 
         $provider = Yii::$container->get(EntryActiveDataProvider::class, [], [
