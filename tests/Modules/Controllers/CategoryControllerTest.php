@@ -57,6 +57,16 @@ class CategoryControllerTest extends TestCase
         self::assertStringNotContainsString('Child category 1', $html);
     }
 
+    public function testTheIndexTitleLinksToTheCategoryIndex(): void
+    {
+        $this->login();
+
+        $html = Yii::$app->runAction('admin/cms/category/index');
+
+        self::assertIsString($html);
+        self::assertMatchesRegularExpression('#<h1><a href="[^"]*/admin/cms/category/index[^"]*">#', $html);
+    }
+
     public function testIndexListsTheChildrenOfAParent(): void
     {
         $this->login();
