@@ -1,4 +1,4 @@
-## Unreleased
+## 3.17.0 (October 21, 2026)
 
 - Changed the `davidhirtz/yii2-skeleton` requirement to `^3.21` (a nav item shown for a sub-item's role)
 - Changed `Block` and `BlockAsset` to carry the custom attributes of the container's `Section` and `SectionAsset`
