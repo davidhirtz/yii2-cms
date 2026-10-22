@@ -328,6 +328,39 @@ class SectionControllerTest extends TestCase
         self::assertSame('intro-1', $section->slug);
     }
 
+    public function testMoveRefusesAnEntryThatDoesNotOfferTheType(): void
+    {
+        $this->setTypeUnavailableOnTarget();
+        $this->login();
+
+        $section = $this->createSection('Hero');
+        $section->updateAttributes(['type' => self::TYPE_GALLERY]);
+        $target = $this->createEntry('Target', 'target');
+
+        $this->post('admin/cms/section/move', ['id' => $section->id, 'entry' => $target->id]);
+
+        self::assertSame($this->entry->id, Section::findOne($section->id)?->entry_id);
+        self::assertEmpty($this->getWebSession()->getFlash('success'));
+        self::assertNotEmpty($this->getWebSession()->getFlash('danger'));
+    }
+
+    public function testTheMovePickerOffersNoEntryThatDoesNotOfferTheType(): void
+    {
+        $this->setTypeUnavailableOnTarget();
+        $this->login();
+
+        $section = $this->createSection('Hero');
+        $section->updateAttributes(['type' => self::TYPE_GALLERY]);
+        $target = $this->createEntry('Target', 'target');
+        $other = $this->createEntry('Other', 'other');
+
+        $html = Yii::$app->runAction('admin/cms/section/entries', ['id' => $section->id]);
+
+        self::assertIsString($html);
+        self::assertStringContainsString("/section/move?id={$section->id}&amp;entry={$other->id}", $html);
+        self::assertStringNotContainsString("&amp;entry={$target->id}", $html);
+    }
+
     public function testDuplicateCopiesTheSectionIntoTheSameEntry(): void
     {
         $this->login();
@@ -661,6 +694,20 @@ class SectionControllerTest extends TestCase
         }
 
         return Yii::$app->runAction($route, $params);
+    }
+
+    private function setTypeUnavailableOnTarget(): void
+    {
+        Yii::$container->set(Section::class, [
+            'types' => fn (): array => [
+                SectionType::make(Section::TYPE_DEFAULT)->name('Default'),
+                SectionType::make(self::TYPE_GALLERY)
+                    ->name('Gallery')
+                    ->available(fn (Section $section): bool => $section->entry?->slug !== 'target'),
+            ],
+        ]);
+
+        DefinitionRegistry::reset();
     }
 
     private function login(): User

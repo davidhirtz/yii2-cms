@@ -44,7 +44,9 @@ class SectionParentEntryGridView extends EntryGridView
     {
         yield $this->getAdminLinkButton($entry);
 
-        if (!$this->webuser->can(Entry::AUTH_ENTRY) || !$entry->allowsSections()) {
+        if (!$this->webuser->can(Entry::AUTH_ENTRY)
+            || !$entry->allowsSections()
+            || !$this->section->isTypeAvailableIn($entry)) {
             return;
         }
 

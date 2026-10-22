@@ -208,7 +208,23 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
     {
         if (!$this->entry->allowsSections()) {
             $this->addInvalidAttributeError('entry_id');
+            return;
         }
+
+        if (!$this->getIsNewRecord() && $this->isAttributeChanged('entry_id', false) && !$this->isTypeAvailableIn($this->entry)) {
+            $this->addInvalidAttributeError('type');
+        }
+    }
+
+    /**
+     * A move is a new placement, so the type has to be offered there — the stored type's exemption does not apply.
+     */
+    public function isTypeAvailableIn(Entry $entry): bool
+    {
+        $section = clone $this;
+        $section->populateEntryRelation($entry);
+
+        return $section->getType()?->isAvailable($section) ?? true;
     }
 
     /**
