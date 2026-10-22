@@ -157,6 +157,22 @@ class CreateBlockFromSectionTest extends TestCase
         self::assertSame([], SectionEntry::findAll(['model_id' => 3]));
     }
 
+    public function testANamelessSectionBecomesABlockWithATranslatedName(): void
+    {
+        Yii::$app->getI18n()->setLanguages(['en-US', 'de']);
+        Yii::$container->set(Block::class, ['i18nAttributes' => ['name']]);
+        Block::instance(true);
+
+        $section = Section::instantiateByType(self::TYPE_HEADLINE);
+        $section->populateEntryRelation(TestEntry::findOne(1));
+        self::assertTrue($section->insert(), print_r($section->getErrors(), true));
+
+        $action = CreateBlockFromSection::create($section);
+
+        self::assertSame([], $action->getFirstErrors());
+        self::assertSame('Headline', Block::find()->withTranslations()->where(['id' => $action->block->id])->one()?->getAttribute('name_de'));
+    }
+
     public function testASectionWithoutANameNamesTheBlockAfterItsType(): void
     {
         $section = Section::instantiateByType(self::TYPE_HEADLINE);

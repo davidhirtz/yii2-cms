@@ -602,21 +602,6 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
         }
     }
 
-    protected function ensureRequiredI18nAttributes(): void
-    {
-        foreach ($this->i18nAttributes as $attribute) {
-            if (!$this->isAttributeRequired($attribute)) {
-                continue;
-            }
-
-            foreach ($this->getI18nAttributeNames($attribute) as $i18nAttributeName) {
-                if (!$this->$i18nAttributeName) {
-                    $this->$i18nAttributeName = $this->$attribute;
-                }
-            }
-        }
-    }
-
     public function populateParentRelation(?Entry $parent): void
     {
         $this->populateRelation('parent', $parent);

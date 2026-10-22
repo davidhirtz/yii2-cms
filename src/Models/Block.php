@@ -121,6 +121,13 @@ class Block extends ActiveRecord implements AssetModelInterface, EntryRelationMo
         return $attribute === 'name' || parent::isAttributeVisible($attribute);
     }
 
+    #[Override]
+    public function beforeValidate(): bool
+    {
+        $this->ensureRequiredI18nAttributes();
+        return parent::beforeValidate();
+    }
+
     /**
      * @param array<string, mixed> $changedAttributes
      */

@@ -126,6 +126,7 @@ class Category extends ActiveRecord implements SearchableInterface
     #[Override]
     public function beforeValidate(): bool
     {
+        $this->ensureRequiredI18nAttributes();
         $this->ensureSlug();
 
         if (!static::getModule()->enableNestedCategories) {
