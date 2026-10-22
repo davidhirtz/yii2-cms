@@ -11,7 +11,7 @@ use Hirtz\Cms\Modules\Admin\Data\CategoryActiveDataProvider;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\Traits\CategoryGridTrait;
 use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Skeleton\Widgets\Grids\Columns\ButtonColumn;
-use Hirtz\Skeleton\Widgets\Buttons\DraggableSortButton;
+use Hirtz\Skeleton\Widgets\Buttons\ReorderButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\ViewGridButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Column;
 use Hirtz\Skeleton\Widgets\Grids\Columns\MissingTranslationsColumn;
@@ -53,8 +53,8 @@ class CategoryGridView extends GridView
 
         $this->attributes['id'] ??= 'category-grid-view';
 
-        /** @see CategoryController::actionOrder() */
-        $this->orderRoute = ['order', 'id' => $this->provider->parent->id ?? null];
+        /** @see CategoryController::actionReorder() */
+        $this->reorderRoute = ['reorder', 'id' => $this->provider->parent->id ?? null];
 
         $this->header ??= [
             $this->getSearchInput(),
@@ -93,8 +93,8 @@ class CategoryGridView extends GridView
     {
         $buttons = [];
 
-        if ($this->isSortable()) {
-            $buttons[] = DraggableSortButton::make();
+        if ($this->isReorderable()) {
+            $buttons[] = ReorderButton::make();
         }
 
         $buttons[] = ViewGridButton::make()

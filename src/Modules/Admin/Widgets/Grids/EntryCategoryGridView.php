@@ -83,6 +83,7 @@ class EntryCategoryGridView extends GridView
             ->content($this->getButtonColumnContent(...));
     }
 
+    #[Override]
     protected function isPicker(): bool
     {
         return true;

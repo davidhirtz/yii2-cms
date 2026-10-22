@@ -30,10 +30,9 @@ class SectionAssetParentSectionGridView extends SectionGridView
     }
 
     #[Override]
-    protected function configure(): void
+    protected function isPicker(): bool
     {
-        parent::configure();
-        $this->orderRoute = null;
+        return true;
     }
 
     /**

@@ -42,7 +42,7 @@ class EntryController extends AbstractController
                             'delete',
                             'duplicate',
                             'index',
-                            'order',
+                            'reorder',
                             'replace-index',
                             'status',
                             'update',
@@ -58,7 +58,7 @@ class EntryController extends AbstractController
                     'delete' => ['post'],
                     'duplicate' => ['post'],
                     'replace-index' => ['post'],
-                    'order' => ['post'],
+                    'reorder' => ['post'],
                     'status' => ['post'],
                     'update-all' => ['post'],
                 ],
@@ -236,7 +236,7 @@ class EntryController extends AbstractController
         ]);
     }
 
-    public function actionOrder(?int $parent = null, ?int $tenant = null): string
+    public function actionReorder(?int $parent = null, ?int $tenant = null): string
     {
         $success = ReorderEntries::runWithBodyParam('entry', [
             'parent' => $parent ? $this->findEntry($parent) : null,

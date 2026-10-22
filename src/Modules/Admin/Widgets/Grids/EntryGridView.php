@@ -21,7 +21,7 @@ use Hirtz\Skeleton\Html\A;
 use Hirtz\Skeleton\Html\Div;
 use Hirtz\Skeleton\Web\Application;
 use Hirtz\Skeleton\Widgets\Buttons\Button;
-use Hirtz\Skeleton\Widgets\Buttons\DraggableSortButton;
+use Hirtz\Skeleton\Widgets\Buttons\ReorderButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\ButtonColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\DeleteGridButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\ViewGridButton;
@@ -64,7 +64,7 @@ class EntryGridView extends GridView
     /**
      * @var array<int|string, mixed>|null
      */
-    protected ?array $orderRoute = null;
+    protected ?array $reorderRoute = null;
 
     public function tenantParamName(string $tenantParamName): static
     {
@@ -118,12 +118,12 @@ class EntryGridView extends GridView
         }
 
         /**
-         * @see EntryController::actionOrder()
-         * @see EntryCategoryController::actionOrder()
+         * @see EntryController::actionReorder()
+         * @see EntryCategoryController::actionReorder()
          */
-        $this->orderRoute ??= $this->provider->category
-            ? ['entry-category/order', 'category' => $this->provider->category->id, 'tenant' => $this->provider->tenantId]
-            : ['order', 'parent' => $this->provider->parent?->id, 'tenant' => $this->provider->tenantId];
+        $this->reorderRoute ??= $this->provider->category
+            ? ['entry-category/reorder', 'category' => $this->provider->category->id, 'tenant' => $this->provider->tenantId]
+            : ['reorder', 'parent' => $this->provider->parent?->id, 'tenant' => $this->provider->tenantId];
 
         $this->configureSelection();
 
@@ -300,6 +300,7 @@ class EntryGridView extends GridView
      * from itself — that cancels the flow the user is in — so its rows drill into the subentries instead, its
      * count badges carry no link, and the entry's own page is an external link button.
      */
+    #[Override]
     protected function isPicker(): bool
     {
         return false;
@@ -412,8 +413,8 @@ class EntryGridView extends GridView
      */
     protected function getButtonColumnContent(Entry $entry): Traversable
     {
-        if ($this->isSortable() && $this->webuser->can(Entry::AUTH_ENTRY)) {
-            yield $this->getSortableButton();
+        if ($this->isReorderable() && $this->webuser->can(Entry::AUTH_ENTRY)) {
+            yield $this->getReorderButton();
         }
 
         if ($this->webuser->can(Entry::AUTH_ENTRY)) {
@@ -434,9 +435,9 @@ class EntryGridView extends GridView
         return $model && $this->webuser->can($model->getEntryRelationClass()::instance()->getPermissionName());
     }
 
-    protected function getSortableButton(): ?Stringable
+    protected function getReorderButton(): ?Stringable
     {
-        return DraggableSortButton::make();
+        return ReorderButton::make();
     }
 
     protected function getUpdateButton(Entry $entry): Stringable
@@ -490,9 +491,9 @@ class EntryGridView extends GridView
     }
 
     #[Override]
-    protected function isSortable(): bool
+    protected function isReorderable(): bool
     {
-        return $this->provider->status === null && parent::isSortable();
+        return $this->provider->status === null && parent::isReorderable();
     }
 
     #[Override]

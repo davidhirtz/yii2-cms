@@ -99,7 +99,7 @@ class AssetDuplicateControllerTest extends TestCase
         self::assertIsString($html);
         self::assertStringContainsString('section-asset/duplicate?id=4&amp;section=', $html);
         self::assertStringNotContainsString('section-asset/duplicate?id=4&amp;section=1"', $html);
-        self::assertStringNotContainsString('data-sort-url', $html);
+        self::assertStringNotContainsString('data-reorder-url', $html);
     }
 
     public function testDuplicateCopiesTheAssetToAnotherSection(): void

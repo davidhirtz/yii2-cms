@@ -44,7 +44,7 @@ class BlockSectionGridView extends GridView
     protected bool $showDeleteButton = false;
 
     protected string $layout = '{summary}{items}{pager}{footer}';
-    protected ?array $orderRoute = null;
+    protected ?array $reorderRoute = null;
 
     protected Block $block;
 

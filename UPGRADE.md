@@ -5,6 +5,13 @@ The v2 → v3 database migrations named below do not ship with the bundle: they 
 `Migrations\M260101000400CmsBaseline` for a fresh install and the migrations dated after it,
 `M260924100000RenumberSectionPositions` and `M260925100000AuthorBlocksAndRedirects`, which every installation runs.
 
+## 3.18 — Drag reordering is "reorder"
+
+Every `actionOrder()` is `actionReorder()` and its route `reorder` (`entry/reorder`, `entry-category/reorder`,
+`category/reorder`, `section/reorder`, `section-entry/reorder`, `block-entry/reorder`, `entry-asset/reorder`,
+`section-asset/reorder`, `block-asset/reorder`), access rules and verb filters included; the permissions stay.
+`EntryGridView::getSortableButton()` is `getReorderButton()`. The grid's own renames are in the skeleton's guide (3.22).
+
 ## 3.0 — The v2 admin widgets that are gone
 
 A record's page is a header, a submenu and an action dropdown now; the help panels that carried its buttons and

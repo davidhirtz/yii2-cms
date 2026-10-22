@@ -33,7 +33,7 @@ class CategoryController extends AbstractController
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['create', 'delete', 'index', 'order', 'status', 'update'],
+                        'actions' => ['create', 'delete', 'index', 'reorder', 'status', 'update'],
                         'roles' => [Category::AUTH_CATEGORY],
                     ],
                 ],
@@ -42,7 +42,7 @@ class CategoryController extends AbstractController
                 'class' => VerbFilter::class,
                 'actions' => [
                     'delete' => ['post'],
-                    'order' => ['post'],
+                    'reorder' => ['post'],
                     'status' => ['post'],
                 ],
             ],
@@ -129,7 +129,7 @@ class CategoryController extends AbstractController
         return $this->redirect(['index', 'parent' => $category->parent_id]);
     }
 
-    public function actionOrder(?int $id = null): string
+    public function actionReorder(?int $id = null): string
     {
         $success = ReorderCategories::runWithBodyParam('category', [
             'parent' => $id ? $this->findCategory($id) : null,

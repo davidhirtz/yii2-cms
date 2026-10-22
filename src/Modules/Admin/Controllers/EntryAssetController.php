@@ -44,8 +44,8 @@ class EntryAssetController extends Controller
                             'duplicate',
                             'entries',
                             'index',
-                            'order',
                             'remove',
+                            'reorder',
                             'status',
                             'update',
                         ],
@@ -127,7 +127,7 @@ class EntryAssetController extends Controller
         return $this->deleteAssets($this->findEntryWithAssets($entry));
     }
 
-    public function actionOrder(?int $entry = null): string
+    public function actionReorder(?int $entry = null): string
     {
         return $this->reorderAssets($this->findEntryWithAssets($entry));
     }

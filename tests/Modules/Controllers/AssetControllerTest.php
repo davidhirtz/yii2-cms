@@ -387,7 +387,7 @@ class AssetControllerTest extends TestCase
         Yii::$app->runAction('admin/cms/entry-asset/delete', ['id' => 1]);
     }
 
-    public function testOrderRewritesThePositions(): void
+    public function testReorderRewritesThePositions(): void
     {
         $this->login();
 
@@ -398,7 +398,7 @@ class AssetControllerTest extends TestCase
 
         self::assertCount(2, $ids);
 
-        $html = $this->post('admin/cms/entry-asset/order', ['entry' => 1], [
+        $html = $this->post('admin/cms/entry-asset/reorder', ['entry' => 1], [
             'asset' => array_reverse($ids),
         ]);
 

@@ -16,7 +16,7 @@ use Hirtz\Skeleton\Helpers\Html;
 use Hirtz\Skeleton\Html\A;
 use Hirtz\Skeleton\Html\Div;
 use Hirtz\Skeleton\Models\CustomAttributes\HtmlCustomAttribute;
-use Hirtz\Skeleton\Widgets\Buttons\DraggableSortButton;
+use Hirtz\Skeleton\Widgets\Buttons\ReorderButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\ButtonColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\DeleteGridButton;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Buttons\ViewGridButton;
@@ -63,7 +63,7 @@ class SectionGridView extends GridView
     protected function configure(): void
     {
         $this->attributes['id'] ??= 'section-grid-view';
-        $this->orderRoute = ['order', 'entry' => $this->provider->entry->id];
+        $this->reorderRoute = ['reorder', 'entry' => $this->provider->entry->id];
 
         $this->configureSelection();
 
@@ -236,11 +236,11 @@ class SectionGridView extends GridView
         $buttons = [];
 
         if (
-            $this->isSortable()
+            $this->isReorderable()
             && $this->provider->getCount() > 1
             && $this->webuser->can(Entry::AUTH_ENTRY)
         ) {
-            $buttons[] = DraggableSortButton::make();
+            $buttons[] = ReorderButton::make();
         }
 
         if ($this->webuser->can(Entry::AUTH_ENTRY)) {

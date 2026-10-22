@@ -39,7 +39,7 @@ trait EntryRelationControllerTrait
             'class' => VerbFilter::class,
             'actions' => [
                 'delete' => ['post'],
-                'order' => ['post'],
+                'reorder' => ['post'],
             ],
         ];
     }

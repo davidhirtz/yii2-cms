@@ -43,8 +43,8 @@ class BlockAssetController extends Controller
                             'delete-all',
                             'duplicate',
                             'index',
-                            'order',
                             'remove',
+                            'reorder',
                             'status',
                             'update',
                         ],
@@ -119,7 +119,7 @@ class BlockAssetController extends Controller
         return $this->deleteAssets($this->findBlockWithAssets($block));
     }
 
-    public function actionOrder(?int $block = null): string
+    public function actionReorder(?int $block = null): string
     {
         return $this->reorderAssets($this->findBlockWithAssets($block));
     }

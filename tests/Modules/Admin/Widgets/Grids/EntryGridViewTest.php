@@ -124,7 +124,7 @@ class EntryGridViewTest extends TestCase
         self::assertStringContainsString('Haystack', $html);
     }
 
-    public function testACategoryIsSortableByItsOwnPosition(): void
+    public function testACategoryIsReorderableByItsOwnPosition(): void
     {
         Entry::getModule()->enableCategories = true;
 
@@ -145,8 +145,8 @@ class EntryGridViewTest extends TestCase
 
         $html = Yii::$app->runAction('admin/cms/entry/index', ['category' => $category->id]);
         self::assertIsString($html);
-        self::assertStringContainsString('sortable-handle', $html);
-        self::assertStringContainsString(Html::encode(Url::to(['/admin/cms/entry-category/order', 'category' => $category->id])), $html);
+        self::assertStringContainsString('reorder-handle', $html);
+        self::assertStringContainsString(Html::encode(Url::to(['/admin/cms/entry-category/reorder', 'category' => $category->id])), $html);
 
         // A tenant the query names is carried into every URL anyway, one set on the provider is not.
         Yii::$container->set(EntryActiveDataProvider::class, ['tenantId' => 1]);
@@ -158,15 +158,15 @@ class EntryGridViewTest extends TestCase
         }
 
         self::assertIsString($html);
-        self::assertStringContainsString(Html::encode(Url::to(['/admin/cms/entry-category/order', 'category' => $category->id, 'tenant' => 1])), $html);
+        self::assertStringContainsString(Html::encode(Url::to(['/admin/cms/entry-category/reorder', 'category' => $category->id, 'tenant' => 1])), $html);
 
         // A status filter shows some of the category's entries, whose positions would collide with the hidden ones.
         $html = Yii::$app->runAction('admin/cms/entry/index', ['category' => $category->id, 'status' => Entry::STATUS_ENABLED]);
         self::assertIsString($html);
-        self::assertStringNotContainsString('sortable-handle', $html);
+        self::assertStringNotContainsString('reorder-handle', $html);
     }
 
-    public function testADescendingPositionIsNotDragSortable(): void
+    public function testADescendingPositionIsNotReorderable(): void
     {
         $this->login();
         $this->createEntry('first', 'first');
@@ -174,14 +174,14 @@ class EntryGridViewTest extends TestCase
 
         $html = Yii::$app->runAction('admin/cms/entry/index');
         self::assertIsString($html);
-        self::assertStringContainsString('sortable-handle', $html);
+        self::assertStringContainsString('reorder-handle', $html);
 
         // A drop posts the shown order as `1..n`, which would reverse it.
         Entry::getModule()->defaultEntryOrderBy = ['position' => SORT_DESC];
 
         $html = Yii::$app->runAction('admin/cms/entry/index');
         self::assertIsString($html);
-        self::assertStringNotContainsString('sortable-handle', $html);
+        self::assertStringNotContainsString('reorder-handle', $html);
     }
 
     public function testTheRowsDeleteButtonWarnsOfTheSubentries(): void

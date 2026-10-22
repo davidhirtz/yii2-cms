@@ -205,11 +205,11 @@ class EntryCategoryControllerTest extends TestCase
         self::assertNotNull(EntryCategory::findOne(['entry_id' => 2, 'category_id' => 3]));
     }
 
-    public function testOrderRewritesThePositionsWithinTheCategory(): void
+    public function testReorderRewritesThePositionsWithinTheCategory(): void
     {
         $this->login();
 
-        $html = $this->post('admin/cms/entry-category/order', ['category' => 1], ['entry' => [2, 1]]);
+        $html = $this->post('admin/cms/entry-category/reorder', ['category' => 1], ['entry' => [2, 1]]);
 
         self::assertIsString($html);
 
@@ -220,18 +220,18 @@ class EntryCategoryControllerTest extends TestCase
         self::assertNotEmpty($this->getWebSession()->getFlash('success'));
     }
 
-    public function testOrderLeavesTheOtherTenantsEntriesAlone(): void
+    public function testReorderLeavesTheOtherTenantsEntriesAlone(): void
     {
         $this->login();
         Entry::updateAll(['tenant_id' => 2], ['id' => 2]);
 
-        $this->post('admin/cms/entry-category/order', ['category' => 1, 'tenant' => 1], ['entry' => [2, 1]]);
+        $this->post('admin/cms/entry-category/reorder', ['category' => 1, 'tenant' => 1], ['entry' => [2, 1]]);
 
         self::assertSame(2, EntryCategory::findOne(['entry_id' => 2, 'category_id' => 1])?->position);
         self::assertSame(1, EntryCategory::findOne(['entry_id' => 1, 'category_id' => 1])?->position);
     }
 
-    public function testOrderWithoutATenantFallsBackToTheRequestsTenant(): void
+    public function testReorderWithoutATenantFallsBackToTheRequestsTenant(): void
     {
         $this->login();
         Entry::updateAll(['tenant_id' => 2], ['id' => 2]);
@@ -240,7 +240,7 @@ class EntryCategoryControllerTest extends TestCase
         self::assertInstanceOf(UrlManager::class, $manager);
         $manager->setTenant(Tenant::findOne(1) ?? self::fail('The seeded tenant is missing.'));
 
-        $this->post('admin/cms/entry-category/order', ['category' => 1], ['entry' => [2, 1]]);
+        $this->post('admin/cms/entry-category/reorder', ['category' => 1], ['entry' => [2, 1]]);
 
         self::assertSame(2, EntryCategory::findOne(['entry_id' => 2, 'category_id' => 1])?->position);
         self::assertSame(1, EntryCategory::findOne(['entry_id' => 1, 'category_id' => 1])?->position);

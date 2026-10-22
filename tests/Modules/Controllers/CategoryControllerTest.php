@@ -356,11 +356,11 @@ class CategoryControllerTest extends TestCase
         Yii::$app->runAction('admin/cms/category/delete', ['id' => 3]);
     }
 
-    public function testOrderRewritesThePositions(): void
+    public function testReorderRewritesThePositions(): void
     {
         $this->login();
 
-        $html = $this->post('admin/cms/category/order', [
+        $html = $this->post('admin/cms/category/reorder', [
             'category' => [2, 1],
         ]);
 

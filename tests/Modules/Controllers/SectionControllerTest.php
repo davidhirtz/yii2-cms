@@ -493,14 +493,14 @@ class SectionControllerTest extends TestCase
         Yii::$app->runAction('admin/cms/section/delete', ['id' => $section->id]);
     }
 
-    public function testOrderRewritesThePositions(): void
+    public function testReorderRewritesThePositions(): void
     {
         $this->login();
 
         $first = $this->createSection('First');
         $second = $this->createSection('Second');
 
-        $html = $this->post('admin/cms/section/order', ['entry' => $this->entry->id], [
+        $html = $this->post('admin/cms/section/reorder', ['entry' => $this->entry->id], [
             'section' => [$second->id, $first->id],
         ]);
 

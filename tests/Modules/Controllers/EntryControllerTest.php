@@ -419,14 +419,14 @@ class EntryControllerTest extends TestCase
         Yii::$app->runAction('admin/cms/entry/delete', ['id' => $entry->id]);
     }
 
-    public function testOrderRewritesThePositions(): void
+    public function testReorderRewritesThePositions(): void
     {
         $this->login();
 
         $first = $this->createEntry('First', 'first');
         $second = $this->createEntry('Second', 'second');
 
-        $html = $this->post('admin/cms/entry/order', [], [
+        $html = $this->post('admin/cms/entry/reorder', [], [
             'entry' => [$second->id, $first->id],
         ]);
 
@@ -437,7 +437,7 @@ class EntryControllerTest extends TestCase
         );
     }
 
-    public function testOrderLeavesTheOtherTenantsEntriesAlone(): void
+    public function testReorderLeavesTheOtherTenantsEntriesAlone(): void
     {
         $this->login();
 
@@ -448,7 +448,7 @@ class EntryControllerTest extends TestCase
         $other = (int)$first->tenant_id === 1 ? 2 : 1;
         Entry::updateAll(['tenant_id' => $other], ['id' => $second->id]);
 
-        $this->post('admin/cms/entry/order', ['tenant' => $first->tenant_id], [
+        $this->post('admin/cms/entry/reorder', ['tenant' => $first->tenant_id], [
             'entry' => [$second->id, $first->id],
         ]);
 

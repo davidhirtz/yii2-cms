@@ -35,7 +35,7 @@ class BlockGridView extends GridView
     use ModuleTrait;
 
     // A block belongs to nothing, so there is no order to drag it into; the grid sorts by its columns instead.
-    protected ?array $orderRoute = null;
+    protected ?array $reorderRoute = null;
 
     #[Override]
     protected function configure(): void

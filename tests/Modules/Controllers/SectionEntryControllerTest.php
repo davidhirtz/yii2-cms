@@ -221,12 +221,12 @@ class SectionEntryControllerTest extends TestCase
         Yii::$app->runAction('admin/cms/section-entry/delete', ['section' => self::SECTION_ID, 'entry' => 1]);
     }
 
-    public function testOnlyTheLinksOwnOrderIsDragSortable(): void
+    public function testOnlyTheLinksOwnOrderIsReorderable(): void
     {
         $this->login();
         Section::updateAll(['type' => Section::TYPE_DEFAULT], ['id' => 3]);
 
-        foreach ([[null, true], [['position' => SORT_ASC], false]] as [$orderBy, $isSortable]) {
+        foreach ([[null, true], [['position' => SORT_ASC], false]] as [$orderBy, $isReorderable]) {
             Yii::$container->set(Section::class, [
                 'types' => fn (): array => [
                     SectionType::make(Section::TYPE_DEFAULT)->name('Links')->entriesOrderBy($orderBy),
@@ -238,11 +238,11 @@ class SectionEntryControllerTest extends TestCase
             $html = Yii::$app->runAction('admin/cms/section-entry/index', ['section' => 3]);
 
             self::assertIsString($html);
-            self::assertSame($isSortable, str_contains($html, 'data-sort-url'), print_r($orderBy, true));
+            self::assertSame($isReorderable, str_contains($html, 'data-reorder-url'), print_r($orderBy, true));
         }
     }
 
-    public function testOrderRewritesThePositions(): void
+    public function testReorderRewritesThePositions(): void
     {
         $this->login();
 
@@ -252,7 +252,7 @@ class SectionEntryControllerTest extends TestCase
         self::assertLessThan($second->position, $first->position);
 
         // the body carries the junction's own ids, not the entry ids
-        $html = $this->post('admin/cms/section-entry/order', ['section' => self::SECTION_ID], [
+        $html = $this->post('admin/cms/section-entry/reorder', ['section' => self::SECTION_ID], [
             'entry-relation' => [$second->id, $first->id],
         ]);
 

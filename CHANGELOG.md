@@ -1,5 +1,7 @@
 ## Unreleased
 
+- Changed the `davidhirtz/yii2-skeleton` requirement to `^3.22` and `davidhirtz/yii2-media` to `^3.20` (reorder)
+- Renamed every `actionOrder()` to `actionReorder()` (route `reorder`) and `EntryGridView::getSortableButton()` to `getReorderButton()`
 - Changed `EntryGridView::getCategoryButtons()` to `getCategoryBadges()`, rendering the categories as badges
 - Changed `ReorderEntries` and `ReorderEntryCategories` to take a `$tenantId` before the ids, reordering only that tenant's entries
 - Changed `Category::allowsDescendants()` to follow `Module::$enableNestedCategories` instead of `$inheritNestedCategories`

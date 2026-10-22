@@ -43,8 +43,8 @@ class SectionAssetController extends Controller
                             'delete-all',
                             'duplicate',
                             'index',
-                            'order',
                             'remove',
+                            'reorder',
                             'sections',
                             'status',
                             'update',
@@ -121,7 +121,7 @@ class SectionAssetController extends Controller
         return $this->deleteAssets($this->findSectionWithAssets($section));
     }
 
-    public function actionOrder(?int $section = null): string
+    public function actionReorder(?int $section = null): string
     {
         return $this->reorderAssets($this->findSectionWithAssets($section));
     }

@@ -59,7 +59,7 @@ class SectionController extends AbstractController
                             'entries',
                             'index',
                             'move',
-                            'order',
+                            'reorder',
                             'status',
                             'update',
                             'update-all',
@@ -76,7 +76,7 @@ class SectionController extends AbstractController
                     'delete' => ['post'],
                     'delete-all' => ['post'],
                     'duplicate' => ['post'],
-                    'order' => ['post'],
+                    'reorder' => ['post'],
                     'move' => ['post'],
                     'status' => ['post'],
                 ],
@@ -311,7 +311,7 @@ class SectionController extends AbstractController
         return $this->redirectToSections($sections[0]);
     }
 
-    public function actionOrder(int $entry): string
+    public function actionReorder(int $entry): string
     {
         $success = ReorderSections::runWithBodyParam('section', [
             'entry' => $this->findEntry($entry),

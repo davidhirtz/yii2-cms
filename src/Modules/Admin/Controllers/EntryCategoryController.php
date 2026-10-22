@@ -35,7 +35,7 @@ class EntryCategoryController extends AbstractController
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['create', 'delete', 'index', 'order'],
+                        'actions' => ['create', 'delete', 'index', 'reorder'],
                         'roles' => [Entry::AUTH_ENTRY],
                     ],
                 ],
@@ -44,7 +44,7 @@ class EntryCategoryController extends AbstractController
                 'class' => VerbFilter::class,
                 'actions' => [
                     'delete' => ['post'],
-                    'order' => ['post'],
+                    'reorder' => ['post'],
                     'create' => ['post'],
                 ],
             ],
@@ -125,7 +125,7 @@ class EntryCategoryController extends AbstractController
         ]);
     }
 
-    public function actionOrder(int $category, ?int $tenant = null): string
+    public function actionReorder(int $category, ?int $tenant = null): string
     {
         $success = ReorderEntryCategories::runWithBodyParam('entry', [
             'category' => $this->findCategory($category),

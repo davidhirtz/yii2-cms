@@ -53,8 +53,8 @@ class LinkedEntryGridView extends EntryGridView
         $model = $this->provider->relatedModel;
         $this->layout = $model?->entry_count ? '{items}{footer}' : '{summary}{footer}';
 
-        /** @see EntryRelationControllerTrait::actionOrder() */
-        $this->orderRoute = ['order', ...$model ? [$model->getParamName() => $model->id] : []];
+        /** @see EntryRelationControllerTrait::reorderEntryRelations() */
+        $this->reorderRoute = ['reorder', ...$model ? [$model->getParamName() => $model->id] : []];
 
         parent::configure();
     }
@@ -87,8 +87,8 @@ class LinkedEntryGridView extends EntryGridView
             return;
         }
 
-        if ($this->isSortable() && $this->provider->getCount() > 1) {
-            yield $this->getSortableButton();
+        if ($this->isReorderable() && $this->provider->getCount() > 1) {
+            yield $this->getReorderButton();
         }
 
         yield $this->getDeleteButton($entry);

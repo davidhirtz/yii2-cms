@@ -29,7 +29,7 @@ class SectionEntryController extends AbstractController
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['create', 'delete', 'index', 'order'],
+                        'actions' => ['create', 'delete', 'index', 'reorder'],
                         'roles' => [Entry::AUTH_ENTRY],
                     ],
                 ],
@@ -59,7 +59,7 @@ class SectionEntryController extends AbstractController
         return $this->deleteEntryRelation($this->findSection($section), $entry);
     }
 
-    public function actionOrder(int $section): string
+    public function actionReorder(int $section): string
     {
         return $this->reorderEntryRelations($this->findSection($section));
     }

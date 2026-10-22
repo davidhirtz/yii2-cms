@@ -28,7 +28,7 @@ class BlockEntryController extends AbstractController
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['create', 'delete', 'index', 'order'],
+                        'actions' => ['create', 'delete', 'index', 'reorder'],
                         'roles' => [Block::AUTH_BLOCK],
                     ],
                 ],
@@ -58,7 +58,7 @@ class BlockEntryController extends AbstractController
         return $this->deleteEntryRelation($this->findBlock($block), $entry);
     }
 
-    public function actionOrder(int $block): string
+    public function actionReorder(int $block): string
     {
         return $this->reorderEntryRelations($this->findBlock($block));
     }
