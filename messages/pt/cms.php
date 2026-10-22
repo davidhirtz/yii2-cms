@@ -15,7 +15,7 @@ return [
     'BLOCK_CONFIRM_DELETE' => 'Tem a certeza de que pretende eliminar este bloco?',
     'BLOCK_CREATE_BUTTON' => 'Novo bloco',
     'BLOCK_CREATE_TITLE' => 'Criar novo bloco',
-    'BLOCK_DELETE_WARNING' => 'Atenção: este bloco é utilizado por {count, plural, one{uma secção} other{# secções}}, que deixarão de mostrar seja o que for.',
+    'BLOCK_DELETE_WARNING' => 'Atenção: este bloco é utilizado por {count, plural, one{uma secção} other{# secções}}, que {count, plural, one{deixará} other{deixarão}} de mostrar seja o que for.',
     'BLOCK_ENTRY_BLOCK_ENTRY' => 'Entrada de bloco',
     'BLOCK_ENTRY_COUNT_LABEL' => 'Entradas',
     'BLOCK_GRID_SUMMARY_EMPTY' => 'Ainda não há blocos. Um bloco é escrito uma vez e colocado por tantas secções quantas quiser.',

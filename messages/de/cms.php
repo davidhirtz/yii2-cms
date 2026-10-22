@@ -15,7 +15,7 @@ return [
     'BLOCK_CONFIRM_DELETE' => 'Sind Sie sich sicher, dass Sie diesen Block löschen wollen?',
     'BLOCK_CREATE_BUTTON' => 'Neuer Block',
     'BLOCK_CREATE_TITLE' => 'Neuen Block erstellen',
-    'BLOCK_DELETE_WARNING' => 'Achtung: Dieser Block wird in {count, plural, one{einer Sektion} other{# Sektionen}} verwendet, die danach nichts mehr anzeigen.',
+    'BLOCK_DELETE_WARNING' => 'Achtung: Dieser Block wird in {count, plural, one{einer Sektion} other{# Sektionen}} verwendet, die danach nichts mehr {count, plural, one{anzeigt} other{anzeigen}}.',
     'BLOCK_ENTRY_BLOCK_ENTRY' => 'Block-Eintrag',
     'BLOCK_ENTRY_COUNT_LABEL' => 'Einträge',
     'BLOCK_GRID_SUMMARY_EMPTY' => 'Es gibt noch keine Blöcke. Ein Block wird einmal angelegt und von beliebig vielen Sektionen eingebunden.',
