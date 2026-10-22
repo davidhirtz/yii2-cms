@@ -44,9 +44,10 @@ class Block extends ActiveRecord implements AssetModelInterface, EntryRelationMo
     use SearchableTrait;
 
     /**
-     * @var list<string> {@see Section::$translatableAttributes}, which a block shows the fields of
+     * @var list<string>|null {@see Section::$translatableAttributes} for the section fields a block shows, the
+     * container's section's while `null`
      */
-    public array $translatableAttributes = ['name', 'content'];
+    public ?array $translatableAttributes = null;
 
     final public const string AUTH_BLOCK = 'block';
 
@@ -89,7 +90,7 @@ class Block extends ActiveRecord implements AssetModelInterface, EntryRelationMo
 
     protected function isTranslatableAttribute(string $name): bool
     {
-        return in_array($name, $this->translatableAttributes, true);
+        return in_array($name, $this->translatableAttributes ?? Yii::$container->get(Section::class)->translatableAttributes, true);
     }
 
     /**
@@ -101,7 +102,7 @@ class Block extends ActiveRecord implements AssetModelInterface, EntryRelationMo
     {
         $section = Yii::$container->get(Section::class, [], [
             'customAttributes' => [],
-            'translatableAttributes' => $this->translatableAttributes,
+            ...($this->translatableAttributes !== null ? ['translatableAttributes' => $this->translatableAttributes] : []),
         ]);
 
         $excluded = $this->getSectionOnlyAttributeNames();

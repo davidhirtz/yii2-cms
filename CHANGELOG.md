@@ -6,6 +6,7 @@
 - Changed `EntryGridView::getCategoryButtons()` to `getCategoryBadges()`, rendering the categories as badges
 - Changed `ReorderEntries` and `ReorderEntryCategories` to take a `$tenantId` before the ids, reordering only that tenant's entries
 - Changed `Category::allowsDescendants()` to follow `Module::$enableNestedCategories` instead of `$inheritNestedCategories`
+- Changed `Block::$translatableAttributes` to `null` by default, taking the container's `Section`'s
 
 ## 3.17.0 (October 21, 2026)
 

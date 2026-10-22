@@ -50,6 +50,8 @@ class CreateBlockFromSectionTest extends TestCase
     {
         Yii::$container->clear(Section::class);
         Yii::$container->clear(Block::class);
+        Section::instance(true);
+        Block::instance(true);
         DefinitionRegistry::reset();
 
         parent::tearDown();
@@ -249,6 +251,27 @@ class CreateBlockFromSectionTest extends TestCase
         self::assertArrayHasKey('block_id', $section->getErrors());
     }
 
+    public function testConvertingToABlockKeepsATranslatedFieldTheProjectAddedToTheSection(): void
+    {
+        Yii::$app->getI18n()->setLanguages(['en-US', 'de']);
+        $this->setSectionTypes(config: ['class' => TeaserSection::class]);
+
+        Section::instance(true);
+        Block::instance(true);
+
+        $section = Section::findOne(1);
+        self::assertInstanceOf(TeaserSection::class, $section);
+        $section->setAttribute('teaser', 'English');
+        $section->setAttribute('teaser_de', 'Deutsch – Å 🙂');
+        self::assertNotFalse($section->update());
+
+        $action = CreateBlockFromSection::create(Section::findOne(1));
+        self::assertSame([], $action->getFirstErrors());
+
+        $block = Block::findOne($action->block->id);
+        self::assertSame('Deutsch – Å 🙂', $block?->getI18nAttribute('teaser', 'de'));
+    }
+
     public function testASectionWithImagesBlocksCannotShowIsNotConverted(): void
     {
         TestEntry::getModule()->enableBlockAssets = false;
@@ -302,9 +325,13 @@ class CreateBlockFromSectionTest extends TestCase
         self::assertCount(4, SectionAsset::findAll(['model_id' => 1]));
     }
 
-    private function setSectionTypes(?SectionType $extra = null, ?Closure $customAttributes = null): void
+    /**
+     * @param array<string, mixed> $config
+     */
+    private function setSectionTypes(?SectionType $extra = null, ?Closure $customAttributes = null, array $config = []): void
     {
         Yii::$container->set(Section::class, [
+            ...$config,
             'types' => fn (): array => [
                 SectionType::make(self::TYPE_HEADLINE)
                     ->name('Headline')
@@ -321,5 +348,20 @@ class CreateBlockFromSectionTest extends TestCase
         ]);
 
         DefinitionRegistry::reset();
+    }
+}
+
+class TeaserSection extends Section
+{
+    public array $translatableAttributes = ['name', 'content', 'teaser'];
+
+    #[Override]
+    protected function getDefaultCustomAttributes(): array
+    {
+        return [
+            ...parent::getDefaultCustomAttributes(),
+            TextCustomAttribute::make('teaser')
+                ->translatable($this->isTranslatableAttribute('teaser')),
+        ];
     }
 }
