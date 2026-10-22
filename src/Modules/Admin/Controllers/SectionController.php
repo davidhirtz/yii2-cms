@@ -203,7 +203,14 @@ class SectionController extends AbstractController
         $section = $this->findSection($id);
         $entry = $this->findEntry($entry);
 
+        if ($section->entry_id === $entry->id) {
+            return $this->redirect(['update', 'id' => $section->id]);
+        }
+
         $section->populateEntryRelation($entry);
+
+        // Slugs like `intro` repeat on every page, which a copy already answers this way.
+        $section->generateUniqueSlug();
 
         if ($section->update()) {
             $this->success(Yii::t('cms', 'SECTION_SUCCESS_MOVED'));

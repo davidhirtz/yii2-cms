@@ -307,6 +307,27 @@ class SectionControllerTest extends TestCase
         self::assertSame(1, Entry::findOne($target->id)->section_count);
     }
 
+    public function testMoveRenamesASlugTheTargetAlreadyHas(): void
+    {
+        $this->login();
+
+        $section = $this->createSection('Intro');
+        $section->slug = 'intro';
+        self::assertNotFalse($section->update());
+
+        $target = $this->createEntry('Target', 'target');
+        $taken = $this->createSection('Intro');
+        $taken->populateEntryRelation($target);
+        $taken->slug = 'intro';
+        self::assertNotFalse($taken->update());
+
+        $this->post('admin/cms/section/move', ['id' => $section->id, 'entry' => $target->id]);
+
+        $section = Section::findOne($section->id);
+        self::assertSame($target->id, $section?->entry_id);
+        self::assertSame('intro-1', $section->slug);
+    }
+
     public function testDuplicateCopiesTheSectionIntoTheSameEntry(): void
     {
         $this->login();
@@ -467,7 +488,7 @@ class SectionControllerTest extends TestCase
         $html = Yii::$app->runAction('admin/cms/section/entries', ['id' => $section->id]);
 
         self::assertIsString($html);
-        self::assertStringContainsString("/section/move?id={$section->id}&amp;entry={$this->entry->id}", $html);
+        self::assertStringNotContainsString("/section/move?id={$section->id}&amp;entry={$this->entry->id}", $html);
         self::assertStringContainsString("/section/duplicate?id={$section->id}&amp;entry={$this->entry->id}", $html);
     }
 
@@ -491,7 +512,7 @@ class SectionControllerTest extends TestCase
         $html = Yii::$app->runAction('admin/cms/section/entries', ['id' => $section->id]);
 
         self::assertIsString($html);
-        self::assertStringContainsString("/section/move?id={$section->id}&amp;entry={$this->entry->id}", $html);
+        self::assertStringContainsString("/section/duplicate?id={$section->id}&amp;entry={$this->entry->id}", $html);
         self::assertStringNotContainsString("&amp;entry={$link->id}", $html);
     }
 
