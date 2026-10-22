@@ -19,6 +19,7 @@ use Hirtz\Skeleton\Models\Translation;
 use Hirtz\Skeleton\Models\User;
 use Hirtz\Tenant\Models\Collections\TenantCollection;
 use Override;
+use Hirtz\Tenant\Models\Tenant;
 use Yii;
 
 class McpResourcesTest extends TestCase
@@ -183,6 +184,35 @@ class McpResourcesTest extends TestCase
 
         $trail = Trail::find()->where(['model_class' => Entry::class, 'model_id' => (string)$id, 'type' => Trail::TYPE_CREATE])->one();
         self::assertSame($this->owner->id, $trail?->user_id);
+    }
+
+    public function testASubentryTakesItsParentsTenant(): void
+    {
+        Entry::getModule()->enableNestedEntries = true;
+
+        $tenant = Tenant::create();
+        $tenant->loadDefaultValues();
+        $tenant->name = 'Other';
+        $tenant->language = Yii::$app->sourceLanguage;
+        $tenant->url = 'https://www.other.localhost';
+        self::assertTrue($tenant->save(), print_r($tenant->getErrors(), true));
+
+        $parent = Entry::create();
+        $parent->loadDefaultValues();
+        $parent->name = 'Parent';
+        $parent->slug = 'parent';
+        $parent->tenant_id = $tenant->id;
+        self::assertTrue($parent->insert(), print_r($parent->getErrors(), true));
+
+        $result = $this->callTool('create_record', [
+            'resource' => 'entry',
+            'parent' => $parent->id,
+            'attributes' => ['name' => 'Kind – Å', 'slug' => 'child'],
+        ]);
+
+        $child = Entry::findOne($result['id'] ?? self::fail('No id'));
+        self::assertSame($tenant->id, $child?->tenant_id);
+        self::assertSame($parent->id, $child->parent_id);
     }
 
     public function testASectionIsCreatedUnderAnEntry(): void

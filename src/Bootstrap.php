@@ -61,7 +61,14 @@ class Bootstrap implements ConfigBootstrapInterface
                     'resources' => [
                         static fn (): Resource => Resource::make('entry', Entry::class)
                             ->defaultType(static fn (): ?int => Entry::getModule()->defaultEntryType)
-                            ->parent('parent', Entry::class, static fn (Entry $entry, ?Entry $parent) => $entry->populateParentRelation($parent), false)
+                            ->parent('parent', Entry::class, static function (Entry $entry, ?Entry $parent): void {
+                                // A subentry belongs to its parent's tenant, as the admin's create action sets it.
+                                if ($parent) {
+                                    $entry->tenant_id = $parent->tenant_id;
+                                }
+
+                                $entry->populateParentRelation($parent);
+                            }, false)
                             ->beforeInsert(static function (Entry $entry): void {
                                 if ($entry->isNewIndex()) {
                                     foreach ($entry->getI18nAttributesNames('slug') as $attribute) {
