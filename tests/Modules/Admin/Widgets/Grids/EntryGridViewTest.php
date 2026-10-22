@@ -24,6 +24,7 @@ use Hirtz\Tenant\Web\UrlManager;
 use Override;
 use Yii;
 use yii\base\Event;
+use yii\data\Sort;
 use yii\helpers\Url;
 
 /**
@@ -164,6 +165,24 @@ class EntryGridViewTest extends TestCase
         $html = Yii::$app->runAction('admin/cms/entry/index', ['category' => $category->id, 'status' => Entry::STATUS_ENABLED]);
         self::assertIsString($html);
         self::assertStringNotContainsString('reorder-handle', $html);
+    }
+
+    public function testACategoryOrderingEntriesByTheirOwnPositionIsNotReorderable(): void
+    {
+        Entry::getModule()->enableCategories = true;
+
+        $category = new UnorderedCategory();
+        $category->loadDefaultValues();
+        $category->name = 'Haystack';
+        $category->slug = 'haystack';
+        self::assertTrue($category->insert(), print_r($category->getErrors(), true));
+
+        // The drag writes `entry_category.position`, an order the entries' own `position` never shows.
+        $provider = Yii::$container->get(EntryActiveDataProvider::class, config: ['category' => $category]);
+        $provider->prepare();
+
+        self::assertInstanceOf(Sort::class, $provider->getSort());
+        self::assertNotFalse($provider->getPagination());
     }
 
     public function testADescendingPositionIsNotReorderable(): void
@@ -536,5 +555,14 @@ class DatedParentEntry extends Entry
     public function getDescendantsOrderBy(): array
     {
         return ['publish_date' => SORT_DESC];
+    }
+}
+
+class UnorderedCategory extends Category
+{
+    #[Override]
+    public function getEntriesOrderBy(): bool|array
+    {
+        return false;
     }
 }

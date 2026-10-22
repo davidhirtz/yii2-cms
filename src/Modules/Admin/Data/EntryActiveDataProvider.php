@@ -232,14 +232,16 @@ class EntryActiveDataProvider extends ActiveDataProvider
     }
 
     /**
-     * Linked entries by their own `position` show an order the drag, which writes the link's, never changes, and a
-     * descending order the drag would reverse, since it writes the shown one as `1..n`.
+     * Linked or categorised entries by their own `position` show an order the drag, which writes the link's, never
+     * changes, and a descending order the drag would reverse, since it writes the shown one as `1..n`.
      */
     public function isOrderedByPosition(): bool
     {
-        $columns = $this->relatedModel && $this->innerJoinRelatedModel
-            ? [EntryRelation::tableName() . '.[[position]]']
-            : [EntryCategory::tableName() . '.[[position]]', EntryRelation::tableName() . '.[[position]]', 'position'];
+        $columns = match (true) {
+            $this->relatedModel && $this->innerJoinRelatedModel => [EntryRelation::tableName() . '.[[position]]'],
+            $this->category !== null => [EntryCategory::tableName() . '.[[position]]'],
+            default => [EntryRelation::tableName() . '.[[position]]', 'position'],
+        };
 
         return isset($this->query->orderBy)
             && in_array(key($this->query->orderBy), $columns, true)
