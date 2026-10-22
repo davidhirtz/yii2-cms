@@ -83,7 +83,11 @@ class EntryParentIdSelectField extends SelectField
      */
     protected function getEntries(): array
     {
-        $this->entries ??= array_filter($this->findEntries(), fn (Entry $entry) => $entry->allowsDescendants());
+        // The current parent stays offered after its type stopped allowing subentries, or a save would drop it.
+        $this->entries ??= array_filter(
+            $this->findEntries(),
+            fn (Entry $entry) => $entry->allowsDescendants() || $entry->id === $this->model->parent_id,
+        );
         return $this->entries;
     }
 
