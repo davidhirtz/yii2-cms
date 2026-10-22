@@ -61,6 +61,7 @@ class PermalinkMigrationTest extends TestCase
             }
 
             $db->createCommand($this->createTable)->execute();
+            $db->getSchema()->refreshTableSchema(Permalink::tableName());
             $db->createCommand('INSERT INTO ' . Permalink::tableName() . ' SELECT * FROM ' . self::BACKUP)->execute();
             $db->createCommand()->dropTable(self::BACKUP)->execute();
         }
