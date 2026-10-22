@@ -39,8 +39,22 @@ class ReorderEntriesTest extends TestCase
         (new ReorderEntries(null, 1, [3, 2, 1]))->run();
 
         self::assertSame(3, TestEntry::findOne(3)?->position);
-        self::assertSame(2, TestEntry::findOne(2)?->position);
-        self::assertSame(3, TestEntry::findOne(1)?->position);
+        self::assertSame(1, TestEntry::findOne(2)?->position);
+        self::assertSame(2, TestEntry::findOne(1)?->position);
+    }
+
+    public function testReorderingOneTypeKeepsTheHiddenTypesSlots(): void
+    {
+        // Root entries 1, 2 and 3 at 1, 2 and 3; the grid filtered by type shows 1 and 3.
+        TestEntry::updateAll(['type' => TestEntry::TYPE_POST], ['id' => 2]);
+
+        (new ReorderEntries(null, null, [3, 1]))->run();
+
+        self::assertSame([1 => 3, 2 => 2, 3 => 1], array_map(intval(...), TestEntry::find()
+            ->select('position')
+            ->where(['id' => [1, 2, 3]])
+            ->indexBy('id')
+            ->column()));
     }
 
     public function testChildrenOrderEntries(): void

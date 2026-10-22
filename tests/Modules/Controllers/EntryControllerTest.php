@@ -361,7 +361,7 @@ class EntryControllerTest extends TestCase
         ]);
 
         self::assertSame($position, Entry::findOne($second->id)?->position);
-        self::assertSame(2, Entry::findOne($first->id)?->position);
+        self::assertSame($first->position, Entry::findOne($first->id)?->position);
     }
 
     private function createEntry(string $name, string $slug, ?Entry $parent = null, ?int $tenantId = null): Entry

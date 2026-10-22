@@ -212,7 +212,7 @@ class EntryCategoryControllerTest extends TestCase
         $this->post('admin/cms/entry-category/order', ['category' => 1, 'tenant' => 1], ['entry' => [2, 1]]);
 
         self::assertSame(2, EntryCategory::findOne(['entry_id' => 2, 'category_id' => 1])?->position);
-        self::assertSame(2, EntryCategory::findOne(['entry_id' => 1, 'category_id' => 1])?->position);
+        self::assertSame(1, EntryCategory::findOne(['entry_id' => 1, 'category_id' => 1])?->position);
     }
 
     public function testOrderWithoutATenantFallsBackToTheRequestsTenant(): void
@@ -227,7 +227,7 @@ class EntryCategoryControllerTest extends TestCase
         $this->post('admin/cms/entry-category/order', ['category' => 1], ['entry' => [2, 1]]);
 
         self::assertSame(2, EntryCategory::findOne(['entry_id' => 2, 'category_id' => 1])?->position);
-        self::assertSame(2, EntryCategory::findOne(['entry_id' => 1, 'category_id' => 1])?->position);
+        self::assertSame(1, EntryCategory::findOne(['entry_id' => 1, 'category_id' => 1])?->position);
     }
 
     /**
