@@ -118,9 +118,6 @@ class CategoryCollectionTest extends TestCase
         self::assertNull(CategoryCollection::getBySlug(''));
     }
 
-    /**
-     * A nested category is addressed by its whole path, so the same slug can sit under two parents.
-     */
     public function testANestedSlugIsResolvedPartByPart(): void
     {
         self::assertSame(3, CategoryCollection::getBySlug('root-1/child-1')?->id);
@@ -129,10 +126,25 @@ class CategoryCollectionTest extends TestCase
         self::assertNull(CategoryCollection::getBySlug('root-2/child-1'));
     }
 
-    public function testASlugOnlyMatchesAtItsOwnLevel(): void
+    public function testAPathWithAnUnknownPartResolvesToNothing(): void
     {
-        self::assertNull(CategoryCollection::getBySlug('child-1'));
+        self::assertNull(CategoryCollection::getBySlug('garbage/root-1'));
+        self::assertNull(CategoryCollection::getBySlug('root-1/garbage/child-1'));
+        self::assertNull(CategoryCollection::getBySlug('root-1/garbage'));
+        self::assertNull(CategoryCollection::getBySlug('child-1/root-1'));
+    }
+
+    /**
+     * A slug is unique across every level, and a nested category's route names its own slug alone.
+     */
+    public function testANestedCategoryResolvesByItsOwnSlug(): void
+    {
+        $category = CategoryCollection::getBySlug('child-1');
+
+        self::assertSame(3, $category?->id);
+        self::assertSame(['/cms/site/index', 'category' => 'child-1'], $category->getRoute());
         self::assertSame(3, CategoryCollection::getBySlug('child-1', 1)?->id);
+        self::assertNull(CategoryCollection::getBySlug('child-1', 2));
     }
 
     public function testInvalidatingTheCacheReloads(): void

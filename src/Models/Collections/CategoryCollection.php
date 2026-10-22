@@ -102,28 +102,42 @@ class CategoryCollection
     }
 
     /**
-     * @return Category|null
+     * A path is matched level by level from the root; a single slug at any level unless `$parentId` names one.
      */
     public static function getBySlug(string $slug, ?int $parentId = null): ?Category
     {
-        if ($slug) {
-            if (strpos($slug, '/')) {
-                $prevParentId = null;
-                $category = null;
+        if ($slug === '') {
+            return null;
+        }
 
-                foreach (explode('/', $slug) as $part) {
-                    if ($category = static::getBySlug($part, $prevParentId)) {
-                        $prevParentId = $category->id;
-                    }
-                }
-
-                return $category;
-            }
-
+        if (!str_contains($slug, '/')) {
             foreach (static::getAll() as $category) {
-                if ($category->getI18nAttribute('slug') === $slug && ($category->parent_id === $parentId)) {
+                if ($category->getI18nAttribute('slug') === $slug && ($parentId === null || $category->parent_id === $parentId)) {
                     return $category;
                 }
+            }
+
+            return null;
+        }
+
+        $category = null;
+
+        foreach (explode('/', $slug) as $part) {
+            $category = static::findChild($part, $category->id ?? $parentId);
+
+            if (!$category) {
+                return null;
+            }
+        }
+
+        return $category;
+    }
+
+    protected static function findChild(string $slug, ?int $parentId): ?Category
+    {
+        foreach (static::getAll() as $category) {
+            if ($category->getI18nAttribute('slug') === $slug && $category->parent_id === $parentId) {
+                return $category;
             }
         }
 
