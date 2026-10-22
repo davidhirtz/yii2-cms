@@ -70,6 +70,9 @@ trait EntryRelationControllerTrait
             $entryRelation->insert();
 
             $this->errorOrSuccess($entryRelation, Yii::t('cms', 'ENTRY_RELATION_SUCCESS_ADDED'));
+
+            // Back to the picker as it was filtered: a page rendered for the POST would link everywhere wrong.
+            return $this->redirect(['create', ...$this->request->getQueryParams(), 'entry' => null]);
         }
 
         $defaultType = static::getModule()->defaultEntryType;

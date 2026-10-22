@@ -114,6 +114,9 @@ class EntryCategoryGridView extends GridView
                     $category->entryCategory ? 'delete' : 'create',
                     'entry' => $this->provider->entry->id,
                     'category' => $category->id,
+                    // The branch and the search travel along, so the action can lead back to them.
+                    'parent' => $this->provider->parent?->id,
+                    'q' => $this->search->getValue() ?: null,
                 ]);
         }
 

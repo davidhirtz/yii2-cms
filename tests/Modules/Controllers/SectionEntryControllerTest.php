@@ -151,9 +151,17 @@ class SectionEntryControllerTest extends TestCase
     {
         $this->login();
 
-        $response = $this->post('admin/cms/section-entry/create', ['section' => self::SECTION_ID, 'entry' => 1]);
+        $params = ['section' => self::SECTION_ID, 'entry' => 1, 'type' => 1, 'q' => 'Müller'];
+        $this->getWebRequest()->setQueryParams($params);
+        $response = $this->post('admin/cms/section-entry/create', $params);
 
-        self::assertIsString($response);
+        // back to the picker as it was filtered, without the entry just added
+        self::assertInstanceOf(Response::class, $response);
+        $location = (string)$response->getHeaders()->get('location');
+        self::assertStringContainsString('type=1', $location);
+        self::assertStringContainsString('q=M%C3%BCller', $location);
+        self::assertStringNotContainsString('entry=1', $location);
+
         self::assertNotNull(SectionEntry::findOne(['model_id' => self::SECTION_ID, 'entry_id' => 1]));
         self::assertNotEmpty($this->getWebSession()->getFlash('success'));
 

@@ -7,6 +7,7 @@ namespace Hirtz\Cms\Modules\Admin\Widgets\Grids;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Modules\Admin\Controllers\Traits\EntryRelationControllerTrait;
 use Hirtz\Skeleton\Models\Types\Type;
+use Hirtz\Skeleton\Web\Application;
 use Hirtz\Skeleton\Widgets\Buttons\Button;
 use Hirtz\Skeleton\Widgets\Grids\Toolbars\TypeFilterDropdown;
 use Override;
@@ -84,7 +85,12 @@ class EntryRelationGridView extends EntryGridView
                 ->primary()
                 ->icon('star')
                 ->tooltip(Yii::t('cms', 'ENTRY_RELATION_ADD_TO_MODEL'))
-                ->post(['create', $model->getParamName() => $model->id, 'entry' => $entry->id]);
+                ->post([
+                    'create',
+                    ...Application::current()->getRequest()->getQueryParams(),
+                    $model->getParamName() => $model->id,
+                    'entry' => $entry->id,
+                ]);
         }
     }
 

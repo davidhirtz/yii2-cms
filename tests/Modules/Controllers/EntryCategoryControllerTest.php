@@ -189,6 +189,22 @@ class EntryCategoryControllerTest extends TestCase
         Yii::$app->runAction('admin/cms/entry-category/create', ['entry' => 2, 'category' => 2]);
     }
 
+    public function testAPickLeadsBackToTheBranchAndSearchItWasMadeIn(): void
+    {
+        $this->login();
+
+        $params = ['entry' => 2, 'category' => 3, 'parent' => 1, 'q' => 'Child'];
+        $this->getWebRequest()->setQueryParams($params);
+        $response = $this->post('admin/cms/entry-category/create', $params);
+
+        self::assertInstanceOf(Response::class, $response);
+        $location = (string)$response->getHeaders()->get('location');
+        self::assertStringContainsString('category=1', $location);
+        self::assertStringContainsString('q=Child', $location);
+        self::assertStringNotContainsString('parent=', $location);
+        self::assertNotNull(EntryCategory::findOne(['entry_id' => 2, 'category_id' => 3]));
+    }
+
     public function testOrderRewritesThePositionsWithinTheCategory(): void
     {
         $this->login();

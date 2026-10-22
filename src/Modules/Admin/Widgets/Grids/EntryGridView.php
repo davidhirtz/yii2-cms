@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin\Widgets\Grids;
 
+use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Collections\CategoryCollection;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Modules\Admin\Controllers\EntryCategoryController;
@@ -462,11 +463,19 @@ class EntryGridView extends GridView
                 $categories[] = A::make()
                     ->class('badge')
                     ->text($category->getI18nAttribute('name'))
-                    ->current(['category' => $category->id, 'page' => null]);
+                    ->href($this->getCategoryUrl($category));
             }
         }
 
         return $categories ? Div::make()->class('badge-list')->content(...$categories) : null;
+    }
+
+    /**
+     * @return array<int|string, mixed>|string
+     */
+    protected function getCategoryUrl(Category $category): array|string
+    {
+        return Url::current(['category' => $category->id, 'page' => null]);
     }
 
     protected function getUrl(Entry $entry): ?Stringable

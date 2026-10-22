@@ -7,6 +7,7 @@ namespace Hirtz\Cms\Modules\Admin\Widgets\Grids;
 use Hirtz\Skeleton\Web\Application;
 use Hirtz\Skeleton\Db\ActiveRecord;
 use Hirtz\Cms\Modules\Admin\Widgets\Buttons\EntryRelationCreateButton;
+use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Modules\Admin\Controllers\Traits\EntryRelationControllerTrait;
 use Hirtz\Cms\Modules\Admin\Data\EntryActiveDataProvider;
@@ -56,6 +57,15 @@ class LinkedEntryGridView extends EntryGridView
         $this->orderRoute = ['order', ...$model ? [$model->getParamName() => $model->id] : []];
 
         parent::configure();
+    }
+
+    /**
+     * The linked entries are not filtered by category: the badge leads to the entries.
+     */
+    #[Override]
+    protected function getCategoryUrl(Category $category): array|string
+    {
+        return ['/admin/cms/entry/index', 'category' => $category->id];
     }
 
     #[Override]

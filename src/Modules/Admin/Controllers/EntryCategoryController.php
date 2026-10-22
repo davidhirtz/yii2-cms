@@ -109,13 +109,19 @@ class EntryCategoryController extends AbstractController
         return $this->redirectToIndex($entryCategory);
     }
 
+    /**
+     * `category` names the one picked here, the branch the picker shows is `parent`.
+     */
     protected function redirectToIndex(EntryCategory $entryCategory): Response
     {
+        $params = $this->request->getQueryParams();
+
         return $this->redirect([
             'index',
-            ...$this->request->getQueryParams(),
+            ...$params,
             'entry' => $entryCategory->entry_id,
-            'category' => null,
+            'category' => $params['parent'] ?? null,
+            'parent' => null,
         ]);
     }
 
