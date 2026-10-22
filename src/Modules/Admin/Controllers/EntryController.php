@@ -73,7 +73,8 @@ class EntryController extends AbstractController
         ?string $q = null,
         ?int $status = null,
     ): Response|string {
-        if (!$type && static::getModule()->defaultEntryType) {
+        // The pinned type is the root list's: a parent's subentries are listed whatever their type.
+        if (!$type && !$parent && static::getModule()->defaultEntryType) {
             return $this->redirect(Url::current(['type' => static::getModule()->defaultEntryType]));
         }
 
@@ -231,7 +232,7 @@ class EntryController extends AbstractController
         return $this->redirect([
             'index',
             'parent' => $entry->parent_id,
-            'type' => static::getModule()->defaultEntryType ? $entry->type : null,
+            'type' => static::getModule()->defaultEntryType && !$entry->parent_id ? $entry->type : null,
         ]);
     }
 

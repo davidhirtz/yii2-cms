@@ -218,6 +218,22 @@ class EntryControllerTest extends TestCase
         self::assertNull($child->parent_id);
     }
 
+    public function testThePinnedTypeLeavesTheSubentriesOfEveryType(): void
+    {
+        Entry::getModule()->enableNestedEntries = true;
+        Entry::getModule()->defaultEntryType = Entry::TYPE_DEFAULT;
+        $this->login();
+
+        $parent = $this->createEntry('Parent', 'parent');
+        $child = $this->createEntry('Child', 'child', $parent);
+        Entry::updateAll(['type' => 2], ['id' => $child->id]);
+
+        $html = Yii::$app->runAction('admin/cms/entry/index', ['parent' => $parent->id]);
+
+        self::assertIsString($html);
+        self::assertStringContainsString("id=\"entry-$child->id\"", $html);
+    }
+
     public function testAFormReloadDoesNotSave(): void
     {
         $this->login();
