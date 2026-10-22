@@ -7,9 +7,9 @@ namespace Hirtz\Cms\Tests\Models\Collections;
 use Hirtz\Cms\Models\Collections\MenuCollection;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Menus\Menu;
-use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Test\TestCase;
 use Hirtz\Skeleton\Db\ActiveQuery;
+use Hirtz\Skeleton\Db\DateTime;
 use Hirtz\Tenant\Models\Collections\TenantCollection;
 use Hirtz\Tenant\Models\Tenant;
 use Hirtz\Tenant\Web\UrlManager;
@@ -28,9 +28,6 @@ class MenuCollectionTest extends TestCase
         parent::setUp();
 
         Entry::getModule()->enableNestedEntries = true;
-
-        // a request scopes its queries by status, and the menu query inherits it
-        EntryQuery::setStatus(Entry::STATUS_ENABLED);
     }
 
     #[Override]
@@ -120,6 +117,32 @@ class MenuCollectionTest extends TestCase
         self::assertSame([], MenuCollection::getItems(self::MAIN));
     }
 
+    public function testAMenuOutsideTheCmsControllerListsPublishedEntriesOnly(): void
+    {
+        $this->setMenus();
+
+        $enabled = $this->createEntry('Enabled', 'enabled', menuIds: [self::MAIN]);
+        $this->createEntry('Disabled', 'disabled', menuIds: [self::MAIN], attributes: ['status' => Entry::STATUS_DISABLED]);
+        $this->createEntry('Draft', 'draft', menuIds: [self::MAIN], attributes: ['status' => Entry::STATUS_DRAFT]);
+        $this->createEntry('Scheduled', 'scheduled', menuIds: [self::MAIN], attributes: [
+            'publish_date' => new DateTime('+1 day'),
+        ]);
+
+        self::assertSame([$enabled->id], array_keys(MenuCollection::getItems(self::MAIN)));
+    }
+
+    public function testAMenuOnTheDraftHostListsDrafts(): void
+    {
+        $this->setMenus();
+        $this->getWebRequest()->setIsDraft(true);
+
+        $this->createEntry('Enabled', 'enabled', menuIds: [self::MAIN]);
+        $this->createEntry('Draft', 'draft', menuIds: [self::MAIN], attributes: ['status' => Entry::STATUS_DRAFT]);
+        $this->createEntry('Disabled', 'disabled', menuIds: [self::MAIN], attributes: ['status' => Entry::STATUS_DISABLED]);
+
+        self::assertCount(2, MenuCollection::getItems(self::MAIN));
+    }
+
     /**
      * The autoloaded menus are loaded once per request, whatever asks for them afterwards.
      */
@@ -197,8 +220,6 @@ class MenuCollectionTest extends TestCase
             Menu::make(self::FOOTER)->name('Footer'),
             Menu::make(self::SITEMAP)->name('Sitemap')->autoload(false),
         ]);
-
-        EntryQuery::setStatus(Entry::STATUS_ENABLED);
     }
 
     public function testAMenuHoldsTheEntriesOfTheCurrentTenantOnly(): void

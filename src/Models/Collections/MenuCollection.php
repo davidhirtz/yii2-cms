@@ -9,6 +9,7 @@ use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Menus\Menu;
 use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Modules\ModuleTrait;
+use Hirtz\Skeleton\Web\Request;
 use Yii;
 
 /**
@@ -115,7 +116,8 @@ class MenuCollection
             ->selectSiteAttributes()
             ->withTranslations()
             ->withPermalinks()
-            ->whereStatus()
+            // A menu renders outside the cms controller too, which is what sets the status otherwise
+            ->whereStatus(Request::current()?->getIsDraft() ? Entry::STATUS_DRAFT : Entry::STATUS_ENABLED)
             ->andWhereParentStatus()
             ->andWhereCurrentTenant()
             ->orderBy(['position' => SORT_ASC])
