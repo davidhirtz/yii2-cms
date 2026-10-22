@@ -201,6 +201,23 @@ class EntryControllerTest extends TestCase
         }
     }
 
+    public function testASubentryMovedToATenantWithoutItsParentBecomesARootEntry(): void
+    {
+        Entry::getModule()->enableNestedEntries = true;
+        $this->login();
+
+        $parent = $this->createEntry('Parent', 'parent', tenantId: 1);
+        $child = $this->createEntry('Child', 'child', $parent, tenantId: 1);
+
+        $this->post('admin/cms/entry/update', ['id' => $child->id], [
+            'Entry' => ['tenant_id' => 2, 'name' => 'Child', 'slug' => 'child'],
+        ]);
+
+        $child = Entry::findOne($child->id);
+        self::assertSame(2, $child?->tenant_id);
+        self::assertNull($child->parent_id);
+    }
+
     public function testAFormReloadDoesNotSave(): void
     {
         $this->login();

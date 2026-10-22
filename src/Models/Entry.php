@@ -144,6 +144,17 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
     {
         $this->ensureRequiredI18nAttributes();
 
+        // The form drops a parent field the new tenant has no entries for, so the old parent would refuse the move.
+        if (
+            !$this->getIsNewRecord()
+            && $this->isAttributeChanged('tenant_id', false)
+            && !$this->isAttributeChanged('parent_id', false)
+            && $this->parent
+            && (int)$this->parent->tenant_id !== (int)$this->tenant_id
+        ) {
+            $this->populateParentRelation(null);
+        }
+
         $this->ensureSlug();
 
         foreach ($this->getI18nAttributeNames('description') as $attributeName) {
