@@ -265,7 +265,7 @@ class EntryGridView extends GridView
     protected function getNameColumn(): ?Column
     {
         return DataColumn::make()
-            ->property('name')
+            ->property(Entry::instance()->getI18nAttributeName('name'))
             ->content($this->getNameColumnContent(...));
     }
 

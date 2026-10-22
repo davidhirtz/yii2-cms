@@ -79,6 +79,41 @@ class EntryGridViewTest extends TestCase
         }
     }
 
+    public function testTheNameColumnIsHeadedWithTheLanguageItShows(): void
+    {
+        Yii::$app->getI18n()->setLanguages(['en-US', 'de']);
+        Yii::$container->setDefinitions([
+            Entry::class => ['class' => TestEntry::class, 'i18nAttributes' => ['name', 'slug']],
+            TestEntry::class => ['i18nAttributes' => ['name', 'slug']],
+        ]);
+        Entry::instance(true);
+        TestEntry::instance(true);
+
+        try {
+            $user = $this->login();
+            $entry = $this->createEntry('Needle', 'needle');
+            $entry->setAttribute('name_de', 'Nadel – Å 🙂');
+            self::assertNotFalse($entry->update());
+
+            $module = Yii::$app->getModule('admin');
+            self::assertInstanceOf(AdminModule::class, $module);
+            $module->languages = ['en-US', 'de'];
+            $user->language = 'de';
+
+            $html = Yii::$app->runAction('admin/cms/entry/index');
+
+            self::assertIsString($html);
+            self::assertStringContainsString('Nadel – Å 🙂', $html);
+            self::assertStringContainsString('<th><div>' . Html::encode($entry->getAttributeLabel('name_de')) . '</div></th>', $html);
+            self::assertStringNotContainsString(Html::encode($entry->getAttributeLabel('name')), $html);
+        } finally {
+            Yii::$container->clear(Entry::class);
+            Yii::$container->clear(TestEntry::class);
+            Entry::instance(true);
+            TestEntry::instance(true);
+        }
+    }
+
     public function testTheIndexRendersTheUrlAndTheCategories(): void
     {
         Entry::getModule()->enableCategories = true;
