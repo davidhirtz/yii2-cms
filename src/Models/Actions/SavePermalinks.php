@@ -120,8 +120,21 @@ class SavePermalinks
      */
     protected function insertRedirect(string $previousUri, Permalink $permalink): void
     {
-        $language = $permalink->language;
+        $requestUris = [];
 
+        foreach ($this->model->getRedirectLanguages($permalink->language) as $language) {
+            // Without a language prefix every language asks for the same one.
+            $requestUri = Url::sanitize($this->model->getPermalinkRequestUri($previousUri, $language));
+
+            if (!isset($requestUris[$requestUri])) {
+                $requestUris[$requestUri] = true;
+                $this->insertLanguageRedirect($previousUri, $permalink, $language);
+            }
+        }
+    }
+
+    protected function insertLanguageRedirect(string $previousUri, Permalink $permalink, string $language): void
+    {
         $previousRequestUri = Url::sanitize($this->model->getPermalinkRequestUri($previousUri, $language));
         $previousUrl = Url::sanitize($this->model->getPermalinkUrl($previousUri, $language));
 

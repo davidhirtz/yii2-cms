@@ -29,15 +29,21 @@ class DeletePermalinkRedirects
 
     protected function deleteRedirects(Permalink $permalink): void
     {
-        $url = Url::sanitize($this->entry->getPermalinkUrl($permalink->uri, $permalink->language));
+        $urls = [];
 
-        if (!$url) {
+        foreach ($this->entry->getRedirectLanguages($permalink->language) as $language) {
+            $urls[] = Url::sanitize($this->entry->getPermalinkUrl($permalink->uri, $language));
+        }
+
+        $urls = array_values(array_unique(array_filter($urls)));
+
+        if (!$urls) {
             return;
         }
 
         /** @var Redirect[] $redirects */
         $redirects = Redirect::find()
-            ->where(['url' => $url])
+            ->where(['url' => $urls])
             ->all();
 
         foreach ($redirects as $redirect) {

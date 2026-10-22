@@ -144,6 +144,23 @@ trait PermalinkTrait
     }
 
     /**
+     * A permalink of every language answers under each language the entry's tenant serves, each its own URL.
+     *
+     * @return list<string>
+     */
+    public function getRedirectLanguages(string $language): array
+    {
+        if ($language !== Permalink::LANGUAGE_ALL) {
+            return [$language];
+        }
+
+        $languages = Yii::$app->getI18n()->getLanguages();
+        $tenant = TenantCollection::getById($this->tenant_id);
+
+        return $tenant ? array_values(array_intersect($languages, $tenant->getAvailableLanguages())) : $languages;
+    }
+
+    /**
      * The path a request for this URI carries, qualified by the tenant's host and without a scheme
      * (`www.example.com/de/old`): the form the 404 handler matches a redirect's `request_uri` against.
      */

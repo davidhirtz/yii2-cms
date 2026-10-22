@@ -152,6 +152,31 @@ class EntryTenantPermalinkTest extends TestCase
         self::assertSame('new', $this->findRedirect('old')?->url);
     }
 
+    public function testAnUntranslatedSlugRedirectsTheUrlOfEveryLanguage(): void
+    {
+        Yii::$app->getI18n()->setLanguages(['en-US', 'de']);
+
+        $default = TenantCollection::getDefault();
+        $default->language = 'de';
+        $default->languages = null;
+        self::assertNotFalse($default->update());
+        TenantCollection::invalidateCache();
+
+        $manager = Yii::$app->getUrlManager();
+        self::assertInstanceOf(UrlManager::class, $manager);
+        $manager->i18nUrl = true;
+        $manager->languages = ['en-US' => 'en', 'de' => 'de'];
+        (fn () => $this->applicationLanguages = null)->call($manager);
+        $manager->setTenant(TenantCollection::getDefault());
+
+        $entry = $this->createEntryWithSection('old', TenantCollection::getDefault());
+        $entry->slug = 'new';
+        self::assertNotFalse($entry->update());
+
+        self::assertNotNull($this->findRedirect('www.domain.localhost/old'));
+        self::assertNotNull($this->findRedirect('www.domain.localhost/en/old'));
+    }
+
     #[Override]
     protected function setUp(): void
     {
