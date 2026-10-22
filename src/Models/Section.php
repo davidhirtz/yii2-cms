@@ -527,7 +527,14 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
 
     public function allowsBlockConversion(): bool
     {
-        if (!static::getModule()->enableBlocks || !$this->getType()?->isSharedWithBlocks()) {
+        $module = static::getModule();
+
+        if (!$module->enableBlocks || !$this->getType()?->isSharedWithBlocks()) {
+            return false;
+        }
+
+        // The block takes the images and linked entries along, so it has to be able to show them.
+        if (($this->asset_count && !$module->enableBlockAssets) || ($this->entry_count && !$module->enableBlockEntries)) {
             return false;
         }
 

@@ -19,7 +19,6 @@ use Hirtz\Skeleton\Models\Breadcrumb;
 use Hirtz\Skeleton\Models\CustomAttributes\CustomAttribute;
 use Hirtz\Skeleton\Models\Interfaces\SearchableInterface;
 use Hirtz\Skeleton\Models\Traits\SearchableTrait;
-use Hirtz\Skeleton\Models\Traits\TranslatableAttributesTrait;
 use Hirtz\Skeleton\Web\User as WebUser;
 use Override;
 use Yii;
@@ -43,7 +42,11 @@ class Block extends ActiveRecord implements AssetModelInterface, EntryRelationMo
     use AssetModelTrait;
     use EntryRelationModelTrait;
     use SearchableTrait;
-    use TranslatableAttributesTrait;
+
+    /**
+     * @var list<string> {@see Section::$translatableAttributes}, which a block shows the fields of
+     */
+    public array $translatableAttributes = ['name', 'content'];
 
     final public const string AUTH_BLOCK = 'block';
 
@@ -82,6 +85,11 @@ class Block extends ActiveRecord implements AssetModelInterface, EntryRelationMo
             ...$this->getDefaultCustomAttributes(),
             ...parent::getCustomAttributes(),
         ];
+    }
+
+    protected function isTranslatableAttribute(string $name): bool
+    {
+        return in_array($name, $this->translatableAttributes, true);
     }
 
     /**

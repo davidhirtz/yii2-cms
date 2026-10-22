@@ -187,6 +187,33 @@ class CreateBlockFromSectionTest extends TestCase
         self::assertSame(0, Block::findOne($action->block->id)?->section_count);
     }
 
+    public function testConvertingToABlockKeepsTheTranslatedContent(): void
+    {
+        Yii::$app->getI18n()->setLanguages(['en-US', 'de']);
+        Section::instance(true);
+        Block::instance(true);
+        DefinitionRegistry::reset();
+
+        $section = Section::findOne(1);
+        self::assertNotNull($section);
+        $section->setAttribute('content_de', '<p>Deutscher Inhalt – Å 🙂</p>');
+        self::assertNotFalse($section->update());
+
+        $action = CreateBlockFromSection::create(Section::findOne(1));
+        self::assertSame([], $action->getFirstErrors());
+
+        $block = Block::findOne($action->block->id);
+        self::assertSame('<p>Deutscher Inhalt – Å 🙂</p>', $block?->getI18nAttribute('content', 'de'));
+    }
+
+    public function testASectionWithImagesBlocksCannotShowIsNotConverted(): void
+    {
+        TestEntry::getModule()->enableBlockAssets = false;
+
+        self::assertFalse(Section::findOne(1)?->allowsBlockConversion());
+        self::assertTrue(Section::findOne(3)?->allowsBlockConversion());
+    }
+
     public function testASectionWithoutANameNamesTheBlockAfterItsType(): void
     {
         $section = Section::instantiateByType(self::TYPE_HEADLINE);
