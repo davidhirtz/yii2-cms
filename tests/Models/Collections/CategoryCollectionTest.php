@@ -10,6 +10,8 @@ use Hirtz\Cms\Models\Collections\CategoryCollection;
 use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
 use Hirtz\Cms\Test\Models\TestEntry;
 use Hirtz\Cms\Test\TestCase;
+use Hirtz\Skeleton\Controllers\McpController;
+use Hirtz\Skeleton\Web\Controller;
 use Override;
 use Yii;
 use yii\caching\ArrayCache;
@@ -81,6 +83,27 @@ class CategoryCollectionTest extends TestCase
         });
 
         self::assertGreaterThan(0, $queries);
+    }
+
+    /**
+     * A page a project controller renders lists published categories, as the cms controller's pages do; the admin
+     * and MCP list every status (#686).
+     */
+    public function testTheWebsiteListsOnlyPublishedCategories(): void
+    {
+        Category::updateAll(['status' => Category::STATUS_DISABLED], ['id' => 2]);
+        CategoryCollection::reset();
+
+        Yii::$app->controller = new Controller('page', Yii::$app);
+        self::assertArrayNotHasKey(2, CategoryCollection::getAll());
+
+        $admin = Yii::$app->createController('admin/cms/category/index')[0] ?? null;
+        self::assertInstanceOf(Controller::class, $admin);
+        Yii::$app->controller = $admin;
+        self::assertArrayHasKey(2, CategoryCollection::getAll());
+
+        Yii::$app->controller = new McpController('mcp', Yii::$app);
+        self::assertArrayHasKey(2, CategoryCollection::getAll());
     }
 
     public function testTheAncestorsAreTheOnesItSitsInside(): void

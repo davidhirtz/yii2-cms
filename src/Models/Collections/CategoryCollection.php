@@ -7,6 +7,7 @@ namespace Hirtz\Cms\Models\Collections;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Modules\ModuleTrait;
+use Hirtz\Skeleton\Web\Application;
 use Yii;
 use Hirtz\Skeleton\Caching\TagDependency;
 
@@ -35,7 +36,12 @@ class CategoryCollection
                 : static::findAll();
         }
 
-        return static::$categories;
+        $status = Yii::$app instanceof Application ? Yii::$app->getVisibleStatus() : null;
+
+        // The website lists published ones on every page, not only those the cms controller serves; the admin all.
+        return $status !== null
+            ? array_filter(static::$categories, fn (Category $category): bool => $category->status >= $status)
+            : static::$categories;
     }
 
     /**
