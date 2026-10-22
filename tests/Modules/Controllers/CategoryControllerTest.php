@@ -16,6 +16,9 @@ use Hirtz\Skeleton\Test\Fixtures\UserFixture;
 use Hirtz\Skeleton\Models\Definitions\DefinitionRegistry;
 use Override;
 use Yii;
+use yii\base\Event;
+use yii\base\Model;
+use yii\base\ModelEvent;
 use yii\web\ForbiddenHttpException;
 use yii\web\MethodNotAllowedHttpException;
 use yii\web\NotFoundHttpException;
@@ -320,6 +323,29 @@ class CategoryControllerTest extends TestCase
         self::assertNull(Category::findOne(3));
         self::assertSame(0, (int)EntryCategory::find()->where(['category_id' => 3])->count());
         self::assertNotEmpty($this->getWebSession()->getFlash('success'));
+    }
+
+    public function testARefusedDeleteFlashesTheReason(): void
+    {
+        $this->login();
+
+        $handler = function (ModelEvent $event): void {
+            self::assertInstanceOf(Model::class, $event->sender);
+            $event->sender->addError('id', 'Still in use.');
+            $event->isValid = false;
+        };
+
+        Event::on(Category::class, Category::EVENT_BEFORE_DELETE, $handler);
+
+        try {
+            $response = $this->post('admin/cms/category/delete', [], ['id' => 3]);
+        } finally {
+            Event::off(Category::class, Category::EVENT_BEFORE_DELETE, $handler);
+        }
+
+        self::assertInstanceOf(Response::class, $response);
+        self::assertNotNull(Category::findOne(3));
+        self::assertSame([['id' => 'Still in use.']], $this->getWebSession()->getFlash('danger'));
     }
 
     public function testDeleteRefusesAGetRequest(): void

@@ -14,7 +14,6 @@ use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
-use yii\web\ServerErrorHttpException;
 
 class BlockController extends AbstractController
 {
@@ -113,10 +112,10 @@ class BlockController extends AbstractController
 
         if ($block->delete()) {
             $this->success(Yii::t('cms', 'BLOCK_SUCCESS_DELETED'));
-            return $this->redirect(['index']);
+        } elseif ($errors = $block->getFirstErrors()) {
+            $this->error($errors);
         }
 
-        $errors = $block->getFirstErrors();
-        throw new ServerErrorHttpException(reset($errors) ?: null);
+        return $this->redirect(['index']);
     }
 }

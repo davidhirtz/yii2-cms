@@ -14,6 +14,9 @@ use Hirtz\Skeleton\Models\User;
 use Hirtz\Skeleton\Test\Fixtures\UserFixture;
 use Override;
 use Yii;
+use yii\base\Event;
+use yii\base\Model;
+use yii\base\ModelEvent;
 use yii\data\Sort;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
@@ -107,6 +110,30 @@ class BlockControllerTest extends TestCase
 
         self::assertNull(Block::findOne($block->id));
         self::assertNotEmpty($this->getWebSession()->getFlash('success'));
+    }
+
+    public function testARefusedDeleteFlashesTheReason(): void
+    {
+        $this->login();
+        $block = $this->createBlock('Kept');
+
+        $handler = function (ModelEvent $event): void {
+            self::assertInstanceOf(Model::class, $event->sender);
+            $event->sender->addError('id', 'Still in use.');
+            $event->isValid = false;
+        };
+
+        Event::on(Block::class, Block::EVENT_BEFORE_DELETE, $handler);
+
+        try {
+            $response = $this->post('admin/cms/block/delete', ['id' => $block->id]);
+        } finally {
+            Event::off(Block::class, Block::EVENT_BEFORE_DELETE, $handler);
+        }
+
+        self::assertInstanceOf(Response::class, $response);
+        self::assertNotNull(Block::findOne($block->id));
+        self::assertSame([['id' => 'Still in use.']], $this->getWebSession()->getFlash('danger'));
     }
 
     public function testTheGridIsSortedByTheMostRecentlyUpdated(): void

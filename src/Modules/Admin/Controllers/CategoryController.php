@@ -17,7 +17,6 @@ use yii\filters\VerbFilter;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
-use yii\web\ServerErrorHttpException;
 
 class CategoryController extends AbstractController
 {
@@ -123,11 +122,11 @@ class CategoryController extends AbstractController
 
         if ($category->delete()) {
             $this->success(Yii::t('cms', 'CATEGORY_SUCCESS_DELETED'));
-            return $this->redirect(['index', 'parent' => $category->parent_id]);
+        } elseif ($errors = $category->getFirstErrors()) {
+            $this->error($errors);
         }
 
-        $errors = $category->getFirstErrors();
-        throw new ServerErrorHttpException(reset($errors) ?: null);
+        return $this->redirect(['index', 'parent' => $category->parent_id]);
     }
 
     public function actionOrder(?int $id = null): string
