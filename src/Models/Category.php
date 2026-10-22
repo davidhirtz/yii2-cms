@@ -214,6 +214,7 @@ class Category extends ActiveRecord implements SearchableInterface
     public function getEntryCategories(): ActiveQuery
     {
         return $this->hasMany(EntryCategory::class, ['category_id' => 'id'])
+            ->orderBy(['position' => SORT_ASC])
             ->inverseOf('category');
     }
 
