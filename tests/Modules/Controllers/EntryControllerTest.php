@@ -120,6 +120,28 @@ class EntryControllerTest extends TestCase
         self::assertNotEmpty($this->getWebSession()->getFlash('success'));
     }
 
+    public function testANewSubentryTakesItsParentsTenant(): void
+    {
+        $this->login();
+        $parent = $this->createEntry('Parent', 'parent');
+        $tenantId = $parent->tenant_id === 2 ? 1 : 2;
+        Entry::updateAll(['tenant_id' => $tenantId], ['id' => $parent->id]);
+
+        $this->post('admin/cms/entry/create', ['parent' => $parent->id], [
+            'Entry' => [
+                'status' => Entry::STATUS_ENABLED,
+                'name' => 'A new entry',
+                'slug' => 'a-new-entry',
+            ],
+        ]);
+
+        $entry = Entry::findOne(['name' => 'A new entry']);
+
+        self::assertNotNull($entry);
+        self::assertSame($parent->id, $entry->parent_id);
+        self::assertSame($tenantId, $entry->tenant_id);
+    }
+
     public function testTheFirstEntryIsCreatedAsTheHomepage(): void
     {
         $this->login();

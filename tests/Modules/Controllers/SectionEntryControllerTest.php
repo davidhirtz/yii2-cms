@@ -14,6 +14,8 @@ use Hirtz\Cms\Test\TestCase;
 use Hirtz\Skeleton\Models\Definitions\DefinitionRegistry;
 use Hirtz\Skeleton\Models\User;
 use Hirtz\Skeleton\Test\Fixtures\UserFixture;
+use Hirtz\Tenant\Models\Tenant;
+use Hirtz\Tenant\Web\UrlManager;
 use Override;
 use Yii;
 use yii\web\ForbiddenHttpException;
@@ -47,6 +49,30 @@ class SectionEntryControllerTest extends TestCase
 
         self::assertIsString($html);
         self::assertStringContainsString('Test Page – Enabled', $html);
+    }
+
+    public function testTheRecordsOfAnotherTenantAreListedFromTheDefaultTenantsHost(): void
+    {
+        TestEntry::getModule()->enableNestedEntries = true;
+        Entry::updateAll(['tenant_id' => 2]);
+
+        $manager = Yii::$app->getUrlManager();
+        self::assertInstanceOf(UrlManager::class, $manager);
+        $manager->setTenant(Tenant::findOne(1) ?? self::fail('The seeded tenant is missing.'));
+
+        $this->login();
+
+        $html = Yii::$app->runAction('admin/cms/entry/index', ['parent' => 1]);
+        self::assertIsString($html);
+        self::assertStringContainsString('id="entry-4"', $html);
+
+        $html = Yii::$app->runAction('admin/cms/section-entry/index', ['section' => 3]);
+        self::assertIsString($html);
+        self::assertStringContainsString('Test Child 1', $html);
+
+        $html = Yii::$app->runAction('admin/cms/section-entry/create', ['section' => 3]);
+        self::assertIsString($html);
+        self::assertStringContainsString('Test Page – Draft', $html);
     }
 
     public function testIndexOfAnUnknownSectionIsNotFound(): void

@@ -7,6 +7,7 @@ namespace Hirtz\Cms\Modules\Admin\Data;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\EntryCategory;
+use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Models\EntryRelation;
 use Hirtz\Cms\Models\Interfaces\EntryRelationModelInterface;
@@ -47,7 +48,8 @@ class EntryActiveDataProvider extends ActiveDataProvider
     #[Override]
     public function init(): void
     {
-        $this->tenantId ??= $this->getTenantIdFromRequest();
+        // A record's children belong to its tenant, whichever host serves the admin.
+        $this->tenantId ??= $this->parent->tenant_id ?? $this->getTenantIdFromRequest();
         parent::init();
     }
 
@@ -57,6 +59,10 @@ class EntryActiveDataProvider extends ActiveDataProvider
 
         if ($tenantId) {
             return $tenantId;
+        }
+
+        if ($this->relatedModel instanceof Section && $this->relatedModel->entry) {
+            return $this->relatedModel->entry->tenant_id;
         }
 
         $manager = Yii::$app->getUrlManager();
@@ -88,7 +94,8 @@ class EntryActiveDataProvider extends ActiveDataProvider
 
     protected function initQuery(): void
     {
-        if ($this->tenantId) {
+        // The linked entries of a record are whatever it links, a block's from any tenant.
+        if ($this->tenantId && !($this->relatedModel && $this->innerJoinRelatedModel)) {
             $this->query->andWhere([Entry::tableName() . '.[[tenant_id]]' => $this->tenantId]);
         }
 

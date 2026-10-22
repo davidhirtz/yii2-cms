@@ -94,7 +94,12 @@ class EntryController extends AbstractController
         $entry = Entry::instantiateFromPost($this->request->post(), $type ?: static::getModule()->defaultEntryType);
         $entry->loadDefaultValues();
 
-        $entry->populateParentRelation(Entry::findOne($parent));
+        $parent = Entry::findOne($parent);
+        $entry->populateParentRelation($parent);
+
+        if ($parent) {
+            $entry->tenant_id = $parent->tenant_id;
+        }
 
         if (!$this->webuser->can(Entry::AUTH_ENTRY)) {
             throw new ForbiddenHttpException();
