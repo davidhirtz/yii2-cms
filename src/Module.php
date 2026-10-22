@@ -16,7 +16,7 @@ use Override;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\caching\CacheInterface;
-use yii\caching\TagDependency;
+use Hirtz\Skeleton\Caching\TagDependency;
 
 class Module extends \Hirtz\Skeleton\Base\Module
 {

@@ -8,7 +8,7 @@ use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Modules\ModuleTrait;
 use Yii;
-use yii\caching\TagDependency;
+use Hirtz\Skeleton\Caching\TagDependency;
 
 class CategoryCollection
 {
