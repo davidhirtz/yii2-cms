@@ -221,6 +221,27 @@ class SectionEntryControllerTest extends TestCase
         Yii::$app->runAction('admin/cms/section-entry/delete', ['section' => self::SECTION_ID, 'entry' => 1]);
     }
 
+    public function testOnlyTheLinksOwnOrderIsDragSortable(): void
+    {
+        $this->login();
+        Section::updateAll(['type' => Section::TYPE_DEFAULT], ['id' => 3]);
+
+        foreach ([[null, true], [['position' => SORT_ASC], false]] as [$orderBy, $isSortable]) {
+            Yii::$container->set(Section::class, [
+                'types' => fn (): array => [
+                    SectionType::make(Section::TYPE_DEFAULT)->name('Links')->entriesOrderBy($orderBy),
+                ],
+            ]);
+
+            DefinitionRegistry::reset();
+
+            $html = Yii::$app->runAction('admin/cms/section-entry/index', ['section' => 3]);
+
+            self::assertIsString($html);
+            self::assertSame($isSortable, str_contains($html, 'data-sort-url'), print_r($orderBy, true));
+        }
+    }
+
     public function testOrderRewritesThePositions(): void
     {
         $this->login();

@@ -231,12 +231,15 @@ class EntryActiveDataProvider extends ActiveDataProvider
         parent::setSort($value);
     }
 
+    /**
+     * Linked entries by their own `position` show an order the drag, which writes the link's, never changes.
+     */
     public function isOrderedByPosition(): bool
     {
-        return isset($this->query->orderBy) && in_array(key($this->query->orderBy), [
-                EntryCategory::tableName() . '.[[position]]',
-                EntryRelation::tableName() . '.[[position]]',
-                'position',
-            ], true);
+        $columns = $this->relatedModel && $this->innerJoinRelatedModel
+            ? [EntryRelation::tableName() . '.[[position]]']
+            : [EntryCategory::tableName() . '.[[position]]', EntryRelation::tableName() . '.[[position]]', 'position'];
+
+        return isset($this->query->orderBy) && in_array(key($this->query->orderBy), $columns, true);
     }
 }
