@@ -285,6 +285,11 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
             $this->position = null;
         }
 
+        // The siblings are the tenant's, so a move to another one lands at the end like a move to another parent.
+        if (!$insert && $this->isAttributeChanged('tenant_id', false)) {
+            $this->position = null;
+        }
+
         return parent::beforeSave($insert);
     }
 

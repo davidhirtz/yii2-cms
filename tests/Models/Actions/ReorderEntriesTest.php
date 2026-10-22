@@ -11,6 +11,7 @@ use Hirtz\Cms\Test\Models\TestEntry;
 use Hirtz\Cms\Test\TestCase;
 use Hirtz\Skeleton\Filters\PageCache;
 use Hirtz\Skeleton\Models\Trail;
+use Hirtz\Tenant\Models\Tenant;
 use Override;
 use Yii;
 use yii\caching\ArrayCache;
@@ -55,6 +56,21 @@ class ReorderEntriesTest extends TestCase
             ->where(['id' => [1, 2, 3]])
             ->indexBy('id')
             ->column()));
+    }
+
+    public function testAnEntryMovedToAnotherTenantLandsAtTheEnd(): void
+    {
+        // Entries 2 and 3 become the German tenant's root entries, at 1 and 2; entry 1 stays at 1 in the default one.
+        Entry::updateAll(['tenant_id' => 2, 'position' => 1], ['id' => 2]);
+        Entry::updateAll(['tenant_id' => 2, 'position' => 2], ['id' => 3]);
+        Entry::updateAll(['tenant_id' => 2], ['parent_id' => 2]);
+
+        $entry = Entry::findOne(1);
+        self::assertNotNull($entry);
+        $entry->populateTenantRelation(Tenant::findOne(2));
+        self::assertTrue($entry->save(), print_r($entry->getErrors(), true));
+
+        self::assertSame(3, Entry::findOne(1)?->position);
     }
 
     public function testChildrenOrderEntries(): void
