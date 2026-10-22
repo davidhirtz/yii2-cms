@@ -11,6 +11,7 @@ use Hirtz\Cms\Modules\Admin\Widgets\Grids\Toolbars\CategoryFilterDropdown;
 use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
 use Hirtz\Cms\Test\Models\TestEntry;
 use Hirtz\Cms\Test\TestCase;
+use Hirtz\Skeleton\Helpers\Html;
 use Hirtz\Skeleton\Models\User;
 use Hirtz\Skeleton\Test\Fixtures\UserFixture;
 use Hirtz\Skeleton\Models\Definitions\DefinitionRegistry;
@@ -19,6 +20,7 @@ use Yii;
 use yii\base\Event;
 use yii\base\Model;
 use yii\base\ModelEvent;
+use yii\helpers\Url;
 use yii\web\ForbiddenHttpException;
 use yii\web\MethodNotAllowedHttpException;
 use yii\web\NotFoundHttpException;
@@ -142,6 +144,31 @@ class CategoryControllerTest extends TestCase
         self::assertIsString($html);
         self::assertStringContainsString('Child category 1', $html);
         self::assertStringNotContainsString('Root category 2', $html);
+    }
+
+    public function testTheChildrenOfAParentDoNotRepeatItWhetherOrNotAnEntryUsesThem(): void
+    {
+        $this->login();
+
+        $category = Category::create();
+        $category->loadDefaultValues();
+        $category->name = 'Child category 2';
+        $category->slug = 'child-category-2';
+        $category->parent_id = 1;
+        self::assertTrue($category->insert(), print_r($category->getErrors(), true));
+
+        // Child category 1 holds an entry, Child category 2 none.
+        $html = Yii::$app->runAction('admin/cms/category/index', ['parent' => 1]);
+
+        self::assertIsString($html);
+        self::assertStringContainsString('Child category 2', $html);
+        $ancestors = '<div class="small"><a href="' . Html::encode(Url::to(['/admin/cms/category/update', 'id' => 1]));
+        self::assertStringNotContainsString($ancestors, $html);
+
+        // A search lists every level, so a row names its branch.
+        $html = Yii::$app->runAction('admin/cms/category/index', ['q' => 'Child']);
+        self::assertIsString($html);
+        self::assertSame(2, substr_count($html, $ancestors));
     }
 
     public function testIndexSearchesAcrossEveryLevel(): void

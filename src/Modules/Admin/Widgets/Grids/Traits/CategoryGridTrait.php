@@ -180,7 +180,7 @@ trait CategoryGridTrait
 
     protected function showCategoryAncestors(Category $category): bool
     {
-        return (bool)$category->parent_id && ($this->provider->searchString || $category->entryCategory);
+        return (bool)$category->parent_id && $this->provider->searchString;
     }
 
     protected function initAncestors(): void
