@@ -223,6 +223,32 @@ class CreateBlockFromSectionTest extends TestCase
         self::assertSame('<p>Deutscher Inhalt – Å 🙂</p>', $block?->getI18nAttribute('content', 'de'));
     }
 
+    public function testABlockTheConfigurationStoppedAllowingStillSaves(): void
+    {
+        $this->setSectionTypes(SectionType::make(5)->name('Placed')->allowBlock());
+
+        $action = CreateBlockFromSection::create(Section::findOne(1));
+        self::assertSame([], $action->getFirstErrors());
+        Section::updateAll(['type' => 5], ['id' => 1]);
+
+        // The project drops `allowBlock()` from the type, which keeps its value.
+        $this->setSectionTypes(SectionType::make(5)->name('Placed'));
+
+        $section = Section::findOne(1) ?? self::fail('The section is missing.');
+        $section->status = Section::STATUS_DISABLED;
+
+        self::assertTrue($section->save(), print_r($section->getErrors(), true));
+        self::assertSame($action->block->id, Section::findOne(1)->block_id);
+
+        // A block newly placed on such a type is still refused.
+        $section->block_id = null;
+        self::assertTrue($section->save(), print_r($section->getErrors(), true));
+
+        $section->block_id = $action->block->id;
+        self::assertFalse($section->validate());
+        self::assertArrayHasKey('block_id', $section->getErrors());
+    }
+
     public function testASectionWithImagesBlocksCannotShowIsNotConverted(): void
     {
         TestEntry::getModule()->enableBlockAssets = false;

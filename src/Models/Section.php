@@ -228,13 +228,18 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
     }
 
     /**
-     * A type change drops the block the new type cannot place: the form no longer shows the field to clear it.
+     * A type change drops the block the new type cannot place: the form no longer shows the field to clear it. A
+     * block the configuration stopped allowing is kept as stored, unshown, for when it allows it again.
      */
     public function validateBlockId(): void
     {
         if ($this->block_id && !$this->allowsBlock()) {
             if (!$this->getIsNewRecord() && $this->isAttributeChanged('type', false)) {
                 $this->block_id = null;
+                return;
+            }
+
+            if (!$this->getIsNewRecord() && !$this->isAttributeChanged('block_id', false)) {
                 return;
             }
 
