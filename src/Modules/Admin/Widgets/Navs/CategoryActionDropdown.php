@@ -36,8 +36,12 @@ class CategoryActionDropdown extends ActionDropdown
         parent::configure();
     }
 
-    protected function getCreateCategoryButton(): Stringable
+    protected function getCreateCategoryButton(): ?Stringable
     {
+        if (!$this->model->allowsDescendants()) {
+            return null;
+        }
+
         return Button::make()
             ->primary()
             ->text(Yii::t('cms', 'CATEGORY_NEW_CATEGORY'))

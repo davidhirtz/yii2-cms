@@ -53,6 +53,10 @@ class CategoryParentIdSelectField extends SelectField
      */
     protected function getCategories(): array
     {
-        return array_filter(CategoryCollection::getAll(), fn (Category $category): bool => $category->allowsDescendants());
+        // The current parent stays an option, or the next save would move the category to the root.
+        return array_filter(
+            CategoryCollection::getAll(),
+            fn (Category $category): bool => $category->allowsDescendants() || $category->id === $this->model->parent_id,
+        );
     }
 }

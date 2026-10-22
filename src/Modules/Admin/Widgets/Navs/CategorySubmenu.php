@@ -42,6 +42,10 @@ class CategorySubmenu extends Submenu
 
     protected function getSubcategoriesItem(): ?NavItem
     {
+        if (!$this->model->allowsDescendants()) {
+            return null;
+        }
+
         return NavItem::make()
             ->badge($this->model->getBranchCount())
             ->icon('folder-open')

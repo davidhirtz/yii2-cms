@@ -376,9 +376,12 @@ class Category extends ActiveRecord implements SearchableInterface
         return self::class;
     }
 
+    /**
+     * Whether it may have subcategories, which is not whether its entries are passed on to them.
+     */
     public function allowsDescendants(): bool
     {
-        return static::getModule()->inheritNestedCategories
+        return static::getModule()->enableNestedCategories
             && ($this->getType()?->allowsDescendants() ?? true);
     }
 

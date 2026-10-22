@@ -7,11 +7,13 @@ namespace Hirtz\Cms\Tests\Modules\Controllers;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\EntryCategory;
 use Hirtz\Cms\Models\Types\CategoryType;
+use Hirtz\Cms\Modules\Admin\Widgets\Grids\Toolbars\CategoryFilterDropdown;
 use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
 use Hirtz\Cms\Test\Models\TestEntry;
 use Hirtz\Cms\Test\TestCase;
 use Hirtz\Skeleton\Models\User;
 use Hirtz\Skeleton\Test\Fixtures\UserFixture;
+use Hirtz\Skeleton\Models\Definitions\DefinitionRegistry;
 use Override;
 use Yii;
 use yii\web\ForbiddenHttpException;
@@ -80,6 +82,52 @@ class CategoryControllerTest extends TestCase
 
         self::assertIsString($html);
         self::assertStringNotContainsString('/admin/cms/entry/index', $html);
+    }
+
+    public function testCategoriesStayNestableWhenEntriesDoNotInheritThem(): void
+    {
+        TestEntry::getModule()->inheritNestedCategories = false;
+        $this->login();
+
+        $html = Yii::$app->runAction('admin/cms/category/update', ['id' => 3]);
+
+        self::assertIsString($html);
+        self::assertStringContainsString('Category[parent_id]', $html);
+        self::assertStringContainsString('category/index?parent=3', $html);
+    }
+
+    public function testFlatCategoriesOfferNoSubcategories(): void
+    {
+        TestEntry::getModule()->enableNestedCategories = false;
+        $this->login();
+
+        $html = Yii::$app->runAction('admin/cms/category/update', ['id' => 1]);
+
+        self::assertIsString($html);
+        self::assertStringNotContainsString('category/index?parent=1', $html);
+        self::assertStringNotContainsString('category/create?parent=1', $html);
+    }
+
+    public function testAGroupingParentStaysAnOptionAndIsNoEntryFilter(): void
+    {
+        Yii::$container->set(Category::class, [
+            'types' => fn (): array => [
+                CategoryType::make(Category::TYPE_DEFAULT)->name('Group')->allowDescendants(false)->allowEntries(false),
+                CategoryType::make(self::TYPE_TOPIC)->name('Topic'),
+            ],
+        ]);
+        DefinitionRegistry::reset();
+
+        Category::updateAll(['type' => self::TYPE_TOPIC], ['id' => 3]);
+        $this->login();
+
+        $html = Yii::$app->runAction('admin/cms/category/update', ['id' => 3]);
+        self::assertIsString($html);
+        self::assertMatchesRegularExpression('/<option value="1" selected/', $html);
+
+        $html = (string)CategoryFilterDropdown::make();
+        self::assertStringNotContainsString('category=1"', $html);
+        self::assertStringContainsString('category=3"', $html);
     }
 
     public function testIndexListsTheChildrenOfAParent(): void

@@ -109,7 +109,7 @@ class PickerGridViewTest extends TestCase
 
         self::assertIsString($html);
         self::assertStringContainsString(
-            '<div class="strong">Child category 1</div><div class="small">Root category 1</div>',
+            '<div class="strong">Child category 1</div><div class="small"><a href="/admin/cms/entry-category/index?category=1">Root category 1</a></div>',
             $html,
         );
     }

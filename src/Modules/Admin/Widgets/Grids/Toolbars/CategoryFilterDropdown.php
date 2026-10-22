@@ -30,7 +30,7 @@ class CategoryFilterDropdown extends FilterDropdown
     protected function getNestedCategoryNames(): array
     {
         return Category::indentNestedTree(
-            $this->getCategories(),
+            CategoryCollection::getAll(),
             Category::instance()->getI18nAttributeName('name'),
         );
     }
@@ -40,6 +40,6 @@ class CategoryFilterDropdown extends FilterDropdown
      */
     protected function getCategories(): array
     {
-        return CategoryCollection::getAll();
+        return array_filter(CategoryCollection::getAll(), fn (Category $category): bool => $category->allowsEntries());
     }
 }

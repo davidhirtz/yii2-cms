@@ -19,8 +19,7 @@ class CategoryType extends Type
     protected ?Closure $structuredData = null;
 
     /**
-     * Whether a category of this type passes its entries down to its children. The module's
-     * `inheritNestedCategories` decides first.
+     * Whether a category of this type may have subcategories. The module's `enableNestedCategories` decides first.
      */
     public function allowDescendants(bool $allowDescendants = true): static
     {
