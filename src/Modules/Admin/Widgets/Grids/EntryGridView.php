@@ -121,8 +121,8 @@ class EntryGridView extends GridView
          * @see EntryCategoryController::actionOrder()
          */
         $this->orderRoute ??= $this->provider->category
-            ? ['entry-category/order', 'category' => $this->provider->category->id]
-            : ['order', 'parent' => $this->provider->parent?->id];
+            ? ['entry-category/order', 'category' => $this->provider->category->id, 'tenant' => $this->provider->tenantId]
+            : ['order', 'parent' => $this->provider->parent?->id, 'tenant' => $this->provider->tenantId];
 
         $this->configureSelection();
 

@@ -17,11 +17,12 @@ class ReorderEntries extends ReorderActiveRecords
     /**
      * @param list<int> $entryIds
      */
-    public function __construct(protected ?Entry $parent, array $entryIds)
+    public function __construct(protected ?Entry $parent, ?int $tenantId, array $entryIds)
     {
         $entries = ($parent?->findChildren() ?? Entry::find())
             ->select(['id', 'position'])
             ->andWhere(['id' => $entryIds])
+            ->andFilterWhere(['tenant_id' => $tenantId])
             ->orderBy(['position' => SORT_ASC])
             ->all();
 

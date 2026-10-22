@@ -116,6 +116,18 @@ class EntryGridViewTest extends TestCase
         self::assertStringContainsString('sortable-handle', $html);
         self::assertStringContainsString(Html::encode(Url::to(['/admin/cms/entry-category/order', 'category' => $category->id])), $html);
 
+        // A tenant the query names is carried into every URL anyway, one set on the provider is not.
+        Yii::$container->set(EntryActiveDataProvider::class, ['tenantId' => 1]);
+
+        try {
+            $html = Yii::$app->runAction('admin/cms/entry/index', ['category' => $category->id]);
+        } finally {
+            Yii::$container->clear(EntryActiveDataProvider::class);
+        }
+
+        self::assertIsString($html);
+        self::assertStringContainsString(Html::encode(Url::to(['/admin/cms/entry-category/order', 'category' => $category->id, 'tenant' => 1])), $html);
+
         // A status filter shows some of the category's entries, whose positions would collide with the hidden ones.
         $html = Yii::$app->runAction('admin/cms/entry/index', ['category' => $category->id, 'status' => Entry::STATUS_ENABLED]);
         self::assertIsString($html);

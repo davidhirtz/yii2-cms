@@ -303,6 +303,25 @@ class EntryControllerTest extends TestCase
         );
     }
 
+    public function testOrderLeavesTheOtherTenantsEntriesAlone(): void
+    {
+        $this->login();
+
+        $first = $this->createEntry('First', 'first');
+        $second = $this->createEntry('Second', 'second');
+        $position = (int)$second->position;
+
+        $other = (int)$first->tenant_id === 1 ? 2 : 1;
+        Entry::updateAll(['tenant_id' => $other], ['id' => $second->id]);
+
+        $this->post('admin/cms/entry/order', ['tenant' => $first->tenant_id], [
+            'entry' => [$second->id, $first->id],
+        ]);
+
+        self::assertSame($position, Entry::findOne($second->id)?->position);
+        self::assertSame(2, Entry::findOne($first->id)?->position);
+    }
+
     private function createEntry(string $name, string $slug, ?Entry $parent = null): Entry
     {
         $entry = Entry::create();

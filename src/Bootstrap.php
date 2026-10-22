@@ -71,6 +71,7 @@ class Bootstrap implements ConfigBootstrapInterface
                             })
                             ->reorder(static fn (?ActiveRecord $parent, array $ids): bool => Yii::createObject(ReorderEntries::class, [
                                 $parent instanceof Entry ? $parent : null,
+                                null,
                                 $ids,
                             ])->run() !== false)
                             ->url(static fn (Entry $entry): array|false => $entry->getRoute()),

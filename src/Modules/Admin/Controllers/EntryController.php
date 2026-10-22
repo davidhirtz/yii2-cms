@@ -218,10 +218,11 @@ class EntryController extends AbstractController
         return $this->redirect(['index', ...$this->request->get()]);
     }
 
-    public function actionOrder(?int $parent = null): string
+    public function actionOrder(?int $parent = null, ?int $tenant = null): string
     {
         $success = ReorderEntries::runWithBodyParam('entry', [
             'parent' => $parent ? $this->findEntry($parent) : null,
+            'tenantId' => $this->getTenantId($tenant),
         ]);
 
         if ($success) {

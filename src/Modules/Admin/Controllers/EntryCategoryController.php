@@ -119,10 +119,11 @@ class EntryCategoryController extends AbstractController
         ]);
     }
 
-    public function actionOrder(int $category): string
+    public function actionOrder(int $category, ?int $tenant = null): string
     {
         $success = ReorderEntryCategories::runWithBodyParam('entry', [
             'category' => $this->findCategory($category),
+            'tenantId' => $this->getTenantId($tenant),
         ]);
 
         if ($success) {

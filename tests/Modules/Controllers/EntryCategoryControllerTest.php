@@ -5,12 +5,15 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Tests\Modules\Controllers;
 
 use Hirtz\Cms\Models\Category;
+use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\EntryCategory;
 use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
 use Hirtz\Cms\Test\Models\TestEntry;
 use Hirtz\Cms\Test\TestCase;
 use Hirtz\Skeleton\Models\User;
 use Hirtz\Skeleton\Test\Fixtures\UserFixture;
+use Hirtz\Tenant\Models\Tenant;
+use Hirtz\Tenant\Web\UrlManager;
 use Override;
 use Yii;
 use yii\web\ForbiddenHttpException;
@@ -199,6 +202,32 @@ class EntryCategoryControllerTest extends TestCase
 
         self::assertLessThan($second->position, $first->position);
         self::assertNotEmpty($this->getWebSession()->getFlash('success'));
+    }
+
+    public function testOrderLeavesTheOtherTenantsEntriesAlone(): void
+    {
+        $this->login();
+        Entry::updateAll(['tenant_id' => 2], ['id' => 2]);
+
+        $this->post('admin/cms/entry-category/order', ['category' => 1, 'tenant' => 1], ['entry' => [2, 1]]);
+
+        self::assertSame(2, EntryCategory::findOne(['entry_id' => 2, 'category_id' => 1])?->position);
+        self::assertSame(2, EntryCategory::findOne(['entry_id' => 1, 'category_id' => 1])?->position);
+    }
+
+    public function testOrderWithoutATenantFallsBackToTheRequestsTenant(): void
+    {
+        $this->login();
+        Entry::updateAll(['tenant_id' => 2], ['id' => 2]);
+
+        $manager = Yii::$app->getUrlManager();
+        self::assertInstanceOf(UrlManager::class, $manager);
+        $manager->setTenant(Tenant::findOne(1) ?? self::fail('The seeded tenant is missing.'));
+
+        $this->post('admin/cms/entry-category/order', ['category' => 1], ['entry' => [2, 1]]);
+
+        self::assertSame(2, EntryCategory::findOne(['entry_id' => 2, 'category_id' => 1])?->position);
+        self::assertSame(2, EntryCategory::findOne(['entry_id' => 1, 'category_id' => 1])?->position);
     }
 
     /**

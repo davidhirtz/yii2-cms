@@ -25,18 +25,29 @@ class ReorderEntriesTest extends TestCase
         $reverseOrder = array_reverse($this->getRootEntryIds());
         $postIds = $this->getPostIds();
 
-        $action = new ReorderEntries(null, $reverseOrder);
+        $action = new ReorderEntries(null, null, $reverseOrder);
         $action->run();
 
         self::assertEquals($this->getRootEntryIds(), $reverseOrder);
         self::assertEquals($this->getPostIds(), $postIds);
     }
 
+    public function testATenantLeavesTheOtherTenantsEntriesAlone(): void
+    {
+        TestEntry::updateAll(['tenant_id' => 2], ['id' => 3]);
+
+        (new ReorderEntries(null, 1, [3, 2, 1]))->run();
+
+        self::assertSame(3, TestEntry::findOne(3)?->position);
+        self::assertSame(2, TestEntry::findOne(2)?->position);
+        self::assertSame(3, TestEntry::findOne(1)?->position);
+    }
+
     public function testChildrenOrderEntries(): void
     {
         $reverseOrder = array_reverse($this->getPostIds());
 
-        $action = new ReorderEntries($this->getPageEntry(), $reverseOrder);
+        $action = new ReorderEntries($this->getPageEntry(), null, $reverseOrder);
         $action->run();
 
         $entry = $this->getPageEntry();
@@ -76,7 +87,7 @@ class ReorderEntriesTest extends TestCase
         Yii::$app->set('cache', $cache);
         $level = Yii::$app->getDb()->getTransaction()?->getLevel();
 
-        self::assertGreaterThan(0, (new ReorderEntries(null, array_reverse($this->getRootEntryIds())))->run());
+        self::assertGreaterThan(0, (new ReorderEntries(null, null, array_reverse($this->getRootEntryIds())))->run());
         self::assertSame($level, $cache->invalidatedAt);
     }
 
