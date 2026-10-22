@@ -10,6 +10,7 @@ use Hirtz\Cms\Models\Interfaces\EntryRelationModelInterface;
 use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Models\Queries\EntryRelationQuery;
 use Hirtz\Cms\Models\Interfaces\EntryRelationTypeInterface;
+use Hirtz\Skeleton\Helpers\ArrayHelper;
 
 /**
  * @mixin EntryRelationModelInterface
@@ -68,7 +69,22 @@ trait EntryRelationModelTrait
      */
     public function getVisibleEntries(): array
     {
-        return $this->allowsEntries() ? array_values($this->entries) : [];
+        return $this->allowsEntries() ? $this->sortByEntriesOrder(array_values($this->entries)) : [];
+    }
+
+    /**
+     * The type's order, which a preload applies too, so a section shows one order however it was loaded.
+     *
+     * @param list<Entry> $entries
+     * @return list<Entry>
+     */
+    protected function sortByEntriesOrder(array $entries): array
+    {
+        if ($order = $this->getEntriesOrderBy()) {
+            ArrayHelper::multisort($entries, array_keys($order), array_values($order));
+        }
+
+        return array_values($entries);
     }
 
     /**

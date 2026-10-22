@@ -602,7 +602,7 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
             return $block->getVisibleEntries();
         }
 
-        return $this->allowsEntries() ? array_values($this->entries) : [];
+        return $this->allowsEntries() ? $this->sortByEntriesOrder(array_values($this->entries)) : [];
     }
 
     public function allowsBlock(): bool

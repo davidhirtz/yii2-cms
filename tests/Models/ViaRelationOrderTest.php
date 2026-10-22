@@ -9,8 +9,11 @@ use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\EntryCategory;
 use Hirtz\Cms\Models\EntryRelation;
 use Hirtz\Cms\Models\Section;
+use Hirtz\Cms\Models\Types\SectionType;
 use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
 use Hirtz\Cms\Test\TestCase;
+use Hirtz\Skeleton\Models\Definitions\DefinitionRegistry;
+use Yii;
 
 class ViaRelationOrderTest extends TestCase
 {
@@ -37,6 +40,40 @@ class ViaRelationOrderTest extends TestCase
         self::assertNotNull($category);
 
         self::assertSame([2, 1], array_map(fn (Entry $entry): int => $entry->id, array_values($category->entries)));
+    }
+
+    public function testEagerLoadedEntriesFollowTheirOrder(): void
+    {
+        Entry::getModule()->enableSectionEntries = true;
+        EntryCategory::updateAll(['position' => 1], ['category_id' => 1, 'entry_id' => 2]);
+        EntryCategory::updateAll(['position' => 2], ['category_id' => 1, 'entry_id' => 1]);
+
+        $section = Section::find()->where(['id' => 3])->with('entries')->one();
+        $category = Category::find()->where(['id' => 1])->with('entries')->one();
+
+        self::assertSame([6, 1], array_map(fn (Entry $entry): int => $entry->id, $section?->getVisibleEntries() ?? []));
+        self::assertSame([2, 1], array_map(fn (Entry $entry): int => $entry->id, array_values($category->entries ?? [])));
+    }
+
+    public function testTheTypesOrderAppliesWithoutAPreload(): void
+    {
+        Entry::getModule()->enableSectionEntries = true;
+
+        Yii::$container->set(Section::class, [
+            'types' => fn (): array => [
+                SectionType::make(Section::TYPE_DEFAULT)->name('Links')->entriesOrderBy(['name' => SORT_ASC]),
+            ],
+        ]);
+
+        DefinitionRegistry::reset();
+
+        Section::updateAll(['type' => Section::TYPE_DEFAULT], ['id' => 3]);
+        Entry::updateAll(['name' => 'Aardvark'], ['id' => 1]);
+        Entry::updateAll(['name' => 'Zebra'], ['id' => 6]);
+
+        $section = Section::findOne(3);
+
+        self::assertSame([1, 6], array_map(fn (Entry $entry): int => $entry->id, $section?->getVisibleEntries() ?? []));
     }
 
     public function testAnOrderOfTheRelationsOwnIsKept(): void
