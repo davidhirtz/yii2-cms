@@ -457,11 +457,11 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
 
     /**
      * Not the entry's name: with the title boost, that would rank every section of an entry beside the entry itself.
+     * Nor the type's, which is translated in the saving editor's language and would land in every language's row.
      */
     public function getSearchTitle(?string $language = null): string
     {
-        $name = (string)$this->getSearchAttributeValue('name', $language);
-        return mb_substr(SearchText::normalize($name !== '' ? $name : $this->getTypeName()), 0, 255);
+        return mb_substr(SearchText::normalize((string)$this->getSearchAttributeValue('name', $language)), 0, 255);
     }
 
     protected function isSearchResultVisible(): bool

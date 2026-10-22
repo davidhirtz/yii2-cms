@@ -7,6 +7,7 @@ namespace Hirtz\Cms\Tests\Models;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
 use Hirtz\Cms\Test\TestCase;
+use Yii;
 use Hirtz\Skeleton\Models\User;
 
 class SectionSearchTest extends TestCase
@@ -39,13 +40,16 @@ class SectionSearchTest extends TestCase
         self::assertStringStartsWith('Test Headline', (string)$result->description);
     }
 
-    public function testAnUnnamedSectionIsTitledByItsType(): void
+    /**
+     * The type name is translated in the saving editor's language, so it would title every language's row in it.
+     */
+    public function testAnUnnamedSectionIsIndexedWithoutATitle(): void
     {
         $section = $this->getSectionFromFixture('section-headline');
         $section->name = '';
 
-        self::assertSame($section->getTypeName(), $section->getSearchTitle());
-        self::assertStringNotContainsString('#', $section->getSearchTitle());
+        self::assertSame('', $section->getSearchTitle());
+        self::assertSame('', Yii::$app->getI18n()->callback('de', fn (): string => $section->getSearchTitle()));
     }
 
     public function testTheSearchableQueryLoadsTheEntry(): void
