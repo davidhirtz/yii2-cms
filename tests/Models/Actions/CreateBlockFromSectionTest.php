@@ -173,6 +173,20 @@ class CreateBlockFromSectionTest extends TestCase
         self::assertSame('Headline', Block::find()->withTranslations()->where(['id' => $action->block->id])->one()?->getAttribute('name_de'));
     }
 
+    public function testTheBlockSectionCanBeChangedBackToATypeWithoutABlock(): void
+    {
+        $action = CreateBlockFromSection::create(Section::findOne(1));
+        self::assertSame([], $action->getFirstErrors());
+
+        $section = Section::findOne(1);
+        self::assertNotNull($section);
+        $section->type = self::TYPE_HEADLINE;
+
+        self::assertTrue($section->save(), print_r($section->getErrors(), true));
+        self::assertNull(Section::findOne(1)?->block_id);
+        self::assertSame(0, Block::findOne($action->block->id)?->section_count);
+    }
+
     public function testASectionWithoutANameNamesTheBlockAfterItsType(): void
     {
         $section = Section::instantiateByType(self::TYPE_HEADLINE);
