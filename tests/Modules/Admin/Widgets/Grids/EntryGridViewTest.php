@@ -7,11 +7,13 @@ namespace Hirtz\Cms\Tests\Modules\Admin\Widgets\Grids;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Collections\CategoryCollection;
 use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Models\EntryCategory;
 use Hirtz\Cms\Models\Types\EntryType;
 use Hirtz\Cms\Modules\Admin\Data\EntryActiveDataProvider;
 use Hirtz\Cms\Test\Models\TestEntry;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\EntryGridView;
 use Hirtz\Cms\Test\TestCase;
+use Hirtz\Skeleton\Helpers\Html;
 use Hirtz\Skeleton\Models\User;
 use Hirtz\Skeleton\Test\Traits\UserFixtureTrait;
 use Hirtz\Skeleton\Widgets\Grids\Toolbars\StatusFilterDropdown;
@@ -21,6 +23,7 @@ use Hirtz\Tenant\Web\UrlManager;
 use Override;
 use Yii;
 use yii\base\Event;
+use yii\helpers\Url;
 
 /**
  * The name column composes the entry link with the frontend URL and the category buttons, both of which a project
@@ -87,6 +90,36 @@ class EntryGridViewTest extends TestCase
         $html = Yii::$app->runAction('admin/cms/entry/index');
         self::assertIsString($html);
         self::assertStringContainsString('Haystack', $html);
+    }
+
+    public function testACategoryIsSortableByItsOwnPosition(): void
+    {
+        Entry::getModule()->enableCategories = true;
+
+        $category = Category::create();
+        $category->loadDefaultValues();
+        $category->name = 'Haystack';
+        $category->slug = 'haystack';
+        self::assertTrue($category->insert(), print_r($category->getErrors(), true));
+
+        $this->login();
+
+        foreach (['first', 'second'] as $slug) {
+            $junction = EntryCategory::create();
+            $junction->populateEntryRelation($this->createEntry($slug, $slug));
+            $junction->populateCategoryRelation($category);
+            self::assertTrue($junction->insert(), print_r($junction->getErrors(), true));
+        }
+
+        $html = Yii::$app->runAction('admin/cms/entry/index', ['category' => $category->id]);
+        self::assertIsString($html);
+        self::assertStringContainsString('sortable-handle', $html);
+        self::assertStringContainsString(Html::encode(Url::to(['/admin/cms/entry-category/order', 'category' => $category->id])), $html);
+
+        // A status filter shows some of the category's entries, whose positions would collide with the hidden ones.
+        $html = Yii::$app->runAction('admin/cms/entry/index', ['category' => $category->id, 'status' => Entry::STATUS_ENABLED]);
+        self::assertIsString($html);
+        self::assertStringNotContainsString('sortable-handle', $html);
     }
 
     public function testTheContainerTurnsTheTypeDropdownOff(): void

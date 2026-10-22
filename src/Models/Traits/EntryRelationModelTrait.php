@@ -28,7 +28,8 @@ trait EntryRelationModelTrait
 
         /** @var EntryRelationQuery<EntryRelation> */
         return $this->hasMany($class, ['model_id' => 'id'])
-            ->andOnCondition([EntryRelation::tableName() . '.[[model_class]]' => $class::getModelClass()]);
+            ->andOnCondition([EntryRelation::tableName() . '.[[model_class]]' => $class::getModelClass()])
+            ->orderBy([EntryRelation::tableName() . '.[[position]]' => SORT_ASC]);
     }
 
     /**

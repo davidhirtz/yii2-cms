@@ -101,7 +101,7 @@ class CreateBlockFromSection
     {
         $position = 0;
 
-        foreach ($this->section->getAssets()->orderBy(['position' => SORT_ASC])->all() as $asset) {
+        foreach ($this->section->getAssets()->all() as $asset) {
             DuplicateAsset::create([
                 'asset' => $asset,
                 'model' => $this->block,
@@ -126,7 +126,7 @@ class CreateBlockFromSection
     {
         $position = 0;
 
-        foreach ($this->section->getEntryRelations()->orderBy(['position' => SORT_ASC])->all() as $relation) {
+        foreach ($this->section->getEntryRelations()->all() as $relation) {
             $blockEntry = BlockEntry::create();
             $blockEntry->populateEntryRelation($relation->entry);
             $blockEntry->populateModelRelation($this->block);

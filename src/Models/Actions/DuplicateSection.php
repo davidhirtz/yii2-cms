@@ -70,12 +70,12 @@ class DuplicateSection extends DuplicateActiveRecord
     {
         Yii::debug('Duplicating entry relations ...');
 
-        $entries = $this->model->getEntries()->all();
         $position = 0;
 
-        foreach ($entries as $entry) {
+        // Not `getEntries()`: a `via()` relation reads the entries in their own order, not the relations'.
+        foreach ($this->model->getEntryRelations()->with('entry')->all() as $relation) {
             $entryRelation = SectionEntry::create();
-            $entryRelation->populateEntryRelation($entry);
+            $entryRelation->populateEntryRelation($relation->entry);
             $entryRelation->populateModelRelation($this->duplicate);
             $entryRelation->setIsBatch(true);
             $entryRelation->position = ++$position;

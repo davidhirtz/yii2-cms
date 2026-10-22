@@ -6,8 +6,11 @@ namespace Hirtz\Cms\Tests\Models\Actions;
 
 use Hirtz\Cms\Models\Actions\DuplicateSection;
 use Hirtz\Cms\Models\Section;
+use Hirtz\Cms\Models\SectionAsset;
+use Hirtz\Cms\Models\SectionEntry;
 use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
 use Hirtz\Cms\Test\Models\TestEntry;
+use Hirtz\Cms\Test\Models\TestSection;
 use Hirtz\Cms\Test\TestCase;
 
 class DuplicateSectionTest extends TestCase
@@ -47,5 +50,35 @@ class DuplicateSectionTest extends TestCase
         self::assertNotNull($stored);
         self::assertSame(0, $stored->asset_count);
         self::assertSame(0, $stored->entry_count);
+    }
+
+    public function testTheLinkedEntriesAreCopiedInTheirOrder(): void
+    {
+        $duplicate = DuplicateSection::create(['section' => TestSection::findOne(3)]);
+
+        $entryIds = SectionEntry::find()
+            ->select('entry_id')
+            ->where(['model_id' => $duplicate->id])
+            ->orderBy(['position' => SORT_ASC])
+            ->column();
+
+        self::assertSame([6, 1], array_map(intval(...), $entryIds));
+    }
+
+    public function testTheAssetsAreCopiedInTheirOrder(): void
+    {
+        foreach ([4 => 4, 5 => 3, 6 => 2, 7 => 1] as $id => $position) {
+            SectionAsset::updateAll(['position' => $position], ['id' => $id]);
+        }
+
+        $duplicate = DuplicateSection::create(['section' => TestSection::findOne(1)]);
+
+        $fileIds = SectionAsset::find()
+            ->select('file_id')
+            ->where(['model_id' => $duplicate->id])
+            ->orderBy(['position' => SORT_ASC])
+            ->column();
+
+        self::assertSame([6, 5, 4, 3], array_map(intval(...), $fileIds));
     }
 }
