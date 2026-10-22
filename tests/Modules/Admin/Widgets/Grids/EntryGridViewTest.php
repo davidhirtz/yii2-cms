@@ -184,6 +184,25 @@ class EntryGridViewTest extends TestCase
         self::assertStringNotContainsString('sortable-handle', $html);
     }
 
+    public function testTheRowsDeleteButtonWarnsOfTheSubentries(): void
+    {
+        $this->login();
+        Entry::getModule()->enableNestedEntries = true;
+
+        $parent = $this->createEntry('Parent', 'parent');
+        $this->createEntry('Leaf', 'leaf');
+        $child = $this->createEntry('Child', 'child');
+        $child->updateAttributes(['parent_id' => $parent->id]);
+        $parent->updateAttributes(['entry_count' => 1]);
+
+        Yii::$container->set(EntryGridView::class, ['showDeleteButton' => true]);
+
+        $html = Yii::$app->runAction('admin/cms/entry/index');
+
+        self::assertIsString($html);
+        self::assertSame(1, substr_count($html, Html::encode(Yii::t('cms', 'ENTRY_DELETE_WARNING'))));
+    }
+
     public function testTheContainerTurnsTheTypeDropdownOff(): void
     {
         Yii::$container->set(Entry::class, DatedEntry::class);

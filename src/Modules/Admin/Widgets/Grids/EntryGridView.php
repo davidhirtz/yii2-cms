@@ -447,9 +447,13 @@ class EntryGridView extends GridView
 
     protected function getDeleteButton(Entry $entry): Stringable
     {
+        // The subentries go with it, see `Entry::beforeDelete()`.
         return DeleteGridButton::make()
             ->label(Yii::t('cms', 'ENTRY_BUTTON_DELETE'))
-            ->title(Yii::t('cms', 'ENTRY_CONFIRM_DELETE'))
+            ->title($entry->entry_count
+                ? Yii::t('cms', 'ENTRY_DELETE_TITLE', ['n' => $entry->entry_count])
+                : Yii::t('cms', 'ENTRY_CONFIRM_DELETE'))
+            ->message($entry->entry_count ? Yii::t('cms', 'ENTRY_DELETE_WARNING') : null)
             ->model($entry);
     }
 
