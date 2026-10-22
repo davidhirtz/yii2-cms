@@ -20,6 +20,8 @@ use Hirtz\Skeleton\Models\User;
 use Hirtz\Tenant\Models\Collections\TenantCollection;
 use Override;
 use Hirtz\Tenant\Models\Tenant;
+use Hirtz\Cms\Models\Types\EntryType;
+use Hirtz\Skeleton\Models\Definitions\DefinitionRegistry;
 use Yii;
 
 class McpResourcesTest extends TestCase
@@ -59,6 +61,23 @@ class McpResourcesTest extends TestCase
         foreach (['entry', 'section', 'category', 'block'] as $name) {
             self::assertContains($name, $names);
         }
+    }
+
+    public function testAHiddenFieldIsLeftOutInEveryLanguage(): void
+    {
+        Yii::$container->set(Entry::class, [
+            'i18nAttributes' => ['name', 'slug', 'description'],
+            'types' => fn (): array => [EntryType::make(Entry::TYPE_DEFAULT)->name('Page')->hiddenFields('description')],
+        ]);
+
+        Entry::instance(true);
+        DefinitionRegistry::reset();
+
+        $properties = $this->callTool('describe_resource', ['resource' => 'entry'])['attributes']['properties'] ?? [];
+
+        self::assertArrayHasKey('name_de', $properties);
+        self::assertArrayNotHasKey('description', $properties);
+        self::assertArrayNotHasKey('description_de', $properties);
     }
 
     public function testTenantsAndMenusAreNamedInTheSchema(): void
