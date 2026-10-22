@@ -1,4 +1,4 @@
-## Unreleased
+## 3.18.0 (October 22, 2026)
 
 - Changed `CategoryCollection::getBySlug()` to find a nested category by its own slug and to refuse a path with an unknown part
 - Changed the `davidhirtz/yii2-skeleton` requirement to `^3.22`, `davidhirtz/yii2-media` to `^3.20` (reorder) and `davidhirtz/yii2-tenant` to `^3.6` (redirect languages)
