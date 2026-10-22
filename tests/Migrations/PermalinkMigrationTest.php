@@ -136,6 +136,43 @@ class PermalinkMigrationTest extends TestCase
         self::assertSame(['alpha'], self::findUris(Permalink::LANGUAGE_ALL));
     }
 
+    public function testATranslatedSlugGetsAPermalinkPerLanguage(): void
+    {
+        Yii::$app->getI18n()->setLanguages(['en-US', 'de']);
+        Yii::$container->set(Entry::class, ['i18nAttributes' => ['slug']]);
+
+        $this->addEntryColumns(['slug_de' => 'varchar(100) NULL', 'parent_slug_de' => 'varchar(255) NULL']);
+        $this->updateEntry(1, ['slug' => 'contact', 'slug_de' => 'kontakt']);
+        $this->updateEntry(2, ['slug' => 'team', 'parent_slug' => 'contact', 'slug_de' => 'team', 'parent_slug_de' => 'kontakt']);
+
+        $this->migrate();
+
+        self::assertSame(['contact', 'contact/team'], self::findUris('en-US'));
+        self::assertSame(['kontakt', 'kontakt/team'], self::findUris('de'));
+        self::assertNull(Yii::$app->getDb()->getTableSchema(Entry::tableName(), true)?->getColumn('slug_de'));
+    }
+
+    /**
+     * The languages come from the configuration at migrate time, which may no longer translate the slug.
+     */
+    public function testATranslatedSlugColumnNoLanguageReadsIsRefused(): void
+    {
+        Yii::$app->getI18n()->setLanguages(['en-US', 'de']);
+
+        $this->addEntryColumns(['slug_de' => 'varchar(100) NULL', 'parent_slug_de' => 'varchar(255) NULL']);
+        $this->updateEntry(1, ['slug' => 'contact', 'slug_de' => 'kontakt']);
+
+        try {
+            $this->migrate();
+            self::fail('A translated slug column was left behind.');
+        } catch (RuntimeException $exception) {
+            self::assertStringContainsString('slug_de, parent_slug_de', $exception->getMessage());
+        }
+
+        self::assertSame([], self::findUris(Permalink::LANGUAGE_ALL));
+        self::assertNotNull(Yii::$app->getDb()->getTableSchema(Entry::tableName(), true)?->getColumn('slug_de'));
+    }
+
     /**
      * @param array<string, string> $columns
      */
