@@ -8,6 +8,7 @@ use Hirtz\Cms\Models\Actions\PreloadEntrySiteRelations;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Module;
+use Hirtz\Skeleton\Helpers\Url;
 use Hirtz\Skeleton\Web\Controller;
 use Override;
 use Yii;
@@ -55,7 +56,7 @@ class SiteController extends Controller
             $slug = rtrim($slug, '/');
 
             if ($this->redirectTrailingSlash) {
-                return $this->redirect(['view', 'slug' => $slug], 301);
+                return $this->redirectWithQueryString(['view', 'slug' => $slug]);
             }
         }
 
@@ -104,10 +105,24 @@ class SiteController extends Controller
     {
         if ($entry->isIndex() || trim($slug, '/') !== $entry->getFormattedSlug()) {
             $route = $entry->getRoute();
-            return $route ? $this->redirect($route, 301) : null;
+            return $route ? $this->redirectWithQueryString($route) : null;
         }
 
         return null;
+    }
+
+    /**
+     * @param array<int|string, mixed> $route
+     */
+    protected function redirectWithQueryString(array $route): Response
+    {
+        $url = Url::to($route);
+
+        if ($query = $this->request->getQueryString()) {
+            $url .= (str_contains($url, '?') ? '&' : '?') . $query;
+        }
+
+        return $this->redirect($url, 301);
     }
 
     protected function populateEntryRelations(Entry $entry): void

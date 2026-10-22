@@ -180,6 +180,36 @@ final class SiteControllerFunctionalTest extends TestCase
         self::assertResponseIsSuccessful();
     }
 
+    public function testTheCanonicalRedirectsKeepTheQueryString(): void
+    {
+        $slug = Entry::getModule()->entryIndexSlug;
+        self::assertIsString($slug);
+
+        $entry = Entry::create();
+        $entry->name = 'Homepage';
+        $entry->slug = $slug;
+        self::assertTrue($entry->insert(), print_r($entry->getErrors(), true));
+
+        $redirects = [
+            '/test-1/?utm_source=x&a%5B%5D=%C3%BC' => '/test-1?utm_source=x&a%5B%5D=%C3%BC',
+            '/TEST-1?utm_source=x' => '/test-1?utm_source=x',
+            "/$slug?utm_source=x" => '/?utm_source=x',
+        ];
+
+        foreach ($redirects as $url => $location) {
+            self::$client = new Browser(['HTTPS' => 'on']);
+            self::$client->followRedirects(false);
+            self::$client->request('GET', $url);
+
+            $response = self::$client->getInternalResponse();
+            $header = $response->getHeader('location');
+
+            self::assertSame(301, $response->getStatusCode(), $url);
+            self::assertIsString($header);
+            self::assertStringEndsWith($location, $header, $url);
+        }
+    }
+
     public function testAMissingHomepageTellsTheEditorToCreateIt(): void
     {
         $this->open('/');
