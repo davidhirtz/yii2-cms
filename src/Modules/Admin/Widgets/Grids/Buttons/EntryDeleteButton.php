@@ -31,6 +31,12 @@ class EntryDeleteButton extends DeleteButton
             $this->title ??= Yii::t('cms', 'COMMON_DELETE_TITLE');
         }
 
+        // The subentries go with it, see `Entry::beforeDelete()`.
+        if ($this->model->entry_count) {
+            $this->title ??= Yii::t('cms', 'ENTRY_DELETE_TITLE', ['n' => $this->model->entry_count]);
+            $this->message ??= Yii::t('cms', 'ENTRY_DELETE_WARNING');
+        }
+
         $this->label ??= Yii::t('cms', 'ENTRY_BUTTON_DELETE');
         $this->title ??= Yii::t('cms', 'ENTRY_CONFIRM_DELETE');
         $this->url ??= ['/admin/cms/entry/delete', 'id' => $this->model->id];

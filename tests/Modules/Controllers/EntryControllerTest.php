@@ -8,6 +8,7 @@ use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Types\EntryType;
 use Hirtz\Cms\Test\TestCase;
 use Hirtz\Skeleton\Models\Definitions\DefinitionRegistry;
+use Hirtz\Skeleton\Helpers\Html;
 use Hirtz\Skeleton\Models\User;
 use Hirtz\Skeleton\Test\Traits\UserFixtureTrait;
 use Override;
@@ -316,6 +317,36 @@ class EntryControllerTest extends TestCase
         self::assertInstanceOf(Response::class, $response);
         self::assertNull(Entry::findOne($entry->id));
         self::assertNotEmpty($this->getWebSession()->getFlash('success'));
+    }
+
+    public function testDeletingASubentryLeadsBackToItsParentsSubentries(): void
+    {
+        Entry::getModule()->enableNestedEntries = true;
+        $this->login();
+
+        $parent = $this->createEntry('Parent', 'parent');
+        $child = $this->createEntry('Child', 'child', $parent);
+
+        $response = $this->post('admin/cms/entry/delete', ['id' => $child->id]);
+
+        self::assertInstanceOf(Response::class, $response);
+        self::assertStringContainsString("parent=$parent->id", (string)$response->getHeaders()->get('location'));
+    }
+
+    public function testTheUpdatePageWarnsThatTheSubentriesAreDeletedAndCopiedToo(): void
+    {
+        Entry::getModule()->enableNestedEntries = true;
+        $this->login();
+
+        $parent = $this->createEntry('Parent', 'parent');
+        $this->createEntry('Child', 'child', $parent);
+
+        $html = Yii::$app->runAction('admin/cms/entry/update', ['id' => $parent->id]);
+
+        self::assertIsString($html);
+        self::assertStringContainsString(Html::encode(Yii::t('cms', 'ENTRY_DELETE_WARNING')), $html);
+        self::assertStringContainsString(Html::encode(Yii::t('cms', 'ENTRY_DELETE_TITLE', ['n' => 1])), $html);
+        self::assertStringContainsString(Html::encode(Yii::t('cms', 'ENTRY_ACTION_DROPDOWN_DUPLICATE_TITLE', ['n' => 1])), $html);
     }
 
     public function testDeleteRefusesAGetRequest(): void

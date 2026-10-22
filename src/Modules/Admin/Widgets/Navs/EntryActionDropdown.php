@@ -40,12 +40,12 @@ class EntryActionDropdown extends ActionDropdown
      */
     protected function getDuplicateButton(): ?Stringable
     {
-        if ($this->model->entry_count > 1) {
+        if ($this->model->entry_count) {
             return ConfirmButton::make()
                 ->icon('copy')
                 ->label(Yii::t('cms', 'ENTRY_BUTTON_DUPLICATE'))
                 ->title(Yii::t('cms', 'ENTRY_ACTION_DROPDOWN_DUPLICATE_TITLE', [
-                    'n' => Yii::$app->getFormatter()->asInteger($this->model->entry_count),
+                    'n' => $this->model->entry_count,
                 ]))
                 ->url(['duplicate', 'id' => $this->model->id]);
         }

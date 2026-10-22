@@ -221,7 +221,12 @@ class EntryController extends AbstractController
             $this->error($errors);
         }
 
-        return $this->redirect(['index', ...$this->request->get()]);
+        // Back to the list it was in: a type-less one would redirect to the default type, which may not be its own.
+        return $this->redirect([
+            'index',
+            'parent' => $entry->parent_id,
+            'type' => static::getModule()->defaultEntryType ? $entry->type : null,
+        ]);
     }
 
     public function actionOrder(?int $parent = null, ?int $tenant = null): string
