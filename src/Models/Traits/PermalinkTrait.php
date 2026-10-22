@@ -39,7 +39,7 @@ trait PermalinkTrait
 
     public function getPermalink(?string $language = null): ?Permalink
     {
-        $language ??= Yii::$app->language;
+        $language ??= Yii::$app->getI18n()->getContentLanguage();
 
         if ($this->matchedPermalinks && !$this->isRelationPopulated('permalinks')) {
             $permalink = $this->matchedPermalinks[$language]
@@ -90,7 +90,7 @@ trait PermalinkTrait
      */
     public function buildPermalink(?string $language = null): Permalink
     {
-        $language ??= Yii::$app->language;
+        $language ??= Yii::$app->getI18n()->getContentLanguage();
         $permalink = $this->permalinks[$language] ?? ($this->newPermalinks[$language] ??= Permalink::create());
 
         if ($permalink->getIsNewRecord()) {

@@ -22,7 +22,7 @@ class PermalinkQuery extends ActiveQuery
     public function whereLanguage(?string $language = null): static
     {
         return $this->andWhere([
-            $this->getTableAlias() . '.[[language]]' => [$language ?? Yii::$app->language, Permalink::LANGUAGE_ALL],
+            $this->getTableAlias() . '.[[language]]' => [$language ?? Yii::$app->getI18n()->getContentLanguage(), Permalink::LANGUAGE_ALL],
         ]);
     }
 
@@ -35,7 +35,7 @@ class PermalinkQuery extends ActiveQuery
      */
     public function whereUri(string $uri, ?string $language = null): static
     {
-        $language ??= Yii::$app->language;
+        $language ??= Yii::$app->getI18n()->getContentLanguage();
         $alias = $this->getTableAlias();
 
         return $this->whereLanguage($language)

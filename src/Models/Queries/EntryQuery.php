@@ -271,7 +271,7 @@ class EntryQuery extends I18nActiveQuery
      */
     public function whereUri(string $uri, ?string $language = null, ?Tenant $tenant = null): static
     {
-        $language ??= Yii::$app->language;
+        $language ??= Yii::$app->getI18n()->getContentLanguage();
         $alias = Permalink::tableName();
 
         $manager = Yii::$app->getUrlManager();

@@ -129,7 +129,7 @@ class EntryActiveForm extends ActiveForm
     #[Override]
     protected function getSlugBaseUrl(?string $language = null): string
     {
-        return Yii::$app->getI18n()->callback($language ?? Yii::$app->language, function (): string {
+        return Yii::$app->getI18n()->callback($language ?? Yii::$app->getI18n()->getContentLanguage(), function (): string {
             $manager = Yii::$app->getUrlManager();
             $parent = $this->model->parent_id ? $this->model->parent : null;
             $params = $this->getSlugBaseRouteParams();

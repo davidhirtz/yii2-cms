@@ -15,6 +15,7 @@ use Hirtz\Cms\Modules\Admin\Widgets\Grids\EntryGridView;
 use Hirtz\Cms\Test\TestCase;
 use Hirtz\Skeleton\Helpers\Html;
 use Hirtz\Skeleton\Models\User;
+use Hirtz\Skeleton\Modules\Admin\Module as AdminModule;
 use Hirtz\Skeleton\Test\Traits\UserFixtureTrait;
 use Hirtz\Skeleton\Widgets\Grids\Toolbars\StatusFilterDropdown;
 use Hirtz\Skeleton\Widgets\Widget;
@@ -44,6 +45,37 @@ class EntryGridViewTest extends TestCase
 
         self::assertIsString($html);
         self::assertStringContainsString('Needle', $html);
+    }
+
+    public function testAnAdminLanguageOutsideTheContentLanguagesListsTheEntries(): void
+    {
+        Yii::$app->getI18n()->setLanguages(['en-US', 'de']);
+        Yii::$container->setDefinitions([
+            Entry::class => ['class' => TestEntry::class, 'i18nAttributes' => ['name', 'slug']],
+            TestEntry::class => ['i18nAttributes' => ['name', 'slug']],
+        ]);
+        Entry::instance(true);
+        TestEntry::instance(true);
+
+        try {
+            $user = $this->login();
+            $this->createEntry('Needle', 'needle');
+
+            $module = Yii::$app->getModule('admin');
+            self::assertInstanceOf(AdminModule::class, $module);
+            $module->languages = ['en-US', 'de', 'fr'];
+            $user->language = 'fr';
+
+            $html = Yii::$app->runAction('admin/cms/entry/index');
+
+            self::assertIsString($html);
+            self::assertStringContainsString('Needle', $html);
+        } finally {
+            Yii::$container->clear(Entry::class);
+            Yii::$container->clear(TestEntry::class);
+            Entry::instance(true);
+            TestEntry::instance(true);
+        }
     }
 
     public function testTheIndexRendersTheUrlAndTheCategories(): void
