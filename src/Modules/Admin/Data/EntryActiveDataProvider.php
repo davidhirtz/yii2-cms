@@ -232,7 +232,8 @@ class EntryActiveDataProvider extends ActiveDataProvider
     }
 
     /**
-     * Linked entries by their own `position` show an order the drag, which writes the link's, never changes.
+     * Linked entries by their own `position` show an order the drag, which writes the link's, never changes, and a
+     * descending order the drag would reverse, since it writes the shown one as `1..n`.
      */
     public function isOrderedByPosition(): bool
     {
@@ -240,6 +241,8 @@ class EntryActiveDataProvider extends ActiveDataProvider
             ? [EntryRelation::tableName() . '.[[position]]']
             : [EntryCategory::tableName() . '.[[position]]', EntryRelation::tableName() . '.[[position]]', 'position'];
 
-        return isset($this->query->orderBy) && in_array(key($this->query->orderBy), $columns, true);
+        return isset($this->query->orderBy)
+            && in_array(key($this->query->orderBy), $columns, true)
+            && current($this->query->orderBy) === SORT_ASC;
     }
 }

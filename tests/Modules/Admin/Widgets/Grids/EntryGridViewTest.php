@@ -166,6 +166,24 @@ class EntryGridViewTest extends TestCase
         self::assertStringNotContainsString('sortable-handle', $html);
     }
 
+    public function testADescendingPositionIsNotDragSortable(): void
+    {
+        $this->login();
+        $this->createEntry('first', 'first');
+        $this->createEntry('second', 'second');
+
+        $html = Yii::$app->runAction('admin/cms/entry/index');
+        self::assertIsString($html);
+        self::assertStringContainsString('sortable-handle', $html);
+
+        // A drop posts the shown order as `1..n`, which would reverse it.
+        Entry::getModule()->defaultEntryOrderBy = ['position' => SORT_DESC];
+
+        $html = Yii::$app->runAction('admin/cms/entry/index');
+        self::assertIsString($html);
+        self::assertStringNotContainsString('sortable-handle', $html);
+    }
+
     public function testTheContainerTurnsTheTypeDropdownOff(): void
     {
         Yii::$container->set(Entry::class, DatedEntry::class);
