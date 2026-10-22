@@ -126,9 +126,12 @@ class SavePermalinks
         $previousUrl = Url::sanitize($this->model->getPermalinkUrl($previousUri, $language));
 
         $requestUri = Url::sanitize($this->model->getPermalinkRequestUri($permalink->uri, $language));
-        $url = Url::sanitize($this->model->getPermalinkUrl($permalink->uri, $language));
+        $isIndex = $this->model->isIndex();
 
-        if (!$previousRequestUri || !$url || $previousUrl === $url) {
+        // The homepage's URL is the root, which a redirect names with an empty URL.
+        $url = Url::sanitize($isIndex ? $this->getIndexUrl($language) : $this->model->getPermalinkUrl($permalink->uri, $language));
+
+        if (!$previousRequestUri || ($url === '' && !$isIndex) || $previousUrl === $url) {
             return;
         }
 
@@ -141,6 +144,21 @@ class SavePermalinks
         if (!$redirect->insert()) {
             $this->warn("Redirect from $previousRequestUri could not be saved", $redirect);
         }
+    }
+
+    protected function getIndexUrl(string $language): false|string
+    {
+        $route = $this->model->getRoute();
+
+        if (!$route) {
+            return false;
+        }
+
+        if ($language === Permalink::LANGUAGE_ALL) {
+            $language = Yii::$app->sourceLanguage;
+        }
+
+        return Yii::$app->getI18n()->callback($language, fn (): string => Yii::$app->getUrlManager()->createUrl($route));
     }
 
     /**

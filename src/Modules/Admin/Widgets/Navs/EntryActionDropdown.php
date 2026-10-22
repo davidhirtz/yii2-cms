@@ -70,7 +70,7 @@ class EntryActionDropdown extends ActionDropdown
      */
     protected function getReplaceIndexButton(): ?Stringable
     {
-        if ($this->model->isIndex()) {
+        if (!$this->model->allowsReplaceIndex()) {
             return null;
         }
 

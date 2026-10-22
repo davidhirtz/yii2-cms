@@ -293,6 +293,34 @@ class EntryControllerTest extends TestCase
         self::assertNull($this->getWebSession()->getFlash('danger'));
     }
 
+    public function testReplaceIndexIsRefusedWithoutAHomepageSlugAndForAnEntryWithSubentries(): void
+    {
+        Entry::getModule()->enableNestedEntries = true;
+        $this->login();
+
+        $parent = $this->createEntry('About', 'about');
+        $this->createEntry('Team', 'team', $parent);
+        $entry = $this->createEntry('Draft', 'draft');
+
+        foreach ([$parent->id, $entry->id] as $id) {
+            if ($id === $entry->id) {
+                Entry::getModule()->entryIndexSlug = false;
+            }
+
+            $html = Yii::$app->runAction('admin/cms/entry/update', ['id' => $id]);
+            self::assertIsString($html);
+            self::assertStringNotContainsString('replace-index', $html);
+
+            try {
+                $this->post('admin/cms/entry/replace-index', ['id' => $id]);
+                self::fail('The homepage was replaced.');
+            } catch (NotFoundHttpException) {
+            }
+        }
+
+        self::assertNotNull(Entry::findOne(['id' => $entry->id, 'parent_id' => null]));
+    }
+
     public function testReplaceIndexMakesTheEntryTheHomePage(): void
     {
         $this->login();

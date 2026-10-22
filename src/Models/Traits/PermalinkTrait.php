@@ -122,8 +122,13 @@ trait PermalinkTrait
     {
         $route = $this->getRoute();
 
-        if (!$route || !array_key_exists('slug', $route)) {
+        if (!$route) {
             return false;
+        }
+
+        // The homepage answers at the root, but a URI it had before is a page of its own.
+        if (!array_key_exists('slug', $route)) {
+            $route[0] = '/cms/site/view';
         }
 
         $route['slug'] = $uri;

@@ -1044,6 +1044,14 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
         return $this->section_count > 0 || $this->entry_count > 0;
     }
 
+    /**
+     * A homepage has no subentries, so an entry with some would leave them unreachable.
+     */
+    public function allowsReplaceIndex(): bool
+    {
+        return static::getModule()->entryIndexSlug && !$this->isIndex() && !$this->entry_count;
+    }
+
     public function isIndex(): bool
     {
         return ($slug = static::getModule()->entryIndexSlug)

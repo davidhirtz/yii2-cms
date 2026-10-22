@@ -9,7 +9,10 @@ use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
 use Hirtz\Cms\Test\Models\TestEntry;
 use Hirtz\Cms\Test\TestCase;
+use Hirtz\Skeleton\Helpers\Url;
+use Hirtz\Skeleton\Models\Redirect;
 use Override;
+use Yii;
 
 class ReplaceIndexEntryTest extends TestCase
 {
@@ -100,6 +103,18 @@ class ReplaceIndexEntryTest extends TestCase
 
         self::assertSame('home', $previous?->slug);
         self::assertSame(Entry::STATUS_ENABLED, $previous->status);
+    }
+
+    public function testTheOldUrlRedirectsToTheHomepage(): void
+    {
+        $entry = $this->createEntry('Über uns', 'about');
+
+        self::assertTrue((new ReplaceIndexEntry(Entry::findOne($entry->id) ?? self::fail('No entry')))->replaceIndexEntry());
+
+        $redirect = Redirect::find()->where(['like', 'request_uri', 'about'])->one();
+        self::assertNotNull($redirect);
+        $route = Entry::findOne($entry->id)->getRoute() ?: self::fail('The homepage has no route.');
+        self::assertSame(Url::sanitize(Yii::$app->getUrlManager()->createUrl($route)), $redirect->url);
     }
 
     public function testTheActionReportsWhetherItSaved(): void

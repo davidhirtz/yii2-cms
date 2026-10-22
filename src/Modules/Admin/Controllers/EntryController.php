@@ -19,6 +19,7 @@ use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\ForbiddenHttpException;
+use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 class EntryController extends AbstractController
@@ -190,6 +191,11 @@ class EntryController extends AbstractController
     public function actionReplaceIndex(int $id): Response|string
     {
         $entry = $this->findEntry($id);
+
+        if (!$entry->allowsReplaceIndex()) {
+            throw new NotFoundHttpException();
+        }
+
         $index = Entry::find()->whereIndex($entry->tenant)->one();
 
         $action = Yii::createObject(ReplaceIndexEntry::class, [
