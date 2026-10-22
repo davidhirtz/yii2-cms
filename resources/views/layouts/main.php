@@ -16,7 +16,7 @@ use yii\helpers\Html;
     <html lang="<?= $this->getHtmlLangAttribute(); ?>">
     <head>
         <meta charset="<?= Yii::$app->charset; ?>">
-        <?= Html::csrfMetaTags(); ?>
+        <?= $this->renderDynamic('return ' . Html::class . '::csrfMetaTags();'); ?>
         <title><?= Html::encode($this->getDocumentTitle()); ?></title>
         <?php $this->head(); ?>
     </head>
