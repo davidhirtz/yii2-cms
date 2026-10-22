@@ -9,6 +9,7 @@ use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
 use Hirtz\Cms\Test\TestCase;
 use Hirtz\Skeleton\Models\Search;
 use Hirtz\Skeleton\Models\User;
+use Yii;
 
 class EntryAssetSearchTest extends TestCase
 {
@@ -25,6 +26,28 @@ class EntryAssetSearchTest extends TestCase
         $document = $asset->getSearchDocuments()[0];
 
         self::assertStringContainsString('A red bicycle', $document->content);
+    }
+
+    /**
+     * A nameless asset is titled by its type and id, in each document's language rather than the editor's.
+     */
+    public function testANamelessAssetsTitleIsInTheDocumentsLanguage(): void
+    {
+        Yii::$app->getI18n()->setLanguages(['en-US', 'de']);
+        $asset = $this->getAssetFromFixture('entry-asset');
+
+        $titles = [];
+
+        foreach (['en-US', 'de'] as $editor) {
+            foreach (Yii::$app->getI18n()->callback($editor, fn (): array => $asset->getSearchDocuments()) as $document) {
+                $titles[$editor][$document->language] = $document->title;
+            }
+        }
+
+        $german = $titles['de'] ?? [];
+
+        self::assertSame($titles['en-US'] ?? null, $german);
+        self::assertNotSame($german['en-US'] ?? null, $german['de'] ?? null);
     }
 
     public function testTheResultIsNamedLikeTheHeader(): void
