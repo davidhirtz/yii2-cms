@@ -20,6 +20,7 @@ use Hirtz\Cms\Test\Models\TestEntry;
 use Hirtz\Cms\Test\TestCase;
 use Hirtz\Skeleton\Models\CustomAttributes\TextCustomAttribute;
 use Hirtz\Skeleton\Models\Definitions\DefinitionRegistry;
+use Hirtz\Skeleton\Models\Search;
 use Override;
 use Yii;
 
@@ -138,6 +139,22 @@ class CreateBlockFromSectionTest extends TestCase
         self::assertSame(0, $section->asset_count);
         self::assertSame([], SectionAsset::findAll(['model_id' => 1]));
         self::assertSame($block->id, $section->getVisibleBlock()?->id);
+    }
+
+    public function testTheSectionNoLongerFindsTheContentItHandedToTheBlock(): void
+    {
+        $section = Section::findOne(1);
+        $section->setAttribute('content', '<p>Zebrafinch Å 🙂</p>');
+        self::assertNotFalse($section->update(), print_r($section->getErrors(), true));
+
+        CreateBlockFromSection::create(Section::findOne(1));
+
+        $classes = Search::find()
+            ->select('model_class')
+            ->where(['like', 'content', 'zebrafinch'])
+            ->column();
+
+        self::assertSame([Block::class], $classes);
     }
 
     public function testTheLinkedEntriesMoveInTheirOrder(): void
