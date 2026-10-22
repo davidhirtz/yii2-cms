@@ -32,6 +32,19 @@ class MenuColumnTest extends TestCase
         $content = (string)$this->createColumn()->renderBody(TestEntry::create(), 0, 0);
 
         self::assertStringNotContainsString('<i', $content);
+        self::assertStringNotContainsString('href=', $content);
+    }
+
+    public function testTheIconLeadsToTheEntry(): void
+    {
+        $entry = TestEntry::create();
+        $entry->id = 7;
+        $entry->menu_ids = [self::MAIN];
+
+        $content = (string)$this->createColumn()->renderBody($entry, 0, 0);
+
+        self::assertStringContainsString('fa-stream', $content);
+        self::assertStringContainsString('/entry/update?id=7"', $content);
     }
 
     /**

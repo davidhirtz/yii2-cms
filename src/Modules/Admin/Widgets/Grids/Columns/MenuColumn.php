@@ -25,8 +25,9 @@ class MenuColumn extends LinkColumn
      */
     public function __construct(array $config = [])
     {
+        $this->format ??= 'raw';
         $this->url ??= fn (Entry $model) => $model->getAdminRoute();
-        $this->content ??= $this->getContent(...);
+        $this->value ??= $this->getContent(...);
 
         parent::__construct($config);
     }
@@ -45,10 +46,10 @@ class MenuColumn extends LinkColumn
         return false;
     }
 
-    protected function getContent(Entry $entry): ?Stringable
+    protected function getContent(Entry $entry): string|Stringable
     {
         $menus = $entry->getMenus();
-        return $menus ? $this->getMenuIcon($menus) : null;
+        return $menus ? $this->getMenuIcon($menus) : '';
     }
 
     /**
