@@ -14,7 +14,7 @@
     "php": "^8.3",
     "davidhirtz/yii2-media": "^3.20",
     "davidhirtz/yii2-skeleton": "^3.22",
-    "davidhirtz/yii2-tenant": "^3.2"
+    "davidhirtz/yii2-tenant": "^3.6"
   },
   "require-dev": {
     "phpstan/phpstan": "^2.1",

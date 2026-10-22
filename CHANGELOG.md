@@ -1,7 +1,7 @@
 ## Unreleased
 
 - Changed `CategoryCollection::getBySlug()` to find a nested category by its own slug and to refuse a path with an unknown part
-- Changed the `davidhirtz/yii2-skeleton` requirement to `^3.22` and `davidhirtz/yii2-media` to `^3.20` (reorder)
+- Changed the `davidhirtz/yii2-skeleton` requirement to `^3.22`, `davidhirtz/yii2-media` to `^3.20` (reorder) and `davidhirtz/yii2-tenant` to `^3.6` (redirect languages)
 - Renamed every `actionOrder()` to `actionReorder()` (route `reorder`) and `EntryGridView::getSortableButton()` to `getReorderButton()`
 - Changed `EntryGridView::getCategoryButtons()` to `getCategoryBadges()`, rendering the categories as badges
 - Changed `ReorderEntries` and `ReorderEntryCategories` to take a `$tenantId` before the ids, reordering only that tenant's entries
