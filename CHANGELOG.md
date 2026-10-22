@@ -7,6 +7,14 @@
 - Changed `ReorderEntries` and `ReorderEntryCategories` to take a `$tenantId` before the ids, reordering only that tenant's entries
 - Changed `Category::allowsDescendants()` to follow `Module::$enableNestedCategories` instead of `$inheritNestedCategories`
 - Changed `Block::$translatableAttributes` to `null` by default, taking the container's `Section`'s
+- Changed `ReplaceIndexEntry::replacePreviousIndexEntry()` to return `bool`
+- Changed `MenuColumn::getContent()` to return `string|Stringable`
+- Added the `?Tenant $tenant` parameter to `EntryQuery::whereUri()` and `whereIndex()`
+- Changed `CategoryCollection::getAll()` to load only published categories on the website (drafts on the draft host)
+- Changed `MenuCollection` to load only published entries on every page
+- Changed `Category::getEntryCategories()` and `EntryRelationModelTrait::getEntryRelations()` to order by `position`
+- Changed `PermalinkTrait::getPermalinkUrl()` to answer the homepage's URL instead of `false`
+- Added `Entry::allowsReplaceIndex()`, `Section::isTypeAvailableIn()` and `PermalinkTrait::getRedirectLanguages()`
 
 ## 3.17.0 (October 21, 2026)
 

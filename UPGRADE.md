@@ -12,6 +12,12 @@ Every `actionOrder()` is `actionReorder()` and its route `reorder` (`entry/reord
 `section-asset/reorder`, `block-asset/reorder`), access rules and verb filters included; the permissions stay.
 `EntryGridView::getSortableButton()` is `getReorderButton()`. The grid's own renames are in the skeleton's guide (3.22).
 
+## 3.18 — Signatures a project override follows
+
+`ReplaceIndexEntry::replacePreviousIndexEntry()` returns `bool`, `MenuColumn::getContent()` returns
+`string|Stringable`, and `EntryQuery::whereUri()` and `whereIndex()` take a trailing `?Tenant $tenant`. A subclass
+overriding one with the old signature is a fatal error.
+
 ## 3.0 — The v2 admin widgets that are gone
 
 A record's page is a header, a submenu and an action dropdown now; the help panels that carried its buttons and
