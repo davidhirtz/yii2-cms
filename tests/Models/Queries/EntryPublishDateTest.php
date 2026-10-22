@@ -12,6 +12,7 @@ use Hirtz\Cms\Modules\Admin\Widgets\Forms\EntryActiveForm;
 use Hirtz\Cms\Modules\Admin\Widgets\ScheduledAncestorAlert;
 use Hirtz\Cms\Test\TestCase;
 use Hirtz\Skeleton\Db\ActiveQuery;
+use Hirtz\Skeleton\Controllers\SitemapController;
 use Hirtz\Skeleton\Filters\PageCache;
 use Override;
 use Yii;
@@ -152,6 +153,18 @@ class EntryPublishDateTest extends TestCase
         $filter = new PageCache(['duration' => 3600, 'owner' => new Controller('test', Yii::$app)]);
 
         self::assertGreaterThan(500, $filter->duration);
+        self::assertLessThanOrEqual(600, $filter->duration);
+    }
+
+    public function testTheCachedSitemapExpiresWhenTheNextEntryGoesLive(): void
+    {
+        $this->createEntry('Future', 'future', '+10 minutes');
+
+        $controller = Yii::createObject(SitemapController::class, ['sitemap', Yii::$app]);
+        $filters = array_filter($controller->getBehaviors(), fn ($behavior) => $behavior instanceof PageCache);
+        $filter = current($filters);
+
+        self::assertInstanceOf(PageCache::class, $filter);
         self::assertLessThanOrEqual(600, $filter->duration);
     }
 
