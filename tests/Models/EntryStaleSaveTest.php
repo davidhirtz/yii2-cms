@@ -71,20 +71,45 @@ class EntryStaleSaveTest extends TestCase
         self::assertTrue($other->save(), print_r($other->getErrors(), true));
     }
 
-    public function testTheFormCarriesWhenItWasRendered(): void
+    public function testTheFormCarriesTheVersionItWasRenderedAt(): void
     {
         $this->getWebUser()->setIdentity($this->getUserFromFixture('admin'));
+        $entry = $this->createEntry();
 
-        $html = EntryActiveForm::make()->model($this->createEntry())->render();
+        $entry->name = 'Saved once';
+        self::assertNotFalse($entry->update());
 
-        self::assertMatchesRegularExpression('/<input type="hidden" name="Entry\[loadedAt\]" value="(\d+)">/', $html);
-        preg_match('/name="Entry\[loadedAt\]" value="(\d+)"/', $html, $matches);
-        self::assertEqualsWithDelta(time(), (int)($matches[1] ?? 0), 5);
+        $html = EntryActiveForm::make()->model($entry)->render();
+
+        self::assertStringContainsString('<input type="hidden" name="Entry[loadedVersion]" value="' . $entry->getStaleSaveVersion() . '">', $html);
+        self::assertGreaterThan(0, $entry->getStaleSaveVersion());
 
         $new = Entry::create();
         $new->loadDefaultValues();
 
-        self::assertStringNotContainsString('loadedAt', EntryActiveForm::make()->model($new)->render());
+        self::assertStringNotContainsString('loadedVersion', EntryActiveForm::make()->model($new)->render());
+    }
+
+    /**
+     * The trail keeps seconds, so only the version tells a save within the second the record was read in apart.
+     */
+    public function testASaveWithinTheSameSecondIsRefusedByVersion(): void
+    {
+        $this->getWebUser()->setIdentity($this->getUserFromFixture('admin'));
+        $entry = $this->createEntry();
+
+        $version = $entry->getStaleSaveVersion();
+
+        $other = Entry::findOne($entry->id) ?? self::fail('The entry is missing.');
+        $other->name = 'Other editor';
+        self::assertNotFalse($other->update());
+
+        $stale = Entry::findOne(['id' => $entry->id]) ?? self::fail('The entry is missing.');
+        $stale->load(['Entry' => ['name' => 'Agent', 'loadedVersion' => (string)$version]]);
+
+        self::assertFalse($stale->save());
+        self::assertArrayHasKey('loadedAt', $stale->getErrors());
+        self::assertSame('Other editor', Entry::find()->where(['id' => $entry->id])->one()?->name);
     }
 
     public function testTheConflictIsAFlashNotALineInTheForm(): void
