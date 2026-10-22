@@ -190,18 +190,19 @@ class EntryController extends AbstractController
     public function actionReplaceIndex(int $id): Response|string
     {
         $entry = $this->findEntry($id);
-        $index = Entry::find()->whereIndex()->one();
+        $index = Entry::find()->whereIndex($entry->tenant)->one();
 
-        ReplaceIndexEntry::run([
+        $action = Yii::createObject(ReplaceIndexEntry::class, [
             'entry' => $entry,
             'previous' => $index,
         ]);
 
-        if ($entry->isIndex()) {
+        if ($action->replaceIndexEntry()) {
             $this->success(Yii::t('cms', 'ENTRY_SUCCESS_UPDATED'));
+        } else {
+            $this->error($index?->hasErrors() ? $index : $entry);
         }
 
-        $this->error($entry);
         return $this->redirectToEntry($entry);
     }
 

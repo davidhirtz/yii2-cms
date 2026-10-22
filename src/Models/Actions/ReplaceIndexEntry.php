@@ -6,6 +6,7 @@ namespace Hirtz\Cms\Models\Actions;
 
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Modules\ModuleTrait;
+use Throwable;
 use Yii;
 
 class ReplaceIndexEntry
@@ -20,18 +21,35 @@ class ReplaceIndexEntry
     ) {
     }
 
+    /**
+     * Without a homepage the site answers nothing, so the previous one keeps its place unless the entry takes it.
+     */
     public function replaceIndexEntry(): bool
     {
-        if ($this->previous) {
-            $this->replacePreviousIndexEntry();
+        $transaction = $this->entry::getDb()->beginTransaction();
+
+        try {
+            if ($this->previous && !$this->replacePreviousIndexEntry()) {
+                $transaction->rollBack();
+                return false;
+            }
+
+            $this->setEntryAttributes();
+
+            if ($this->entry->update() !== 1) {
+                $transaction->rollBack();
+                return false;
+            }
+
+            $transaction->commit();
+            return true;
+        } catch (Throwable $exception) {
+            $transaction->rollBack();
+            throw $exception;
         }
-
-        $this->setEntryAttributes();
-
-        return $this->entry->update() === 1;
     }
 
-    protected function replacePreviousIndexEntry(): void
+    protected function replacePreviousIndexEntry(): bool
     {
         $this->generateUniqueSlugForPrevious();
 
@@ -39,7 +57,7 @@ class ReplaceIndexEntry
             $this->previous->status = $this->previous::STATUS_DISABLED;
         }
 
-        $this->previous->update();
+        return $this->previous->update() !== false;
     }
 
     protected function generateUniqueSlugForPrevious(): void
@@ -67,7 +85,8 @@ class ReplaceIndexEntry
      */
     public static function run(array $params = []): static
     {
-        $action = Yii::createObject(static::class, $params);
+        // The container would otherwise build a blank entry for an omitted `previous`.
+        $action = Yii::createObject(static::class, [...$params, 'previous' => $params['previous'] ?? null]);
         $action->replaceIndexEntry();
 
         return $action;

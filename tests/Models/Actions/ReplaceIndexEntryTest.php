@@ -88,6 +88,20 @@ class ReplaceIndexEntryTest extends TestCase
         self::assertSame("home-$previous->id", $previous->slug);
     }
 
+    public function testThePreviousIndexIsKeptWhenTheEntryCannotBeSaved(): void
+    {
+        $previous = $this->createEntry('Old home', 'home');
+        $entry = $this->createEntry('New home', 'new-home');
+        $entry->name = '';
+
+        self::assertFalse((new ReplaceIndexEntry($entry, $previous))->replaceIndexEntry());
+
+        $previous = Entry::findOne($previous->id);
+
+        self::assertSame('home', $previous?->slug);
+        self::assertSame(Entry::STATUS_ENABLED, $previous->status);
+    }
+
     public function testTheActionReportsWhetherItSaved(): void
     {
         $entry = $this->createEntry('New home', 'new-home');

@@ -272,6 +272,26 @@ class EntryControllerTest extends TestCase
         self::assertNotEmpty($this->getWebSession()->getFlash('success'));
     }
 
+    public function testReplaceIndexOnAnotherTenantLeavesTheAdminTenantsHomepageAlone(): void
+    {
+        $this->login();
+
+        $home = $this->createEntry('Home 1', 'home', tenantId: 1);
+        $otherHome = $this->createEntry('Home 2', 'home', tenantId: 2);
+        $entry = $this->createEntry('New home 2', 'new-home', tenantId: 2);
+
+        $this->post('admin/cms/entry/replace-index', ['id' => $entry->id]);
+
+        $home = Entry::findOne($home->id);
+        self::assertNotNull($home);
+        self::assertSame('home', $home->slug);
+        self::assertSame(Entry::STATUS_ENABLED, $home->status);
+
+        self::assertTrue(Entry::findOne($entry->id)?->isIndex());
+        self::assertNotSame('home', Entry::findOne($otherHome->id)?->slug);
+        self::assertNull($this->getWebSession()->getFlash('danger'));
+    }
+
     public function testReplaceIndexMakesTheEntryTheHomePage(): void
     {
         $this->login();
@@ -344,10 +364,11 @@ class EntryControllerTest extends TestCase
         self::assertSame(2, Entry::findOne($first->id)?->position);
     }
 
-    private function createEntry(string $name, string $slug, ?Entry $parent = null): Entry
+    private function createEntry(string $name, string $slug, ?Entry $parent = null, ?int $tenantId = null): Entry
     {
         $entry = Entry::create();
         $entry->loadDefaultValues();
+        $entry->tenant_id = $tenantId ?? $entry->tenant_id;
         $entry->status = Entry::STATUS_ENABLED;
         $entry->type = Entry::TYPE_DEFAULT;
         $entry->name = $name;

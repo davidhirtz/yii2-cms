@@ -18,6 +18,7 @@ use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Skeleton\Db\ActiveQuery;
 use Hirtz\Skeleton\Db\I18nActiveQuery;
 use Hirtz\Tenant\Models\Queries\Traits\TenantQueryTrait;
+use Hirtz\Tenant\Models\Tenant;
 use Hirtz\Tenant\Web\UrlManager;
 use Override;
 use Yii;
@@ -253,9 +254,9 @@ class EntryQuery extends I18nActiveQuery
         );
     }
 
-    public function whereIndex(): static
+    public function whereIndex(?Tenant $tenant = null): static
     {
-        return $this->whereUri((string)static::getModule()->entryIndexSlug);
+        return $this->whereUri((string)static::getModule()->entryIndexSlug, tenant: $tenant);
     }
 
     public function whereId(int $id): static
@@ -268,13 +269,13 @@ class EntryQuery extends I18nActiveQuery
      * handed to the entry, so the relation is not loaded to read it back. The permalink's own copy of the tenant is
      * what lets the lookup use its unique key, which leads with it.
      */
-    public function whereUri(string $uri, ?string $language = null): static
+    public function whereUri(string $uri, ?string $language = null, ?Tenant $tenant = null): static
     {
         $language ??= Yii::$app->language;
         $alias = Permalink::tableName();
 
         $manager = Yii::$app->getUrlManager();
-        $tenant = $manager instanceof UrlManager ? $manager->tenant : null;
+        $tenant ??= $manager instanceof UrlManager ? $manager->tenant : null;
 
         return $this->innerJoin($alias, "$alias.[[entry_id]] = " . Entry::tableName() . '.[[id]]')
             ->selectJoinedRecord('permalink', Permalink::find(), $alias, function (Entry $entry, ?Permalink $permalink): void {
@@ -290,7 +291,7 @@ class EntryQuery extends I18nActiveQuery
             ->addOrderBy(new Expression("$alias.[[language]] = :permalinkLanguage DESC", [
                 ':permalinkLanguage' => $language,
             ]))
-            ->andWhereCurrentTenant();
+            ->andWhere($tenant ? [Entry::tableName() . '.[[tenant_id]]' => $tenant->id] : []);
     }
 
     public function whereNotUri(?string $uri): static
