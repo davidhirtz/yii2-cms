@@ -677,7 +677,8 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
     }
 
     /**
-     * A root entry is listed in its own type's index, not in the default type's — that is the list it is in.
+     * A root entry is listed in its own type's index, not in the default type's — that is the list it is in. A
+     * subentry is listed with its siblings of every type, as the parent's tab shows them.
      */
     #[Override]
     public function getAdminIndexBreadcrumb(): Breadcrumb
@@ -685,7 +686,6 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
         return $this->parent_id
             ? new Breadcrumb(Yii::t('cms', 'COMMON_SUBENTRIES'), [
                 '/admin/cms/entry/index',
-                'type' => $this->type,
                 'parent' => $this->parent_id,
             ])
             : new Breadcrumb(Yii::t('cms', 'COMMON_ENTRIES'), [

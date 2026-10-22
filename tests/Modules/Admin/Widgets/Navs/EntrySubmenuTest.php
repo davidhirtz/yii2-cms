@@ -28,8 +28,8 @@ class EntrySubmenuTest extends TestCase
     {
         $html = EntrySubmenu::make()->model(TestEntry::findOne(4))->render();
 
-        self::assertStringContainsString('<a class="nav-link nav-back-link" href="/admin/cms/entry/index?type=', $html);
-        self::assertStringContainsString('parent=1"', $html);
+        // Every type: the parent's tab lists the siblings of all of them.
+        self::assertStringContainsString('<a class="nav-link nav-back-link" href="/admin/cms/entry/index?parent=1"', $html);
     }
 
     public function testARootEntryHasNoBackButton(): void
