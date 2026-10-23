@@ -1,3 +1,8 @@
+## Unreleased
+
+- Changed `BlockAsset` to take the container's `SectionAsset`'s `translatableAttributes` unless configured itself
+- Changed the `davidhirtz/yii2-media` requirement to `^3.23`
+
 ## 3.18.0 (October 22, 2026)
 
 - Changed `CategoryCollection::getBySlug()` to find a nested category by its own slug and to refuse a path with an unknown part

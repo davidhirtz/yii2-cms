@@ -95,6 +95,33 @@ class BlockSectionFieldsTest extends TestCase
         self::assertNotNull($asset->getCustomAttribute('alt_text'));
     }
 
+    public function testABlockAssetTranslatesTheFieldsTheSectionAssetTranslates(): void
+    {
+        Yii::$app->getI18n()->setLanguages(['en-US', 'de']);
+        Yii::$container->set(SectionAsset::class, ['class' => FieldsSectionAsset::class, 'translatableAttributes' => ['alt_text']]);
+
+        $asset = Yii::createObject(BlockAsset::class);
+
+        self::assertTrue($asset->getCustomAttribute('alt_text')?->isTranslatable());
+        self::assertFalse($asset->getCustomAttribute('content')?->isTranslatable());
+    }
+
+    public function testABlockAssetConfiguredItselfKeepsItsOwnTranslatedFields(): void
+    {
+        Yii::$app->getI18n()->setLanguages(['en-US', 'de']);
+        Yii::$container->set(SectionAsset::class, ['class' => FieldsSectionAsset::class, 'translatableAttributes' => ['alt_text']]);
+        Yii::$container->set(BlockAsset::class, ['translatableAttributes' => ['content']]);
+
+        try {
+            $asset = Yii::createObject(BlockAsset::class);
+
+            self::assertTrue($asset->getCustomAttribute('content')?->isTranslatable());
+            self::assertFalse($asset->getCustomAttribute('alt_text')?->isTranslatable());
+        } finally {
+            Yii::$container->clear(BlockAsset::class);
+        }
+    }
+
     public function testABlockSectionShowsOnlyTheStatusTheTypeAndTheBlock(): void
     {
         $section = $this->createSection(FieldsSection::TYPE_BLOCK);

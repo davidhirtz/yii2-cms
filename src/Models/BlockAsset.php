@@ -24,7 +24,7 @@ class BlockAsset extends Asset
     {
         $asset = Yii::$container->get(SectionAsset::class, [], [
             'customAttributes' => [],
-            'translatableAttributes' => $this->translatableAttributes,
+            ...($this->translatableAttributes !== null ? ['translatableAttributes' => $this->translatableAttributes] : []),
         ]);
 
         return $asset->getCustomAttributes();
