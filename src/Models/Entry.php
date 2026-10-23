@@ -829,6 +829,23 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
     }
 
     /**
+     * The tenant's languages, plus the source language a required attribute is validated in.
+     */
+    #[Override]
+    public function getI18nLanguages(): array
+    {
+        $languages = parent::getI18nLanguages();
+        $tenant = TenantCollection::getById($this->tenant_id);
+
+        if (!$tenant) {
+            return $languages;
+        }
+
+        $available = [Yii::$app->sourceLanguage, ...$tenant->getAvailableLanguages()];
+        return array_values(array_filter($languages, fn (string $language): bool => in_array($language, $available, true)));
+    }
+
+    /**
      * @return array<string, Tenant|null>
      */
     public function getTenantRouteParams(): array

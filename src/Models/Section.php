@@ -463,6 +463,12 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
         return 0.7;
     }
 
+    #[Override]
+    public function getI18nLanguages(): array
+    {
+        return $this->entry?->getI18nLanguages() ?? parent::getI18nLanguages();
+    }
+
     public function getSearchTenantId(): ?int
     {
         return $this->entry?->tenant_id;
