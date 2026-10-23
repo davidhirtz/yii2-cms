@@ -2,6 +2,7 @@
 
 - Changed `BlockAsset` to take the container's `SectionAsset`'s `translatableAttributes` unless configured itself
 - Changed the `davidhirtz/yii2-media` requirement to `^3.23`
+- Changed `site/index` to answer the default 404 when a project lacks the `missing-index` view
 
 ## 3.18.0 (October 22, 2026)
 

@@ -12,6 +12,7 @@ use Hirtz\Skeleton\Helpers\Url;
 use Hirtz\Skeleton\Web\Controller;
 use Override;
 use Yii;
+use yii\base\ViewNotFoundException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -42,8 +43,12 @@ class SiteController extends Controller
                 throw $exception;
             }
 
-            $this->response->setStatusCode(404);
-            return $this->render('missing-index');
+            try {
+                $this->response->setStatusCode(404);
+                return $this->render('missing-index');
+            } catch (ViewNotFoundException) {
+                throw $exception;
+            }
         }
     }
 

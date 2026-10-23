@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Tests\Controllers;
 
+use Hirtz\Cms\Controllers\SiteController;
 use Hirtz\Media\Models\Asset;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
@@ -216,6 +217,19 @@ final class SiteControllerFunctionalTest extends TestCase
 
         self::assertResponseStatusCodeSame(404);
         self::assertSelectorExists('a[href="/admin/cms/entry/index"]');
+    }
+
+    public function testAMissingHomepageWithoutItsViewIsAPlainNotFound(): void
+    {
+        Yii::$app->getModule('cms')->controllerMap['site'] = [
+            'class' => SiteController::class,
+            'viewPath' => __DIR__,
+        ];
+
+        $this->open('/');
+
+        self::assertResponseStatusCodeSame(404);
+        self::assertSelectorNotExists('a[href="/admin/cms/entry/index"]');
     }
 
     public function testADisabledHomepageIsAPlainNotFound(): void
