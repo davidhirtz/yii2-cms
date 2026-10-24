@@ -1,4 +1,4 @@
-## Unreleased
+## 3.19.0 (October 24, 2026)
 
 - Changed `BlockAsset` to take the container's `SectionAsset`'s `translatableAttributes` unless configured itself
 - Changed `Entry` and `Section` to offer the languages of the entry's tenant in the admin
