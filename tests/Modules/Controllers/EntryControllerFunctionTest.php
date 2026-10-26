@@ -17,7 +17,8 @@ class EntryControllerFunctionTest extends TestCase
     public function testIndexAsGuest(): void
     {
         $this->open('/admin/cms/entry/index');
-        self::assertCurrentUrlEquals('https://www.test.localhost/admin/account/login');
+        self::assertCurrentUrlEquals('https://www.test.localhost/admin/account/login?returnUrl='
+            . urlencode('https://www.test.localhost/admin/cms/entry/index'));
     }
 
     public function testIndexWithoutPermission(): void

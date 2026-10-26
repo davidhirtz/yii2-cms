@@ -13,6 +13,7 @@ use Hirtz\Skeleton\Test\Browser;
 use Hirtz\Skeleton\Test\Traits\FunctionalTestTrait;
 use Override;
 use Yii;
+use yii\base\Event;
 
 final class SiteControllerPageCacheTest extends TestCase
 {
@@ -36,6 +37,30 @@ final class SiteControllerPageCacheTest extends TestCase
         }
 
         self::assertNotSame($tokens[0], $tokens[1]);
+    }
+
+    public function testTheNoCacheParamOfAVisitorIsServedFromTheCache(): void
+    {
+        Yii::$app->getModule('cms')->controllerMap['site'] = PageCacheSiteController::class;
+        Event::on(PageCache::class, PageCache::EVENT_CONFIGURE, function (Event $event): void {
+            if ($event->sender instanceof PageCache) {
+                $event->sender->debug = false;
+            }
+        });
+
+        $entry = $this->getEntryFromFixture('page-enabled');
+        $url = Yii::$app->getUrlManager()->createUrl($entry->getRoute() ?: []);
+
+        $name = $entry->name;
+
+        $this->open($url);
+        self::assertPageTitleSame($name);
+
+        // No hooks, so the page cache is not invalidated
+        $entry->updateAttributes(['name' => 'Changed']);
+
+        $this->open("$url?nocache=1");
+        self::assertPageTitleSame($name);
     }
 
     /**
