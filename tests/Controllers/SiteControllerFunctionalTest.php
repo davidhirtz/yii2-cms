@@ -37,6 +37,16 @@ final class SiteControllerFunctionalTest extends TestCase
         self::assertPageTitleSame($entry->name);
     }
 
+    public function testACookielessVisitorGetsNoSession(): void
+    {
+        foreach (['/test-1', '/wp-login.php'] as $url) {
+            $count = $this->countQueries(fn () => $this->open($url), '/`session`/');
+
+            self::assertSame(0, $count, $url);
+            self::assertFalse($this->getWebSession()->getIsActive(), $url);
+        }
+    }
+
     public function testEnabledEntry(): void
     {
         $entry = $this->getEntryFromFixture('page-enabled');
