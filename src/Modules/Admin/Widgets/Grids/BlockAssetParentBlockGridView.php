@@ -41,7 +41,7 @@ class BlockAssetParentBlockGridView extends BlockGridView
             $buttons[] = Button::make()
                 ->primary()
                 ->icon('paste')
-                ->tooltip(Yii::t('cms', 'BLOCK_ASSET_BUTTON_COPY_TO_BLOCK'))
+                ->tooltip(Yii::t('cms', 'BLOCK_ASSET_COPY_TOOLTIP'))
                 ->post(['duplicate', 'id' => $this->asset->id, 'block' => $block->id], true);
         }
 

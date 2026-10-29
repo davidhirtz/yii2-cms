@@ -94,7 +94,7 @@ class BlockSectionGridView extends GridView
     protected function getSummary(): ?GridSummary
     {
         return parent::getSummary()
-            ->emptyMessage(Yii::t('cms', 'BLOCK_SECTION_GRID_SUMMARY_EMPTY'))
+            ->emptyMessage(Yii::t('cms', 'BLOCK_SECTION_GRID_EMPTY'))
             ->visible(fn (): bool => $this->provider->getCount() === 0);
     }
 
@@ -105,12 +105,12 @@ class BlockSectionGridView extends GridView
 
     protected function getDeleteSelectionLabel(): string
     {
-        return Yii::t('cms', 'SECTION_BUTTON_DELETE_SELECTED');
+        return Yii::t('cms', 'SECTION_DELETE_SELECTED_BUTTON');
     }
 
     protected function getDeleteSelectionMessage(): string
     {
-        return Yii::t('cms', 'SECTION_CONFIRM_DELETE_SELECTED');
+        return Yii::t('cms', 'SECTION_DELETE_SELECTED_CONFIRM');
     }
 
     /**
@@ -170,8 +170,8 @@ class BlockSectionGridView extends GridView
 
         if ($this->showDeleteButton) {
             $buttons[] = DeleteGridButton::make()
-                ->label(Yii::t('cms', 'SECTION_BUTTON_DELETE'))
-                ->title(Yii::t('cms', 'SECTION_CONFIRM_DELETE'))
+                ->label(Yii::t('cms', 'SECTION_DELETE_BUTTON'))
+                ->title(Yii::t('cms', 'SECTION_DELETE_CONFIRM'))
                 ->model($section)
                 ->url(['delete', 'id' => $section->id]);
         }

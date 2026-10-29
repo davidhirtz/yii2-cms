@@ -300,7 +300,7 @@ class EntryRelation extends ActiveRecord implements TrailModelInterface
 
     public function getAdminName(): string
     {
-        return Yii::t('cms', 'ENTRY_RELATION_ENTRY_RELATION');
+        return Yii::t('cms', 'ENTRY_RELATION_SINGULAR');
     }
 
     public function getAdminType(): string

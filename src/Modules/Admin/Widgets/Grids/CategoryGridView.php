@@ -107,9 +107,9 @@ class CategoryGridView extends GridView
     protected function getSummary(): ?GridSummary
     {
         return parent::getSummary()
-            ?->emptyMessage(Yii::t('cms', 'CATEGORY_GRID_SUMMARY_EMPTY'))
+            ?->emptyMessage(Yii::t('cms', 'CATEGORY_GRID_EMPTY'))
             ->emptyLink(
-                Yii::t('cms', 'CATEGORY_GRID_SUMMARY_EMPTY_LINK'),
+                Yii::t('cms', 'CATEGORY_GRID_CREATE_TEXT'),
                 $this->webuser->can(Category::AUTH_CATEGORY)
                     ? ['/admin/cms/category/create', ...Application::current()->getRequest()->getQueryParams()]
                     : null,

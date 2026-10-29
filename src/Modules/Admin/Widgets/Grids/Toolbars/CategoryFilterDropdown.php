@@ -17,7 +17,7 @@ class CategoryFilterDropdown extends FilterDropdown
     #[Override]
     protected function configure(): void
     {
-        $this->label ??= Yii::t('cms', 'CATEGORY_FILTER_DROPDOWN_ALL_CATEGORIES');
+        $this->label ??= Yii::t('cms', 'CATEGORY_FILTER_LABEL');
 
         $this->items = array_map(fn ($category) => $this->getNestedCategoryNames()[$category->id], $this->getCategories());
 

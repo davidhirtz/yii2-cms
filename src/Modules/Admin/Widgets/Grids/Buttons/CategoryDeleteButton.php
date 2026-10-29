@@ -27,12 +27,12 @@ class CategoryDeleteButton extends DeleteButton
     protected function configure(): void
     {
         if ($this->model->getBranchCount()) {
-            $this->title ??= Yii::t('cms', 'CATEGORY_DELETE_TITLE');
+            $this->title ??= Yii::t('cms', 'CATEGORY_DELETE_BRANCH_CONFIRM');
             $this->message ??= Yii::t('cms', 'CATEGORY_DELETE_WARNING');
         }
 
-        $this->label ??= Yii::t('cms', 'CATEGORY_BUTTON_DELETE');
-        $this->title ??= Yii::t('cms', 'CATEGORY_CONFIRM_DELETE');
+        $this->label ??= Yii::t('cms', 'CATEGORY_DELETE_BUTTON');
+        $this->title ??= Yii::t('cms', 'CATEGORY_DELETE_CONFIRM');
         $this->url ??= ['/admin/cms/category/delete', 'id' => $this->model->id];
 
         parent::configure();

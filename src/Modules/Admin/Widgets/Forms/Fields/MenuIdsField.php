@@ -51,7 +51,7 @@ class MenuIdsField extends CheckboxListField
                 $this->itemAttributes[$menu->value] ??= [
                     'class' => 'text-invalid',
                     'data-tooltip' => '',
-                    'title' => Yii::t('cms', 'ENTRY_MENU_IDS_PARENT_ENTRY', [
+                    'title' => Yii::t('cms', 'ENTRY_MENU_IDS_PARENT_TOOLTIP', [
                         'entry' => $ancestor->getI18nAttribute('name'),
                     ]),
                 ];

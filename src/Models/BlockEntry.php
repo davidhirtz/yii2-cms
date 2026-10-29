@@ -34,6 +34,6 @@ class BlockEntry extends EntryRelation
     #[Override]
     public function getAdminName(): string
     {
-        return Yii::t('cms', 'BLOCK_ENTRY_BLOCK_ENTRY');
+        return Yii::t('cms', 'BLOCK_ENTRY_SINGULAR');
     }
 }

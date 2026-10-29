@@ -285,7 +285,7 @@ class Block extends ActiveRecord implements AssetModelInterface, EntryRelationMo
     #[Override]
     public function getAdminType(): string
     {
-        return $this->getTypeName() ?: Yii::t('cms', 'COMMON_BLOCK');
+        return $this->getTypeName() ?: Yii::t('cms', 'BLOCK_SINGULAR');
     }
 
     #[Override]
@@ -302,7 +302,7 @@ class Block extends ActiveRecord implements AssetModelInterface, EntryRelationMo
     #[Override]
     public function getAdminIndexBreadcrumb(): Breadcrumb
     {
-        return new Breadcrumb(Yii::t('cms', 'COMMON_BLOCKS'), ['/admin/cms/block/index']);
+        return new Breadcrumb(Yii::t('cms', 'BLOCK_PLURAL'), ['/admin/cms/block/index']);
     }
 
     public function getPermissionName(): string

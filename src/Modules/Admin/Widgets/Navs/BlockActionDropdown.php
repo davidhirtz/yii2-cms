@@ -35,7 +35,7 @@ class BlockActionDropdown extends ActionDropdown
     {
         return Button::make()
             ->primary()
-            ->text(Yii::t('cms', 'BLOCK_NEW_BLOCK'))
+            ->text(Yii::t('cms', 'BLOCK_CREATE_BUTTON'))
             ->icon('plus')
             ->roles([Block::AUTH_BLOCK])
             ->url(['/admin/cms/block/create']);

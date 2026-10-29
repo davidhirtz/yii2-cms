@@ -72,8 +72,8 @@ class LinkedEntryGridView extends EntryGridView
     protected function getSummary(): ?GridSummary
     {
         return parent::getSummary()
-            ->emptyMessage(Yii::t('cms', 'ENTRY_RELATION_GRID_SUMMARY_EMPTY'))
-            ->emptyLink(Yii::t('cms', 'ENTRY_RELATION_GRID_SUMMARY_EMPTY_LINK'), $this->getEntryRelationCreateRoute())
+            ->emptyMessage(Yii::t('cms', 'ENTRY_RELATION_GRID_EMPTY'))
+            ->emptyLink(Yii::t('cms', 'ENTRY_RELATION_GRID_CREATE_TEXT'), $this->getEntryRelationCreateRoute())
             ->visible(fn (): bool => $this->provider->getCount() === 0);
     }
 
@@ -103,9 +103,9 @@ class LinkedEntryGridView extends EntryGridView
         $model = $this->provider->relatedModel;
 
         return DeleteGridButton::make()
-            ->label(Yii::t('cms', 'ENTRY_RELATION_BUTTON_REMOVE'))
+            ->label(Yii::t('cms', 'ENTRY_RELATION_DELETE_BUTTON'))
             ->url(['delete', ...$model ? [$model->getParamName() => $model->id] : [], 'entry' => $entry->id])
-            ->title(Yii::t('cms', 'ENTRY_RELATION_REMOVE_TITLE'));
+            ->title(Yii::t('cms', 'ENTRY_RELATION_DELETE_CONFIRM'));
     }
 
     /**

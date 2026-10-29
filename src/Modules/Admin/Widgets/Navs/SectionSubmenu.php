@@ -53,7 +53,7 @@ class SectionSubmenu extends Submenu
         return NavItem::make()
             ->badge($this->model->entry_count)
             ->icon('chain')
-            ->label(Yii::t('cms', 'ENTRY_RELATION_NAV_ENTRIES'))
+            ->label(Yii::t('cms', 'ENTRY_RELATION_PLURAL'))
             ->addRoute('admin/cms/section-entry')
             ->url(['/admin/cms/section-entry/index', 'section' => $this->model->id])
             ->visible($this->model->allowsEntries());

@@ -107,7 +107,7 @@ class SectionController extends AbstractController
         $section->populateEntryRelation($entry);
 
         if ($section->load($this->request->post()) && !$this->request->isFormReload() && $section->insert()) {
-            $this->success(Yii::t('cms', 'SECTION_SUCCESS_CREATED'));
+            $this->success(Yii::t('cms', 'SECTION_CREATE_SUCCESS'));
             return $this->redirect(['update', 'id' => $section->id]);
         }
 
@@ -132,7 +132,7 @@ class SectionController extends AbstractController
         $action = CreateSectionSet::create($entry, $set);
 
         if ($sections = $action->getSections()) {
-            $this->success(Yii::t('cms', 'SECTION_SUCCESS_SET_CREATED', [
+            $this->success(Yii::t('cms', 'SECTION_SET_CREATE_SUCCESS', [
                 'count' => count($sections),
                 'name' => $set->getName(),
             ]));
@@ -151,7 +151,7 @@ class SectionController extends AbstractController
 
         if ($section->load($this->request->post()) && !$this->request->isFormReload()) {
             if ($section->update()) {
-                $this->success(Yii::t('cms', 'SECTION_SUCCESS_UPDATED'));
+                $this->success(Yii::t('cms', 'SECTION_UPDATE_SUCCESS'));
             }
 
             if (!$section->hasErrors()) {
@@ -187,7 +187,7 @@ class SectionController extends AbstractController
             }
 
             if ($isUpdated) {
-                $this->success(Yii::t('cms', 'SECTION_SUCCESS_SELECTED_UPDATED'));
+                $this->success(Yii::t('cms', 'SECTION_UPDATE_SELECTED_SUCCESS'));
             }
         }
 
@@ -213,7 +213,7 @@ class SectionController extends AbstractController
         $section->generateUniqueSlug();
 
         if ($section->update()) {
-            $this->success(Yii::t('cms', 'SECTION_SUCCESS_MOVED'));
+            $this->success(Yii::t('cms', 'SECTION_MOVE_SUCCESS'));
         }
 
         if ($errors = $section->getFirstErrors()) {
@@ -238,7 +238,7 @@ class SectionController extends AbstractController
             return $this->redirectToSections($section);
         }
 
-        $this->success(Yii::t('cms', 'SECTION_SUCCESS_DUPLICATED'));
+        $this->success(Yii::t('cms', 'SECTION_DUPLICATE_SUCCESS'));
         return $this->redirect(['update', 'id' => $duplicate->id]);
     }
 
@@ -257,7 +257,7 @@ class SectionController extends AbstractController
             return $this->redirect(['update', 'id' => $section->id]);
         }
 
-        $this->success(Yii::t('cms', 'SECTION_SUCCESS_BLOCK_CREATED'));
+        $this->success(Yii::t('cms', 'SECTION_CREATE_BLOCK_SUCCESS'));
         return $this->redirect(['/admin/cms/block/update', 'id' => $action->block->id]);
     }
 
@@ -275,7 +275,7 @@ class SectionController extends AbstractController
                 return '';
             }
 
-            $this->success(Yii::t('cms', 'SECTION_SUCCESS_DELETED'));
+            $this->success(Yii::t('cms', 'SECTION_DELETE_SUCCESS'));
         }
 
         if ($errors = $section->getFirstErrors()) {
@@ -300,7 +300,7 @@ class SectionController extends AbstractController
         $action = DeleteSections::create($sections);
 
         if ($count = count($action->getDeleted())) {
-            $this->success(Yii::t('cms', 'SECTION_SUCCESS_SELECTED_DELETED', ['count' => $count]));
+            $this->success(Yii::t('cms', 'SECTION_DELETE_SELECTED_SUCCESS', ['count' => $count]));
         }
 
         foreach ($action->getFailed() as $section) {
@@ -318,7 +318,7 @@ class SectionController extends AbstractController
         ]);
 
         if ($success) {
-            $this->success(Yii::t('cms', 'SECTION_SUCCESS_ORDERED'));
+            $this->success(Yii::t('cms', 'SECTION_ORDER_SUCCESS'));
         }
 
         return (string) Flashes::make();

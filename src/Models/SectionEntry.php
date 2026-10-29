@@ -34,6 +34,6 @@ class SectionEntry extends EntryRelation
     #[Override]
     public function getAdminName(): string
     {
-        return Yii::t('cms', 'SECTION_ENTRY_SECTION_ENTRY');
+        return Yii::t('cms', 'SECTION_ENTRY_SINGULAR');
     }
 }

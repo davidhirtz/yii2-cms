@@ -44,7 +44,7 @@ class CategoryActionDropdown extends ActionDropdown
 
         return Button::make()
             ->primary()
-            ->text(Yii::t('cms', 'CATEGORY_NEW_CATEGORY'))
+            ->text(Yii::t('cms', 'CATEGORY_CREATE_BUTTON'))
             ->icon('plus')
             ->url(['/admin/cms/category/create', 'parent' => $this->model->id]);
     }
@@ -54,7 +54,7 @@ class CategoryActionDropdown extends ActionDropdown
         return $this->model->allowsEntries() && $this->webuser->can(Entry::AUTH_ENTRY)
             ? Button::make()
                 ->primary()
-                ->text(Yii::t('cms', 'CATEGORY_VIEW_ALL_ENTRIES'))
+                ->text(Yii::t('cms', 'CATEGORY_ENTRIES_BUTTON'))
                 ->icon('book')
                 ->url(['/admin/cms/entry/index', 'category' => $this->model->id])
             : null;

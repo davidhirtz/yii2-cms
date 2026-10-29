@@ -38,7 +38,7 @@ class CategoryHeader extends ModelHeader
 
         if ($this->provider) {
             $this->subtitle ??= $this->getPaginationSubtitle($this->provider);
-            $this->title ??= Yii::t('cms', 'COMMON_CATEGORIES');
+            $this->title ??= Yii::t('cms', 'CATEGORY_PLURAL');
             $this->url ??= ['/admin/cms/category/index', 'type' => $this->provider->type];
         }
 

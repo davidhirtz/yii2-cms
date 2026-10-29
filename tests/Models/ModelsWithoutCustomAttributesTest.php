@@ -47,7 +47,7 @@ class ModelsWithoutCustomAttributesTest extends TestCase
 
         $html = (string)SectionWithoutCustomAttributesGridView::make()->getNameColumnContent($section);
 
-        self::assertStringContainsString(Yii::t('cms', 'COMMON_NO_TITLE'), $html);
+        self::assertStringContainsString(Yii::t('cms', 'MODEL_UNTITLED_TEXT'), $html);
     }
 
     public function testAnAssetWithoutCustomAttributesRendersAsAnArtwork(): void

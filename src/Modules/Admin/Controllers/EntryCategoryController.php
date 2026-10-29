@@ -78,7 +78,7 @@ class EntryCategoryController extends AbstractController
 
         $entryCategory->insert();
 
-        $this->errorOrSuccess($entryCategory, Yii::t('cms', 'ENTRY_CATEGORY_SUCCESS_LINKED', [
+        $this->errorOrSuccess($entryCategory, Yii::t('cms', 'ENTRY_CATEGORY_CREATE_SUCCESS', [
             'count' => $entryCategory->getAffectedCategoryCount(),
         ]));
 
@@ -102,7 +102,7 @@ class EntryCategoryController extends AbstractController
 
         $entryCategory->delete();
 
-        $this->errorOrSuccess($entryCategory, Yii::t('cms', 'ENTRY_CATEGORY_SUCCESS_REMOVED', [
+        $this->errorOrSuccess($entryCategory, Yii::t('cms', 'ENTRY_CATEGORY_DELETE_SUCCESS', [
             'count' => $entryCategory->getAffectedCategoryCount(),
         ]));
 
@@ -133,7 +133,7 @@ class EntryCategoryController extends AbstractController
         ]);
 
         if ($success) {
-            $this->success(Yii::t('cms', 'ENTRY_SUCCESS_ORDERED'));
+            $this->success(Yii::t('cms', 'ENTRY_ORDER_SUCCESS'));
         }
 
         return (string) Flashes::make();

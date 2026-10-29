@@ -45,7 +45,7 @@ class SectionHeaderTest extends TestCase
             [[
                 '/admin/cms/section/update?id=' . $section->id,
                 Yii::t('skeleton', 'MODEL_POSITION_FORMAT', [
-                    'model' => Yii::t('cms', 'COMMON_SECTION'),
+                    'model' => Yii::t('cms', 'SECTION_SINGULAR'),
                     'position' => 1,
                     'total' => 5,
                 ]),
@@ -72,7 +72,7 @@ class SectionHeaderTest extends TestCase
         self::assertIsString($html);
         self::assertSame(
             Yii::t('skeleton', 'MODEL_POSITION_FORMAT', [
-                'model' => Yii::t('cms', 'COMMON_SECTION'),
+                'model' => Yii::t('cms', 'SECTION_SINGULAR'),
                 'position' => 4,
                 'total' => 4,
             ]),
@@ -124,9 +124,9 @@ class SectionHeaderTest extends TestCase
         self::assertIsString($html);
         self::assertSame(
             [
-                Yii::t('cms', 'COMMON_ENTRIES'),
+                Yii::t('cms', 'ENTRY_PLURAL'),
                 $section->entry->getAdminName(),
-                Yii::t('cms', 'COMMON_SECTIONS'),
+                Yii::t('cms', 'SECTION_PLURAL'),
             ],
             $this->getBreadcrumbLabels(),
         );

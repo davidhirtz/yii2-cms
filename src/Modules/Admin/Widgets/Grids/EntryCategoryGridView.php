@@ -63,9 +63,9 @@ class EntryCategoryGridView extends GridView
     protected function getSummary(): ?GridSummary
     {
         return parent::getSummary()
-            ->emptyMessage(Yii::t('cms', 'ENTRY_CATEGORY_GRID_SUMMARY_EMPTY'))
+            ->emptyMessage(Yii::t('cms', 'ENTRY_CATEGORY_GRID_EMPTY'))
             ->emptyLink(
-                Yii::t('cms', 'CATEGORY_GRID_SUMMARY_EMPTY_LINK'),
+                Yii::t('cms', 'CATEGORY_GRID_CREATE_TEXT'),
                 $this->webuser->can(Category::AUTH_CATEGORY) ? ['/admin/cms/category/create'] : null,
             );
     }
@@ -132,7 +132,7 @@ class EntryCategoryGridView extends GridView
         return Button::make()
             ->secondary()
             ->icon('external-link-alt')
-            ->tooltip(Yii::t('cms', 'COMMON_OPEN_ADMIN'))
+            ->tooltip(Yii::t('skeleton', 'NAV_OPEN_NEW_TAB_TOOLTIP'))
             ->url($category->getAdminRoute())
             ->target('_blank')
             ->roles([Category::AUTH_CATEGORY]);

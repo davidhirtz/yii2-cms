@@ -65,7 +65,7 @@ class BlockGridView extends GridView
     protected function getSummary(): ?GridSummary
     {
         return parent::getSummary()
-            ->emptyMessage(Yii::t('cms', 'BLOCK_GRID_SUMMARY_EMPTY'))
+            ->emptyMessage(Yii::t('cms', 'BLOCK_GRID_EMPTY'))
             ->visible(fn (): bool => $this->provider->getCount() === 0);
     }
 

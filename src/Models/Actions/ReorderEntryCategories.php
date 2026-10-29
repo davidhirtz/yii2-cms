@@ -42,7 +42,7 @@ class ReorderEntryCategories extends ReorderActiveRecords
     #[\Override]
     protected function afterReorder(): void
     {
-        Trail::createOrderTrail($this->category, Message::make('cms', 'COMMON_ENTRY_ORDER_CHANGED'));
+        Trail::createOrderTrail($this->category, Message::make('cms', 'ENTRY_ORDER_TRAIL'));
         parent::afterReorder();
     }
 }

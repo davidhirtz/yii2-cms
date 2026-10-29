@@ -84,7 +84,7 @@ class EntryRelationGridView extends EntryGridView
             yield Button::make()
                 ->primary()
                 ->icon('star')
-                ->tooltip(Yii::t('cms', 'ENTRY_RELATION_ADD_TO_MODEL'))
+                ->tooltip(Yii::t('cms', 'ENTRY_RELATION_CREATE_TOOLTIP'))
                 ->post([
                     'create',
                     ...Application::current()->getRequest()->getQueryParams(),

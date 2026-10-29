@@ -50,7 +50,7 @@ class CmsNavItemTest extends TestCase
 
         $html = CmsNavItem::make()->render();
 
-        self::assertStringContainsString('>' . Yii::t('cms', 'COMMON_ENTRIES') . '</span>', $html);
+        self::assertStringContainsString('>' . Yii::t('cms', 'ENTRY_PLURAL') . '</span>', $html);
         self::assertStringContainsString('href="' . Url::to(['/admin/cms/entry/index']) . '"', $html);
 
         foreach ([TestEntry::TYPE_PAGE => 'Page', TestEntry::TYPE_POST => 'Post'] as $type => $label) {

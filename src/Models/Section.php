@@ -403,7 +403,7 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
     #[Override]
     public function getAdminType(): string
     {
-        return Yii::t('cms', 'COMMON_SECTION');
+        return Yii::t('cms', 'SECTION_SINGULAR');
     }
 
     #[Override]
@@ -442,7 +442,7 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
             return null;
         }
 
-        return new Breadcrumb(Yii::t('cms', 'COMMON_SECTIONS'), [
+        return new Breadcrumb(Yii::t('cms', 'SECTION_PLURAL'), [
             '/admin/cms/section/index',
             'entry' => $this->entry_id,
         ]);

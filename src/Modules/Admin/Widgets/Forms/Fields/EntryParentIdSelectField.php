@@ -60,7 +60,7 @@ class EntryParentIdSelectField extends SelectField
                 continue;
             }
 
-            $name = $entry->getI18nAttribute('name') ?: Yii::t('cms', 'COMMON_NO_TITLE');
+            $name = $entry->getI18nAttribute('name') ?: Yii::t('cms', 'MODEL_UNTITLED_TEXT');
             $count = count($entry->getAncestorIds());
             $indent = ($count ? (str_repeat($this->indent, $count) . ' ') : '');
 

@@ -27,7 +27,7 @@ trait LinkButtonTrait
 
         return Button::make()
             ->primary()
-            ->text(Yii::t('cms', 'COMMON_OPEN_WEBSITE'))
+            ->text(Yii::t('cms', 'MODEL_VIEW_BUTTON'))
             ->icon('external-link-alt')
             ->url($url)
             ->target('_blank');

@@ -95,7 +95,7 @@ class EntrySubmenu extends Submenu
         return NavItem::make()
             ->badge($this->model->entry_count)
             ->icon('book')
-            ->label(Yii::t('cms', 'COMMON_SUBENTRIES'))
+            ->label(Yii::t('cms', 'ENTRY_CHILDREN_LABEL'))
             ->addRoute('admin/cms/entry/index')
             ->url(['/admin/cms/entry/index', 'parent' => $this->model->id])
             ->visible($this->model->allowsDescendants());
@@ -106,7 +106,7 @@ class EntrySubmenu extends Submenu
         return NavItem::make()
             ->badge($this->model->getCategoryCount())
             ->icon('folder-open')
-            ->label(Yii::t('cms', 'COMMON_CATEGORIES'))
+            ->label(Yii::t('cms', 'CATEGORY_PLURAL'))
             ->addRoute('admin/cms/entry-category/')
             ->url(['/admin/cms/entry-category/index', 'entry' => $this->model->id])
             ->visible($this->showEntryCategories);
@@ -115,7 +115,7 @@ class EntrySubmenu extends Submenu
     protected function getEntrySectionsItem(): ?NavItem
     {
         return NavItem::make()
-            ->label(Yii::t('cms', 'COMMON_SECTIONS'))
+            ->label(Yii::t('cms', 'SECTION_PLURAL'))
             ->url(['/admin/cms/section/index', 'entry' => $this->model->id])
             ->icon('th-list')
             ->badge($this->model->section_count)

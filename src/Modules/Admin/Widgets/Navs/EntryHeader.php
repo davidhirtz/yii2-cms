@@ -41,7 +41,7 @@ class EntryHeader extends ModelHeader
             $type = Entry::instance()::findType($this->provider->type);
 
             $this->subtitle ??= $this->getPaginationSubtitle($this->provider);
-            $this->title ??= $type?->getPlural() ?: Yii::t('cms', 'COMMON_ENTRIES');
+            $this->title ??= $type?->getPlural() ?: Yii::t('cms', 'ENTRY_PLURAL');
             $this->url ??= ['/admin/cms/entry/index', 'type' => $this->provider->type];
 
             $this->addContent($this->getCreateEntryButton());

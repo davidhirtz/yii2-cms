@@ -406,8 +406,8 @@ class EntryControllerTest extends TestCase
 
         self::assertIsString($html);
         self::assertStringContainsString(Html::encode(Yii::t('cms', 'ENTRY_DELETE_WARNING')), $html);
-        self::assertStringContainsString(Html::encode(Yii::t('cms', 'ENTRY_DELETE_TITLE', ['n' => 1])), $html);
-        self::assertStringContainsString(Html::encode(Yii::t('cms', 'ENTRY_ACTION_DROPDOWN_DUPLICATE_TITLE', ['n' => 1])), $html);
+        self::assertStringContainsString(Html::encode(Yii::t('cms', 'ENTRY_DELETE_BRANCH_CONFIRM', ['n' => 1])), $html);
+        self::assertStringContainsString(Html::encode(Yii::t('cms', 'ENTRY_DUPLICATE_CONFIRM', ['n' => 1])), $html);
     }
 
     public function testDeleteRefusesAGetRequest(): void

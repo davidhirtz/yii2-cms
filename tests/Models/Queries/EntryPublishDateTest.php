@@ -135,7 +135,7 @@ class EntryPublishDateTest extends TestCase
 
         self::assertTrue($future->isScheduled());
         self::assertSame('clock', $future->getStatusIcon());
-        self::assertSame(Yii::t('cms', 'ENTRY_STATUS_SCHEDULED', [
+        self::assertSame(Yii::t('cms', 'ENTRY_STATUS_SCHEDULED_TEXT', [
             'date' => Yii::$app->getFormatter()->asDatetime($future->publish_date, 'short'),
         ]), $future->getStatusName());
 

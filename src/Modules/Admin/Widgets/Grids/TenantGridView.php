@@ -41,7 +41,7 @@ class TenantGridView extends \Hirtz\Tenant\Modules\Admin\Widgets\Grids\TenantGri
 
         return $column
             ->property(UpdateTenantEntryCount::ENTRY_COUNT_ATTRIBUTE)
-            ->title(Yii::t('cms', 'COMMON_ENTRIES'))
+            ->title(Yii::t('cms', 'ENTRY_PLURAL'))
             ->url(fn (Tenant $tenant) => ['/admin/cms/entry/index', 'tenant' => $tenant->id]);
     }
 }

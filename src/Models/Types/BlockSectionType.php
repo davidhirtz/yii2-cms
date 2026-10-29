@@ -60,7 +60,7 @@ class BlockSectionType extends SectionType
     #[Override]
     public function getName(): string
     {
-        return $this->name ?? Yii::t('cms', 'SECTION_TYPE_BLOCK');
+        return $this->name ?? Yii::t('cms', 'SECTION_TYPE_BLOCK_NAME');
     }
 
     /**

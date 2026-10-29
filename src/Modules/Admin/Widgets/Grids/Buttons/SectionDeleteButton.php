@@ -27,8 +27,8 @@ class SectionDeleteButton extends DeleteButton
     #[Override]
     protected function configure(): void
     {
-        $this->label ??= Yii::t('cms', 'SECTION_BUTTON_DELETE');
-        $this->title ??= Yii::t('cms', 'SECTION_CONFIRM_DELETE');
+        $this->label ??= Yii::t('cms', 'SECTION_DELETE_BUTTON');
+        $this->title ??= Yii::t('cms', 'SECTION_DELETE_CONFIRM');
         $this->url ??= ['/admin/cms/section/delete', 'id' => $this->model->id];
 
         parent::configure();

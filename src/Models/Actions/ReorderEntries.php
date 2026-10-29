@@ -34,7 +34,7 @@ class ReorderEntries extends ReorderActiveRecords
     #[\Override]
     protected function afterReorder(): void
     {
-        Trail::createOrderTrail($this->parent, Message::make('cms', 'COMMON_ENTRY_ORDER_CHANGED'));
+        Trail::createOrderTrail($this->parent, Message::make('cms', 'ENTRY_ORDER_TRAIL'));
 
         if ($this->parent) {
             $this->parent->updateAttributes(['updated_at' => new DateTime()]);

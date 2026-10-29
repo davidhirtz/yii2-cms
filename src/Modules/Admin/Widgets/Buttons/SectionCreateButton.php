@@ -24,7 +24,7 @@ class SectionCreateButton extends CreateButton
      */
     public function __construct(array $config = [])
     {
-        $this->label ??= Yii::t('cms', 'SECTION_NEW_SECTION');
+        $this->label ??= Yii::t('cms', 'SECTION_CREATE_BUTTON');
         $this->roles ??= [Entry::AUTH_ENTRY];
 
         parent::__construct($config);

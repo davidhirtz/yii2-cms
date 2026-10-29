@@ -54,14 +54,14 @@ class SectionParentEntryGridView extends EntryGridView
             yield Button::make()
                 ->primary()
                 ->icon('copy')
-                ->tooltip(Yii::t('cms', 'SECTION_BUTTON_MOVE_TO_ENTRY'))
+                ->tooltip(Yii::t('cms', 'SECTION_MOVE_TOOLTIP'))
                 ->post(['move', 'id' => $this->section->id, 'entry' => $entry->id], true);
         }
 
         yield Button::make()
             ->primary()
             ->icon('paste')
-            ->tooltip(Yii::t('cms', 'SECTION_BUTTON_COPY_TO_ENTRY'))
+            ->tooltip(Yii::t('cms', 'SECTION_COPY_TOOLTIP'))
             ->post(['duplicate', 'id' => $this->section->id, 'entry' => $entry->id], true);
     }
 }

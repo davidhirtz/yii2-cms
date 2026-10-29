@@ -73,7 +73,7 @@ class BlockController extends AbstractController
         $block->loadDefaultValues();
 
         if ($block->load($this->request->post()) && !$this->request->isFormReload() && $block->insert()) {
-            $this->success(Yii::t('cms', 'BLOCK_SUCCESS_CREATED'));
+            $this->success(Yii::t('cms', 'BLOCK_CREATE_SUCCESS'));
             return $this->redirect(['update', 'id' => $block->id]);
         }
 
@@ -88,7 +88,7 @@ class BlockController extends AbstractController
 
         if ($block->load($this->request->post()) && !$this->request->isFormReload()) {
             if ($block->update()) {
-                $this->success(Yii::t('cms', 'BLOCK_SUCCESS_UPDATED'));
+                $this->success(Yii::t('cms', 'BLOCK_UPDATE_SUCCESS'));
             }
 
             if (!$block->hasErrors()) {
@@ -111,7 +111,7 @@ class BlockController extends AbstractController
         $block = $this->findBlock($id);
 
         if ($block->delete()) {
-            $this->success(Yii::t('cms', 'BLOCK_SUCCESS_DELETED'));
+            $this->success(Yii::t('cms', 'BLOCK_DELETE_SUCCESS'));
         } elseif ($errors = $block->getFirstErrors()) {
             $this->error($errors);
         }

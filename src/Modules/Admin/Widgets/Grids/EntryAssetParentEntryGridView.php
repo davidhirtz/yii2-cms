@@ -50,7 +50,7 @@ class EntryAssetParentEntryGridView extends EntryGridView
         yield Button::make()
             ->primary()
             ->icon('paste')
-            ->tooltip(Yii::t('cms', 'ENTRY_ASSET_BUTTON_COPY_TO_ENTRY'))
+            ->tooltip(Yii::t('cms', 'ENTRY_ASSET_COPY_TOOLTIP'))
             ->post(['duplicate', 'id' => $this->asset->id, 'entry' => $entry->id], true);
     }
 }

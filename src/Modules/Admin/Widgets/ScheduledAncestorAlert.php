@@ -38,7 +38,7 @@ class ScheduledAncestorAlert extends Widget
         $ancestor = $this->entry?->findScheduledAncestor();
 
         if ($ancestor && !$this->content) {
-            $this->addText(Yii::t('cms', 'ENTRY_SCHEDULED_ANCESTOR_ALERT', [
+            $this->addText(Yii::t('cms', 'ENTRY_SCHEDULED_ANCESTOR_WARNING', [
                 'name' => (string)$ancestor->getI18nAttribute('name'),
                 'date' => $ancestor->publish_date ? Yii::$app->getFormatter()->asDatetime($ancestor->publish_date, 'short') : '',
             ]));

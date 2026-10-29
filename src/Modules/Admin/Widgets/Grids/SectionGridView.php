@@ -85,9 +85,9 @@ class SectionGridView extends GridView
     protected function getSummary(): ?GridSummary
     {
         return parent::getSummary()
-            ->emptyMessage(Yii::t('cms', 'SECTION_GRID_SUMMARY_EMPTY'))
+            ->emptyMessage(Yii::t('cms', 'SECTION_GRID_EMPTY'))
             ->emptyLink(
-                Yii::t('cms', 'SECTION_GRID_SUMMARY_EMPTY_LINK'),
+                Yii::t('cms', 'SECTION_GRID_CREATE_TEXT'),
                 $this->webuser->can(Entry::AUTH_ENTRY)
                     ? ['/admin/cms/section/create', 'entry' => $this->provider->entry->id]
                     : null,
@@ -119,12 +119,12 @@ class SectionGridView extends GridView
 
     protected function getDeleteSelectionLabel(): string
     {
-        return Yii::t('cms', 'SECTION_BUTTON_DELETE_SELECTED');
+        return Yii::t('cms', 'SECTION_DELETE_SELECTED_BUTTON');
     }
 
     protected function getDeleteSelectionMessage(): string
     {
-        return Yii::t('cms', 'SECTION_CONFIRM_DELETE_SELECTED');
+        return Yii::t('cms', 'SECTION_DELETE_SELECTED_CONFIRM');
     }
 
     /**
@@ -182,7 +182,7 @@ class SectionGridView extends GridView
         }
 
         if (!$html) {
-            $html = Yii::t('cms', 'COMMON_NO_TITLE');
+            $html = Yii::t('cms', 'MODEL_UNTITLED_TEXT');
             $cssClass = 'text-muted';
         }
 
@@ -250,8 +250,8 @@ class SectionGridView extends GridView
 
         if ($this->showDeleteButton && $this->webuser->can(Entry::AUTH_ENTRY)) {
             $buttons[] = DeleteGridButton::make()
-                ->label(Yii::t('cms', 'SECTION_BUTTON_DELETE'))
-                ->title(Yii::t('cms', 'SECTION_CONFIRM_DELETE'))
+                ->label(Yii::t('cms', 'SECTION_DELETE_BUTTON'))
+                ->title(Yii::t('cms', 'SECTION_DELETE_CONFIRM'))
                 ->model($section);
         }
 

@@ -1,3 +1,7 @@
+## Unreleased
+
+- Changed every message key to the `{DOMAIN}_{SUBJECT}_{KIND}` scheme; a migration renames the keys stored in `trail`
+
 ## 3.19.0 (October 24, 2026)
 
 - Changed `BlockAsset` to take the container's `SectionAsset`'s `translatableAttributes` unless configured itself

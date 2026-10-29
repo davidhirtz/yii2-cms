@@ -49,7 +49,7 @@ class CategorySubmenu extends Submenu
         return NavItem::make()
             ->badge($this->model->getBranchCount())
             ->icon('folder-open')
-            ->label(Yii::t('cms', 'COMMON_SUBCATEGORIES'))
+            ->label(Yii::t('cms', 'CATEGORY_CHILDREN_LABEL'))
             ->addRoute('admin/cms/category/index')
             ->url(['/admin/cms/category/index', 'parent' => $this->model->id]);
     }

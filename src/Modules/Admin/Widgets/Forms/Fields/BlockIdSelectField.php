@@ -81,7 +81,7 @@ class BlockIdSelectField extends SelectField
             ->addContent(Button::make()
                 ->secondary()
                 ->icon('external-link-alt')
-                ->tooltip(Yii::t('cms', 'COMMON_OPEN_ADMIN'))
+                ->tooltip(Yii::t('skeleton', 'NAV_OPEN_NEW_TAB_TOOLTIP'))
                 ->url($url ?? '#')
                 ->attribute('hidden', $url === null)
                 ->attribute('data-select-link-target', true)

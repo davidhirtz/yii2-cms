@@ -43,15 +43,15 @@ class EntryActionDropdown extends ActionDropdown
         if ($this->model->entry_count) {
             return ConfirmButton::make()
                 ->icon('copy')
-                ->label(Yii::t('cms', 'ENTRY_BUTTON_DUPLICATE'))
-                ->title(Yii::t('cms', 'ENTRY_ACTION_DROPDOWN_DUPLICATE_TITLE', [
+                ->label(Yii::t('cms', 'ENTRY_DUPLICATE_BUTTON'))
+                ->title(Yii::t('cms', 'ENTRY_DUPLICATE_CONFIRM', [
                     'n' => $this->model->entry_count,
                 ]))
                 ->url(['duplicate', 'id' => $this->model->id]);
         }
 
         return DuplicateButton::make()
-            ->label(Yii::t('cms', 'ENTRY_BUTTON_DUPLICATE'))
+            ->label(Yii::t('cms', 'ENTRY_DUPLICATE_BUTTON'))
             ->model($this->model);
     }
 
@@ -61,7 +61,7 @@ class EntryActionDropdown extends ActionDropdown
             ->primary()
             ->model($this->model)
             ->icon('external-link-alt')
-            ->text(Yii::t('cms', 'COMMON_OPEN_WEBSITE'))
+            ->text(Yii::t('cms', 'MODEL_VIEW_BUTTON'))
             ->target('_blank');
     }
 
@@ -77,8 +77,8 @@ class EntryActionDropdown extends ActionDropdown
         return ConfirmButton::make()
             ->confirmStyle('danger')
             ->icon('home')
-            ->label(Yii::t('cms', 'ENTRY_ACTION_DROPDOWN_MAKE_HOMEPAGE'))
-            ->text(Yii::t('cms', 'ENTRY_ACTION_DROPDOWN_MAKE_TITLE'))
+            ->label(Yii::t('cms', 'ENTRY_INDEX_BUTTON'))
+            ->text(Yii::t('cms', 'ENTRY_INDEX_CONFIRM'))
             ->url(['replace-index', 'id' => $this->model->id]);
     }
 

@@ -115,7 +115,7 @@ class EntryController extends AbstractController
             }
 
             if ($entry->insert()) {
-                $this->success(Yii::t('cms', 'ENTRY_SUCCESS_CREATED'));
+                $this->success(Yii::t('cms', 'ENTRY_CREATE_SUCCESS'));
                 return $this->redirectToEntry($entry);
             }
         }
@@ -131,7 +131,7 @@ class EntryController extends AbstractController
 
         if ($entry->load($this->request->post()) && !$this->request->isFormReload()) {
             if ($entry->update()) {
-                $this->success(Yii::t('cms', 'ENTRY_SUCCESS_UPDATED'));
+                $this->success(Yii::t('cms', 'ENTRY_UPDATE_SUCCESS'));
             }
 
             if (!$entry->hasErrors()) {
@@ -165,7 +165,7 @@ class EntryController extends AbstractController
             }
 
             if ($isUpdated) {
-                $this->success(Yii::t('cms', 'ENTRY_SUCCESS_SELECTED_UPDATED'));
+                $this->success(Yii::t('cms', 'ENTRY_UPDATE_SELECTED_SUCCESS'));
             }
         }
 
@@ -183,7 +183,7 @@ class EntryController extends AbstractController
         if ($errors = $duplicate->getFirstErrors()) {
             $this->error($errors);
         } else {
-            $this->success(Yii::t('cms', 'ENTRY_SUCCESS_DUPLICATED'));
+            $this->success(Yii::t('cms', 'ENTRY_DUPLICATE_SUCCESS'));
         }
 
         return $this->redirect(['update', 'id' => $duplicate->id ?? $entry->id]);
@@ -205,7 +205,7 @@ class EntryController extends AbstractController
         ]);
 
         if ($action->replaceIndexEntry()) {
-            $this->success(Yii::t('cms', 'ENTRY_SUCCESS_UPDATED'));
+            $this->success(Yii::t('cms', 'ENTRY_UPDATE_SUCCESS'));
         } else {
             $this->error($index?->hasErrors() ? $index : $entry);
         }
@@ -223,7 +223,7 @@ class EntryController extends AbstractController
         $entry = $this->findEntry($id);
 
         if ($entry->delete()) {
-            $this->success(Yii::t('cms', 'ENTRY_SUCCESS_DELETED'));
+            $this->success(Yii::t('cms', 'ENTRY_DELETE_SUCCESS'));
         } elseif ($errors = $entry->getFirstErrors()) {
             $this->error($errors);
         }
@@ -244,7 +244,7 @@ class EntryController extends AbstractController
         ]);
 
         if ($success) {
-            $this->success(Yii::t('cms', 'ENTRY_SUCCESS_ORDERED'));
+            $this->success(Yii::t('cms', 'ENTRY_ORDER_SUCCESS'));
         }
 
         return (string)Flashes::make();

@@ -45,6 +45,6 @@ class BlockAsset extends Asset
     #[Override]
     public function getAdminType(): string
     {
-        return Yii::t('cms', 'BLOCK_ASSET_BLOCK_ASSET');
+        return Yii::t('cms', 'BLOCK_ASSET_SINGULAR');
     }
 }

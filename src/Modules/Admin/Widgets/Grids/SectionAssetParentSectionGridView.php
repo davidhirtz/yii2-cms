@@ -51,7 +51,7 @@ class SectionAssetParentSectionGridView extends SectionGridView
             $buttons[] = Button::make()
                 ->primary()
                 ->icon('paste')
-                ->tooltip(Yii::t('cms', 'SECTION_ASSET_BUTTON_COPY_TO_SECTION'))
+                ->tooltip(Yii::t('cms', 'SECTION_ASSET_COPY_TOOLTIP'))
                 ->post(['duplicate', 'id' => $this->asset->id, 'section' => $section->id], true);
         }
 

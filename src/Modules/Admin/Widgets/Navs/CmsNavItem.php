@@ -62,7 +62,7 @@ class CmsNavItem extends NavItem
             $this->showBlocks = static::getModule()->enableBlocks;
         }
 
-        $this->label ??= Yii::t('cms', 'COMMON_ENTRIES');
+        $this->label ??= Yii::t('cms', 'ENTRY_PLURAL');
 
         $this->routes([
             'admin/cms/entry',
@@ -113,7 +113,7 @@ class CmsNavItem extends NavItem
     protected function addBlockSubnavItems(): void
     {
         $this->addItem(NavItem::make()
-            ->label(Yii::t('cms', 'COMMON_BLOCKS'))
+            ->label(Yii::t('cms', 'BLOCK_PLURAL'))
             ->url(['/admin/cms/block/index'])
             ->roles([Block::AUTH_BLOCK])
             ->routes(['admin/cms/block', 'admin/cms/block-asset', 'admin/cms/block-entry']));
@@ -122,7 +122,7 @@ class CmsNavItem extends NavItem
     protected function addCategorySubnavItems(): void
     {
         $this->addItem(NavItem::make()
-            ->label(Yii::t('cms', 'COMMON_CATEGORIES'))
+            ->label(Yii::t('cms', 'CATEGORY_PLURAL'))
             ->url(['/admin/cms/category/index'])
             ->roles([Category::AUTH_CATEGORY])
             ->routes(['admin/cms/category']));

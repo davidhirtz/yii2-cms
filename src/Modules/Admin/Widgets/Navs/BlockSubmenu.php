@@ -55,7 +55,7 @@ class BlockSubmenu extends Submenu
         return NavItem::make()
             ->badge($this->model->section_count)
             ->icon('th-list')
-            ->label(Yii::t('cms', 'COMMON_SECTIONS'))
+            ->label(Yii::t('cms', 'SECTION_PLURAL'))
             ->addRoute('admin/cms/block-section')
             ->url(['/admin/cms/block-section/index', 'block' => $this->model->id]);
     }
@@ -65,7 +65,7 @@ class BlockSubmenu extends Submenu
         return NavItem::make()
             ->badge($this->model->entry_count)
             ->icon('chain')
-            ->label(Yii::t('cms', 'ENTRY_RELATION_NAV_ENTRIES'))
+            ->label(Yii::t('cms', 'ENTRY_RELATION_PLURAL'))
             ->addRoute('admin/cms/block-entry')
             ->url(['/admin/cms/block-entry/index', 'block' => $this->model->id])
             ->visible($this->model->allowsEntries());

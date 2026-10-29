@@ -245,7 +245,7 @@ class EntryCategory extends \Hirtz\Skeleton\Db\ActiveRecord implements TrailMode
 
     public function getAdminName(): string
     {
-        return Yii::t('cms', 'ENTRY_CATEGORY_TRAIL_NAME');
+        return Yii::t('cms', 'ENTRY_CATEGORY_SINGULAR');
     }
 
     #[Override]

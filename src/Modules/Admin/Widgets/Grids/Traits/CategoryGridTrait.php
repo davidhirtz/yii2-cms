@@ -65,7 +65,7 @@ trait CategoryGridTrait
 
         $html = $name
             ? $this->search->markKeywords($name)
-            : Yii::t('cms', 'COMMON_NO_TITLE');
+            : Yii::t('cms', 'MODEL_UNTITLED_TEXT');
 
         $url = $this->getRecordUrl($category);
         $class = $name ? 'strong' : 'strong text-muted';

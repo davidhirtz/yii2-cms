@@ -57,7 +57,7 @@ class AssetHeaderTest extends TestCase
                 [
                     '/admin/cms/section/update?id=' . $section->id,
                     Yii::t('skeleton', 'MODEL_POSITION_FORMAT', [
-                        'model' => Yii::t('cms', 'COMMON_SECTION'),
+                        'model' => Yii::t('cms', 'SECTION_SINGULAR'),
                         'position' => 1,
                         'total' => 5,
                     ]),

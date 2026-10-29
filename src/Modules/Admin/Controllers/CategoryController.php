@@ -83,7 +83,7 @@ class CategoryController extends AbstractController
         }
 
         if ($category->load($this->request->post()) && !$this->request->isFormReload() && $category->insert()) {
-            $this->success(Yii::t('cms', 'CATEGORY_SUCCESS_CREATED'));
+            $this->success(Yii::t('cms', 'CATEGORY_CREATE_SUCCESS'));
             return $this->redirect(['index', 'parent' => $category->parent_id]);
         }
 
@@ -98,7 +98,7 @@ class CategoryController extends AbstractController
 
         if ($category->load($this->request->post()) && !$this->request->isFormReload()) {
             if ($category->update()) {
-                $this->success(Yii::t('cms', 'CATEGORY_SUCCESS_UPDATED'));
+                $this->success(Yii::t('cms', 'CATEGORY_UPDATE_SUCCESS'));
             }
 
             if (!$category->hasErrors()) {
@@ -121,7 +121,7 @@ class CategoryController extends AbstractController
         $category = $this->findCategory($id);
 
         if ($category->delete()) {
-            $this->success(Yii::t('cms', 'CATEGORY_SUCCESS_DELETED'));
+            $this->success(Yii::t('cms', 'CATEGORY_DELETE_SUCCESS'));
         } elseif ($errors = $category->getFirstErrors()) {
             $this->error($errors);
         }
@@ -136,7 +136,7 @@ class CategoryController extends AbstractController
         ]);
 
         if ($success) {
-            $this->success(Yii::t('cms', 'CATEGORY_SUCCESS_ORDERED'));
+            $this->success(Yii::t('cms', 'CATEGORY_ORDER_SUCCESS'));
         }
 
         return (string) Flashes::make();

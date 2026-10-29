@@ -33,7 +33,7 @@ class BlockHeader extends ModelHeader
 
         if ($this->provider) {
             $this->subtitle ??= $this->getPaginationSubtitle($this->provider);
-            $this->title ??= Yii::t('cms', 'COMMON_BLOCKS');
+            $this->title ??= Yii::t('cms', 'BLOCK_PLURAL');
             $this->url ??= ['/admin/cms/block/index'];
 
             $this->addContent($this->getCreateBlockButton());

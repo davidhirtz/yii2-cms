@@ -43,7 +43,7 @@ class SectionSetButton extends ConfirmButton
     protected function configure(): void
     {
         $this->icon ??= 'layer-group';
-        $this->label ??= Yii::t('cms', 'SECTION_SET_BUTTON');
+        $this->label ??= Yii::t('cms', 'SECTION_SET_CREATE_BUTTON');
         $this->url ??= ['/admin/cms/section/create-set', 'entry' => $this->model->id];
 
         $select = $this->getSelect();

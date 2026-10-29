@@ -81,7 +81,7 @@ class BlockSectionController extends AbstractController
         $block = $this->findBlock($section->block_id);
 
         $section->delete();
-        $this->errorOrSuccess($section, Yii::t('cms', 'SECTION_SUCCESS_DELETED'));
+        $this->errorOrSuccess($section, Yii::t('cms', 'SECTION_DELETE_SUCCESS'));
 
         return $this->redirectToBlock($block);
     }
@@ -101,7 +101,7 @@ class BlockSectionController extends AbstractController
         $action = DeleteSections::create($sections);
 
         if ($count = count($action->getDeleted())) {
-            $this->success(Yii::t('cms', 'SECTION_SUCCESS_SELECTED_DELETED', ['count' => $count]));
+            $this->success(Yii::t('cms', 'SECTION_DELETE_SELECTED_SUCCESS', ['count' => $count]));
         }
 
         foreach ($action->getFailed() as $section) {

@@ -87,7 +87,7 @@ class SectionActionDropdown extends ActionDropdown
     {
         return Button::make()
             ->primary()
-            ->text(Yii::t('cms', 'SECTION_BUTTON_MOVE_COPY'))
+            ->text(Yii::t('cms', 'SECTION_MOVE_BUTTON'))
             ->icon('copy')
             ->url(['entries', 'id' => $this->model->id]);
     }
@@ -102,7 +102,7 @@ class SectionActionDropdown extends ActionDropdown
         }
 
         return DuplicateButton::make()
-            ->label(Yii::t('cms', 'SECTION_BUTTON_DUPLICATE'))
+            ->label(Yii::t('cms', 'SECTION_DUPLICATE_BUTTON'))
             ->model($this->model);
     }
 
@@ -117,8 +117,8 @@ class SectionActionDropdown extends ActionDropdown
 
         return ConfirmButton::make()
             ->icon('cube')
-            ->label(Yii::t('cms', 'SECTION_BUTTON_CREATE_BLOCK'))
-            ->text(Yii::t('cms', 'SECTION_ACTION_DROPDOWN_CREATE_BLOCK_TEXT'))
+            ->label(Yii::t('cms', 'SECTION_CREATE_BLOCK_BUTTON'))
+            ->text(Yii::t('cms', 'SECTION_CREATE_BLOCK_TEXT'))
             ->url(['create-block', 'id' => $this->model->id]);
     }
 

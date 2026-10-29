@@ -28,9 +28,9 @@ class EntryHeaderTest extends TestCase
         self::assertIsString($html);
         self::assertSame(
             [
-                Yii::t('cms', 'COMMON_ENTRIES'),
+                Yii::t('cms', 'ENTRY_PLURAL'),
                 $entry->parent->getAdminName(),
-                Yii::t('cms', 'COMMON_SUBENTRIES'),
+                Yii::t('cms', 'ENTRY_CHILDREN_LABEL'),
             ],
             $this->getBreadcrumbLabels(),
         );
@@ -44,7 +44,7 @@ class EntryHeaderTest extends TestCase
         $html = Yii::$app->runAction('admin/cms/entry/update', ['id' => $entry->id]);
 
         self::assertIsString($html);
-        self::assertSame([Yii::t('cms', 'COMMON_ENTRIES')], $this->getBreadcrumbLabels());
+        self::assertSame([Yii::t('cms', 'ENTRY_PLURAL')], $this->getBreadcrumbLabels());
         self::assertStringNotContainsString('class="header-path small"', $html);
     }
 
@@ -57,7 +57,7 @@ class EntryHeaderTest extends TestCase
 
         self::assertIsString($html);
         self::assertStringContainsString('>' . $entry->getAdminName() . '</a></h1>', $html);
-        self::assertSame([Yii::t('cms', 'COMMON_ENTRIES')], $this->getBreadcrumbLabels());
+        self::assertSame([Yii::t('cms', 'ENTRY_PLURAL')], $this->getBreadcrumbLabels());
     }
 
     public function testTheIndexPageForAParentIsTitledWithItsNameInAnotherLanguage(): void

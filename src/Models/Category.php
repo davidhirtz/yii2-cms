@@ -303,7 +303,7 @@ class Category extends ActiveRecord implements SearchableInterface
     #[Override]
     public function getAdminType(): string
     {
-        return $this->getTypeName() ?: Yii::t('cms', 'COMMON_CATEGORY');
+        return $this->getTypeName() ?: Yii::t('cms', 'CATEGORY_SINGULAR');
     }
 
     #[Override]
@@ -326,7 +326,7 @@ class Category extends ActiveRecord implements SearchableInterface
     #[Override]
     public function getAdminIndexBreadcrumb(): Breadcrumb
     {
-        return new Breadcrumb(Yii::t('cms', 'COMMON_CATEGORIES'), [
+        return new Breadcrumb(Yii::t('cms', 'CATEGORY_PLURAL'), [
             '/admin/cms/category/index',
             'parent' => $this->parent_id,
         ]);
@@ -412,7 +412,7 @@ class Category extends ActiveRecord implements SearchableInterface
             'name' => Yii::t('cms', 'CATEGORY_NAME_LABEL'),
             'parent_id' => Yii::t('cms', 'CATEGORY_PARENT_ID_LABEL'),
             'slug' => Yii::t('cms', 'CATEGORY_SLUG_LABEL'),
-            'branchCount' => Yii::t('cms', 'CATEGORY_BRANCHCOUNT_LABEL'),
+            'branchCount' => Yii::t('cms', 'CATEGORY_BRANCH_COUNT_LABEL'),
             'entry_count' => Yii::t('cms', 'CATEGORY_ENTRY_COUNT_LABEL'),
         ];
     }

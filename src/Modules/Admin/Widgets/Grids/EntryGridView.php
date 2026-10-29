@@ -275,7 +275,7 @@ class EntryGridView extends GridView
 
         $content = $name
             ? $this->search->markKeywords($name)
-            : Yii::t('cms', 'COMMON_NO_TITLE');
+            : Yii::t('cms', 'MODEL_UNTITLED_TEXT');
 
         $url = $this->getRecordUrl($entry);
         $class = $name ? 'strong' : 'strong text-muted';
@@ -346,7 +346,7 @@ class EntryGridView extends GridView
         return Button::make()
             ->secondary()
             ->icon('external-link-alt')
-            ->tooltip(Yii::t('cms', 'COMMON_OPEN_ADMIN'))
+            ->tooltip(Yii::t('skeleton', 'NAV_OPEN_NEW_TAB_TOOLTIP'))
             ->url($entry->getAdminRoute() ?: null)
             ->target('_blank')
             ->roles([Entry::AUTH_ENTRY]);
@@ -450,10 +450,10 @@ class EntryGridView extends GridView
     {
         // The subentries go with it, see `Entry::beforeDelete()`.
         return DeleteGridButton::make()
-            ->label(Yii::t('cms', 'ENTRY_BUTTON_DELETE'))
+            ->label(Yii::t('cms', 'ENTRY_DELETE_BUTTON'))
             ->title($entry->entry_count
-                ? Yii::t('cms', 'ENTRY_DELETE_TITLE', ['n' => $entry->entry_count])
-                : Yii::t('cms', 'ENTRY_CONFIRM_DELETE'))
+                ? Yii::t('cms', 'ENTRY_DELETE_BRANCH_CONFIRM', ['n' => $entry->entry_count])
+                : Yii::t('cms', 'ENTRY_DELETE_CONFIRM'))
             ->message($entry->entry_count ? Yii::t('cms', 'ENTRY_DELETE_WARNING') : null)
             ->model($entry);
     }
@@ -502,11 +502,11 @@ class EntryGridView extends GridView
         $summary = parent::getSummary();
 
         return $this->isPicker() ? $summary : $summary
-            ?->emptyMessage(Yii::t('cms', 'ENTRY_GRID_SUMMARY_EMPTY'))
+            ?->emptyMessage(Yii::t('cms', 'ENTRY_GRID_EMPTY'))
             ->emptyLink(
                 $this->provider->createsIndex()
-                    ? Yii::t('cms', 'ENTRY_GRID_SUMMARY_EMPTY_INDEX_LINK')
-                    : Yii::t('cms', 'ENTRY_GRID_SUMMARY_EMPTY_LINK'),
+                    ? Yii::t('cms', 'ENTRY_GRID_CREATE_INDEX_TEXT')
+                    : Yii::t('cms', 'ENTRY_GRID_CREATE_TEXT'),
                 $this->webuser->can(Entry::AUTH_ENTRY)
                     ? ['/admin/cms/entry/create', ...Application::current()->getRequest()->getQueryParams()]
                     : null,

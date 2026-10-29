@@ -20,4 +20,4 @@ $link = A::make()
     ->text(Yii::t('skeleton', 'GRID_HERE_LINK'));
 ?>
 <h1><?= Yii::t('yii', 'Page not found.'); ?></h1>
-<p><?= Yii::t('cms', 'SITE_MISSING_INDEX', ['here' => (string)$link]); ?></p>
+<p><?= Yii::t('cms', 'SITE_MISSING_INDEX_TEXT', ['here' => (string)$link]); ?></p>

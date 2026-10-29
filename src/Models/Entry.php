@@ -684,11 +684,11 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
     public function getAdminIndexBreadcrumb(): Breadcrumb
     {
         return $this->parent_id
-            ? new Breadcrumb(Yii::t('cms', 'COMMON_SUBENTRIES'), [
+            ? new Breadcrumb(Yii::t('cms', 'ENTRY_CHILDREN_LABEL'), [
                 '/admin/cms/entry/index',
                 'parent' => $this->parent_id,
             ])
-            : new Breadcrumb(Yii::t('cms', 'COMMON_ENTRIES'), [
+            : new Breadcrumb(Yii::t('cms', 'ENTRY_PLURAL'), [
                 '/admin/cms/entry/index',
                 'type' => $this->type,
             ]);
@@ -908,7 +908,7 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
     public function getStatusName(): string
     {
         $status = $this->isScheduled() && $this->publish_date instanceof \DateTimeInterface
-            ? Yii::t('cms', 'ENTRY_STATUS_SCHEDULED', [
+            ? Yii::t('cms', 'ENTRY_STATUS_SCHEDULED_TEXT', [
                 'date' => Yii::$app->getFormatter()->asDatetime($this->publish_date, 'short'),
             ])
             : parent::getStatusName();
@@ -941,7 +941,7 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
     #[Override]
     public function getAdminType(): string
     {
-        return $this->getTypeName() ?: Yii::t('cms', 'COMMON_ENTRY');
+        return $this->getTypeName() ?: Yii::t('cms', 'ENTRY_SINGULAR');
     }
 
     #[Override]
@@ -954,8 +954,8 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
     protected function getDefaultType(): EntryType
     {
         return EntryType::make(static::TYPE_DEFAULT)
-            ->name(Yii::t('cms', 'COMMON_ENTRY'))
-            ->plural(Yii::t('cms', 'COMMON_ENTRIES'));
+            ->name(Yii::t('cms', 'ENTRY_SINGULAR'))
+            ->plural(Yii::t('cms', 'ENTRY_PLURAL'));
     }
 
     #[Override]

@@ -69,7 +69,7 @@ trait EntryRelationControllerTrait
             $entryRelation->populateEntryRelation($this->findEntry((int)$entry));
             $entryRelation->insert();
 
-            $this->errorOrSuccess($entryRelation, Yii::t('cms', 'ENTRY_RELATION_SUCCESS_ADDED'));
+            $this->errorOrSuccess($entryRelation, Yii::t('cms', 'ENTRY_RELATION_CREATE_SUCCESS'));
 
             // Back to the picker as it was filtered: a page rendered for the POST would link everywhere wrong.
             return $this->redirect(['create', ...$this->request->getQueryParams(), 'entry' => null]);
@@ -112,7 +112,7 @@ trait EntryRelationControllerTrait
         $entryRelation->populateModelRelation($model);
         $entryRelation->delete();
 
-        $this->errorOrSuccess($entryRelation, Yii::t('cms', 'ENTRY_RELATION_SUCCESS_REMOVED'));
+        $this->errorOrSuccess($entryRelation, Yii::t('cms', 'ENTRY_RELATION_DELETE_SUCCESS'));
         return $this->redirect(['index', $model->getParamName() => $model->id]);
     }
 
@@ -123,7 +123,7 @@ trait EntryRelationControllerTrait
         ]);
 
         if ($success) {
-            $this->success(Yii::t('cms', 'ENTRY_SUCCESS_ORDERED'));
+            $this->success(Yii::t('cms', 'ENTRY_ORDER_SUCCESS'));
         }
 
         return (string)Flashes::make();
