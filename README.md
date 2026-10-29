@@ -155,8 +155,8 @@ menu in one query. A section set creates its sections on an entry in one go and 
 
 The cms registers the `categories` and `entries` seeders of the skeleton's `./yii setup`: categories are inserted while
 there are none, then entries while there are none; without `entries`, a homepage named after the application. An entry
-may carry `sections`, `categories` (`EntryCategory` attributes) and child `entries`; a `type` picks the class. The
-entries closure is called after the categories exist:
+may carry `sections`, `categories` (`EntryCategory` attributes), child `entries` and `assets`, as may a section; a
+`type` picks the class. The entries closure is called after the categories exist:
 
 ```php
 return [
@@ -164,7 +164,13 @@ return [
         ['name' => 'News', 'slug' => 'news'],
     ],
     'entries' => fn (): array => [
-        ['name' => 'Home', 'slug' => 'home', 'title' => Yii::$app->name, 'sections' => [['type' => 1]]],
+        [
+            'name' => 'Home',
+            'slug' => 'home',
+            'title' => Yii::$app->name,
+            'assets' => [['url' => 'https://example.com/hero.jpg', 'alt_text' => 'Hero']],
+            'sections' => [['type' => 1, 'assets' => [['path' => '@root/resources/intro.jpg']]]],
+        ],
         ['name' => 'Imprint', 'menu_ids' => [2]],
     ],
 ];

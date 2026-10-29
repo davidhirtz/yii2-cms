@@ -10,6 +10,10 @@ use Hirtz\Cms\Models\EntryCategory;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Test\TestCase;
 use Hirtz\Media\Models\Collections\FolderCollection;
+use Hirtz\Media\Models\File;
+use Hirtz\Media\Test\Traits\MediaFileTrait;
+use Hirtz\Skeleton\Helpers\FileHelper;
+use Hirtz\Skeleton\Upload\Upload;
 use Hirtz\Skeleton\Console\Application;
 use Hirtz\Skeleton\Console\Controllers\SetupController;
 use Hirtz\Skeleton\Test\Traits\StdOutBufferControllerTrait;
@@ -20,6 +24,7 @@ use yii\console\ExitCode;
 
 class SetupTest extends TestCase
 {
+    use MediaFileTrait;
     use UserFixtureTrait;
 
     protected string $applicationClass = Application::class;
@@ -46,6 +51,9 @@ class SetupTest extends TestCase
     protected function tearDown(): void
     {
         @unlink($this->file);
+        FileHelper::removeDirectory((string)File::getModule()->uploadPath);
+        FileHelper::removeDirectory(Upload::getComponent()->tempPath);
+
         parent::tearDown();
     }
 
@@ -121,6 +129,38 @@ class SetupTest extends TestCase
         self::assertSame(ExitCode::DATAERR, $controller->runAction('index', ['file' => $this->file]));
         self::assertStringContainsString('Failed to insert', $controller->flushStdOutBuffer());
         self::assertSame(0, (int)Entry::find()->count());
+    }
+
+    public function testAFileThatCannotBeReadCostsOnlyItsAsset(): void
+    {
+        $source = Upload::getComponent()->tempPath . '/Grüße Å 東京 🎉.jpg';
+        FileHelper::createDirectory(dirname($source));
+        $this->writeImage($source, 60, 40);
+
+        $this->writeSetupFile(<<<PHP
+            return ['entries' => [
+                [
+                    'status' => Entry::STATUS_ENABLED,
+                    'name' => 'Home',
+                    'slug' => 'home',
+                    'assets' => [['path' => '$source', 'alt_text' => 'Grüße 🎉']],
+                    'sections' => [['name' => 'Intro', 'assets' => [['url' => 'http://127.0.0.1/gone.jpg']]]],
+                ],
+            ]];
+            PHP);
+
+        $controller = $this->createController();
+
+        self::assertSame(ExitCode::DATAERR, $controller->runAction('index', ['file' => $this->file]));
+        self::assertStringContainsString('http://127.0.0.1/gone.jpg could not be read.', $controller->flushStdOutBuffer());
+
+        $entry = Entry::findOne(['name' => 'Home']) ?? self::fail('No entry');
+        $section = Section::findOne(['entry_id' => $entry->id]) ?? self::fail('No section');
+
+        self::assertSame(1, $entry->asset_count);
+        self::assertSame('Grüße 🎉', $entry->assets[0]->getAttribute('alt_text') ?? null);
+        self::assertSame(60, $entry->assets[0]->file?->width);
+        self::assertSame(0, $section->asset_count);
     }
 
     /**

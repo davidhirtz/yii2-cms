@@ -7,6 +7,7 @@ namespace Hirtz\Cms\Setup;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\EntryCategory;
 use Hirtz\Cms\Models\Section;
+use Hirtz\Media\Setup\AssetSeederTrait;
 use Hirtz\Skeleton\Setup\Seeder;
 use Override;
 use Yii;
@@ -17,7 +18,9 @@ use yii\helpers\ArrayHelper;
  */
 class EntrySeeder extends Seeder
 {
-    public array $dependencies = ['categories'];
+    use AssetSeederTrait;
+
+    public array $dependencies = ['categories', 'folders'];
 
     #[Override]
     public function run(?array $value): void
@@ -39,6 +42,7 @@ class EntrySeeder extends Seeder
         $children = (array)ArrayHelper::remove($attributes, 'entries', []);
         $categories = (array)ArrayHelper::remove($attributes, 'categories', []);
         $sections = (array)ArrayHelper::remove($attributes, 'sections', []);
+        $assets = (array)ArrayHelper::remove($attributes, 'assets', []);
 
         $entry = Entry::instantiateByType(self::getDeclaredType($attributes));
         $entry->setAttributes($attributes);
@@ -51,6 +55,8 @@ class EntrySeeder extends Seeder
         if (!$this->insert($entry)) {
             return;
         }
+
+        $this->insertAssets($entry, $assets);
 
         foreach ($children as $child) {
             $this->insertEntry((array)$child, $entry);
@@ -65,11 +71,16 @@ class EntrySeeder extends Seeder
         }
 
         foreach ($sections as $section) {
-            $model = Section::instantiateByType(self::getDeclaredType((array)$section));
-            $model->setAttributes((array)$section);
+            $section = (array)$section;
+            $assets = (array)ArrayHelper::remove($section, 'assets', []);
+
+            $model = Section::instantiateByType(self::getDeclaredType($section));
+            $model->setAttributes($section);
             $model->populateEntryRelation($entry);
 
-            $this->insert($model);
+            if ($this->insert($model)) {
+                $this->insertAssets($model, $assets);
+            }
         }
     }
 
