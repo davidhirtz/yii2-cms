@@ -1,5 +1,7 @@
 ## Unreleased
 
+- Changed `setup` to the skeleton's command, with `Setup\CategorySeeder` and `Setup\EntrySeeder`; a key no seeder reads is refused
+- Removed `Console\Controllers\SetupController` and `Models\Actions\SetupContent`
 - Changed every message key to the `{DOMAIN}_{SUBJECT}_{KIND}` scheme; a migration renames the keys stored in `trail`
 
 ## 3.19.0 (October 24, 2026)

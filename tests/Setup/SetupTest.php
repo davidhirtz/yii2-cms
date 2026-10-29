@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Cms\Tests\Console;
+namespace Hirtz\Cms\Tests\Setup;
 
-use Hirtz\Cms\Console\Controllers\SetupController;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\EntryCategory;
@@ -12,13 +11,14 @@ use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Test\TestCase;
 use Hirtz\Media\Models\Collections\FolderCollection;
 use Hirtz\Skeleton\Console\Application;
+use Hirtz\Skeleton\Console\Controllers\SetupController;
 use Hirtz\Skeleton\Test\Traits\StdOutBufferControllerTrait;
 use Hirtz\Skeleton\Test\Traits\UserFixtureTrait;
 use Override;
 use Yii;
 use yii\console\ExitCode;
 
-class SetupControllerTest extends TestCase
+class SetupTest extends TestCase
 {
     use UserFixtureTrait;
 
@@ -39,6 +39,7 @@ class SetupControllerTest extends TestCase
         $module->enableNestedEntries = true;
 
         $this->file = Yii::getAlias('@runtime/' . uniqid('setup-') . '.php');
+        Yii::setAlias('@root', Yii::getAlias('@runtime/' . uniqid('setup-root-')));
     }
 
     #[Override]
@@ -91,25 +92,6 @@ class SetupControllerTest extends TestCase
         self::assertSame($this->getUserFromFixture('owner')->id, $entry->updated_by_user_id);
     }
 
-    public function testTheFileInTheRootConfigIsTheDefault(): void
-    {
-        $root = Yii::getAlias('@runtime/' . uniqid('setup-root-'));
-        $this->file = "$root/config/setup.php";
-        mkdir(dirname($this->file), 0777, true);
-
-        Yii::setAlias('@root', $root);
-        $this->writeSetupFile("return ['entries' => [['status' => Entry::STATUS_ENABLED, 'name' => 'Root', 'slug' => 'root']]];");
-
-        try {
-            self::assertSame(ExitCode::OK, $this->runSetup(['file' => null]));
-            self::assertNotNull(Entry::findOne(['name' => 'Root']));
-        } finally {
-            @unlink($this->file);
-            @rmdir(dirname($this->file));
-            @rmdir($root);
-        }
-    }
-
     public function testWithoutAFileAHomepageIsInserted(): void
     {
         self::assertSame(ExitCode::OK, $this->runSetup(['file' => null]));
@@ -141,12 +123,6 @@ class SetupControllerTest extends TestCase
         self::assertSame(0, (int)Entry::find()->count());
     }
 
-    public function testAMissingFileIsRefused(): void
-    {
-        self::assertSame(ExitCode::NOINPUT, $this->runSetup());
-        self::assertSame(0, (int)Entry::find()->count());
-    }
-
     /**
      * @param array<string, mixed> $params
      */
@@ -156,9 +132,9 @@ class SetupControllerTest extends TestCase
         return $this->createController()->runAction('index', $params);
     }
 
-    private function createController(): SetupControllerMock
+    private function createController(): SetupTestControllerMock
     {
-        return new SetupControllerMock('setup', Application::current());
+        return new SetupTestControllerMock('setup', Application::current());
     }
 
     private function writeSetupFile(string $code): void
@@ -175,7 +151,7 @@ class SetupControllerTest extends TestCase
     }
 }
 
-class SetupControllerMock extends SetupController
+class SetupTestControllerMock extends SetupController
 {
     use StdOutBufferControllerTrait;
 }

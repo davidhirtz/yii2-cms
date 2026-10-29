@@ -153,11 +153,10 @@ menu in one query. A section set creates its sections on an entry in one go and 
 
 ### Setup
 
-`./yii setup` inserts the categories of `config/setup.php` while there are none, then its entries while there are none,
-and creates the default folder. Without the file, it inserts a homepage named after the application. The records are
-attributed to `--user` (an email address), the owner by default; `--file` reads another file. An entry may carry
-`sections`, `categories` (`EntryCategory` attributes) and child `entries`; a `type` picks the class. The entries
-closure is called after the categories exist:
+The cms registers the `categories` and `entries` seeders of the skeleton's `./yii setup`: categories are inserted while
+there are none, then entries while there are none; without `entries`, a homepage named after the application. An entry
+may carry `sections`, `categories` (`EntryCategory` attributes) and child `entries`; a `type` picks the class. The
+entries closure is called after the categories exist:
 
 ```php
 return [
