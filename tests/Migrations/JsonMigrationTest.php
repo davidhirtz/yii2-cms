@@ -14,8 +14,7 @@ use Yii;
 use yii\db\Query;
 
 /**
- * v2 stored `path` and `category_ids` as comma lists. The DDL commits the test transaction, which is why the
- * columns are put back by hand.
+ * The DDL commits the test transaction, so the columns are put back by hand.
  */
 class JsonMigrationTest extends TestCase
 {

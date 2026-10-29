@@ -12,9 +12,8 @@ use Hirtz\Skeleton\Test\Fixtures\ActiveFixture;
 use yii\test\Fixture;
 
 /**
- * Fixtures insert rows straight into the table, so no model event fires and no permalink would be written for a
- * fixture-loaded entry. The data file carries the URI, the leaf and the relations; language and timestamps are
- * filled in here so the rows follow whatever language the test runs in.
+ * Fixtures insert rows straight into the table, so no model event writes the permalinks; language and timestamps follow
+ * the test's language.
  */
 class PermalinkFixture extends ActiveFixture
 {

@@ -24,8 +24,8 @@ use Yii;
 use yii\base\NotSupportedException;
 
 /**
- * One row per entry linked to a model. Every registered subclass shares this table and is dispatched on
- * `model_class`, so `updateAll()` and `deleteAll()` are unscoped and must name it themselves.
+ * Every registered subclass shares this table, so `updateAll()` and `deleteAll()` are unscoped and must name
+ * `model_class`.
  *
  * @template TModel of (ActiveRecord&EntryRelationModelInterface) = ActiveRecord&EntryRelationModelInterface
  *
@@ -36,7 +36,7 @@ use yii\base\NotSupportedException;
  * @property int $position
  * @property DateTime|null $updated_at
  *
- * @property-read TModel $model {@see static::getModel()}
+ * @property-read TModel $model
  *
  * @mixin TrailBehavior
  */
@@ -62,8 +62,7 @@ class EntryRelation extends ActiveRecord implements TrailModelInterface
     }
 
     /**
-     * An entry relation is only ever edited through the model it hangs on, so it answers that model's permission.
-     * Read off the class rather than the record: a grid asks per row, and a bare instance has to answer as well.
+     * Answers the permission of the model it hangs on, read off the class since a bare instance has to answer too.
      */
     public function getPermissionName(): string
     {
@@ -216,8 +215,8 @@ class EntryRelation extends ActiveRecord implements TrailModelInterface
     }
 
     /**
-     * The base is unscoped and returns mixed subclasses from one query; every subclass is scoped to its own
-     * `model_class`, which is what makes `findOne()`, the relations and the eager load safe.
+     * The base is unscoped, every subclass scoped to its own `model_class`, which makes `findOne()`, the relations
+     * and the eager load safe.
      *
      * @return EntryRelationQuery<static>
      */

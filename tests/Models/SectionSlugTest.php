@@ -11,8 +11,8 @@ use Hirtz\Cms\Test\TestCase;
 use Yii;
 
 /**
- * The slug is the section's HTML id and has no column of its own, so the uniqueness check is a comparison against
- * the sections of the same entry rather than a database constraint.
+ * A section slug is its HTML id and has no column, so uniqueness is checked against the entry's sections, not by a
+ * constraint.
  */
 class SectionSlugTest extends TestCase
 {
@@ -65,9 +65,6 @@ class SectionSlugTest extends TestCase
         self::assertArrayHasKey('slug', $second->getErrors());
     }
 
-    /**
-     * Only within the entry: two entries may name the same anchor.
-     */
     public function testTheSameSlugIsAcceptedOnAnotherEntry(): void
     {
         $first = $this->getSectionFromFixture('section-headline');

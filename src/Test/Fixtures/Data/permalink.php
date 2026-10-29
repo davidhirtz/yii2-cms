@@ -5,8 +5,8 @@ declare(strict_types=1);
 use Hirtz\Cms\Test\Models\TestEntry;
 
 /**
- * Mirrors the entry fixture. Entry ids 4 and 5 are children of 1, id 6 is a child of 2, so their URIs carry the
- * parent path the way {@see TestEntry::getFormattedSlug()} composes it.
+ * Entry ids 4 and 5 are children of 1, id 6 of 2, so their URIs carry the parent path as
+ * {@see TestEntry::getFormattedSlug()} composes it.
  */
 return [
     'page-enabled' => ['uri' => 'test-1', 'slug' => 'test-1', 'entry_id' => 1, 'tenant_id' => 1],

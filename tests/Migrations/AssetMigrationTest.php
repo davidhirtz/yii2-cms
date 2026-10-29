@@ -21,9 +21,6 @@ use yii\db\Expression;
 use yii\db\JsonExpression;
 
 /**
- * `cms_asset` is kept, so the copy can be replayed against it. The migration asserts its own result and throws, so
- * a silent failure here would already have rolled back — these tests check what it produced.
- *
  * Adding the legacy file count column commits the test transaction, so everything is cleaned up by hand.
  */
 class AssetMigrationTest extends TestCase

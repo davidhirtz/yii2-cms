@@ -8,11 +8,10 @@ use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Queries\CategoryQuery;
 
 /**
- * The foreign key is deliberately not declared here: a trait `@property` is flattened into the using class, so a
- * second declaration of the same name there silently drops that class's whole PHPDoc scope instead of being
- * reported (monorepo issue #125). Each using model declares the column with its own nullability.
+ * `category_id` is not declared here, since a trait `@property` the using class declares too drops its whole
+ * PHPDoc scope (#125).
  *
- * @property-read Category|null $category {@see static::getCategory()}
+ * @property-read Category|null $category
  */
 trait CategoryRelationTrait
 {

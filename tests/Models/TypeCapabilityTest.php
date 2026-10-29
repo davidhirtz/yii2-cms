@@ -50,8 +50,8 @@ class TypeCapabilityTest extends TestCase
     }
 
     /**
-     * The site asks the entry, not the section count: a type that declares no sections had its sections rendered
-     * anyway, where the asset side has always gone through `getVisibleAssets()`.
+     * The site asks the entry, not the section count, since a type declaring no sections had its sections rendered
+     * anyway.
      */
     public function testTheTypeTakesTheSectionsOffAnEntry(): void
     {

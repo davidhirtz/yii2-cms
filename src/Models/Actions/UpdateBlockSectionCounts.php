@@ -7,9 +7,7 @@ namespace Hirtz\Cms\Models\Actions;
 use Hirtz\Cms\Models\Block;
 
 /**
- * `section.block_id` has no count column on the section's side, so both the block a section moved to and the one it
- * left have to be recounted. A caller deleting or inserting sections in batch runs this once, for every block the
- * batch touched.
+ * A batch deleting or inserting sections runs this once, for every block it touched.
  */
 class UpdateBlockSectionCounts
 {

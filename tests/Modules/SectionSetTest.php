@@ -14,8 +14,7 @@ use Hirtz\Cms\Test\TestCase;
 use yii\base\InvalidConfigException;
 
 /**
- * A set is a project-level catalogue rather than per-record state, so it is declared on the module beside the
- * feature flags, not on the model.
+ * A set is a project-level catalogue, so it is declared on the module, not on the model.
  */
 class SectionSetTest extends TestCase
 {
@@ -57,9 +56,6 @@ class SectionSetTest extends TestCase
         self::assertNull($this->getModule()->findSectionSet(null));
     }
 
-    /**
-     * The declaration is resolved once, so a set is the same object wherever it is read.
-     */
     public function testTheSetsAreResolvedOnce(): void
     {
         $calls = 0;
@@ -90,8 +86,7 @@ class SectionSetTest extends TestCase
     }
 
     /**
-     * A set is scoped by the record it is offered for, never by the request — the admin edits entries of any
-     * tenant, so the request's tenant is not the entry's.
+     * The admin edits entries of any tenant, so a set is scoped by the record it is offered for, never by the request.
      */
     public function testAvailabilityIsDecidedPerEntry(): void
     {

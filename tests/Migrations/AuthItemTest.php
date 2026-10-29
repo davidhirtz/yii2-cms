@@ -96,8 +96,7 @@ class AuthItemTest extends TestCase
     }
 
     /**
-     * A permission nobody registered is not an error anywhere: the record simply stops being reachable, and every
-     * link to it silently disappears.
+     * A permission nobody registered is no error: the record just stops being reachable.
      *
      * @param class-string<AdminModelInterface> $class
      */

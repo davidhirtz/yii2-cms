@@ -15,8 +15,7 @@ use Override;
 use Yii;
 
 /**
- * A translated entry splits across three tables: the source language stays in the entry row, the other languages go to
- * {@see Translation} — except the slug, which is backed by a {@see \Hirtz\Cms\Models\Permalink}.
+ * The other languages go to {@see Translation}, except the slug, which a {@see \Hirtz\Cms\Models\Permalink} backs.
  */
 class EntryTranslationTest extends TestCase
 {
@@ -204,7 +203,7 @@ class EntryTranslationTest extends TestCase
     }
 
     /**
-     * @return array<string, string|null> the stored German value per attribute
+     * @return array<string, string|null>
      */
     protected function getTranslations(Entry $entry): array
     {

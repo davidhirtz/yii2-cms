@@ -26,7 +26,7 @@ class EntryTest extends TestCase
     }
 
     /**
-     * The type names the entry in the submenu and elsewhere, so an entry nothing declares types for is an "Entry".
+     * The type names the entry in the submenu, so an entry without declared types is an "Entry".
      */
     public function testTheDefaultTypeIsNamedAfterTheEntry(): void
     {
@@ -103,8 +103,7 @@ class EntryTest extends TestCase
     }
 
     /**
-     * The counters are bookkeeping on the parent, so a parent that no longer validates — a custom attribute gone
-     * stale, a rule tightened since it was saved — still has its children counted.
+     * The counters are bookkeeping, so a parent that no longer validates still has its children counted.
      */
     public function testTheCountersOfAParentThatDoesNotValidateAreUpdated(): void
     {

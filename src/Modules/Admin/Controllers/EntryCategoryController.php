@@ -140,9 +140,8 @@ class EntryCategoryController extends AbstractController
     }
 
     /**
-     * Whether the controller works with this entry at all. A controller behind a submenu tab answers with the
-     * capability that tab is shown for, so a route cannot do what the admin does not offer — the media
-     * `Modules\Admin\Controllers\Traits\AssetControllerTrait` refuses an asset model the same way.
+     * A controller behind a submenu tab answers with the capability the tab is shown for, as media's
+     * `AssetControllerTrait` does.
      */
     protected function isEntryAllowed(Entry $entry): bool
     {

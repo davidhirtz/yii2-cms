@@ -87,9 +87,8 @@ class CmsNavItem extends NavItem
     }
 
     /**
-     * The current type is the one `EntryHeader`, `EntrySubmenu` or `SectionSubmenu` published while the page
-     * rendered, which happens before the layout renders this. A page outside the entries has none. The type's item
-     * is the active one, so the parent, whose routes cover every entry page, steps back.
+     * The current type is published by `EntryHeader`, `EntrySubmenu` or `SectionSubmenu` before the layout renders
+     * this.
      */
     protected function addEntrySubnavItems(): void
     {

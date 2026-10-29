@@ -151,8 +151,8 @@ class EntryGridView extends GridView
     }
 
     /**
-     * A single-tenant project gets no dropdown at all, and neither does a grid already scoped to one entry's
-     * children — they all belong to its tenant, so the filter could only empty the grid.
+     * Neither a single-tenant project nor a grid scoped to one entry's children gets a dropdown, which could only
+     * empty the grid.
      */
     protected function getTenantDropdown(): ?Stringable
     {
@@ -177,8 +177,7 @@ class EntryGridView extends GridView
     }
 
     /**
-     * The tenant the grid is scoped to comes from the host as often as from the dropdown's parameter, and an empty
-     * grid of one tenant says nothing about the others — so the dropdown that reaches them has to stay.
+     * The tenant comes from the host as often as from the parameter, so an empty grid keeps the dropdown to the others.
      */
     #[Override]
     protected function isFiltered(): bool
@@ -296,9 +295,8 @@ class EntryGridView extends GridView
     }
 
     /**
-     * Whether the grid is a list to pick an entry *from* rather than to navigate. A picker must not lead away
-     * from itself — that cancels the flow the user is in — so its rows drill into the subentries instead, its
-     * count badges carry no link, and the entry's own page is an external link button.
+     * A picker must not lead away from itself, so its rows drill into the subentries, its badges carry no link and
+     * the entry's page is an external link button.
      */
     #[Override]
     protected function isPicker(): bool
@@ -307,8 +305,6 @@ class EntryGridView extends GridView
     }
 
     /**
-     * Where the row's own links lead: the name and the type icon.
-     *
      * @return array<array-key, mixed>|string|null
      */
     protected function getRecordUrl(Entry $entry): array|string|null
@@ -323,8 +319,6 @@ class EntryGridView extends GridView
     }
 
     /**
-     * The subentries, which is also what {@see EntryEntryCountColumn} carries.
-     *
      * @return array<array-key, mixed>|string
      */
     protected function getDescendantUrl(Entry $entry): array|string
@@ -338,8 +332,7 @@ class EntryGridView extends GridView
     }
 
     /**
-     * The entry's own page, which a picker's name no longer leads to — in a new tab, so the picker survives the
-     * detour.
+     * In a new tab, so the picker survives the detour.
      */
     protected function getAdminLinkButton(Entry $entry): Stringable
     {

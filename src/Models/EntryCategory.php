@@ -21,8 +21,6 @@ use Override;
 use Yii;
 
 /**
- * Represents a relation between an entry and a category.
- *
  * @property int $entry_id
  * @property int $category_id
  * @property int $position
@@ -42,7 +40,9 @@ class EntryCategory extends \Hirtz\Skeleton\Db\ActiveRecord implements TrailMode
     public bool|null $shouldUpdateEntryAfterInsert = null;
 
     /**
-     * @var list<static> the junctions the nested-category cascade inserted or deleted beside this one
+     * The junctions the nested-category cascade inserted or deleted beside this one.
+     *
+     * @var list<static>
      */
     public array $inheritedEntryCategories = [];
 

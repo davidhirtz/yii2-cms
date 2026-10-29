@@ -15,8 +15,7 @@ use Stringable;
 use Yii;
 
 /**
- * On the form of a live entry whose parent is still scheduled: the entry is reachable at its own address before the
- * parent goes live ({@see Entry::findScheduledAncestor()}).
+ * @see Entry::findScheduledAncestor()
  */
 class ScheduledAncestorAlert extends Widget
 {

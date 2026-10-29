@@ -9,16 +9,14 @@ use Override;
 use yii\db\ActiveRecord;
 
 /**
- * Adds the permalink-backed slug to the virtual attributes of {@see TranslationTrait}, for a model used with
- * {@see PermalinkTrait} that has no slug column. Must be used in a subclass of the class using `TranslationTrait`,
- * as the `parent::` calls below resolve to it.
+ * Must be used in a subclass of the class using {@see TranslationTrait}, as the `parent::` calls resolve to it.
  *
  * @mixin ActiveRecord
  */
 trait VirtualSlugTrait
 {
     /**
-     * @var array<string, true> the slug attributes already read off a permalink, keyed by attribute name
+     * @var array<string, true>
      */
     private array $populatedSlugs = [];
 
@@ -75,9 +73,7 @@ trait VirtualSlugTrait
     }
 
     /**
-     * One language at a time: reading the current language's slug must not load the permalink relation for the
-     * others, when the record a URI lookup matched already answers it. Skips an attribute that already holds a
-     * written value, so a pending change is never clobbered.
+     * One language at a time, so the others' permalinks are not loaded, and never over a pending written value.
      */
     protected function populateSlugAttribute(string $name): void
     {

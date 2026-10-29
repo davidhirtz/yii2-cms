@@ -12,8 +12,7 @@ use Hirtz\Skeleton\Test\Fixtures\UserFixture;
 use Yii;
 
 /**
- * The media bundle owns `AssetHeader` but not the routes an asset page lives on, so the chain it walks is
- * exercised here, where an entry and a section have assets.
+ * The media bundle owns `AssetHeader` but not the routes an asset page lives on, so its chain is exercised here.
  */
 class AssetHeaderTest extends TestCase
 {
@@ -97,8 +96,7 @@ class AssetHeaderTest extends TestCase
     }
 
     /**
-     * The noun is the base "Asset", not the subclass's "Section asset": whatever the asset hangs on is already
-     * named, either as the title or as the item right before it.
+     * The noun is the base "Asset", since whatever the asset hangs on is already named.
      *
      * @return array{string, string}
      */
@@ -111,8 +109,9 @@ class AssetHeaderTest extends TestCase
         ])];
     }
     /**
-     * @return list<array{string, string}> the href and the text of each subtitle item, in order. Matched rather
-     *     than spelled out: an item also carries the generated `view-transition-name` its group is matched by.
+     * Matched rather than spelled out, since an item also carries a generated `view-transition-name`.
+     *
+     * @return list<array{string, string}>
      */
     private function getSubtitleItems(string $html): array
     {
@@ -139,8 +138,7 @@ class AssetHeaderTest extends TestCase
     }
 
     /**
-     * `CmsFixtureTrait` declares the user fixture but no accessor for it: adding one would collide with
-     * `UserFixtureTrait` for the tests that use both.
+     * `CmsFixtureTrait` declares no accessor for the user fixture, since one would collide with `UserFixtureTrait`.
      */
     private function getUserFromFixture(string $key): User
     {

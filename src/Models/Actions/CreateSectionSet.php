@@ -11,8 +11,8 @@ use Hirtz\Cms\Models\Sets\SectionTemplate;
 use Yii;
 
 /**
- * Inserted one at a time rather than validated up front, so each section sees the slugs and positions of the ones
- * before it. A section that fails is reported and the rest are kept.
+ * Inserted one at a time so each section sees the slugs and positions before it, a failure reported and the rest
+ * kept.
  */
 class CreateSectionSet
 {

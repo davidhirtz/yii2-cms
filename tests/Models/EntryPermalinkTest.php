@@ -16,8 +16,8 @@ use Override;
 use Yii;
 
 /**
- * While the slug columns are still the source of truth, a permalink must always agree with
- * {@see TestEntry::getFormattedSlug()}. Every case here asserts that invariant.
+ * A permalink must always agree with {@see TestEntry::getFormattedSlug()} while the slug columns are the source of
+ * truth.
  */
 class EntryPermalinkTest extends TestCase
 {
@@ -40,8 +40,7 @@ class EntryPermalinkTest extends TestCase
     }
 
     /**
-     * Renaming touches no column on the entry itself, so Yii reports no affected rows. Callers read the return
-     * value as success, so it has to account for the permalink that was rewritten.
+     * Renaming touches no entry column, so Yii reports no affected rows, yet callers read the return value as success.
      */
     public function testSlugOnlyUpdateReportsAnAffectedRow(): void
     {
@@ -81,8 +80,8 @@ class EntryPermalinkTest extends TestCase
     }
 
     /**
-     * The cascade in {@see TestEntry::afterSave()} re-saves every descendant, so their permalinks have to follow a
-     * parent rename without any separate bookkeeping.
+     * The cascade in {@see TestEntry::afterSave()} re-saves every descendant, so their permalinks follow a parent
+     * rename.
      */
     public function testRenamingAParentRewritesDescendantPermalinks(): void
     {
@@ -154,7 +153,7 @@ class EntryPermalinkTest extends TestCase
     }
 
     /**
-     * Two entries may share a leaf as long as their parents differ, so the unique index must be on the full path.
+     * The unique index must be on the full path, since two entries may share a leaf under different parents.
      */
     public function testSameSlugUnderDifferentParents(): void
     {
@@ -179,8 +178,7 @@ class EntryPermalinkTest extends TestCase
     }
 
     /**
-     * The request side names the tenant's host, so the 404 handler matches it on that host only; a bare path would
-     * fire on every host and collide with another tenant's entry of the same slug.
+     * A bare path would fire on every host and collide with another tenant's entry of the same slug.
      */
     public function testRedirectRequestUriIsQualifiedByTheTenantHost(): void
     {
@@ -194,8 +192,8 @@ class EntryPermalinkTest extends TestCase
     }
 
     /**
-     * `RedirectBehavior` only produced these because every descendant happened to be re-saved. Recording them from
-     * the permalink action makes it explicit.
+     * Recorded by the permalink action, since `RedirectBehavior` only saw them because every descendant happened to be
+     * re-saved.
      */
     public function testRenamingAParentRecordsRedirectsForDescendants(): void
     {
@@ -210,9 +208,6 @@ class EntryPermalinkTest extends TestCase
         self::assertSame('renamed/child', $this->findRedirectTarget('parent/child'));
     }
 
-    /**
-     * Two renames in a row must leave one hop, not a chain.
-     */
     public function testRepeatedRenamesDoNotChainRedirects(): void
     {
         $entry = $this->createEntryWithSection('first');
@@ -229,10 +224,8 @@ class EntryPermalinkTest extends TestCase
     }
 
     /**
-     * Renaming an entry back to a slug it already had leaves one redirect onto the current URL. The redirect the
-     * first rename recorded now points at where the entry is again, so it is a no-op and is removed — left in
-     * place, it turned the second redirect into `first` → `first` through {@see Redirect::validateUrl()}'s chain
-     * flattening, and the 404 handler then redirected that URL to itself forever.
+     * Left in place, the first rename's redirect flattened into `first` → `first` through
+     * {@see Redirect::validateUrl()}, which the 404 handler followed forever.
      */
     public function testRenamingAnEntryBackDoesNotLeaveARedirectLoop(): void
     {
@@ -250,9 +243,6 @@ class EntryPermalinkTest extends TestCase
         self::assertSame(1, Redirect::find()->count());
     }
 
-    /**
-     * The same cycle one level down: the descendant redirects a parent rename records must not loop either.
-     */
     public function testRenamingAParentBackDoesNotLeaveARedirectLoopForDescendants(): void
     {
         $parent = $this->createEntryWithSection('parent');
@@ -288,8 +278,7 @@ class EntryPermalinkTest extends TestCase
     }
 
     /**
-     * The slug is no longer a column on the entry, so nothing reports it as changed unless the model does. Without
-     * that, renaming an entry left no trace in the trail at all.
+     * The slug is no longer an entry column, so nothing reports it as changed unless the model does.
      */
     public function testRenameIsRecordedInTheTrail(): void
     {
@@ -305,8 +294,8 @@ class EntryPermalinkTest extends TestCase
     }
 
     /**
-     * The old slug is read from the permalink, not from the virtual attribute, so a rename records the correct
-     * before/after even when the slug was never read (and thus never materialised) before being written.
+     * The old slug is read from the permalink, since the virtual attribute may never have been materialised before
+     * being written.
      */
     public function testRenameRecordsTheOldSlugWithoutReadingItFirst(): void
     {
@@ -341,9 +330,6 @@ class EntryPermalinkTest extends TestCase
         self::assertSame('brand-new', $data['slug'] ?? null);
     }
 
-    /**
-     * A parent rename rewrites descendant permalinks, but their own slug is unchanged, so they must not report one.
-     */
     public function testRenamingAParentDoesNotTrailDescendantSlugs(): void
     {
         $parent = $this->createEntry('parent');
@@ -357,7 +343,7 @@ class EntryPermalinkTest extends TestCase
     }
 
     /**
-     * @return array<string, mixed> the most recent trail data of that type, empty when no record was written
+     * @return array<string, mixed>
      */
     protected function findTrailData(TestEntry $entry, int $type): array
     {
@@ -375,7 +361,7 @@ class EntryPermalinkTest extends TestCase
     }
 
     /**
-     * @param string $requestUri the path on the default tenant, whose host the stored request URI carries
+     * The request URI is a path on the default tenant, whose host the stored URI carries.
      */
     protected function findRedirectTarget(string $requestUri): ?string
     {
@@ -407,8 +393,7 @@ class EntryPermalinkTest extends TestCase
     }
 
     /**
-     * {@see TestEntry::hasRoute()} needs sections or children, so an entry without either has no URL and therefore
-     * nothing to redirect.
+     * {@see TestEntry::hasRoute()} needs sections or children, so an entry without either has nothing to redirect.
      */
     protected function createEntryWithSection(string $slug, ?TestEntry $parent = null): TestEntry
     {
@@ -437,8 +422,8 @@ class EntryPermalinkTest extends TestCase
     }
 
     /**
-     * The URL manager resolves the default tenant as a request on its host would, so a redirect target on that
-     * tenant is relative, as it is in the admin.
+     * The URL manager resolves the default tenant as a request on its host would, so a redirect target on it is
+     * relative.
      */
     #[Override]
     protected function setUp(): void

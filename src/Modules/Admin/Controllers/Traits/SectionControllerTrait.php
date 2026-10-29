@@ -21,10 +21,8 @@ trait SectionControllerTrait
     }
 
     /**
-     * Whether the controller works with this section at all, the counterpart of
-     * {@see EntryControllerTrait::isEntryAllowed()}. A section the record *already has* is not refused here — only
-     * listing and adding are, which is the exemption {@see \Hirtz\Skeleton\Models\Types\Type::isAvailableOrStored()}
-     * makes for a stored value the configuration no longer allows.
+     * A section the record already has is not refused, only listing and adding are, the exemption of
+     * {@see \Hirtz\Skeleton\Models\Types\Type::isAvailableOrStored()}.
      */
     protected function isSectionAllowed(Section $section): bool
     {

@@ -13,8 +13,7 @@ use Hirtz\Skeleton\Web\Request;
 use Yii;
 
 /**
- * The entries of every autoloaded menu, in one query per request: a layout renders a header and a footer menu
- * without paying for either separately. A menu declaring `autoload(false)` is loaded on its own, on first use.
+ * Every autoloaded menu is loaded in one query per request, one declaring `autoload(false)` on its own.
  */
 class MenuCollection
 {
@@ -64,8 +63,6 @@ class MenuCollection
     }
 
     /**
-     * The entries of every autoloaded menu, which is what the single query holds.
-     *
      * @return array<int, Entry>
      */
     public static function getEntries(): array

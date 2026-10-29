@@ -36,9 +36,8 @@ class EntryType extends Type implements AssetModelTypeInterface
     protected ?Closure $structuredData = null;
 
     /**
-     * Whether an entry of this type is put into categories. The module's `enableCategories` decides first: a type
-     * only ever narrows what the installation turned on, which is why these take a plain `bool` where
-     * {@see static::showCategories()} — a grid setting with a default of its own to fall through to — takes `?bool`.
+     * The module's `enableCategories` decides first, so these take a plain `bool` where
+     * {@see static::showCategories()} takes `?bool`.
      */
     public function allowCategories(bool $allowCategories = true): static
     {
@@ -59,8 +58,8 @@ class EntryType extends Type implements AssetModelTypeInterface
     }
 
     /**
-     * Whether an entry's `publish_date` keeps it off the site until then. Unset, a type schedules unless it hides
-     * the date; a type whose date is something else (an event's day) shows it and passes `false`.
+     * Unset, a type schedules unless it hides the date; a type whose date is something else (an event's day) passes
+     * `false`.
      */
     public function schedule(?bool $schedule = true): static
     {
@@ -86,7 +85,9 @@ class EntryType extends Type implements AssetModelTypeInterface
     }
 
     /**
-     * @param array<string, int>|null $orderBy the entry index order, which also disables manual ordering
+     * An order disables manual ordering.
+     *
+     * @param array<string, int>|null $orderBy
      */
     public function orderBy(?array $orderBy): static
     {

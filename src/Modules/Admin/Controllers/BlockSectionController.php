@@ -20,9 +20,7 @@ use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 /**
- * The sections that place one block, which is what makes a block safe to change or delete. Removing one here
- * stays here — the section's own controller would redirect to the entry it belongs to, which is not where the
- * user was.
+ * Removing a section stays here, since the section's own controller would redirect to its entry.
  */
 class BlockSectionController extends AbstractController
 {
@@ -142,8 +140,7 @@ class BlockSectionController extends AbstractController
     }
 
     /**
-     * Deleting a section is the section's business, so its own permission decides — this controller lists it, the
-     * entry owns it.
+     * The section's own permission decides, since the entry owns it.
      */
     protected function findBlockSection(int $id): Section
     {

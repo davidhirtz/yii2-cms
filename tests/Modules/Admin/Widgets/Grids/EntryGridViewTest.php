@@ -28,8 +28,8 @@ use yii\data\Sort;
 use yii\helpers\Url;
 
 /**
- * The name column composes the entry link with the frontend URL and the category buttons, both of which a project
- * turns off — and a grid rendering neither used to hand back the link itself rather than a string.
+ * The name column once handed back the link rather than a string when a project turned off the frontend URL and
+ * category buttons.
  */
 class EntryGridViewTest extends TestCase
 {
@@ -128,8 +128,8 @@ class EntryGridViewTest extends TestCase
     }
 
     /**
-     * The category buttons and the dropdown follow the module's `enableCategories`, which wins over a grid
-     * setting them: a type or a grid only ever narrows what the installation turned on.
+     * The module's `enableCategories` wins over a grid, since a type or a grid only ever narrows what the installation
+     * turned on.
      */
     public function testTheCategoryDropdownFollowsTheModule(): void
     {
@@ -282,7 +282,7 @@ class EntryGridViewTest extends TestCase
     }
 
     /**
-     * A status per item, posting the model's form name with the checked rows; entries have no bulk delete.
+     * Entries have no bulk delete, only a status per item.
      */
     public function testASelectionOfEntriesChangesTheirStatus(): void
     {
@@ -475,8 +475,7 @@ class EntryGridViewTest extends TestCase
     }
 
     /**
-     * The date shows for a type whose form shows it, whatever the order: one sorted by a flag first and the date
-     * second used to list when it was last edited instead.
+     * A type sorted by a flag first and the date second used to list the last edit instead of the date.
      */
     public function testATypeShowingTheDateListsIt(): void
     {

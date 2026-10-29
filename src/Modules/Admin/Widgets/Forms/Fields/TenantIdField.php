@@ -11,9 +11,7 @@ use Override;
 use Yii;
 
 /**
- * Reloads the page on change, because the tenant decides which entries the parent select offers and which host the
- * slug field spells out. That used to be a script of its own fetching the page and replacing the parent select's
- * `innerHTML`, which reached neither.
+ * Reloads the page on change, since the tenant decides the parent select's entries and the slug field's host.
  *
  * @template T of Entry
  * @property Entry $model

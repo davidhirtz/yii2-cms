@@ -43,8 +43,7 @@ class BlockSubmenu extends Submenu
     }
 
     /**
-     * Only once the block is placed somewhere: an unused block has nothing to list, and the tab would say so at
-     * the cost of a page of its own.
+     * Only once the block is placed somewhere, since an unused block has nothing to list.
      */
     protected function getSectionsItem(): ?NavItem
     {

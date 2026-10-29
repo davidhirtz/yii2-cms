@@ -14,9 +14,8 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use Yii;
 
 /**
- * The widget itself is covered in the skeleton; what a cms record has to answer for is that the frontend overlay
- * reaches its admin page at all. Before {@see AdminModelInterface::getPermissionName()} the widget asked
- * `method_exists()` and rendered nothing otherwise, which was every model here but the asset.
+ * Before {@see AdminModelInterface::getPermissionName()} the widget asked `method_exists()` and rendered nothing for
+ * every model here but the asset.
  */
 class AdminLinkTest extends TestCase
 {

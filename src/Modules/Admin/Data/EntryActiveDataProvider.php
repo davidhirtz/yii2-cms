@@ -153,8 +153,7 @@ class EntryActiveDataProvider extends ActiveDataProvider
     }
 
     /**
-     * Limits results to the scope of `entry` or null as root unless a text search is performed. If no category
-     * is defining the order, the descendant order is applied.
+     * A text search is not limited to the scope of `entry`, and without a category order the descendant order applies.
      */
     protected function whereEntry(): void
     {

@@ -15,10 +15,7 @@ use Override;
 use Yii;
 
 /**
- * The resolvable URL of an {@see Entry}, one record per entry and language.
- *
- * `uri` holds the full path the request is matched against, `slug` only the leaf segment the editor
- * edits on the related model. `tenant_id` is denormalized from the entry so the unique index can see it.
+ * `tenant_id` is denormalized from the entry so the unique index can see it.
  *
  * @property int $id
  * @property int $tenant_id
@@ -29,7 +26,7 @@ use Yii;
  * @property DateTime|null $updated_at
  * @property DateTime $created_at
  *
- * @property-read Entry $entry {@see static::getEntry()}
+ * @property-read Entry $entry
  */
 class Permalink extends ActiveRecord
 {

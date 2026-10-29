@@ -12,8 +12,7 @@ use Hirtz\Skeleton\Models\Definitions\Definition;
 use yii\base\InvalidConfigException;
 
 /**
- * A set of sections an entry can be given in one go, declared by `Module::$sectionSets`. It is a plain
- * `Definition` rather than a `ModelDefinition`: no model declares it and none is validated against.
+ * A plain `Definition`, since no model declares a set and none is validated against.
  */
 class SectionSet extends Definition
 {
@@ -25,8 +24,7 @@ class SectionSet extends Definition
     protected array $sections = [];
 
     /**
-     * Whether the set is offered for an entry, and enforced by
-     * {@see SectionController::actionCreateSet()} rather than only filtering the admin's select.
+     * Enforced by {@see SectionController::actionCreateSet()}, not only by the admin's select.
      *
      * @param Closure(Entry): bool|bool $available
      */

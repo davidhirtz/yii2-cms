@@ -138,8 +138,7 @@ class EntryTenantPermalinkTest extends TestCase
     }
 
     /**
-     * A tenant without a URL names no host, so its redirects are relative — an installation that never wanted
-     * tenants runs on whichever host the request came in on.
+     * A tenant without a URL names no host, so its redirects are relative.
      */
     public function testRenameOnATenantWithoutAUrlRecordsARelativeRedirect(): void
     {

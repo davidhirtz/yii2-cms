@@ -3,8 +3,7 @@
 declare(strict_types=1);
 
 /**
- * The v2 idiom: every section of the group is handed to the pop helper, which renders the run it starts and
- * answers `''` for every further member of a run it has already taken.
+ * The v2 idiom: the pop helper renders the run a section starts and answers `''` for every further member.
  *
  * @var View $this
  * @var Section[] $sections

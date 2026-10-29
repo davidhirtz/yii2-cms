@@ -17,9 +17,8 @@ use Override;
 use Yii;
 
 /**
- * A picker lists records to choose from, so nothing in a row may lead out of it — neither the record's own page,
- * which is an external link button opening in a new tab, nor the related lists the count badges carry. The file
- * picker is pinned here too: the cms asset controller is the only place the media grid renders with a model.
+ * Nothing in a picker row may lead out of it; the file picker is pinned here, the only place the media grid renders
+ * with a model.
  */
 class PickerGridViewTest extends TestCase
 {
@@ -59,9 +58,6 @@ class PickerGridViewTest extends TestCase
         self::assertStringContainsString('<div class="badge">2</div>', $html);
     }
 
-    /**
-     * The grid that picks the entry a section is moved or copied to.
-     */
     public function testTheSectionParentEntryPickerDrillsIntoTheSubentries(): void
     {
         $this->login();
@@ -115,8 +111,7 @@ class PickerGridViewTest extends TestCase
     }
 
     /**
-     * The picker lists every category in the installation, so it needs the search the category index has —
-     * `EntryCategoryController::actionIndex()` has always taken the `q` parameter, only the input was missing.
+     * The picker lists every category, and `EntryCategoryController::actionIndex()` has always taken the `q` parameter.
      */
     public function testTheCategoryPickerHasASearchInput(): void
     {
@@ -133,8 +128,7 @@ class PickerGridViewTest extends TestCase
     }
 
     /**
-     * The picker hangs off an entry, and a GET form submits its own fields and nothing else — so the entry the
-     * search would otherwise leave behind is a hidden input.
+     * A GET form submits its own fields alone, so the entry the picker hangs off is a hidden input.
      */
     public function testTheCategoryPickerSearchKeepsTheEntry(): void
     {
@@ -168,9 +162,8 @@ class PickerGridViewTest extends TestCase
     }
 
     /**
-     * The toggle carries whatever the picker is narrowed to, so the action can lead back into the same list, and it
-     * swaps the grid alone: a click on the thirtieth row must leave the user on the thirtieth row. Naming the
-     * submenu's asset count in `hx-select-oob` replaces the body's own, so the flashes are named again beside it.
+     * The grid alone is swapped so a click on the thirtieth row stays there, and the submenu's count in `hx-select-oob`
+     * replaces the body's own, so the flashes are named beside it.
      */
     public function testTheFilePickerToggleCarriesTheFilterAndSwapsTheGridAlone(): void
     {
@@ -210,8 +203,7 @@ class PickerGridViewTest extends TestCase
     }
 
     /**
-     * A picker must not change what it lists — the flow the user is in is picking, not editing — so the status icon
-     * stays an icon there and is the cycle button only on the index.
+     * A picker must not change what it lists, so its status icon is no cycle button.
      */
     public function testTheStatusIconCyclesOnTheIndexButNotInAPicker(): void
     {
@@ -228,9 +220,6 @@ class PickerGridViewTest extends TestCase
         self::assertStringNotContainsString('/admin/cms/entry/status', $html);
     }
 
-    /**
-     * The index is not a picker, so its rows lead to the record as they always did.
-     */
     public function testTheEntryIndexKeepsItsLinks(): void
     {
         $this->login();
@@ -273,8 +262,7 @@ class PickerGridViewTest extends TestCase
     }
 
     /**
-     * `CmsFixtureTrait` declares the user fixture but no accessor for it: adding one would collide with
-     * `UserFixtureTrait` for the tests that use both.
+     * `CmsFixtureTrait` declares no accessor for the user fixture, since one would collide with `UserFixtureTrait`.
      */
     private function getUserFromFixture(string $key): User
     {

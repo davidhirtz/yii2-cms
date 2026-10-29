@@ -18,8 +18,7 @@ class DuplicateSectionTest extends TestCase
     use CmsFixtureTrait;
 
     /**
-     * The children are inserted with validation and may be refused: the counts follow what was inserted, not what
-     * the original says.
+     * The children are inserted with validation and may be refused, so the counts follow what was inserted.
      */
     public function testTheCountsFollowTheChildrenActuallyCopied(): void
     {

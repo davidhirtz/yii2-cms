@@ -9,11 +9,10 @@ use Hirtz\Cms\Models\Queries\EntryQuery;
 use yii\db\ActiveRecord;
 
 /**
- * `entry_id` is deliberately not declared here: every using model declares it itself, and a trait `@property` is
- * flattened into the using class, so a second declaration of the same name silently drops that class's whole
- * PHPDoc scope rather than being reported (monorepo issue #125).
+ * `entry_id` is not declared here, since a trait `@property` the using class declares too drops its whole PHPDoc
+ * scope (#125).
  *
- * @property-read Entry|null $entry {@see static::getEntry()}
+ * @property-read Entry|null $entry
  *
  * @mixin ActiveRecord
  */

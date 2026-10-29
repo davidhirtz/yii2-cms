@@ -12,8 +12,7 @@ use Override;
 use Yii;
 
 /**
- * A category has no URL of its own, so its meta title and description live in `custom_attributes` rather than in
- * columns of their own — unlike the entry's, which are still columns.
+ * A category has no URL of its own, so its meta title and description live in `custom_attributes`, unlike the entry's.
  */
 class CategoryMetaTest extends TestCase
 {

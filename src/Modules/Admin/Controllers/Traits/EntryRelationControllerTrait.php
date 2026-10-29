@@ -21,9 +21,6 @@ use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 /**
- * The four actions every model that links entries needs. A controller using it names the model it is scoped to,
- * the way the media asset controllers do.
- *
  * @mixin AbstractController
  */
 trait EntryRelationControllerTrait

@@ -88,9 +88,8 @@ trait CategoryGridTrait
     }
 
     /**
-     * Whether the grid is a list to pick a category *from* rather than to navigate. A picker must not lead away
-     * from itself — that cancels the flow the user is in — so its rows drill into the subcategories instead, its
-     * entry count badge carries no link, and the category's own page is an external link button.
+     * A picker must not lead away from itself, so its rows drill into the subcategories, its badge carries no link
+     * and the category's page is an external link button.
      */
     protected function isPicker(): bool
     {
@@ -98,8 +97,6 @@ trait CategoryGridTrait
     }
 
     /**
-     * Where the row's own links lead: the name, the type icon and the ancestors.
-     *
      * @return array<array-key, mixed>|string|null
      */
     protected function getRecordUrl(Category $category): array|string|null

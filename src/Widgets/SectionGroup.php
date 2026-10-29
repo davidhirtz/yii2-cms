@@ -15,9 +15,6 @@ use Stringable;
  */
 class SectionGroup extends Widget
 {
-    /**
-     * @var SectionStack
-     */
     protected SectionStack $stack;
 
     /**
@@ -33,14 +30,8 @@ class SectionGroup extends Widget
     protected string $key = '';
     protected ?string $wrapperKey = null;
 
-    /**
-     * @var SectionGroup|null
-     */
     protected ?SectionGroup $previous = null;
 
-    /**
-     * @var SectionGroup|null
-     */
     protected ?SectionGroup $next = null;
 
     /**
@@ -48,9 +39,6 @@ class SectionGroup extends Widget
      */
     private array $remaining = [];
 
-    /**
-     * @param SectionStack $stack
-     */
     public function stack(SectionStack $stack): static
     {
         $this->stack = $stack;
@@ -93,18 +81,12 @@ class SectionGroup extends Widget
         return $this;
     }
 
-    /**
-     * @param SectionGroup|null $previous
-     */
     public function previous(?SectionGroup $previous): static
     {
         $this->previous = $previous;
         return $this;
     }
 
-    /**
-     * @param SectionGroup|null $next
-     */
     public function next(?SectionGroup $next): static
     {
         $this->next = $next;
@@ -142,9 +124,6 @@ class SectionGroup extends Widget
         return $this->viewPath ?? $this->stack->getViewPath();
     }
 
-    /**
-     * @param Section $section
-     */
     public function renderAdjacent(Section $section, ?string $viewFile = null): string
     {
         $sections = [];
@@ -203,25 +182,16 @@ class SectionGroup extends Widget
         return $this->wrapperKey;
     }
 
-    /**
-     * @return SectionStack
-     */
     public function getStack(): SectionStack
     {
         return $this->stack;
     }
 
-    /**
-     * @return SectionGroup|null
-     */
     public function getPrevious(): ?SectionGroup
     {
         return $this->previous;
     }
 
-    /**
-     * @return SectionGroup|null
-     */
     public function getNext(): ?SectionGroup
     {
         return $this->next;

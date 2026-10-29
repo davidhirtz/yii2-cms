@@ -19,7 +19,7 @@ class CategoryType extends Type
     protected ?Closure $structuredData = null;
 
     /**
-     * Whether a category of this type may have subcategories. The module's `enableNestedCategories` decides first.
+     * The module's `enableNestedCategories` decides first.
      */
     public function allowDescendants(bool $allowDescendants = true): static
     {
@@ -28,7 +28,7 @@ class CategoryType extends Type
     }
 
     /**
-     * Whether entries are put into a category of this type. A category used only to group others declares `false`.
+     * A category used only to group others declares `false`.
      */
     public function allowEntries(bool $allowEntries = true): static
     {

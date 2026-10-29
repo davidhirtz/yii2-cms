@@ -41,11 +41,13 @@ use yii\db\Expression;
 use yii\db\Query;
 
 /**
+ * `slug` is virtual, backed by {@see Permalink::$slug}.
+ *
  * @property int $tenant_id
  * @property int|null $parent_status
  * @property int|null|false $position
  * @property string $name
- * @property string|null $slug virtual, backed by {@see Permalink::$slug}
+ * @property string|null $slug
  * @property string|null $title
  * @property string|null $description
  * @property string|null $content
@@ -56,12 +58,12 @@ use yii\db\Query;
  * @property int $section_count
  * @property int $asset_count
  *
- * @property-read EntryAsset[] $assets {@see static::getAssets()}
- * @property-read Permalink[] $permalinks {@see static::getPermalinks()}
- * @property-read EntryCategory $entryCategory {@see static::getEntryCategory()}
- * @property-read EntryCategory[] $entryCategories {@see static::getEntryCategories()}
- * @property-read EntryRelation|null $entryRelation {@see static::getEntryRelation()}
- * @property-read Section[] $sections {@see static::getSections()}
+ * @property-read EntryAsset[] $assets
+ * @property-read Permalink[] $permalinks
+ * @property-read EntryCategory $entryCategory
+ * @property-read EntryCategory[] $entryCategories
+ * @property-read EntryRelation|null $entryRelation
+ * @property-read Section[] $sections
  *
  * @method EntryQuery<static> findAncestors()
  * @method EntryQuery<static> findChildren()
@@ -219,8 +221,8 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
     }
 
     /**
-     * Validates the {@see Permalink} this slug would produce rather than the slug itself, so uniqueness, length and
-     * the protected-path check all come from one place — including the tenant scope of the unique index.
+     * Validates the {@see Permalink} this slug would produce, so uniqueness, length, the protected paths and the
+     * tenant scope of the unique index come from one place.
      */
     protected function validateSlug(): void
     {
@@ -677,8 +679,8 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
     }
 
     /**
-     * A root entry is listed in its own type's index, not in the default type's — that is the list it is in. A
-     * subentry is listed with its siblings of every type, as the parent's tab shows them.
+     * A root entry is listed in its own type's index, a subentry with its siblings of every type, as the parent's tab
+     * shows them.
      */
     #[Override]
     public function getAdminIndexBreadcrumb(): Breadcrumb
@@ -734,8 +736,7 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
     }
 
     /**
-     * The menus the record was loaded with, which is what keeps a menu that has stopped being available valid
-     * for the entries already in it.
+     * The menus the record was loaded with, which keep a menu that stopped being available valid for its entries.
      *
      * @return list<int>
      */
@@ -755,8 +756,7 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
     }
 
     /**
-     * The menus the admin offers for this entry: every declared one it is available for, plus the ones it is
-     * already in.
+     * Every declared menu available for the entry, plus the ones it is already in.
      *
      * @return array<int, Menu>
      */
@@ -874,8 +874,8 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
     }
 
     /**
-     * The nearest ancestor still waiting for its publish date while this entry is live: `parent_status` follows a
-     * parent's status, not its date, so this entry is reachable at its own address before the parent is.
+     * `parent_status` follows a parent's status, not its date, so a live entry is reachable before a scheduled
+     * ancestor is.
      */
     public function findScheduledAncestor(): ?Entry
     {

@@ -21,8 +21,8 @@ class TenantIdValidatorTest extends TestCase
     }
 
     /**
-     * A form reload renders the loaded record without validating it, so the posted string has to be gone by then:
-     * {@see \Hirtz\Cms\Models\Entry::getTenantRouteParams()} hands the value to a `?int` parameter.
+     * A form reload renders the record unvalidated, and {@see \Hirtz\Cms\Models\Entry::getTenantRouteParams()}
+     * hands the value to a `?int`.
      */
     public function testAPostedTenantIdIsAnIntegerAfterLoad(): void
     {

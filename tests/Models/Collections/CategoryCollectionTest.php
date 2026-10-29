@@ -41,8 +41,8 @@ class CategoryCollectionTest extends TestCase
     }
 
     /**
-     * The records a request loaded must never reach the next one, so `Bootstrap` drops them — a reset that only
-     * ran in the tests would leave a resident application serving them forever.
+     * `Bootstrap` drops the records a request loaded, since a reset only the tests ran would leave a resident
+     * application serving them.
      */
     public function testTheCategoriesDoNotOutliveTheApplication(): void
     {

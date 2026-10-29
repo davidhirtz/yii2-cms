@@ -11,8 +11,7 @@ use Hirtz\Media\Models\Types\Traits\AssetModelTypeTrait;
 use Override;
 
 /**
- * A block is rendered wherever a section points at it, so it declares its own view file and nothing about where
- * that sits in the stack — `group`, `wrapper` and `collect` stay on {@see SectionType}.
+ * A block declares its own view file, while `group`, `wrapper` and `collect` stay on {@see SectionType}.
  */
 class BlockType extends Type implements AssetModelTypeInterface, EntryRelationTypeInterface
 {

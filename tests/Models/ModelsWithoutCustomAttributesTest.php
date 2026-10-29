@@ -18,8 +18,8 @@ use Yii;
 use yii\db\Query;
 
 /**
- * A project may filter the default custom attributes of a section, a category or an asset down to the ones it
- * uses, so every one of them is optional: nothing reading the record may assume one is declared.
+ * A project may filter the default custom attributes of a section, a category or an asset, so none may be assumed
+ * declared.
  */
 class ModelsWithoutCustomAttributesTest extends TestCase
 {

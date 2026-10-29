@@ -42,8 +42,8 @@ class EntryControllerFunctionTest extends TestCase
     }
 
     /**
-     * Renaming an entry redirects back to it. `getAdminRoute()` returns an array, so it has to be spread into the
-     * redirect route; appending it made the route element itself an array and `Url::toRoute()` failed on it.
+     * `getAdminRoute()` returns an array, so it is spread into the redirect route, which `Url::toRoute()` otherwise
+     * failed on.
      */
     public function testUpdateRedirectsBackToTheEntry(): void
     {

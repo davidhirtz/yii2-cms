@@ -40,8 +40,8 @@ class EntryQuery extends I18nActiveQuery
     }
 
     /**
-     * `menu_ids` is a JSON list and neither MySQL nor MariaDB can index one usefully, so the condition is a
-     * comparison per menu — and the common case, "every declared menu", is the cheap `IS NOT NULL` instead.
+     * `menu_ids` is a JSON list no index serves, so each menu is a comparison and every declared menu the cheap
+     * `IS NOT NULL`.
      */
     public function andWhereMenu(int|BackedEnum ...$menus): static
     {
@@ -67,9 +67,7 @@ class EntryQuery extends I18nActiveQuery
     }
 
     /**
-     * Filtered like its counterpart `whereStatus()`: an unset status is no filter, where `andWhere()` would compare
-     * against `NULL` and leave nothing behind — an empty menu on any page whose controller had not scoped a query
-     * by status first.
+     * An unset status is no filter, where `andWhere()` would compare against `NULL` and leave nothing.
      */
     public function andWhereParentStatus(): static
     {
@@ -77,9 +75,8 @@ class EntryQuery extends I18nActiveQuery
     }
 
     /**
-     * The frontend asks for its status here — enabled on the site, draft on the draft domain — so an entry dated in
-     * the future stays out of every page, menu, relation and sitemap until its time, and still previews on the
-     * draft domain. The admin asks for no status and sees everything.
+     * The frontend asks for its status here, so an entry dated in the future stays off the site until its time and
+     * still previews on the draft domain.
      */
     #[Override]
     public function whereStatus(?int $status = null): static
@@ -92,9 +89,8 @@ class EntryQuery extends I18nActiveQuery
     }
 
     /**
-     * Rounded up to the end of the minute, so the statement — and the query and page caches keyed on it — holds for
-     * one: a scheduled entry goes live up to a minute early, and one saved this very second is never hidden. A type
-     * that does not schedule ({@see EntryType::schedules()}) keeps the date for display: it gates nothing there.
+     * Rounded up to the end of the minute so the caches keyed on it hold for one; a type that does not
+     * {@see EntryType::schedules()} is not gated.
      */
     public function wherePublished(): static
     {
@@ -144,9 +140,6 @@ class EntryQuery extends I18nActiveQuery
             ->andWhereParentStatus();
     }
 
-    /**
-     * Override this method to select only the attributes needed for frontend display.
-     */
     public function selectSiteAttributes(): static
     {
         $attributes = array_diff(
@@ -157,9 +150,6 @@ class EntryQuery extends I18nActiveQuery
         return $this->addSelect($this->prefixColumns($attributes));
     }
 
-    /**
-     * Override this method to select only the attributes needed for XML sitemap generation.
-     */
     public function selectSitemapAttributes(): static
     {
         return $this->addSelect($this->prefixColumns([
@@ -218,8 +208,8 @@ class EntryQuery extends I18nActiveQuery
     }
 
     /**
-     * Prepends alias to inner join to allow multiple categories. Keeps original table name for single joins to use of
-     * {@see Category::getEntriesOrderBy()} order; a single eager-loaded join reads the record off the row.
+     * An alias allows several categories, while a single join keeps the table name for
+     * {@see Category::getEntriesOrderBy()} and an eager-loaded one reads the record off the row.
      */
     protected function innerJoinWithEntryCategory(int $categoryId, bool $eagerLoading = false, bool $useAlias = false): static
     {
@@ -265,9 +255,8 @@ class EntryQuery extends I18nActiveQuery
     }
 
     /**
-     * A per-language record wins over the {@see Permalink::LANGUAGE_ALL} one for the same path. The matched record is
-     * handed to the entry, so the relation is not loaded to read it back. The permalink's own copy of the tenant is
-     * what lets the lookup use its unique key, which leads with it.
+     * A per-language record wins over the {@see Permalink::LANGUAGE_ALL} one, and the permalink's copy of the tenant
+     * lets the lookup use its unique key.
      */
     public function whereUri(string $uri, ?string $language = null, ?Tenant $tenant = null): static
     {

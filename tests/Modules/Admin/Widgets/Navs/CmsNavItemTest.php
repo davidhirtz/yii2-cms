@@ -41,8 +41,7 @@ class CmsNavItemTest extends TestCase
     }
 
     /**
-     * Each type is an item of its own, and the parent keeps its label and link: the setters used to chain onto the
-     * return of `addItem()`, the parent, so every type overwrote it and the items had neither.
+     * The setters used to chain onto `addItem()`'s return, the parent, so every type overwrote its label and link.
      */
     public function testEachTypeLinksToItsOwnList(): void
     {

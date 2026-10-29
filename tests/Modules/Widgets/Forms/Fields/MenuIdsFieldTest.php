@@ -16,9 +16,6 @@ class MenuIdsFieldTest extends TestCase
     private const int MAIN = 1;
     private const int FOOTER = 2;
 
-    /**
-     * A project that declares no menus gets no field at all.
-     */
     public function testTheFieldIsHiddenWithoutMenus(): void
     {
         self::assertSame('', $this->render(TestEntry::create()));
@@ -77,8 +74,8 @@ class MenuIdsFieldTest extends TestCase
     }
 
     /**
-     * The field decides its visibility on the items its own `configure()` resolved, which only holds while
-     * `Widgets\Forms\Fieldset` renders it before asking — rendering it standalone would not notice a regression.
+     * The field decides its visibility on what its own `configure()` resolved, which a standalone render would not
+     * exercise.
      */
     public function testTheFieldReachesTheEntryForm(): void
     {

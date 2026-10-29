@@ -35,8 +35,7 @@ class CategorySitemapTest extends TestCase
     }
 
     /**
-     * The status filter belongs in the query, or the record count the index pages by would count records that never
-     * produce a URL.
+     * The status filter belongs in the query, or the index would count records that never produce a URL.
      */
     public function testADisabledCategoryIsLeftOutOfTheCountToo(): void
     {

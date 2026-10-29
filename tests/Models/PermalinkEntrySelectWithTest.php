@@ -12,8 +12,8 @@ use Override;
 use Yii;
 
 /**
- * The records `selectWith()` reads off the join are populated by the relation's own query, so the translations of
- * a translated model come with one query for the whole list rather than one per record.
+ * `selectWith()` records are populated by the relation's own query, so the translations come in one query for the whole
+ * list.
  */
 class PermalinkEntrySelectWithTest extends TestCase
 {

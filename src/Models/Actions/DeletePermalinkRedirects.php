@@ -10,8 +10,7 @@ use Hirtz\Skeleton\Helpers\Url;
 use Hirtz\Skeleton\Models\Redirect;
 
 /**
- * Redirects pointing at a URL that no longer resolves would send visitors to a 404. Runs before the entry is
- * deleted: the {@see Permalink} records go with it through the foreign key cascade.
+ * Runs before the entry is deleted, since the {@see Permalink} records go with it through the cascade.
  */
 class DeletePermalinkRedirects
 {

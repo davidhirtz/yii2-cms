@@ -11,8 +11,7 @@ use Hirtz\Cms\Test\TestCase;
 use Override;
 
 /**
- * Building a URL must not walk up the tree. The permalink already holds the full path and the site queries eager
- * load it; composing the path from the parent instead costs a query per row, and another per level of nesting.
+ * Building a URL must not walk up the tree, since the permalink holds the full path and the site queries eager load it.
  */
 class EntryUrlQueryCountTest extends TestCase
 {
@@ -63,8 +62,7 @@ class EntryUrlQueryCountTest extends TestCase
     }
 
     /**
-     * A slug lives in a permalink record, but loading an entry must not fetch it: the relation stays unloaded until
-     * the slug (or a route derived from it) is actually read.
+     * The permalink relation stays unloaded until the slug, or a route derived from it, is read.
      */
     public function testLoadingAnEntryDoesNotLoadPermalinks(): void
     {
@@ -83,10 +81,6 @@ class EntryUrlQueryCountTest extends TestCase
         self::assertTrue($entry->isRelationPopulated('permalinks'));
     }
 
-    /**
-     * The lookup joins the permalink, so the record it matched comes back in the same row rather than through a
-     * second query for the relation.
-     */
     public function testFindingAnEntryByUriReadsThePermalinkInTheSameQuery(): void
     {
         $created = $this->createEntry('test-entry');
@@ -113,7 +107,7 @@ class EntryUrlQueryCountTest extends TestCase
     }
 
     /**
-     * The joined table has an `id` too; without a select of its own the query would read the permalink's.
+     * The joined table has an `id` too, which the query would read without a select of its own.
      */
     public function testFindingAnEntryByUriReturnsTheEntryId(): void
     {
@@ -129,12 +123,8 @@ class EntryUrlQueryCountTest extends TestCase
     }
 
     /**
-     * The entry validates the permalink itself, so writing it must not check uniqueness again, and the relation
-     * it loaded for that must serve the save too: load, check, the descendants' longest URI, the entry's own row,
-     * write, trail.
-     *
-     * `TimestampBehavior` writes `updated_at` on every save, so whether the entry's row is updated at all would
-     * otherwise depend on the rename landing in a later second than the insert. Aging it pins the count.
+     * The queries are load, check, the descendants' longest URI, the entry's row, write and trail; the entry is aged
+     * first, since `TimestampBehavior` would otherwise make its row update depend on the clock second.
      */
     public function testRenameRunsOneUniquenessCheck(): void
     {

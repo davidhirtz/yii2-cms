@@ -14,14 +14,12 @@ use Hirtz\Skeleton\Models\Interfaces\TrailModelInterface;
 use yii\db\ActiveRecordInterface;
 
 /**
- * A model that links entries.
- *
  * @property int $id
  * @property int $entry_count
  * @property DateTime|null $updated_at
  *
- * @property-read Entry[] $entries {@see static::getEntries()}
- * @property-read EntryRelation[] $entryRelations {@see static::getEntryRelations()}
+ * @property-read Entry[] $entries
+ * @property-read EntryRelation[] $entryRelations
  *
  * @phpstan-require-extends ActiveRecord
  */
@@ -33,8 +31,7 @@ interface EntryRelationModelInterface extends ActiveRecordInterface, TrailModelI
     public function getEntryRelationClass(): string;
 
     /**
-     * Whether this record links entries — the installation's flag and the type's own answer, in one place so no
-     * caller has to remember the other.
+     * The installation's flag and the type's answer in one place, so no caller has to remember the other.
      */
     public function allowsEntries(): bool;
 
@@ -66,7 +63,9 @@ interface EntryRelationModelInterface extends ActiveRecordInterface, TrailModelI
     public function getEntriesOrderBy(): ?array;
 
     /**
-     * @return list<int>|null null means every entry type, an empty declaration being no restriction at all
+     * `null` is every entry type, as is an empty declaration.
+     *
+     * @return list<int>|null
      */
     public function getEntriesTypes(): ?array;
 }

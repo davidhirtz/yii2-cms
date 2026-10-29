@@ -159,8 +159,8 @@ class BlockControllerTest extends TestCase
     }
 
     /**
-     * The default order is the `Sort`'s, not the query's: `yii\data\ActiveDataProvider::prepareModels()` *adds*
-     * the sort to what the query carries, so an `orderBy()` of its own would win over every column header.
+     * `ActiveDataProvider::prepareModels()` adds the sort to the query's own order, so an `orderBy()` would win over
+     * every header.
      */
     public function testTheGridIsSortableByAColumn(): void
     {

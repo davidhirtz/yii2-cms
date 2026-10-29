@@ -23,8 +23,7 @@ use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 /**
- * The records are built here rather than taken from the cms fixture, whose sections carry `TestSection` types that
- * the base `Section` the controller loads refuses to save.
+ * The records are built here, since the base `Section` the controller loads refuses the fixture's `TestSection` types.
  */
 class SectionControllerTest extends TestCase
 {
@@ -454,8 +453,8 @@ class SectionControllerTest extends TestCase
     }
 
     /**
-     * The row's own delete button is off by default, so the footer is the only way to delete from the grid — and the
-     * footer is only offered for more than one section.
+     * The row's delete button is off by default, so the footer, offered for more than one section, is the grid's only
+     * delete.
      */
     public function testTheGridOffersTheSelection(): void
     {

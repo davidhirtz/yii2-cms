@@ -23,9 +23,6 @@ class PermalinkTest extends TestCase
         self::assertSame($permalink->id, $found->id);
     }
 
-    /**
-     * The lookup must not depend on the caller trimming the request path.
-     */
     public function testUriIsMatchedWithoutSurroundingSlashes(): void
     {
         $this->createPermalink('blog/hello-world', 'hello-world');
@@ -34,9 +31,8 @@ class PermalinkTest extends TestCase
     }
 
     /**
-     * A permalink stored under a specific non-source language is scoped to it: there is no source-language record
-     * for {@see \Hirtz\Cms\Models\Queries\PermalinkQuery::whereUri()} to fall back to, so another language does not
-     * resolve it.
+     * There is no source-language record for {@see \Hirtz\Cms\Models\Queries\PermalinkQuery::whereUri()} to fall back
+     * to.
      */
     public function testPermalinkIsNotFoundInAnotherLanguage(): void
     {
@@ -48,7 +44,7 @@ class PermalinkTest extends TestCase
     }
 
     /**
-     * An untranslated slug is stored once, under {@see Permalink::LANGUAGE_ALL}, and must resolve in every language.
+     * An untranslated slug is stored once, under {@see Permalink::LANGUAGE_ALL}.
      */
     public function testLanguageAgnosticPermalinkResolvesInEveryLanguage(): void
     {
@@ -64,9 +60,6 @@ class PermalinkTest extends TestCase
         }
     }
 
-    /**
-     * When the requested language has its own record, it wins over the language-agnostic fallback.
-     */
     public function testExactLanguageMatchWinsOverLanguageAgnosticFallback(): void
     {
         $agnostic = $this->makePermalink('shared', 'shared');

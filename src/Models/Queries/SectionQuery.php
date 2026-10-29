@@ -13,9 +13,6 @@ use Hirtz\Skeleton\Db\I18nActiveQuery;
  */
 class SectionQuery extends I18nActiveQuery
 {
-    /**
-     * Override this method to select only the attributes needed for frontend display.
-     */
     public function selectSiteAttributes(): static
     {
         return $this->addSelect($this->prefixColumns(array_diff($this->getModelInstance()->getColumnAttributes(), [

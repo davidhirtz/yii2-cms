@@ -28,9 +28,8 @@ class SectionEntryControllerTest extends TestCase
     use CmsFixtureTrait;
 
     /**
-     * The admin controllers resolve sections through the base `Section`, whose only known type is `TYPE_DEFAULT`,
-     * so a write test has to use the one fixture section that carries it — the others are `TestSection` types and
-     * `DynamicRangeValidator` refuses them on save.
+     * The base `Section` the controllers resolve knows only `TYPE_DEFAULT`, so a write test uses the one fixture
+     * section carrying it.
      */
     private const int SECTION_ID = 6;
 
@@ -303,8 +302,7 @@ class SectionEntryControllerTest extends TestCase
     }
 
     /**
-     * `CmsFixtureTrait` declares the user fixture but no accessor for it: adding one would collide with
-     * `UserFixtureTrait` for the tests that use both.
+     * `CmsFixtureTrait` declares no accessor for the user fixture, since one would collide with `UserFixtureTrait`.
      */
     private function getUserFromFixture(string $key): User
     {

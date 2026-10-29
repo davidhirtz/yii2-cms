@@ -11,8 +11,8 @@ use Override;
 use Yii;
 
 /**
- * A translated slug is one virtual attribute per language, each backed by its own permalink. Reading the one the URI
- * lookup matched must not fetch the others: that turns every site request into a second permalink query.
+ * Reading the slug the URI lookup matched must not fetch the other languages', which would cost every site request a
+ * query.
  */
 class EntryTranslatedSlugQueryCountTest extends TestCase
 {
@@ -81,7 +81,7 @@ class EntryTranslatedSlugQueryCountTest extends TestCase
     }
 
     /**
-     * @param array<string, string> $slugs the slug for each language
+     * @param array<string, string> $slugs
      */
     protected function createEntry(array $slugs): TestEntry
     {

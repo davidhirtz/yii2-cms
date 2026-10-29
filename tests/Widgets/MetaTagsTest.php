@@ -123,8 +123,7 @@ class MetaTagsTest extends TestCase
     }
 
     /**
-     * The `og` preset fits a 1000 × 1000 JPEG into 1200 × 630, which is what the size tags say; the SVG meta image
-     * cannot be transformed and is shared as it is.
+     * The `og` preset fits a 1000 × 1000 JPEG into 1200 × 630, while the SVG meta image cannot be transformed.
      */
     public function testTheShareImageDefaultsToTheOpenGraphTransformation(): void
     {
@@ -251,8 +250,7 @@ class MetaTagsTest extends TestCase
     }
 
     /**
-     * The status is the request's, as `SiteController` sets it: outside a draft host, the preload leaves out the draft
-     * parent, which leaves the entry no trail to list.
+     * Outside a draft host the preload leaves out the draft parent, so the entry has no trail to list.
      */
     public function testAnUnpublishedAncestorIsLeftOut(): void
     {
@@ -450,7 +448,7 @@ class MetaTagsTest extends TestCase
     }
 
     /**
-     * @param array<string, mixed> $config the setters to call, by name
+     * @param array<string, mixed> $config
      */
     private function render(Category|Entry $model, array $config = []): string
     {

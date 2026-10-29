@@ -44,8 +44,7 @@ class DeleteSectionsTest extends TestCase
     }
 
     /**
-     * Each section is told not to touch its entry, which the action then does once per entry — so the guard in
-     * `Section::afterDelete()` is what a stale count would show.
+     * The guard in `Section::afterDelete()` is what a stale count would show, since the action updates each entry once.
      */
     public function testABatchDeleteLeavesTheEntryCountToTheCaller(): void
     {
@@ -72,9 +71,6 @@ class DeleteSectionsTest extends TestCase
         self::assertSame(0, Entry::findOne($other->id)->section_count);
     }
 
-    /**
-     * A section that refuses to be deleted is reported and the ones beside it are kept.
-     */
     public function testAFailingSectionIsReported(): void
     {
         $deleted = $this->createSection('Deleted');

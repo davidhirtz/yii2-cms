@@ -31,9 +31,8 @@ class EntryCreateButton extends CreateButton
     }
 
     /**
-     * The type a project pinned the page to is the fallback, and is read here rather than in the constructor:
-     * `$this->view` is only assigned by the parent's, and `??` answers `null` for an uninitialized typed
-     * property instead of erroring — so in the constructor the whole expression was silently dead.
+     * Read here, not in the constructor, since `$this->view` is only assigned by the parent's and `??` hides the
+     * uninitialized property.
      */
     #[Override]
     protected function configure(): void

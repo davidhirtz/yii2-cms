@@ -15,11 +15,7 @@ use Stringable;
 use Yii;
 
 /**
- * The block a section places. Without one the section renders nothing, so the prompt is not a shortcut for
- * "leave it out" — it is the state the hint warns about.
- *
- * Whoever may edit blocks gets a button next to it opening the selected one in a new tab; each option carries its
- * block's URL, which the `data-select-link` script hands to the button on every change.
+ * Each option carries its block's URL, which the `data-select-link` script hands to the button beside it.
  *
  * @property Section|null $model
  */

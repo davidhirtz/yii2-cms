@@ -10,9 +10,6 @@ use Hirtz\Cms\Modules\Admin\Widgets\Forms\EntryActiveForm;
 use Hirtz\Cms\Test\TestCase;
 use Hirtz\Skeleton\Test\Traits\UserFixtureTrait;
 
-/**
- * Two editors on one entry: the one saving second is told, instead of overwriting the first.
- */
 class EntryStaleSaveTest extends TestCase
 {
     use UserFixtureTrait;

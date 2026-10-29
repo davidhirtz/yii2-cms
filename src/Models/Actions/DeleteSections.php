@@ -9,8 +9,7 @@ use Hirtz\Cms\Models\Section;
 use Yii;
 
 /**
- * Deleted one at a time and the entries recounted once at the end, so a selection spanning fifty sections of the
- * same entry costs one recalculation rather than fifty. A section that fails is reported and the rest are kept.
+ * The entries are recounted once at the end, and a section that fails is reported while the rest are kept.
  */
 class DeleteSections
 {

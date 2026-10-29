@@ -103,8 +103,7 @@ class SiteController extends Controller
     }
 
     /**
-     * The homepage answers at `/` only, and an entry at its URI as stored: the lookup ignores letter case, which
-     * would otherwise answer `/About` with the content of `/about`.
+     * The lookup ignores letter case, so an entry answers only at its URI as stored and the homepage at `/` alone.
      */
     protected function redirectToCanonicalUrl(Entry $entry, string $slug): ?Response
     {

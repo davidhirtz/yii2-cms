@@ -127,8 +127,8 @@ class EntryCategoryTest extends TestCase
     }
 
     /**
-     * The cascade owns the whole branch, so each junction below the one being deleted is a batch delete: the
-     * entry's `category_ids` are recalculated once, by the junction the cascade started from.
+     * Each junction below the one deleted is a batch delete, so the entry's `category_ids` are recalculated once, by
+     * the junction the cascade started from.
      */
     public function testTheCascadeRecalculatesTheEntryOnlyOnce(): void
     {

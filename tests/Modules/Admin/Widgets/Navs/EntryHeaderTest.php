@@ -121,8 +121,7 @@ class EntryHeaderTest extends TestCase
     }
 
     /**
-     * `CmsFixtureTrait` declares the user fixture but no accessor for it: adding one would collide with
-     * `UserFixtureTrait` for the tests that use both.
+     * `CmsFixtureTrait` declares no accessor for the user fixture, since one would collide with `UserFixtureTrait`.
      */
     private function getUserFromFixture(string $key): User
     {

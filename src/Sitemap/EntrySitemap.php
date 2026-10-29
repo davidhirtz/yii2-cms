@@ -15,9 +15,6 @@ use Override;
  */
 class EntrySitemap extends RecordSitemap
 {
-    /**
-     * @var bool whether the image assets of an entry should be added to its sitemap URL.
-     */
     public bool $enableImages = false;
 
     public string $modelClass = Entry::class;
@@ -54,8 +51,7 @@ class EntrySitemap extends RecordSitemap
     }
 
     /**
-     * The assets are eager loaded by {@see getQuery()}, so reading the relation must never query: an entry loaded
-     * without them has none.
+     * The assets are eager loaded by {@see getQuery()}, so an entry loaded without them has none.
      *
      * @return list<array<string, mixed>>
      */

@@ -123,8 +123,8 @@ class SectionStack extends Widget
     }
 
     /**
-     * An invisible stack runs no pipeline at all, so neither `filter()` nor a type's `visible` is consulted:
-     * {@see Widget::render()} asks for the widget's own visibility only after `configure()`.
+     * An invisible stack consults neither `filter()` nor a type's `visible`, since {@see Widget::render()} asks for
+     * visibility after `configure()`.
      */
     #[Override]
     protected function configure(): void
@@ -166,9 +166,8 @@ class SectionStack extends Widget
     }
 
     /**
-     * The stack's relative view names resolve against the directory of the view that renders it, not against
-     * `@views/<controller id>/`: the cms site views live in the bundle, where the application's view path does
-     * not reach.
+     * Relative view names resolve against the rendering view's directory, since the cms site views live beyond the
+     * application's view path.
      */
     #[Override]
     public function getViewPath(): ?string
@@ -193,19 +192,11 @@ class SectionStack extends Widget
         return $this->orderedSections;
     }
 
-    /**
-     * @param Section $section
-     * @return Section|null
-     */
     public function getPrevious(Section $section): ?Section
     {
         return $this->getSectionByOffset($section, -1);
     }
 
-    /**
-     * @param Section $section
-     * @return Section|null
-     */
     public function getNext(Section $section): ?Section
     {
         return $this->getSectionByOffset($section, 1);
@@ -355,7 +346,6 @@ class SectionStack extends Widget
 
     /**
      * @param Section[] $sections
-     * @return SectionGroup
      */
     protected function createGroup(array $sections): SectionGroup
     {
@@ -387,9 +377,6 @@ class SectionStack extends Widget
     }
 
     /**
-     * @param Section $section
-     */
-    /**
      * `Section::getViewFile()` rather than the type's, because a section carrying a block renders the block's.
      */
     protected function getSectionViewFile(Section $section): string
@@ -399,9 +386,6 @@ class SectionStack extends Widget
             : ($section->getViewFile() ?: $this->viewFile);
     }
 
-    /**
-     * @param Section $section
-     */
     protected function getGroupKey(Section $section): string
     {
         $key = $section->getType()?->getGroup();
@@ -414,9 +398,6 @@ class SectionStack extends Widget
         return (string)$key;
     }
 
-    /**
-     * @param Section $section
-     */
     protected function getWrapperKey(Section $section): ?string
     {
         $key = $section->getType()?->getWrapper();
@@ -440,10 +421,6 @@ class SectionStack extends Widget
         }
     }
 
-    /**
-     * @param Section $section
-     * @return Section|null
-     */
     private function getSectionByOffset(Section $section, int $offset): ?Section
     {
         $current = $this->sectionOffsets[spl_object_id($section)] ?? null;

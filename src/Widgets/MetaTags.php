@@ -65,7 +65,9 @@ class MetaTags extends Widget
     }
 
     /**
-     * @param list<string>|null $languages the languages of the hreflang links, by default those of the URL manager
+     * `null` uses the URL manager's languages.
+     *
+     * @param list<string>|null $languages
      */
     public function languages(?array $languages): static
     {
@@ -86,7 +88,7 @@ class MetaTags extends Widget
     }
 
     /**
-     * Renders the model's ancestors as a schema.org `BreadcrumbList`, only for a nested model.
+     * Only a nested model has breadcrumbs.
      */
     public function enableBreadcrumbs(bool $enableBreadcrumbs = true): static
     {
@@ -113,7 +115,7 @@ class MetaTags extends Widget
     }
 
     /**
-     * @param int|null $assetType the asset type offered as the share image, `null` for every asset
+     * `null` offers every asset.
      */
     public function assetType(?int $assetType): static
     {
@@ -122,8 +124,7 @@ class MetaTags extends Widget
     }
 
     /**
-     * The share image's transformation, or its name on the media module; `null` shares the original file, as does a
-     * transformation the file is too small for.
+     * `null` shares the original file, as does a transformation the file is too small for.
      */
     public function transformation(Transformation|string|null $transformation): static
     {
@@ -170,9 +171,8 @@ class MetaTags extends Widget
     }
 
     /**
-     * An entry's ancestors are the ones `PreloadEntrySiteRelations` loaded with the related entries, so they cost no
-     * query on the site and leave out what the request's status hides; a view rendered without the preload
-     * queries them. A category's come from the cached collection.
+     * An entry's ancestors come from `PreloadEntrySiteRelations`, leaving out what the request's status hides; without
+     * it they are queried.
      *
      * @return list<Breadcrumb>
      */
@@ -303,8 +303,7 @@ class MetaTags extends Widget
     }
 
     /**
-     * A category carries no assets. The URL comes from the media module, which only serves a transformation it
-     * declares under that name.
+     * The media module only serves a transformation it declares under that name.
      *
      * @return list<array{string, int|null, int|null}>
      */

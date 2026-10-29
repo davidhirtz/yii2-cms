@@ -23,8 +23,7 @@ use Stringable;
 use Yii;
 
 /**
- * The actions of one section, or — given the index page's provider instead of a model — the ones that add a
- * section to its entry.
+ * Given the index page's provider instead of a model, the actions that add a section to its entry.
  */
 class SectionActionDropdown extends ActionDropdown
 {

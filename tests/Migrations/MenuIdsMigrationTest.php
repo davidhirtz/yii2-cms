@@ -13,8 +13,7 @@ use Yii;
 use yii\db\Query;
 
 /**
- * The v2 checkbox columns are a project's own, so the migration has to find them rather than assume them. The DDL
- * commits the test transaction, which is why everything is undone by hand.
+ * The DDL commits the test transaction, so everything is undone by hand.
  */
 class MenuIdsMigrationTest extends TestCase
 {
@@ -107,8 +106,7 @@ class MenuIdsMigrationTest extends TestCase
     }
 
     /**
-     * An entry in neither is left alone rather than given an empty list, which would read as "in no menu" where
-     * `null` reads as "never asked".
+     * An empty list would read as "in no menu" where `null` reads as "never asked".
      */
     public function testAnEntryInNeitherKeepsNull(): void
     {
@@ -119,8 +117,7 @@ class MenuIdsMigrationTest extends TestCase
     }
 
     /**
-     * Only `show_in_menu` carried an index, and dropping the column while the index still names it degrades the
-     * index instead of removing it.
+     * Dropping `show_in_menu` while its index still names it degrades the index instead of removing it.
      */
     public function testOnlyOneOfTheColumnsIsEnough(): void
     {

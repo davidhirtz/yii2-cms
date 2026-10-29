@@ -17,13 +17,14 @@ use Yii;
 trait PermalinkTrait
 {
     /**
-     * @var array<string, Permalink> the records a query matched by URI, keyed by language, so a request that found
-     * the entry through its permalink does not load the relation to read that same record back
+     * The records a query matched by URI, so the request does not load the relation to read them back.
+     *
+     * @var array<string, Permalink>
      */
     private array $matchedPermalinks = [];
 
     /**
-     * @var array<string, Permalink> the unsaved records per language, shared between validation and save
+     * @var array<string, Permalink>
      */
     private array $newPermalinks = [];
 
@@ -64,7 +65,7 @@ trait PermalinkTrait
     }
 
     /**
-     * @param array<string, Permalink> $permalinks keyed by language
+     * @param array<string, Permalink> $permalinks
      */
     public function populatePermalinks(array $permalinks): void
     {
@@ -85,8 +86,8 @@ trait PermalinkTrait
     }
 
     /**
-     * Looked up by exact language: the {@see Permalink::LANGUAGE_ALL} fallback of {@see static::getPermalink()} is
-     * for reading only. An unsaved record is kept per language so validation and save work on the same object.
+     * Looked up by exact language, since the {@see Permalink::LANGUAGE_ALL} fallback of {@see static::getPermalink()}
+     * is for reading only.
      */
     public function buildPermalink(?string $language = null): Permalink
     {
@@ -105,7 +106,7 @@ trait PermalinkTrait
     }
 
     /**
-     * @return list<string> the languages a {@see Permalink} record is written for
+     * @return list<string>
      */
     public function getPermalinkLanguages(): array
     {
@@ -115,8 +116,7 @@ trait PermalinkTrait
     }
 
     /**
-     * Takes the URI rather than reading the current one, so a {@see \Hirtz\Skeleton\Models\Redirect} can be
-     * recorded for a URI this model no longer has. Relative on the entry's own host, absolute on another.
+     * Takes the URI so a {@see \Hirtz\Skeleton\Models\Redirect} can be recorded for one the model no longer has.
      */
     public function getPermalinkUrl(string $uri, ?string $language = null): false|string
     {
@@ -161,8 +161,8 @@ trait PermalinkTrait
     }
 
     /**
-     * The path a request for this URI carries, qualified by the tenant's host and without a scheme
-     * (`www.example.com/de/old`): the form the 404 handler matches a redirect's `request_uri` against.
+     * Qualified by the tenant's host without a scheme (`www.example.com/de/old`), the form the 404 handler matches
+     * `request_uri` against.
      */
     public function getPermalinkRequestUri(string $uri, ?string $language = null): false|string
     {
@@ -186,7 +186,7 @@ trait PermalinkTrait
     }
 
     /**
-     * @return array<string, mixed> the attributes copied onto every {@see Permalink} record of this entry
+     * @return array<string, mixed>
      */
     public function getPermalinkAttributes(): array
     {

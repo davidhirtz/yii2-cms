@@ -12,8 +12,7 @@ use Override;
 use Yii;
 
 /**
- * A section type that carries nothing but a block: the status, the type and the block are the whole form, and the
- * block answers for the view file, the assets and the linked entries.
+ * The block answers for the view file, the assets and the linked entries.
  */
 class BlockSectionType extends SectionType
 {

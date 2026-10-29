@@ -36,9 +36,6 @@ class EntryMenuTest extends TestCase
         self::assertFalse($entry->isMenuItem(self::MAIN));
     }
 
-    /**
-     * A form posts strings, and the column is a list of ints.
-     */
     public function testThePostedValuesAreNormalizedToInts(): void
     {
         $entry = $this->createEntry();
@@ -74,8 +71,8 @@ class EntryMenuTest extends TestCase
     }
 
     /**
-     * The declaration is project configuration a record cannot answer for, so an id nothing declares is dropped
-     * rather than reported — the entry is still saveable, it is simply in no such menu.
+     * An undeclared id is dropped rather than reported, since the declaration is project configuration a record cannot
+     * answer for.
      */
     public function testAnUndeclaredMenuIsDropped(): void
     {
@@ -104,8 +101,8 @@ class EntryMenuTest extends TestCase
     }
 
     /**
-     * A rule can stop matching records that are already in the menu, and locking those out of every later save —
-     * or dropping them silently — is worse than the hole.
+     * A rule can stop matching records already in the menu, and locking them out of every later save is worse than the
+     * hole.
      */
     public function testAMenuTheEntryIsAlreadyInStaysValid(): void
     {
@@ -139,9 +136,6 @@ class EntryMenuTest extends TestCase
         self::assertSame('Footer', $menus[self::FOOTER]->getName());
     }
 
-    /**
-     * The value survives the round trip as a list of ints, not as JSON text.
-     */
     public function testTheValueIsStoredAsAList(): void
     {
         $entry = $this->createEntry();
@@ -157,7 +151,7 @@ class EntryMenuTest extends TestCase
     }
 
     /**
-     * The fallback formatter `print_r()`s a list of ids, which is not a diff anyone can read.
+     * The fallback formatter `print_r()`s a list of ids, which no one can read as a diff.
      */
     public function testTheTrailNamesTheMenus(): void
     {

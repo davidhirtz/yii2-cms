@@ -11,10 +11,7 @@ use Override;
 use Yii;
 
 /**
- * The two ways a slug can behave across languages:
- *
- * - not an `i18nAttribute`: one permalink, stored under the source language, resolvable in every language;
- * - an `i18nAttribute`: one permalink per language, each resolvable under its own language.
+ * An untranslated slug has one permalink, resolvable in every language; a translated one has a permalink per language.
  */
 class EntryPermalinkLanguageTest extends TestCase
 {
@@ -66,9 +63,8 @@ class EntryPermalinkLanguageTest extends TestCase
     }
 
     /**
-     * A translated slug has a real record per language and no language-agnostic one, so each URL resolves only under
-     * its own language — in either direction. The source-language URL leaking into other languages is exactly what
-     * the {@see Permalink::LANGUAGE_ALL} sentinel prevents: only an untranslated slug gets that fallback.
+     * Only an untranslated slug gets the {@see Permalink::LANGUAGE_ALL} fallback, so a translated URL resolves under
+     * its own language alone.
      */
     public function testTranslatedSlugDoesNotResolveUnderTheWrongLanguage(): void
     {
@@ -117,7 +113,7 @@ class EntryPermalinkLanguageTest extends TestCase
     }
 
     /**
-     * @param array<string, string> $slugs the slug for each language
+     * @param array<string, string> $slugs
      */
     protected function createTranslatedEntry(array $slugs): TestEntry
     {

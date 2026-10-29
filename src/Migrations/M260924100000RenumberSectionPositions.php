@@ -9,8 +9,8 @@ use Override;
 use yii\db\Migration;
 
 /**
- * Closes the gaps deletes left in section positions before 3.1.1, which renumbers on every delete and move: the
- * admin subtitle reads a position as its rank out of the parent's count.
+ * Closes the gaps deletes left in section positions before 3.1.1, since the admin subtitle reads a position
+ * against the parent's count.
  *
  * @noinspection PhpUnused
  */

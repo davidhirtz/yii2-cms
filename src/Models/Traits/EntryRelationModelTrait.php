@@ -112,8 +112,7 @@ trait EntryRelationModelTrait
     }
 
     /**
-     * A section or block is deleted through the model layer, but `entry_relation.model_id` can carry no foreign
-     * key of its own — it points at two tables — so the rows have to go by hand.
+     * `entry_relation.model_id` points at two tables and carries no foreign key, so the rows go by hand.
      */
     protected function deleteEntryRelations(): void
     {

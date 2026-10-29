@@ -6,7 +6,6 @@ namespace Hirtz\Cms\Modules\Admin\Widgets\Grids;
 
 use Hirtz\Skeleton\Web\Application;
 use Hirtz\Skeleton\Db\ActiveRecord;
-use Hirtz\Cms\Modules\Admin\Widgets\Buttons\EntryRelationCreateButton;
 use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Modules\Admin\Controllers\Traits\EntryRelationControllerTrait;
@@ -20,10 +19,9 @@ use Yii;
 use yii\helpers\Inflector;
 
 /**
- * @property EntryActiveDataProvider|null $provider
- */
-/**
  * @extends EntryGridView<Entry>
+ *
+ * @property EntryActiveDataProvider|null $provider
  */
 class LinkedEntryGridView extends EntryGridView
 {
@@ -109,7 +107,7 @@ class LinkedEntryGridView extends EntryGridView
     }
 
     /**
-     * The route `EntryRelationCreateButton` leads to, `null` without the relation's permission.
+     * `null` without the relation's permission.
      *
      * @return array<int|string, mixed>|null
      */

@@ -45,8 +45,7 @@ class ArtworkTest extends TestCase
     }
 
     /**
-     * An asset's `content` is an `HtmlCustomAttribute`, sanitised by `HtmlValidator` on the way in, so the caption
-     * is rendered as it stands. A project that redeclares it as plain text gets it escaped instead.
+     * `HtmlValidator` sanitises the `HtmlCustomAttribute` caption on the way in, so it renders as it stands.
      */
     public function testAnHtmlCaptionIsRenderedAsItStands(): void
     {
@@ -101,7 +100,7 @@ class ArtworkTest extends TestCase
     }
 
     /**
-     * The first few artworks of a page are above the fold, so they load eagerly; everything after them is lazy.
+     * The first artworks of a page are above the fold, so they load eagerly.
      */
     public function testOnlyTheArtworksPastTheThresholdAreLazy(): void
     {
@@ -149,8 +148,7 @@ class ArtworkTest extends TestCase
     }
 
     /**
-     * The counter belongs to the request, so `Bootstrap` drops it — a reset that only ran in the tests would
-     * leave a resident application rendering every artwork after the first page lazily.
+     * The counter belongs to the request, so `Bootstrap` drops it for a resident application.
      */
     public function testTheCounterStartsAtZeroForEveryApplication(): void
     {
@@ -169,8 +167,7 @@ class ArtworkTest extends TestCase
     }
 
     /**
-     * `false` hands the decision back to the media widget, which reads it off the asset, so the position on the
-     * page stops mattering — every artwork renders the same way.
+     * `false` hands the decision back to the media widget, which reads it off the asset.
      */
     public function testTheCounterIsNotConsultedWhileBothPositionsAreFalse(): void
     {

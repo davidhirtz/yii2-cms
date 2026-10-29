@@ -8,9 +8,6 @@ use BackedEnum;
 use Hirtz\Skeleton\Base\Traits\ContainerConfigurationTrait;
 use Hirtz\Skeleton\Base\Traits\IntBackedEnumTrait;
 
-/**
- * One section of a {@see SectionSet}: the type it is created with, and the attribute values it starts out with.
- */
 class SectionTemplate
 {
     use ContainerConfigurationTrait;

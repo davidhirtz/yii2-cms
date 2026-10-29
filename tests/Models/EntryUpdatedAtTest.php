@@ -21,8 +21,8 @@ use Hirtz\Skeleton\Db\DateTime;
 use Override;
 
 /**
- * The entry's `updated_at` is its sitemap `lastmod`, so whatever changes the entry's page moves it. Each test ages
- * the entry first, so none depends on the clock second.
+ * The entry's `updated_at` is its sitemap `lastmod`, and each test ages the entry first so none depends on the clock
+ * second.
  */
 class EntryUpdatedAtTest extends TestCase
 {

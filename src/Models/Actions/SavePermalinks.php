@@ -18,23 +18,23 @@ class SavePermalinks
     protected array $changedLanguages = [];
 
     /**
-     * @var array<string, string|null> the previous slug per changed slug attribute, for the owner's trail
+     * @var array<string, string|null>
      */
     protected array $slugChanges = [];
 
     /**
-     * @var array<string, Permalink> the records written, keyed by language
+     * @var array<string, Permalink>
      */
     protected array $savedPermalinks = [];
 
     /**
-     * @var list<string> the languages whose record was deleted
+     * @var list<string>
      */
     protected array $deletedLanguages = [];
 
     /**
-     * @param bool $runValidation `false` when the entry validated the records itself through `validateSlug()`,
-     * which is every validated save; a save that skipped validation then relies on the unique index
+     * `$runValidation` is `false` when the entry validated the records through `validateSlug()`, else the unique
+     * index answers.
      */
     public function __construct(
         protected Entry $model,
@@ -59,7 +59,7 @@ class SavePermalinks
     }
 
     /**
-     * @return list<string> the languages whose URL changed
+     * @return list<string>
      */
     public function getChangedLanguages(): array
     {
@@ -113,10 +113,8 @@ class SavePermalinks
     }
 
     /**
-     * The request side is host-qualified so the 404 handler matches it on the entry's tenant only; the target is
-     * a URL, relative on that host and absolute elsewhere. The two are therefore never comparable as strings,
-     * which is why both forms of the new URI are resolved here — `Redirect::validateUrl()` cannot see a loop
-     * between columns of different shapes.
+     * The request side is host-qualified and the target a URL, so both forms of the new URI are resolved here:
+     * `Redirect::validateUrl()` cannot see a loop between them.
      */
     protected function insertRedirect(string $previousUri, Permalink $permalink): void
     {
@@ -175,14 +173,8 @@ class SavePermalinks
     }
 
     /**
-     * A redirect the entry has just moved back onto is a no-op and is deleted rather than updated: left in
-     * place it points at a URI the entry no longer has, and it redirects its own request URI to itself.
-     *
-     * That deletion comes first, and the ordering is load-bearing: {@see Redirect::validateUrl()} resolves the
-     * chain its new target starts, so while the no-op row is still there every other row updated in this pass
-     * follows it back to the URL they are all being moved off.
-     *
-     * @param string $toRequestUri the host-qualified form of `$to`, the shape `request_uri` is stored in
+     * A redirect the entry moved back onto is deleted first, since {@see Redirect::validateUrl()} would otherwise
+     * follow it back for every other row updated in this pass.
      */
     protected function updatePreviousRedirects(string $from, string $to, string $toRequestUri): void
     {
@@ -208,8 +200,7 @@ class SavePermalinks
     }
 
     /**
-     * Removes the records of languages no longer written, e.g. the {@see Permalink::LANGUAGE_ALL} one once the slug
-     * became translated, and hands the entry the relation as it is now, without reading it back.
+     * Hands the entry the relation as it is now, without reading it back.
      *
      * @param list<string> $languages
      */

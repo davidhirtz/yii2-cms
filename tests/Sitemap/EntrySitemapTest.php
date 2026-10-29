@@ -77,8 +77,7 @@ class EntrySitemapTest extends TestCase
     }
 
     /**
-     * The language is switched per record so the translated attributes resolve, and it has to be put back: whatever
-     * renders the sitemap — and everything after it — runs in the request's own language.
+     * The language is switched per record, so it has to be put back for whatever renders after the sitemap.
      */
     public function testTheApplicationLanguageIsRestored(): void
     {
@@ -102,8 +101,7 @@ class EntrySitemapTest extends TestCase
     }
 
     /**
-     * With an index the records are paged, and the page size is shared between the languages: a record produces one
-     * URL per language, so a page holds half the records once two languages are configured.
+     * The page size is shared between the languages, so a page holds half the records once two are configured.
      */
     public function testTheSitemapIndexPagesTheRecords(): void
     {
@@ -123,8 +121,7 @@ class EntrySitemapTest extends TestCase
     }
 
     /**
-     * An odd number of URLs per page is what broke the paging: the records per page were a float, which the query
-     * builder drops, and every page then held every record.
+     * An odd number of URLs per page made the records per page a float, which the query builder drops.
      */
     public function testThePageSizeStaysAnIntegerAcrossLanguages(): void
     {
@@ -154,8 +151,7 @@ class EntrySitemapTest extends TestCase
     }
 
     /**
-     * `ModelSitemap::getLanguages()` asks the shared `instance()` for its `i18nAttributes`, so those have to be
-     * configured through the container rather than set on a record.
+     * `ModelSitemap::getLanguages()` asks the shared `instance()`, so `i18nAttributes` go through the container.
      */
     private function setUpI18nUrls(): void
     {
@@ -173,8 +169,7 @@ class EntrySitemapTest extends TestCase
     }
 
     /**
-     * `Entry::hasRoute()` answers `false` for an entry with neither a section nor a child, so an entry that is to
-     * appear in the sitemap at all needs one.
+     * `Entry::hasRoute()` answers `false` for an entry with neither a section nor a child.
      */
     private function createEntry(string $name, string $slug, int $status = Entry::STATUS_ENABLED): Entry
     {

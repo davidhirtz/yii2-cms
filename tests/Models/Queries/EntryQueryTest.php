@@ -37,9 +37,6 @@ class EntryQueryTest extends TestCase
         self::assertNotContains('Test Page – Disabled', $names);
     }
 
-    /**
-     * A child of a disabled parent is not reachable, whatever its own status says.
-     */
     public function testEnabledSkipsAChildOfADisabledParent(): void
     {
         $entry = $this->getEntryFromFixture('post-1');

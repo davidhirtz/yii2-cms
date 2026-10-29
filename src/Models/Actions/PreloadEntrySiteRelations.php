@@ -47,9 +47,6 @@ class PreloadEntrySiteRelations extends Component
      */
     public array $files = [];
 
-    /**
-     * @var bool whether to autoload the current entry's ancestors, this can be useful for breadcrumbs.
-     */
     public bool $autoloadEntryAncestors = true;
 
     /**
@@ -153,8 +150,8 @@ class PreloadEntrySiteRelations extends Component
     }
 
     /**
-     * A section carrying a block renders it in place of its own content, so the block's assets and linked entries
-     * are loaded with the entry's own — one extra query, and none for an entry that places no block.
+     * A placed block renders in place of its section, so its assets and entries are loaded with the entry's own in
+     * one extra query.
      */
     protected function loadBlocks(): void
     {

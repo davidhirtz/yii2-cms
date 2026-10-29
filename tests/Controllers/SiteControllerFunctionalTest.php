@@ -150,8 +150,8 @@ final class SiteControllerFunctionalTest extends TestCase
     }
 
     /**
-     * The request arrives on a host that is not a tenant, so the URL manager falls back to the default tenant and
-     * its canonical host is what the 404 handler matches the host-qualified redirect against.
+     * The request's host is no tenant, so the 404 handler matches the redirect against the default tenant's canonical
+     * host.
      */
     public function testRenamedEntryRedirectsFromItsOldUrl(): void
     {

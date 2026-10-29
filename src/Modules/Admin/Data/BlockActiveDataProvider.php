@@ -36,8 +36,7 @@ class BlockActiveDataProvider extends ActiveDataProvider
     }
 
     /**
-     * The order belongs to the `Sort`, not to the query: `yii\data\ActiveDataProvider::prepareModels()` *adds*
-     * the sort to whatever the query already carries, so an `orderBy()` here would win over every column header.
+     * The order belongs to the `Sort`, since `ActiveDataProvider::prepareModels()` adds it after the query's own.
      *
      * @param array<string, mixed>|Sort|bool $value
      */

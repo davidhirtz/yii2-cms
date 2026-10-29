@@ -24,9 +24,7 @@ class FrontendLink extends Widget
     use UrlTrait;
 
     /**
-     * The nearest record up the admin chain that has a frontend URL at all: an asset and a hotspot have none of
-     * their own, so their pages link to whatever they hang on. `null` where nothing in the chain does — a block
-     * and everything under it.
+     * An asset or a hotspot links to what it hangs on, and a block and everything under it to nothing.
      */
     public static function findInChain(?AdminModelInterface $model): ?static
     {

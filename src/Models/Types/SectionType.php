@@ -10,9 +10,8 @@ use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Widgets\SectionStack;
 
 /**
- * The four stages {@see SectionStack} runs over an entry's sections. `visible` is the frontend render filter, not
- * whether the type is offered in the admin — that is {@see static::available()}. A block type, so that one shared
- * with blocks is the same definition on both.
+ * `visible` is the frontend render filter, not whether the type is offered in the admin
+ * ({@see static::available()}).
  */
 class SectionType extends BlockType
 {
@@ -25,9 +24,8 @@ class SectionType extends BlockType
     protected bool $isSharedWithBlocks = true;
 
     /**
-     * Whether a section of this type carries a block instead of content of its own. The module's `enableBlocks`
-     * decides first, and the default is `false` on both sides: a section that has always been its own content
-     * must not grow a block field from a version bump.
+     * The module's `enableBlocks` decides first, and the default is `false` so no section grows a block field from a
+     * version bump.
      */
     public function allowBlock(bool $allowBlock = true): static
     {
@@ -41,7 +39,7 @@ class SectionType extends BlockType
     }
 
     /**
-     * Offers the type for blocks too, under the same value, and lets a section of it become one. On by default.
+     * Under the same value, on by default.
      *
      * @see Block::getTypesWithSharedSectionTypes()
      */
@@ -60,8 +58,9 @@ class SectionType extends BlockType
     }
 
     /**
-     * @param Closure(Section): bool|bool $visible whether the section is rendered on the site; a type declaring
-     * nothing falls through to the stack's own {@see SectionStack::filter()}
+     * A type declaring nothing falls through to {@see SectionStack::filter()}.
+     *
+     * @param Closure(Section): bool|bool $visible
      */
     public function visible(Closure|bool $visible = true): static
     {
@@ -97,7 +96,7 @@ class SectionType extends BlockType
     }
 
     /**
-     * What the admin grid shows for a section of this type, in place of its name, as HTML: encode what a user wrote.
+     * Rendered as HTML in place of the name, so encode what a user wrote.
      *
      * @param Closure(Section): ?string|string|null $gridContent
      */

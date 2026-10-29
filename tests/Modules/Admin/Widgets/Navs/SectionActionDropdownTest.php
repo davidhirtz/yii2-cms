@@ -20,8 +20,7 @@ use Override;
 use Yii;
 
 /**
- * The dropdown replaces the index page's create button, so the provider decides whether it offers the actions of
- * one section or the ones that add a section to its entry.
+ * The provider decides whether the dropdown offers one section's actions or those adding a section to its entry.
  */
 class SectionActionDropdownTest extends TestCase
 {

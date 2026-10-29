@@ -42,8 +42,8 @@ use Yii;
  * @property int $asset_count
  * @property int $entry_count
  *
- * @property-read SectionAsset[] $assets {@see static::getAssets()}
- * @property-read Block|null $block {@see static::getBlock()}
+ * @property-read SectionAsset[] $assets
+ * @property-read Block|null $block
  */
 class Section extends ActiveRecord implements AssetModelInterface, EntryRelationModelInterface, SearchableInterface
 {
@@ -62,8 +62,10 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
     public bool|null $shouldUpdateEntryAfterSave = null;
 
     /**
-     * @var list<string> the default custom attributes stored per language; declared here rather than through the
-     * skeleton's `TranslatableAttributesTrait`, since a class cannot give a trait property another default
+     * Declared here rather than through `TranslatableAttributesTrait`, since a class cannot give a trait property
+     * another default.
+     *
+     * @var list<string>
      */
     public array $translatableAttributes = ['name', 'content'];
 
@@ -228,8 +230,8 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
     }
 
     /**
-     * A type change drops the block the new type cannot place: the form no longer shows the field to clear it. A
-     * block the configuration stopped allowing is kept as stored, unshown, for when it allows it again.
+     * A type change drops a block the new type cannot place, while one the configuration stopped allowing is kept,
+     * unshown.
      */
     public function validateBlockId(): void
     {
@@ -362,8 +364,7 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
     }
 
     /**
-     * The block a section of this type actually carries, or null — a `block_id` left over from a type that no
-     * longer allows one renders nothing.
+     * A `block_id` left over from a type that no longer allows one renders nothing.
      */
     public function getVisibleBlock(): ?Block
     {
@@ -378,10 +379,6 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
         return $this->getVisibleBlock() ?? $this;
     }
 
-    /**
-     * Updates the old entry relation after the section was moved to another entry. Override this method if the old
-     * entry should be further manipulated after the section's entry was changed.
-     */
     protected function updateOldEntryRelation(?int $entryId): void
     {
         $entry = Entry::findOne($entryId);
@@ -483,8 +480,8 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
     }
 
     /**
-     * Not the entry's name: with the title boost, that would rank every section of an entry beside the entry itself.
-     * Nor the type's, which is translated in the saving editor's language and would land in every language's row.
+     * Neither the entry's name, which the title boost would rank every section beside, nor the type's, translated in
+     * the saving editor's language.
      */
     public function getSearchTitle(?string $language = null): string
     {

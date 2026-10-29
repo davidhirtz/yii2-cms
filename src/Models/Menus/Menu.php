@@ -12,8 +12,7 @@ use Hirtz\Skeleton\Models\Definitions\Definition;
 use yii\base\InvalidConfigException;
 
 /**
- * A menu an entry can be put into, declared by `Module::$menus`. It is a plain `Definition` rather than a
- * `ModelDefinition`: no model declares it and none is validated against.
+ * A plain `Definition`, since no model declares a menu and none is validated against.
  */
 class Menu extends Definition
 {
@@ -21,8 +20,7 @@ class Menu extends Definition
     protected bool $autoload = true;
 
     /**
-     * Whether the menu is offered for an entry. A menu an entry is already stored in stays offered and stays
-     * valid, see {@see static::isAvailableOrStored()}.
+     * A menu an entry is already stored in stays offered and valid ({@see static::isAvailableOrStored()}).
      *
      * @param Closure(Entry): bool|bool $available
      */
@@ -33,8 +31,8 @@ class Menu extends Definition
     }
 
     /**
-     * Whether {@see MenuCollection} loads the menu with the others, in the one query a layout pays for. A menu
-     * that is rarely rendered, or holds far more entries than a navigation, is loaded on its own instead.
+     * A rarely rendered menu, or one far larger than a navigation, loads on its own instead of in the one query of
+     * {@see MenuCollection}.
      */
     public function autoload(bool $autoload = true): static
     {

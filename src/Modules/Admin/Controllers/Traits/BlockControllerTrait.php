@@ -20,10 +20,6 @@ trait BlockControllerTrait
         return $block;
     }
 
-    /**
-     * Whether the controller works with this block at all, the counterpart of
-     * {@see SectionControllerTrait::isSectionAllowed()}.
-     */
     protected function isBlockAllowed(Block $block): bool
     {
         return true;

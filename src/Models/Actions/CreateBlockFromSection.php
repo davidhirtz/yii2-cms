@@ -12,8 +12,7 @@ use Throwable;
 use Yii;
 
 /**
- * Moves a section's content, assets and linked entries into a new block of the same type and turns the section into
- * the block section placing it. Everything rolls back when either record does not validate.
+ * Everything rolls back when either record does not validate.
  */
 class CreateBlockFromSection
 {
@@ -71,7 +70,7 @@ class CreateBlockFromSection
     }
 
     /**
-     * @return list<string> the custom attribute names copied
+     * @return list<string>
      */
     protected function copyAttributes(): array
     {

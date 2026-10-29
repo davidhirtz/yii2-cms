@@ -78,9 +78,6 @@ class CreateSectionSetTest extends TestCase
         self::assertSame(3, Entry::findOne($this->entry->id)->section_count);
     }
 
-    /**
-     * A section the project declared with an invalid value is reported, the ones beside it are kept.
-     */
     public function testAFailingSectionIsReported(): void
     {
         $action = CreateSectionSet::create($this->entry, $this->createSet(
@@ -114,8 +111,7 @@ class CreateSectionSetTest extends TestCase
     }
 
     /**
-     * A template names the type, so the class the type names is what the section has to be built as — the
-     * definitions, the rules and the lifecycle hooks are all that class's.
+     * The section is built as the class its type names, since the definitions, rules and hooks are that class's.
      */
     public function testTheTypeDecidesTheSectionClass(): void
     {

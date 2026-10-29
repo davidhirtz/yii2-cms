@@ -20,10 +20,6 @@ use yii\web\MethodNotAllowedHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
-/**
- * Both controllers are thin: they resolve and authorise the record, then hand it to the media bundle's
- * `AssetControllerTrait`.
- */
 class AssetControllerTest extends TestCase
 {
     use CmsFixtureTrait;
@@ -221,8 +217,7 @@ class AssetControllerTest extends TestCase
     }
 
     /**
-     * The asset table is shared, so a controller only ever resolves the subclass it serves. Note that a query built
-     * on a subclass loses that scope to `where()` — it has to be `andWhere()`.
+     * A query built on a subclass loses its scope to `where()`, so it has to be `andWhere()`.
      */
     public function testASectionAssetIsNotAnEntryAsset(): void
     {
@@ -236,8 +231,7 @@ class AssetControllerTest extends TestCase
     }
 
     /**
-     * The picker's toggle: an entry holds a file once, so the button of a file it already has removes that asset
-     * and leads back into the picker, carrying whatever the picker was narrowed to.
+     * An entry holds a file once, so the picker's button for a file it already has removes that asset.
      */
     public function testRemoveDeletesTheAssetForTheFileAndFixesTheCount(): void
     {
@@ -280,8 +274,7 @@ class AssetControllerTest extends TestCase
     }
 
     /**
-     * The same file cannot be added to the same entry twice — the picker offers a remove button for it, and the
-     * route behind the add button refuses it as well.
+     * The route behind the add button refuses it too, not only the picker offering a remove button.
      */
     public function testCreateRefusesAFileTheEntryAlreadyHas(): void
     {
@@ -360,9 +353,8 @@ class AssetControllerTest extends TestCase
     }
 
     /**
-     * The row's own delete button is gone, so the footer is the only way to remove an asset from the grid. The
-     * checkbox carries the asset's id because `AssetArrayDataProvider` keys its rows by it — an array provider
-     * keys by array offset otherwise, and the selection would post positions.
+     * The checkbox carries the asset's id because `AssetArrayDataProvider` keys its rows by it; an array provider keys
+     * by offset otherwise.
      */
     public function testTheGridOffersTheSelectionInsteadOfARowDeleteButton(): void
     {
@@ -467,8 +459,7 @@ class AssetControllerTest extends TestCase
     }
 
     /**
-     * `CmsFixtureTrait` declares the user fixture but no accessor for it: adding one would collide with
-     * `UserFixtureTrait` for the tests that use both.
+     * `CmsFixtureTrait` declares no accessor for the user fixture, since one would collide with `UserFixtureTrait`.
      */
     private function getUserFromFixture(string $key): User
     {

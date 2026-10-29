@@ -206,7 +206,7 @@ class BlockSectionFieldsTest extends TestCase
 }
 
 /**
- * Scratch models, declared here because a second class in a test file is only autoloadable while that file runs.
+ * Declared here, since a second class in a test file is only autoloadable while that file runs.
  *
  * @property list<array<string, mixed>>|null $buttons
  */

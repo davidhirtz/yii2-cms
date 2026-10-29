@@ -15,8 +15,8 @@ use Hirtz\Cms\Test\TestCase;
 use Override;
 
 /**
- * The records are built here rather than taken from the fixture: the fixture's sections carry `TestSection` types,
- * and everything the product loads through `Entry::getSections()` is a base `Section`, which refuses them.
+ * The records are built here, since the base `Section` that `Entry::getSections()` loads refuses the fixture's
+ * `TestSection` types.
  */
 class DuplicateEntryTest extends TestCase
 {
@@ -48,8 +48,7 @@ class DuplicateEntryTest extends TestCase
     }
 
     /**
-     * The prefix would otherwise push a name that already fills the column past its length rule, failing the
-     * duplication outright.
+     * The prefix would otherwise push a full-length name past its length rule, failing the duplication.
      */
     public function testAFullLengthNameIsTruncatedToFitThePrefix(): void
     {
@@ -153,8 +152,7 @@ class DuplicateEntryTest extends TestCase
     }
 
     /**
-     * The children are inserted with validation, so a type or module change since the original was saved can refuse
-     * them: the counts follow what was inserted, not what the original says.
+     * The children are inserted with validation, which a type or module change since the original was saved can refuse.
      */
     public function testTheCountsFollowTheChildrenActuallyCopied(): void
     {

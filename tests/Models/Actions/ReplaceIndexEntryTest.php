@@ -57,8 +57,7 @@ class ReplaceIndexEntryTest extends TestCase
     }
 
     /**
-     * Two entries cannot both answer to `home`, so the slug has to be freed before the new one takes it. The slug
-     * is not a column on `entry` — it lives on the permalink — so this is what the frontend actually resolves.
+     * The slug lives on the permalink, not on `entry`, so this is what the frontend resolves.
      */
     public function testOnlyOneEntryIsLeftOnTheIndexSlug(): void
     {

@@ -22,97 +22,67 @@ class Module extends \Hirtz\Skeleton\Base\Module
 {
     final public const string AUTH_ROLE_AUTHOR = 'author';
 
-    /**
-     * @var bool whether categories should be enabled
-     */
     public bool $enableCategories = false;
 
-    /**
-     * @var bool whether categories should be stored in a nested tree
-     */
     public bool $enableNestedCategories = true;
 
-    /**
-     * @var bool whether entries should automatically inherit parent categories
-     */
     public bool $inheritNestedCategories = true;
 
-    /**
-     * @var bool whether entries should be nested
-     */
     public bool $enableNestedEntries = false;
 
-    /**
-     * @var bool whether entries should have sections
-     */
     public bool $enableSections = true;
 
-    /**
-     * @var bool whether entries should have assets
-     */
     public bool $enableEntryAssets = true;
 
-    /**
-     * @var bool whether sections should have assets
-     */
     public bool $enableSectionAssets = true;
 
-    /**
-     * @var bool whether entries should be linkable to sections
-     * @since 1.4.0
-     */
     public bool $enableSectionEntries = false;
 
     /**
-     * @var bool whether global sections are enabled, which a section places by carrying a `block_id`
+     * A section places a global block by carrying a `block_id`.
      */
     public bool $enableBlocks = true;
 
-    /**
-     * @var bool whether blocks should have assets
-     */
     public bool $enableBlockAssets = true;
 
     /**
-     * @var bool|null whether entries should be linkable to blocks, `null` follows {@see $enableSectionEntries}
+     * `null` follows {@see $enableSectionEntries}.
      */
     public ?bool $enableBlockEntries = null;
 
     /**
-     * @var list<class-string<EntryRelation>> the registered entry relation subclasses, one per model that links
-     * entries.
+     * @var list<class-string<EntryRelation>>
      */
     public array $entryRelations = [];
 
-    /**
-     * @var bool whether the default url rules should be loaded automatically, defaults to true
-     */
     public bool $enableUrlRules = true;
 
     /**
-     * @var array<string, int>|null the default sort order when neither type nor category previously applied an order
+     * Applies when neither type nor category set an order.
+     *
+     * @var array<string, int>|null
      */
     public ?array $defaultEntryOrderBy = ['position' => SORT_ASC];
 
     /**
-     * @var int|null the default entry type which is applied to all default admin urls
+     * Applied to every default admin URL.
      */
     public ?int $defaultEntryType = null;
 
     /**
-     * @var int|null|false duration in seconds for caching the category query. Set to `false` to disable cache.
+     * `false` disables the cache.
+     *
      * @see CategoryCollection::getAll()
      */
     public int|null|false $categoryCachedQueryDuration = 60;
 
     /**
-     * @var string|false the default entry slug that will be omitted from the url and redirected to the index action.
-     * Set false to disable this feature.
+     * The slug omitted from the URL and redirected to the index action, `false` for none.
      */
     public string|false $entryIndexSlug = 'home';
 
     /**
-     * @var Closure(): array<mixed>|array<mixed> the declaration, which is unvalidated by definition
+     * @var Closure(): array<mixed>|array<mixed>
      */
     private Closure|array $configuredSectionSets = [];
 
@@ -122,7 +92,7 @@ class Module extends \Hirtz\Skeleton\Base\Module
     private ?array $sectionSets = null;
 
     /**
-     * @var Closure(): array<mixed>|array<mixed> the declaration, which is unvalidated by definition
+     * @var Closure(): array<mixed>|array<mixed>
      */
     private Closure|array $configuredMenus = [];
 
@@ -158,8 +128,8 @@ class Module extends \Hirtz\Skeleton\Base\Module
     }
 
     /**
-     * A closure, because a set's name is a {@see Yii::t()} result and a configuration file is read before the
-     * application has an `i18n` component. A plain list is accepted for a declaration that needs no translation.
+     * A closure, since a set's name is a {@see Yii::t()} result and the configuration is read before the `i18n`
+     * component exists.
      *
      * @param Closure(): array<mixed>|array<mixed> $sectionSets
      */
@@ -207,8 +177,8 @@ class Module extends \Hirtz\Skeleton\Base\Module
     }
 
     /**
-     * A closure, because a menu's name is a {@see Yii::t()} result and a configuration file is read before the
-     * application has an `i18n` component. A plain list is accepted for a declaration that needs no translation.
+     * A closure, since a menu's name is a {@see Yii::t()} result and the configuration is read before the `i18n`
+     * component exists.
      *
      * @param Closure(): array<mixed>|array<mixed> $menus
      */
@@ -283,8 +253,7 @@ class Module extends \Hirtz\Skeleton\Base\Module
     }
 
     /**
-     * The next time a scheduled entry goes live, `null` for none. Cached under the page cache's tag, so a save
-     * recomputes it, and recomputed once the moment has passed.
+     * Cached under the page cache's tag, so a save recomputes it, and recomputed once the moment has passed.
      */
     public function getNextPublishTime(): ?int
     {

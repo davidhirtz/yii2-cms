@@ -18,8 +18,8 @@ use Override;
 use Yii;
 
 /**
- * Whatever an entry takes with it goes in batch: renumbering and recounting a section about to be deleted is a
- * query per asset, for nothing.
+ * Renumbering and recounting a section about to be deleted is a query per asset for nothing, so all an entry takes goes
+ * in batch.
  */
 class EntryDeleteQueryCountTest extends TestCase
 {

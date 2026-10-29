@@ -4,11 +4,6 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Models\Types;
 
-use Hirtz\Cms\Models\ActiveRecord;
-
-/**
- * The two options {@see ActiveRecord} reads for every cms model.
- */
 class Type extends \Hirtz\Skeleton\Models\Types\Type
 {
     protected ?string $viewFile = null;

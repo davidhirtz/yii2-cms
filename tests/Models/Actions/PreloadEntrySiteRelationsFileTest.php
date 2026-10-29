@@ -24,8 +24,7 @@ use Override;
 use Yii;
 
 /**
- * The files the custom attributes name are loaded with the asset files, in one query, and populated where a view
- * reads them.
+ * The files the custom attributes name load with the asset files, in one query.
  */
 class PreloadEntrySiteRelationsFileTest extends TestCase
 {
@@ -140,8 +139,7 @@ class PreloadEntrySiteRelationsFileTest extends TestCase
 }
 
 /**
- * A scratch section model, declared here because a second class in a test file is only autoloadable while that
- * file runs.
+ * Declared here, since a second class in a test file is only autoloadable while that file runs.
  */
 class FileSectionModel extends Section
 {

@@ -14,9 +14,8 @@ use yii\helpers\Console;
 /**
  * Rebuilds permalink records.
  *
- * A {@see Permalink} is written when an entry is saved, so anything that changes one outside a save leaves it
- * stale — adding a language, for instance. Those are one-off jobs, not runtime cascades, which is what this
- * command is for.
+ * A {@see Permalink} is written on an entry save, so anything else changing one, such as adding a language, leaves it
+ * stale.
  */
 class PermalinkController extends Controller
 {

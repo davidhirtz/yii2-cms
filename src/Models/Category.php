@@ -30,11 +30,11 @@ use yii\db\ActiveQuery;
  * @property string|null $description
  * @property int $entry_count
  *
- * @property-read Entry[] $entries {@see static::getEntries()}
- * @property-read EntryCategory|null $entryCategory {@see static::getEntryCategory()}
- * @property-read EntryCategory[] $entryCategories {@see static::getEntryCategories()}
- * @property-read static[] $ancestors {@see static::getAncestors()}
- * @property-read static[] $descendants {@see static::getDescendants()}
+ * @property-read Entry[] $entries
+ * @property-read EntryCategory|null $entryCategory
+ * @property-read EntryCategory[] $entryCategories
+ * @property-read static[] $ancestors
+ * @property-read static[] $descendants
  */
 class Category extends ActiveRecord implements SearchableInterface
 {
@@ -148,9 +148,8 @@ class Category extends ActiveRecord implements SearchableInterface
     }
 
     /**
-     * On parent id change all related entries (linked to this category as well as to the child categories)
-     * need to be added to the new parent categories, if {@see \Hirtz\Cms\Module::$inheritNestedCategories}
-     * is true. Previous parent {@see EntryCategory} relations will not be deleted.
+     * A new parent gets the entries under {@see \Hirtz\Cms\Module::$inheritNestedCategories}, the previous one keeps
+     * them.
      *
      * @param array<string, mixed> $changedAttributes
      */
@@ -227,9 +226,7 @@ class Category extends ActiveRecord implements SearchableInterface
     }
 
     /**
-     * Inserts related {@see EntryCategory} records to this records ancestor categories. This method is called after
-     * the parent id was changed and can insert quite a lot of records. This might need to be overridden on applications
-     * with MANY entry-category relations.
+     * Can insert a lot of records, so an application with many entry-category relations may override it.
      */
     protected function insertEntryCategoryAncestors(): void
     {
@@ -261,9 +258,7 @@ class Category extends ActiveRecord implements SearchableInterface
     }
 
     /**
-     * Deletes all related entry categories before the {@see EntryCategory} records would be deleted by the database's
-     * foreign key relation. This enables recalculating the related record as well as adding {@see Trail} records.
-     * This might need to be overridden on applications with MANY entry-category relations.
+     * Deleted before the foreign key cascade would, so the counts are recalculated and {@see Trail} records written.
      */
     protected function deleteEntryCategories(): void
     {

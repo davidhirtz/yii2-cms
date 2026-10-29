@@ -15,9 +15,7 @@ use yii\base\NotSupportedException;
 use yii\validators\Validator;
 
 /**
- * Normalizes the posted list into a `list<int>|null` of declared menus. An undeclared or unavailable menu is
- * dropped rather than reported: the declaration is project configuration a record cannot answer for, and a
- * menu that stops being available must not lock every later save of the entries already in it.
+ * An undeclared or unavailable menu is dropped rather than reported, so it never locks a later save of its entries.
  */
 class MenuIdsValidator extends Validator implements JsonSchemaInterface
 {

@@ -90,8 +90,7 @@ class PreloadEntrySiteRelationsBlockTest extends TestCase
 }
 
 /**
- * A scratch section model, declared here because a second class in a test file is only autoloadable while that
- * file runs.
+ * Declared here, since a second class in a test file is only autoloadable while that file runs.
  */
 class BlockSectionModel extends Section
 {

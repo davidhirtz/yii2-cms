@@ -388,7 +388,6 @@ class SectionStackTest extends TestCase
 
     /**
      * @param Section[] $sections
-     * @return SectionStack
      */
     private function createStack(array $sections): SectionStack
     {
@@ -409,8 +408,8 @@ class SectionStackTest extends TestCase
 }
 
 /**
- * The scratch model carries every type option the stack reads. Composer's PSR-4 map finds one class per file, so
- * it is only autoloadable while this test file is loaded.
+ * The scratch model carries every type option the stack reads, declared here since a second class in a test file is
+ * only autoloadable while that file runs.
  */
 class TestSection extends Section
 {

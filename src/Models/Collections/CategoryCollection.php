@@ -178,8 +178,7 @@ class CategoryCollection
     }
 
     /**
-     * The static outlives the application; `Bootstrap` resets it, so a test's application does not start with the
-     * categories of the one before.
+     * The static outlives the application, so `Bootstrap` resets it.
      */
     public static function reset(): void
     {

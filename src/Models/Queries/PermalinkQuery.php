@@ -16,8 +16,7 @@ use yii\db\Expression;
 class PermalinkQuery extends ActiveQuery
 {
     /**
-     * Matches permalinks that resolve under the given language: those stored for it, plus the language-agnostic
-     * {@see Permalink::LANGUAGE_ALL} records that resolve under every language.
+     * Includes the {@see Permalink::LANGUAGE_ALL} records, which resolve under every language.
      */
     public function whereLanguage(?string $language = null): static
     {
@@ -27,11 +26,7 @@ class PermalinkQuery extends ActiveQuery
     }
 
     /**
-     * Matches the full path a request resolves to.
-     *
-     * A translated slug has one record per language; an untranslated one has a single {@see Permalink::LANGUAGE_ALL}
-     * record that resolves under every language. The lookup accepts both, and a per-language record wins over the
-     * language-agnostic fallback when the same path exists as both.
+     * A per-language record wins over the {@see Permalink::LANGUAGE_ALL} one when the same path exists as both.
      */
     public function whereUri(string $uri, ?string $language = null): static
     {

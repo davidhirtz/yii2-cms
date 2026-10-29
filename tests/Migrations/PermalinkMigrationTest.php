@@ -16,8 +16,7 @@ use yii\db\Command;
 use yii\db\Query;
 
 /**
- * The permalink table is replaced by the one the migration creates, and restored with its rows afterwards. The
- * DDL commits the test transaction, which is why everything is undone by hand.
+ * The DDL commits the test transaction, so the permalink table and its rows are restored by hand.
  */
 class PermalinkMigrationTest extends TestCase
 {

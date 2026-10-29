@@ -24,8 +24,7 @@ use Override;
 use Yii;
 
 /**
- * A section with no owner: the same types, assets, linked entries and custom attributes, but no tenant and no
- * entry. A section carrying a `block_id` renders it in place of its own content.
+ * A section with no owner, which a section carrying its `block_id` renders in place of its own content.
  *
  * @property string $name
  * @property string|null $content
@@ -33,9 +32,9 @@ use Yii;
  * @property int $asset_count
  * @property int $entry_count
  *
- * @property-read BlockAsset[] $assets {@see static::getAssets()}
- * @property-read Entry|null $entry {@see static::getEntry()}
- * @property-read Section[] $sections {@see static::getSections()}
+ * @property-read BlockAsset[] $assets
+ * @property-read Entry|null $entry
+ * @property-read Section[] $sections
  */
 class Block extends ActiveRecord implements AssetModelInterface, EntryRelationModelInterface, SearchableInterface
 {
@@ -44,8 +43,9 @@ class Block extends ActiveRecord implements AssetModelInterface, EntryRelationMo
     use SearchableTrait;
 
     /**
-     * @var list<string>|null {@see Section::$translatableAttributes} for the section fields a block shows, the
-     * container's section's while `null`
+     * The container's section's {@see Section::$translatableAttributes} while `null`.
+     *
+     * @var list<string>|null
      */
     public ?array $translatableAttributes = null;
 
@@ -151,8 +151,8 @@ class Block extends ActiveRecord implements AssetModelInterface, EntryRelationMo
     }
 
     /**
-     * Touches every entry placing the block, as its sections render it — even one whose type no longer shows a
-     * block, which is cheaper than loading each section's type.
+     * Touches every entry placing the block, even one whose type no longer shows a block, which is cheaper than
+     * loading each section's type.
      */
     #[Override]
     protected function touchOwners(): void
@@ -196,8 +196,7 @@ class Block extends ActiveRecord implements AssetModelInterface, EntryRelationMo
     }
 
     /**
-     * A block belongs to nothing, so it has no `position` and nothing to be ordered within — the base needs the
-     * method for {@see \Hirtz\Cms\Models\ActiveRecord::getMaxPosition()}, which is never reached here.
+     * A block has no `position`, but {@see \Hirtz\Cms\Models\ActiveRecord::getMaxPosition()} needs the method.
      *
      * @return BlockQuery<static>
      */
@@ -207,8 +206,8 @@ class Block extends ActiveRecord implements AssetModelInterface, EntryRelationMo
     }
 
     /**
-     * The entry the block is rendered on, populated by `PreloadEntrySiteRelations`, so a view shared with sections can
-     * read `entry` off either. A block has no entry of its own: `null` everywhere else.
+     * Populated by `PreloadEntrySiteRelations`, so a view shared with sections can read `entry` off either; `null`
+     * everywhere else.
      */
     public function getEntry(): ?Entry
     {
@@ -237,9 +236,6 @@ class Block extends ActiveRecord implements AssetModelInterface, EntryRelationMo
     }
 
     /**
-     * The sections that place this block. There is no count column for them: a block is edited on its own page,
-     * where the number only matters when it is about to be deleted.
-     *
      * @return SectionQuery<Section>
      */
     public function getSections(): SectionQuery
@@ -329,7 +325,7 @@ class Block extends ActiveRecord implements AssetModelInterface, EntryRelationMo
     }
 
     /**
-     * A block has no URL of its own — it is rendered wherever a section points at it.
+     * A block has no URL of its own.
      *
      * @return array<int|string, mixed>|false
      */

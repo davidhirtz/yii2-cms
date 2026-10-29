@@ -12,8 +12,8 @@ use Hirtz\Skeleton\Test\Traits\UserFixtureTrait;
 use Hirtz\Skeleton\Web\Application;
 
 /**
- * A grid's type filter is a query parameter, so the button that creates the next record carries it through — it
- * used to overwrite it with the type a project pins the page to, which is normally nothing (monorepo issue #161).
+ * The create button carries the grid's type filter through, not the type a project pins the page to (monorepo issue
+ * #161).
  */
 class EntryCreateButtonTest extends TestCase
 {

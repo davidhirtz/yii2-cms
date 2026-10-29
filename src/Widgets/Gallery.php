@@ -35,7 +35,7 @@ class Gallery extends Widget
     private ?array $artworkClosures = null;
 
     /**
-     * The markup of a run of assets, set by `content()` or `viewFile()`, whichever was called last.
+     * Set by `content()` or `viewFile()`, whichever was called last.
      */
     private ?Closure $content = null;
 
@@ -102,8 +102,7 @@ class Gallery extends Widget
     }
 
     /**
-     * What the gallery renders per asset unless `content()` or `viewFile()` take over, which call it themselves to
-     * keep the caller's `artwork()` closures.
+     * `content()` and `viewFile()` call it themselves to keep the caller's `artwork()` closures.
      *
      * @param T $asset
      */

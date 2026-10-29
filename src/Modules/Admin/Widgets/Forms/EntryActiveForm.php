@@ -75,9 +75,7 @@ class EntryActiveForm extends ActiveForm
     }
 
     /**
-     * The record answers first: it is an existing entry, or a new one carrying the tenant the form reload posted.
-     * Only a record with none falls back to the request, which is what a `tenant` parameter on the create route and
-     * the admin's own host are for.
+     * The record's tenant answers first, then the request's (the create route's `tenant` parameter, the admin's host).
      */
     protected function setTenant(): void
     {
@@ -123,8 +121,8 @@ class EntryActiveForm extends ActiveForm
     }
 
     /**
-     * The prefix is the parent's path rather than its route: an entry being created under a parent that has no
-     * children yet is exactly the case {@see Entry::getRoute()} answers `false` for.
+     * The prefix is the parent's path, since {@see Entry::getRoute()} answers `false` for a parent with no children
+     * yet.
      */
     #[Override]
     protected function getSlugBaseUrl(?string $language = null): string

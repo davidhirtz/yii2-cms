@@ -25,11 +25,7 @@ use Yii;
 use yii\data\ActiveDataProvider;
 
 /**
- * Every section that places one block, which is what makes a block safe to change or delete. It leads out of
- * itself on purpose — the section is where the placement is edited — so it is not a picker.
- *
- * Its delete routes are relative, so the grid only renders where
- * {@see \Hirtz\Cms\Modules\Admin\Controllers\BlockSectionController} serves it.
+ * Its delete routes are relative, so the grid only renders where {@see BlockSectionController} serves it.
  *
  * @extends GridView<Section>
  */
@@ -38,8 +34,7 @@ class BlockSectionGridView extends GridView
     use SelectionTrait;
 
     /**
-     * @var bool whether each row offers a delete button of its own beside the selection, which deletes the
-     * section rather than only its placement.
+     * A row's own delete button deletes the section, not only its placement.
      */
     protected bool $showDeleteButton = false;
 
