@@ -32,7 +32,7 @@ class EntryAsset extends Asset
     #[Override]
     public function getAdminType(): string
     {
-        return Yii::t('media', 'ASSET_ENTRY_ASSET');
+        return Yii::t('media', 'ASSET_ENTRY_SINGULAR');
     }
 
     /**

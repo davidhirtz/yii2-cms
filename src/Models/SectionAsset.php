@@ -28,6 +28,6 @@ class SectionAsset extends Asset
     #[Override]
     public function getAdminType(): string
     {
-        return Yii::t('media', 'ASSET_SECTION_ASSET');
+        return Yii::t('media', 'ASSET_SECTION_SINGULAR');
     }
 }

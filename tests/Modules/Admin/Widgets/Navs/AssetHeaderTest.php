@@ -105,7 +105,7 @@ class AssetHeaderTest extends TestCase
     private function subtitleItem(string $route, int $position, int $total): array
     {
         return [$route, Yii::t('skeleton', 'MODEL_POSITION_FORMAT', [
-            'model' => Yii::t('media', 'ASSET_ASSET'),
+            'model' => Yii::t('media', 'ASSET_SINGULAR'),
             'position' => $position,
             'total' => $total,
         ])];
