@@ -56,7 +56,7 @@ class AssetHeaderTest extends TestCase
             [
                 [
                     '/admin/cms/section/update?id=' . $section->id,
-                    Yii::t('skeleton', 'COMMON_MODEL_POSITION_TOTAL', [
+                    Yii::t('skeleton', 'MODEL_POSITION_FORMAT', [
                         'model' => Yii::t('cms', 'COMMON_SECTION'),
                         'position' => 1,
                         'total' => 5,
@@ -104,7 +104,7 @@ class AssetHeaderTest extends TestCase
      */
     private function subtitleItem(string $route, int $position, int $total): array
     {
-        return [$route, Yii::t('skeleton', 'COMMON_MODEL_POSITION_TOTAL', [
+        return [$route, Yii::t('skeleton', 'MODEL_POSITION_FORMAT', [
             'model' => Yii::t('media', 'ASSET_ASSET'),
             'position' => $position,
             'total' => $total,

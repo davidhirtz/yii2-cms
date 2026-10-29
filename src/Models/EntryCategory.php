@@ -251,7 +251,7 @@ class EntryCategory extends \Hirtz\Skeleton\Db\ActiveRecord implements TrailMode
     #[Override]
     public function getAdminType(): string
     {
-        return Yii::t('skeleton', 'COMMON_RELATION');
+        return Yii::t('skeleton', 'RELATION_SINGULAR');
     }
 
     #[Override]

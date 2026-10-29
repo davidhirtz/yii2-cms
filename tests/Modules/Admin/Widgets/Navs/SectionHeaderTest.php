@@ -44,7 +44,7 @@ class SectionHeaderTest extends TestCase
         self::assertSame(
             [[
                 '/admin/cms/section/update?id=' . $section->id,
-                Yii::t('skeleton', 'COMMON_MODEL_POSITION_TOTAL', [
+                Yii::t('skeleton', 'MODEL_POSITION_FORMAT', [
                     'model' => Yii::t('cms', 'COMMON_SECTION'),
                     'position' => 1,
                     'total' => 5,
@@ -71,7 +71,7 @@ class SectionHeaderTest extends TestCase
 
         self::assertIsString($html);
         self::assertSame(
-            Yii::t('skeleton', 'COMMON_MODEL_POSITION_TOTAL', [
+            Yii::t('skeleton', 'MODEL_POSITION_FORMAT', [
                 'model' => Yii::t('cms', 'COMMON_SECTION'),
                 'position' => 4,
                 'total' => 4,

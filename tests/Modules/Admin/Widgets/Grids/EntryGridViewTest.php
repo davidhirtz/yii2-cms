@@ -352,15 +352,15 @@ class EntryGridViewTest extends TestCase
 
             $html = Yii::$app->runAction('admin/cms/entry/index');
             self::assertIsString($html);
-            self::assertStringContainsString(Yii::t('skeleton', 'GRID_MISSING_TRANSLATIONS', ['languages' => 'DE']), $html);
-            self::assertStringContainsString('class="text-warning fas fa-exclamation-triangle" title="' . Yii::t('skeleton', 'GRID_MISSING_TRANSLATIONS', ['languages' => 'DE']), $html);
+            self::assertStringContainsString(Yii::t('skeleton', 'GRID_MISSING_TRANSLATIONS_TOOLTIP', ['languages' => 'DE']), $html);
+            self::assertStringContainsString('class="text-warning fas fa-exclamation-triangle" title="' . Yii::t('skeleton', 'GRID_MISSING_TRANSLATIONS_TOOLTIP', ['languages' => 'DE']), $html);
 
             $entry->setAttribute('description_de', 'Spitz');
             self::assertTrue($entry->save(), print_r($entry->getErrors(), true));
 
             $html = Yii::$app->runAction('admin/cms/entry/index');
             self::assertIsString($html);
-            self::assertStringNotContainsString(Yii::t('skeleton', 'GRID_MISSING_TRANSLATIONS', ['languages' => 'DE']), $html);
+            self::assertStringNotContainsString(Yii::t('skeleton', 'GRID_MISSING_TRANSLATIONS_TOOLTIP', ['languages' => 'DE']), $html);
             self::assertStringNotContainsString('text-warning', $html, 'Nothing missing on the page, no column.');
         } finally {
             Yii::$container->clear(Entry::class);

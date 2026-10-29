@@ -305,7 +305,7 @@ class EntryRelation extends ActiveRecord implements TrailModelInterface
 
     public function getAdminType(): string
     {
-        return Yii::t('skeleton', 'COMMON_RELATION');
+        return Yii::t('skeleton', 'RELATION_SINGULAR');
     }
 
     #[Override]
@@ -314,7 +314,7 @@ class EntryRelation extends ActiveRecord implements TrailModelInterface
         return [
             ...parent::attributeLabels(),
             'model_class' => Yii::t('cms', 'ENTRY_RELATION_MODEL_CLASS_LABEL'),
-            'model_id' => Yii::t('skeleton', 'COMMON_ID_LABEL'),
+            'model_id' => Yii::t('skeleton', 'MODEL_ID_LABEL'),
             'entry_id' => Yii::t('cms', 'ENTRY_RELATION_ENTRY_ID_LABEL'),
             'updated_at' => Yii::t('cms', 'ENTRY_RELATION_UPDATED_AT_LABEL'),
         ];
