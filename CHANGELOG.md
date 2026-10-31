@@ -1,4 +1,4 @@
-## Unreleased
+## 3.20.0 (October 31, 2026)
 
 - Added `assets` to the entries and sections of `setup`
 - Changed `setup` to the skeleton's command, with `Setup\CategorySeeder` and `Setup\EntrySeeder`; a key no seeder reads is refused
