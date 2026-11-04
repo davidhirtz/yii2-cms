@@ -161,6 +161,7 @@ class EntryQuery extends I18nActiveQuery
             'section_count',
             'entry_count',
             'updated_at',
+            'custom_attributes',
         ]))->andWhereCurrentTenant();
     }
 

@@ -89,6 +89,8 @@ return [
     'ENTRY_INDEX_CONFIRM' => 'Please confirm that you want to make this entry the new homepage. This will deactivate the current homepage entry.',
     'ENTRY_MENU_IDS_LABEL' => 'Menus',
     'ENTRY_MENU_IDS_PARENT_TOOLTIP' => 'Parent entry "{entry}" is not in this menu',
+    'ENTRY_NO_INDEX_HINT' => 'Leaves the entry out of the sitemap and asks search engines not to index it.',
+    'ENTRY_NO_INDEX_LABEL' => 'Hide from search engines',
     'ENTRY_ORDER_SUCCESS' => 'The entry order was changed.',
     'ENTRY_ORDER_TRAIL' => 'Entry order changed',
     'ENTRY_PARENT_ID_LABEL' => 'Parent entry',

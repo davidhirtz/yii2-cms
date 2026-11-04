@@ -89,6 +89,8 @@ return [
     'ENTRY_INDEX_CONFIRM' => 'Bitte bestätigen Sie, dass Sie diesen Eintrag zur neuen Startseite machen wollen. Der aktuelle Startseiten-Eintrag wird deaktiviert.',
     'ENTRY_MENU_IDS_LABEL' => 'Menüs',
     'ENTRY_MENU_IDS_PARENT_TOOLTIP' => 'Der übergeordnete Eintrag "{entry}" ist nicht in diesem Menü',
+    'ENTRY_NO_INDEX_HINT' => 'Lässt den Eintrag in der Sitemap weg und bittet Suchmaschinen, ihn nicht zu indexieren.',
+    'ENTRY_NO_INDEX_LABEL' => 'Vor Suchmaschinen verbergen',
     'ENTRY_ORDER_SUCCESS' => 'Die Reihenfolge der Einträge wurde geändert.',
     'ENTRY_ORDER_TRAIL' => 'Reihenfolge der Einträge geändert',
     'ENTRY_PARENT_ID_LABEL' => 'Übergeordneter Eintrag',

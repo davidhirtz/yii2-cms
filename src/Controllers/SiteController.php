@@ -75,6 +75,10 @@ class SiteController extends Controller
             return $response;
         }
 
+        if (!$entry->allowsIndexing()) {
+            $this->response->getHeaders()->set('X-Robots-Tag', 'noindex');
+        }
+
         $this->populateEntryRelations($entry);
 
         return $this->render($entry->getViewFile() ?? 'view', [

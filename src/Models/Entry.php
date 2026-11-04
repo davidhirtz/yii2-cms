@@ -7,6 +7,7 @@ namespace Hirtz\Cms\Models;
 use Hirtz\Cms\Models\Actions\DeletePermalinkRedirects;
 use Hirtz\Cms\Models\Actions\UpdateBlockSectionCounts;
 use Hirtz\Cms\Models\Actions\UpdateTenantEntryCount;
+use Hirtz\Cms\Models\CustomAttributes\NoIndexCustomAttribute;
 use Hirtz\Cms\Models\Menus\Menu;
 use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Models\Interfaces\EntryRelationModelInterface;
@@ -1045,6 +1046,17 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
     public function allowsSections(): bool
     {
         return static::getModule()->enableSections && ($this->getType()?->allowsSections() ?? true);
+    }
+
+    public function allowsIndexing(): bool
+    {
+        foreach ($this->getCustomAttributeDefinitions() as $definition) {
+            if ($definition instanceof NoIndexCustomAttribute && $this->getVisibleAttribute($definition->name)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public function hasInvalidParentStatus(): bool

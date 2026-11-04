@@ -97,6 +97,9 @@ An entry asset is the entry's preview image, so `EntryAsset` declares only the `
 `fetchpriority` custom attributes; section and block assets keep all of them. A project needing a caption or a link
 on an entry asset overrides `getDefaultCustomAttributes()` in its own subclass.
 
+`NoIndexCustomAttribute::make()` in an entry type's `customAttributes()` adds a checkbox that leaves the entry out of
+the sitemap and answers its page with `X-Robots-Tag: noindex`.
+
 Every type takes `name()`, `plural()`, `viewFile()`, `cssClass()`, `customAttributes()` and `hiddenFields()`.
 Per model:
 

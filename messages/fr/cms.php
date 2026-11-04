@@ -89,6 +89,8 @@ return [
     'ENTRY_INDEX_CONFIRM' => 'Confirmez que vous souhaitez faire de cette entrée la nouvelle page d’accueil. L’entrée actuellement utilisée comme page d’accueil sera désactivée.',
     'ENTRY_MENU_IDS_LABEL' => 'Menus',
     'ENTRY_MENU_IDS_PARENT_TOOLTIP' => 'L’entrée parente « {entry} » n’est pas dans ce menu',
+    'ENTRY_NO_INDEX_HINT' => 'Retire l’entrée du plan du site et demande aux moteurs de recherche de ne pas l’indexer.',
+    'ENTRY_NO_INDEX_LABEL' => 'Masquer aux moteurs de recherche',
     'ENTRY_ORDER_SUCCESS' => 'L’ordre des entrées a été modifié.',
     'ENTRY_ORDER_TRAIL' => 'Ordre des entrées modifié',
     'ENTRY_PARENT_ID_LABEL' => 'Entrée parente',

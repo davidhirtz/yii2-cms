@@ -11,18 +11,31 @@ namespace Hirtz\Cms\Tests\Controllers;
 use Hirtz\Cms\Controllers\SiteController;
 use Hirtz\Media\Models\Asset;
 use Hirtz\Cms\Models\Category;
+use Hirtz\Cms\Models\CustomAttributes\NoIndexCustomAttribute;
 use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Models\Types\EntryType;
 use Hirtz\Cms\Test\Fixtures\Traits\CmsFixtureTrait;
 use Hirtz\Cms\Test\TestCase;
+use Hirtz\Skeleton\Models\Definitions\DefinitionRegistry;
 use Hirtz\Skeleton\Models\User;
 use Hirtz\Skeleton\Test\Browser;
 use Hirtz\Skeleton\Test\Traits\FunctionalTestTrait;
+use Override;
 use Yii;
 
 final class SiteControllerFunctionalTest extends TestCase
 {
     use CmsFixtureTrait;
     use FunctionalTestTrait;
+
+    #[Override]
+    protected function tearDown(): void
+    {
+        Yii::$container->clear(Entry::class);
+        DefinitionRegistry::reset();
+
+        parent::tearDown();
+    }
 
     public function testHomepage(): void
     {
@@ -84,6 +97,30 @@ final class SiteControllerFunctionalTest extends TestCase
         $url = $urlManager->createAbsoluteUrl($asset->file->getUrl());
 
         self::assertStringContainsString('<link href="' . $url . '" rel="image_src">', $html);
+    }
+
+    public function testAnEntryHiddenFromSearchEnginesSendsNoindex(): void
+    {
+        Yii::$container->set(Entry::class, [
+            'types' => fn (): array => [
+                EntryType::make(Entry::TYPE_DEFAULT)
+                    ->name('Page')
+                    ->customAttributes([NoIndexCustomAttribute::make()]),
+            ],
+        ]);
+
+        DefinitionRegistry::reset();
+
+        $entry = Entry::findOne($this->getEntryFromFixture('page-enabled')->id);
+        self::assertNotNull($entry);
+
+        $entry->setAttribute('noindex', true);
+        self::assertSame(1, $entry->update());
+
+        $this->open(Yii::$app->getUrlManager()->createUrl($entry->getRoute() ?: []));
+
+        self::assertResponseIsSuccessful();
+        self::assertResponseHeaderSame('x-robots-tag', 'noindex');
     }
 
     public function testDraftEntry(): void

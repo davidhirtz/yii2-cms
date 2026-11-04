@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Tests\Sitemap;
 
+use Hirtz\Cms\Models\CustomAttributes\NoIndexCustomAttribute;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Sitemap\EntrySitemap;
+use Hirtz\Cms\Models\Types\EntryType;
 use Hirtz\Cms\Test\TestCase;
+use Hirtz\Skeleton\Models\Definitions\DefinitionRegistry;
 use Hirtz\Skeleton\Sitemap\Sitemap;
 use Override;
 use Yii;
@@ -28,6 +31,7 @@ class EntrySitemapTest extends TestCase
     {
         Yii::$container->clear(Entry::class);
         Entry::instance(true);
+        DefinitionRegistry::reset();
 
         parent::tearDown();
     }
@@ -47,6 +51,32 @@ class EntrySitemapTest extends TestCase
         self::assertSame('first', $urls[0]['loc']['slug']);
         self::assertNull($urls[0]['loc']['language']);
         self::assertNotEmpty($urls[0]['lastmod']);
+    }
+
+    public function testAnEntryHiddenFromSearchEnginesIsLeftOut(): void
+    {
+        Yii::$container->set(Entry::class, [
+            'types' => fn (): array => [
+                EntryType::make(Entry::TYPE_DEFAULT)
+                    ->name('Page')
+                    ->customAttributes([NoIndexCustomAttribute::make()]),
+            ],
+        ]);
+
+        DefinitionRegistry::reset();
+
+        $this->createEntry('First', 'first');
+        $hidden = $this->createEntry('Hidden', 'hidden');
+
+        self::assertTrue($hidden->allowsIndexing());
+
+        $hidden->setAttribute('noindex', true);
+        self::assertSame(1, $hidden->update());
+        self::assertFalse($hidden->allowsIndexing());
+
+        $urls = $this->createSitemap()->generateUrls();
+
+        self::assertSame(['first'], array_column(array_column($urls, 'loc'), 'slug'));
     }
 
     public function testThePageCountMatchesWhatIsGenerated(): void

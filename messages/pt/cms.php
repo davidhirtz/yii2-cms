@@ -89,6 +89,8 @@ return [
     'ENTRY_INDEX_CONFIRM' => 'Confirme que pretende tornar esta entrada a nova página inicial. A entrada atualmente definida como página inicial será desativada.',
     'ENTRY_MENU_IDS_LABEL' => 'Menus',
     'ENTRY_MENU_IDS_PARENT_TOOLTIP' => 'A entrada superior "{entry}" não está neste menu',
+    'ENTRY_NO_INDEX_HINT' => 'Retira a entrada do mapa do site e pede aos motores de pesquisa que não a indexem.',
+    'ENTRY_NO_INDEX_LABEL' => 'Ocultar dos motores de pesquisa',
     'ENTRY_ORDER_SUCCESS' => 'A ordem das entradas foi alterada.',
     'ENTRY_ORDER_TRAIL' => 'Ordem das entradas alterada',
     'ENTRY_PARENT_ID_LABEL' => 'Entrada superior',

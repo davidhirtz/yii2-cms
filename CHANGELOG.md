@@ -1,3 +1,7 @@
+## Unreleased
+
+- Added `NoIndexCustomAttribute` and `Entry::allowsIndexing()`
+
 ## 3.20.0 (October 31, 2026)
 
 - Added `assets` to the entries and sections of `setup`

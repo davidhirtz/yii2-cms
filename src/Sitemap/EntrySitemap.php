@@ -42,6 +42,15 @@ class EntrySitemap extends RecordSitemap
      * @param Entry $record
      */
     #[Override]
+    protected function getRecordUrls(ActiveRecord $record, ?string $language = null): array
+    {
+        return $record->allowsIndexing() ? parent::getRecordUrls($record, $language) : [];
+    }
+
+    /**
+     * @param Entry $record
+     */
+    #[Override]
     protected function getRecordUrl(ActiveRecord $record, array $route, ?string $language = null): array
     {
         return [
