@@ -68,10 +68,13 @@ class EntryType extends Type implements AssetModelTypeInterface
     }
 
     /**
-     * @param Closure(Entry, array<string, mixed>): (array<string, mixed>|Thing|null)|null $structuredData
+     * @template TEntry of Entry
+     * @param (Closure(TEntry, array<string, mixed>): (array<string, mixed>|Thing|null))|null $structuredData
      */
     public function structuredData(?Closure $structuredData): static
     {
+        // The container makes every record an instance of the application's class, which `TEntry` names
+        /** @var (Closure(Entry, array<string, mixed>): (array<string, mixed>|Thing|null))|null $structuredData */
         $this->structuredData = $structuredData;
         return $this;
     }

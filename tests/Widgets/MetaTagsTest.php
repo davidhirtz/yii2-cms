@@ -538,7 +538,7 @@ class StructuredDataTestEntry extends TestEntry
                     TextCustomAttribute::make('venue'),
                     TextCustomAttribute::make('address'),
                 ])
-                ->structuredData(fn (Entry $entry): Event => Event::make()
+                ->structuredData(fn (self $entry): Event => Event::make()
                     ->startDate($entry->publish_date)
                     ->endDate($entry->getVisibleAttribute('end_date'))
                     ->location($entry->getVisibleAttribute('venue'), $entry->getVisibleAttribute('address'))),

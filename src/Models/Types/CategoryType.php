@@ -37,10 +37,13 @@ class CategoryType extends Type
     }
 
     /**
-     * @param Closure(Category, array<string, mixed>): (array<string, mixed>|Thing|null)|null $structuredData
+     * @template TCategory of Category
+     * @param (Closure(TCategory, array<string, mixed>): (array<string, mixed>|Thing|null))|null $structuredData
      */
     public function structuredData(?Closure $structuredData): static
     {
+        // The container makes every record an instance of the application's class, which `TCategory` names
+        /** @var (Closure(Category, array<string, mixed>): (array<string, mixed>|Thing|null))|null $structuredData */
         $this->structuredData = $structuredData;
         return $this;
     }
