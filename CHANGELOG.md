@@ -1,4 +1,4 @@
-## Unreleased
+## 3.21.0 (November 6, 2026)
 
 - Added `NoIndexCustomAttribute` and `Entry::allowsIndexing()`
 
