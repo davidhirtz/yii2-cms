@@ -316,6 +316,17 @@ class CategoryControllerTest extends TestCase
         self::assertStringContainsString('value="Root category 1"', $html);
     }
 
+    public function testTheMetaDescriptionCountsItsCharacters(): void
+    {
+        $this->login();
+
+        $html = Yii::$app->runAction('admin/cms/category/update', ['id' => 1]);
+
+        self::assertIsString($html);
+        self::assertMatchesRegularExpression('/<textarea[^>]*name="Category\[description]"[^>]*data-character-counter/', $html);
+        self::assertStringContainsString('<span data-character-count>', $html);
+    }
+
     public function testUpdateSavesTheCategory(): void
     {
         $this->login();

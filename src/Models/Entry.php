@@ -1120,7 +1120,7 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
     {
         return [
             ...parent::attributeHints(),
-            'description' => Yii::t('cms', 'ENTRY_DESCRIPTION_HINT'),
+            'description' => Yii::t('cms', 'MODEL_META_DESCRIPTION_HINT'),
         ];
     }
 

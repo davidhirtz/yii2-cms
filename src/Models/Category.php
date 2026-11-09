@@ -119,6 +119,7 @@ class Category extends ActiveRecord implements SearchableInterface
             TextCustomAttribute::make('description')
                 ->multiline()
                 ->label(Yii::t('cms', 'CATEGORY_DESCRIPTION_LABEL'))
+                ->hint(Yii::t('cms', 'MODEL_META_DESCRIPTION_HINT'))
                 ->translatable($this->isTranslatableAttribute('description')),
         ];
     }
