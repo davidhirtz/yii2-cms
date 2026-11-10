@@ -45,6 +45,8 @@ permissions, granted to `admin` and `manager`, and the `author` role, which hold
 | `enableSections` | `true` | entries have sections |
 | `enableUrlRules` | `true` | register the two frontend URL rules |
 | `entryIndexSlug` | `'home'` | slug of the top-level entry served at `/`; `false` serves nothing there |
+| `entryLinkAriaLabels` | `true` | a resolved entry link whose text does not name its target gets an `aria-label` |
+| `entryReferenceModelClasses` | `Block`, `Entry`, `Section` | records `entry/references` rebuilds, beside the asset classes |
 | `entryRelations` | `BlockEntry`, `SectionEntry` | `Models\EntryRelation` subclasses, one per model that links entries |
 | `inheritNestedCategories` | `true` | an entry is also in the ancestors of its categories |
 | `menus` | `[]` | `Models\Menus\Menu` definitions, see below |
@@ -231,6 +233,8 @@ and sections, and the prompts `getting_started` (what the connected user can do,
 
 ## Console commands
 
+- `entry/references` — rebuilds `entry_reference`, the index of who links to an entry; needed once after the upgrade
+  and after writes outside `save()`
 - `permalink/rebuild` — rewrites every entry's permalinks, inserting the missing ones and deleting those of entries that
   no longer have a URL (after adding a language, for instance)
 
@@ -243,6 +247,34 @@ sections, grouped and wrapped as their types say; a section view reads content, 
 section; `Widgets\Artwork` and `Widgets\Gallery` render assets, and
 `Widgets\MetaTags` the page's meta tags, canonical link, hreflang links and its structured data (below). Saving any
 cms record invalidates the page cache (`Module::invalidatePageCache()`).
+
+### Entry links
+
+An editor picks an entry in TinyMCE's link dialog or in a link attribute; the value stores its id, `entry:12` (or
+`entry:12#anchor`), never a URL. `getVisibleAttribute()` resolves it when the page renders, in the language and on
+the host rendered, so a template echoes it as before:
+
+```php
+echo $section->getVisibleAttribute('content'); // <a href="/karriere">…</a>
+echo $asset->getVisibleAttribute('link'); // "/karriere", "https://…" as typed, or null
+```
+
+A target that is disabled, scheduled, deleted, without a URL in the language or on a disabled tenant renders as its
+text in HTML and as `null` for a link attribute; the stored value is never rewritten, so the link comes back with its
+target. A link whose text does not name its target ("Read more") gets an `aria-label` with it. The preload resolves
+every link of the page in the batch it loads related entries in; a list rendered outside it calls
+`Links\EntryLinks::preload($models)` first, and a template wanting the target itself reads
+`EntryLinks::getEntry($id)`.
+
+Declare a link with `Hirtz\Skeleton\Models\CustomAttributes\LinkCustomAttribute::make('link')`, which the cms maps to
+its own class through the container (`->types(…)`, `->anyTenant()`, `->entries(false)` narrow it). Traps:
+
+- A project class extending the skeleton's `HtmlCustomAttribute` or `LinkCustomAttribute`, or a container definition
+  of its own for them, gets no entry links: extend the `Hirtz\Cms\Models\CustomAttributes\` class instead. Always
+  `::make()`, never `new`.
+- HTML declared as a column, not a custom attribute, is not resolved: echo `EntryLinks::replaceHtml($html)`.
+- A group row reads through `$item->getVisibleAttribute('link')`, not `$item->link`.
+- A duplicated entry linking to its own children keeps linking to the originals.
 
 ### Tailwind
 
