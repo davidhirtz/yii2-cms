@@ -9,7 +9,6 @@ use Hirtz\Cms\Models\Collections\CategoryCollection;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\EntryRelation;
 use Hirtz\Cms\Models\Menus\Menu;
-use Hirtz\Cms\Models\Queries\EntryQuery;
 use Hirtz\Cms\Models\Sets\SectionSet;
 use Hirtz\Skeleton\Filters\PageCache;
 use Override;
@@ -272,16 +271,10 @@ class Module extends \Hirtz\Skeleton\Base\Module
 
     protected function findNextPublishTime(): ?int
     {
-        $query = Entry::find()
+        $date = Entry::find()
             ->select(['MIN([[publish_date]])'])
-            ->andWhere(['>=', 'status', Entry::STATUS_ENABLED])
-            ->andWhere(['>', 'publish_date', gmdate('Y-m-d H:i:s')]);
-
-        if ($types = EntryQuery::getUnscheduledTypes(Entry::class)) {
-            $query->andWhere(['not in', 'type', $types]);
-        }
-
-        $date = $query->scalar();
+            ->whereScheduled()
+            ->scalar();
 
         return is_string($date) ? (int)strtotime("$date UTC") : null;
     }

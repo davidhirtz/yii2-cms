@@ -131,6 +131,7 @@ class EntryGridView extends GridView
             $this->getTenantDropdown(),
             $this->getTypeDropdown(),
             $this->getCategoryDropdown(),
+            $this->getMissingDropdown(),
             $this->getSearchInput(),
         ];
 
@@ -231,6 +232,19 @@ class EntryGridView extends GridView
         return TypeFilterDropdown::make()
             ->model(Entry::instance())
             ->visible($this->showTypeDropdown);
+    }
+
+    /**
+     * Only while the filter is on, as the dashboard is the way in.
+     */
+    protected function getMissingDropdown(): ?Stringable
+    {
+        return $this->provider->missing !== null
+            ? FilterDropdown::make()
+                ->items([EntryActiveDataProvider::MISSING_DESCRIPTION => Yii::t('cms', 'ENTRY_MISSING_DESCRIPTION_LABEL')])
+                ->label(Yii::t('cms', 'ENTRY_MISSING_DESCRIPTION_LABEL'))
+                ->paramName('missing')
+            : null;
     }
 
     protected function getCategoryDropdown(): ?Stringable

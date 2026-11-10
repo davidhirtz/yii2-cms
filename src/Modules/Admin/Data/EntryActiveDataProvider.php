@@ -30,6 +30,8 @@ class EntryActiveDataProvider extends ActiveDataProvider
 {
     use ModuleTrait;
 
+    final public const string MISSING_DESCRIPTION = 'description';
+
     public ?int $tenantId = null;
     public ?Category $category = null;
     public ?Entry $parent = null;
@@ -37,6 +39,7 @@ class EntryActiveDataProvider extends ActiveDataProvider
     public ?int $type = null;
     public ?int $status = null;
     public ?string $searchString = null;
+    public ?string $missing = null;
     public bool $innerJoinRelatedModel = true;
 
     public function __construct($config = [])
@@ -125,6 +128,10 @@ class EntryActiveDataProvider extends ActiveDataProvider
             $this->query->matching($this->searchString);
         }
 
+        if ($this->missing === self::MISSING_DESCRIPTION) {
+            $this->query->whereMissingDescription();
+        }
+
         $this->query->withPermalinks();
     }
 
@@ -153,11 +160,12 @@ class EntryActiveDataProvider extends ActiveDataProvider
     }
 
     /**
-     * A text search is not limited to the scope of `entry`, and without a category order the descendant order applies.
+     * A text search or a missing filter is not limited to the scope of `entry`, and without a category order the
+     * descendant order applies.
      */
     protected function whereEntry(): void
     {
-        if ($this->searchString || $this->category) {
+        if ($this->searchString || $this->missing || $this->category) {
             return;
         }
 

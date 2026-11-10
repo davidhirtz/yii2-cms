@@ -1,3 +1,9 @@
+## Unreleased
+
+- Added the "scheduled" dashboard panel and a dashboard count of pages without a meta description
+- Added `EntryQuery::whereScheduled()`, `whereMissingDescription()` and the entry grid's `missing` filter
+- Changed the `davidhirtz/yii2-skeleton` requirement to `^3.27`
+
 ## 3.21.0 (November 6, 2026)
 
 - Added `NoIndexCustomAttribute` and `Entry::allowsIndexing()`

@@ -107,6 +107,49 @@ class EntryQuery extends I18nActiveQuery
     }
 
     /**
+     * Enabled entries with a page of their own whose meta description is empty in the source language, of the types
+     * that show the field.
+     */
+    public function whereMissingDescription(): static
+    {
+        $modelClass = $this->modelClass;
+        $table = $modelClass::tableName();
+
+        $this->andWhere(['>=', "$table.[[status]]", Entry::STATUS_ENABLED])
+            ->andWhere(['or', ['>', "$table.[[section_count]]", 0], ['>', "$table.[[entry_count]]", 0]])
+            ->andWhere(['or', ["$table.[[description]]" => null], ['=', "TRIM($table.[[description]])", '']]);
+
+        $types = [];
+
+        foreach ($modelClass::getTypeDefinitions() as $value => $type) {
+            if (in_array('description', $type->getHiddenFields(), true)) {
+                $types[] = (int)$value;
+            }
+        }
+
+        if ($types) {
+            $this->andWhere(['not in', "$table.[[type]]", $types]);
+        }
+
+        return $this;
+    }
+
+    public function whereScheduled(): static
+    {
+        $modelClass = $this->modelClass;
+        $table = $modelClass::tableName();
+
+        $this->andWhere(['>=', "$table.[[status]]", Entry::STATUS_ENABLED])
+            ->andWhere(['>', "$table.[[publish_date]]", gmdate('Y-m-d H:i:s')]);
+
+        if ($types = static::getUnscheduledTypes($modelClass)) {
+            $this->andWhere(['not in', "$table.[[type]]", $types]);
+        }
+
+        return $this;
+    }
+
+    /**
      * @param class-string<Entry> $modelClass
      * @return list<int>
      */
