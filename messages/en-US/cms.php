@@ -89,6 +89,8 @@ return [
     'ENTRY_MENU_IDS_LABEL' => 'Menus',
     'ENTRY_MENU_IDS_PARENT_TOOLTIP' => 'Parent entry "{entry}" is not in this menu',
     'ENTRY_MISSING_DESCRIPTION_LABEL' => 'Without meta description',
+    'ENTRY_MISSING_DESCRIPTION_LANGUAGE_LABEL' => 'Without meta description ({language})',
+    'ENTRY_MISSING_DESCRIPTION_LANGUAGE_TEXT' => '{count, plural, one{One page has} other{# pages have}} no meta description in {language}',
     'ENTRY_MISSING_DESCRIPTION_TEXT' => '{count, plural, one{One page has} other{# pages have}} no meta description',
     'ENTRY_NO_INDEX_HINT' => 'Leaves the entry out of the sitemap and asks search engines not to index it.',
     'ENTRY_NO_INDEX_LABEL' => 'Hide from search engines',

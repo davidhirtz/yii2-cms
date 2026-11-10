@@ -13,6 +13,7 @@ use Hirtz\Skeleton\Modules\Admin\Widgets\Panels\ContentHealthPanel;
 use Hirtz\Skeleton\Widgets\Navs\Nav;
 use Hirtz\Skeleton\Widgets\Panels\Dashboard;
 use Hirtz\Skeleton\Widgets\Panels\DashboardItem;
+use Hirtz\Tenant\Web\UrlManager;
 use Yii;
 
 /**
@@ -31,17 +32,8 @@ class Module extends \Hirtz\Skeleton\Base\Module implements ModuleInterface
     {
         $health = $dashboard->getPanel('health');
 
-        // Counted through the grid's own provider, so the number is what the link lists, tenant included.
         if ($health instanceof ContentHealthPanel) {
-            $health->addCheck(
-                'entry-description',
-                static fn (): int => Yii::$container->get(EntryActiveDataProvider::class, config: [
-                    'missing' => EntryActiveDataProvider::MISSING_DESCRIPTION,
-                ])->getTotalCount(),
-                static fn (int $count): string => Yii::t('cms', 'ENTRY_MISSING_DESCRIPTION_TEXT', ['count' => $count]),
-                ['/admin/cms/entry/index', 'missing' => EntryActiveDataProvider::MISSING_DESCRIPTION],
-                [Entry::AUTH_ENTRY],
-            );
+            $this->addDescriptionChecks($health);
         }
 
         return $dashboard->addItem(DashboardItem::make()
@@ -51,5 +43,51 @@ class Module extends \Hirtz\Skeleton\Base\Module implements ModuleInterface
             ->roles([Entry::AUTH_ENTRY])
             ->url(['/admin/cms/entry/create']))
             ->addPanel(ScheduledEntriesPanel::make()->order(20));
+    }
+
+    /**
+     * One check per language of the request's tenant, each counted through the grid's own provider, so the number is
+     * what the link lists.
+     */
+    protected function addDescriptionChecks(ContentHealthPanel $health): void
+    {
+        $languages = $this->getDescriptionLanguages();
+
+        foreach ($languages as $language) {
+            $health->addCheck(
+                "entry-description-$language",
+                static fn (): int => Yii::$container->get(EntryActiveDataProvider::class, config: [
+                    'language' => $language,
+                    'missing' => EntryActiveDataProvider::MISSING_DESCRIPTION,
+                ])->getTotalCount(),
+                count($languages) > 1
+                    ? static fn (int $count): string => Yii::t('cms', 'ENTRY_MISSING_DESCRIPTION_LANGUAGE_TEXT', [
+                        'count' => $count,
+                        'language' => Yii::$app->getI18n()->getLabel($language),
+                    ])
+                    : static fn (int $count): string => Yii::t('cms', 'ENTRY_MISSING_DESCRIPTION_TEXT', ['count' => $count]),
+                [
+                    '/admin/cms/entry/index',
+                    'missing' => EntryActiveDataProvider::MISSING_DESCRIPTION,
+                    'language' => $language !== Yii::$app->sourceLanguage ? $language : null,
+                ],
+                [Entry::AUTH_ENTRY],
+            );
+        }
+    }
+
+    /**
+     * @return list<string>
+     */
+    protected function getDescriptionLanguages(): array
+    {
+        $manager = Yii::$app->getUrlManager();
+        $tenant = $manager instanceof UrlManager ? $manager->tenant : null;
+        $languages = $tenant?->getAvailableLanguages() ?? Yii::$app->getI18n()->getLanguages();
+
+        return array_values(array_unique([
+            ...array_intersect([Yii::$app->sourceLanguage], $languages),
+            ...$languages,
+        ]));
     }
 }

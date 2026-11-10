@@ -1,5 +1,6 @@
 ## Unreleased
 
+- Added a language to `EntryQuery::whereMissingDescription()` and the entry grid's `missing` filter, and a dashboard count per language of the tenant
 - Fixed the raw HTML a section's shortened slug base URL showed
 - Added the "scheduled" dashboard panel and a dashboard count of pages without a meta description
 - Added `EntryQuery::whereScheduled()`, `whereMissingDescription()` and the entry grid's `missing` filter

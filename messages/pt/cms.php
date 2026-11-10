@@ -89,6 +89,8 @@ return [
     'ENTRY_MENU_IDS_LABEL' => 'Menus',
     'ENTRY_MENU_IDS_PARENT_TOOLTIP' => 'A entrada superior "{entry}" não está neste menu',
     'ENTRY_MISSING_DESCRIPTION_LABEL' => 'Sem meta descrição',
+    'ENTRY_MISSING_DESCRIPTION_LANGUAGE_LABEL' => 'Sem meta descrição ({language})',
+    'ENTRY_MISSING_DESCRIPTION_LANGUAGE_TEXT' => '{count, plural, one{Uma página não tem} other{# páginas não têm}} meta descrição em {language}',
     'ENTRY_MISSING_DESCRIPTION_TEXT' => '{count, plural, one{Uma página não tem} other{# páginas não têm}} meta descrição',
     'ENTRY_NO_INDEX_HINT' => 'Retira a entrada do mapa do site e pede aos motores de pesquisa que não a indexem.',
     'ENTRY_NO_INDEX_LABEL' => 'Ocultar dos motores de pesquisa',

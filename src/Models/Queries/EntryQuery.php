@@ -107,17 +107,18 @@ class EntryQuery extends I18nActiveQuery
     }
 
     /**
-     * Enabled entries with a page of their own whose meta description is empty in the source language, of the types
-     * that show the field.
+     * Enabled entries with a page of their own whose meta description is empty in the language (the source language
+     * by default), of the types that show the field.
      */
-    public function whereMissingDescription(): static
+    public function whereMissingDescription(?string $language = null): static
     {
         $modelClass = $this->modelClass;
         $table = $modelClass::tableName();
+        $column = $this->getI18nAttributeName('description', $language ?? Yii::$app->sourceLanguage);
 
         $this->andWhere(['>=', "$table.[[status]]", Entry::STATUS_ENABLED])
             ->andWhere(['or', ['>', "$table.[[section_count]]", 0], ['>', "$table.[[entry_count]]", 0]])
-            ->andWhere(['or', ["$table.[[description]]" => null], ['=', "TRIM($table.[[description]])", '']]);
+            ->andWhere("$column IS NULL OR TRIM($column) = ''");
 
         $types = [];
 

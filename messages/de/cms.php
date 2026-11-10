@@ -89,6 +89,8 @@ return [
     'ENTRY_MENU_IDS_LABEL' => 'Menüs',
     'ENTRY_MENU_IDS_PARENT_TOOLTIP' => 'Der übergeordnete Eintrag "{entry}" ist nicht in diesem Menü',
     'ENTRY_MISSING_DESCRIPTION_LABEL' => 'Ohne Meta-Beschreibung',
+    'ENTRY_MISSING_DESCRIPTION_LANGUAGE_LABEL' => 'Ohne Meta-Beschreibung ({language})',
+    'ENTRY_MISSING_DESCRIPTION_LANGUAGE_TEXT' => '{count, plural, one{Eine Seite hat} other{# Seiten haben}} keine Meta-Beschreibung auf {language}',
     'ENTRY_MISSING_DESCRIPTION_TEXT' => '{count, plural, one{Eine Seite hat} other{# Seiten haben}} keine Meta-Beschreibung',
     'ENTRY_NO_INDEX_HINT' => 'Lässt den Eintrag in der Sitemap weg und bittet Suchmaschinen, ihn nicht zu indexieren.',
     'ENTRY_NO_INDEX_LABEL' => 'Vor Suchmaschinen verbergen',

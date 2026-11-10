@@ -8,8 +8,10 @@ use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Types\EntryType;
 use Hirtz\Cms\Modules\Admin\Data\EntryActiveDataProvider;
 use Hirtz\Cms\Modules\Admin\Widgets\Panels\ScheduledEntriesPanel;
+use Hirtz\Cms\Test\Models\TestEntry;
 use Hirtz\Cms\Test\TestCase;
 use Hirtz\Skeleton\Db\DateTime;
+use Hirtz\Skeleton\Helpers\Html;
 use Hirtz\Skeleton\Helpers\Url;
 use Hirtz\Skeleton\Test\Traits\UserFixtureTrait;
 use Hirtz\Skeleton\Widgets\Panels\Dashboard;
@@ -110,12 +112,76 @@ class DashboardPanelsTest extends TestCase
         self::assertStringContainsString(Url::to(['/admin/cms/entry/index', 'missing' => 'description']), $html);
     }
 
+    public function testADescriptionMissingInOneLanguageIsCountedForThatLanguage(): void
+    {
+        $this->withGermanDescriptions(function (): void {
+            $this->login();
+
+            $entry = $this->createEntry('Translated later', description: 'Sharp Å 東京', sectionCount: 1);
+
+            self::assertNotContains($entry->id, $this->getMissingDescriptionIds());
+            self::assertContains($entry->id, $this->getMissingDescriptionIds('de'));
+
+            $html = Dashboard::make()->render();
+
+            self::assertStringContainsString(Yii::t('cms', 'ENTRY_MISSING_DESCRIPTION_LANGUAGE_TEXT', [
+                'count' => count($this->getMissingDescriptionIds('de')),
+                'language' => Yii::$app->getI18n()->getLabel('de'),
+            ]), $html);
+            self::assertStringContainsString(Html::encode(Url::to([
+                '/admin/cms/entry/index',
+                'missing' => 'description',
+                'language' => 'de',
+            ])), $html);
+
+            $entry->setAttribute('description_de', 'Spitz Mu' . "\u{308}" . 'ller 😀');
+            self::assertTrue($entry->save(), print_r($entry->getErrors(), true));
+
+            self::assertNotContains($entry->id, $this->getMissingDescriptionIds('de'));
+
+            $params = ['missing' => 'description', 'language' => 'de'];
+            $this->getWebRequest()->setQueryParams($params);
+
+            $html = Yii::$app->runAction('admin/cms/entry/index', $params);
+            self::assertIsString($html);
+            self::assertStringNotContainsString('Translated later', $html);
+            self::assertStringContainsString(Yii::t('cms', 'ENTRY_MISSING_DESCRIPTION_LANGUAGE_LABEL', [
+                'language' => Yii::$app->getI18n()->getLabel('de'),
+            ]), $html);
+        });
+    }
+
+    /**
+     * The query layer reads `i18nAttributes` off the shared instance(), so it has to be configured.
+     */
+    private function withGermanDescriptions(callable $test): void
+    {
+        Yii::$app->getI18n()->setLanguages(['en-US', 'de']);
+
+        Yii::$container->setDefinitions([
+            Entry::class => ['class' => TestEntry::class, 'i18nAttributes' => ['name', 'slug', 'description']],
+            TestEntry::class => ['i18nAttributes' => ['name', 'slug', 'description']],
+        ]);
+
+        Entry::instance(true);
+        TestEntry::instance(true);
+
+        try {
+            $test();
+        } finally {
+            Yii::$container->clear(Entry::class);
+            Yii::$container->clear(TestEntry::class);
+            Entry::instance(true);
+            TestEntry::instance(true);
+        }
+    }
+
     /**
      * @return list<int>
      */
-    private function getMissingDescriptionIds(): array
+    private function getMissingDescriptionIds(?string $language = null): array
     {
-        return array_values(array_map(intval(...), Entry::find()->whereMissingDescription()->select('id')->column()));
+        return array_values(array_map(intval(...), Entry::find()->whereMissingDescription($language)->select(Entry::tableName() . '.[[id]]')->column()));
     }
 
     private function createEntry(

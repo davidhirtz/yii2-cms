@@ -40,6 +40,7 @@ class EntryActiveDataProvider extends ActiveDataProvider
     public ?int $status = null;
     public ?string $searchString = null;
     public ?string $missing = null;
+    public ?string $language = null;
     public bool $innerJoinRelatedModel = true;
 
     public function __construct($config = [])
@@ -129,7 +130,7 @@ class EntryActiveDataProvider extends ActiveDataProvider
         }
 
         if ($this->missing === self::MISSING_DESCRIPTION) {
-            $this->query->whereMissingDescription();
+            $this->query->whereMissingDescription($this->language);
         }
 
         $this->query->withPermalinks();

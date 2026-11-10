@@ -239,12 +239,21 @@ class EntryGridView extends GridView
      */
     protected function getMissingDropdown(): ?Stringable
     {
-        return $this->provider->missing !== null
-            ? FilterDropdown::make()
-                ->items([EntryActiveDataProvider::MISSING_DESCRIPTION => Yii::t('cms', 'ENTRY_MISSING_DESCRIPTION_LABEL')])
-                ->label(Yii::t('cms', 'ENTRY_MISSING_DESCRIPTION_LABEL'))
-                ->paramName('missing')
-            : null;
+        if ($this->provider->missing === null) {
+            return null;
+        }
+
+        $label = $this->provider->language
+            ? Yii::t('cms', 'ENTRY_MISSING_DESCRIPTION_LANGUAGE_LABEL', [
+                'language' => Yii::$app->getI18n()->getLabel($this->provider->language),
+            ])
+            : Yii::t('cms', 'ENTRY_MISSING_DESCRIPTION_LABEL');
+
+        return FilterDropdown::make()
+            ->items([EntryActiveDataProvider::MISSING_DESCRIPTION => $label])
+            ->label($label)
+            ->params(['page' => null, 'language' => null])
+            ->paramName('missing');
     }
 
     protected function getCategoryDropdown(): ?Stringable

@@ -89,6 +89,8 @@ return [
     'ENTRY_MENU_IDS_LABEL' => 'Menus',
     'ENTRY_MENU_IDS_PARENT_TOOLTIP' => 'L’entrée parente « {entry} » n’est pas dans ce menu',
     'ENTRY_MISSING_DESCRIPTION_LABEL' => 'Sans méta description',
+    'ENTRY_MISSING_DESCRIPTION_LANGUAGE_LABEL' => 'Sans méta description ({language})',
+    'ENTRY_MISSING_DESCRIPTION_LANGUAGE_TEXT' => '{count, plural, one{Une page n’a} other{# pages n’ont}} pas de méta description en {language}',
     'ENTRY_MISSING_DESCRIPTION_TEXT' => '{count, plural, one{Une page n’a} other{# pages n’ont}} pas de méta description',
     'ENTRY_NO_INDEX_HINT' => 'Retire l’entrée du plan du site et demande aux moteurs de recherche de ne pas l’indexer.',
     'ENTRY_NO_INDEX_LABEL' => 'Masquer aux moteurs de recherche',
