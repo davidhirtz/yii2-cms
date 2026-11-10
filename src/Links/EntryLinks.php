@@ -11,10 +11,9 @@ use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Skeleton\Models\CustomAttributes\CustomAttributeGroupItem;
 use Hirtz\Skeleton\Models\CustomAttributes\GroupCustomAttribute;
 use Hirtz\Skeleton\Models\CustomAttributes\HtmlCustomAttribute;
-use Hirtz\Skeleton\Models\CustomAttributes\LinkCustomAttribute;
+use Hirtz\Cms\Models\CustomAttributes\LinkCustomAttribute;
 use Hirtz\Skeleton\Models\Interfaces\AdminModelInterface;
 use Hirtz\Skeleton\Models\Interfaces\CustomAttributeInterface;
-use Hirtz\Skeleton\Models\Interfaces\I18nAttributeInterface;
 use Hirtz\Skeleton\Web\User as WebUser;
 use Hirtz\Tenant\Models\Collections\TenantCollection;
 use Normalizer;
@@ -87,34 +86,60 @@ class EntryLinks
         $ids = [];
 
         foreach ($models as $model) {
-            if (!$model instanceof CustomAttributeInterface) {
-                continue;
-            }
+            $ids = [...$ids, ...array_keys(self::getReferenceCounts($model))];
+        }
 
-            foreach ($model->getCustomAttributeDefinitions() as $definition) {
-                $names = $model instanceof I18nAttributeInterface && $definition->isTranslatable()
-                    ? array_values($model->getI18nAttributeNames($definition->name))
-                    : [$definition->name];
+        return array_values(array_unique($ids));
+    }
 
-                foreach ($names as $name) {
-                    $value = $model->$name;
+    /**
+     * How often each attribute of the model names an entry, in every language; nested names are joined by `.`.
+     *
+     * @return array<int, array<string, int>>
+     */
+    public static function getReferenceCounts(Model $model): array
+    {
+        if (!$model instanceof CustomAttributeInterface) {
+            return [];
+        }
 
-                    if ($definition instanceof LinkCustomAttribute) {
-                        $link = self::parse($value);
+        $counts = [];
 
-                        if ($link !== null) {
-                            $ids[] = $link['id'];
+        foreach ($model->getCustomAttributeDefinitions() as $definition) {
+            foreach ($definition->getAttributeNames($model) as $name) {
+                $value = $model->$name;
+
+                if ($definition instanceof LinkCustomAttribute) {
+                    $link = $definition->allowsEntries() ? self::parse($value) : null;
+
+                    if ($link !== null) {
+                        $counts[$link['id']][$name] = ($counts[$link['id']][$name] ?? 0) + 1;
+                    }
+                } elseif ($definition instanceof HtmlCustomAttribute) {
+                    if (is_string($value) && str_contains($value, 'entry:')) {
+                        preg_match_all('/href="entry:([1-9]\d*)(?:#[^"]*)?"/', $value, $matches);
+
+                        foreach ($matches[1] as $id) {
+                            $counts[(int)$id][$name] = ($counts[(int)$id][$name] ?? 0) + 1;
                         }
-                    } elseif ($definition instanceof HtmlCustomAttribute) {
-                        $ids = [...$ids, ...self::findIds(is_string($value) ? $value : '')];
-                    } elseif ($definition instanceof GroupCustomAttribute) {
-                        $ids = [...$ids, ...self::findModelIds(array_values($model->getCustomAttributeItems($name)))];
+                    }
+                } elseif ($definition instanceof GroupCustomAttribute) {
+                    foreach ($model->getCustomAttributeItems($name) as $item) {
+                        foreach (self::getReferenceCounts($item) as $id => $itemCounts) {
+                            foreach ($itemCounts as $itemName => $count) {
+                                $counts[$id]["$name.$itemName"] = ($counts[$id]["$name.$itemName"] ?? 0) + $count;
+                            }
+                        }
                     }
                 }
             }
         }
 
-        return array_values(array_unique($ids));
+        foreach ($counts as &$attributeCounts) {
+            ksort($attributeCounts);
+        }
+
+        return $counts;
     }
 
     /**

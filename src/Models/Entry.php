@@ -58,6 +58,7 @@ use yii\db\Query;
  * @property int $entry_count
  * @property int $section_count
  * @property int $asset_count
+ * @property int $reference_count
  *
  * @property-read EntryAsset[] $assets
  * @property-read Permalink[] $permalinks
@@ -721,6 +722,23 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
     public function getCategoryIds(): array
     {
         return array_map(intval(...), $this->category_ids ?? []);
+    }
+
+    /**
+     * @return ActiveQuery<EntryReference>
+     */
+    public function getReferences(): ActiveQuery
+    {
+        return $this->hasMany(EntryReference::class, ['entry_id' => 'id']);
+    }
+
+    /**
+     * Who links here is no change to the entry, so `updated_at` (the sitemap's `lastmod`) stays.
+     */
+    public function updateReferenceCount(): int
+    {
+        $count = (int)$this->getReferences()->sum('use_count');
+        return $this->reference_count !== $count ? $this->updateAttributes(['reference_count' => $count]) : 0;
     }
 
     public function getCategoryCount(): int

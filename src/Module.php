@@ -86,6 +86,13 @@ class Module extends \Hirtz\Skeleton\Base\Module
     public bool $entryLinkAriaLabels = true;
 
     /**
+     * Rebuilt by `entry/references` beside the asset classes; the save keeps them current without it.
+     *
+     * @var list<class-string<\Hirtz\Skeleton\Db\ActiveRecord>>
+     */
+    public array $entryReferenceModelClasses = [];
+
+    /**
      * @var Closure(): array<mixed>|array<mixed>
      */
     private Closure|array $configuredSectionSets = [];
@@ -259,6 +266,17 @@ class Module extends \Hirtz\Skeleton\Base\Module
     /**
      * Cached under the page cache's tag, so a save recomputes it, and recomputed once the moment has passed.
      */
+    /**
+     * @return list<class-string<\Hirtz\Skeleton\Db\ActiveRecord>>
+     */
+    public function getEntryReferenceModelClasses(): array
+    {
+        $media = Yii::$app->getModule('media');
+        $assetClasses = $media instanceof \Hirtz\Media\Module ? $media->getAssetClasses() : [];
+
+        return array_values(array_unique([...$this->entryReferenceModelClasses, ...$assetClasses]));
+    }
+
     public function getNextPublishTime(): ?int
     {
         $cache = $this->getCache();

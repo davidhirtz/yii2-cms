@@ -10,6 +10,8 @@
 - Changed the skeleton's `HtmlCustomAttribute` and `LinkCustomAttribute` to resolve to the cms subclasses through the container
 - Added an entry picker to TinyMCE's link dialog and to a link attribute
 - Added `Module::$entryLinkAriaLabels`
+- Added `entry_reference`, `Entry::$reference_count`, `Module::$entryReferenceModelClasses` and the `entry/references` command
+- Added the records linking or listing an entry to its delete warning and a "used in" tab
 
 ## 3.21.0 (November 6, 2026)
 

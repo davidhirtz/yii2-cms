@@ -17,6 +17,7 @@ use Hirtz\Cms\Models\Collections\MenuCollection;
 use Hirtz\Cms\Widgets\Artwork;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\EntryAsset;
+use Hirtz\Cms\Models\Events\EntryReferenceEventHandler;
 use Hirtz\Cms\Models\Events\TenantAfterSaveEventHandler;
 use Hirtz\Cms\Models\Events\TenantBeforeDeleteEventHandler;
 use Hirtz\Cms\Models\Section;
@@ -39,6 +40,7 @@ use Hirtz\Tenant\Modules\Admin\Widgets\Grids\TenantGridView;
 use Override;
 use Yii;
 use yii\base\ModelEvent;
+use yii\db\AfterSaveEvent;
 use yii\db\BaseActiveRecord;
 use yii\i18n\PhpMessageSource;
 
@@ -169,6 +171,11 @@ class Bootstrap implements ConfigBootstrapInterface
                 ],
                 'cms' => [
                     'class' => Module::class,
+                    'entryReferenceModelClasses' => [
+                        Block::class,
+                        Entry::class,
+                        Section::class,
+                    ],
                     'entryRelations' => [
                         BlockEntry::class,
                         SectionEntry::class,
@@ -201,6 +208,7 @@ class Bootstrap implements ConfigBootstrapInterface
         // In `bootstrap()`, not the default config: a web application must not route to a console controller
         if ($app instanceof ConsoleApplication) {
             $app->controllerMap['permalink'] ??= Console\Controllers\PermalinkController::class;
+            $app->controllerMap['entry'] ??= Console\Controllers\EntryController::class;
         }
 
         Artwork::reset();
@@ -211,6 +219,7 @@ class Bootstrap implements ConfigBootstrapInterface
         $this->addDefaultUrlRules();
         $this->addTenantEventHandlers();
         $this->addPageCacheEventHandlers();
+        $this->addEntryReferenceEventHandlers();
 
         DashboardController::addRoles(static fn (): array => [
             Entry::AUTH_ENTRY,
@@ -219,6 +228,24 @@ class Bootstrap implements ConfigBootstrapInterface
 
         $app->setMigrationNamespace('Hirtz\Cms\Migrations');
 
+    }
+
+    protected function addEntryReferenceEventHandlers(): void
+    {
+        foreach ([BaseActiveRecord::EVENT_AFTER_INSERT, BaseActiveRecord::EVENT_AFTER_UPDATE] as $name) {
+            EventHelper::on(
+                ActiveRecord::class,
+                $name,
+                EntryReferenceEventHandler::handleAfterSave(...),
+                AfterSaveEvent::class,
+            );
+        }
+
+        EventHelper::on(
+            ActiveRecord::class,
+            BaseActiveRecord::EVENT_AFTER_DELETE,
+            EntryReferenceEventHandler::handleAfterDelete(...),
+        );
     }
 
     /**

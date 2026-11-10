@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Modules\Admin\Widgets\Navs;
 
 use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Models\EntryRelation;
 use Hirtz\Cms\Models\EntryAsset;
 use Hirtz\Cms\Modules\Admin\Module;
 use Hirtz\Cms\Modules\ModuleTrait;
@@ -64,6 +65,7 @@ class EntrySubmenu extends Submenu
             subentries: $this->getSubentriesItem(),
             categories: $this->getEntryCategoriesItem(),
             sections: $this->getEntrySectionsItem(),
+            references: $this->getReferencesItem(),
         );
 
         $this->backUrl ??= $this->getAdminBackUrl($this->model);
@@ -121,5 +123,27 @@ class EntrySubmenu extends Submenu
             ->badge($this->model->section_count)
             ->addRoute('admin/cms/section/')
             ->visible($this->showEntrySections);
+    }
+
+    /**
+     * Links and listings, shown while either exists.
+     */
+    protected function getReferencesItem(): ?NavItem
+    {
+        if (!$this->webuser->can(Entry::AUTH_ENTRY)) {
+            return null;
+        }
+
+        $count = $this->model->reference_count
+            + (int)EntryRelation::find()->where(['entry_id' => $this->model->id])->count();
+
+        return $count
+            ? NavItem::make()
+                ->badge($count)
+                ->icon('link')
+                ->label(Yii::t('cms', 'ENTRY_REFERENCE_PLURAL'))
+                ->addRoute('admin/cms/entry-reference')
+                ->url(['/admin/cms/entry-reference/index', 'entry' => $this->model->id])
+            : null;
     }
 }
