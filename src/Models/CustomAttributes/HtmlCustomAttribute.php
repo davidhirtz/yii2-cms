@@ -40,10 +40,10 @@ class HtmlCustomAttribute extends \Hirtz\Skeleton\Models\CustomAttributes\HtmlCu
     public function createField(Model $owner): Field
     {
         $field = parent::createField($owner);
-        $route = EntryLinks::getPickerRoute($owner);
+        $route = EntryLinks::getDialogRoute($owner);
 
         return $field instanceof TinyMceField && $route !== null
-            ? $field->linkPickerUrl($route)->linkPickerTitle(EntryLinks::getPickerTitle())
+            ? $field->linkDialogUrl($route)
             : $field;
     }
 

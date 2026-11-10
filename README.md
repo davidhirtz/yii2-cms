@@ -250,7 +250,8 @@ cms record invalidates the page cache (`Module::invalidatePageCache()`).
 
 ### Entry links
 
-An editor picks an entry in TinyMCE's link dialog or in a link attribute; the value stores its id, `entry:12` (or
+An editor picks an entry in TinyMCE's link dialog or in a link attribute, both suggesting entries while typing (a name,
+or a path starting with `/`) and keeping anything else as a typed URL; the value stores its id, `entry:12` (or
 `entry:12#anchor`), never a URL. `getVisibleAttribute()` resolves it when the page renders, in the language and on
 the host rendered, so a template echoes it as before:
 

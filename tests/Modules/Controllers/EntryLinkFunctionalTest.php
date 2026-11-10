@@ -68,10 +68,11 @@ class EntryLinkFunctionalTest extends TestCase
         self::assertResponseIsSuccessful();
 
         self::assertStringContainsString('&lt;a href="entry:1#team"&gt;', $this->getResponseContent());
-        self::assertStringContainsString('linkPickerUrl', $this->getResponseContent());
+        self::assertStringContainsString('linkDialogUrl', $this->getResponseContent());
         self::assertInputValueSame('Section[link]', 'entry:1');
-        self::assertSelectorExists('button[data-picker][data-picker-input]');
-        self::assertSelectorTextContains('.form-hint', 'Test Page – Enabled');
+        self::assertSelectorExists('[data-link-field] .link-field-input[hidden] input[name="Section[link]"][hx-get]');
+        self::assertSelectorTextContains('.link-field-selected:not([hidden]) [data-link-field-text]', 'Test Page – Enabled');
+        self::assertSelectorTextContains('.link-field-selected [data-link-field-description]', '/test-1');
 
         $this->submit('form', ['Section[status]' => (string)TestSection::STATUS_DRAFT]);
         self::assertResponseIsSuccessful();
@@ -83,22 +84,66 @@ class EntryLinkFunctionalTest extends TestCase
         self::assertSame('entry:1', $section->link);
     }
 
-    public function testThePickerListsEntriesWithTheirUrl(): void
+    public function testTheSuggestionsMatchANameOrAPath(): void
     {
-        $this->open('/admin/cms/entry-link/index?tenant=1');
+        $this->open('/admin/cms/entry-link/index?tenant=1&q=' . urlencode('Test Page'));
         self::assertResponseIsSuccessful();
 
-        self::assertSelectorExists('#picker #entry-link-grid-view');
-        self::assertSelectorExists('#picker [data-picker-value="entry:1"][data-picker-title="Test Page – Enabled"]');
-        self::assertSelectorTextContains('#picker', '/test-1');
+        self::assertSelectorExists('#autocomplete-options [data-autocomplete-value="entry:1"][data-autocomplete-text="Test Page – Enabled"]');
+        self::assertSelectorExists('#autocomplete-options [data-autocomplete-value="entry:1"][data-autocomplete-description="/test-1"]');
+
+        $this->open('/admin/cms/entry-link/index?tenant=1&q=' . urlencode('/test-1'));
+        self::assertSelectorExists('#autocomplete-options [data-autocomplete-value="entry:1"]');
     }
 
-    public function testThePickerOffersOnlyTheTypesTheAttributeAllows(): void
+    public function testAUrlGetsNoSuggestions(): void
     {
-        $this->open('/admin/cms/entry-link/index?tenant=1&types=' . TestEntry::TYPE_POST);
+        foreach (['https://www.example.com/', 'mailto:å@example.com', '#team', '?q=東京', 'Nothing like this 🚀'] as $q) {
+            $this->open('/admin/cms/entry-link/index?tenant=1&q=' . urlencode($q));
+            self::assertResponseIsSuccessful();
+            self::assertSame('', trim((string)self::$client->getResponse()->getContent()), $q);
+        }
+    }
+
+    public function testTheSuggestionsOfferOnlyTheTypesTheAttributeAllows(): void
+    {
+        $this->open('/admin/cms/entry-link/index?tenant=1&q=Test&types=' . TestEntry::TYPE_POST);
         self::assertResponseIsSuccessful();
 
-        self::assertSelectorNotExists('[data-picker-value="entry:1"]');
+        self::assertSelectorNotExists('[data-autocomplete-value="entry:1"]');
+    }
+
+    public function testTheDialogIsFilledWithTheLinkItEdits(): void
+    {
+        $this->open('/admin/cms/entry-link/dialog?' . http_build_query([
+            'tenant' => 1,
+            'href' => 'entry:1#team',
+            'text' => 'Ågot 東京 🚀',
+            'title' => 'Mu' . "\u{308}" . 'ller',
+            'target' => '_blank',
+            'class' => 'btn',
+            'classes' => json_encode(['' => 'None', 'btn' => 'Button']),
+        ]));
+
+        self::assertResponseIsSuccessful();
+
+        self::assertSelectorExists('form#link-dialog[data-link-dialog]');
+        self::assertInputValueSame('href', 'entry:1#team');
+        self::assertInputValueSame('text', 'Ågot 東京 🚀');
+        self::assertInputValueSame('title', 'Mu' . "\u{308}" . 'ller');
+        self::assertSelectorExists('#link-dialog input[name="target"][value="_blank"][checked]');
+        self::assertSelectorExists('#link-dialog select[name="class"] option[value="btn"][selected]');
+        self::assertSelectorTextContains('#link-dialog .link-field-selected [data-link-field-text]', 'Test Page – Enabled');
+    }
+
+    public function testTheDialogOffersNoStyleWithoutClasses(): void
+    {
+        $this->open('/admin/cms/entry-link/dialog?tenant=1&href=' . urlencode('https://www.example.com/'));
+        self::assertResponseIsSuccessful();
+
+        self::assertSelectorNotExists('#link-dialog select[name="class"]');
+        self::assertSelectorExists('#link-dialog .link-field-selected[hidden]');
+        self::assertInputValueSame('href', 'https://www.example.com/');
     }
 
     private function getResponseContent(): string

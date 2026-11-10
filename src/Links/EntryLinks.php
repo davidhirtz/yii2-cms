@@ -13,7 +13,9 @@ use Hirtz\Skeleton\Models\CustomAttributes\GroupCustomAttribute;
 use Hirtz\Skeleton\Models\CustomAttributes\HtmlCustomAttribute;
 use Hirtz\Cms\Models\CustomAttributes\LinkCustomAttribute;
 use Hirtz\Skeleton\Models\Interfaces\AdminModelInterface;
+use Hirtz\Skeleton\Helpers\Url;
 use Hirtz\Skeleton\Models\Interfaces\CustomAttributeInterface;
+use Hirtz\Skeleton\Widgets\Forms\Fields\LinkField;
 use Hirtz\Skeleton\Web\User as WebUser;
 use Hirtz\Tenant\Models\Collections\TenantCollection;
 use Normalizer;
@@ -348,14 +350,13 @@ class EntryLinks
     }
 
     /**
-     * The entry picker, opening on the tenant of the record the link is made in; `null` for a user who may not open
-     * it.
+     * Entries suggested on the tenant of the record the link is made in; `null` for a user who may not open them.
      *
      * @param list<int> $types
      * @return array<int|string, mixed>|null
      * @see \Hirtz\Cms\Modules\Admin\Controllers\EntryLinkController::actionIndex()
      */
-    public static function getPickerRoute(Model $owner, array $types = [], bool $anyTenant = false, ?string $language = null): ?array
+    public static function getSuggestionRoute(Model $owner, array $types = [], bool $anyTenant = false, ?string $language = null): ?array
     {
         $user = WebUser::current();
 
@@ -372,11 +373,6 @@ class EntryLinks
             'anyTenant' => $anyTenant || $tenantId === null ? 1 : null,
             'language' => $language,
         ], static fn (mixed $value): bool => $value !== null);
-    }
-
-    public static function getPickerTitle(): string
-    {
-        return Yii::t('cms', 'ENTRY_LINK_PICKER_TITLE');
     }
 
     /**
@@ -421,16 +417,81 @@ class EntryLinks
     }
 
     /**
-     * Name and URL, which tell apart the "Home" of several tenants and two "Contact" pages of one.
+     * Suggests entries from `$route` and shows a picked one by its name, in a link attribute and in the editor's dialog.
+     *
+     * @param array<int|string, mixed>|null $route
      */
-    public static function getAdminLabel(Entry $entry, ?int $tenantId, ?string $language = null): string
+    public static function configureField(LinkField $field, mixed $value, ?array $route, ?int $tenantId, ?string $language): LinkField
+    {
+        if ($route !== null) {
+            $field->url($route);
+
+            if ($field->getAttribute('placeholder') === null) {
+                $field->placeholder(Yii::t('cms', 'ENTRY_LINK_PLACEHOLDER'));
+            }
+        }
+
+        $link = self::parse($value);
+
+        if ($link === null) {
+            return $field;
+        }
+
+        $entry = self::findAdminEntry($link['id']);
+
+        return $entry
+            ? $field->selected(
+                self::getAdminName($entry, $language),
+                self::getAdminDescription($entry, $tenantId, $language),
+                self::getAdminUrl($entry),
+            )
+            : $field->selected(Yii::t('cms', 'ENTRY_LINK_MISSING_TEXT'), self::SCHEME . ':' . $link['id']);
+    }
+
+    /**
+     * The editor's link dialog, on the tenant of the record the HTML belongs to.
+     *
+     * @return array<int|string, mixed>|null
+     * @see \Hirtz\Cms\Modules\Admin\Controllers\EntryLinkController::actionDialog()
+     */
+    public static function getDialogRoute(Model $owner): ?array
+    {
+        $route = self::getSuggestionRoute($owner);
+
+        if ($route === null) {
+            return null;
+        }
+
+        $route[0] = '/admin/cms/entry-link/dialog';
+        return $route;
+    }
+
+    public static function getAdminName(Entry $entry, ?string $language = null): string
+    {
+        $name = $entry->getI18nAttribute('name', $language ?? Yii::$app->getI18n()->getContentLanguage(), true);
+        return (string)$name ?: Yii::t('cms', 'MODEL_UNTITLED_TEXT');
+    }
+
+    /**
+     * The URL, which tells apart the "Home" of several tenants and two "Contact" pages of one; the type without one.
+     */
+    public static function getAdminDescription(Entry $entry, ?int $tenantId, ?string $language = null): string
     {
         $language ??= Yii::$app->getI18n()->getContentLanguage();
 
-        return Yii::$app->getI18n()->callback($language, static function () use ($entry, $tenantId): string {
-            $name = (string)$entry->getI18nAttribute('name', null, true) ?: Yii::t('cms', 'MODEL_UNTITLED_TEXT');
-            return $name . ' — ' . (self::getDisplayUrl($entry, $tenantId) ?? $entry->getTypeName());
-        });
+        return Yii::$app->getI18n()->callback(
+            $language,
+            static fn (): string => self::getDisplayUrl($entry, $tenantId) ?? $entry->getTypeName(),
+        );
+    }
+
+    /**
+     * The entry's admin page, `null` for a user who may not open it.
+     */
+    public static function getAdminUrl(Entry $entry): ?string
+    {
+        $route = $entry->getAdminRoute();
+        return $route && WebUser::current()?->can(Entry::AUTH_ENTRY) ? Url::to($route) : null;
     }
 
     /**

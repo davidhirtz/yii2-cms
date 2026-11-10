@@ -8,12 +8,10 @@ use Hirtz\Cms\Links\EntryLinks;
 use Closure;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\Queries\EntryQuery;
-use Hirtz\Skeleton\Helpers\Url;
 use Hirtz\Skeleton\Models\CustomAttributes\CustomAttributeGroupItem;
 use Hirtz\Skeleton\Models\Interfaces\CustomAttributeInterface;
-use Hirtz\Skeleton\Widgets\Buttons\Button;
 use Hirtz\Skeleton\Widgets\Forms\Fields\Field;
-use Hirtz\Skeleton\Widgets\Forms\Fields\InputField;
+use Hirtz\Skeleton\Widgets\Forms\Fields\LinkField;
 use Override;
 use Stringable;
 use Yii;
@@ -189,51 +187,21 @@ class LinkCustomAttribute extends \Hirtz\Skeleton\Models\CustomAttributes\LinkCu
     {
         $field = parent::createField($owner);
 
-        if (!$this->entries || !$field instanceof InputField) {
+        if (!$this->entries || !$field instanceof LinkField) {
             return $field;
         }
 
-        return $field->prepare(function (InputField $field) use ($owner): InputField {
-            $route = EntryLinks::getPickerRoute($owner, $this->types, $this->anyTenant, $field->getLanguage());
-
-            if ($route === null) {
-                return $field;
-            }
-
+        return $field->prepare(function (LinkField $field) use ($owner): void {
             $property = (string)$field->getProperty();
-            $link = EntryLinks::parse($field->getModel()?->$property);
-            $entry = $link !== null ? EntryLinks::findAdminEntry($link['id']) : null;
 
-            if ($link !== null) {
-                $field->hint($entry
-                    ? EntryLinks::getAdminLabel($entry, EntryLinks::findTenantId($owner), $field->getLanguage())
-                    : Yii::t('cms', 'ENTRY_LINK_MISSING_TEXT'));
-            }
-
-            return $field->append(
-                $this->getPickerButton($field, $route),
-                ...$field->getAppend(),
+            EntryLinks::configureField(
+                $field,
+                $field->getModel()?->$property,
+                EntryLinks::getSuggestionRoute($owner, $this->types, $this->anyTenant, $field->getLanguage()),
+                EntryLinks::findTenantId($owner),
+                $field->getLanguage(),
             );
         });
-    }
-
-    /**
-     * @param array<int|string, mixed> $route
-     */
-    protected function getPickerButton(InputField $field, array $route): Stringable
-    {
-        $label = EntryLinks::getPickerTitle();
-
-        return Button::make()
-            ->class('btn')
-            ->type('button')
-            ->icon('link')
-            ->tooltip($label)
-            ->attribute('aria-label', $label)
-            ->attribute('data-picker', Url::to($route))
-            ->attribute('data-picker-title', $label)
-            ->attribute('data-picker-input', $field->getId())
-            ->attribute('data-picker-label', $field->getId() . '-hint');
     }
 
     /**

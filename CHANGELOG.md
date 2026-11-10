@@ -8,7 +8,7 @@
 - Changed the `davidhirtz/yii2-skeleton` requirement to `^3.27`
 - Added entry links: `entry:12` in HTML and in a `LinkCustomAttribute`, resolved by `getVisibleAttribute()` through `Links\EntryLinks`
 - Changed the skeleton's `HtmlCustomAttribute` and `LinkCustomAttribute` to resolve to the cms subclasses through the container
-- Added an entry picker to TinyMCE's link dialog and to a link attribute
+- Added entry suggestions to a link attribute and to the editor's link dialog
 - Added `Module::$entryLinkAriaLabels`
 - Added `entry_reference`, `Entry::$reference_count`, `Module::$entryReferenceModelClasses` and the `entry/references` command
 - Added the records linking or listing an entry to its delete warning and a "used in" tab
