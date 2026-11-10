@@ -53,6 +53,8 @@ return [
     'CATEGORY_SINGULAR' => 'Kategorie',
     'CATEGORY_SLUG_LABEL' => 'Url',
     'CATEGORY_TITLE_LABEL' => 'Meta-Titel',
+    'CATEGORY_UNUSED_LABEL' => 'Ohne Einträge',
+    'CATEGORY_UNUSED_TEXT' => '{count, plural, one{Eine Kategorie hat} other{# Kategorien haben}} keine Einträge',
     'CATEGORY_UPDATE_SUCCESS' => 'Die Kategorie wurde aktualisiert.',
     'ENTRY_ASSET_COPY_TOOLTIP' => 'Dateiverknüpfung in diesen Eintrag kopieren',
     'ENTRY_ASSET_ENTRIES_HINT' => 'Den Eintrag wählen, in den eine Kopie dieser Dateiverknüpfung soll. Die Kopie behält ihre Texte und startet als Entwurf.',

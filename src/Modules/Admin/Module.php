@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Modules\Admin;
 
+use Hirtz\Cms\Models\Category;
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Modules\Admin\Data\EntryActiveDataProvider;
 use Hirtz\Cms\Modules\Admin\Widgets\Navs\CmsNavItem;
@@ -34,6 +35,16 @@ class Module extends \Hirtz\Skeleton\Base\Module implements ModuleInterface
 
         if ($health instanceof ContentHealthPanel) {
             $this->addDescriptionChecks($health);
+
+            if (Entry::getModule()->enableCategories) {
+                $health->addCheck(
+                    'category-unused',
+                    static fn (): int => (int)Category::find()->whereUnused()->count(),
+                    static fn (int $count): string => Yii::t('cms', 'CATEGORY_UNUSED_TEXT', ['count' => $count]),
+                    ['/admin/cms/category/index', 'unused' => 1],
+                    [Category::AUTH_CATEGORY],
+                );
+            }
         }
 
         return $dashboard->addItem(DashboardItem::make()

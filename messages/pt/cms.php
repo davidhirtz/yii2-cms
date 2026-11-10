@@ -53,6 +53,8 @@ return [
     'CATEGORY_SINGULAR' => 'Categoria',
     'CATEGORY_SLUG_LABEL' => 'Url',
     'CATEGORY_TITLE_LABEL' => 'Meta título',
+    'CATEGORY_UNUSED_LABEL' => 'Sem entradas',
+    'CATEGORY_UNUSED_TEXT' => '{count, plural, one{Uma categoria não tem} other{# categorias não têm}} entradas',
     'CATEGORY_UPDATE_SUCCESS' => 'A categoria foi atualizada.',
     'ENTRY_ASSET_COPY_TOOLTIP' => 'Copiar recurso para esta entrada',
     'ENTRY_ASSET_ENTRIES_HINT' => 'Escolha a entrada para onde deve ir uma cópia deste recurso. A cópia mantém os seus textos e começa como rascunho.',

@@ -29,6 +29,7 @@ class CategoryActiveDataProvider extends ActiveDataProvider
     public ?string $searchString = null;
     public bool $showNestedCategories = true;
     public ?int $type = null;
+    public bool $unused = false;
 
     #[Override]
     public function init(): void
@@ -49,9 +50,16 @@ class CategoryActiveDataProvider extends ActiveDataProvider
             );
         }
 
+        if ($this->unused) {
+            $this->query->whereUnused();
+            $this->parent = null;
+        }
+
         if ($this->searchString) {
             $this->query->matching($this->searchString);
             $this->parent = null;
+        } elseif ($this->unused) {
+            return;
         } elseif ($this->entry) {
             if ($this->showNestedCategories) {
                 if ($this->parent) {

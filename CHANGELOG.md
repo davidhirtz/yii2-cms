@@ -1,5 +1,6 @@
 ## Unreleased
 
+- Added `CategoryQuery::whereUnused()`, the category grid's `unused` filter and a dashboard count of categories without entries
 - Added a language to `EntryQuery::whereMissingDescription()` and the entry grid's `missing` filter, and a dashboard count per language of the tenant
 - Fixed the raw HTML a section's shortened slug base URL showed
 - Added the "scheduled" dashboard panel and a dashboard count of pages without a meta description

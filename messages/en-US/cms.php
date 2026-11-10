@@ -53,6 +53,8 @@ return [
     'CATEGORY_SINGULAR' => 'Category',
     'CATEGORY_SLUG_LABEL' => 'Url',
     'CATEGORY_TITLE_LABEL' => 'Meta title',
+    'CATEGORY_UNUSED_LABEL' => 'Without entries',
+    'CATEGORY_UNUSED_TEXT' => '{count, plural, one{One category has} other{# categories have}} no entries',
     'CATEGORY_UPDATE_SUCCESS' => 'The category was updated.',
     'ENTRY_ASSET_COPY_TOOLTIP' => 'Copy asset to this entry',
     'ENTRY_ASSET_ENTRIES_HINT' => 'Pick the entry a copy of this asset should go to. The copy keeps its texts and starts as a draft.',

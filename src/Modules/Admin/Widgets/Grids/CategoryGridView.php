@@ -18,6 +18,7 @@ use Hirtz\Skeleton\Widgets\Grids\Columns\MissingTranslationsColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\RelativeTimeColumn;
 use Hirtz\Skeleton\Widgets\Grids\GridView;
 use Hirtz\Skeleton\Widgets\Grids\GridSummary;
+use Hirtz\Skeleton\Widgets\Grids\Toolbars\FilterDropdown;
 use Override;
 use Yii;
 use Stringable;
@@ -57,6 +58,7 @@ class CategoryGridView extends GridView
         $this->reorderRoute = ['reorder', 'id' => $this->provider->parent->id ?? null];
 
         $this->header ??= [
+            $this->getUnusedDropdown(),
             $this->getSearchInput(),
         ];
 
@@ -72,6 +74,28 @@ class CategoryGridView extends GridView
         ];
 
         parent::configure();
+    }
+
+    /**
+     * Only while the filter is on, as the dashboard is the way in.
+     */
+    protected function getUnusedDropdown(): ?Stringable
+    {
+        return $this->provider->unused
+            ? FilterDropdown::make()
+                ->items([1 => Yii::t('cms', 'CATEGORY_UNUSED_LABEL')])
+                ->label(Yii::t('cms', 'CATEGORY_UNUSED_LABEL'))
+                ->paramName('unused')
+            : null;
+    }
+
+    /**
+     * A filtered list mixes levels, which a reorder would renumber as one.
+     */
+    #[Override]
+    protected function isReorderable(): bool
+    {
+        return !$this->provider->unused && parent::isReorderable();
     }
 
     protected function getUpdatedAtColumn(): ?Column

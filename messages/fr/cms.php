@@ -53,6 +53,8 @@ return [
     'CATEGORY_SINGULAR' => 'Catégorie',
     'CATEGORY_SLUG_LABEL' => 'Url',
     'CATEGORY_TITLE_LABEL' => 'Méta titre',
+    'CATEGORY_UNUSED_LABEL' => 'Sans entrées',
+    'CATEGORY_UNUSED_TEXT' => '{count, plural, one{Une catégorie n’a} other{# catégories n’ont}} aucune entrée',
     'CATEGORY_UPDATE_SUCCESS' => 'La catégorie a été mise à jour.',
     'ENTRY_ASSET_COPY_TOOLTIP' => 'Copier la ressource dans cette entrée',
     'ENTRY_ASSET_ENTRIES_HINT' => 'Choisissez l’entrée qui doit recevoir une copie de cette ressource. La copie garde ses textes et commence en brouillon.',

@@ -59,12 +59,17 @@ class CategoryController extends AbstractController
         return parent::beforeAction($action);
     }
 
-    public function actionIndex(?int $parent = null, ?int $type = null, ?string $q = null): Response|string
-    {
+    public function actionIndex(
+        ?int $parent = null,
+        ?int $type = null,
+        ?string $q = null,
+        ?int $unused = null,
+    ): Response|string {
         $provider = Yii::$container->get(CategoryActiveDataProvider::class, config: [
             'parent' => Category::findOne($parent),
             'searchString' => $q,
             'type' => $type,
+            'unused' => (bool)$unused,
         ]);
 
         return $this->render('index', [
