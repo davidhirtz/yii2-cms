@@ -1,5 +1,6 @@
 ## Unreleased
 
+- Fixed the raw HTML a section's shortened slug base URL showed
 - Added the "scheduled" dashboard panel and a dashboard count of pages without a meta description
 - Added `EntryQuery::whereScheduled()`, `whereMissingDescription()` and the entry grid's `missing` filter
 - Changed the `davidhirtz/yii2-skeleton` requirement to `^3.27`

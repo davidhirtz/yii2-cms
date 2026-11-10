@@ -14,7 +14,6 @@ use Hirtz\Skeleton\Widgets\Forms\Traits\CustomAttributeFieldsTrait;
 use Override;
 use Stringable;
 use Yii;
-use yii\helpers\Html;
 
 /**
  * @property Section $model
@@ -72,13 +71,17 @@ class SectionActiveForm extends ActiveForm
             $this->model->entry->parent_status,
         ], true);
 
-        $url = $isDraft ? $manager->createDraftUrl($route) : $manager->createAbsoluteUrl($route);
+        return $isDraft ? $manager->createDraftUrl($route) : $manager->createAbsoluteUrl($route);
+    }
 
-        if ($this->maxBaseUrlLength && strlen((string) $url) > $this->maxBaseUrlLength) {
-            $url = Html::tag('span', substr((string) $url, 0, $this->maxBaseUrlLength) . '…#', ['title' => $url]);
-        }
-
-        return $url;
+    /**
+     * Cut before the `#`, so the anchor the slug adds stays in sight.
+     */
+    protected function formatSlugBaseUrl(string $url): string
+    {
+        return $this->maxBaseUrlLength && mb_strlen($url) > $this->maxBaseUrlLength
+            ? mb_substr($url, 0, $this->maxBaseUrlLength) . '…#'
+            : $url;
     }
 
     protected function hasSlugField(): bool
