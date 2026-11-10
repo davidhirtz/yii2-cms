@@ -116,6 +116,15 @@ class EntryLinksTest extends TestCase
         self::assertStringContainsString('aria-label="Mehr: Müller &amp; &quot;Söhne&quot; Å 東京 🚀"', $html);
     }
 
+    public function testAnEditorsOwnLabelIsKept(): void
+    {
+        $target = $this->createEntry('karriere', 'Karriere');
+        $html = EntryLinks::replaceHtml("<a href=\"entry:$target->id\" aria-label=\"Read more: Stellen Å 東京 🚀\">Read more</a>");
+
+        self::assertSame(1, substr_count($html, 'aria-label='));
+        self::assertStringContainsString('aria-label="Read more: Stellen Å 東京 🚀"', $html);
+    }
+
     public function testTheLabelCanBeTurnedOff(): void
     {
         $target = $this->createEntry('karriere', 'Karriere');

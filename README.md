@@ -262,7 +262,7 @@ echo $asset->getVisibleAttribute('link'); // "/karriere", "https://…" as typed
 
 A target that is disabled, scheduled, deleted, without a URL in the language or on a disabled tenant renders as its
 text in HTML and as `null` for a link attribute; the stored value is never rewritten, so the link comes back with its
-target. A link whose text does not name its target ("Read more") gets an `aria-label` with it. The preload resolves
+target. A link whose text does not name its target ("Read more") gets an `aria-label` with it, unless the editor gave it one. The preload resolves
 every link of the page in the batch it loads related entries in; a list rendered outside it calls
 `Links\EntryLinks::preload($models)` first, and a template wanting the target itself reads
 `EntryLinks::getEntry($id)`.

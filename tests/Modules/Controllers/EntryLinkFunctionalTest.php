@@ -119,7 +119,7 @@ class EntryLinkFunctionalTest extends TestCase
             'tenant' => 1,
             'href' => 'entry:1#team',
             'text' => 'Ågot 東京 🚀',
-            'title' => 'Mu' . "\u{308}" . 'ller',
+            'label' => 'Mu' . "\u{308}" . 'ller',
             'target' => '_blank',
             'class' => 'btn',
             'classes' => json_encode(['' => 'None', 'btn' => 'Button']),
@@ -130,7 +130,8 @@ class EntryLinkFunctionalTest extends TestCase
         self::assertSelectorExists('form#link-dialog[data-link-dialog]');
         self::assertInputValueSame('href', 'entry:1#team');
         self::assertInputValueSame('text', 'Ågot 東京 🚀');
-        self::assertInputValueSame('title', 'Mu' . "\u{308}" . 'ller');
+        self::assertInputValueSame('label', 'Mu' . "\u{308}" . 'ller');
+        self::assertSelectorExists('#link-dialog input[name="label"][placeholder*="Test Page – Enabled"]');
         self::assertSelectorExists('#link-dialog input[name="target"][value="_blank"][checked]');
         self::assertSelectorExists('#link-dialog select[name="class"] option[value="btn"][selected]');
         self::assertSelectorTextContains('#link-dialog .link-field-selected [data-link-field-text]', 'Test Page – Enabled');

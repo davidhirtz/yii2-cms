@@ -12,6 +12,7 @@ use Hirtz\Skeleton\Widgets\Forms\AutocompleteList;
 use Hirtz\Skeleton\Widgets\Forms\Fields\LinkField;
 use Hirtz\Skeleton\Widgets\Forms\LinkDialog;
 use Override;
+use yii\helpers\Html;
 use Yii;
 use yii\filters\AccessControl;
 
@@ -109,7 +110,7 @@ class EntryLinkController extends AbstractController
         ?string $language = null,
         ?string $href = null,
         ?string $text = null,
-        ?string $title = null,
+        ?string $label = null,
         ?string $target = null,
         ?string $class = null,
         ?string $classes = null,
@@ -131,11 +132,26 @@ class EntryLinkController extends AbstractController
             ->field($field)
             ->href($href)
             ->text($text)
-            ->title($title)
+            ->label($label)
+            ->labelPlaceholder($this->getLabelPlaceholder($href, $text, $language))
             ->blank($target === '_blank')
             ->cssClass($class)
             ->classes($this->getClasses($classes))
             ->render());
+    }
+
+    /**
+     * The label an entry link gets at render without one of its own.
+     */
+    protected function getLabelPlaceholder(?string $href, ?string $text, ?string $language): ?string
+    {
+        $link = EntryLinks::parse($href);
+
+        if ($link === null || !static::getModule()->entryLinkAriaLabels) {
+            return null;
+        }
+
+        return EntryLinks::getAriaLabel(EntryLinks::findAdminEntry($link['id']), Html::encode((string)$text), $language);
     }
 
     /**

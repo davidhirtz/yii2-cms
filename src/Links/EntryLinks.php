@@ -289,7 +289,7 @@ class EntryLinks
      * Only for text that does not already name the target, such as "Read more". The visible text stays first, so a
      * voice-control user can say what they see (WCAG 2.5.3).
      */
-    protected static function getAriaLabel(?Entry $entry, string $content, ?string $language): ?string
+    public static function getAriaLabel(?Entry $entry, string $content, ?string $language): ?string
     {
         if ($entry === null) {
             return null;
