@@ -69,8 +69,6 @@ class PreloadEntrySiteRelations extends Component
     protected array $relatedEntryIds = [];
 
     /**
-     * Targets of `entry:` links only, whose assets are not needed.
-     *
      * @var list<int>
      */
     protected array $linkOnlyEntryIds = [];
