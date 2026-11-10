@@ -7,6 +7,7 @@ namespace Hirtz\Cms;
 use Hirtz\Cms\Models\Actions\ReorderCategories;
 use Hirtz\Cms\Models\Actions\ReorderEntries;
 use Hirtz\Cms\Models\Actions\ReorderSections;
+use Hirtz\Cms\Links\EntryLinks;
 use Hirtz\Cms\Models\Block;
 use Hirtz\Cms\Models\BlockAsset;
 use Hirtz\Cms\Models\BlockEntry;
@@ -113,7 +114,10 @@ class Bootstrap implements ConfigBootstrapInterface
                             . '"parent" on create_record, and its frontend URL comes from its slug. A section is a '
                             . 'content block of an entry, created with "entry" set to the entry\'s id where the entry\'s '
                             . 'type allows sections, and shows a shared block through its block_id. reorder puts '
-                            . 'entries, sections and categories in order under their parent.',
+                            . 'entries, sections and categories in order under their parent. A link to another entry '
+                            . 'is href="entry:<id>" in HTML (optionally entry:<id>#anchor) and entry:<id> in a link '
+                            . 'attribute; it renders as the entry\'s URL in each language and stays valid when the '
+                            . 'slug changes.',
                     ],
                     'tools' => [
                         static fn (SkeletonMcp $mcp): ?Mcp\AssignCategoriesTool => Entry::getModule()->enableCategories
@@ -147,6 +151,8 @@ class Bootstrap implements ConfigBootstrapInterface
             'container' => [
                 'definitions' => [
                     TenantGridView::class => Modules\Admin\Widgets\Grids\TenantGridView::class,
+                    \Hirtz\Skeleton\Models\CustomAttributes\HtmlCustomAttribute::class => Models\CustomAttributes\HtmlCustomAttribute::class,
+                    \Hirtz\Skeleton\Models\CustomAttributes\LinkCustomAttribute::class => Models\CustomAttributes\LinkCustomAttribute::class,
                 ],
             ],
             'modules' => [
@@ -199,6 +205,7 @@ class Bootstrap implements ConfigBootstrapInterface
 
         Artwork::reset();
         CategoryCollection::reset();
+        EntryLinks::reset();
         MenuCollection::reset();
 
         $this->addDefaultUrlRules();

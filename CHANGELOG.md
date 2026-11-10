@@ -6,6 +6,10 @@
 - Added the "scheduled" dashboard panel and a dashboard count of pages without a meta description
 - Added `EntryQuery::whereScheduled()`, `whereMissingDescription()` and the entry grid's `missing` filter
 - Changed the `davidhirtz/yii2-skeleton` requirement to `^3.27`
+- Added entry links: `entry:12` in HTML and in a `LinkCustomAttribute`, resolved by `getVisibleAttribute()` through `Links\EntryLinks`
+- Changed the skeleton's `HtmlCustomAttribute` and `LinkCustomAttribute` to resolve to the cms subclasses through the container
+- Added an entry picker to TinyMCE's link dialog and to a link attribute
+- Added `Module::$entryLinkAriaLabels`
 
 ## 3.21.0 (November 6, 2026)
 

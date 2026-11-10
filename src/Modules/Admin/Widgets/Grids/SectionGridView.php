@@ -173,7 +173,10 @@ class SectionGridView extends GridView
         }
 
         if (!$html) {
-            $text = (string)($section->getVisibleAttribute('content') ?? '');
+            // The stored value: a resolved link would cost a query for an excerpt that strips it anyway.
+            $text = $section->hasAttribute('content') && $section->isAttributeVisible('content')
+                ? (string)($section->getI18nAttribute('content') ?? '')
+                : '';
             $text = $section->getCustomAttribute('content') instanceof HtmlCustomAttribute
                 ? html_entity_decode(strip_tags($text), ENT_QUOTES | ENT_HTML5)
                 : $text;

@@ -243,7 +243,10 @@ class MetaTags extends Widget
         $content = $this->model->getVisibleAttribute('description');
 
         if ($content === null) {
-            $content = $this->model->getVisibleAttribute('content');
+            // The stored value: a resolved link would cost a query for a description that strips it anyway.
+            $content = $this->model->hasAttribute('content') && $this->model->isAttributeVisible('content')
+                ? $this->model->getI18nAttribute('content')
+                : null;
 
             if ($content && $this->model->getCustomAttribute('content') instanceof HtmlCustomAttribute) {
                 $content = html_entity_decode(strip_tags(str_replace('<', ' <', $content)), ENT_QUOTES | ENT_HTML5);

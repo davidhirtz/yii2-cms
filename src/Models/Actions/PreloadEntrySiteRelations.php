@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Cms\Models\Actions;
 
+use Hirtz\Cms\Links\EntryLinks;
 use Hirtz\Cms\Models\Block;
 use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Models\Entry;
@@ -55,9 +56,24 @@ class PreloadEntrySiteRelations extends Component
     public array $fileIds = [];
 
     /**
+     * The targets of `entry:` links that event handlers found after the assets loaded (in hotspots, say), loaded with
+     * those of the assets in one query.
+     *
+     * @var list<int>
+     */
+    public array $linkedEntryIds = [];
+
+    /**
      * @var int[]
      */
     protected array $relatedEntryIds = [];
+
+    /**
+     * Targets of `entry:` links only, whose assets are not needed.
+     *
+     * @var list<int>
+     */
+    protected array $linkOnlyEntryIds = [];
 
     /**
      * @var list<Section|Block>
@@ -98,7 +114,9 @@ class PreloadEntrySiteRelations extends Component
         $this->loadBlocks();
 
         $this->loadEntryRelations();
+        $this->addLinkedEntryIds();
         $this->loadEntries();
+        $this->registerLinkedEntries();
         $this->trigger(self::EVENT_AFTER_LOAD_ENTRIES);
 
         $this->populateParentRelations();
@@ -106,6 +124,7 @@ class PreloadEntrySiteRelations extends Component
 
         $this->loadAssets();
         $this->trigger(self::EVENT_AFTER_LOAD_ASSETS);
+        $this->loadLinkedAssetEntries();
 
         $this->addCustomAttributeFileIds();
 
@@ -221,6 +240,40 @@ class PreloadEntrySiteRelations extends Component
         }
     }
 
+    /**
+     * The targets of the links in the entry, its sections and its blocks share the related entries' query.
+     */
+    protected function addLinkedEntryIds(): void
+    {
+        $sections = $this->entry->isRelationPopulated('sections') ? array_values($this->entry->sections) : [];
+        $ids = EntryLinks::findModelIds([$this->entry, ...$sections, ...array_values($this->blocks)]);
+
+        $this->linkOnlyEntryIds = array_values(array_diff($ids, $this->relatedEntryIds, array_keys($this->entries)));
+        $this->relatedEntryIds = [...$this->relatedEntryIds, ...$ids];
+    }
+
+    /**
+     * A target the query did not return is unreachable, which rendering must not ask for again.
+     */
+    protected function registerLinkedEntries(): void
+    {
+        $missing = array_diff($this->linkOnlyEntryIds, array_keys($this->entries));
+
+        EntryLinks::register($this->entries);
+        EntryLinks::register(array_fill_keys($missing, null));
+    }
+
+    /**
+     * Assets load after the entries, so the targets of their links need a query of their own.
+     */
+    protected function loadLinkedAssetEntries(): void
+    {
+        EntryLinks::load([
+            ...EntryLinks::findModelIds(array_values($this->assets)),
+            ...$this->linkedEntryIds,
+        ]);
+    }
+
     protected function loadEntries(): void
     {
         if (!$this->relatedEntryIds) {
@@ -305,7 +358,8 @@ class PreloadEntrySiteRelations extends Component
 
     protected function loadAssets(): void
     {
-        $entries = array_filter($this->entries, fn (Entry $entry): bool => (bool)$entry->asset_count);
+        $entries = array_filter($this->entries, fn (Entry $entry): bool => $entry->asset_count
+            && !in_array($entry->id, $this->linkOnlyEntryIds, true));
         $models = [...array_values($entries), ...$this->modelsWithAssets];
 
         if (!$models) {

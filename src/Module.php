@@ -81,6 +81,11 @@ class Module extends \Hirtz\Skeleton\Base\Module
     public string|false $entryIndexSlug = 'home';
 
     /**
+     * Gives a resolved `entry:` link in HTML an `aria-label` naming its target when its text does not.
+     */
+    public bool $entryLinkAriaLabels = true;
+
+    /**
      * @var Closure(): array<mixed>|array<mixed>
      */
     private Closure|array $configuredSectionSets = [];
