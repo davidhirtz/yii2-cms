@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Modules\Admin\Widgets\Grids\Buttons;
 
 use Hirtz\Cms\Models\Entry;
-use Hirtz\Cms\Models\EntryRelation;
 use Hirtz\Skeleton\Widgets\Buttons\DeleteButton;
 use Override;
 use Yii;
@@ -65,10 +64,8 @@ class EntryDeleteButton extends DeleteButton
             ]);
         }
 
-        $listings = (int)EntryRelation::find()->where(['entry_id' => $entry->id])->count();
-
-        if ($listings) {
-            $sentences[] = Yii::t('cms', 'ENTRY_DELETE_RELATIONS_TEXT', ['count' => $listings]);
+        if ($entry->relation_count) {
+            $sentences[] = Yii::t('cms', 'ENTRY_DELETE_RELATIONS_TEXT', ['count' => $entry->relation_count]);
         }
 
         return $sentences ? implode(' ', $sentences) : null;

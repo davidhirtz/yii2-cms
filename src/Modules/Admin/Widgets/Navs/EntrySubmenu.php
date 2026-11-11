@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Modules\Admin\Widgets\Navs;
 
 use Hirtz\Cms\Models\Entry;
-use Hirtz\Cms\Models\EntryRelation;
 use Hirtz\Cms\Models\EntryAsset;
 use Hirtz\Cms\Modules\Admin\Module;
 use Hirtz\Cms\Modules\ModuleTrait;
@@ -65,6 +64,7 @@ class EntrySubmenu extends Submenu
             subentries: $this->getSubentriesItem(),
             categories: $this->getEntryCategoriesItem(),
             sections: $this->getEntrySectionsItem(),
+            relations: $this->getRelationsItem(),
             references: $this->getReferencesItem(),
         );
 
@@ -125,25 +125,31 @@ class EntrySubmenu extends Submenu
             ->visible($this->showEntrySections);
     }
 
-    /**
-     * Links and listings, shown while either exists.
-     */
-    protected function getReferencesItem(): ?NavItem
+    protected function getRelationsItem(): ?NavItem
     {
-        if (!$this->webuser->can(Entry::AUTH_ENTRY)) {
+        if (!$this->model->relation_count || !$this->webuser->can(Entry::AUTH_ENTRY)) {
             return null;
         }
 
-        $count = $this->model->reference_count
-            + (int)EntryRelation::find()->where(['entry_id' => $this->model->id])->count();
+        return NavItem::make()
+            ->badge($this->model->relation_count)
+            ->icon('list')
+            ->label(Yii::t('cms', 'ENTRY_RELATION_PARENT_PLURAL'))
+            ->addRoute('admin/cms/entry-relation')
+            ->url(['/admin/cms/entry-relation/index', 'entry' => $this->model->id]);
+    }
 
-        return $count
-            ? NavItem::make()
-                ->badge($count)
-                ->icon('link')
-                ->label(Yii::t('cms', 'ENTRY_REFERENCE_PLURAL'))
-                ->addRoute('admin/cms/entry-reference')
-                ->url(['/admin/cms/entry-reference/index', 'entry' => $this->model->id])
-            : null;
+    protected function getReferencesItem(): ?NavItem
+    {
+        if (!$this->model->reference_count || !$this->webuser->can(Entry::AUTH_ENTRY)) {
+            return null;
+        }
+
+        return NavItem::make()
+            ->badge($this->model->reference_count)
+            ->icon('link')
+            ->label(Yii::t('cms', 'ENTRY_REFERENCE_PLURAL'))
+            ->addRoute('admin/cms/entry-reference')
+            ->url(['/admin/cms/entry-reference/index', 'entry' => $this->model->id]);
     }
 }

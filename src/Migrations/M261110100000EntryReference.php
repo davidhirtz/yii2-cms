@@ -46,11 +46,20 @@ class M261110100000EntryReference extends Migration
             'reference_count',
             (string)$this->integer()->unsigned()->notNull()->defaultValue(0)->after('asset_count'),
         );
+
+        $this->addColumn(
+            '{{%entry}}',
+            'relation_count',
+            (string)$this->integer()->unsigned()->notNull()->defaultValue(0)->after('reference_count'),
+        );
+
+        $this->execute('UPDATE {{%entry}} SET [[relation_count]] = (SELECT COUNT(*) FROM {{%entry_relation}} WHERE {{%entry_relation}}.[[entry_id]] = {{%entry}}.[[id]])');
     }
 
     #[Override]
     public function safeDown(): void
     {
+        $this->dropColumn('{{%entry}}', 'relation_count');
         $this->dropColumn('{{%entry}}', 'reference_count');
         $this->dropTable('{{%entry_reference}}');
     }

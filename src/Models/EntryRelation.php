@@ -187,6 +187,10 @@ class EntryRelation extends ActiveRecord implements TrailModelInterface
     #[Override]
     public function afterSave($insert, $changedAttributes): void
     {
+        if ($insert) {
+            $this->updateEntryRelationCount();
+        }
+
         if ($insert && !$this->getIsBatch()) {
             $this->updateModelEntryCount();
             static::getModule()->invalidatePageCache();
@@ -198,6 +202,8 @@ class EntryRelation extends ActiveRecord implements TrailModelInterface
     #[Override]
     public function afterDelete(): void
     {
+        $this->updateEntryRelationCount();
+
         if (!$this->getIsBatch()) {
             if (!$this->model->isDeleted()) {
                 $this->updateModelEntryCount();
@@ -207,6 +213,14 @@ class EntryRelation extends ActiveRecord implements TrailModelInterface
         }
 
         parent::afterDelete();
+    }
+
+    /**
+     * Runs in a batch too: the batch spares the owner's count, while each relation of it lists another entry.
+     */
+    public function updateEntryRelationCount(): int
+    {
+        return $this->entry?->updateRelationCount() ?? 0;
     }
 
     public function updateModelEntryCount(): int

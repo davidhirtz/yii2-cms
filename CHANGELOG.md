@@ -10,8 +10,8 @@
 - Changed the skeleton's `HtmlCustomAttribute` and `LinkCustomAttribute` to resolve to the cms subclasses through the container
 - Added entry suggestions to a link attribute and to the editor's link dialog
 - Added `Module::$entryLinkAriaLabels`
-- Added `entry_reference`, `Entry::$reference_count`, `Module::$entryReferenceModelClasses` and the `entry/references` command
-- Added the records linking or listing an entry to its delete warning and a "used in" tab
+- Added `entry_reference`, `Entry::$reference_count`, `Entry::$relation_count`, `Module::$entryReferenceModelClasses` and the `entry/references` command
+- Added the records linking or listing an entry to its delete warning and its "references" and "relations" tabs
 
 ## 3.21.0 (November 6, 2026)
 

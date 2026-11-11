@@ -188,7 +188,7 @@ class EntryQuery extends I18nActiveQuery
     {
         $attributes = array_diff(
             $this->getModelInstance()->getColumnAttributes(),
-            ['updated_by_user_id', 'reference_count', 'created_at']
+            ['updated_by_user_id', 'reference_count', 'relation_count', 'created_at']
         );
 
         return $this->addSelect($this->prefixColumns($attributes));

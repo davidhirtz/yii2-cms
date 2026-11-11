@@ -233,7 +233,7 @@ and sections, and the prompts `getting_started` (what the connected user can do,
 
 ## Console commands
 
-- `entry/references` — rebuilds `entry_reference`, the index of who links to an entry; needed once after the upgrade
+- `entry/references` — rebuilds `entry_reference`, the index of who links to an entry, and recounts `Entry::$relation_count`; needed once after the upgrade
   and after writes outside `save()`
 - `permalink/rebuild` — rewrites every entry's permalinks, inserting the missing ones and deleting those of entries that
   no longer have a URL (after adding a language, for instance)

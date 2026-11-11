@@ -25,7 +25,7 @@ class EntryController extends Controller
     use ModuleTrait;
 
     /**
-     * Rebuilds the entry references of every registered record and deletes those whose record is gone.
+     * Rebuilds the entry references of every registered record, deletes those whose record is gone and recounts the relations.
      *
      * Needed once for records saved before the index existed and after writes outside `save()`.
      *
@@ -48,6 +48,14 @@ class EntryController extends Controller
 
         $deletedCount = $this->deleteOrphanedReferences();
         $this->stdout("$deletedCount references of deleted records were removed" . PHP_EOL, Console::FG_GREEN);
+
+        $updatedCount = 0;
+
+        foreach (Entry::find()->each() as $entry) {
+            $updatedCount += $entry->updateRelationCount();
+        }
+
+        $this->stdout("$updatedCount relation counts were corrected" . PHP_EOL, Console::FG_GREEN);
 
         return ExitCode::OK;
     }

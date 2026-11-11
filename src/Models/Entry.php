@@ -59,6 +59,7 @@ use yii\db\Query;
  * @property int $section_count
  * @property int $asset_count
  * @property int $reference_count
+ * @property int $relation_count
  *
  * @property-read EntryAsset[] $assets
  * @property-read Permalink[] $permalinks
@@ -739,6 +740,15 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
     {
         $count = (int)$this->getReferences()->sum('use_count');
         return $this->reference_count !== $count ? $this->updateAttributes(['reference_count' => $count]) : 0;
+    }
+
+    /**
+     * Who lists the entry is no change to it either.
+     */
+    public function updateRelationCount(): int
+    {
+        $count = (int)EntryRelation::find()->where(['entry_id' => $this->id])->count();
+        return $this->relation_count !== $count ? $this->updateAttributes(['relation_count' => $count]) : 0;
     }
 
     public function getCategoryCount(): int

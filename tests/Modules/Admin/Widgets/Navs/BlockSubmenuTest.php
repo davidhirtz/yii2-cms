@@ -43,7 +43,7 @@ class BlockSubmenuTest extends TestCase
         self::assertStringNotContainsString('fa-link', $html);
     }
 
-    public function testTheLinkedEntriesFollowTheAssets(): void
+    public function testTheRelatedEntriesFollowTheAssets(): void
     {
         // The module cascaded it off at `init()`, before `setUp()` turned the blocks on.
         TestEntry::getModule()->enableBlockAssets = true;
@@ -62,6 +62,6 @@ class BlockSubmenuTest extends TestCase
         self::assertNotFalse($assets);
         self::assertNotFalse($entries);
         self::assertLessThan($entries, $assets);
-        self::assertStringContainsString('>Linked entries</span>', $html);
+        self::assertStringContainsString('>Related entries</span>', $html);
     }
 }

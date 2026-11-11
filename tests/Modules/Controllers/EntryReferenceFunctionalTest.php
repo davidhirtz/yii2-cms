@@ -15,7 +15,7 @@ use Hirtz\Skeleton\Test\Traits\UserFixtureTrait;
 use Override;
 
 /**
- * The entry page tells who links and who lists the entry before it is deleted.
+ * The entry page tells who links to the entry and who lists it before it is deleted.
  */
 class EntryReferenceFunctionalTest extends TestCase
 {
@@ -35,7 +35,7 @@ class EntryReferenceFunctionalTest extends TestCase
         $this->getWebUser()->login($user);
     }
 
-    public function testTheEntryShowsItsLinksAndListings(): void
+    public function testTheEntryShowsItsReferencesAndRelations(): void
     {
         $section = TestSection::instantiateByType(TestSection::TYPE_TEXT_COLUMN);
         $section->populateEntryRelation($this->getEntryFromFixture('page-enabled'));
@@ -54,14 +54,20 @@ class EntryReferenceFunctionalTest extends TestCase
         self::assertStringContainsString('linked 2 times in one record', $html);
         self::assertStringContainsString('listed in one section or block', $html);
         self::assertSelectorExists('a[href="/admin/cms/entry-reference/index?entry=4"]');
+        self::assertSelectorExists('a[href="/admin/cms/entry-relation/index?entry=4"]');
 
         $this->open('/admin/cms/entry-reference/index?entry=4');
         self::assertResponseIsSuccessful();
 
-        self::assertSelectorTextContains('#entry-reference-grid-view', 'Linked in Content (2x)');
-        self::assertSelectorTextContains('#entry-reference-grid-view', 'Listed');
+        self::assertSelectorTextContains('#entry-reference-grid-view', 'Content (2x)');
         self::assertSelectorExists("#entry-reference-grid-view a[href=\"/admin/cms/section/update?id=$section->id\"]");
-        self::assertSelectorExists('#entry-reference-grid-view a[href="/admin/cms/section/update?id=3"]');
+        self::assertSelectorNotExists('#entry-reference-grid-view a[href="/admin/cms/section/update?id=3"]');
+
+        $this->open('/admin/cms/entry-relation/index?entry=4');
+        self::assertResponseIsSuccessful();
+
+        self::assertSelectorExists('#entry-relation-parent-grid-view a[href="/admin/cms/section-entry/index?section=3"]');
+        self::assertSelectorNotExists("#entry-relation-parent-grid-view a[href*=\"section=$section->id\"]");
     }
 
     public function testAnUnusedEntryShowsNoTab(): void
@@ -70,5 +76,6 @@ class EntryReferenceFunctionalTest extends TestCase
         self::assertResponseIsSuccessful();
 
         self::assertSelectorNotExists('a[href="/admin/cms/entry-reference/index?entry=5"]');
+        self::assertSelectorNotExists('a[href="/admin/cms/entry-relation/index?entry=5"]');
     }
 }

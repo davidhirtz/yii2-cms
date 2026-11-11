@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Modules\Admin\Widgets\Grids;
 
 use Hirtz\Cms\Models\Entry;
-use Hirtz\Cms\Modules\Admin\Data\EntryUsage;
+use Hirtz\Cms\Models\EntryReference;
 use Hirtz\Skeleton\Helpers\Html;
 use Hirtz\Skeleton\Models\Interfaces\AdminModelInterface;
 use Hirtz\Skeleton\Widgets\AdminModelHeading;
@@ -19,10 +19,10 @@ use Hirtz\Skeleton\Widgets\Grids\GridView;
 use Override;
 use Stringable;
 use Yii;
-use yii\data\ArrayDataProvider;
+use yii\data\ActiveDataProvider;
 
 /**
- * @extends GridView<EntryUsage>
+ * @extends GridView<EntryReference>
  * @see \Hirtz\Cms\Modules\Admin\Controllers\EntryReferenceController::actionIndex()
  */
 class EntryReferenceGridView extends GridView
@@ -42,16 +42,18 @@ class EntryReferenceGridView extends GridView
     {
         $this->attributes['id'] ??= 'entry-reference-grid-view';
 
-        $this->provider ??= new ArrayDataProvider([
-            'allModels' => $this->entry ? EntryUsage::findAll($this->entry) : [],
-            'key' => 'id',
-            'pagination' => false,
+        $this->provider ??= new ActiveDataProvider([
+            'query' => EntryReference::find()
+                ->andWhere(['entry_id' => $this->entry->id ?? null])
+                ->orderBy(['updated_at' => SORT_DESC, 'id' => SORT_DESC]),
             'sort' => false,
         ]);
 
+        EntryReference::populateModelRelations($this->provider->getModels());
+
         $this->columns ??= [
             $this->getModelColumn(),
-            $this->getUsageColumn(),
+            $this->getAttributesColumn(),
             $this->getUpdatedAtColumn(),
             $this->getButtonColumn(),
         ];
@@ -66,43 +68,35 @@ class EntryReferenceGridView extends GridView
             ->title(Yii::t('cms', 'ENTRY_REFERENCE_MODEL_LABEL'))
             ->value($this->getModelName(...))
             ->format('raw')
-            ->url(fn (EntryUsage $usage): ?array => $this->getModelRoute($usage));
+            ->url(fn (EntryReference $reference): ?array => $this->getModelRoute($reference));
     }
 
-    protected function getModelName(EntryUsage $usage): string|Stringable
+    protected function getModelName(EntryReference $reference): string|Stringable
     {
-        return $usage->model instanceof AdminModelInterface
-            ? AdminModelHeading::make()->model($usage->model)
-            : Html::encode("$usage->model_class #$usage->model_id");
+        $model = $reference->getModel();
+
+        return $model instanceof AdminModelInterface
+            ? AdminModelHeading::make()->model($model)
+            : Html::encode("$reference->model_class #$reference->model_id");
     }
 
-    protected function getUsageColumn(): ?Column
+    protected function getAttributesColumn(): ?Column
     {
         return DataColumn::make()
-            ->property('linkCounts')
-            ->title(Yii::t('cms', 'ENTRY_REFERENCE_USAGE_LABEL'))
-            ->value($this->getUsageColumnValue(...));
+            ->property('attribute_counts')
+            ->title(Yii::t('cms', 'ENTRY_REFERENCE_ATTRIBUTES_LABEL'))
+            ->value($this->getAttributesColumnValue(...));
     }
 
-    protected function getUsageColumnValue(EntryUsage $usage): string
+    protected function getAttributesColumnValue(EntryReference $reference): string
     {
-        $texts = [];
+        $labels = [];
 
-        if ($usage->listed) {
-            $texts[] = Yii::t('cms', 'ENTRY_REFERENCE_LISTED_TEXT');
+        foreach ($reference->getAttributeLabelCounts() as $label => $count) {
+            $labels[] = $count > 1 ? "$label ({$count}x)" : $label;
         }
 
-        if ($usage->linkCounts) {
-            $labels = [];
-
-            foreach ($usage->linkCounts as $label => $count) {
-                $labels[] = $count > 1 ? "$label ({$count}x)" : $label;
-            }
-
-            $texts[] = Yii::t('cms', 'ENTRY_REFERENCE_LINKED_TEXT', ['attributes' => implode(', ', $labels)]);
-        }
-
-        return implode(' · ', $texts);
+        return implode(', ', $labels);
     }
 
     protected function getUpdatedAtColumn(): ?Column
@@ -120,9 +114,9 @@ class EntryReferenceGridView extends GridView
     /**
      * @return list<Stringable>
      */
-    protected function getButtonColumnContent(EntryUsage $usage): array
+    protected function getButtonColumnContent(EntryReference $reference): array
     {
-        $route = $this->getModelRoute($usage);
+        $route = $this->getModelRoute($reference);
         return $route ? [ViewGridButton::make()->url($route)] : [];
     }
 
@@ -131,9 +125,9 @@ class EntryReferenceGridView extends GridView
      *
      * @return array<int|string, mixed>|null
      */
-    protected function getModelRoute(EntryUsage $usage): ?array
+    protected function getModelRoute(EntryReference $reference): ?array
     {
-        $model = $usage->model;
+        $model = $reference->getModel();
 
         if (!$model instanceof AdminModelInterface || !$this->webuser->can($model->getPermissionName())) {
             return null;
