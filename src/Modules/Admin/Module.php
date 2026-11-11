@@ -43,6 +43,7 @@ class Module extends \Hirtz\Skeleton\Base\Module implements ModuleInterface
                     static fn (int $count): string => Yii::t('cms', 'CATEGORY_UNUSED_TEXT', ['count' => $count]),
                     ['/admin/cms/category/index', 'unused' => 1],
                     [Category::AUTH_CATEGORY],
+                    'folder-open',
                 );
             }
         }
@@ -83,6 +84,7 @@ class Module extends \Hirtz\Skeleton\Base\Module implements ModuleInterface
                     'language' => $language !== Yii::$app->sourceLanguage ? $language : null,
                 ],
                 [Entry::AUTH_ENTRY],
+                'align-left',
             );
         }
     }
