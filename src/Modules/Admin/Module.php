@@ -9,6 +9,7 @@ use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Modules\Admin\Data\EntryActiveDataProvider;
 use Hirtz\Cms\Modules\Admin\Widgets\Navs\CmsNavItem;
 use Hirtz\Cms\Modules\Admin\Widgets\Panels\ScheduledEntriesPanel;
+use Hirtz\Skeleton\Helpers\Html;
 use Hirtz\Skeleton\Modules\Admin\ModuleInterface;
 use Hirtz\Skeleton\Modules\Admin\Widgets\Panels\ContentHealthPanel;
 use Hirtz\Skeleton\Widgets\Navs\Nav;
@@ -75,7 +76,7 @@ class Module extends \Hirtz\Skeleton\Base\Module implements ModuleInterface
                 count($languages) > 1
                     ? static fn (int $count): string => Yii::t('cms', 'ENTRY_MISSING_DESCRIPTION_LANGUAGE_TEXT', [
                         'count' => $count,
-                        'language' => Yii::$app->getI18n()->getLabel($language),
+                        'language' => Html::encode(Yii::$app->getI18n()->getLabel($language)),
                     ])
                     : static fn (int $count): string => Yii::t('cms', 'ENTRY_MISSING_DESCRIPTION_TEXT', ['count' => $count]),
                 [
