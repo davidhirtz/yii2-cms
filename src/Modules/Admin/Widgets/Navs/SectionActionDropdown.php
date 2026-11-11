@@ -67,6 +67,7 @@ class SectionActionDropdown extends ActionDropdown
     protected function getCreateButton(Entry $entry): ?Stringable
     {
         return SectionCreateButton::make()
+            ->primary()
             ->model($entry);
     }
 

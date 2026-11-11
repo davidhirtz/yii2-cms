@@ -59,7 +59,7 @@ class Module extends \Hirtz\Skeleton\Base\Module implements ModuleInterface
 
     /**
      * One check per language of the request's tenant, each counted through the grid's own provider, so the number is
-     * what the link lists.
+     * what the link lists: its query, since `getTotalCount()` loads every entry of a list without pagination.
      */
     protected function addDescriptionChecks(ContentHealthPanel $health): void
     {
@@ -68,10 +68,10 @@ class Module extends \Hirtz\Skeleton\Base\Module implements ModuleInterface
         foreach ($languages as $language) {
             $health->addCheck(
                 "entry-description-$language",
-                static fn (): int => Yii::$container->get(EntryActiveDataProvider::class, config: [
+                static fn (): int => (int)Yii::$container->get(EntryActiveDataProvider::class, config: [
                     'language' => $language,
                     'missing' => EntryActiveDataProvider::MISSING_DESCRIPTION,
-                ])->getTotalCount(),
+                ])->query->count(),
                 count($languages) > 1
                     ? static fn (int $count): string => Yii::t('cms', 'ENTRY_MISSING_DESCRIPTION_LANGUAGE_TEXT', [
                         'count' => $count,
@@ -84,7 +84,8 @@ class Module extends \Hirtz\Skeleton\Base\Module implements ModuleInterface
                     'language' => $language !== Yii::$app->sourceLanguage ? $language : null,
                 ],
                 [Entry::AUTH_ENTRY],
-                'align-left',
+                'triangle-exclamation',
+                10,
             );
         }
     }

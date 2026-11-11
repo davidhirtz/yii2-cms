@@ -54,8 +54,8 @@ class SectionActionDropdownTest extends TestCase
 
         $html = $this->render();
 
-        self::assertStringContainsString('New Section', $html);
-        self::assertStringContainsString('Add Section Set', $html);
+        self::assertStringContainsString('New section', $html);
+        self::assertStringContainsString('Add section set', $html);
         self::assertStringContainsString('<option value="1">Landing page</option>', $html);
         self::assertStringContainsString('create-set', $html);
     }
@@ -89,16 +89,16 @@ class SectionActionDropdownTest extends TestCase
 
         $html = $this->render();
 
-        self::assertStringContainsString('New Section', $html);
-        self::assertStringNotContainsString('Add Section Set', $html);
+        self::assertStringContainsString('New section', $html);
+        self::assertStringNotContainsString('Add section set', $html);
     }
 
     public function testTheSetButtonIsHiddenWithoutDeclaredSets(): void
     {
         $html = $this->render();
 
-        self::assertStringContainsString('New Section', $html);
-        self::assertStringNotContainsString('Add Section Set', $html);
+        self::assertStringContainsString('New section', $html);
+        self::assertStringNotContainsString('Add section set', $html);
     }
 
     public function testAModelOffersTheSectionActions(): void
@@ -123,8 +123,8 @@ class SectionActionDropdownTest extends TestCase
         // The action names its record in the menu, in the confirmation and on the button that confirms it.
         self::assertStringContainsString('Are you sure you want to delete this section?', $html);
         self::assertSame(2, substr_count($html, 'Delete section</'));
-        self::assertStringContainsString('href="/admin/cms/section/create?entry=' . $section->entry_id . '"', $html);
-        self::assertStringNotContainsString('Add Section Set', $html);
+        self::assertStringContainsString('class="btn btn-primary" href="/admin/cms/section/create?entry=' . $section->entry_id . '"', $html);
+        self::assertStringNotContainsString('Add section set', $html);
     }
 
     public function testASharedSectionOffersToBecomeABlock(): void

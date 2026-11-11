@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Modules\Admin\Widgets\Navs;
 
 use Hirtz\Cms\Models\Entry;
+use Hirtz\Cms\Modules\Admin\Widgets\Buttons\EntryCreateButton;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\Buttons\EntryDeleteButton;
 use Hirtz\Cms\Modules\Admin\Widgets\Grids\Buttons\FrontendLinkButton;
 use Hirtz\Skeleton\Widgets\Buttons\ConfirmButton;
@@ -26,6 +27,7 @@ class EntryActionDropdown extends ActionDropdown
     protected function configure(): void
     {
         $this->addItem(
+            $this->getCreateButton(),
             $this->getDuplicateButton(),
             $this->getLinkButton(),
             $this->getReplaceIndexButton(),
@@ -33,6 +35,21 @@ class EntryActionDropdown extends ActionDropdown
         );
 
         parent::configure();
+    }
+
+    /**
+     * @see EntryController::actionCreate()
+     */
+    protected function getCreateButton(): ?Stringable
+    {
+        return EntryCreateButton::make()
+            ->primary()
+            ->url([
+                '/admin/cms/entry/create',
+                'parent' => $this->model->parent_id,
+                'tenant' => $this->model->tenant_id,
+                'type' => $this->model->type,
+            ]);
     }
 
     /**

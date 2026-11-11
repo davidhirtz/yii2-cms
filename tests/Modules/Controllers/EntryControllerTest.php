@@ -267,6 +267,20 @@ class EntryControllerTest extends TestCase
         self::assertSame('Renamed', Entry::findOne($entry->id)->name);
     }
 
+    public function testTheUpdatePageOffersANewSiblingEntry(): void
+    {
+        Entry::getModule()->enableNestedEntries = true;
+        $this->login();
+
+        $parent = $this->createEntry('Parent', 'parent', tenantId: 1);
+        $child = $this->createEntry('Child', 'child', $parent, tenantId: 1);
+
+        $html = Yii::$app->runAction('admin/cms/entry/update', ['id' => $child->id]);
+
+        self::assertIsString($html);
+        self::assertStringContainsString('class="btn btn-primary" href="/admin/cms/entry/create?parent=' . $parent->id . '&amp;tenant=1&amp;type=' . $child->type . '"', $html);
+    }
+
     public function testUpdateOfAnUnknownEntryIsNotFound(): void
     {
         $this->login();
