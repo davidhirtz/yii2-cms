@@ -6,13 +6,10 @@ namespace Hirtz\Cms\Modules\Admin\Widgets\Panels;
 
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Modules\ModuleTrait;
-use Hirtz\Skeleton\Html\A;
 use Hirtz\Skeleton\Html\Custom\RelativeTime;
 use Hirtz\Skeleton\Html\Div;
-use Hirtz\Skeleton\Html\Li;
 use Hirtz\Skeleton\Html\Span;
 use Hirtz\Skeleton\Html\Ul;
-use Hirtz\Skeleton\Widgets\Icon;
 use Hirtz\Skeleton\Widgets\Panels\DashboardPanel;
 use Override;
 use Stringable;
@@ -73,26 +70,21 @@ class ScheduledEntriesPanel extends DashboardPanel
         $formatter = Yii::$app->getFormatter();
 
         foreach ($entries as $entry) {
-            $route = $entry->getAdminRoute();
-            $name = $entry->getAdminName();
-
-            $list->addContent(Li::make()->content(Div::make()
-                ->class('dashboard-list-row')
-                ->content(
-                    Icon::make()->name('clock')->addClass('dashboard-list-icon'),
-                    Div::make()->content(
-                        Div::make()
-                            ->class('dashboard-list-title')
-                            ->content($route ? A::make()->href($route)->text($name) : Span::make()->text($name)),
-                        Div::make()
-                            ->class('dashboard-list-meta small text-muted')
-                            ->content(
-                                Span::make()->text($entry->getAdminType()),
-                                Span::make()->text($formatter->asDatetime($entry->publish_date, 'short')),
-                                Span::make()->content(RelativeTime::make()->value($entry->publish_date)),
-                            ),
-                    ),
-                )));
+            $list->addContent($this->getListItem($this->getListRow(
+                'clock',
+                Div::make()->content(
+                    Div::make()
+                        ->class('dashboard-list-title')
+                        ->text($entry->getAdminName()),
+                    Div::make()
+                        ->class('dashboard-list-meta small text-muted')
+                        ->content(
+                            Span::make()->text($entry->getAdminType()),
+                            Span::make()->text($formatter->asDatetime($entry->publish_date, 'short')),
+                            Span::make()->content(RelativeTime::make()->value($entry->publish_date)),
+                        ),
+                ),
+            ), $entry->getAdminRoute() ?: null));
         }
 
         return $list;
