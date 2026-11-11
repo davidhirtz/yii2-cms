@@ -45,6 +45,8 @@ class ScheduledEntriesPanel extends DashboardPanel
     protected function configure(): void
     {
         $this->title ??= Yii::t('cms', 'ENTRY_SCHEDULED_TITLE');
+        $this->icon ??= 'calendar-days';
+
         parent::configure();
     }
 
