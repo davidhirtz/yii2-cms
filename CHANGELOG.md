@@ -1,4 +1,4 @@
-## Unreleased
+## 3.22.0 (November 11, 2026)
 
 - Added `CategoryQuery::whereUnused()`, the category grid's `unused` filter and a dashboard count of categories without entries
 - Added a language to `EntryQuery::whereMissingDescription()` and the entry grid's `missing` filter, and a dashboard count per language of the tenant
