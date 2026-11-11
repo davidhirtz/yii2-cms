@@ -12,6 +12,7 @@ use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Skeleton\Behaviors\BlameableBehavior;
 use Hirtz\Skeleton\Behaviors\TimestampBehavior;
 use Hirtz\Skeleton\Behaviors\TrailBehavior;
+use Hirtz\Skeleton\Db\ActiveQuery;
 use Hirtz\Skeleton\Db\ActiveRecord;
 use Hirtz\Skeleton\Models\Interfaces\TrailModelInterface;
 use Hirtz\Skeleton\Models\Traits\AdminModelTrait;
@@ -270,6 +271,15 @@ class EntryRelation extends ActiveRecord implements TrailModelInterface
 
         /** @var TModel */
         return $this->getRelatedRecords()['model'];
+    }
+
+    /**
+     * `getModel()` loads the record rather than answering a relation, and a deleted row's stand-in has no class.
+     */
+    #[Override]
+    public function getRelationFromForeignKey(string $foreignKey, bool $throwException = false): ?ActiveQuery
+    {
+        return $foreignKey !== 'model_id' ? parent::getRelationFromForeignKey($foreignKey, $throwException) : null;
     }
 
     public function populateModelRelation(EntryRelationModelInterface $model): void
