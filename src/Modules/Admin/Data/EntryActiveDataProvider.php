@@ -241,10 +241,15 @@ class EntryActiveDataProvider extends ActiveDataProvider
 
     /**
      * Linked or categorised entries by their own `position` show an order the drag, which writes the link's, never
-     * changes, and a descending order the drag would reverse, since it writes the shown one as `1..n`.
+     * changes, and a descending order the drag would reverse, since it writes the shown one as `1..n`. A search or a
+     * missing filter shows a subset, which the drag would renumber as if it were the whole list.
      */
     public function isOrderedByPosition(): bool
     {
+        if ($this->searchString || $this->missing) {
+            return false;
+        }
+
         $columns = match (true) {
             $this->relatedModel && $this->innerJoinRelatedModel => [EntryRelation::tableName() . '.[[position]]'],
             $this->category !== null => [EntryCategory::tableName() . '.[[position]]'],

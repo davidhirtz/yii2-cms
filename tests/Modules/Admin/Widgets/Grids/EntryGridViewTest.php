@@ -220,6 +220,28 @@ class EntryGridViewTest extends TestCase
         self::assertNotFalse($provider->getPagination());
     }
 
+    public function testAFilteredListIsPaginatedAndNotReorderable(): void
+    {
+        $this->login();
+        $this->createEntry('Ålesund 東京', 'first')->updateAttributes(['section_count' => 1]);
+        $this->createEntry('Mu' . "\u{308}" . 'ller', 'second')->updateAttributes(['section_count' => 1]);
+
+        foreach ([['missing' => EntryActiveDataProvider::MISSING_DESCRIPTION], ['q' => 'e']] as $params) {
+            $provider = Yii::$container->get(EntryActiveDataProvider::class, config: [
+                'missing' => $params['missing'] ?? null,
+                'searchString' => $params['q'] ?? null,
+            ]);
+
+            self::assertNotFalse($provider->getPagination());
+            self::assertInstanceOf(Sort::class, $provider->getSort());
+            self::assertSame(2, $provider->getTotalCount());
+
+            $html = Yii::$app->runAction('admin/cms/entry/index', $params);
+            self::assertIsString($html);
+            self::assertStringNotContainsString('reorder-handle', $html);
+        }
+    }
+
     public function testADescendingPositionIsNotReorderable(): void
     {
         $this->login();
