@@ -15,6 +15,8 @@ use Hirtz\Skeleton\Helpers\Html;
 use Hirtz\Skeleton\Helpers\Url;
 use Hirtz\Skeleton\Test\Traits\UserFixtureTrait;
 use Hirtz\Skeleton\Widgets\Panels\Dashboard;
+use Hirtz\Tenant\Models\Tenant;
+use Hirtz\Tenant\Web\UrlManager;
 use Override;
 use Yii;
 
@@ -151,6 +153,57 @@ class DashboardPanelsTest extends TestCase
         });
     }
 
+    public function testATenantWithOneLanguageNamesNoLanguage(): void
+    {
+        $this->withGermanDescriptions(function (): void {
+            $this->login();
+
+            $tenant = Tenant::create();
+            $tenant->loadDefaultValues();
+            $tenant->name = 'Deutsch';
+            $tenant->language = 'de';
+            $tenant->languages = [];
+            $tenant->url = 'https://www.deutsch-domain.localhost';
+            self::assertTrue($tenant->save(), implode(' ', $tenant->getErrorSummary(true)));
+
+            $manager = Yii::$app->getUrlManager();
+            self::assertInstanceOf(UrlManager::class, $manager);
+            $manager->tenant = $tenant;
+
+            $this->createEntry('Untranslated Å 東京', sectionCount: 1, tenant: $tenant);
+
+            $html = Dashboard::make()->render();
+
+            self::assertStringContainsString(Yii::t('cms', 'ENTRY_MISSING_DESCRIPTION_TEXT', [
+                'count' => count($this->getMissingDescriptionIds('de')),
+            ]), $html);
+
+            // The grid's own tenant, picked from the dropdown, decides, not the request's.
+            $manager->tenant = null;
+            $label = Yii::t('cms', 'ENTRY_MISSING_DESCRIPTION_LANGUAGE_LABEL', [
+                'language' => Yii::$app->getI18n()->getLabel('de'),
+            ]);
+
+            self::assertStringNotContainsString($label, $this->renderMissingDescriptions(['tenant' => $tenant->id]));
+            self::assertStringContainsString($label, $this->renderMissingDescriptions());
+        });
+    }
+
+    /**
+     * @param array<string, mixed> $params
+     */
+    private function renderMissingDescriptions(array $params = []): string
+    {
+        $params = [...$params, 'missing' => 'description', 'language' => 'de'];
+        $this->getWebRequest()->setQueryParams($params);
+
+        $html = Yii::$app->runAction('admin/cms/entry/index', $params);
+        self::assertIsString($html);
+        self::assertStringContainsString(Yii::t('cms', 'ENTRY_MISSING_DESCRIPTION_LABEL'), $html);
+
+        return $html;
+    }
+
     /**
      * The query layer reads `i18nAttributes` off the shared instance(), so it has to be configured.
      */
@@ -191,10 +244,16 @@ class DashboardPanelsTest extends TestCase
         ?string $publishDate = null,
         ?Entry $parent = null,
         int $sectionCount = 0,
+        ?Tenant $tenant = null,
     ): Entry {
         $entry = Entry::create();
         $entry->loadDefaultValues();
         $entry->populateParentRelation($parent);
+
+        if ($tenant) {
+            $entry->populateTenantRelation($tenant);
+        }
+
         $entry->status = $status;
         $entry->type = Entry::TYPE_DEFAULT;
         $entry->name = $name;

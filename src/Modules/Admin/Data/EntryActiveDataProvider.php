@@ -74,6 +74,20 @@ class EntryActiveDataProvider extends ActiveDataProvider
     }
 
     /**
+     * @return list<string>
+     */
+    public function getDescriptionLanguages(): array
+    {
+        $languages = TenantCollection::getById($this->tenantId)?->getAvailableLanguages()
+            ?? Yii::$app->getI18n()->getLanguages();
+
+        return array_values(array_unique([
+            ...array_intersect([Yii::$app->sourceLanguage], $languages),
+            ...$languages,
+        ]));
+    }
+
+    /**
      * @see Entry::isNewIndex()
      */
     public function createsIndex(): bool

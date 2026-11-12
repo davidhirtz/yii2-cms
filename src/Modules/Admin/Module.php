@@ -15,7 +15,6 @@ use Hirtz\Skeleton\Modules\Admin\Widgets\Panels\ContentHealthPanel;
 use Hirtz\Skeleton\Widgets\Navs\Nav;
 use Hirtz\Skeleton\Widgets\Panels\Dashboard;
 use Hirtz\Skeleton\Widgets\Panels\DashboardItem;
-use Hirtz\Tenant\Web\UrlManager;
 use Yii;
 
 /**
@@ -64,7 +63,7 @@ class Module extends \Hirtz\Skeleton\Base\Module implements ModuleInterface
      */
     protected function addDescriptionChecks(ContentHealthPanel $health): void
     {
-        $languages = $this->getDescriptionLanguages();
+        $languages = Yii::$container->get(EntryActiveDataProvider::class)->getDescriptionLanguages();
 
         foreach ($languages as $language) {
             $health->addCheck(
@@ -89,20 +88,5 @@ class Module extends \Hirtz\Skeleton\Base\Module implements ModuleInterface
                 10,
             );
         }
-    }
-
-    /**
-     * @return list<string>
-     */
-    protected function getDescriptionLanguages(): array
-    {
-        $manager = Yii::$app->getUrlManager();
-        $tenant = $manager instanceof UrlManager ? $manager->tenant : null;
-        $languages = $tenant?->getAvailableLanguages() ?? Yii::$app->getI18n()->getLanguages();
-
-        return array_values(array_unique([
-            ...array_intersect([Yii::$app->sourceLanguage], $languages),
-            ...$languages,
-        ]));
     }
 }

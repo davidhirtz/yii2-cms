@@ -243,7 +243,7 @@ class EntryGridView extends GridView
             return null;
         }
 
-        $label = $this->provider->language
+        $label = $this->provider->language && count($this->provider->getDescriptionLanguages()) > 1
             ? Yii::t('cms', 'ENTRY_MISSING_DESCRIPTION_LANGUAGE_LABEL', [
                 'language' => Yii::$app->getI18n()->getLabel($this->provider->language),
             ])
