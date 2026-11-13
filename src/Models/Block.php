@@ -245,21 +245,25 @@ class Block extends ActiveRecord implements AssetModelInterface, EntryRelationMo
         return $relation;
     }
 
+    #[Override]
     public function getEntryRelationClass(): string
     {
         return BlockEntry::class;
     }
 
+    #[Override]
     public function getAssetClass(): string
     {
         return BlockAsset::class;
     }
 
+    #[Override]
     public function allowsAssets(): bool
     {
         return static::getModule()->enableBlockAssets && $this->typeAllowsAssets();
     }
 
+    #[Override]
     public function allowsEntries(): bool
     {
         return static::getModule()->enableBlockEntries && $this->typeAllowsEntries();
@@ -290,6 +294,7 @@ class Block extends ActiveRecord implements AssetModelInterface, EntryRelationMo
         return 'cube';
     }
 
+    #[Override]
     public function getAdminRoute(): array
     {
         return $this->id ? ['/admin/cms/block/update', 'id' => $this->id] : ['/admin/cms/block/index'];
@@ -301,6 +306,7 @@ class Block extends ActiveRecord implements AssetModelInterface, EntryRelationMo
         return new Breadcrumb(Yii::t('cms', 'BLOCK_PLURAL'), ['/admin/cms/block/index']);
     }
 
+    #[Override]
     public function getPermissionName(): string
     {
         return self::AUTH_BLOCK;
@@ -309,11 +315,13 @@ class Block extends ActiveRecord implements AssetModelInterface, EntryRelationMo
     /**
      * `content` has no column of its own: it is indexed only where the project declares it as a custom attribute.
      */
+    #[Override]
     public function getSearchAttributes(): array
     {
         return ['name', 'content'];
     }
 
+    #[Override]
     public function getSearchWeight(): float
     {
         return 0.6;
@@ -334,6 +342,7 @@ class Block extends ActiveRecord implements AssetModelInterface, EntryRelationMo
         return false;
     }
 
+    #[Override]
     public function getTranslationModelClass(): string
     {
         return self::class;

@@ -168,6 +168,7 @@ abstract class ActiveRecord extends BaseActiveRecord implements
     /**
      * @return list<string>
      */
+    #[Override]
     public function getTrailAttributes(): array
     {
         return array_values(array_diff($this->attributes(), [

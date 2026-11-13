@@ -15,6 +15,7 @@ use Hirtz\Skeleton\Modules\Admin\Widgets\Panels\ContentHealthPanel;
 use Hirtz\Skeleton\Widgets\Navs\Nav;
 use Hirtz\Skeleton\Widgets\Panels\Dashboard;
 use Hirtz\Skeleton\Widgets\Panels\DashboardItem;
+use Override;
 use Yii;
 
 /**
@@ -24,11 +25,13 @@ class Module extends \Hirtz\Skeleton\Base\Module implements ModuleInterface
 {
     public $defaultRoute = 'entry';
 
+    #[Override]
     public function aside(Nav $nav): Nav
     {
         return $nav->addItem(CmsNavItem::make());
     }
 
+    #[Override]
     public function dashboard(Dashboard $dashboard): Dashboard
     {
         $health = $dashboard->getPanel('health');

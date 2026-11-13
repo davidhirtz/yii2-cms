@@ -308,6 +308,7 @@ class Category extends ActiveRecord implements SearchableInterface
         return 'folder-open';
     }
 
+    #[Override]
     public function getAdminRoute(): array
     {
         return $this->id ? ['/admin/cms/category/update', 'id' => $this->id] : ['/admin/cms/category/index'];
@@ -328,6 +329,7 @@ class Category extends ActiveRecord implements SearchableInterface
         ]);
     }
 
+    #[Override]
     public function getPermissionName(): string
     {
         return self::AUTH_CATEGORY;
@@ -336,11 +338,13 @@ class Category extends ActiveRecord implements SearchableInterface
     /**
      * `content` has no column of its own: it is indexed only where the project declares it as a custom attribute.
      */
+    #[Override]
     public function getSearchAttributes(): array
     {
         return ['name', 'title', 'description', 'content'];
     }
 
+    #[Override]
     public function getSearchWeight(): float
     {
         return 0.8;
@@ -367,6 +371,7 @@ class Category extends ActiveRecord implements SearchableInterface
         return [EntryCategory::tableName() . '.[[position]]' => SORT_ASC];
     }
 
+    #[Override]
     public function getTranslationModelClass(): string
     {
         return self::class;

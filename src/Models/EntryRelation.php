@@ -65,6 +65,7 @@ class EntryRelation extends ActiveRecord implements TrailModelInterface
     /**
      * Answers the permission of the model it hangs on, read off the class since a bare instance has to answer too.
      */
+    #[Override]
     public function getPermissionName(): string
     {
         return static::getModelClass()::instance()->getPermissionName();
@@ -293,6 +294,7 @@ class EntryRelation extends ActiveRecord implements TrailModelInterface
      * @noinspection PhpUnused
      * @return list<string>
      */
+    #[Override]
     public function getTrailAttributes(): array
     {
         return array_values(array_diff($this->attributes(), [
@@ -308,6 +310,7 @@ class EntryRelation extends ActiveRecord implements TrailModelInterface
      * @noinspection PhpUnused
      * @return list<TrailModelInterface>
      */
+    #[Override]
     public function getTrailParents(): ?array
     {
         return [$this->entry, $this->model];
@@ -316,16 +319,19 @@ class EntryRelation extends ActiveRecord implements TrailModelInterface
     /**
      * @return array<int|string, mixed>|false
      */
+    #[Override]
     public function getAdminRoute(): array|false
     {
         return false;
     }
 
+    #[Override]
     public function getAdminName(): string
     {
         return Yii::t('cms', 'ENTRY_RELATION_SINGULAR');
     }
 
+    #[Override]
     public function getAdminType(): string
     {
         return Yii::t('skeleton', 'RELATION_SINGULAR');

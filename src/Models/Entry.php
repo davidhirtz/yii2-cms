@@ -699,6 +699,7 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
             ]);
     }
 
+    #[Override]
     public function getPermissionName(): string
     {
         return self::AUTH_ENTRY;
@@ -707,6 +708,7 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
     /**
      * `content` has no column of its own: it is indexed only where the project declares it as a custom attribute.
      */
+    #[Override]
     public function getSearchAttributes(): array
     {
         return ['name', 'title', 'description', 'content'];
@@ -921,6 +923,7 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
         return null;
     }
 
+    #[Override]
     public function getStatusIcon(): string
     {
         if ($this->isIndex() && $this->isEnabled()) {
@@ -934,6 +937,7 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
         return parent::getStatusIcon();
     }
 
+    #[Override]
     public function getStatusName(): string
     {
         $status = $this->isScheduled() && $this->publish_date instanceof \DateTimeInterface
@@ -1038,11 +1042,13 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
             || (($this->entry_count > 0 || $this->isMaterializedTreeChanged()) && !static::getDb()->getTransaction());
     }
 
+    #[Override]
     public function getAssetClass(): string
     {
         return EntryAsset::class;
     }
 
+    #[Override]
     public function allowsAssets(): bool
     {
         return static::getModule()->enableEntryAssets && $this->typeAllowsAssets();
@@ -1097,6 +1103,7 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
         return true;
     }
 
+    #[Override]
     public function getTranslationModelClass(): string
     {
         return self::class;

@@ -342,6 +342,7 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
         return Yii::createObject(SectionQuery::class, [static::class]);
     }
 
+    #[Override]
     public function getEntryRelationClass(): string
     {
         return SectionEntry::class;
@@ -392,6 +393,7 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
     /**
      * @return list<TrailModelInterface>
      */
+    #[Override]
     public function getTrailParents(): array
     {
         return $this->trailParents ?? [$this->entry];
@@ -415,6 +417,7 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
         return $content instanceof Closure ? $content($this) : $content;
     }
 
+    #[Override]
     public function getAdminRoute(): array|false
     {
         return $this->id ? ['/admin/cms/section/update', 'id' => $this->id] : false;
@@ -445,16 +448,19 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
         ]);
     }
 
+    #[Override]
     public function getPermissionName(): string
     {
         return Entry::AUTH_ENTRY;
     }
 
+    #[Override]
     public function getSearchAttributes(): array
     {
         return ['name', 'content'];
     }
 
+    #[Override]
     public function getSearchWeight(): float
     {
         return 0.7;
@@ -466,6 +472,7 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
         return $this->entry?->getI18nLanguages() ?? parent::getI18nLanguages();
     }
 
+    #[Override]
     public function getSearchTenantId(): ?int
     {
         return $this->entry?->tenant_id;
@@ -474,6 +481,7 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
     /**
      * @return SectionQuery<static>
      */
+    #[Override]
     public static function findSearchable(): SectionQuery
     {
         return static::find()->with('entry');
@@ -483,6 +491,7 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
      * Neither the entry's name, which the title boost would rank every section beside, nor the type's, translated in
      * the saving editor's language.
      */
+    #[Override]
     public function getSearchTitle(?string $language = null): string
     {
         return mb_substr(SearchText::normalize((string)$this->getSearchAttributeValue('name', $language)), 0, 255);
@@ -604,6 +613,7 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
     /**
      * @return list<Entry>
      */
+    #[Override]
     public function getVisibleEntries(): array
     {
         if ($block = $this->getVisibleBlock()) {
@@ -618,16 +628,19 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
         return static::getModule()->enableBlocks && ($this->getType()?->allowsBlock() ?? false);
     }
 
+    #[Override]
     public function getAssetClass(): string
     {
         return SectionAsset::class;
     }
 
+    #[Override]
     public function allowsAssets(): bool
     {
         return static::getModule()->enableSectionAssets && $this->typeAllowsAssets();
     }
 
+    #[Override]
     public function allowsEntries(): bool
     {
         return static::getModule()->enableSectionEntries && $this->typeAllowsEntries();
@@ -651,6 +664,7 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
         return 'Section';
     }
 
+    #[Override]
     public function getTranslationModelClass(): string
     {
         return self::class;
