@@ -12,7 +12,7 @@ use Hirtz\Skeleton\Widgets\Forms\AutocompleteList;
 use Hirtz\Skeleton\Widgets\Forms\Fields\LinkField;
 use Hirtz\Skeleton\Widgets\Forms\LinkDialog;
 use Override;
-use yii\helpers\Html;
+use Hirtz\Skeleton\Helpers\Html;
 use Yii;
 use yii\filters\AccessControl;
 

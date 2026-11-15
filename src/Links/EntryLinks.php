@@ -21,7 +21,7 @@ use Hirtz\Tenant\Models\Collections\TenantCollection;
 use Normalizer;
 use Yii;
 use yii\base\Model;
-use yii\helpers\Html;
+use Hirtz\Skeleton\Helpers\Html;
 
 /**
  * The statics outlive the application and are reset from the cms `Bootstrap`.

@@ -235,7 +235,7 @@ class PickerGridViewTest extends TestCase
      */
     private function assertRecordLinksOpenInANewTab(string $html, string $route): void
     {
-        self::assertSame(1, preg_match('~<tbody.*?</tbody>~s', $html, $rows));
+        self::assertSame(1, preg_match('~<div class="table-wrap">.*?<tbody.*?</tbody>~s', $html, $rows));
 
         preg_match_all('~<a\b[^>]*>~', $rows[0] ?? '', $matches);
         $links = array_filter($matches[0], static fn (string $link): bool => str_contains($link, $route));
