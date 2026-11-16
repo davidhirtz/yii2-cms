@@ -153,6 +153,51 @@ class DashboardPanelsTest extends TestCase
         });
     }
 
+    /**
+     * With every frontend URL prefixed, the link once lost its `language` to the prefix and listed the source language.
+     */
+    public function testTheLinkForALanguageReachesTheGridUnderPrefixedUrls(): void
+    {
+        $this->withGermanDescriptions(function (): void {
+            $this->login();
+            $this->createEntry('Translated later', description: 'Sharp Å 東京', sectionCount: 1);
+
+            $manager = Yii::$app->getUrlManager();
+            self::assertInstanceOf(UrlManager::class, $manager);
+            $manager->languages = ['en-US' => 'en', 'de' => 'de'];
+            $manager->defaultLanguage = null;
+            $manager->i18nUrl = true;
+
+            Yii::$app->language = 'de';
+            $html = Dashboard::make()->render();
+
+            preg_match('#href="([^"]*missing=description[^"]*language=de[^"]*)"#', $html, $matches);
+            $url = Html::decode($matches[1] ?? self::fail('No link to the German descriptions'));
+            $alias = Yii::$app->getAdminAlias();
+
+            self::assertStringStartsWith("/$alias/cms/entry/index?", $url);
+
+            $request = $this->getWebRequest();
+            $request->setUrl($url);
+            $request->setPathInfo(ltrim((string)parse_url($url, PHP_URL_PATH), '/'));
+
+            $result = $manager->parseRequest($request);
+            self::assertIsArray($result);
+            self::assertSame('admin/cms/entry/index', $result[0]);
+
+            parse_str((string)parse_url($url, PHP_URL_QUERY), $params);
+            self::assertSame('de', $params['language'] ?? null);
+
+            $request->setQueryParams($params);
+            $html = Yii::$app->runAction($result[0], $params);
+
+            self::assertIsString($html);
+            self::assertStringContainsString(Yii::t('cms', 'ENTRY_MISSING_DESCRIPTION_LANGUAGE_LABEL', [
+                'language' => Yii::$app->getI18n()->getLabel('de'),
+            ]), $html);
+        });
+    }
+
     public function testATenantWithOneLanguageNamesNoLanguage(): void
     {
         $this->withGermanDescriptions(function (): void {

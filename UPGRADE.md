@@ -5,6 +5,13 @@ The v2 → v3 database migrations named below do not ship with the bundle: they 
 `Migrations\M260101000400CmsBaseline` for a fresh install and the migrations dated after it,
 `M260924100000RenumberSectionPositions` and `M260925100000AuthorBlocksAndRedirects`, which every installation runs.
 
+## 3.23 — Links to the site follow the content language
+
+The entry and category link buttons, the grids' frontend links, the slug prefixes of the entry, section and category
+forms and the grids' titles follow the admin's content language (the skeleton's guide, 3.29), no longer the editor's
+interface language. A project building a frontend URL in the admin in another language passes `language` or renders
+through `I18N::callback()`; assigning `Yii::$app->language` no longer changes the prefix there.
+
 ## 3.18 — Drag reordering is "reorder"
 
 Every `actionOrder()` is `actionReorder()` and its route `reorder` (`entry/reorder`, `entry-category/reorder`,

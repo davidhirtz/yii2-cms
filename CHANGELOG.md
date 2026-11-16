@@ -1,3 +1,9 @@
+## Unreleased
+
+- Changed the admin's links to the site, slug prefixes and translated titles to follow the admin's content language
+- Fixed the dashboard's missing-description link of a language under `i18nUrl`, which listed the source language
+- Changed the `davidhirtz/yii2-skeleton` requirement to `^3.29`
+
 ## 3.22.0 (November 11, 2026)
 
 - Added `CategoryQuery::whereUnused()`, the category grid's `unused` filter and a dashboard count of categories without entries
