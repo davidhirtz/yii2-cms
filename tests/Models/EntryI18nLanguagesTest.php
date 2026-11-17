@@ -87,11 +87,28 @@ class EntryI18nLanguagesTest extends TestCase
         self::assertSame('Château Å 東京 🚀', $entry->name);
         self::assertSame($entry->getI18nAttribute('slug', 'fr'), $entry->slug);
 
-        $entry->name = 'Stale';
         $entry->setAttribute('name_fr', 'Привет');
 
         self::assertSame(1, $entry->update());
-        self::assertSame('Привет', TestEntry::findOne($entry->id)?->name);
+        self::assertSame('Château Å 東京 🚀', TestEntry::findOne($entry->id)?->name, 'A filled source column is never overwritten.');
+    }
+
+    public function testAnEntryMovedToATenantWithoutTheSourceLanguageKeepsItsSourceContent(): void
+    {
+        Yii::$app->getI18n()->setLanguages(['en-US', 'de']);
+
+        $entry = TestEntry::create();
+        $entry->tenant_id = $this->createTenant('en-US', ['de'])->id;
+        $entry->name = 'English Å 東京';
+        $entry->setAttribute('name_de', 'Deutsch Mu' . "\u{308}" . 'ller');
+
+        self::assertTrue($entry->insert(), implode(' ', $entry->getErrorSummary(true)));
+
+        $entry = TestEntry::findOne($entry->id) ?? self::fail('No entry.');
+        $entry->tenant_id = $this->createTenant('de', [])->id;
+
+        self::assertSame(1, $entry->update(), implode(' ', $entry->getErrorSummary(true)));
+        self::assertSame('English Å 東京', TestEntry::findOne($entry->id)?->name);
     }
 
     public function testCodeWritingTheSourceColumnAloneKeepsIt(): void
@@ -107,7 +124,7 @@ class EntryI18nLanguagesTest extends TestCase
         self::assertSame('Ågot 東京', $entry->getI18nAttribute('name', 'fr'));
     }
 
-    public function testClearingTheDefaultLanguageIsAnErrorOnIt(): void
+    public function testAClearedDefaultLanguageTakesTheSourceValueBackLikeATranslation(): void
     {
         Yii::$app->getI18n()->setLanguages(['en-US', 'de', 'fr']);
 
@@ -119,8 +136,8 @@ class EntryI18nLanguagesTest extends TestCase
 
         $entry->setAttribute('name_fr', '');
 
-        self::assertFalse($entry->validate());
-        self::assertTrue($entry->hasErrors('name_fr'));
+        self::assertTrue($entry->validate());
+        self::assertSame('Château', $entry->getI18nAttribute('name', 'fr'));
     }
 
     public function testATenantOfferingEveryLanguageNarrowsNothing(): void
@@ -142,7 +159,7 @@ class EntryI18nLanguagesTest extends TestCase
         $tenant = Tenant::create();
         $tenant->loadDefaultValues();
         $tenant->name = 'Languages';
-        $tenant->url = 'https://www.languages.localhost';
+        $tenant->url = 'https://www.' . strtolower($language) . '.localhost';
         $tenant->language = $language;
         $tenant->languages = $languages;
 
