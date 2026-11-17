@@ -13,6 +13,7 @@ use Hirtz\Cms\Test\TestCase;
 use Hirtz\Skeleton\Db\DateTime;
 use Hirtz\Skeleton\Helpers\Html;
 use Hirtz\Skeleton\Helpers\Url;
+use Hirtz\Skeleton\Modules\Admin\Module as AdminModule;
 use Hirtz\Skeleton\Test\Traits\UserFixtureTrait;
 use Hirtz\Skeleton\Widgets\Panels\Dashboard;
 use Hirtz\Tenant\Models\Tenant;
@@ -133,7 +134,7 @@ class DashboardPanelsTest extends TestCase
             self::assertStringContainsString(Html::encode(Url::to([
                 '/admin/cms/entry/index',
                 'missing' => 'description',
-                'language' => 'de',
+                'contentLanguage' => 'de',
             ])), $html);
 
             $entry->setAttribute('description_de', 'Spitz Mu' . "\u{308}" . 'ller 😀');
@@ -141,11 +142,7 @@ class DashboardPanelsTest extends TestCase
 
             self::assertNotContains($entry->id, $this->getMissingDescriptionIds('de'));
 
-            $params = ['missing' => 'description', 'language' => 'de'];
-            $this->getWebRequest()->setQueryParams($params);
-
-            $html = Yii::$app->runAction('admin/cms/entry/index', $params);
-            self::assertIsString($html);
+            $html = $this->followMissingDescriptionsLink(['missing' => 'description', 'contentLanguage' => 'de']);
             self::assertStringNotContainsString('Translated later', $html);
             self::assertStringContainsString(Yii::t('cms', 'ENTRY_MISSING_DESCRIPTION_LANGUAGE_LABEL', [
                 'language' => Yii::$app->getI18n()->getLabel('de'),
@@ -171,7 +168,7 @@ class DashboardPanelsTest extends TestCase
             Yii::$app->language = 'de';
             $html = Dashboard::make()->render();
 
-            preg_match('#href="([^"]*missing=description[^"]*language=de[^"]*)"#', $html, $matches);
+            preg_match('#href="([^"]*missing=description[^"]*contentLanguage=de[^"]*)"#', $html, $matches);
             $url = Html::decode($matches[1] ?? self::fail('No link to the German descriptions'));
             $alias = Yii::$app->getAdminAlias();
 
@@ -186,12 +183,11 @@ class DashboardPanelsTest extends TestCase
             self::assertSame('admin/cms/entry/index', $result[0]);
 
             parse_str((string)parse_url($url, PHP_URL_QUERY), $params);
-            self::assertSame('de', $params['language'] ?? null);
+            self::assertSame('de', $params['contentLanguage'] ?? null);
 
-            $request->setQueryParams($params);
-            $html = Yii::$app->runAction($result[0], $params);
+            Yii::$app->language = 'en-US';
+            $html = $this->followMissingDescriptionsLink($params);
 
-            self::assertIsString($html);
             self::assertStringContainsString(Yii::t('cms', 'ENTRY_MISSING_DESCRIPTION_LANGUAGE_LABEL', [
                 'language' => Yii::$app->getI18n()->getLabel('de'),
             ]), $html);
@@ -239,12 +235,38 @@ class DashboardPanelsTest extends TestCase
      */
     private function renderMissingDescriptions(array $params = []): string
     {
-        $params = [...$params, 'missing' => 'description', 'language' => 'de'];
-        $this->getWebRequest()->setQueryParams($params);
+        $html = $this->followMissingDescriptionsLink([...$params, 'missing' => 'description', 'contentLanguage' => 'de']);
+        self::assertStringContainsString(Yii::t('cms', 'ENTRY_MISSING_DESCRIPTION_LABEL'), $html);
 
+        return $html;
+    }
+
+    /**
+     * The link makes its language the content language and redirects without it, and the grid lists in that language.
+     *
+     * @param array<int|string, mixed> $params
+     */
+    private function followMissingDescriptionsLink(array $params): string
+    {
+        $language = $params['contentLanguage'] ?? self::fail('The link names no content language.');
+        self::assertIsString($language);
+
+        $this->getWebRequest()->setQueryParams($params);
+        Yii::$app->runAction('admin/cms/entry/index', $params);
+
+        self::assertStringNotContainsString('contentLanguage=', (string)$this->getWebResponse()->getHeaders()->get('location'));
+
+        $admin = Yii::$app->getModule('admin');
+        self::assertInstanceOf(AdminModule::class, $admin);
+        self::assertSame($language, $admin->getContentLanguage());
+
+        Yii::$app->getUrlManager()->setContentLanguage($language);
+        unset($params['contentLanguage']);
+
+        $this->getWebResponse()->clear();
+        $this->getWebRequest()->setQueryParams($params);
         $html = Yii::$app->runAction('admin/cms/entry/index', $params);
         self::assertIsString($html);
-        self::assertStringContainsString(Yii::t('cms', 'ENTRY_MISSING_DESCRIPTION_LABEL'), $html);
 
         return $html;
     }

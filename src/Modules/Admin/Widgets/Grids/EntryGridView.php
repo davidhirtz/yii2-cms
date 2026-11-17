@@ -252,7 +252,7 @@ class EntryGridView extends GridView
         return FilterDropdown::make()
             ->items([EntryActiveDataProvider::MISSING_DESCRIPTION => $label])
             ->label($label)
-            ->params(['page' => null, 'language' => null])
+            ->params(['page' => null])
             ->paramName('missing');
     }
 

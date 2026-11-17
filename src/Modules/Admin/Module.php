@@ -67,6 +67,7 @@ class Module extends \Hirtz\Skeleton\Base\Module implements ModuleInterface
     protected function addDescriptionChecks(ContentHealthPanel $health): void
     {
         $languages = Yii::$container->get(EntryActiveDataProvider::class)->getDescriptionLanguages();
+        $param = $this->module->contentLanguageParam;
 
         foreach ($languages as $language) {
             $health->addCheck(
@@ -84,7 +85,7 @@ class Module extends \Hirtz\Skeleton\Base\Module implements ModuleInterface
                 [
                     '/admin/cms/entry/index',
                     'missing' => EntryActiveDataProvider::MISSING_DESCRIPTION,
-                    'language' => $language !== Yii::$app->sourceLanguage ? $language : null,
+                    $param => $language,
                 ],
                 [Entry::AUTH_ENTRY],
                 'triangle-exclamation',

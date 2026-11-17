@@ -73,7 +73,6 @@ class EntryController extends AbstractController
         ?string $q = null,
         ?int $status = null,
         ?string $missing = null,
-        ?string $language = null,
     ): Response|string {
         // The pinned type is the root list's: a parent's subentries, like a missing filter, are listed whatever their type.
         if (!$type && !$parent && !$missing && static::getModule()->defaultEntryType) {
@@ -83,7 +82,7 @@ class EntryController extends AbstractController
         $provider = Yii::$container->get(EntryActiveDataProvider::class, config: [
             'category' => Category::findOne($category),
             'parent' => Entry::findOne($parent),
-            'language' => $missing ? $language : null,
+            'language' => $missing ? Yii::$app->getI18n()->getContentLanguage() : null,
             'missing' => $missing,
             'searchString' => $q,
             'status' => $status,
