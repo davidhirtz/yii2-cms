@@ -148,7 +148,7 @@ class PreloadEntrySiteRelations extends Component
 
         $sections = $this->entry->getSections()
             ->selectSiteAttributes()
-            ->withTranslations()
+            ->withTranslations($this->getTranslationLanguages())
             ->whereStatus()
             ->indexBy('id')
             ->all();
@@ -188,7 +188,7 @@ class PreloadEntrySiteRelations extends Component
 
         $this->blocks = Block::find()
             ->selectSiteAttributes()
-            ->withTranslations()
+            ->withTranslations($this->getTranslationLanguages())
             ->whereStatus()
             ->andWhere(['id' => array_unique($blockIds)])
             ->indexBy('id')
@@ -295,13 +295,23 @@ class PreloadEntrySiteRelations extends Component
     }
 
     /**
+     * The languages the entry's tenant serves; another language a page reads loads lazily.
+     *
+     * @return list<string>
+     */
+    protected function getTranslationLanguages(): array
+    {
+        return $this->entry->getI18nLanguages();
+    }
+
+    /**
      * @return EntryQuery<Entry>
      */
     protected function getEntryQuery(): EntryQuery
     {
         return Entry::find()
             ->selectSiteAttributes()
-            ->withTranslations()
+            ->withTranslations($this->getTranslationLanguages())
             ->withPermalinks()
             ->whereStatus()
             ->andWhereParentStatus()
@@ -413,7 +423,7 @@ class PreloadEntrySiteRelations extends Component
         if ($fileIds) {
             $this->files += File::find()
                 ->selectSiteAttributes()
-                ->withTranslations()
+                ->withTranslations($this->getTranslationLanguages())
                 ->where(['id' => $fileIds])
                 ->indexBy('id')
                 ->all();

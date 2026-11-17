@@ -1,5 +1,6 @@
 ## Unreleased
 
+- Changed an entry of a tenant without the source language to offer the tenant's languages alone, its default first, copied into the source columns
 - Changed the admin's links to the site, slug prefixes and translated titles to follow the admin's content language
 - Fixed the dashboard's missing-description link of a language under `i18nUrl`, which listed the source language
 - Changed the `davidhirtz/yii2-skeleton` requirement to `^3.29`

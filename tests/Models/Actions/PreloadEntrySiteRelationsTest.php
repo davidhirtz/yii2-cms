@@ -13,6 +13,8 @@ use Hirtz\Cms\Test\Models\TestEntry;
 use Hirtz\Cms\Test\Models\TestSection;
 use Hirtz\Cms\Test\TestCase;
 use Hirtz\Skeleton\Db\ActiveQuery;
+use Hirtz\Tenant\Models\Collections\TenantCollection;
+use Hirtz\Tenant\Models\Tenant;
 use Yii;
 
 class PreloadEntrySiteRelationsTest extends TestCase
@@ -165,5 +167,35 @@ class PreloadEntrySiteRelationsTest extends TestCase
 
         self::assertNull($entry->parent);
         self::assertCount(1, $preload->entries);
+    }
+
+    public function testTranslationsLoadInTheLanguagesOfTheEntrysTenant(): void
+    {
+        Yii::$app->getI18n()->setLanguages(['en-US', 'de', 'fr']);
+        Yii::$container->set(TestSection::class, ['i18nAttributes' => ['name']]);
+        TestSection::instance(true);
+
+        try {
+            $tenant = Tenant::create();
+            $tenant->loadDefaultValues();
+            $tenant->name = 'Deutsch';
+            $tenant->url = 'https://www.deutsch.localhost';
+            $tenant->language = 'de';
+            $tenant->languages = [];
+            self::assertTrue($tenant->save(), implode(' ', $tenant->getErrorSummary(true)));
+            TenantCollection::invalidateCache();
+
+            $entry = $this->getEntryFromFixture('page-enabled');
+            $entry->populateTenantRelation($tenant);
+            ActiveQuery::setStatus(TestEntry::STATUS_ENABLED);
+
+            $preload = fn () => new PreloadEntrySiteRelations(['entry' => $entry]);
+
+            self::assertGreaterThan(0, $this->countQueries($preload, "/FROM `translation`.*'de'/"));
+            self::assertSame(0, $this->countQueries($preload, "/FROM `translation`.*'fr'/"));
+        } finally {
+            Yii::$container->clear(TestSection::class);
+            TestSection::instance(true);
+        }
     }
 }

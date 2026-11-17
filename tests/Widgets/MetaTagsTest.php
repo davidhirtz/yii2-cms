@@ -231,6 +231,9 @@ class MetaTagsTest extends TestCase
     {
         $entry = $this->getPreloadedEntryFromFixture('post-1');
 
+        // The first render reads the fixture entry's slug, which no permalink match preloaded.
+        $this->render($entry);
+
         $without = $this->countQueries(fn () => $this->render($entry, ['enableBreadcrumbs' => false]));
         $with = $this->countQueries(fn () => $this->render($entry));
 

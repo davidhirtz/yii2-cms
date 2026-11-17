@@ -860,7 +860,8 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
     }
 
     /**
-     * The tenant's languages, plus the source language a required attribute is validated in.
+     * The tenant's languages, its default first: the source columns copy it when the tenant leaves the source
+     * language out ({@see fillI18nSourceAttributes()}).
      */
     #[Override]
     public function getI18nLanguages(): array
@@ -872,8 +873,13 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
             return $languages;
         }
 
-        $available = [Yii::$app->sourceLanguage, ...$tenant->getAvailableLanguages()];
-        return array_values(array_filter($languages, fn (string $language): bool => in_array($language, $available, true)));
+        $available = $tenant->getAvailableLanguages();
+        $languages = array_values(array_filter($languages, fn (string $language): bool => in_array($language, $available, true)));
+        $default = $tenant->getDefaultLanguage();
+
+        return in_array($default, $languages, true)
+            ? [$default, ...array_values(array_diff($languages, [$default]))]
+            : $languages;
     }
 
     /**
