@@ -1,4 +1,4 @@
-## Unreleased
+## 3.23.0 (November 17, 2026)
 
 - Changed an entry of a tenant without the source language to offer the tenant's languages only
 - Changed the admin's links to the site, slug prefixes and translated titles to follow the admin's content language
