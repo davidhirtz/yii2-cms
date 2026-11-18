@@ -2,7 +2,8 @@
 
 - Changed the dashboard's missing-description links to switch the content language, and the entry grid's `missing` filter to follow it
 - Changed the `davidhirtz/yii2-skeleton` requirement to `^3.30`
-- Changed the navbar's tenant switch to show for the `entry` permission
+- Changed the navbar's tenant switch to show for the `entry` permission; entry pages switch to the entry list (`EntryTenantSwitchTrait`)
+- Removed the entry grid's tenant dropdown and `EntryGridView::tenantParamName()`: the navbar switches the tenant
 - Changed the `davidhirtz/yii2-tenant` requirement to `^3.11`
 
 ## 3.23.0 (November 17, 2026)

@@ -8,9 +8,12 @@ use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Modules\Admin\Controllers\Traits\EntryControllerTrait;
 use Override;
 use yii\filters\AccessControl;
+use Hirtz\Cms\Modules\Admin\Controllers\Traits\EntryTenantSwitchTrait;
+use Hirtz\Tenant\Modules\Admin\Controllers\TenantSwitchInterface;
 
-class EntryReferenceController extends AbstractController
+class EntryReferenceController extends AbstractController implements TenantSwitchInterface
 {
+    use EntryTenantSwitchTrait;
     use EntryControllerTrait;
 
     #[Override]

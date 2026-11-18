@@ -485,9 +485,9 @@ class EntryGridViewTest extends TestCase
     }
 
     /**
-     * The request's tenant has no entries, another one does — and the dropdown is the only way to it.
+     * The request's tenant has no entries, another one does — and the navbar's switch leads to its list.
      */
-    public function testAnEmptyTenantKeepsTheTenantDropdown(): void
+    public function testAnEmptyTenantSwitchesToAnotherTenantsEntries(): void
     {
         $empty = $this->createTenant('Empty Tenant', 'https://www.empty-domain.localhost');
         $other = $this->createTenant('Other Tenant', 'https://www.other-domain.localhost');
@@ -503,7 +503,7 @@ class EntryGridViewTest extends TestCase
 
         self::assertIsString($html);
         self::assertStringNotContainsString('Needle', $html);
-        self::assertStringContainsString('tenant=' . $other->id, $html);
+        self::assertStringContainsString('href="https://www.other-domain.localhost/admin/cms/entry/index" hx-boost="false">Other Tenant</a>', $html);
     }
 
     private function createTenant(string $name, string $url): Tenant

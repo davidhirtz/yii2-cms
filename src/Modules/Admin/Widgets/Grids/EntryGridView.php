@@ -36,9 +36,6 @@ use Hirtz\Skeleton\Widgets\Grids\GridView;
 use Hirtz\Skeleton\Widgets\Grids\Toolbars\FilterDropdown;
 use Hirtz\Skeleton\Widgets\Grids\Toolbars\TypeFilterDropdown;
 use Hirtz\Skeleton\Widgets\Grids\Traits\SelectionTrait;
-use Hirtz\Tenant\Models\Collections\TenantCollection;
-use Hirtz\Tenant\Models\Tenant;
-use Hirtz\Tenant\Web\UrlManager;
 use Override;
 use Stringable;
 use Traversable;
@@ -54,8 +51,6 @@ class EntryGridView extends GridView
     use ModuleTrait;
     use SelectionTrait;
 
-    protected string $tenantParamName = 'tenant';
-
     protected bool $showUrl = true;
     protected ?bool $showCategories = null;
     protected ?bool $showCategoryDropdown = null;
@@ -65,12 +60,6 @@ class EntryGridView extends GridView
      * @var array<int|string, mixed>|null
      */
     protected ?array $reorderRoute = null;
-
-    public function tenantParamName(string $tenantParamName): static
-    {
-        $this->tenantParamName = $tenantParamName;
-        return $this;
-    }
 
     public function showUrl(bool $showUrl = true): static
     {
@@ -128,7 +117,6 @@ class EntryGridView extends GridView
         $this->configureSelection();
 
         $this->header ??= [
-            $this->getTenantDropdown(),
             $this->getTypeDropdown(),
             $this->getCategoryDropdown(),
             $this->getMissingDropdown(),
@@ -149,63 +137,6 @@ class EntryGridView extends GridView
         ];
 
         parent::configure();
-    }
-
-    /**
-     * Neither a single-tenant project nor a grid scoped to one entry's children gets a dropdown, which could only
-     * empty the grid.
-     */
-    protected function getTenantDropdown(): ?Stringable
-    {
-        if ($this->provider->parent) {
-            return null;
-        }
-
-        $items = $this->getTenantDropdownItems();
-
-        if (count($items) < 2) {
-            return null;
-        }
-
-        $manager = Yii::$app->getUrlManager();
-        $tenant = $manager instanceof UrlManager ? $manager->getTenantFromRequest(Application::current()->getRequest()) : null;
-
-        return FilterDropdown::make()
-            ->default(false)
-            ->label($tenant->name ?? Yii::t('cms', 'ENTRY_TENANT_ID_LABEL'))
-            ->items($items)
-            ->paramName($this->tenantParamName);
-    }
-
-    /**
-     * The tenant comes from the host as often as from the parameter, so an empty grid keeps the dropdown to the others.
-     */
-    #[Override]
-    protected function isFiltered(): bool
-    {
-        if (parent::isFiltered()) {
-            return true;
-        }
-
-        if ($this->provider->tenantId === null) {
-            return false;
-        }
-
-        foreach (is_array($this->header) ? $this->header : [] as $item) {
-            if ($item instanceof FilterDropdown && $item->getParamName() === $this->tenantParamName) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * @return array<int, string>
-     */
-    protected function getTenantDropdownItems(): array
-    {
-        return array_map(fn (Tenant $tenant) => $tenant->name, TenantCollection::getAll());
     }
 
     /**

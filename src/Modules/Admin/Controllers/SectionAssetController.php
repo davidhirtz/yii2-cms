@@ -17,12 +17,15 @@ use Yii;
 use yii\filters\AccessControl;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
+use Hirtz\Cms\Modules\Admin\Controllers\Traits\EntryTenantSwitchTrait;
+use Hirtz\Tenant\Modules\Admin\Controllers\TenantSwitchInterface;
 
 /**
  * @extends Controller<Module>
  */
-class SectionAssetController extends Controller
+class SectionAssetController extends Controller implements TenantSwitchInterface
 {
+    use EntryTenantSwitchTrait;
     use AssetControllerTrait;
     use SectionControllerTrait;
 

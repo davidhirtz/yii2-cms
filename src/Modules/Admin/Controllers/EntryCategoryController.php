@@ -19,9 +19,12 @@ use yii\filters\VerbFilter;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
+use Hirtz\Cms\Modules\Admin\Controllers\Traits\EntryTenantSwitchTrait;
+use Hirtz\Tenant\Modules\Admin\Controllers\TenantSwitchInterface;
 
-class EntryCategoryController extends AbstractController
+class EntryCategoryController extends AbstractController implements TenantSwitchInterface
 {
+    use EntryTenantSwitchTrait;
     use CategoryControllerTrait;
     use EntryControllerTrait;
 

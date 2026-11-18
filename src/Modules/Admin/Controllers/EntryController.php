@@ -14,15 +14,17 @@ use Hirtz\Cms\Modules\Admin\Data\EntryActiveDataProvider;
 use Hirtz\Skeleton\Helpers\Url;
 use Hirtz\Skeleton\Web\Traits\StatusControllerTrait;
 use Hirtz\Skeleton\Widgets\Flashes;
+use Hirtz\Tenant\Modules\Admin\Controllers\TenantSwitchInterface;
 use Override;
 use Yii;
+use yii\base\Action;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
-class EntryController extends AbstractController
+class EntryController extends AbstractController implements TenantSwitchInterface
 {
     use EntryControllerTrait;
     use StatusControllerTrait;
@@ -261,5 +263,24 @@ class EntryController extends AbstractController
         return $this->redirect($route
             ? [...array_filter($this->request->get(), is_string(...), ARRAY_FILTER_USE_KEY), ...$route]
             : ['index', ...$this->request->get()]);
+    }
+
+    /**
+     * The list and a new entry keep their filters but the parent, which belongs to the tenant switched from; an
+     * entry of its own leads to the list.
+     *
+     * @return array<int|string, mixed>
+     */
+    #[Override]
+    public function getTenantSwitchRoute(Action $action): array
+    {
+        if (!in_array($action->id, ['index', 'create'], true)) {
+            return ['/' . $this->getUniqueId() . '/index'];
+        }
+
+        $params = $this->request->getQueryParams();
+        unset($params['parent'], $params['tenant']);
+
+        return ['/' . $action->getUniqueId(), ...$params];
     }
 }

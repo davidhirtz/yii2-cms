@@ -12,9 +12,12 @@ use Hirtz\Cms\Modules\Admin\Controllers\Traits\SectionControllerTrait;
 use Override;
 use yii\filters\AccessControl;
 use yii\web\Response;
+use Hirtz\Cms\Modules\Admin\Controllers\Traits\EntryTenantSwitchTrait;
+use Hirtz\Tenant\Modules\Admin\Controllers\TenantSwitchInterface;
 
-class SectionEntryController extends AbstractController
+class SectionEntryController extends AbstractController implements TenantSwitchInterface
 {
+    use EntryTenantSwitchTrait;
     use EntryControllerTrait;
     use EntryRelationControllerTrait;
     use SectionControllerTrait;

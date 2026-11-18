@@ -27,9 +27,12 @@ use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
+use Hirtz\Cms\Modules\Admin\Controllers\Traits\EntryTenantSwitchTrait;
+use Hirtz\Tenant\Modules\Admin\Controllers\TenantSwitchInterface;
 
-class SectionController extends AbstractController
+class SectionController extends AbstractController implements TenantSwitchInterface
 {
+    use EntryTenantSwitchTrait;
     use EntryControllerTrait;
     use SectionControllerTrait;
     use StatusControllerTrait;
