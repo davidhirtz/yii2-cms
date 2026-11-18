@@ -37,6 +37,7 @@ use Hirtz\Skeleton\Console\Application as ConsoleApplication;
 use Hirtz\Skeleton\Web\Application;
 use Hirtz\Tenant\Models\Tenant;
 use Hirtz\Tenant\Modules\Admin\Widgets\Grids\TenantGridView;
+use Hirtz\Tenant\Modules\Admin\Widgets\Buttons\TenantDropdownButton;
 use Override;
 use Yii;
 use yii\base\ModelEvent;
@@ -225,6 +226,10 @@ class Bootstrap implements ConfigBootstrapInterface
         DashboardController::addRoles(static fn (): array => [
             Entry::AUTH_ENTRY,
             Category::AUTH_CATEGORY,
+        ]);
+
+        TenantDropdownButton::addRoles(static fn (): array => [
+            Entry::AUTH_ENTRY,
         ]);
 
         $app->setMigrationNamespace('Hirtz\Cms\Migrations');
