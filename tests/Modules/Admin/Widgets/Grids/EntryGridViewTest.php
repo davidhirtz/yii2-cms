@@ -506,6 +506,42 @@ class EntryGridViewTest extends TestCase
         self::assertStringContainsString('href="https://www.other-domain.localhost/admin/cms/entry/index" hx-boost="false">Other Tenant</a>', $html);
     }
 
+    /**
+     * A grid lists the admin's tenant: a `?tenant=` was a filter that left languages and previews on the host's.
+     */
+    public function testTheTenantQueryParamListsNoOtherTenant(): void
+    {
+        $empty = $this->createTenant('Empty Tenant', 'https://www.empty-domain.localhost');
+        $other = $this->createTenant('Other Tenant', 'https://www.other-domain.localhost');
+
+        $manager = Yii::$app->getUrlManager();
+        self::assertInstanceOf(UrlManager::class, $manager);
+        $manager->setTenant($empty);
+
+        $this->login();
+        $this->createEntry('Needle', 'needle', $other);
+        $this->getWebRequest()->setQueryParams(['tenant' => (string)$other->id]);
+
+        $html = Yii::$app->runAction('admin/cms/entry/index');
+
+        self::assertIsString($html);
+        self::assertStringNotContainsString('Needle', $html);
+    }
+
+    public function testATenantsEntryCountSwitchesToItsAdmin(): void
+    {
+        $other = $this->createTenant('Other Tenant', 'https://www.other-domain.localhost');
+        $user = $this->login();
+        $this->assignPermission($user->id, Tenant::AUTH_TENANT);
+        $this->createEntry('Needle', 'needle', $other);
+
+        $html = Yii::$app->runAction('admin/tenant/tenant/index');
+
+        self::assertIsString($html);
+        self::assertMatchesRegularExpression('#<a [^>]*href="https://www\.other-domain\.localhost/admin/cms/entry/index"[^>]*hx-boost="false"#', $html);
+        self::assertStringNotContainsString('entry/index?tenant=', $html);
+    }
+
     private function createTenant(string $name, string $url): Tenant
     {
         $tenant = Tenant::create();

@@ -219,13 +219,14 @@ class DashboardPanelsTest extends TestCase
                 'count' => count($this->getMissingDescriptionIds('de')),
             ]), $html);
 
-            // The grid's own tenant, picked from the dropdown, decides, not the request's.
-            $manager->tenant = null;
+            // The grid lists the admin's tenant, whose languages decide.
             $label = Yii::t('cms', 'ENTRY_MISSING_DESCRIPTION_LANGUAGE_LABEL', [
                 'language' => Yii::$app->getI18n()->getLabel('de'),
             ]);
 
-            self::assertStringNotContainsString($label, $this->renderMissingDescriptions(['tenant' => $tenant->id]));
+            self::assertStringNotContainsString($label, $this->renderMissingDescriptions());
+
+            $manager->tenant = null;
             self::assertStringContainsString($label, $this->renderMissingDescriptions());
         });
     }

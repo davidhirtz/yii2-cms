@@ -13,7 +13,6 @@ use Hirtz\Cms\Models\EntryRelation;
 use Hirtz\Cms\Models\Interfaces\EntryRelationModelInterface;
 use Hirtz\Cms\Modules\ModuleTrait;
 use Hirtz\Skeleton\Data\ActiveDataProvider;
-use Hirtz\Skeleton\Web\Application;
 use Hirtz\Tenant\Models\Collections\TenantCollection;
 use Hirtz\Tenant\Web\UrlManager;
 use Override;
@@ -59,12 +58,6 @@ class EntryActiveDataProvider extends ActiveDataProvider
 
     protected function getTenantIdFromRequest(): ?int
     {
-        $tenantId = (int)Application::current()->getRequest()->get('tenant');
-
-        if ($tenantId) {
-            return $tenantId;
-        }
-
         if ($this->relatedModel instanceof Section && $this->relatedModel->entry) {
             return $this->relatedModel->entry->tenant_id;
         }

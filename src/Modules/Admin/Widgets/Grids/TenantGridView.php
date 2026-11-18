@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Hirtz\Cms\Modules\Admin\Widgets\Grids;
 
 use Hirtz\Cms\Models\Actions\UpdateTenantEntryCount;
+use Hirtz\Skeleton\Html\A;
+use Hirtz\Skeleton\Html\Div;
 use Hirtz\Skeleton\Widgets\Grids\Columns\BadgeColumn;
 use Hirtz\Skeleton\Widgets\Grids\Columns\Column;
 use Hirtz\Tenant\Models\Tenant;
@@ -42,6 +44,8 @@ class TenantGridView extends \Hirtz\Tenant\Modules\Admin\Widgets\Grids\TenantGri
         return $column
             ->property(UpdateTenantEntryCount::ENTRY_COUNT_ATTRIBUTE)
             ->title(Yii::t('cms', 'ENTRY_PLURAL'))
-            ->url(fn (Tenant $tenant) => ['/admin/cms/entry/index', 'tenant' => $tenant->id]);
+            // Another tenant's entries are listed by its own admin, which the link switches to.
+            ->url(fn (Tenant $tenant) => ['/admin/cms/entry/index', 'tenant' => $tenant])
+            ->link(fn (A|Div $tag) => $tag instanceof A ? $tag->attribute('hx-boost', 'false') : $tag);
     }
 }
