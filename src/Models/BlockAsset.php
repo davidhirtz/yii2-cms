@@ -6,6 +6,7 @@ namespace Hirtz\Cms\Models;
 
 use Hirtz\Media\Models\Asset;
 use Hirtz\Skeleton\Models\CustomAttributes\CustomAttribute;
+use Hirtz\Tenant\Models\Tenant;
 use Override;
 use Yii;
 
@@ -34,6 +35,14 @@ class BlockAsset extends Asset
     public static function getModelClass(): string
     {
         return Block::class;
+    }
+
+    /**
+     * @return array<string, Tenant>
+     */
+    public function getAdminTenantRouteParams(): array
+    {
+        return [];
     }
 
     #[Override]

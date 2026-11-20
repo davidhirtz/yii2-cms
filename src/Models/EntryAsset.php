@@ -7,6 +7,7 @@ namespace Hirtz\Cms\Models;
 use Hirtz\Cms\Models\Traits\MetaImageTrait;
 use Hirtz\Media\Models\Asset;
 use Hirtz\Skeleton\Models\CustomAttributes\CustomAttribute;
+use Hirtz\Tenant\Models\Tenant;
 use Override;
 use Yii;
 
@@ -21,6 +22,21 @@ class EntryAsset extends Asset
     public static function getModelClass(): string
     {
         return Entry::class;
+    }
+
+    #[Override]
+    public function getAdminRoute(): array|false
+    {
+        $route = parent::getAdminRoute();
+        return $route ? [...$route, ...$this->getAdminTenantRouteParams()] : false;
+    }
+
+    /**
+     * @return array<string, Tenant>
+     */
+    public function getAdminTenantRouteParams(): array
+    {
+        return $this->model->getAdminTenantRouteParams();
     }
 
     #[Override]

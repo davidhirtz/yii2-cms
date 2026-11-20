@@ -1,6 +1,7 @@
 ## Unreleased
 
-- Added a tenant column to the grids of a file's assets and references, an entry's references and relations, a block's sections and linked entries
+- Added `getAdminTenantRouteParams()` to entries, sections and their assets, whose admin routes open another tenant's record in it
+- Added a tenant column before the record to the grids of a file's assets and references, an entry's references and relations, a block's sections and linked entries
 - Changed `EntryGridView` to declare its columns in `getDefaultColumns()`
 - Changed the `davidhirtz/yii2-tenant` requirement to `^3.12`
 

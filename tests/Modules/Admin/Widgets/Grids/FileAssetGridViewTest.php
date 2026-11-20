@@ -16,6 +16,8 @@ use Hirtz\Media\Modules\Admin\Widgets\Grids\FileAssetGridView;
 use Hirtz\Media\Modules\Admin\Widgets\Grids\FileReferenceGridView;
 use Hirtz\Skeleton\Models\User;
 use Hirtz\Skeleton\Test\Fixtures\UserFixture;
+use Hirtz\Tenant\Models\Collections\TenantCollection;
+use Hirtz\Tenant\Web\UrlManager;
 use Override;
 use Yii;
 use yii\web\Controller;
@@ -51,13 +53,33 @@ class FileAssetGridViewTest extends TestCase
         );
     }
 
-    public function testTheOwnersTenantIsNamed(): void
+    public function testTheOwnersTenantIsNamedBeforeTheOwner(): void
     {
+        $this->setCurrentTenant(2);
+
         $html = (string)FileAssetGridView::make()
             ->file($this->getFileFromFixture('file-3'));
 
-        self::assertStringContainsString('Record</a></th><th>Tenant</th>', $html);
-        self::assertStringContainsString('<td>Default</td>', $html);
+        self::assertStringContainsString('<th>Tenant</th><th><a href="/de/test?sort=model_class">Record</a></th>', $html);
+        self::assertStringContainsString('<td>Default</td><td><span class="model-heading">', $html);
+    }
+
+    public function testTheTenantIsHiddenWhileEveryOwnerIsTheAdminsTenants(): void
+    {
+        $this->setCurrentTenant(1);
+
+        $html = (string)FileAssetGridView::make()
+            ->file($this->getFileFromFixture('file-3'));
+
+        self::assertStringNotContainsString('<th>Tenant</th>', $html);
+    }
+
+    private function setCurrentTenant(int $id): void
+    {
+        $manager = Yii::$app->getUrlManager();
+        self::assertInstanceOf(UrlManager::class, $manager);
+
+        $manager->setTenant(TenantCollection::getById($id) ?? self::fail('No tenant.'));
     }
 
     public function testTheOwnerIsLinkedOnlyWithItsPermission(): void

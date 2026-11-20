@@ -31,6 +31,7 @@ use Hirtz\Skeleton\Search\Search;
 use Hirtz\Skeleton\Web\User as WebUser;
 use Hirtz\Tenant\Models\Collections\TenantCollection;
 use Hirtz\Tenant\Models\Tenant;
+use Hirtz\Tenant\Modules\Admin\Module as AdminTenantModule;
 use Hirtz\Tenant\Models\Traits\TenantRelationTrait;
 use BackedEnum;
 use Override;
@@ -672,7 +673,7 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
     #[Override]
     public function getAdminRoute(): false|array
     {
-        return $this->id ? ['/admin/cms/entry/update', 'id' => $this->id] : false;
+        return $this->id ? ['/admin/cms/entry/update', 'id' => $this->id, ...$this->getAdminTenantRouteParams()] : false;
     }
 
     #[Override]
@@ -888,6 +889,19 @@ class Entry extends ActiveRecord implements AssetModelInterface, SearchableInter
     public function getTenantRouteParams(): array
     {
         return ['tenant' => TenantCollection::getById($this->tenant_id)];
+    }
+
+    /**
+     * An entry of another tenant than the admin's opens in its own.
+     *
+     * @return array<string, Tenant>
+     */
+    public function getAdminTenantRouteParams(): array
+    {
+        $tenant = TenantCollection::getById($this->tenant_id);
+        $current = AdminTenantModule::getCurrentTenant();
+
+        return $tenant && $current && $tenant->id !== $current->id ? ['tenant' => $tenant] : [];
     }
 
     /**

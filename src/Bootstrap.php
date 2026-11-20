@@ -267,7 +267,7 @@ class Bootstrap implements ConfigBootstrapInterface
     {
         foreach ([FileAssetGridView::class, FileReferenceGridView::class] as $class) {
             EventHelper::on($class, Widget::EVENT_CONFIGURE, static function (GridView $grid): void {
-                $grid->columns(static fn (array $columns): array => TenantColumn::insertAfter($columns, 'model_class'));
+                $grid->columns(static fn (array $columns): array => TenantColumn::insertBefore($columns, 'model_class'));
             });
         }
     }

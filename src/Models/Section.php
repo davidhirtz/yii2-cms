@@ -29,6 +29,7 @@ use Hirtz\Skeleton\Models\Traits\SearchableTrait;
 use Hirtz\Skeleton\Search\SearchText;
 use Hirtz\Skeleton\Validators\RelationValidator;
 use Hirtz\Skeleton\Web\User as WebUser;
+use Hirtz\Tenant\Models\Tenant;
 use Override;
 use Yii;
 
@@ -420,7 +421,15 @@ class Section extends ActiveRecord implements AssetModelInterface, EntryRelation
     #[Override]
     public function getAdminRoute(): array|false
     {
-        return $this->id ? ['/admin/cms/section/update', 'id' => $this->id] : false;
+        return $this->id ? ['/admin/cms/section/update', 'id' => $this->id, ...$this->getAdminTenantRouteParams()] : false;
+    }
+
+    /**
+     * @return array<string, Tenant>
+     */
+    public function getAdminTenantRouteParams(): array
+    {
+        return $this->entry?->getAdminTenantRouteParams() ?? [];
     }
 
     #[Override]

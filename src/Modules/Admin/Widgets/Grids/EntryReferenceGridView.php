@@ -44,7 +44,7 @@ class EntryReferenceGridView extends GridView
 
         EntryReference::populateModelRelations($this->provider->getModels(), searchable: true);
 
-        $this->columns ??= TenantColumn::insertAfter($this->getModelReferenceColumns(), 'model_class');
+        $this->columns ??= TenantColumn::insertBefore($this->getModelReferenceColumns(), 'model_class');
 
         parent::configure();
     }

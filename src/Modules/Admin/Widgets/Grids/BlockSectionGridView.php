@@ -78,8 +78,8 @@ class BlockSectionGridView extends GridView
             $this->getCheckboxColumn(),
             $this->getStatusColumn(),
             $this->getTypeColumn(),
-            $this->getEntryColumn(),
             $this->getTenantColumn(),
+            $this->getEntryColumn(),
             $this->getUpdatedAtColumn(),
             $this->getButtonColumn(),
         ];

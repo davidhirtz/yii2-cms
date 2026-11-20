@@ -19,7 +19,6 @@ use Stringable;
 use Yii;
 use yii\data\ArrayDataProvider;
 use Hirtz\Tenant\Modules\Admin\Widgets\Grids\Columns\TenantColumn;
-use Hirtz\Tenant\Models\Collections\TenantCollection;
 use Hirtz\Skeleton\Models\Interfaces\SearchableInterface;
 
 /**
@@ -53,8 +52,8 @@ class EntryRelationParentGridView extends GridView
         ]);
 
         $this->columns ??= [
-            $this->getModelColumn(),
             $this->getTenantColumn(),
+            $this->getModelColumn(),
             $this->getUpdatedAtColumn(),
             $this->getButtonColumn(),
         ];
@@ -121,12 +120,9 @@ class EntryRelationParentGridView extends GridView
     protected function getTenantColumn(): ?Column
     {
         return TenantColumn::make()
-            ->value(function (EntryRelation $relation): ?string {
+            ->tenantId(function (EntryRelation $relation): ?int {
                 $model = $relation->getModel();
-
-                return $model instanceof SearchableInterface
-                    ? TenantCollection::getById($model->getSearchTenantId())?->name
-                    : null;
+                return $model instanceof SearchableInterface ? $model->getSearchTenantId() : null;
             });
     }
 

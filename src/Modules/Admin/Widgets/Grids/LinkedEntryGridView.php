@@ -64,7 +64,7 @@ class LinkedEntryGridView extends EntryGridView
     #[Override]
     protected function getDefaultColumns(): array
     {
-        return TenantColumn::insertAfter(parent::getDefaultColumns(), Entry::instance()->getI18nAttributeName('name'));
+        return TenantColumn::insertBefore(parent::getDefaultColumns(), Entry::instance()->getI18nAttributeName('name'));
     }
 
     /**
