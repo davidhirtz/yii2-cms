@@ -40,6 +40,18 @@ class SectionAssetSearchTest extends TestCase
         self::assertSame(0, $count);
     }
 
+    public function testDocumentsCarryTheTenantOfTheEntry(): void
+    {
+        $asset = SectionAsset::findOne($this->createSectionAsset(0));
+        self::assertNotNull($asset);
+
+        $tenantId = $asset->model->entry->tenant_id;
+
+        foreach ($asset->getSearchDocuments() as $document) {
+            self::assertSame($tenantId, $document->tenantId);
+        }
+    }
+
     private function createSectionAsset(int $i): int
     {
         $entry = Entry::create();

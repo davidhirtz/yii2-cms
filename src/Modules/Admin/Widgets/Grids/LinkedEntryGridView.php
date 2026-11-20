@@ -16,6 +16,7 @@ use Override;
 use Stringable;
 use Traversable;
 use Yii;
+use Hirtz\Tenant\Modules\Admin\Widgets\Grids\Columns\TenantColumn;
 use yii\helpers\Inflector;
 
 /**
@@ -55,6 +56,15 @@ class LinkedEntryGridView extends EntryGridView
         $this->reorderRoute = ['reorder', ...$model ? [$model->getParamName() => $model->id] : []];
 
         parent::configure();
+    }
+
+    /**
+     * A block links entries of every tenant.
+     */
+    #[Override]
+    protected function getDefaultColumns(): array
+    {
+        return TenantColumn::insertAfter(parent::getDefaultColumns(), Entry::instance()->getI18nAttributeName('name'));
     }
 
     /**

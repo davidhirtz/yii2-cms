@@ -10,6 +10,7 @@ use Hirtz\Skeleton\Widgets\Grids\GridView;
 use Hirtz\Skeleton\Widgets\Grids\Traits\ModelReferenceGridTrait;
 use Override;
 use yii\data\ActiveDataProvider;
+use Hirtz\Tenant\Modules\Admin\Widgets\Grids\Columns\TenantColumn;
 
 /**
  * @extends GridView<EntryReference>
@@ -43,7 +44,7 @@ class EntryReferenceGridView extends GridView
 
         EntryReference::populateModelRelations($this->provider->getModels(), searchable: true);
 
-        $this->columns ??= $this->getModelReferenceColumns();
+        $this->columns ??= TenantColumn::insertAfter($this->getModelReferenceColumns(), 'model_class');
 
         parent::configure();
     }

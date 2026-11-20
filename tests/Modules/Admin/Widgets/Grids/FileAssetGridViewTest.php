@@ -51,6 +51,15 @@ class FileAssetGridViewTest extends TestCase
         );
     }
 
+    public function testTheOwnersTenantIsNamed(): void
+    {
+        $html = (string)FileAssetGridView::make()
+            ->file($this->getFileFromFixture('file-3'));
+
+        self::assertStringContainsString('Record</a></th><th>Tenant</th>', $html);
+        self::assertStringContainsString('<td>Default</td>', $html);
+    }
+
     public function testTheOwnerIsLinkedOnlyWithItsPermission(): void
     {
         $file = $this->getFileFromFixture('file-3');

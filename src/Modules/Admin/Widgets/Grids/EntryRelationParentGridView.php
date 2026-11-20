@@ -18,6 +18,9 @@ use Override;
 use Stringable;
 use Yii;
 use yii\data\ArrayDataProvider;
+use Hirtz\Tenant\Modules\Admin\Widgets\Grids\Columns\TenantColumn;
+use Hirtz\Tenant\Models\Collections\TenantCollection;
+use Hirtz\Skeleton\Models\Interfaces\SearchableInterface;
 
 /**
  * The sections and blocks listing an entry, each leading to its list of related entries.
@@ -51,6 +54,7 @@ class EntryRelationParentGridView extends GridView
 
         $this->columns ??= [
             $this->getModelColumn(),
+            $this->getTenantColumn(),
             $this->getUpdatedAtColumn(),
             $this->getButtonColumn(),
         ];
@@ -112,6 +116,18 @@ class EntryRelationParentGridView extends GridView
             ->value(fn (EntryRelation $relation): Stringable => AdminModelHeading::make()->model($relation->model))
             ->format('raw')
             ->url($this->getRelationsRoute(...));
+    }
+
+    protected function getTenantColumn(): ?Column
+    {
+        return TenantColumn::make()
+            ->value(function (EntryRelation $relation): ?string {
+                $model = $relation->getModel();
+
+                return $model instanceof SearchableInterface
+                    ? TenantCollection::getById($model->getSearchTenantId())?->name
+                    : null;
+            });
     }
 
     protected function getUpdatedAtColumn(): ?Column

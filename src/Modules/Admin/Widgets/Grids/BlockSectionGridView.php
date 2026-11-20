@@ -23,6 +23,7 @@ use Override;
 use Stringable;
 use Yii;
 use yii\data\ActiveDataProvider;
+use Hirtz\Tenant\Modules\Admin\Widgets\Grids\Columns\TenantColumn;
 
 /**
  * Its delete routes are relative, so the grid only renders where {@see BlockSectionController} serves it.
@@ -78,6 +79,7 @@ class BlockSectionGridView extends GridView
             $this->getStatusColumn(),
             $this->getTypeColumn(),
             $this->getEntryColumn(),
+            $this->getTenantColumn(),
             $this->getUpdatedAtColumn(),
             $this->getButtonColumn(),
         ];
@@ -135,6 +137,11 @@ class BlockSectionGridView extends GridView
             ->title(Yii::t('cms', 'SECTION_ENTRY_ID_LABEL'))
             ->value(fn (Section $section) => $section->entry->getI18nAttribute('name'))
             ->url(fn (Section $section) => $this->getSectionUrl($section));
+    }
+
+    protected function getTenantColumn(): ?Column
+    {
+        return TenantColumn::make();
     }
 
     protected function getUpdatedAtColumn(): ?Column

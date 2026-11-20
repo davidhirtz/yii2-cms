@@ -24,6 +24,8 @@ use Hirtz\Cms\Models\Section;
 use Hirtz\Cms\Models\SectionAsset;
 use Hirtz\Cms\Models\SectionEntry;
 use Hirtz\Media\Mcp\AssetResources;
+use Hirtz\Media\Modules\Admin\Widgets\Grids\FileAssetGridView;
+use Hirtz\Media\Modules\Admin\Widgets\Grids\FileReferenceGridView;
 use Hirtz\Skeleton\Base\ConfigBootstrapInterface;
 use Hirtz\Skeleton\Db\ActiveRecord;
 use Hirtz\Skeleton\Filters\PageCache;
@@ -35,9 +37,12 @@ use Hirtz\Skeleton\Modules\Admin\Controllers\DashboardController;
 use Hirtz\Skeleton\Models\User;
 use Hirtz\Skeleton\Console\Application as ConsoleApplication;
 use Hirtz\Skeleton\Web\Application;
+use Hirtz\Skeleton\Widgets\Grids\GridView;
+use Hirtz\Skeleton\Widgets\Widget;
 use Hirtz\Tenant\Models\Tenant;
 use Hirtz\Tenant\Modules\Admin\Widgets\Grids\TenantGridView;
 use Hirtz\Tenant\Modules\Admin\Widgets\Buttons\TenantDropdownButton;
+use Hirtz\Tenant\Modules\Admin\Widgets\Grids\Columns\TenantColumn;
 use Override;
 use Yii;
 use yii\base\ModelEvent;
@@ -222,6 +227,7 @@ class Bootstrap implements ConfigBootstrapInterface
         $this->addTenantEventHandlers();
         $this->addPageCacheEventHandlers();
         $this->addEntryReferenceEventHandlers();
+        $this->addTenantColumnEventHandlers();
 
         DashboardController::addRoles(static fn (): array => [
             Entry::AUTH_ENTRY,
@@ -252,6 +258,18 @@ class Bootstrap implements ConfigBootstrapInterface
             BaseActiveRecord::EVENT_AFTER_DELETE,
             EntryReferenceEventHandler::handleAfterDelete(...),
         );
+    }
+
+    /**
+     * A file is used and referenced across tenants.
+     */
+    protected function addTenantColumnEventHandlers(): void
+    {
+        foreach ([FileAssetGridView::class, FileReferenceGridView::class] as $class) {
+            EventHelper::on($class, Widget::EVENT_CONFIGURE, static function (GridView $grid): void {
+                $grid->columns(static fn (array $columns): array => TenantColumn::insertAfter($columns, 'model_class'));
+            });
+        }
     }
 
     /**

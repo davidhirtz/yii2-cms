@@ -123,7 +123,13 @@ class EntryGridView extends GridView
             $this->getSearchInput(),
         ];
 
-        $this->columns ??= [
+        parent::configure();
+    }
+
+    #[Override]
+    protected function getDefaultColumns(): array
+    {
+        return [
             $this->getCheckboxColumn(),
             $this->getStatusColumn(),
             $this->getTypeColumn(),
@@ -135,8 +141,6 @@ class EntryGridView extends GridView
             $this->getDateColumn(),
             $this->getButtonColumn(),
         ];
-
-        parent::configure();
     }
 
     /**
