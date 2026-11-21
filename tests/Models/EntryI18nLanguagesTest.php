@@ -6,9 +6,11 @@ namespace Hirtz\Cms\Tests\Models;
 
 use Hirtz\Cms\Models\Entry;
 use Hirtz\Cms\Models\EntryAsset;
+use Hirtz\Cms\Models\Permalink;
 use Hirtz\Cms\Test\Models\TestEntry;
 use Hirtz\Cms\Test\Models\TestSection;
 use Hirtz\Cms\Test\TestCase;
+use Hirtz\Skeleton\Models\Search;
 use Hirtz\Tenant\Models\Collections\TenantCollection;
 use Hirtz\Tenant\Models\Tenant;
 use Override;
@@ -149,6 +151,52 @@ class EntryI18nLanguagesTest extends TestCase
 
         self::assertSame(['en-US', 'de', 'fr'], $entry->getI18nLanguages());
         self::assertSame(['en-US', 'de', 'fr'], TestSection::create()->getI18nLanguages());
+    }
+
+    /**
+     * The form shows the tenant's languages alone, and the editor may show fewer still: the save writes what was posted.
+     */
+    public function testASaveFromANarrowedFormKeepsTheOtherLanguages(): void
+    {
+        Yii::$app->getI18n()->setLanguages(['en-US', 'de', 'fr']);
+        $tenant = $this->createTenant('en-US', ['de']);
+
+        $entry = TestEntry::create();
+        $entry->loadDefaultValues();
+        $entry->tenant_id = $tenant->id;
+        $entry->setAttributes(['name' => 'Index', 'slug' => '', 'name_de' => 'Start', 'slug_de' => '', 'name_fr' => 'Accueil'], false);
+        self::assertTrue($entry->insert(), implode(' ', $entry->getErrorSummary(true)));
+
+        $entry = TestEntry::create();
+        $entry->loadDefaultValues();
+        $entry->tenant_id = $tenant->id;
+        $entry->setAttributes([
+            'name' => 'Castle',
+            'slug' => 'castle',
+            'name_de' => 'Schloss',
+            'slug_de' => 'schloss',
+            'name_fr' => 'Château Å',
+            'slug_fr' => 'chateau',
+        ], false);
+        self::assertTrue($entry->insert(), implode(' ', $entry->getErrorSummary(true)));
+
+        $entry = TestEntry::findOne($entry->id) ?? self::fail('Not found.');
+        $posted = array_fill_keys($entry->getI18nAttributesNames(['name', 'slug'], $entry->getI18nLanguages()), '');
+        self::assertSame(['name', 'name_de', 'slug', 'slug_de'], array_keys($posted));
+
+        self::assertTrue($entry->load([...$posted, 'name' => 'Castle 東京', 'slug' => 'castle', 'name_de' => 'Burg', 'slug_de' => 'burg'], ''));
+        self::assertTrue($entry->update() !== false, implode(' ', $entry->getErrorSummary(true)));
+
+        $entry = TestEntry::findOne($entry->id) ?? self::fail('Not found.');
+        self::assertSame('Château Å', $entry->getI18nAttribute('name', 'fr'));
+        self::assertSame('Burg', $entry->getI18nAttribute('name', 'de'));
+
+        $permalinks = Permalink::find()->select(['slug', 'language'])->where(['entry_id' => $entry->id])->indexBy('language')->column();
+        self::assertSame('chateau', $permalinks['fr'] ?? null);
+        self::assertSame('burg', $permalinks['de'] ?? null);
+
+        $languages = Search::find()->select('language')->where(['model_class' => Entry::class, 'model_id' => $entry->id])->column();
+        self::assertContains('fr', $languages);
     }
 
     /**

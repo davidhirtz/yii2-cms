@@ -234,6 +234,36 @@ class McpResourcesTest extends TestCase
         self::assertSame($parent->id, $child->parent_id);
     }
 
+    public function testATenantBoundRecordIsDescribedWithItsTenantsLanguages(): void
+    {
+        Yii::$app->getI18n()->setLanguages(['en-US', 'de', 'fr']);
+
+        $tenant = Tenant::create();
+        $tenant->loadDefaultValues();
+        $tenant->name = 'Deutsch – Å';
+        $tenant->language = 'de';
+        $tenant->languages = [];
+        $tenant->url = 'https://www.deutsch.localhost';
+        self::assertTrue($tenant->save(), print_r($tenant->getErrors(), true));
+        TenantCollection::invalidateCache();
+
+        $entry = Entry::create();
+        $entry->loadDefaultValues();
+        $entry->name_de = 'Startseite 東京';
+        $entry->tenant_id = $tenant->id;
+        self::assertTrue($entry->insert(), print_r($entry->getErrors(), true));
+
+        $languages = fn (array $arguments): array => array_column($this->callTool('describe_resource', $arguments)['languages'] ?? [], 'language');
+
+        self::assertSame(['en-US', 'de', 'fr'], $languages(['resource' => 'entry']));
+        self::assertSame(['de'], $languages(['resource' => 'entry', 'id' => $entry->id]));
+        self::assertSame(['de'], $languages(['resource' => 'section', 'parent' => $entry->id]));
+
+        // Storage keeps every language.
+        $properties = $this->callTool('describe_resource', ['resource' => 'entry', 'id' => $entry->id])['attributes']['properties'] ?? [];
+        self::assertArrayHasKey('name_fr', $properties);
+    }
+
     public function testASectionIsCreatedUnderAnEntry(): void
     {
         $entry = $this->getEntryFromFixture('page-enabled');
