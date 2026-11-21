@@ -1,4 +1,4 @@
-## Unreleased
+## 3.25.0 (November 21, 2026)
 
 - Added `getAdminTenantRouteParams()` to entries, sections and their assets, whose admin routes open another tenant's record in it
 - Added a tenant column before the record to the grids of a file's assets and references, an entry's references and relations, a block's sections and linked entries
